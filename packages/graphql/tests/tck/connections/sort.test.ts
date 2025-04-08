@@ -75,7 +75,8 @@ describe("Relationship Properties Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -136,7 +137,8 @@ describe("Relationship Properties Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {

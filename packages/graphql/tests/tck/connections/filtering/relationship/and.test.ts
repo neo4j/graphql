@@ -52,7 +52,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> AND", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { AND: [{ role_ENDS_WITH: "Gump" }, { screenTime_LT: 60 }] } }) {
+                    actorsConnection(
+                        where: { edge: { AND: [{ role: { endsWith: "Gump" } }, { screenTime: { lt: 60 } }] } }
+                    ) {
                         edges {
                             properties {
                                 role
@@ -70,7 +72,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> AND", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -104,7 +107,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> AND", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { NOT: { role_ENDS_WITH: "Gump" } } }) {
+                    actorsConnection(where: { edge: { NOT: { role: { endsWith: "Gump" } } } }) {
                         edges {
                             properties {
                                 role
@@ -122,7 +125,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> AND", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)

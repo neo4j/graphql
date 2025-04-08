@@ -60,13 +60,13 @@ describe("Nested Unions", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title_EQ: "Movie" }
+                    where: { title: { eq: "Movie" } }
                     update: {
                         actors: {
                             LeadActor: {
                                 connect: {
-                                    where: { node: { name_EQ: "Actor" } }
-                                    connect: { actedIn: { Series: { where: { node: { name_EQ: "Series" } } } } }
+                                    where: { node: { name: { eq: "Actor" } } }
+                                    connect: { actedIn: { Series: { where: { node: { name: { eq: "Series" } } } } } }
                                 }
                             }
                         }
@@ -92,7 +92,8 @@ describe("Nested Unions", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             WITH *
             CALL {
@@ -106,7 +107,7 @@ describe("Nested Unions", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors_LeadActor0_connect0_node
-            			MERGE (this)<-[:ACTED_IN]-(this_actors_LeadActor0_connect0_node)
+            			CREATE (this)<-[:ACTED_IN]-(this_actors_LeadActor0_connect0_node)
             		}
             	}
             WITH this, this_actors_LeadActor0_connect0_node
@@ -121,7 +122,7 @@ describe("Nested Unions", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this_actors_LeadActor0_connect0_node
             			UNWIND connectedNodes as this_actors_LeadActor0_connect0_node_actedIn_Series0_node
-            			MERGE (this_actors_LeadActor0_connect0_node)-[:ACTED_IN]->(this_actors_LeadActor0_connect0_node_actedIn_Series0_node)
+            			CREATE (this_actors_LeadActor0_connect0_node)-[:ACTED_IN]->(this_actors_LeadActor0_connect0_node_actedIn_Series0_node)
             		}
             	}
             WITH this, this_actors_LeadActor0_connect0_node, this_actors_LeadActor0_connect0_node_actedIn_Series0_node
@@ -179,13 +180,13 @@ describe("Nested Unions", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title_EQ: "Movie" }
+                    where: { title: { eq: "Movie" } }
                     update: {
                         actors: {
                             LeadActor: {
                                 disconnect: {
-                                    where: { node: { name_EQ: "Actor" } }
-                                    disconnect: { actedIn: { Series: { where: { node: { name_EQ: "Series" } } } } }
+                                    where: { node: { name: { eq: "Actor" } } }
+                                    disconnect: { actedIn: { Series: { where: { node: { name: { eq: "Series" } } } } } }
                                 }
                             }
                         }
@@ -211,7 +212,8 @@ describe("Nested Unions", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             WITH this
             CALL {
@@ -289,7 +291,9 @@ describe("Nested Unions", () => {
                                             {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"name_EQ\\": \\"Actor\\"
+                                                        \\"name\\": {
+                                                            \\"eq\\": \\"Actor\\"
+                                                        }
                                                     }
                                                 },
                                                 \\"disconnect\\": {
@@ -298,7 +302,9 @@ describe("Nested Unions", () => {
                                                             {
                                                                 \\"where\\": {
                                                                     \\"node\\": {
-                                                                        \\"name_EQ\\": \\"Series\\"
+                                                                        \\"name\\": {
+                                                                            \\"eq\\": \\"Series\\"
+                                                                        }
                                                                     }
                                                                 }
                                                             }

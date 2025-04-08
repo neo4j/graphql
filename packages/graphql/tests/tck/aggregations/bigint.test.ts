@@ -39,9 +39,13 @@ describe("Cypher Aggregations BigInt", () => {
     test("Min", async () => {
         const query = /* GraphQL */ `
             {
-                filesAggregate {
-                    size {
-                        min
+                filesConnection {
+                    aggregate {
+                        node {
+                            size {
+                                min
+                            }
+                        }
                     }
                 }
             }
@@ -50,12 +54,13 @@ describe("Cypher Aggregations BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:File)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.size) } AS var0
             }
-            RETURN { size: var0 }"
+            RETURN { aggregate: { node: { size: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -64,9 +69,13 @@ describe("Cypher Aggregations BigInt", () => {
     test("Max", async () => {
         const query = /* GraphQL */ `
             {
-                filesAggregate {
-                    size {
-                        max
+                filesConnection {
+                    aggregate {
+                        node {
+                            size {
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -75,12 +84,13 @@ describe("Cypher Aggregations BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:File)
-                WITH this
+                WITH DISTINCT this
                 RETURN { max: max(this.size) } AS var0
             }
-            RETURN { size: var0 }"
+            RETURN { aggregate: { node: { size: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -89,9 +99,13 @@ describe("Cypher Aggregations BigInt", () => {
     test("Average", async () => {
         const query = /* GraphQL */ `
             {
-                filesAggregate {
-                    size {
-                        average
+                filesConnection {
+                    aggregate {
+                        node {
+                            size {
+                                average
+                            }
+                        }
                     }
                 }
             }
@@ -100,12 +114,13 @@ describe("Cypher Aggregations BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:File)
-                WITH this
+                WITH DISTINCT this
                 RETURN { average: avg(this.size) } AS var0
             }
-            RETURN { size: var0 }"
+            RETURN { aggregate: { node: { size: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -114,9 +129,13 @@ describe("Cypher Aggregations BigInt", () => {
     test("Sum", async () => {
         const query = /* GraphQL */ `
             {
-                filesAggregate {
-                    size {
-                        sum
+                filesConnection {
+                    aggregate {
+                        node {
+                            size {
+                                sum
+                            }
+                        }
                     }
                 }
             }
@@ -125,12 +144,13 @@ describe("Cypher Aggregations BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:File)
-                WITH this
+                WITH DISTINCT this
                 RETURN { sum: sum(this.size) } AS var0
             }
-            RETURN { size: var0 }"
+            RETURN { aggregate: { node: { size: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -139,12 +159,16 @@ describe("Cypher Aggregations BigInt", () => {
     test("Min, Max, Sum and Average", async () => {
         const query = /* GraphQL */ `
             {
-                filesAggregate {
-                    size {
-                        min
-                        max
-                        average
-                        sum
+                filesConnection {
+                    aggregate {
+                        node {
+                            size {
+                                min
+                                max
+                                average
+                                sum
+                            }
+                        }
                     }
                 }
             }
@@ -153,12 +177,13 @@ describe("Cypher Aggregations BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:File)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.size), max: max(this.size), average: avg(this.size), sum: sum(this.size) } AS var0
             }
-            RETURN { size: var0 }"
+            RETURN { aggregate: { node: { size: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

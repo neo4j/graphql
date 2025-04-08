@@ -49,7 +49,7 @@ describe("Cypher Disconnect", () => {
                 id: ID!
                 description: String!
                 url: String!
-                color: Color! @relationship(type: "OF_COLOR", direction: OUT)
+                color: [Color!]! @relationship(type: "OF_COLOR", direction: OUT)
             }
         `;
 
@@ -68,12 +68,12 @@ describe("Cypher Disconnect", () => {
                         colors: {
                             disconnect: [
                                 {
-                                    where: { node: { name_EQ: "Red" } }
+                                    where: { node: { name: { eq: "Red" } } }
                                     disconnect: {
                                         photos: [
                                             {
-                                                where: { node: { id_EQ: "123" } }
-                                                disconnect: { color: { where: { node: { id_EQ: "134" } } } }
+                                                where: { node: { id: { eq: "123" } } }
+                                                disconnect: { color: { where: { node: { id: { eq: "134" } } } } }
                                             }
                                         ]
                                     }
@@ -83,12 +83,12 @@ describe("Cypher Disconnect", () => {
                         photos: {
                             disconnect: [
                                 {
-                                    where: { node: { id_EQ: "321" } }
-                                    disconnect: { color: { where: { node: { name_EQ: "Green" } } } }
+                                    where: { node: { id: { eq: "321" } } }
+                                    disconnect: { color: { where: { node: { name: { eq: "Green" } } } } }
                                 }
                                 {
-                                    where: { node: { id_EQ: "33211" } }
-                                    disconnect: { color: { where: { node: { name_EQ: "Red" } } } }
+                                    where: { node: { id: { eq: "33211" } } }
+                                    disconnect: { color: { where: { node: { name: { eq: "Red" } } } } }
                                 }
                             ]
                         }
@@ -104,7 +104,8 @@ describe("Cypher Disconnect", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Product)
+            "CYPHER 5
+            MATCH (this:Product)
             SET this.id = $this_update_id_SET
             SET this.name = $this_update_name_SET
             WITH this
@@ -131,7 +132,7 @@ describe("Cypher Disconnect", () => {
             CALL {
             WITH this, this_colors0_disconnect0, this_colors0_disconnect0_photos0
             OPTIONAL MATCH (this_colors0_disconnect0_photos0)-[this_colors0_disconnect0_photos0_color0_rel:OF_COLOR]->(this_colors0_disconnect0_photos0_color0:Color)
-            WHERE this_colors0_disconnect0_photos0_color0.id = $updateProducts_args_update_colors0_disconnect0_disconnect_photos_disconnect_color_where_Color_this_colors0_disconnect0_photos0_color0param0
+            WHERE this_colors0_disconnect0_photos0_color0.id = $updateProducts_args_update_colors0_disconnect0_disconnect_photos0_disconnect_color0_where_Color_this_colors0_disconnect0_photos0_color0param0
             CALL {
             	WITH this_colors0_disconnect0_photos0_color0, this_colors0_disconnect0_photos0_color0_rel, this_colors0_disconnect0_photos0
             	WITH collect(this_colors0_disconnect0_photos0_color0) as this_colors0_disconnect0_photos0_color0, this_colors0_disconnect0_photos0_color0_rel, this_colors0_disconnect0_photos0
@@ -158,7 +159,7 @@ describe("Cypher Disconnect", () => {
             CALL {
             WITH this, this_photos0_disconnect0
             OPTIONAL MATCH (this_photos0_disconnect0)-[this_photos0_disconnect0_color0_rel:OF_COLOR]->(this_photos0_disconnect0_color0:Color)
-            WHERE this_photos0_disconnect0_color0.name = $updateProducts_args_update_photos0_disconnect_disconnect_color_where_Color_this_photos0_disconnect0_color0param0
+            WHERE this_photos0_disconnect0_color0.name = $updateProducts_args_update_photos0_disconnect0_disconnect_color0_where_Color_this_photos0_disconnect0_color0param0
             CALL {
             	WITH this_photos0_disconnect0_color0, this_photos0_disconnect0_color0_rel, this_photos0_disconnect0
             	WITH collect(this_photos0_disconnect0_color0) as this_photos0_disconnect0_color0, this_photos0_disconnect0_color0_rel, this_photos0_disconnect0
@@ -183,7 +184,7 @@ describe("Cypher Disconnect", () => {
             CALL {
             WITH this, this_photos0_disconnect1
             OPTIONAL MATCH (this_photos0_disconnect1)-[this_photos0_disconnect1_color0_rel:OF_COLOR]->(this_photos0_disconnect1_color0:Color)
-            WHERE this_photos0_disconnect1_color0.name = $updateProducts_args_update_photos0_disconnect_disconnect_color_where_Color_this_photos0_disconnect1_color0param0
+            WHERE this_photos0_disconnect1_color0.name = $updateProducts_args_update_photos0_disconnect0_disconnect_color0_where_Color_this_photos0_disconnect1_color0param0
             CALL {
             	WITH this_photos0_disconnect1_color0, this_photos0_disconnect1_color0_rel, this_photos0_disconnect1
             	WITH collect(this_photos0_disconnect1_color0) as this_photos0_disconnect1_color0, this_photos0_disconnect1_color0_rel, this_photos0_disconnect1
@@ -203,11 +204,11 @@ describe("Cypher Disconnect", () => {
                 \\"this_update_name_SET\\": \\"Nested Connect\\",
                 \\"updateProducts_args_update_colors0_disconnect0_where_Color_this_colors0_disconnect0param0\\": \\"Red\\",
                 \\"updateProducts_args_update_colors0_disconnect0_disconnect_photos0_where_Photo_this_colors0_disconnect0_photos0param0\\": \\"123\\",
-                \\"updateProducts_args_update_colors0_disconnect0_disconnect_photos_disconnect_color_where_Color_this_colors0_disconnect0_photos0_color0param0\\": \\"134\\",
+                \\"updateProducts_args_update_colors0_disconnect0_disconnect_photos0_disconnect_color0_where_Color_this_colors0_disconnect0_photos0_color0param0\\": \\"134\\",
                 \\"updateProducts_args_update_photos0_disconnect0_where_Photo_this_photos0_disconnect0param0\\": \\"321\\",
-                \\"updateProducts_args_update_photos0_disconnect_disconnect_color_where_Color_this_photos0_disconnect0_color0param0\\": \\"Green\\",
+                \\"updateProducts_args_update_photos0_disconnect0_disconnect_color0_where_Color_this_photos0_disconnect0_color0param0\\": \\"Green\\",
                 \\"updateProducts_args_update_photos0_disconnect1_where_Photo_this_photos0_disconnect1param0\\": \\"33211\\",
-                \\"updateProducts_args_update_photos0_disconnect_disconnect_color_where_Color_this_photos0_disconnect1_color0param0\\": \\"Red\\",
+                \\"updateProducts_args_update_photos0_disconnect0_disconnect_color0_where_Color_this_photos0_disconnect1_color0param0\\": \\"Red\\",
                 \\"updateProducts\\": {
                     \\"args\\": {
                         \\"update\\": {
@@ -219,7 +220,9 @@ describe("Cypher Disconnect", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"name_EQ\\": \\"Red\\"
+                                                    \\"name\\": {
+                                                        \\"eq\\": \\"Red\\"
+                                                    }
                                                 }
                                             },
                                             \\"disconnect\\": {
@@ -227,17 +230,23 @@ describe("Cypher Disconnect", () => {
                                                     {
                                                         \\"where\\": {
                                                             \\"node\\": {
-                                                                \\"id_EQ\\": \\"123\\"
+                                                                \\"id\\": {
+                                                                    \\"eq\\": \\"123\\"
+                                                                }
                                                             }
                                                         },
                                                         \\"disconnect\\": {
-                                                            \\"color\\": {
-                                                                \\"where\\": {
-                                                                    \\"node\\": {
-                                                                        \\"id_EQ\\": \\"134\\"
+                                                            \\"color\\": [
+                                                                {
+                                                                    \\"where\\": {
+                                                                        \\"node\\": {
+                                                                            \\"id\\": {
+                                                                                \\"eq\\": \\"134\\"
+                                                                            }
+                                                                        }
                                                                     }
                                                                 }
-                                                            }
+                                                            ]
                                                         }
                                                     }
                                                 ]
@@ -252,33 +261,45 @@ describe("Cypher Disconnect", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id_EQ\\": \\"321\\"
+                                                    \\"id\\": {
+                                                        \\"eq\\": \\"321\\"
+                                                    }
                                                 }
                                             },
                                             \\"disconnect\\": {
-                                                \\"color\\": {
-                                                    \\"where\\": {
-                                                        \\"node\\": {
-                                                            \\"name_EQ\\": \\"Green\\"
+                                                \\"color\\": [
+                                                    {
+                                                        \\"where\\": {
+                                                            \\"node\\": {
+                                                                \\"name\\": {
+                                                                    \\"eq\\": \\"Green\\"
+                                                                }
+                                                            }
                                                         }
                                                     }
-                                                }
+                                                ]
                                             }
                                         },
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id_EQ\\": \\"33211\\"
+                                                    \\"id\\": {
+                                                        \\"eq\\": \\"33211\\"
+                                                    }
                                                 }
                                             },
                                             \\"disconnect\\": {
-                                                \\"color\\": {
-                                                    \\"where\\": {
-                                                        \\"node\\": {
-                                                            \\"name_EQ\\": \\"Red\\"
+                                                \\"color\\": [
+                                                    {
+                                                        \\"where\\": {
+                                                            \\"node\\": {
+                                                                \\"name\\": {
+                                                                    \\"eq\\": \\"Red\\"
+                                                                }
+                                                            }
                                                         }
                                                     }
-                                                }
+                                                ]
                                             }
                                         }
                                     ]

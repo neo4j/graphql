@@ -57,10 +57,12 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
         const query = `
             query {
                 ${typeMovie.plural} {
-                    actorsAggregate {
-                        node {
+                    actorsConnection {
+                        aggregate {
+                          node {
                             nickname {
                                 shortest
+                                }
                             }
                         }
                     }
@@ -73,8 +75,8 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
         expect(gqlResult.errors).toBeUndefined();
         expect(gqlResult.data[typeMovie.plural]).toEqual(
             expect.toIncludeSameMembers([
-                { actorsAggregate: { node: { nickname: { shortest: "SName" } } } },
-                { actorsAggregate: { node: { nickname: { shortest: null } } } },
+                { actorsConnection: { aggregate: { node: { nickname: { shortest: "SName" } } } } },
+                { actorsConnection: { aggregate: { node: { nickname: { shortest: null } } } } },
             ])
         );
     });
@@ -82,9 +84,13 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
     test("should support nullable fields in aggregations", async () => {
         const query = `
             query {
-                ${typePerson.plural}Aggregate {
-                    surname {
-                        shortest
+                ${typePerson.plural}Connection {
+                    aggregate {
+                        node {
+                            surname {
+                              shortest
+                            }
+                        }
                     }
                 }
             }
@@ -93,6 +99,8 @@ describe("https://github.com/neo4j/graphql/issues/594", () => {
         const gqlResult: any = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect(gqlResult.data[`${typePerson.plural}Aggregate`]).toEqual({ surname: { shortest: null } });
+        expect(gqlResult.data[`${typePerson.plural}Connection`]).toEqual({
+            aggregate: { node: { surname: { shortest: null } } },
+        });
     });
 });

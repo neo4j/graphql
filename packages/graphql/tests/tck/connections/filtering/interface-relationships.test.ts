@@ -46,14 +46,16 @@ describe("interface relationships with aliased fields", () => {
 
             type Actor @node {
                 name: String!
-                currentlyActingIn: Production @relationship(type: "CURRENTLY_ACTING_IN", direction: OUT)
+                currentlyActingIn: [Production!]! @relationship(type: "CURRENTLY_ACTING_IN", direction: OUT)
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type ProtectedActor
                 @node
                 @authorization(
-                    validate: [{ where: { node: { actedInConnection_SOME: { node: { title_EQ: "$jwt.title" } } } } }]
+                    validate: [
+                        { where: { node: { actedInConnection: { some: { node: { title: { eq: "$jwt.title" } } } } } } }
+                    ]
                 ) {
                 name: String! @alias(property: "dbName")
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
@@ -68,7 +70,7 @@ describe("interface relationships with aliased fields", () => {
     test("should read and return interface relationship fields with interface relationship filter SOME", async () => {
         const query = /* GraphQL */ `
             query Actors($title: String) {
-                actors(where: { actedInConnection_SOME: { node: { title_EQ: $title } } }) {
+                actors(where: { actedInConnection: { some: { node: { title: { eq: $title } } } } }) {
                     name
                     actedIn {
                         title
@@ -88,7 +90,8 @@ describe("interface relationships with aliased fields", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE EXISTS {
                 MATCH (this)-[this0:ACTED_IN]->(this1)
                 WHERE (CASE
@@ -126,7 +129,7 @@ describe("interface relationships with aliased fields", () => {
     test("delete", async () => {
         const query = /* GraphQL */ `
             mutation deleteActors($title: String) {
-                deleteActors(where: { actedInConnection_SOME: { node: { title_EQ: $title } } }) {
+                deleteActors(where: { actedInConnection: { some: { node: { title: { eq: $title } } } } }) {
                     nodesDeleted
                     relationshipsDeleted
                 }
@@ -138,7 +141,8 @@ describe("interface relationships with aliased fields", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE EXISTS {
                 MATCH (this)-[this0:ACTED_IN]->(this1)
                 WHERE (CASE
@@ -178,7 +182,8 @@ describe("interface relationships with aliased fields", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:ProtectedActor)
+            "CYPHER 5
+            MATCH (this:ProtectedActor)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)-[this1:ACTED_IN]->(this0) WHERE (($jwt.title IS NOT NULL AND CASE
                 WHEN this0:Movie THEN this0.movieTitle

@@ -52,7 +52,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { screenTime_IN: [60, 70] } }) {
+                    actorsConnection(where: { edge: { screenTime: { in: [60, 70] } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -69,7 +69,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -108,7 +109,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { quotes_INCLUDES: "Life is like a box of chocolates" } }) {
+                    actorsConnection(where: { edge: { quotes: { includes: "Life is like a box of chocolates" } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -125,7 +126,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Arrays", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)

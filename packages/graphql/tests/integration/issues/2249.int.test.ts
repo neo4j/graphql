@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
             type ${Movie} @node {
                 title: String!
                 reviewers: [Reviewer!]! @relationship(type: "REVIEWED", properties: "Review", direction: IN)
-                imdbId: Int @unique
+                imdbId: Int
             }
 
             type Review @relationshipProperties {

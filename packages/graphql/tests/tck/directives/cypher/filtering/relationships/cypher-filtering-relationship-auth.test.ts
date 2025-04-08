@@ -26,7 +26,9 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(filter: [{ where: { node: { actors_SOME: { name_EQ: "$jwt.custom_value" } } } }]) {
+                @authorization(
+                    filter: [{ where: { node: { actors: { some: { name: { eq: "$jwt.custom_value" } } } } } }]
+                ) {
                 title: String
                 rating: Float
                 actors: [Actor!]!
@@ -65,7 +67,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
 
         const query = /* GraphQL */ `
             query {
-                moviesConnection(where: { rating_LT: 7.0 }) {
+                moviesConnection(where: { rating: { lt: 7.0 } }) {
                     edges {
                         node {
                             title
@@ -78,7 +80,8 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             CALL {
                 WITH this0
                 CALL {
@@ -118,7 +121,9 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(filter: [{ where: { node: { actors_SOME: { name_EQ: "$jwt.custom_value" } } } }]) {
+                @authorization(
+                    filter: [{ where: { node: { actors: { some: { name: { eq: "$jwt.custom_value" } } } } } }]
+                ) {
                 title: String
                 rating: Float
                 actors: [Actor!]!
@@ -157,7 +162,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
 
         const query = /* GraphQL */ `
             query {
-                moviesConnection(where: { rating_LT: 7.0 }) {
+                moviesConnection(where: { rating: { lt: 7.0 } }) {
                     edges {
                         node {
                             title
@@ -170,7 +175,8 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             CALL {
                 WITH this0
                 CALL {
@@ -210,7 +216,9 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(validate: [{ where: { node: { actors_SOME: { name_EQ: "$jwt.custom_value" } } } }]) {
+                @authorization(
+                    validate: [{ where: { node: { actors: { some: { name: { eq: "$jwt.custom_value" } } } } } }]
+                ) {
                 title: String
                 rating: Float
                 actors: [Actor!]!
@@ -249,7 +257,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
 
         const query = /* GraphQL */ `
             query {
-                moviesConnection(where: { rating_LT: 7.0 }) {
+                moviesConnection(where: { rating: { lt: 7.0 } }) {
                     edges {
                         node {
                             title
@@ -262,7 +270,8 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             CALL {
                 WITH this0
                 CALL {
@@ -302,7 +311,9 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(validate: [{ where: { node: { actors_SOME: { name_EQ: "$jwt.custom_value" } } } }]) {
+                @authorization(
+                    validate: [{ where: { node: { actors: { some: { name: { eq: "$jwt.custom_value" } } } } } }]
+                ) {
                 title: String
                 rating: Float
                 actors: [Actor!]!
@@ -341,7 +352,7 @@ describe("cypher directive filtering - relationship auth filter", () => {
 
         const query = /* GraphQL */ `
             query {
-                moviesConnection(where: { rating_GT: 7.0 }) {
+                moviesConnection(where: { rating: { gt: 7.0 } }) {
                     edges {
                         node {
                             title
@@ -354,7 +365,8 @@ describe("cypher directive filtering - relationship auth filter", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             CALL {
                 WITH this0
                 CALL {

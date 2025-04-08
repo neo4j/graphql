@@ -52,7 +52,7 @@ describe("cypherParams", () => {
             charset: "alphabetic",
         });
 
-        const source = `
+        const source = /* GraphQL */ `
             {
                 id
             }
@@ -69,7 +69,7 @@ describe("cypherParams", () => {
 
     test("should inject cypherParams on field level nested query", async () => {
         const typeDefs = /* GraphQL */ `
-            type CypherParams {
+            type CypherParams @node {
                 id: ID
             }
 
@@ -90,7 +90,7 @@ describe("cypherParams", () => {
             charset: "alphabetic",
         });
 
-        const source = `
+        const source = /* GraphQL */ `
             query($id: ID) {
                 ${Movie.plural}(where: {id_EQ: $id}) {
                     id
@@ -144,7 +144,7 @@ describe("cypherParams", () => {
             charset: "alphabetic",
         });
 
-        const source = `
+        const source = /* GraphQL */ `
             mutation {
                 id
             }

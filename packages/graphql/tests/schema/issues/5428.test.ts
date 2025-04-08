@@ -80,8 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
             }
 
             type Query {
-              test(limit: Int, offset: Int, options: TestOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [TestSort!], where: TestWhere): [Test!]!
-              testAggregate(where: TestWhere): TestAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"testConnection\\\\\\" instead\\")
+              test(limit: Int, offset: Int, sort: [TestSort!], where: TestWhere): [Test!]!
               testConnection(after: String, first: Int, sort: [TestSort!], where: TestWhere): TestConnection!
             }
 
@@ -98,6 +97,20 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
               shortest: String
             }
 
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
             type Test {
               Name: String
             }
@@ -109,11 +122,6 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
 
             type TestAggregateNode {
               Name: StringAggregateSelection!
-            }
-
-            type TestAggregateSelection {
-              Name: StringAggregateSelection!
-              count: Int!
             }
 
             type TestConnection {
@@ -132,15 +140,6 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
               node: Test!
             }
 
-            input TestOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more TestSort objects to sort Test by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [TestSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Test by. The order in which sorts are applied is not guaranteed when specifying many fields in one TestSort object.
             \\"\\"\\"
@@ -149,19 +148,19 @@ describe("https://github.com/neo4j/graphql/issues/5428", () => {
             }
 
             input TestUpdateInput {
-              Name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              Name_SET: String
+              Name: StringScalarMutations
+              Name_SET: String @deprecated(reason: \\"Please use the generic mutation 'Name: { set: ... } }' instead.\\")
             }
 
             input TestWhere {
               AND: [TestWhere!]
               NOT: TestWhere
-              Name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              Name_CONTAINS: String
-              Name_ENDS_WITH: String
-              Name_EQ: String
-              Name_IN: [String]
-              Name_STARTS_WITH: String
+              Name: StringScalarFilters
+              Name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter Name: { contains: ... }\\")
+              Name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter Name: { endsWith: ... }\\")
+              Name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter Name: { eq: ... }\\")
+              Name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter Name: { in: ... }\\")
+              Name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter Name: { startsWith: ... }\\")
               OR: [TestWhere!]
             }
 

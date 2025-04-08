@@ -64,9 +64,18 @@ describe("Localdatetime", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             \\"\\"\\"A local datetime, represented as 'YYYY-MM-DDTHH:MM:SS'\\"\\"\\"
@@ -75,6 +84,21 @@ describe("Localdatetime", () => {
             type LocalDateTimeAggregateSelection {
               max: LocalDateTime
               min: LocalDateTime
+            }
+
+            \\"\\"\\"LocalDateTime filters\\"\\"\\"
+            input LocalDateTimeScalarFilters {
+              eq: LocalDateTime
+              gt: LocalDateTime
+              gte: LocalDateTime
+              in: [LocalDateTime!]
+              lt: LocalDateTime
+              lte: LocalDateTime
+            }
+
+            \\"\\"\\"LocalDateTime mutations\\"\\"\\"
+            input LocalDateTimeScalarMutations {
+              set: LocalDateTime
             }
 
             type Movie {
@@ -88,13 +112,6 @@ describe("Localdatetime", () => {
             }
 
             type MovieAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              localDT: LocalDateTimeAggregateSelection!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               localDT: LocalDateTimeAggregateSelection!
             }
 
@@ -108,15 +125,6 @@ describe("Localdatetime", () => {
               node: Movie!
             }
 
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -126,29 +134,29 @@ describe("Localdatetime", () => {
             }
 
             input MovieUpdateInput {
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              localDT: LocalDateTime @deprecated(reason: \\"Please use the explicit _SET field\\")
-              localDT_SET: LocalDateTime
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              localDT: LocalDateTimeScalarMutations
+              localDT_SET: LocalDateTime @deprecated(reason: \\"Please use the generic mutation 'localDT: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              localDT: LocalDateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              localDT_EQ: LocalDateTime
-              localDT_GT: LocalDateTime
-              localDT_GTE: LocalDateTime
-              localDT_IN: [LocalDateTime]
-              localDT_LT: LocalDateTime
-              localDT_LTE: LocalDateTime
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              localDT: LocalDateTimeScalarFilters
+              localDT_EQ: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDT: { eq: ... }\\")
+              localDT_GT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDT: { gt: ... }\\")
+              localDT_GTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDT: { gte: ... }\\")
+              localDT_IN: [LocalDateTime] @deprecated(reason: \\"Please use the relevant generic filter localDT: { in: ... }\\")
+              localDT_LT: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDT: { lt: ... }\\")
+              localDT_LTE: LocalDateTime @deprecated(reason: \\"Please use the relevant generic filter localDT: { lte: ... }\\")
             }
 
             type MoviesConnection {
@@ -173,8 +181,7 @@ describe("Localdatetime", () => {
             }
 
             type Query {
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

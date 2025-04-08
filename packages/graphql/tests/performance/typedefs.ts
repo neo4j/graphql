@@ -39,7 +39,7 @@ export const typeDefs = `#graphql
         @node
         @fulltext(
             indexes: [
-                { queryName: "movieTaglineFulltextQuery", name: "MovieTaglineFulltextIndex", fields: ["tagline"] }
+                { queryName: "movieTaglineFulltextQuery", indexName: "MovieTaglineFulltextIndex", fields: ["tagline"] }
             ]
         ) {
         id: ID!
@@ -60,13 +60,11 @@ export const typeDefs = `#graphql
                 ORDER BY m.title DESC
                 RETURN distinct (m) as otherMovies
                 """, columnName: "otherMovies")
-        favouriteActor: Person @relationship(type: "FAV", direction: OUT)
     }
 
     type MovieClone implements MovieLike @node {
         title: String!
         released: Int
-        favouriteActor: Person! @relationship(type: "FAV", direction: OUT)
     }
     type PersonClone @node {
         name: String!

@@ -25,7 +25,6 @@ import type {
     GraphQLScalarType,
     ObjectTypeDefinitionNode,
 } from "graphql";
-import { Kind, print } from "graphql";
 import { SchemaComposer } from "graphql-compose";
 import { SortDirection } from "../../graphql/enums/SortDirection";
 import { CartesianPointDistance } from "../../graphql/input-objects/CartesianPointDistance";
@@ -43,16 +42,16 @@ import { UpdateInfo } from "../../graphql/objects/UpdateInfo";
 import * as Scalars from "../../graphql/scalars";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
+import type { DefinitionCollection } from "../../schema-model/parser/definition-collection";
 import { getEntityAdapter } from "../../schema-model/utils/get-entity-adapter";
-import type { DefinitionNodes } from "../get-definition-nodes";
 
 export class AugmentedSchemaGenerator {
     private composer: SchemaComposer;
 
     constructor(
         private schemaModel: Neo4jGraphQLSchemaModel,
-        private definitionNodes: DefinitionNodes,
+        private definitionNodes: DefinitionCollection,
         private rootTypesCustomResolvers: ObjectTypeDefinitionNode[]
     ) {
         this.composer = new SchemaComposer();
@@ -71,28 +70,28 @@ export class AugmentedSchemaGenerator {
         for (const entity of this.schemaModel.entities.values()) {
             const model = getEntityAdapter(entity);
 
-            // TODO: check if these can be created ad-hoc
-            if (model instanceof ConcreteEntityAdapter || model instanceof InterfaceEntityAdapter) {
-                for (const attribute of model.attributes.values()) {
-                    if (attribute.typeHelper.isPoint()) {
-                        pointInTypeDefs = true;
-                    }
-                    if (attribute.typeHelper.isCartesianPoint()) {
-                        cartesianPointInTypeDefs = true;
-                    }
+            if (model instanceof UnionEntityAdapter) {
+                continue;
+            }
+            for (const attribute of model.attributes.values()) {
+                if (attribute.typeHelper.isPoint()) {
+                    pointInTypeDefs = true;
                 }
-                if (model.annotations.fulltext || model.annotations.vector) {
-                    floatWhereInTypeDefs = true;
+                if (attribute.typeHelper.isCartesianPoint()) {
+                    cartesianPointInTypeDefs = true;
                 }
-                if (model instanceof ConcreteEntityAdapter) {
-                    for (const relationship of model.relationships.values()) {
-                        for (const attribute of relationship.attributes.values()) {
-                            if (attribute.typeHelper.isPoint()) {
-                                pointInTypeDefs = true;
-                            }
-                            if (attribute.typeHelper.isCartesianPoint()) {
-                                cartesianPointInTypeDefs = true;
-                            }
+            }
+            if (model.annotations.fulltext || model.annotations.vector) {
+                floatWhereInTypeDefs = true;
+            }
+            if (model instanceof ConcreteEntityAdapter) {
+                for (const relationship of model.relationships.values()) {
+                    for (const attribute of relationship.attributes.values()) {
+                        if (attribute.typeHelper.isPoint()) {
+                            pointInTypeDefs = true;
+                        }
+                        if (attribute.typeHelper.isCartesianPoint()) {
+                            cartesianPointInTypeDefs = true;
                         }
                     }
                 }
@@ -105,20 +104,6 @@ export class AugmentedSchemaGenerator {
         this.addToComposer(this.getTemporalTypes(floatWhereInTypeDefs));
 
         return this.composer;
-    }
-
-    private pipeDefs() {
-        const pipedDefs = [
-            ...this.definitionNodes.enumTypes,
-            ...this.definitionNodes.scalarTypes,
-            ...this.definitionNodes.inputObjectTypes,
-            ...this.definitionNodes.unionTypes,
-            ...this.definitionNodes.directives,
-            ...this.rootTypesCustomResolvers,
-        ].filter(Boolean);
-        if (pipedDefs.length) {
-            this.composer.addTypeDefs(print({ kind: Kind.DOCUMENT, definitions: pipedDefs }));
-        }
     }
 
     private getStaticTypes() {

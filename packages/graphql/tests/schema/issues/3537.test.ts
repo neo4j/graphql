@@ -84,15 +84,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               node: Actor!
             }
 
-            input ActorOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [ActorSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -102,28 +93,28 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             input ActorUpdateInput {
-              password: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              password_SET: String
-              username: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              username_SET: String
+              password: StringScalarMutations
+              password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
+              username: StringScalarMutations
+              username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              password: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              password_CONTAINS: String
-              password_ENDS_WITH: String
-              password_EQ: String
-              password_IN: [String!]
-              password_STARTS_WITH: String
-              username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              username_CONTAINS: String
-              username_ENDS_WITH: String
-              username_EQ: String
-              username_IN: [String!]
-              username_STARTS_WITH: String
+              password: StringScalarFilters
+              password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
+              password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
+              password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
+              password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
+              password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
+              username: StringScalarFilters
+              username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
+              username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
+              username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
+              username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
+              username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -171,15 +162,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               node: Movie!
             }
 
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -188,20 +170,20 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             }
 
             input MovieUpdateInput {
-              title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              title_SET: String
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String]
-              title_STARTS_WITH: String
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -229,9 +211,9 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type Query {
               _service: _Service!
-              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
+              actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -241,6 +223,20 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -345,24 +341,9 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               username: StringAggregateSelection!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              password: StringAggregateSelection!
-              username: StringAggregateSelection!
-            }
-
             type ActorEdge {
               cursor: String!
               node: Actor!
-            }
-
-            input ActorOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [ActorSort!]
             }
 
             \\"\\"\\"
@@ -377,18 +358,18 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              password: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              password_CONTAINS: String
-              password_ENDS_WITH: String
-              password_EQ: String
-              password_IN: [String!]
-              password_STARTS_WITH: String
-              username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              username_CONTAINS: String
-              username_ENDS_WITH: String
-              username_EQ: String
-              username_IN: [String!]
-              username_STARTS_WITH: String
+              password: StringScalarFilters
+              password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
+              password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
+              password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
+              password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
+              password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
+              username: StringScalarFilters
+              username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
+              username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
+              username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
+              username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
+              username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -415,23 +396,9 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -445,12 +412,12 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String]
-              title_STARTS_WITH: String
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -470,11 +437,9 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type Query {
               _service: _Service!
-              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
+              actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -489,6 +454,15 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             type StringAggregateSelection @shareable {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
             }
 
             scalar _Any
@@ -575,12 +549,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               username: StringAggregateSelection!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              password: StringAggregateSelection!
-              username: StringAggregateSelection!
-            }
-
             input ActorCreateInput {
               password: String!
               username: String!
@@ -596,15 +564,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               username: String!
             }
 
-            input ActorOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [ActorSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
             \\"\\"\\"
@@ -617,25 +576,25 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               AND: [ActorSubscriptionWhere!]
               NOT: ActorSubscriptionWhere
               OR: [ActorSubscriptionWhere!]
-              password: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              password_CONTAINS: String
-              password_ENDS_WITH: String
-              password_EQ: String
-              password_IN: [String!]
-              password_STARTS_WITH: String
-              username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              username_CONTAINS: String
-              username_ENDS_WITH: String
-              username_EQ: String
-              username_IN: [String!]
-              username_STARTS_WITH: String
+              password: StringScalarFilters
+              password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
+              password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
+              password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
+              password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
+              password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
+              username: StringScalarFilters
+              username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
+              username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
+              username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
+              username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
+              username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
             }
 
             input ActorUpdateInput {
-              password: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              password_SET: String
-              username: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              username_SET: String
+              password: StringScalarMutations
+              password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
+              username: StringScalarMutations
+              username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
             }
 
             type ActorUpdatedEvent {
@@ -649,18 +608,18 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              password: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              password_CONTAINS: String
-              password_ENDS_WITH: String
-              password_EQ: String
-              password_IN: [String!]
-              password_STARTS_WITH: String
-              username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              username_CONTAINS: String
-              username_ENDS_WITH: String
-              username_EQ: String
-              username_IN: [String!]
-              username_STARTS_WITH: String
+              password: StringScalarFilters
+              password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
+              password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
+              password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
+              password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
+              password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
+              username: StringScalarFilters
+              username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
+              username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
+              username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
+              username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
+              username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -721,11 +680,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
             input MovieCreateInput {
               title: String
             }
@@ -739,15 +693,6 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               title: String
             }
 
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -759,17 +704,17 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               AND: [MovieSubscriptionWhere!]
               NOT: MovieSubscriptionWhere
               OR: [MovieSubscriptionWhere!]
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String]
-              title_STARTS_WITH: String
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             input MovieUpdateInput {
-              title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              title_SET: String
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             type MovieUpdatedEvent {
@@ -783,12 +728,12 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String]
-              title_STARTS_WITH: String
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -817,11 +762,9 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
 
             type Query {
               _service: _Service!
-              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
+              actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -836,6 +779,20 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
             type StringAggregateSelection @shareable {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type Subscription {

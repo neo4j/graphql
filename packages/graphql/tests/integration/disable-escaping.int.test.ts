@@ -33,11 +33,11 @@ describe("Disable escaping", () => {
         Production = testHelper.createUniqueType("Production");
 
         const typeDefs = /* GraphQL */ `
-            type ${Actor} {
+            type ${Actor} @node {
                 name: String!
             }
 
-            type ${Movie} {
+            type ${Movie} @node {
                 title: String!
                 actors: [${Actor}!]! @relationship(type: "FROM_PRODUCTION]->(:${Production})-[:ACTED_IN", direction: OUT)
             }

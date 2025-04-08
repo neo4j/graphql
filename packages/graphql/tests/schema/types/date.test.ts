@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Date", () => {
@@ -59,6 +59,21 @@ describe("Date", () => {
             \\"\\"\\"A date, represented as a 'yyyy-mm-dd' string\\"\\"\\"
             scalar Date
 
+            \\"\\"\\"Date filters\\"\\"\\"
+            input DateScalarFilters {
+              eq: Date
+              gt: Date
+              gte: Date
+              in: [Date!]
+              lt: Date
+              lte: Date
+            }
+
+            \\"\\"\\"Date mutations\\"\\"\\"
+            input DateScalarMutations {
+              set: Date
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -67,9 +82,18 @@ describe("Date", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie {
@@ -79,16 +103,6 @@ describe("Date", () => {
 
             type MovieAggregate {
               count: Count!
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input MovieCreateInput {
@@ -101,15 +115,6 @@ describe("Date", () => {
               node: Movie!
             }
 
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -119,29 +124,29 @@ describe("Date", () => {
             }
 
             input MovieUpdateInput {
-              date: Date @deprecated(reason: \\"Please use the explicit _SET field\\")
-              date_SET: Date
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
+              date: DateScalarMutations
+              date_SET: Date @deprecated(reason: \\"Please use the generic mutation 'date: { set: ... } }' instead.\\")
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              date: Date @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              date_EQ: Date
-              date_GT: Date
-              date_GTE: Date
-              date_IN: [Date]
-              date_LT: Date
-              date_LTE: Date
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              date: DateScalarFilters
+              date_EQ: Date @deprecated(reason: \\"Please use the relevant generic filter date: { eq: ... }\\")
+              date_GT: Date @deprecated(reason: \\"Please use the relevant generic filter date: { gt: ... }\\")
+              date_GTE: Date @deprecated(reason: \\"Please use the relevant generic filter date: { gte: ... }\\")
+              date_IN: [Date] @deprecated(reason: \\"Please use the relevant generic filter date: { in: ... }\\")
+              date_LT: Date @deprecated(reason: \\"Please use the relevant generic filter date: { lt: ... }\\")
+              date_LTE: Date @deprecated(reason: \\"Please use the relevant generic filter date: { lte: ... }\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -166,8 +171,7 @@ describe("Date", () => {
             }
 
             type Query {
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

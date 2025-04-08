@@ -31,17 +31,17 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
 
             type Person implements Entity @node {
-                id: String! @unique
+                id: String!
                 name: String!
             }
 
             type Place implements Entity @node {
-                id: String! @unique
+                id: String!
                 location: Point!
             }
 
             type Interaction @node {
-                id: ID! @id @unique
+                id: ID! @id
                 kind: String!
                 subjects: [Entity!]! @relationship(type: "ACTED_IN", direction: IN)
                 objects: [Entity!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -59,14 +59,14 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 createInteractions(
                     input: [
                         {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            subjects: { connect: { where: { node: { id: { in: ["adam", "eve"] } } } } }
                             kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["cain"] } } } }
+                            objects: { connect: { where: { node: { id: { in: ["cain"] } } } } }
                         }
                         {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            subjects: { connect: { where: { node: { id: { in: ["adam", "eve"] } } } } }
                             kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["abel"] } } } }
+                            objects: { connect: { where: { node: { id: { in: ["abel"] } } } } }
                         }
                     ]
                 ) {
@@ -83,7 +83,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
@@ -99,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect0_node
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		}
             	}
             WITH this0, this0_subjects_connect0_node
@@ -116,7 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect1_node
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
+            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
             		}
             	}
             WITH this0, this0_subjects_connect1_node
@@ -134,7 +135,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect0_node
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		}
             	}
             WITH this0, this0_objects_connect0_node
@@ -151,7 +152,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect1_node
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
+            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
             		}
             	}
             WITH this0, this0_objects_connect1_node
@@ -175,7 +176,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_subjects_connect0_node
-            			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
+            			CREATE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
             		}
             	}
             WITH this1, this1_subjects_connect0_node
@@ -192,7 +193,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_subjects_connect1_node
-            			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect1_node)
+            			CREATE (this1)<-[:ACTED_IN]-(this1_subjects_connect1_node)
             		}
             	}
             WITH this1, this1_subjects_connect1_node
@@ -210,7 +211,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_objects_connect0_node
-            			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
+            			CREATE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
             		}
             	}
             WITH this1, this1_objects_connect0_node
@@ -227,7 +228,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_objects_connect1_node
-            			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect1_node)
+            			CREATE (this1)-[:ACTED_IN]->(this1_objects_connect1_node)
             		}
             	}
             WITH this1, this1_objects_connect1_node
@@ -289,9 +290,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 createInteractions(
                     input: [
                         {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            subjects: { connect: { where: { node: { id: { in: ["adam", "eve"] } } } } }
                             kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["cain"] } } } }
+                            objects: { connect: { where: { node: { id: { in: ["cain"] } } } } }
                         }
                     ]
                 ) {
@@ -308,7 +309,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
@@ -324,7 +326,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect0_node
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		}
             	}
             WITH this0, this0_subjects_connect0_node
@@ -341,7 +343,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect1_node
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
+            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
             		}
             	}
             WITH this0, this0_subjects_connect1_node
@@ -359,7 +361,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect0_node
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		}
             	}
             WITH this0, this0_objects_connect0_node
@@ -376,7 +378,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect1_node
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
+            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
             		}
             	}
             WITH this0, this0_objects_connect1_node
@@ -419,9 +421,9 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 createInteractions(
                     input: [
                         {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            subjects: { connect: { where: { node: { id: { in: ["adam", "eve"] } } } } }
                             kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["abel"] } } } }
+                            objects: { connect: { where: { node: { id: { in: ["abel"] } } } } }
                         }
                     ]
                 ) {
@@ -438,7 +440,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
@@ -454,7 +457,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect0_node
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		}
             	}
             WITH this0, this0_subjects_connect0_node
@@ -471,7 +474,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect1_node
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
+            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
             		}
             	}
             WITH this0, this0_subjects_connect1_node
@@ -489,7 +492,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect0_node
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		}
             	}
             WITH this0, this0_objects_connect0_node
@@ -506,7 +509,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect1_node
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
+            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
             		}
             	}
             WITH this0, this0_objects_connect1_node
@@ -549,14 +552,14 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
                 createInteractions(
                     input: [
                         {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            subjects: { connect: { where: { node: { id: { in: ["adam", "eve"] } } } } }
                             kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["cain"] } } } }
+                            objects: { connect: { where: { node: { id: { in: ["cain"] } } } } }
                         }
                         {
-                            subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }
+                            subjects: { connect: { where: { node: { id: { in: ["adam", "eve"] } } } } }
                             kind: "PARENT_OF"
-                            objects: { connect: { where: { node: { id_IN: ["abel"] } } } }
+                            objects: { connect: { where: { node: { id: { in: ["abel"] } } } } }
                         }
                     ]
                 ) {
@@ -579,7 +582,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
@@ -595,7 +599,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect0_node
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		}
             	}
             WITH this0, this0_subjects_connect0_node
@@ -612,7 +616,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect1_node
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
+            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
             		}
             	}
             WITH this0, this0_subjects_connect1_node
@@ -630,7 +634,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect0_node
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
+            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
             		}
             	}
             WITH this0, this0_objects_connect0_node
@@ -647,7 +651,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect1_node
-            			MERGE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
+            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
             		}
             	}
             WITH this0, this0_objects_connect1_node
@@ -671,7 +675,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_subjects_connect0_node
-            			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
+            			CREATE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
             		}
             	}
             WITH this1, this1_subjects_connect0_node
@@ -688,7 +692,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_subjects_connect1_node
-            			MERGE (this1)<-[:ACTED_IN]-(this1_subjects_connect1_node)
+            			CREATE (this1)<-[:ACTED_IN]-(this1_subjects_connect1_node)
             		}
             	}
             WITH this1, this1_subjects_connect1_node
@@ -706,7 +710,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_objects_connect0_node
-            			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
+            			CREATE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
             		}
             	}
             WITH this1, this1_objects_connect0_node
@@ -723,7 +727,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_objects_connect1_node
-            			MERGE (this1)-[:ACTED_IN]->(this1_objects_connect1_node)
+            			CREATE (this1)-[:ACTED_IN]->(this1_objects_connect1_node)
             		}
             	}
             WITH this1, this1_objects_connect1_node
@@ -848,7 +852,10 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             mutation {
                 createInteractions(
                     input: [
-                        { subjects: { connect: { where: { node: { id_IN: ["adam", "eve"] } } } }, kind: "PARENT_OF" }
+                        {
+                            subjects: { connect: { where: { node: { id: { in: ["adam", "eve"] } } } } }
+                            kind: "PARENT_OF"
+                        }
                         { kind: "PARENT_OF" }
                     ]
                 ) {
@@ -865,7 +872,8 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
@@ -881,7 +889,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect0_node
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
+            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
             		}
             	}
             WITH this0, this0_subjects_connect0_node
@@ -898,7 +906,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect1_node
-            			MERGE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
+            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
             		}
             	}
             WITH this0, this0_subjects_connect1_node

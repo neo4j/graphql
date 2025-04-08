@@ -29,8 +29,9 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 import { asArray } from "../../../utils/utils";
 import { isLogicalOperator } from "../../utils/logical-operators";
 import type { ConnectionFilter } from "../ast/filters/ConnectionFilter";
+
 import type { Filter, FilterOperator, RelationshipWhereOperator } from "../ast/filters/Filter";
-import { isRelationshipOperator } from "../ast/filters/Filter";
+import { isLegacyRelationshipOperator } from "../ast/filters/Filter";
 import { LogicalFilter } from "../ast/filters/LogicalFilter";
 import type { RelationshipFilter } from "../ast/filters/RelationshipFilter";
 import { AuthConnectionFilter } from "../ast/filters/authorization-filters/AuthConnectionFilter";
@@ -90,7 +91,7 @@ export class AuthFilterFactory extends FilterFactory {
         where: GraphQLWhereArg,
         context: Neo4jGraphQLTranslationContext
     ): Filter[] {
-        return Object.entries(where).map(([key, value]) => {
+        return Object.entries(where).flatMap(([key, value]) => {
             if (isLogicalOperator(key)) {
                 const nestedFilters = asArray(value).flatMap((v) => {
                     return this.createJWTFilters(jwtPayload, v, context);
@@ -101,7 +102,7 @@ export class AuthFilterFactory extends FilterFactory {
                     filters: nestedFilters,
                 });
             }
-            const { fieldName, operator, isNot } = parseWhereField(key);
+            const { fieldName, operator } = parseWhereField(key);
             if (!fieldName) {
                 throw new Error(`Failed to find field name in filter: ${key}`);
             }
@@ -118,12 +119,24 @@ export class AuthFilterFactory extends FilterFactory {
 
                 target = jwtPayload.property(...paths);
             }
-
+            if (!operator) {
+                return this.wrapMultipleFiltersInLogical(this.getGenericJWTFilters(value, target));
+            }
             return new JWTFilter({
-                operator: operator || "EQ",
+                operator: operator,
                 JWTClaim: target,
                 comparisonValue: value,
-                isNot,
+            });
+        });
+    }
+
+    private getGenericJWTFilters(genericOperator: Record<string, any>, target: Cypher.Property): JWTFilter[] {
+        return Object.entries(genericOperator).map(([key, value]): JWTFilter => {
+            const operator = this.parseGenericOperator(key);
+            return new JWTFilter({
+                operator,
+                JWTClaim: target,
+                comparisonValue: value,
             });
         });
     }
@@ -132,19 +145,15 @@ export class AuthFilterFactory extends FilterFactory {
         attribute,
         comparisonValue,
         operator,
-        isNot,
         attachedTo,
         relationship,
     }: {
         attribute: AttributeAdapter;
         comparisonValue: unknown;
         operator: FilterOperator | undefined;
-        isNot: boolean;
         attachedTo?: "node" | "relationship";
         relationship?: RelationshipAdapter;
     }): Filter {
-        const filterOperator = operator || "EQ";
-
         const isCypherVariable =
             comparisonValue instanceof Cypher.Variable ||
             comparisonValue instanceof Cypher.Property ||
@@ -160,8 +169,25 @@ export class AuthFilterFactory extends FilterFactory {
             if (attribute.annotations.cypher?.targetEntity) {
                 const entityAdapter = getEntityAdapter(attribute.annotations.cypher.targetEntity);
 
-                if (operator && !isRelationshipOperator(operator)) {
+                if (operator && !isLegacyRelationshipOperator(operator)) {
                     throw new Error(`Invalid operator ${operator} for relationship`);
+                }
+                // path for generic filters input, in v8 it will be the only path
+                if (!operator && attribute.typeHelper.isList()) {
+                    const genericFilters = Object.entries(comparisonValue as any).flatMap(([quantifier, predicate]) => {
+                        const legacyOperator = this.convertRelationshipOperatorToLegacyOperator(quantifier);
+                        return this.createCypherRelationshipFilter({
+                            where: predicate as any,
+                            selection,
+                            target: entityAdapter,
+                            operator: legacyOperator,
+                            attribute,
+                        });
+                    });
+                    return new LogicalFilter({
+                        operation: "AND",
+                        filters: genericFilters,
+                    });
                 }
 
                 return new LogicalFilter({
@@ -170,10 +196,7 @@ export class AuthFilterFactory extends FilterFactory {
                         where: comparisonValue as GraphQLWhereArg,
                         selection,
                         target: entityAdapter,
-                        filterOps: {
-                            isNot,
-                            operator,
-                        },
+                        operator,
                         attribute,
                     }),
                 });
@@ -184,7 +207,7 @@ export class AuthFilterFactory extends FilterFactory {
                     selection,
                     attribute,
                     comparisonValue: comparisonValue,
-                    operator: filterOperator,
+                    operator: operator ?? "EQ",
                     checkIsNotNull: true,
                 });
             }
@@ -195,18 +218,19 @@ export class AuthFilterFactory extends FilterFactory {
                 selection,
                 attribute,
                 comparisonValue: comparisonValueParam,
-                operator: filterOperator,
+                operator: operator ?? "EQ",
             });
         }
-
+        if (!operator) {
+            throw new Error(`Operator is required for property filter`);
+        }
         // This is probably not needed, but avoid changing the cypher
         if (typeof comparisonValue === "boolean") {
             return new ParamPropertyFilter({
                 attribute,
                 relationship,
                 comparisonValue: new Cypher.Param(comparisonValue),
-                isNot,
-                operator: filterOperator,
+                operator,
                 attachedTo,
             });
         }
@@ -216,8 +240,7 @@ export class AuthFilterFactory extends FilterFactory {
                 attribute,
                 relationship,
                 comparisonValue: comparisonValue,
-                isNot,
-                operator: filterOperator,
+                operator,
                 attachedTo,
             });
         } else {
@@ -226,8 +249,7 @@ export class AuthFilterFactory extends FilterFactory {
                     attribute,
                     relationship,
                     comparisonValue: comparisonValue,
-                    isNot,
-                    operator: filterOperator,
+                    operator,
                     attachedTo,
                 });
             }
@@ -235,8 +257,7 @@ export class AuthFilterFactory extends FilterFactory {
                 attribute,
                 relationship,
                 comparisonValue: new Cypher.Param(comparisonValue),
-                isNot,
-                operator: filterOperator,
+                operator,
                 attachedTo,
             });
         }
@@ -245,7 +266,6 @@ export class AuthFilterFactory extends FilterFactory {
     protected createRelationshipFilterTreeNode(options: {
         relationship: RelationshipAdapter;
         target: ConcreteEntityAdapter | InterfaceEntityAdapter;
-        isNot: boolean;
         operator: RelationshipWhereOperator;
     }): RelationshipFilter {
         return new AuthRelationshipFilter(options);
@@ -254,8 +274,7 @@ export class AuthFilterFactory extends FilterFactory {
     protected createConnectionFilterTreeNode(options: {
         relationship: RelationshipAdapter;
         target: ConcreteEntityAdapter | InterfaceEntityAdapter;
-        isNot: boolean;
-        operator: RelationshipWhereOperator | undefined;
+        operator: RelationshipWhereOperator;
     }): ConnectionFilter {
         return new AuthConnectionFilter(options);
     }

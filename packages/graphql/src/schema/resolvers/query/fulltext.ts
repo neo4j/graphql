@@ -17,25 +17,23 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
-import type { GraphQLFieldResolver, GraphQLResolveInfo } from "graphql";
-import type { Node } from "../../../classes";
+import type { GraphQLFieldResolver, GraphQLResolveInfo, SelectionSetNode } from "graphql";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { translateRead } from "../../../translate";
 import type { FulltextContext } from "../../../types";
-import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
+import { isNeoInt } from "../../../utils/utils";
+import { createConnectionWithEdgeProperties } from "../../pagination";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
+import { emptyConnection } from "./empty-connection";
 
 export function fulltextResolver({
-    node,
-    index,
+    fulltextContext,
     entityAdapter,
 }: {
-    node: Node;
-    index: FulltextContext;
+    fulltextContext: FulltextContext;
     entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
 }): GraphQLFieldResolver<any, any, any> {
     return async function resolve(
@@ -44,8 +42,7 @@ export function fulltextResolver({
         context: Neo4jGraphQLComposedContext,
         info: GraphQLResolveInfo
     ) {
-        context.fulltext = index;
-        context.fulltext.scoreVariable = new Cypher.Variable();
+        context.fulltext = fulltextContext;
 
         const resolveTree = getNeo4jResolveTree(info, { args });
         resolveTree.args.options = {
@@ -54,12 +51,10 @@ export function fulltextResolver({
             offset: resolveTree.args.offset,
         };
 
-        (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
-
         const { cypher, params } = translateRead({
-            context: context as Neo4jGraphQLTranslationContext,
+            context: { ...context, resolveTree },
             entityAdapter,
-            varName: node.singular,
+            varName: "this",
         });
         const executeResult = await execute({
             cypher,
@@ -68,6 +63,24 @@ export function fulltextResolver({
             context,
             info,
         });
-        return executeResult.records;
+
+        if (!executeResult.records[0]) {
+            return { [entityAdapter.operations.rootTypeFieldNames.connection]: emptyConnection };
+        }
+
+        const record = executeResult.records[0].this;
+        const totalCount = isNeoInt(record.totalCount) ? record.totalCount.toNumber() : record.totalCount;
+        const connection = createConnectionWithEdgeProperties({
+            selectionSet: resolveTree as unknown as SelectionSetNode,
+            source: { edges: record.edges },
+            args: { first: args.first, after: args.after },
+            totalCount,
+        });
+
+        return {
+            totalCount,
+            edges: connection.edges,
+            pageInfo: connection.pageInfo,
+        };
     };
 }

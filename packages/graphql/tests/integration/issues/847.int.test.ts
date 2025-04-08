@@ -38,17 +38,17 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             }
 
             type ${personType.name} implements Entity @node {
-                id   : String! @unique
+                id   : String! 
                 name : String!
             }
 
             type ${placeType.name} implements Entity @node {
-                id: String! @unique
+                id: String! 
                 location: Point!
             }
 
             type ${interactionType.name}  @node {
-                id       : ID! @id @unique
+                id       : ID! @id 
                 kind     : String!
                 subjects : [Entity!]! @relationship(type: "ACTED_IN", direction: IN )
                 objects  : [Entity!]! @relationship(type: "ACTED_IN", direction: OUT)

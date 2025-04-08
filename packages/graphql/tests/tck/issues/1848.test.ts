@@ -27,17 +27,17 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type ContentPiece @node(labels: ["ContentPiece", "UNIVERSAL"]) {
-                uid: String! @unique
+                uid: String!
                 id: Int
             }
 
             type Project @node(labels: ["Project", "UNIVERSAL"]) {
-                uid: String! @unique
+                uid: String!
                 id: Int
             }
 
             type Community @node(labels: ["Community", "UNIVERSAL"]) {
-                uid: String! @unique
+                uid: String!
                 id: Int
                 hasContentPieces: [ContentPiece!]!
                     @relationship(type: "COMMUNITY_CONTENTPIECE_HASCONTENTPIECES", direction: OUT)
@@ -86,7 +86,8 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Community:UNIVERSAL)
+            "CYPHER 5
+            MATCH (this:Community:UNIVERSAL)
             CALL {
                 WITH this
                 CALL {

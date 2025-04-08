@@ -30,9 +30,7 @@ import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
-import type { Neo4jFeaturesSettings } from "../../types";
-import { overwrite } from "../create-relationship-fields/fields/overwrite";
-import { relationshipTargetHasRelationshipWithNestedOperation, shouldAddDeprecatedFields } from "./utils";
+import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
 import { withConnectWhereFieldInputType } from "./where-input";
 
 export function withConnectInputType({
@@ -53,12 +51,10 @@ export function augmentConnectInputTypeWithConnectFieldInput({
     relationshipAdapter,
     composer,
     deprecatedDirectives,
-    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
-    features?: Neo4jFeaturesSettings;
 }) {
     if (relationshipAdapter.source instanceof UnionEntityAdapter) {
         throw new Error("Unexpected union source");
@@ -67,7 +63,6 @@ export function augmentConnectInputTypeWithConnectFieldInput({
         relationshipAdapter,
         composer,
         deprecatedDirectives,
-        features,
     });
     if (!connectFieldInput) {
         return;
@@ -91,17 +86,15 @@ function makeConnectInputType({
     relationshipAdapter,
     composer,
     deprecatedDirectives,
-    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
-    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer | undefined {
     if (relationshipAdapter.target instanceof UnionEntityAdapter) {
-        return withUnionConnectInputType({ relationshipAdapter, composer, deprecatedDirectives, features });
+        return withUnionConnectInputType({ relationshipAdapter, composer, deprecatedDirectives });
     }
-    return withConnectFieldInputType({ relationshipAdapter, composer, features });
+    return withConnectFieldInputType({ relationshipAdapter, composer });
 }
 function makeConnectInputTypeRelationshipField({
     relationshipAdapter,
@@ -132,12 +125,10 @@ function withUnionConnectInputType({
     relationshipAdapter,
     composer,
     deprecatedDirectives,
-    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
-    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer | undefined {
     const typeName = relationshipAdapter.operations.unionConnectInputTypeName;
     if (!relationshipAdapter.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT)) {
@@ -146,7 +137,7 @@ function withUnionConnectInputType({
     if (composer.has(typeName)) {
         return composer.getITC(typeName);
     }
-    const fields = makeUnionConnectInputTypeFields({ relationshipAdapter, composer, deprecatedDirectives, features });
+    const fields = makeUnionConnectInputTypeFields({ relationshipAdapter, composer, deprecatedDirectives });
     if (!Object.keys(fields).length) {
         return;
     }
@@ -161,12 +152,10 @@ function makeUnionConnectInputTypeFields({
     relationshipAdapter,
     composer,
     deprecatedDirectives,
-    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     deprecatedDirectives: Directive[];
-    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields: InputTypeComposerFieldConfigMapDefinition = {};
     if (!(relationshipAdapter.target instanceof UnionEntityAdapter)) {
@@ -177,7 +166,6 @@ function makeUnionConnectInputTypeFields({
             relationshipAdapter,
             ifUnionMemberEntity: memberEntity,
             composer,
-            features,
         });
         if (fieldInput) {
             fields[memberEntity.name] = {
@@ -193,12 +181,10 @@ export function withConnectFieldInputType({
     relationshipAdapter,
     composer,
     ifUnionMemberEntity,
-    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
-    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposer | undefined {
     const typeName = relationshipAdapter.operations.getConnectFieldInputTypeName(ifUnionMemberEntity);
     if (!relationshipAdapter.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT)) {
@@ -210,7 +196,7 @@ export function withConnectFieldInputType({
 
     const connectFieldInput = composer.createInputTC({
         name: typeName,
-        fields: makeConnectFieldInputTypeFields({ relationshipAdapter, composer, ifUnionMemberEntity, features }),
+        fields: makeConnectFieldInputTypeFields({ relationshipAdapter, composer, ifUnionMemberEntity }),
     });
     return connectFieldInput;
 }
@@ -218,12 +204,10 @@ function makeConnectFieldInputTypeFields({
     relationshipAdapter,
     composer,
     ifUnionMemberEntity,
-    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
-    features: Neo4jFeaturesSettings | undefined;
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields = {};
     if (relationshipAdapter.hasCreateInputFields) {
@@ -231,9 +215,6 @@ function makeConnectFieldInputTypeFields({
     }
     if (relationshipAdapter.target instanceof ConcreteEntityAdapter) {
         fields["where"] = withConnectWhereFieldInputType(relationshipAdapter.target, composer);
-        if (shouldAddDeprecatedFields(features, "overwriteArgument")) {
-            fields["overwrite"] = overwrite;
-        }
         if (
             relationshipTargetHasRelationshipWithNestedOperation(
                 relationshipAdapter.target,

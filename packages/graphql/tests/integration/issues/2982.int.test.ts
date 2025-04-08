@@ -68,8 +68,12 @@ describe("https://github.com/neo4j/graphql/issues/2982", () => {
                 ${User.plural} {
                     ${Post.plural} {
                         ... on ${BlogArticle} {
-                            ${Comment.operations.aggregate} {
-                                count
+                            ${Comment.operations.connection} {
+                                aggregate {
+                                    count {
+                                        nodes
+                                    }
+                                }
                             }
                         }
                     }
@@ -94,7 +98,9 @@ describe("https://github.com/neo4j/graphql/issues/2982", () => {
 
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [User.plural]: [{ [Post.plural]: [{ [Comment.operations.aggregate]: { count: 0 } }] }],
+            [User.plural]: [
+                { [Post.plural]: [{ [Comment.operations.connection]: { aggregate: { count: { nodes: 0 } } } }] },
+            ],
         });
     });
 });

@@ -31,14 +31,14 @@ describe("Cypher Auth Allow", () => {
             type Comment @node {
                 id: ID
                 content: String
-                creator: User! @relationship(type: "HAS_COMMENT", direction: IN)
-                post: Post! @relationship(type: "HAS_COMMENT", direction: IN)
+                creator: [User!]! @relationship(type: "HAS_COMMENT", direction: IN)
+                post: [Post!]! @relationship(type: "HAS_COMMENT", direction: IN)
             }
 
             type Post @node {
                 id: ID
                 content: String
-                creator: User! @relationship(type: "HAS_POST", direction: IN)
+                creator: [User!]! @relationship(type: "HAS_POST", direction: IN)
                 comments: [Comment!]! @relationship(type: "HAS_COMMENT", direction: OUT)
             }
 
@@ -54,7 +54,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
                             when: BEFORE
-                            where: { node: { id_EQ: "$jwt.sub" } }
+                            where: { node: { id: { eq: "$jwt.sub" } } }
                         }
                     ]
                 )
@@ -63,7 +63,11 @@ describe("Cypher Auth Allow", () => {
                 password: String!
                     @authorization(
                         validate: [
-                            { operations: [READ, UPDATE, DELETE], when: BEFORE, where: { node: { id_EQ: "$jwt.sub" } } }
+                            {
+                                operations: [READ, UPDATE, DELETE]
+                                when: BEFORE
+                                where: { node: { id: { eq: "$jwt.sub" } } }
+                            }
                         ]
                     )
             }
@@ -74,7 +78,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
                             when: BEFORE
-                            where: { node: { creator: { id_EQ: "$jwt.sub" } } }
+                            where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } }
                         }
                     ]
                 )
@@ -85,7 +89,7 @@ describe("Cypher Auth Allow", () => {
                         {
                             operations: [READ, UPDATE, DELETE, DELETE_RELATIONSHIP, CREATE_RELATIONSHIP]
                             when: BEFORE
-                            where: { node: { creator: { id_EQ: "$jwt.sub" } } }
+                            where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } }
                         }
                     ]
                 )
@@ -116,7 +120,8 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id } AS this"
@@ -150,7 +155,8 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             RETURN this { .password } AS this"
@@ -187,20 +193,23 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
-                OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
-                WITH *, count(this2) AS var3
+                WITH DISTINCT this1
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                    MATCH (this1)<-[:HAS_POST]-(this2:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this1 { .content } AS this1
-                RETURN collect(this1) AS var4
+                RETURN collect(this1) AS var3
             }
-            RETURN this { .id, posts: var4 } AS this"
+            RETURN this { .id, posts: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -233,20 +242,23 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:HAS_POST]-(this0:User)
-            WITH *, count(this0) AS var1
+            "CYPHER 5
+            MATCH (this:Post)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_POST]-(this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
-                MATCH (this)<-[this2:HAS_POST]-(this3:User)
+                MATCH (this)<-[this1:HAS_POST]-(this2:User)
+                WITH DISTINCT this2
                 WITH *
-                WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                WITH this3 { .password } AS this3
-                RETURN head(collect(this3)) AS var4
+                WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WITH this2 { .password } AS this2
+                RETURN collect(this2) AS var3
             }
-            RETURN this { creator: var4 } AS this"
+            RETURN this { creator: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -265,10 +277,10 @@ describe("Cypher Auth Allow", () => {
     test("Read Two Relationships", async () => {
         const query = /* GraphQL */ `
             {
-                users(where: { id_EQ: "1" }) {
+                users(where: { id: { eq: "1" } }) {
                     id
-                    posts(where: { id_EQ: "1" }) {
-                        comments(where: { id_EQ: "1" }) {
+                    posts(where: { id: { eq: "1" } }) {
+                        comments(where: { id: { eq: "1" } }) {
                             content
                         }
                     }
@@ -282,30 +294,35 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
-                OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
-                WITH *, count(this2) AS var3
+                WITH DISTINCT this1
                 WITH *
-                WHERE (this1.id = $param3 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WHERE (this1.id = $param3 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                    MATCH (this1)<-[:HAS_POST]-(this2:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+                }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
                 CALL {
                     WITH this1
-                    MATCH (this1)-[this4:HAS_COMMENT]->(this5:Comment)
-                    OPTIONAL MATCH (this5)<-[:HAS_COMMENT]-(this6:User)
-                    WITH *, count(this6) AS var7
+                    MATCH (this1)-[this3:HAS_COMMENT]->(this4:Comment)
+                    WITH DISTINCT this4
                     WITH *
-                    WHERE (this5.id = $param4 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (var7 <> 0 AND ($jwt.sub IS NOT NULL AND this6.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                    WITH this5 { .content } AS this5
-                    RETURN collect(this5) AS var8
+                    WHERE (this4.id = $param4 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                        MATCH (this4)<-[:HAS_COMMENT]-(this5:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)
+                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    WITH this4 { .content } AS this4
+                    RETURN collect(this4) AS var6
                 }
-                WITH this1 { comments: var8 } AS this1
-                RETURN collect(this1) AS var9
+                WITH this1 { comments: var6 } AS this1
+                RETURN collect(this1) AS var7
             }
-            RETURN this { .id, posts: var9 } AS this"
+            RETURN this { .id, posts: var7 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -327,7 +344,7 @@ describe("Cypher Auth Allow", () => {
     test("Update Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id_EQ: "old-id" }, update: { id_SET: "new-id" }) {
+                updateUsers(where: { id: { eq: "old-id" } }, update: { id_SET: "new-id" }) {
                     users {
                         id
                     }
@@ -341,7 +358,8 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             SET this.id = $this_update_id_SET
@@ -369,7 +387,7 @@ describe("Cypher Auth Allow", () => {
     test("Update Node Property", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(where: { id_EQ: "id-01" }, update: { password_SET: "new-password" }) {
+                updateUsers(where: { id: { eq: "id-01" } }, update: { password_SET: "new-password" }) {
                     users {
                         id
                     }
@@ -383,7 +401,8 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             WITH this
@@ -414,7 +433,7 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updatePosts(
-                    where: { id_EQ: "post-id" }
+                    where: { id: { eq: "post-id" } }
                     update: { creator: { update: { node: { id_SET: "new-id" } } } }
                 ) {
                     posts {
@@ -430,11 +449,13 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:HAS_POST]-(this0:User)
-            WITH *, count(this0) AS var1
+            "CYPHER 5
+            MATCH (this:Post)
             WITH *
-            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_POST]-(this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             WITH this
             CALL {
             	WITH this
@@ -444,17 +465,10 @@ describe("Cypher Auth Allow", () => {
             	RETURN count(*) AS update_this_creator0
             }
             WITH *
-            CALL {
-            	WITH this
-            	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
-            	WITH count(this_creator_User_unique) as c
-            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
-            	RETURN c AS this_creator_User_unique_ignored
-            }
-            OPTIONAL MATCH (this)<-[:HAS_POST]-(update_this0:User)
-            WITH *, count(update_this0) AS update_var1
-            WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (update_var1 <> 0 AND ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_POST]-(update_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -478,7 +492,7 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updatePosts(
-                    where: { id_EQ: "post-id" }
+                    where: { id: { eq: "post-id" } }
                     update: { creator: { update: { node: { password_SET: "new-password" } } } }
                 ) {
                     posts {
@@ -494,11 +508,13 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:HAS_POST]-(this0:User)
-            WITH *, count(this0) AS var1
+            "CYPHER 5
+            MATCH (this:Post)
             WITH *
-            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_POST]-(this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             WITH this
             CALL {
             	WITH this
@@ -510,17 +526,10 @@ describe("Cypher Auth Allow", () => {
             	RETURN count(*) AS update_this_creator0
             }
             WITH *
-            CALL {
-            	WITH this
-            	MATCH (this)<-[this_creator_User_unique:HAS_POST]-(:User)
-            	WITH count(this_creator_User_unique) as c
-            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
-            	RETURN c AS this_creator_User_unique_ignored
-            }
-            OPTIONAL MATCH (this)<-[:HAS_POST]-(update_this0:User)
-            WITH *, count(update_this0) AS update_var1
-            WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (update_var1 <> 0 AND ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_POST]-(update_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -543,7 +552,7 @@ describe("Cypher Auth Allow", () => {
     test("Delete Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteUsers(where: { id_EQ: "user-id" }) {
+                deleteUsers(where: { id: { eq: "user-id" } }) {
                     nodesDeleted
                 }
             }
@@ -555,7 +564,8 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             DETACH DELETE this"
         `);
@@ -577,7 +587,10 @@ describe("Cypher Auth Allow", () => {
     test("Nested Delete Node", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteUsers(where: { id_EQ: "user-id" }, delete: { posts: { where: { node: { id_EQ: "post-id" } } } }) {
+                deleteUsers(
+                    where: { id: { eq: "user-id" } }
+                    delete: { posts: { where: { node: { id: { eq: "post-id" } } } } }
+                ) {
                     nodesDeleted
                 }
             }
@@ -589,20 +602,22 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             WITH *
             CALL {
                 WITH *
                 OPTIONAL MATCH (this)-[this0:HAS_POST]->(this1:Post)
-                OPTIONAL MATCH (this1)<-[:HAS_POST]-(this2:User)
-                WITH *, count(this2) AS var3
-                WHERE (this1.id = $param3 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-                WITH this0, collect(DISTINCT this1) AS var4
+                WHERE (this1.id = $param3 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                    MATCH (this1)<-[:HAS_POST]-(this2:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+                }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                WITH this0, collect(DISTINCT this1) AS var3
                 CALL {
-                    WITH var4
-                    UNWIND var4 AS var5
-                    DETACH DELETE var5
+                    WITH var3
+                    UNWIND var3 AS var4
+                    DETACH DELETE var4
                 }
             }
             WITH *
@@ -628,8 +643,8 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateUsers(
-                    where: { id_EQ: "user-id" }
-                    update: { posts: { disconnect: { where: { node: { id_EQ: "post-id" } } } } }
+                    where: { id: { eq: "user-id" } }
+                    update: { posts: { disconnect: { where: { node: { id: { eq: "post-id" } } } } } }
                 ) {
                     users {
                         id
@@ -644,17 +659,18 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             WITH this
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post)
-            OPTIONAL MATCH (this_posts0_disconnect0)<-[:HAS_POST]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            WHERE this_posts0_disconnect0.id = $updateUsers_args_update_posts0_disconnect0_where_Post_this_posts0_disconnect0param0 AND (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE this_posts0_disconnect0.id = $updateUsers_args_update_posts0_disconnect0_where_Post_this_posts0_disconnect0param0 AND (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this_posts0_disconnect0)<-[:HAS_POST]-(authorization__before_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
             	WITH this_posts0_disconnect0, this_posts0_disconnect0_rel, this
             	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel, this
@@ -688,7 +704,9 @@ describe("Cypher Auth Allow", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id_EQ\\": \\"post-id\\"
+                                                    \\"id\\": {
+                                                        \\"eq\\": \\"post-id\\"
+                                                    }
                                                 }
                                             }
                                         }
@@ -707,9 +725,11 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateComments(
-                    where: { id_EQ: "comment-id" }
+                    where: { id: { eq: "comment-id" } }
                     update: {
-                        post: { disconnect: { disconnect: { creator: { where: { node: { id_EQ: "user-id" } } } } } }
+                        post: {
+                            disconnect: { disconnect: { creator: { where: { node: { id: { eq: "user-id" } } } } } }
+                        }
                     }
                 ) {
                     comments {
@@ -725,21 +745,24 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Comment)
-            OPTIONAL MATCH (this)<-[:HAS_COMMENT]-(this0:User)
-            WITH *, count(this0) AS var1
+            "CYPHER 5
+            MATCH (this:Comment)
             WITH *
-            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_COMMENT]-(this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             WITH this
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_post0_disconnect0_rel:HAS_COMMENT]-(this_post0_disconnect0:Post)
-            OPTIONAL MATCH (this)<-[:HAS_COMMENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            OPTIONAL MATCH (this_post0_disconnect0)<-[:HAS_POST]-(authorization__before_this3:User)
-            WITH *, count(authorization__before_this3) AS authorization__before_var2
-            WITH *
-            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (authorization__before_var2 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this3.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_COMMENT]-(authorization__before_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this_post0_disconnect0)<-[:HAS_POST]-(authorization__before_this1:User)
+                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
             	WITH this_post0_disconnect0, this_post0_disconnect0_rel, this
             	WITH collect(this_post0_disconnect0) as this_post0_disconnect0, this_post0_disconnect0_rel, this
@@ -749,10 +772,10 @@ describe("Cypher Auth Allow", () => {
             CALL {
             WITH this, this_post0_disconnect0
             OPTIONAL MATCH (this_post0_disconnect0)<-[this_post0_disconnect0_creator0_rel:HAS_POST]-(this_post0_disconnect0_creator0:User)
-            OPTIONAL MATCH (this_post0_disconnect0)<-[:HAS_POST]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            WHERE this_post0_disconnect0_creator0.id = $updateComments_args_update_post_disconnect_disconnect_creator_where_User_this_post0_disconnect0_creator0param0 AND (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this_post0_disconnect0_creator0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE this_post0_disconnect0_creator0.id = $updateComments_args_update_post0_disconnect0_disconnect_creator0_where_User_this_post0_disconnect0_creator0param0 AND (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this_post0_disconnect0)<-[:HAS_POST]-(authorization__before_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this_post0_disconnect0_creator0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             CALL {
             	WITH this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel, this_post0_disconnect0
             	WITH collect(this_post0_disconnect0_creator0) as this_post0_disconnect0_creator0, this_post0_disconnect0_creator0_rel, this_post0_disconnect0
@@ -764,24 +787,10 @@ describe("Cypher Auth Allow", () => {
             RETURN count(*) AS disconnect_this_post0_disconnect_Post
             }
             WITH *
-            CALL {
-            	WITH this
-            	MATCH (this)<-[this_creator_User_unique:HAS_COMMENT]-(:User)
-            	WITH count(this_creator_User_unique) as c
-            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required exactly once', [0])
-            	RETURN c AS this_creator_User_unique_ignored
-            }
-            CALL {
-            	WITH this
-            	MATCH (this)<-[this_post_Post_unique:HAS_COMMENT]-(:Post)
-            	WITH count(this_post_Post_unique) as c
-            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.post required exactly once', [0])
-            	RETURN c AS this_post_Post_unique_ignored
-            }
-            OPTIONAL MATCH (this)<-[:HAS_COMMENT]-(update_this0:User)
-            WITH *, count(update_this0) AS update_var1
-            WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (update_var1 <> 0 AND ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_COMMENT]-(update_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -795,23 +804,31 @@ describe("Cypher Auth Allow", () => {
                     \\"sub\\": \\"user-id\\"
                 },
                 \\"param0\\": \\"comment-id\\",
-                \\"updateComments_args_update_post_disconnect_disconnect_creator_where_User_this_post0_disconnect0_creator0param0\\": \\"user-id\\",
+                \\"updateComments_args_update_post0_disconnect0_disconnect_creator0_where_User_this_post0_disconnect0_creator0param0\\": \\"user-id\\",
                 \\"updateComments\\": {
                     \\"args\\": {
                         \\"update\\": {
-                            \\"post\\": {
-                                \\"disconnect\\": {
-                                    \\"disconnect\\": {
-                                        \\"creator\\": {
-                                            \\"where\\": {
-                                                \\"node\\": {
-                                                    \\"id_EQ\\": \\"user-id\\"
-                                                }
+                            \\"post\\": [
+                                {
+                                    \\"disconnect\\": [
+                                        {
+                                            \\"disconnect\\": {
+                                                \\"creator\\": [
+                                                    {
+                                                        \\"where\\": {
+                                                            \\"node\\": {
+                                                                \\"id\\": {
+                                                                    \\"eq\\": \\"user-id\\"
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                ]
                                             }
                                         }
-                                    }
+                                    ]
                                 }
-                            }
+                            ]
                         }
                     }
                 },
@@ -824,8 +841,8 @@ describe("Cypher Auth Allow", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateUsers(
-                    where: { id_EQ: "user-id" }
-                    update: { posts: { connect: { where: { node: { id_EQ: "post-id" } } } } }
+                    where: { id: { eq: "user-id" } }
+                    update: { posts: { connect: { where: { node: { id: { eq: "post-id" } } } } } }
                 ) {
                     users {
                         id
@@ -840,17 +857,18 @@ describe("Cypher Auth Allow", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             WITH *
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_posts0_connect0_node:Post)
-            OPTIONAL MATCH (this_posts0_connect0_node)<-[:HAS_POST]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            	WHERE this_posts0_connect0_node.id = $this_posts0_connect0_node_param0 AND (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            	WHERE this_posts0_connect0_node.id = $this_posts0_connect0_node_param0 AND (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this_posts0_connect0_node)<-[:HAS_POST]-(authorization__before_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             	CALL {
             		WITH *
             		WITH collect(this_posts0_connect0_node) as connectedNodes, collect(this) as parentNodes
@@ -858,7 +876,7 @@ describe("Cypher Auth Allow", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_posts0_connect0_node
-            			MERGE (this)-[:HAS_POST]->(this_posts0_connect0_node)
+            			CREATE (this)-[:HAS_POST]->(this_posts0_connect0_node)
             		}
             	}
             WITH this, this_posts0_connect0_node

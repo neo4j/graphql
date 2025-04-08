@@ -51,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/227", () => {
         const typeDefs = /* GraphQL */ `
                     type ${Member} @node {
                         id: ID!
-                        gender: ${Gender}! @relationship(type: "HAS_GENDER", direction: OUT)
+                        gender: [${Gender}!]! @relationship(type: "HAS_GENDER", direction: OUT)
                     }
 
                     type ${Gender} @node {
@@ -100,6 +100,6 @@ describe("https://github.com/neo4j/graphql/issues/227", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        expect((gqlResult?.data as any).townMemberList).toEqual([{ id: memberId, gender: { gender } }]);
+        expect((gqlResult?.data as any).townMemberList).toEqual([{ id: memberId, gender: [{ gender }] }]);
     });
 });

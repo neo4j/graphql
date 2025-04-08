@@ -42,28 +42,28 @@ describe("https://github.com/neo4j/graphql/issues/5013", () => {
             id: String
         }
         type ${User} @authorization(filter: [{ where: { node: { userId_EQ: "$jwt.id" } } }]) @node {
-            userId: String! @unique
+            userId: String!
             adminAccess: [${Tenant}!]! @relationship(type: "ADMIN_IN", direction: OUT, aggregate: false)
         }
 
         type ${Tenant} @authorization(validate: [{ where: { node: { admins_SOME: { userId_EQ: "$jwt.id" } } } }]) @node {
             id: ID! @id
             admins: [${User}!]! @relationship(type: "ADMIN_IN", direction: IN, aggregate: false)
-            settings: ${Settings}! @relationship(type: "HAS_SETTINGS", direction: OUT, aggregate: false)
+            settings: [${Settings}!]! @relationship(type: "HAS_SETTINGS", direction: OUT, aggregate: false)
         }
 
         type ${Settings} @node
-            @authorization(validate: [{ where: { node: { tenant: { admins_SOME: { userId_EQ: "$jwt.id" } } } } }]) {
-            tenant: ${Tenant}! @relationship(type: "HAS_SETTINGS", direction: IN, aggregate: false)
+            @authorization(validate: [{ where: { node: { tenant_SOME: { admins_SOME: { userId_EQ: "$jwt.id" } } } } }]) {
+            tenant: [${Tenant}!]! @relationship(type: "HAS_SETTINGS", direction: IN, aggregate: false)
             extendedOpeningHours: [${OpeningDay}!]!
                 @relationship(type: "HAS_OPENING_HOURS", direction: OUT, aggregate: false)
         }
 
         type ${OpeningDay} @node
             @authorization(
-                validate: [{ where: { node: { settings: { tenant: { admins_SOME: { userId_EQ: "$jwt.id" } } } } } }]
+                validate: [{ where: { node: { settings_SOME: { tenant_SOME: { admins_SOME: { userId_EQ: "$jwt.id" } } } } } }]
             ) {
-            settings: ${Settings}! @relationship(type: "HAS_OPENING_HOURS", direction: IN, aggregate: false)
+            settings: [${Settings}!]! @relationship(type: "HAS_OPENING_HOURS", direction: IN, aggregate: false)
             date: Date
             open: [${OpeningHoursInterval}!]!
                 @relationship(type: "HAS_OPEN_INTERVALS", direction: OUT, aggregate: false)
@@ -72,10 +72,10 @@ describe("https://github.com/neo4j/graphql/issues/5013", () => {
         type ${OpeningHoursInterval} @node
             @authorization(
                 validate: [
-                    { where: { node: { openingDay: { settings: { tenant: { admins_SOME: { userId_EQ: "$jwt.id" } } } } } } }
+                    { where: { node: { openingDay_SOME: { settings_SOME: { tenant_SOME: { admins_SOME: { userId_EQ: "$jwt.id" } } } } } } }
                 ]
             ) {
-            openingDay: ${OpeningDay} @relationship(type: "HAS_OPEN_INTERVALS", direction: IN, aggregate: false)
+            openingDay: [${OpeningDay}!]! @relationship(type: "HAS_OPEN_INTERVALS", direction: IN, aggregate: false)
             name: String
         }
 

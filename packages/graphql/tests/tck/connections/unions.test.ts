@@ -80,7 +80,8 @@ describe("Cypher -> Connections -> Unions", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "CYPHER 5
+            MATCH (this:Author)
             CALL {
                 WITH this
                 CALL {
@@ -115,8 +116,8 @@ describe("Cypher -> Connections -> Unions", () => {
                     name
                     publicationsConnection(
                         where: {
-                            Book: { node: { title_EQ: "Book Title" } }
-                            Journal: { node: { subject_EQ: "Journal Subject" } }
+                            Book: { node: { title: { eq: "Book Title" } } }
+                            Journal: { node: { subject: { eq: "Journal Subject" } } }
                         }
                     ) {
                         edges {
@@ -140,7 +141,8 @@ describe("Cypher -> Connections -> Unions", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "CYPHER 5
+            MATCH (this:Author)
             CALL {
                 WITH this
                 CALL {
@@ -181,7 +183,7 @@ describe("Cypher -> Connections -> Unions", () => {
                 authors {
                     name
                     publicationsConnection(
-                        where: { Book: { edge: { words_EQ: 1000 } }, Journal: { edge: { words_EQ: 2000 } } }
+                        where: { Book: { edge: { words: { eq: 1000 } } }, Journal: { edge: { words: { eq: 2000 } } } }
                     ) {
                         edges {
                             properties {
@@ -204,7 +206,8 @@ describe("Cypher -> Connections -> Unions", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "CYPHER 5
+            MATCH (this:Author)
             CALL {
                 WITH this
                 CALL {
@@ -252,8 +255,8 @@ describe("Cypher -> Connections -> Unions", () => {
                     name
                     publicationsConnection(
                         where: {
-                            Book: { edge: { words_EQ: 1000 }, node: { title_EQ: "Book Title" } }
-                            Journal: { edge: { words_EQ: 2000 }, node: { subject_EQ: "Journal Subject" } }
+                            Book: { edge: { words: { eq: 1000 } }, node: { title: { eq: "Book Title" } } }
+                            Journal: { edge: { words: { eq: 2000 } }, node: { subject: { eq: "Journal Subject" } } }
                         }
                     ) {
                         edges {
@@ -277,7 +280,8 @@ describe("Cypher -> Connections -> Unions", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "CYPHER 5
+            MATCH (this:Author)
             CALL {
                 WITH this
                 CALL {
@@ -347,7 +351,8 @@ describe("Cypher -> Connections -> Unions", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "CYPHER 5
+            MATCH (this:Author)
             CALL {
                 WITH this
                 CALL {

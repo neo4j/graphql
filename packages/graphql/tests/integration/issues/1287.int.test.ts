@@ -34,10 +34,10 @@ describe("https://github.com/neo4j/graphql/issues/1287", () => {
 
         typeDefs = `
             type ${screeningsType} @node {
-                id: ID! @id @unique
+                id: ID! @id
                 title: String
                 beginsAt: DateTime!
-                movie: ${norwegianScreenable}! @relationship(type: "SCREENS_MOVIE", direction: OUT)
+                movie: [${norwegianScreenable}!]! @relationship(type: "SCREENS_MOVIE", direction: OUT)
             }
     
             interface ScreenableMeta {
@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/1287", () => {
             }
     
             type ${norwegianScreenable} implements ScreenableMeta @node {
-                id: ID! @id @unique
+                id: ID! @id
                 spokenLanguage: String!
                 subtitlesLanguage: String!
                 premiere: DateTime!
@@ -70,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/1287", () => {
 
         const query = `
             query queryScreenings {
-                ${screeningsType.plural}(where: { movieConnection: { node: { id_EQ: "my-id" } } }) {
+                ${screeningsType.plural}(where: { movieConnection_SINGLE: { node: { id_EQ: "my-id" } } }) {
                     beginsAt
                     movie {
                         id

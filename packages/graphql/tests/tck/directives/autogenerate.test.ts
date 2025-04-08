@@ -27,7 +27,7 @@ describe("Cypher autogenerate directive", () => {
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type Movie @node {
-                id: ID! @id @unique
+                id: ID! @id
                 name: String!
             }
         `;
@@ -52,7 +52,8 @@ describe("Cypher autogenerate directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -90,7 +91,8 @@ describe("Cypher autogenerate directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             SET this.name = $this_update_name_SET
             RETURN collect(DISTINCT this { .id, .name }) AS data"
         `);

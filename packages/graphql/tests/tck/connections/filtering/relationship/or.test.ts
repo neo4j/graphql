@@ -52,7 +52,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> OR", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { OR: [{ role_ENDS_WITH: "Gump" }, { screenTime_LT: 60 }] } }) {
+                    actorsConnection(
+                        where: { edge: { OR: [{ role: { endsWith: "Gump" } }, { screenTime: { lt: 60 } }] } }
+                    ) {
                         edges {
                             properties {
                                 role
@@ -70,7 +72,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -104,7 +107,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> OR", () => {
             {
                 movies(
                     where: {
-                        actorsConnection_SOME: { OR: [{ node: { name_EQ: "Harry" } }, { edge: { role_EQ: "Tom" } }] }
+                        actorsConnection: {
+                            some: { OR: [{ node: { name: { eq: "Harry" } } }, { edge: { role: { eq: "Tom" } } }] }
+                        }
                     }
                 ) {
                     title
@@ -115,7 +120,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE EXISTS {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE (this1.name = $param0 OR this0.role = $param1)

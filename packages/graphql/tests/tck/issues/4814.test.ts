@@ -54,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
     test("should use the direction specified in the typeDefs (direction: OUT, connection fields)", async () => {
         const query = /* GraphQL */ `
             query GetNextStep {
-                steps(where: { id_EQ: "2" }) {
+                steps(where: { id: { eq: "2" } }) {
                     __typename
                     nextsConnection {
                         edges {
@@ -71,7 +71,8 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this0:AStep)
                 WHERE this0.id = $param0
                 CALL {
@@ -139,7 +140,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
     test("should use the direction specified in the typeDefs (direction: IN, connection fields)", async () => {
         const query = /* GraphQL */ `
             query GetNextStep {
-                steps(where: { id_EQ: "2" }) {
+                steps(where: { id: { eq: "2" } }) {
                     __typename
                     prevsConnection {
                         edges {
@@ -156,7 +157,8 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this0:AStep)
                 WHERE this0.id = $param0
                 CALL {
@@ -224,7 +226,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
     test("should use the direction specified in the typeDefs (direction: OUT, relationship fields)", async () => {
         const query = /* GraphQL */ `
             query GetNextStep {
-                steps(where: { id_EQ: "2" }) {
+                steps(where: { id: { eq: "2" } }) {
                     __typename
                     nexts {
                         id
@@ -237,7 +239,8 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this0:AStep)
                 WHERE this0.id = $param0
                 CALL {
@@ -295,7 +298,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
     test("should use the direction specified in the typeDefs (direction: IN, relationship fields)", async () => {
         const query = /* GraphQL */ `
             query GetNextStep {
-                steps(where: { id_EQ: "2" }) {
+                steps(where: { id: { eq: "2" } }) {
                     __typename
                     prevs {
                         id
@@ -308,7 +311,8 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this0:AStep)
                 WHERE this0.id = $param0
                 CALL {

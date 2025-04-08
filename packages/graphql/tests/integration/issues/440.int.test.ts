@@ -42,12 +42,12 @@ describe("https://github.com/neo4j/graphql/issues/440", () => {
 
         typeDefs = `
         type ${Video} @node {
-            id: ID! @unique
+            id: ID!
             categories: [${Category}!]! @relationship(type: "IS_CATEGORIZED_AS", direction: OUT)
         }
 
         type ${Category} @node {
-            id: ID! @unique
+            id: ID!
             videos: [${Video}!]! @relationship(type: "IS_CATEGORIZED_AS", direction: IN)
         }
     `;

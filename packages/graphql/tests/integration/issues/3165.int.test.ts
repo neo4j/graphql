@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
             type ${Related} @node {
                 name: String!
                 value: String!
-                target: RelatedTarget!
+                target: [RelatedTarget!]!
                     @relationship(type: "PROPERTY_OF", properties: "RelatedProperties", direction: OUT)
             }
         `;
@@ -97,8 +97,8 @@ describe("https://github.com/neo4j/graphql/issues/3165", () => {
                 ${Related.plural}(
                     where: {
                         OR: [
-                            { targetConnection: { ${A}: { edge: { prop_EQ: "propvalue" } } } }
-                            { targetConnection: { ${B}: { edge: { prop_EQ: "propvalue" } } } }
+                            { targetConnection_SINGLE: { ${A}: { edge: { prop_EQ: "propvalue" } } } }
+                            { targetConnection_SINGLE: { ${B}: { edge: { prop_EQ: "propvalue" } } } }
                         ]
                     }
                 ) {

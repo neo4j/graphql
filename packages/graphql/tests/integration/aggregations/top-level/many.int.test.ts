@@ -33,8 +33,8 @@ describe("aggregations-top_level-many", () => {
         await testHelper.close();
     });
 
-    test("should preform many aggregations and return correct data", async () => {
-        const typeDefs = `
+    test("should perform many aggregations and return correct data", async () => {
+        const typeDefs = /* GraphQL */ `
             type ${typeMovie} @node {
                 testId: ID!
                 id: ID!
@@ -50,7 +50,6 @@ describe("aggregations-top_level-many", () => {
         });
 
         const minDate = new Date();
-
         const maxDate = new Date();
         maxDate.setDate(maxDate.getDate() + 1);
 
@@ -62,42 +61,35 @@ describe("aggregations-top_level-many", () => {
                     CREATE (:${typeMovie} {testId: "${testId}", id: "22", title: "22", imdbRating: 2, createdAt: datetime()})
                     CREATE (:${typeMovie} {testId: "${testId}", id: "333", title: "333", imdbRating: 3, createdAt: datetime()})
                     CREATE (:${typeMovie} {testId: "${testId}", id: "4444", title: "4444", imdbRating: 4, createdAt: datetime("${maxDate.toISOString()}")})
+                    CREATE (:${typeMovie} {testId: "different-id", id: "5555", title: "5555", imdbRating: 5, createdAt: datetime()})
                 `
         );
 
-        const query = `
-                {
-                    ${typeMovie.operations.connection}(where: { testId_EQ: "${testId}" }) {
-                        aggregate {
-                            node {
-                                id {
-                                        shortest
-                                        longest
-                                    }
-                                    title {
-                                        shortest
-                                        longest
-                                    }
-                                    imdbRating {
-                                        min
-                                        max
-                                        average
-                                    }
-                                    createdAt {
-                                        min
-                                        max
-                                    }
-                                }
+        const query = /* GraphQL */ `
+            {
+                ${typeMovie.operations.connection}(where: { testId: { eq: "${testId}" } }) {
+                    aggregate {
+                        node {
+                            title {
+                                shortest
+                                longest
                             }
-                    }  
-                }
-            `;
+                            imdbRating {
+                                min
+                                max
+                                average
+                            }
+                            createdAt {
+                                min
+                                max
+                            }
+                        }
+                    }
+                }  
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -105,10 +97,6 @@ describe("aggregations-top_level-many", () => {
             [typeMovie.operations.connection]: {
                 aggregate: {
                     node: {
-                        id: {
-                            shortest: "1",
-                            longest: "4444",
-                        },
                         title: {
                             shortest: "1",
                             longest: "4444",

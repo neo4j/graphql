@@ -44,7 +44,13 @@ describe("#360", () => {
         const query = /* GraphQL */ `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
                 events(
-                    where: { AND: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity_EQ: $activity }] }
+                    where: {
+                        AND: [
+                            { start: { gte: $rangeStart } }
+                            { start: { lte: $rangeEnd } }
+                            { activity: { eq: $activity } }
+                        ]
+                    }
                 ) {
                     start
                     activity
@@ -57,33 +63,16 @@ describe("#360", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Event)
-            WHERE (this.start >= $param0 AND this.start <= $param1)
+            "CYPHER 5
+            MATCH (this:Event)
+            WHERE (this.start >= datetime($param0) AND this.start <= datetime($param1))
             RETURN this { .activity, start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 7,
-                    \\"day\\": 17,
-                    \\"hour\\": 23,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 7,
-                    \\"day\\": 18,
-                    \\"hour\\": 22,
-                    \\"minute\\": 59,
-                    \\"second\\": 59,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-07-18T00:00:00+0100\\",
+                \\"param1\\": \\"2021-07-18T23:59:59+0100\\"
             }"
         `);
     });
@@ -91,7 +80,15 @@ describe("#360", () => {
     test("Should exclude undefined members in OR", async () => {
         const query = /* GraphQL */ `
             query ($rangeStart: DateTime, $rangeEnd: DateTime, $activity: String) {
-                events(where: { OR: [{ start_GTE: $rangeStart }, { start_LTE: $rangeEnd }, { activity_EQ: $activity }] }) {
+                events(
+                    where: {
+                        OR: [
+                            { start: { gte: $rangeStart } }
+                            { start: { lte: $rangeEnd } }
+                            { activity: { eq: $activity } }
+                        ]
+                    }
+                ) {
                     start
                     activity
                 }
@@ -103,33 +100,16 @@ describe("#360", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Event)
-            WHERE (this.start >= $param0 OR this.start <= $param1)
+            "CYPHER 5
+            MATCH (this:Event)
+            WHERE (this.start >= datetime($param0) OR this.start <= datetime($param1))
             RETURN this { .activity, start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 7,
-                    \\"day\\": 17,
-                    \\"hour\\": 23,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                },
-                \\"param1\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 7,
-                    \\"day\\": 18,
-                    \\"hour\\": 22,
-                    \\"minute\\": 59,
-                    \\"second\\": 59,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-07-18T00:00:00+0100\\",
+                \\"param1\\": \\"2021-07-18T23:59:59+0100\\"
             }"
         `);
     });

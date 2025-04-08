@@ -16,77 +16,109 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode, EnumTypeDefinitionNode, FieldDefinitionNode, StringValueNode } from "graphql";
+
+import type { ASTVisitor, EnumTypeDefinitionNode, FieldDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
+import { GraphQLDate } from "graphql-compose";
 import { GRAPHQL_BUILTIN_SCALAR_TYPES } from "../../../../constants";
-import { GraphQLDate, GraphQLDateTime, GraphQLLocalDateTime } from "../../../../graphql/scalars";
-import { GraphQLLocalTime, parseLocalTime } from "../../../../graphql/scalars/LocalTime";
-import { GraphQLTime, parseTime } from "../../../../graphql/scalars/Time";
-import { DocumentValidationError } from "../utils/document-validation-error";
-import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
+import { defaultDirective } from "../../../../graphql/directives";
+import { GraphQLDateTime, GraphQLLocalDateTime, GraphQLLocalTime, GraphQLTime } from "../../../../graphql/scalars";
+import type { Neo4jValidationContext, TypeMapWithExtensions } from "../../Neo4jValidationContext";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { fieldIsInNodeType } from "../utils/location-helpers/is-in-node-type";
+import { fieldIsInRelationshipPropertiesType } from "../utils/location-helpers/is-in-relationship-properties-type";
+import { getPathToNode } from "../utils/path-parser";
 import { assertArgumentHasSameTypeAsField } from "../utils/same-type-argument-as-field";
-import { getInnerTypeName, isArrayType } from "../utils/utils";
 
-// TODO: schema-generation: save enums as map
+export function validateDefaultDirective(context: Neo4jValidationContext): ASTVisitor {
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
+    }
 
-export function verifyDefault(enums: EnumTypeDefinitionNode[]) {
-    return function ({
-        directiveNode,
-        traversedDef,
-    }: {
-        directiveNode: DirectiveNode;
-        traversedDef: ObjectOrInterfaceWithExtensions | FieldDefinitionNode;
-    }) {
-        if (traversedDef.kind !== Kind.FIELD_DEFINITION) {
-            // delegate
-            return;
-        }
+    const enumsTypes: EnumTypeDefinitionNode[] = Object.values(typeMapWithExtensions)
+        .map((type) => type.definition)
+        .filter((definition): definition is EnumTypeDefinitionNode => definition.kind === Kind.ENUM_TYPE_DEFINITION);
 
-        const defaultArg = directiveNode.arguments?.find((a) => a.name.value === "value");
-        const expectedType = getInnerTypeName(traversedDef.type);
+    return {
+        FieldDefinition(fieldDefinitionNode: FieldDefinitionNode, _key, _parent, path, ancestors) {
+            const defDirective = fieldDefinitionNode.directives?.find(
+                (directive) => directive.name.value === defaultDirective.name
+            );
+            if (!defDirective) {
+                return;
+            }
+            const valueArg = defDirective.arguments?.find((arg) => arg.name.value === "value");
+            if (!valueArg) {
+                return;
+            }
+            const isValidLocation =
+                fieldIsInNodeType({ path, ancestors, typeMapWithExtensions }) ||
+                fieldIsInRelationshipPropertiesType({ path, ancestors, typeMapWithExtensions });
 
-        if (!defaultArg) {
-            // delegate to DirectiveArgumentOfCorrectType rule
-            return;
-        }
-
-        if (!isArrayType(traversedDef)) {
-            if ([GraphQLDateTime.name, GraphQLLocalDateTime.name, GraphQLDate.name].includes(expectedType)) {
-                if (Number.isNaN(Date.parse((defaultArg?.value as StringValueNode).value))) {
+            const { isValid, errorMsg, errorPath } = assertValid(() => {
+                if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `@default.${defaultArg.name.value} is not a valid ${expectedType}`,
-                        ["value"]
+                        `Directive "${defaultDirective.name}" requires in a type with "@node" or within the "@relationshipProperties" directive`,
+                        []
                     );
                 }
-            } else if (expectedType === GraphQLTime.name) {
-                try {
-                    parseTime((defaultArg?.value as StringValueNode).value);
-                } catch {
-                    throw new DocumentValidationError(
-                        `@default.${defaultArg.name.value} is not a valid ${expectedType}`,
-                        ["value"]
-                    );
-                }
-            } else if (expectedType === GraphQLLocalTime.name) {
-                try {
-                    parseLocalTime((defaultArg?.value as StringValueNode).value);
-                } catch {
-                    throw new DocumentValidationError(
-                        `@default.${defaultArg.name.value} is not a valid ${expectedType}`,
-                        ["value"]
-                    );
-                }
-            } else if (
-                !GRAPHQL_BUILTIN_SCALAR_TYPES.includes(expectedType) &&
-                !enums.some((x) => x.name.value === expectedType) &&
-                expectedType !== "BigInt"
-            ) {
-                throw new DocumentValidationError(
-                    `@default directive can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime or LocalTime.`,
-                    []
+                assertTypeIsSupportedByDefault(fieldDefinitionNode.type, typeMapWithExtensions);
+                // for compatibility with previous helper we generate the enumTypes here, but it can be passed the typeMap instead.
+                assertArgumentHasSameTypeAsField({
+                    directiveName: defaultDirective.name,
+                    traversedDef: fieldDefinitionNode,
+                    argument: valueArg,
+                    enums: enumsTypes,
+                });
+            });
+            const pathToNode = getPathToNode(path, ancestors);
+
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [fieldDefinitionNode],
+                        path: [...pathToNode[0], `@${defaultDirective.name}`, ...errorPath],
+                        errorMsg,
+                    })
                 );
             }
-        }
-        assertArgumentHasSameTypeAsField({ directiveName: "@default", traversedDef, argument: defaultArg, enums });
+        },
     };
+}
+
+function assertTypeIsSupportedByDefault(typeNode: TypeNode, typeMapWithExtensions: TypeMapWithExtensions): void {
+    if (typeNode.kind === Kind.LIST_TYPE) {
+        assertTypeIsSupportedByDefault(typeNode.type, typeMapWithExtensions);
+    }
+    if (typeNode.kind === Kind.NON_NULL_TYPE) {
+        assertTypeIsSupportedByDefault(typeNode.type, typeMapWithExtensions);
+    }
+
+    if (typeNode.kind === Kind.NAMED_TYPE) {
+        if (
+            GRAPHQL_BUILTIN_SCALAR_TYPES.includes(typeNode.name.value) ||
+            [
+                GraphQLDateTime.name,
+                GraphQLLocalDateTime.name,
+                GraphQLDate.name,
+                GraphQLTime.name,
+                GraphQLLocalTime.name,
+            ].includes(typeNode.name.value) ||
+            typeNode.name.value === BigInt.name
+        ) {
+            return;
+        }
+
+        // check if the type is an enum
+        const typeFromMap = typeMapWithExtensions[typeNode.name.value];
+        if (typeFromMap?.definition.kind === Kind.ENUM_TYPE_DEFINITION) {
+            return;
+        }
+
+        throw new DocumentValidationError(
+            `@${defaultDirective.name} directive can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime or LocalTime.`,
+            []
+        );
+    }
 }

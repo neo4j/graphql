@@ -39,8 +39,8 @@ describe("https://github.com/neo4j/graphql/issues/5586", () => {
         Entity = testHelper.createUniqueType("Entity");
 
         typeDefs = /* GraphQL */ `
-            type ${Entity} {
-                id: ID! @id @unique
+            type ${Entity} @node @subscription {
+                id: ID! @id
                 name: String
             }
         `;
@@ -97,7 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/5586", () => {
             .send({
                 query: /* GraphQL */ `
                     mutation {
-                        ${Entity.operations.update}(update: { name: "new" }) {
+                        ${Entity.operations.update}(update: { name_SET: "new" }) {
                             ${Entity.plural} {
                                 name
                                 id

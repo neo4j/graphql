@@ -61,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
     test("collect unions returned by cypher directive", async () => {
         const query = /* GraphQL */ `
             query {
-                communities(where: { id_EQ: 4656564 }) {
+                communities(where: { id: { eq: 4656564 } }) {
                     id
                     hasFeedItems {
                         __typename
@@ -79,7 +79,8 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Community)
+            "CYPHER 5
+            MATCH (this:Community)
             WHERE this.id = $param0
             CALL {
                 WITH this

@@ -17,20 +17,19 @@
  * limitations under the License.
  */
 
-import type { FilterOperator, LogicalOperators } from "../../ast/filters/Filter";
+import type { FilterOperator } from "../../ast/filters/Filter";
 
 export type WhereRegexGroups = {
     fieldName: string;
     isAggregate: boolean;
     operator: FilterOperator | undefined;
     prefix?: string;
-    isNot: boolean;
     isConnection: boolean;
 };
 
-
+// This regex is only valid for the non generic operators
 const whereRegEx =
-    /(?<prefix>\w*\.)?(?<fieldName>[_A-Za-z]\w*?)(?<isConnection>Connection)?(?<isAggregate>Aggregate)?(?:_(?<operator>NOT|NOT_IN|IN|NOT_INCLUDES|INCLUDES|MATCHES|NOT_CONTAINS|CONTAINS|NOT_STARTS_WITH|STARTS_WITH|NOT_ENDS_WITH|ENDS_WITH|EQ|LT|LTE|GT|GTE|DISTANCE|ALL|NONE|SINGLE|SOME))?$/;
+    /(?<prefix>\w*\.)?(?<fieldName>[_A-Za-z]\w*?)(?<isConnection>Connection)?(?<isAggregate>Aggregate)?(?:_(?<operator>IN|INCLUDES|MATCHES|CONTAINS|STARTS_WITH|ENDS_WITH|EQ|LT|LTE|GT|GTE|DISTANCE|ALL|NONE|SINGLE|SOME))?$/;
 
 export function parseWhereField(field: string): WhereRegexGroups {
     const match = whereRegEx.exec(field);
@@ -43,53 +42,22 @@ export function parseWhereField(field: string): WhereRegexGroups {
         isConnection?: string;
     };
 
-    let isNot = false;
-    let operator = undefined as FilterOperator | undefined;
-
-    if (matchGroups.operator) {
-        const notSplit = matchGroups.operator.split("NOT_");
-        if (notSplit.length === 2) {
-            isNot = true;
-            operator = notSplit[1] as FilterOperator;
-        } else if (matchGroups.operator === "NOT" || matchGroups.operator === "NONE") {
-            isNot = true;
-            if (matchGroups.operator === "NONE") {
-                operator = notSplit[0] as FilterOperator;
-            }
-        } else {
-            operator = notSplit[0] as FilterOperator;
-        }
-    }
+    const operator = match?.groups?.operator as FilterOperator | undefined;
 
     return {
         fieldName: matchGroups.fieldName,
         isAggregate: Boolean(matchGroups.isAggregate),
         operator,
-        isNot,
         prefix: matchGroups.prefix,
         isConnection: Boolean(matchGroups.isConnection),
     };
 }
 
-type ConnectionWhereArgField = {
-    isNot: boolean;
-    fieldName: "node" | "edge" | LogicalOperators;
-};
-
-export function parseConnectionWhereFields(key: string): ConnectionWhereArgField {
-    const splitKey = key.split("_NOT");
-    const isNot = splitKey.length > 1;
-    return {
-        fieldName: splitKey[0] as "node" | "edge" | LogicalOperators,
-        isNot,
-    };
-}
-
 export const aggregationFieldRegEx =
-    /(?<fieldName>[_A-Za-z]\w*?)(?:_(?<aggregationOperator>AVERAGE|MAX|MIN|SUM|SHORTEST|LONGEST))?(?:_LENGTH)?(?:_(?<logicalOperator>EQUAL|GT|GTE|LT|LTE))?$/;
+    /(?<fieldName>[_A-Za-z]\w*?)(?:_(?<aggregationOperator>AVERAGE|MAX|MIN|SUM|SHORTEST|LONGEST))?(?:_LENGTH)?(?:_(?<logicalOperator>EQUAL|EQ|GT|GTE|LT|LTE|IN))?$/;
 
 export type AggregationOperator = "AVERAGE" | "SHORTEST" | "LONGEST" | "MIN" | "MAX" | "SUM";
-export type AggregationLogicalOperator = "EQUAL" | "GT" | "GTE" | "LT" | "LTE";
+export type AggregationLogicalOperator = "EQUAL" | "EQ" | "GT" | "GTE" | "LT" | "LTE" | "IN";
 
 export type AggregationFieldRegexGroups = {
     fieldName: string;

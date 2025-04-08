@@ -46,7 +46,6 @@ describe("Interface Relationships", () => {
 
             type Actor @node {
                 name: String!
-                currentlyActingIn: Production @relationship(type: "CURRENTLY_ACTING_IN", direction: OUT)
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
@@ -76,7 +75,8 @@ describe("Interface Relationships", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
@@ -94,49 +94,6 @@ describe("Interface Relationships", () => {
                 RETURN collect(var2) AS var2
             }
             RETURN this { actedIn: var2 } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-    });
-
-    test("Simple Interface Relationship Query For Non-Array Field", async () => {
-        const query = /* GraphQL */ `
-            query {
-                actors {
-                    currentlyActingIn {
-                        title
-                        ... on Movie {
-                            runtime
-                        }
-                        ... on Series {
-                            episodes
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH *
-                    MATCH (this)-[this0:CURRENTLY_ACTING_IN]->(this1:Movie)
-                    WITH this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this1) } AS this1
-                    RETURN this1 AS var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this3:CURRENTLY_ACTING_IN]->(this4:Series)
-                    WITH this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this4) } AS this4
-                    RETURN this4 AS var2
-                }
-                WITH var2
-                RETURN head(collect(var2)) AS var2
-            }
-            RETURN this { currentlyActingIn: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -162,7 +119,8 @@ describe("Interface Relationships", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
@@ -226,7 +184,8 @@ describe("Interface Relationships", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
@@ -258,7 +217,9 @@ describe("Interface Relationships", () => {
         const query = /* GraphQL */ `
             query {
                 actors {
-                    actedInConnection(where: { node: { title_STARTS_WITH: "The " }, edge: { screenTime_GT: 60 } }) {
+                    actedInConnection(
+                        where: { node: { title: { startsWith: "The " } }, edge: { screenTime: { gt: 60 } } }
+                    ) {
                         edges {
                             properties {
                                 screenTime
@@ -281,7 +242,8 @@ describe("Interface Relationships", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {

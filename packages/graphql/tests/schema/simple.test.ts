@@ -41,6 +41,16 @@ describe("Simple", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              eq: Boolean
+            }
+
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
             type Count {
               nodes: Int!
             }
@@ -73,9 +83,37 @@ describe("Simple", () => {
               sum: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type IntAggregateSelection {
@@ -83,6 +121,23 @@ describe("Simple", () => {
               max: Int
               min: Int
               sum: Int
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie {
@@ -100,14 +155,6 @@ describe("Simple", () => {
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type MovieAggregateSelection {
-              actorCount: IntAggregateSelection!
-              averageRating: FloatAggregateSelection!
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input MovieCreateInput {
@@ -122,15 +169,6 @@ describe("Simple", () => {
               node: Movie!
             }
 
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -142,48 +180,48 @@ describe("Simple", () => {
             }
 
             input MovieUpdateInput {
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _SET field\\")
-              actorCount_DECREMENT: Int
-              actorCount_INCREMENT: Int
-              actorCount_SET: Int
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _SET field\\")
-              averageRating_ADD: Float
-              averageRating_DIVIDE: Float
-              averageRating_MULTIPLY: Float
-              averageRating_SET: Float
-              averageRating_SUBTRACT: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _SET field\\")
-              isActive_SET: Boolean
+              actorCount: IntScalarMutations
+              actorCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { decrement: ... } }' instead.\\")
+              actorCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { increment: ... } }' instead.\\")
+              actorCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'actorCount: { set: ... } }' instead.\\")
+              averageRating: FloatScalarMutations
+              averageRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { add: ... } }' instead.\\")
+              averageRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { divide: ... } }' instead.\\")
+              averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
+              averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
+              averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              isActive: BooleanScalarMutations
+              isActive_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'isActive: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_IN: [Int]
-              actorCount_LT: Int
-              actorCount_LTE: Int
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float]
-              averageRating_LT: Float
-              averageRating_LTE: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              actorCount: IntScalarFilters
+              actorCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { eq: ... }\\")
+              actorCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gt: ... }\\")
+              actorCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gte: ... }\\")
+              actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
+              actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
+              averageRating: FloatScalarFilters
+              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
+              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
+              averageRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
+              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              isActive: BooleanScalarFilters
+              isActive_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter isActive: { eq: ... }\\")
             }
 
             type MoviesConnection {
@@ -208,8 +246,7 @@ describe("Simple", () => {
             }
 
             type Query {
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

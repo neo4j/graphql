@@ -81,7 +81,7 @@ describe("auth/bind", () => {
             const typeDefs = `
                 type ${Post} @node {
                     id: ID
-                    creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
+                    creator: [${User}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type ${User} @node {
@@ -138,7 +138,7 @@ describe("auth/bind", () => {
             const typeDefs = `
                 type ${Post} @node {
                     id: ID
-                    creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
+                    creator: [${User}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type ${User} @node {
@@ -301,7 +301,7 @@ describe("auth/bind", () => {
                 type ${Post} @node {
                     id: ID
                     title: String
-                    creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
+                    creator: [${User}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type ${User} @node {
@@ -366,14 +366,14 @@ describe("auth/bind", () => {
             const typeDefs = `
                 type ${Post} @node {
                     id: ID
-                    creator: ${User}! @relationship(type: "HAS_POST", direction: OUT)
+                    creator: [${User}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
                 type ${User} @node {
                     id: ID
                 }
 
-                extend type ${Post} @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
+                extend type ${Post} @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { creator_SINGLE: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -473,7 +473,7 @@ describe("auth/bind", () => {
             const typeDefs = /* GraphQL */ `
                 type ${Post} @node {
                     id: ID
-                    creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
+                    creator: [${User}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type ${User} @node {
@@ -481,7 +481,7 @@ describe("auth/bind", () => {
                     posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${Post} @authorization(validate: [{ when: AFTER, operations: [UPDATE], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
+                extend type ${Post} @authorization(validate: [{ when: AFTER, operations: [UPDATE], where: { node: { creator_SINGLE: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -498,8 +498,8 @@ describe("auth/bind", () => {
                         where: { id_EQ: "${userId}" },
                         update: {
                             posts: {
-                                where: { node: { id_EQ: "${postId}" } },
                                 update: {
+                                    where: { node: { id_EQ: "${postId}" } },
                                     node: {
                                         creator: { update: { node: { id_SET: "not bound" } } }
                                     }
@@ -591,10 +591,10 @@ describe("auth/bind", () => {
 
                 type ${Post} @node {
                     id: ID
-                    creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
+                    creator: [${User}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type ${Post} @authorization(validate: [{ when: AFTER, operations: [CREATE_RELATIONSHIP], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
+                extend type ${Post} @authorization(validate: [{ when: AFTER, operations: [CREATE_RELATIONSHIP], where: { node: { creator_SINGLE: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -654,10 +654,10 @@ describe("auth/bind", () => {
 
                 type ${Post} @node {
                     id: ID
-                    creator: ${User}! @relationship(type: "HAS_POST", direction: IN)
+                    creator: [${User}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type ${Post} @authorization(validate: [{ when: AFTER, operations: [DELETE_RELATIONSHIP], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
+                extend type ${Post} @authorization(validate: [{ when: AFTER, operations: [DELETE_RELATIONSHIP], where: { node: { creator_SINGLE: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({

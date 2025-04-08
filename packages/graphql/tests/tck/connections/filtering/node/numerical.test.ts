@@ -52,7 +52,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { age_LT: 60 } }) {
+                    actorsConnection(where: { node: { age: { lt: 60 } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -70,7 +70,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -103,7 +104,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { age_LTE: 60 } }) {
+                    actorsConnection(where: { node: { age: { lte: 60 } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -121,7 +122,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -154,7 +156,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { age_GT: 60 } }) {
+                    actorsConnection(where: { node: { age: { gt: 60 } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -172,7 +174,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -205,7 +208,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { age_GTE: 60 } }) {
+                    actorsConnection(where: { node: { age: { gte: 60 } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -223,7 +226,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Numerical", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)

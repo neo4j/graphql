@@ -48,7 +48,8 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tech)
+            "CYPHER 5
+            MATCH (this:Tech)
             RETURN this { .name } AS this"
         `);
 
@@ -58,8 +59,12 @@ describe("Plural directive", () => {
     test("Count Tech with plural techs using aggregation", async () => {
         const query = /* GraphQL */ `
             {
-                techsAggregate {
-                    count
+                techsConnection {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                    }
                 }
             }
         `;
@@ -67,11 +72,12 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Tech)
-                RETURN count(this) AS var0
+                RETURN { nodes: count(DISTINCT this) } AS var0
             }
-            RETURN { count: var0 }"
+            RETURN { aggregate: { count: var0 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -91,7 +97,8 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Tech)
@@ -127,7 +134,8 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tech)
+            "CYPHER 5
+            MATCH (this:Tech)
             SET this.name = $this_update_name_SET
             RETURN collect(DISTINCT this { .name }) AS data"
         `);
@@ -143,7 +151,7 @@ describe("Plural directive", () => {
     test("Delete Tech with plural techs using aggregation", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteTechs(where: { name_EQ: "Matrix" }) {
+                deleteTechs(where: { name: { eq: "Matrix" } }) {
                     nodesDeleted
                 }
             }
@@ -152,7 +160,8 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tech)
+            "CYPHER 5
+            MATCH (this:Tech)
             WHERE this.name = $param0
             DETACH DELETE this"
         `);
@@ -176,7 +185,8 @@ describe("Plural directive", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Tech)
+            "CYPHER 5
+            MATCH (this:Tech)
             RETURN this { .name } AS this"
         `);
 

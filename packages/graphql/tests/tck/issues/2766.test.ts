@@ -69,7 +69,8 @@ describe("https://github.com/neo4j/graphql/issues/2766", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
@@ -82,6 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/2766", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                    WITH DISTINCT this2
                     CALL {
                         WITH this2
                         CALL {

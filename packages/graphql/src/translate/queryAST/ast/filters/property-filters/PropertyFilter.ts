@@ -21,7 +21,6 @@ import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { hasTarget } from "../../../utils/context-has-target";
 import { createComparisonOperation } from "../../../utils/create-comparison-operator";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
@@ -34,7 +33,6 @@ export class PropertyFilter extends Filter {
     protected relationship: RelationshipAdapter | undefined;
     protected comparisonValue: unknown;
     protected operator: FilterOperator;
-    protected isNot: boolean; // _NOT is deprecated
     protected attachedTo: "node" | "relationship";
 
     constructor({
@@ -42,14 +40,12 @@ export class PropertyFilter extends Filter {
         relationship,
         comparisonValue,
         operator,
-        isNot,
-        attachedTo,
+        attachedTo = "node",
     }: {
         attribute: AttributeAdapter;
         relationship?: RelationshipAdapter;
         comparisonValue: unknown;
         operator: FilterOperator;
-        isNot: boolean;
         attachedTo?: "node" | "relationship";
     }) {
         super();
@@ -57,8 +53,7 @@ export class PropertyFilter extends Filter {
         this.relationship = relationship;
         this.comparisonValue = comparisonValue;
         this.operator = operator;
-        this.isNot = isNot;
-        this.attachedTo = attachedTo ?? "node";
+        this.attachedTo = attachedTo;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -66,19 +61,17 @@ export class PropertyFilter extends Filter {
     }
 
     public print(): string {
-        return `${super.print()} [${this.attribute.name}] <${this.isNot ? "NOT " : ""}${this.operator}>`;
+        return `${super.print()} [${this.attribute.name}] <${this.operator}>`;
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate {
         const prop = this.getPropertyRefOrAliasesCase(queryASTContext);
 
         if (this.comparisonValue === null) {
-            return this.getNullPredicate(prop);
+            return Cypher.isNull(prop);
         }
 
-        const baseOperation = this.getOperation(prop);
-
-        return this.wrapInNotIfNeeded(baseOperation);
+        return this.getOperation(prop);
     }
 
     private getPropertyRefOrAliasesCase(queryASTContext: QueryASTContext): Cypher.Property | Cypher.Case {
@@ -106,7 +99,9 @@ export class PropertyFilter extends Filter {
         queryASTContext: QueryASTContext,
         concreteLabelsToAttributeAlias: [string[], string][]
     ): Cypher.Case {
-        if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
+        if (!queryASTContext.hasTarget()) {
+            throw new Error("No parent node found!");
+        }
         const aliasesCase = new Cypher.Case();
         for (const [labels, databaseName] of concreteLabelsToAttributeAlias) {
             aliasesCase
@@ -119,7 +114,9 @@ export class PropertyFilter extends Filter {
 
     private getPropertyRef(queryASTContext: QueryASTContext): Cypher.Property {
         if (this.attachedTo === "node") {
-            if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
+            if (!queryASTContext.hasTarget()) {
+                throw new Error("No parent node found!");
+            }
             return queryASTContext.target.property(this.attribute.databaseName);
         } else if (this.attachedTo === "relationship" && queryASTContext.relationship) {
             return queryASTContext.relationship.property(this.attribute.databaseName);
@@ -152,18 +149,5 @@ export class PropertyFilter extends Filter {
         const coalesceProperty = coalesceValueIfNeeded(this.attribute, property);
 
         return createComparisonOperation({ operator, property: coalesceProperty, param });
-    }
-
-    private getNullPredicate(propertyRef: Cypher.Property | Cypher.Case): Cypher.Predicate {
-        if (this.isNot) {
-            return Cypher.isNotNull(propertyRef);
-        } else {
-            return Cypher.isNull(propertyRef);
-        }
-    }
-
-    private wrapInNotIfNeeded(predicate: Cypher.Predicate): Cypher.Predicate {
-        if (this.isNot) return Cypher.not(predicate);
-        else return predicate;
     }
 }

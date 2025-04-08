@@ -72,7 +72,8 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 CALL {
                     MATCH (this0:Series)
                     WHERE this0:Movie
@@ -117,7 +118,8 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Actor)
+            "CYPHER 5
+            MATCH (this0:Actor)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {

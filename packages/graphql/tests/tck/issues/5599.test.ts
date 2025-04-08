@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    update: { actors: { LeadActor: [{ delete: [{ where: { node: { name: "Actor1" } } }] }] } }
+                    update: { actors: { LeadActor: [{ delete: [{ where: { node: { name: { eq: "Actor1" } } } }] }] } }
                 ) {
                     movies {
                         title
@@ -65,7 +65,8 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH *
             CALL {
             WITH *
@@ -94,7 +95,9 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
                                             {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"name\\": \\"Actor1\\"
+                                                        \\"name\\": {
+                                                            \\"eq\\": \\"Actor1\\"
+                                                        }
                                                     }
                                                 }
                                             }
@@ -116,8 +119,8 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
                 updateMovies(
                     update: {
                         actors: {
-                            LeadActor: [{ delete: [{ where: { node: { name: "Actor1" } } }] }]
-                            Extra: [{ delete: [{ where: { node: { name: "Actor2" } } }] }]
+                            LeadActor: [{ delete: [{ where: { node: { name: { eq: "Actor1" } } } }] }]
+                            Extra: [{ delete: [{ where: { node: { name: { eq: "Actor2" } } } }] }]
                         }
                     }
                 ) {
@@ -131,7 +134,8 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH *
             CALL {
             WITH *
@@ -173,7 +177,9 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
                                             {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"name\\": \\"Actor1\\"
+                                                        \\"name\\": {
+                                                            \\"eq\\": \\"Actor1\\"
+                                                        }
                                                     }
                                                 }
                                             }
@@ -186,7 +192,9 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
                                             {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"name\\": \\"Actor2\\"
+                                                        \\"name\\": {
+                                                            \\"eq\\": \\"Actor2\\"
+                                                        }
                                                     }
                                                 }
                                             }

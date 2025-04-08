@@ -76,7 +76,7 @@ describe("@fulltext directive", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", queryName: "${type.plural}ByTitle", fields: ["title"] }]) @node {
                 title: String!
             }
         `;
@@ -103,7 +103,7 @@ describe("@fulltext directive", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", queryName: "${type.plural}ByTitleAndDescription", fields: ["title", "description"] }]) @node {
                 title: String!
                 description: String!
             }
@@ -136,7 +136,7 @@ describe("@fulltext directive", () => {
         const type = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${type.name} @fulltext(indexes: [{ name: "${indexName}", fields: ["title", "description"] }]) @node {
+            type ${type.name} @fulltext(indexes: [{ indexName: "${indexName}", queryName: "${type.plural}ByTitleAndDescription", fields: ["title", "description"] }]) @node {
                 title: String!
                 description: String! @alias(property: "${alias}")
             }

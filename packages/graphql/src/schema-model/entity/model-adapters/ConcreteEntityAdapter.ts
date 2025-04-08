@@ -21,6 +21,7 @@ import { upperFirst } from "graphql-compose";
 import { MutationOperations } from "../../../graphql/directives/mutation";
 import { SubscriptionEvent } from "../../../graphql/directives/subscription";
 import { toGlobalId } from "../../../utils/global-ids";
+import type { Neo4jGraphQLSchemaModel } from "../../Neo4jGraphQLSchemaModel";
 import type { Annotations } from "../../annotation/Annotation";
 import type { Attribute } from "../../attribute/Attribute";
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
@@ -44,8 +45,6 @@ export class ConcreteEntityAdapter {
 
     // These keys allow to store the keys of the map in memory and avoid keep iterating over the map.
     private mutableFieldsKeys: string[] = [];
-    private uniqueFieldsKeys: string[] = [];
-    private constrainableFieldsKeys: string[] = [];
 
     private _relatedEntities: EntityAdapter[] | undefined;
 
@@ -78,13 +77,6 @@ export class ConcreteEntityAdapter {
                 this.mutableFieldsKeys.push(attribute.name);
             }
 
-            if (attributeAdapter.isConstrainable()) {
-                this.constrainableFieldsKeys.push(attribute.name);
-                if (attributeAdapter.isUnique()) {
-                    this.uniqueFieldsKeys.push(attribute.name);
-                }
-            }
-
             if (attributeAdapter.isGlobalIDAttribute()) {
                 this._globalIdField = attributeAdapter;
             }
@@ -101,49 +93,40 @@ export class ConcreteEntityAdapter {
         return this.attributes.get(name);
     }
 
-    get isReadable(): boolean {
-        return this.annotations.query === undefined || this.annotations.query.read === true;
+    public isReadable(schemaModel: Neo4jGraphQLSchemaModel): boolean {
+        if (this.annotations.query) {
+            return this.annotations.query.read;
+        }
+
+        return schemaModel.annotations.query === undefined || schemaModel.annotations.query.read === true;
     }
-    get isAggregable(): boolean {
-        return this.annotations.query === undefined || this.annotations.query.aggregate === true;
+
+    public isAggregable(schemaModel: Neo4jGraphQLSchemaModel): boolean {
+        if (this.annotations.query) {
+            return this.annotations.query.aggregate;
+        }
+
+        return schemaModel.annotations.query === undefined || schemaModel.annotations.query.aggregate === true;
     }
+
     get isCreatable(): boolean {
         return (
             this.annotations.mutation === undefined ||
             this.annotations.mutation.operations.has(MutationOperations.CREATE)
         );
     }
+
     get isUpdatable(): boolean {
         return (
             this.annotations.mutation === undefined ||
             this.annotations.mutation.operations.has(MutationOperations.UPDATE)
         );
     }
+
     get isDeletable(): boolean {
         return (
             this.annotations.mutation === undefined ||
             this.annotations.mutation.operations.has(MutationOperations.DELETE)
-        );
-    }
-    get isSubscribable(): boolean {
-        return this.annotations.subscription === undefined || this.annotations.subscription.events?.size > 0;
-    }
-    get isSubscribableOnCreate(): boolean {
-        return (
-            this.annotations.subscription === undefined ||
-            this.annotations.subscription.events.has(SubscriptionEvent.CREATED)
-        );
-    }
-    get isSubscribableOnUpdate(): boolean {
-        return (
-            this.annotations.subscription === undefined ||
-            this.annotations.subscription.events.has(SubscriptionEvent.UPDATED)
-        );
-    }
-    get isSubscribableOnDelete(): boolean {
-        return (
-            this.annotations.subscription === undefined ||
-            this.annotations.subscription.events.has(SubscriptionEvent.DELETED)
         );
     }
 
@@ -155,14 +138,6 @@ export class ConcreteEntityAdapter {
 
     public get mutableFields(): AttributeAdapter[] {
         return this.mutableFieldsKeys.map((key) => getFromMap(this.attributes, key));
-    }
-
-    public get uniqueFields(): AttributeAdapter[] {
-        return this.uniqueFieldsKeys.map((key) => getFromMap(this.attributes, key));
-    }
-
-    public get constrainableFields(): AttributeAdapter[] {
-        return this.constrainableFieldsKeys.map((key) => getFromMap(this.attributes, key));
     }
 
     public get relatedEntities(): EntityAdapter[] {
@@ -214,6 +189,49 @@ export class ConcreteEntityAdapter {
 
     public get subscriptionEventPayloadFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isEventPayloadField());
+    }
+
+    public isSubscribable(schemaModel: Neo4jGraphQLSchemaModel): boolean {
+        if (this.annotations.subscription) {
+            return this.annotations.subscription.events?.size > 0;
+        }
+
+        return (
+            schemaModel.annotations.subscription !== undefined && schemaModel.annotations.subscription.events?.size > 0
+        );
+    }
+
+    public isSubscribableOnCreate(schemaModel: Neo4jGraphQLSchemaModel): boolean {
+        if (this.annotations.subscription) {
+            return this.annotations.subscription.events.has(SubscriptionEvent.CREATED);
+        }
+
+        return (
+            schemaModel.annotations.subscription !== undefined &&
+            schemaModel.annotations.subscription.events.has(SubscriptionEvent.CREATED)
+        );
+    }
+
+    public isSubscribableOnUpdate(schemaModel: Neo4jGraphQLSchemaModel): boolean {
+        if (this.annotations.subscription) {
+            return this.annotations.subscription.events.has(SubscriptionEvent.UPDATED);
+        }
+
+        return (
+            schemaModel.annotations.subscription !== undefined &&
+            schemaModel.annotations.subscription.events.has(SubscriptionEvent.UPDATED)
+        );
+    }
+
+    public isSubscribableOnDelete(schemaModel: Neo4jGraphQLSchemaModel): boolean {
+        if (this.annotations.subscription) {
+            return this.annotations.subscription.events.has(SubscriptionEvent.DELETED);
+        }
+
+        return (
+            schemaModel.annotations.subscription !== undefined &&
+            schemaModel.annotations.subscription.events.has(SubscriptionEvent.DELETED)
+        );
     }
 
     public findRelationship(name: string): RelationshipAdapter | undefined {

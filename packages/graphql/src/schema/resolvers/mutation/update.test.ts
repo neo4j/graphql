@@ -75,7 +75,6 @@ describe("Update resolver", () => {
 
             create: "MovieRelationInput",
             delete: "MovieDeleteInput",
-            connectOrCreate: "MovieConnectOrCreateInput",
         });
         expect(result.args).toMatchObject({
             where: "MovieWhere",

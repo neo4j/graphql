@@ -71,12 +71,12 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                         where: {
                             node: { 
                                 OR: [
-                                    { owner: { authId_EQ: "$jwt.sub" } } 
+                                    { owner_SOME: { authId_EQ: "$jwt.sub" } } 
                                     {
                                         AND: [
                                             { shared_EQ: true } 
                                             {
-                                                workspace: {
+                                                workspace_SOME: {
                                                     OR: [
                                                         { members_SOME: { authId_EQ: "$jwt.sub" } } 
                                                         { admins_SOME: { authId_EQ: "$jwt.sub" } } 
@@ -95,9 +95,9 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
 
             shared: Boolean! @default(value: false)
 
-            owner: ${userType}! @relationship(type: "CREATED_PAGE", direction: IN)
+            owner: [${userType}!]! @relationship(type: "CREATED_PAGE", direction: IN)
 
-            workspace: ${workspaceType}! @relationship(type: "HAS_PAGE", direction: IN)
+            workspace: [${workspaceType}!]! @relationship(type: "HAS_PAGE", direction: IN)
         }
     `;
     });
@@ -141,7 +141,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
         `;
         const pagesQuery = `
             query Pages($workspaceId: ID!) {
-                ${pageType.plural}(where: { workspace: { id_EQ: $workspaceId } }) {
+                ${pageType.plural}(where: { workspace_SOME: { id_EQ: $workspaceId } }) {
                     id
                 }
             }

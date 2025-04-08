@@ -45,7 +45,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("AVERAGE_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_AVERAGE_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { average: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -54,7 +54,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -75,7 +76,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("AVERAGE_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_AVERAGE_GT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { average: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -84,7 +85,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -105,7 +107,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("AVERAGE_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_AVERAGE_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { average: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -114,7 +116,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -135,7 +138,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("AVERAGE_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_AVERAGE_LT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { average: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -144,7 +147,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -165,7 +169,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("AVERAGE_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_AVERAGE_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { average: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -174,7 +178,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -195,7 +200,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("SUM_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_SUM_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { sum: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -204,7 +209,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -225,7 +231,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("SUM_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_SUM_GT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { sum: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -234,7 +240,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -255,7 +262,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("SUM_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_SUM_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { sum: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -264,7 +271,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -285,7 +293,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("SUM_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_SUM_LT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { sum: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -294,7 +302,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -315,7 +324,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("SUM_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_SUM_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { sum: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -324,7 +333,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -345,7 +355,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("MIN_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_MIN_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { min: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -354,7 +364,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -375,7 +386,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("MIN_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_MIN_GT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { min: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -384,7 +395,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -405,7 +417,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("MIN_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_MIN_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { min: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -414,7 +426,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -435,7 +448,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("MIN_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_MIN_LT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { min: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -444,7 +457,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -465,7 +479,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("MIN_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_MIN_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { min: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -474,7 +488,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -495,7 +510,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("MAX_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_MAX_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { max: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -504,7 +519,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -525,7 +541,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("MAX_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_MAX_GT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { max: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -534,7 +550,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -555,7 +572,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("MAX_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_MAX_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { max: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -564,7 +581,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -585,7 +603,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("MAX_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_MAX_LT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { max: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -594,7 +612,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -615,7 +634,7 @@ describe("Cypher Aggregations where node with Float", () => {
     test("MAX_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someFloat_MAX_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { someFloat: { max: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -624,7 +643,8 @@ describe("Cypher Aggregations where node with Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)

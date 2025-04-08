@@ -3,3 +3,11 @@ mutation SimpleDelete {
         nodesDeleted
     }
 }
+
+mutation NestedDeleteInUpdate {
+    updateMovies(update: { actors: { delete: { where: { node: { name_CONTAINS: "Shark" } } } } }) {
+        movies {
+            title
+        }
+    }
+}

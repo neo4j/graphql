@@ -64,7 +64,8 @@ describe("Field Level Aggregations", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -84,12 +85,16 @@ describe("Field Level Aggregations", () => {
         const query = /* GraphQL */ `
             query {
                 movies {
-                    actorsAggregate {
-                        count
-                        node {
-                            name {
-                                longest
-                                shortest
+                    actorsConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                            node {
+                                name {
+                                    longest
+                                    shortest
+                                }
                             }
                         }
                     }
@@ -100,21 +105,26 @@ describe("Field Level Aggregations", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                RETURN count(this1) AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                    RETURN { nodes: count(DISTINCT this1) } AS var2
+                }
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
+                    WITH DISTINCT this4
+                    ORDER BY size(this4.name) DESC
+                    WITH collect(this4.name) AS list
+                    RETURN { longest: head(list), shortest: last(list) } AS var5
+                }
+                RETURN { aggregate: { count: var2, node: { name: var5 } } } AS var6
             }
-            CALL {
-                WITH this
-                MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
-                WITH this4
-                ORDER BY size(this4.name) DESC
-                WITH collect(this4.name) AS list
-                RETURN { longest: head(list), shortest: last(list) } AS var5
-            }
-            RETURN this { actorsAggregate: { count: var2, node: { name: var5 } } } AS this"
+            RETURN this { actorsConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -124,13 +134,15 @@ describe("Field Level Aggregations", () => {
         const query = /* GraphQL */ `
             query {
                 movies {
-                    actorsAggregate {
-                        node {
-                            age {
-                                min
-                                max
-                                average
-                                sum
+                    actorsConnection {
+                        aggregate {
+                            node {
+                                age {
+                                    min
+                                    max
+                                    average
+                                    sum
+                                }
                             }
                         }
                     }
@@ -141,14 +153,19 @@ describe("Field Level Aggregations", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH this1
-                RETURN { min: min(this1.age), max: max(this1.age), average: avg(this1.age), sum: sum(this1.age) } AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                    WITH DISTINCT this1
+                    RETURN { min: min(this1.age), max: max(this1.age), average: avg(this1.age), sum: sum(this1.age) } AS var2
+                }
+                RETURN { aggregate: { node: { age: var2 } } } AS var3
             }
-            RETURN this { actorsAggregate: { node: { age: var2 } } } AS this"
+            RETURN this { actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -159,11 +176,13 @@ describe("Field Level Aggregations", () => {
             query {
                 movies {
                     title
-                    actorsAggregate {
-                        node {
-                            name {
-                                longest
-                                shortest
+                    actorsConnection {
+                        aggregate {
+                            node {
+                                name {
+                                    longest
+                                    shortest
+                                }
                             }
                         }
                     }
@@ -174,16 +193,21 @@ describe("Field Level Aggregations", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH this1
-                ORDER BY size(this1.name) DESC
-                WITH collect(this1.name) AS list
-                RETURN { longest: head(list), shortest: last(list) } AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                    WITH DISTINCT this1
+                    ORDER BY size(this1.name) DESC
+                    WITH collect(this1.name) AS list
+                    RETURN { longest: head(list), shortest: last(list) } AS var2
+                }
+                RETURN { aggregate: { node: { name: var2 } } } AS var3
             }
-            RETURN this { .title, actorsAggregate: { node: { name: var2 } } } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -193,10 +217,12 @@ describe("Field Level Aggregations", () => {
         const query = /* GraphQL */ `
             query {
                 actors {
-                    moviesAggregate {
-                        node {
-                            released {
-                                min
+                    moviesConnection {
+                        aggregate {
+                            node {
+                                released {
+                                    min
+                                }
                             }
                         }
                     }
@@ -207,14 +233,19 @@ describe("Field Level Aggregations", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
-                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WITH this1
-                RETURN { min: apoc.date.convertFormat(toString(min(this1.released)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                    WITH DISTINCT this1
+                    RETURN { min: apoc.date.convertFormat(toString(min(this1.released)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
+                }
+                RETURN { aggregate: { node: { released: var2 } } } AS var3
             }
-            RETURN this { moviesAggregate: { node: { released: var2 } } } AS this"
+            RETURN this { moviesConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -224,17 +255,19 @@ describe("Field Level Aggregations", () => {
         const query = /* GraphQL */ `
             query {
                 movies {
-                    actorsAggregate {
-                        node {
-                            name {
-                                longest
-                                shortest
-                            }
-                            age {
-                                min
-                                max
-                                average
-                                sum
+                    actorsConnection {
+                        aggregate {
+                            node {
+                                name {
+                                    longest
+                                    shortest
+                                }
+                                age {
+                                    min
+                                    max
+                                    average
+                                    sum
+                                }
                             }
                         }
                     }
@@ -245,22 +278,27 @@ describe("Field Level Aggregations", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH this1
-                ORDER BY size(this1.name) DESC
-                WITH collect(this1.name) AS list
-                RETURN { longest: head(list), shortest: last(list) } AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                    WITH DISTINCT this1
+                    ORDER BY size(this1.name) DESC
+                    WITH collect(this1.name) AS list
+                    RETURN { longest: head(list), shortest: last(list) } AS var2
+                }
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
+                    WITH DISTINCT this4
+                    RETURN { min: min(this4.age), max: max(this4.age), average: avg(this4.age), sum: sum(this4.age) } AS var5
+                }
+                RETURN { aggregate: { node: { name: var2, age: var5 } } } AS var6
             }
-            CALL {
-                WITH this
-                MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
-                WITH this4
-                RETURN { min: min(this4.age), max: max(this4.age), average: avg(this4.age), sum: sum(this4.age) } AS var5
-            }
-            RETURN this { actorsAggregate: { node: { name: var2, age: var5 } } } AS this"
+            RETURN this { actorsConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

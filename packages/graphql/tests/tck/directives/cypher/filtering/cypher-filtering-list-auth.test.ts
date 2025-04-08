@@ -26,7 +26,7 @@ describe("cypher directive filtering - List Auth", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(filter: [{ where: { node: { custom_list_INCLUDES: "$jwt.custom_value" } } }]) {
+                @authorization(filter: [{ where: { node: { custom_list: { includes: "$jwt.custom_value" } } } }]) {
                 title: String
                 custom_list: [String]
                     @cypher(
@@ -39,7 +39,7 @@ describe("cypher directive filtering - List Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -67,7 +67,8 @@ describe("cypher directive filtering - List Auth", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -112,7 +113,7 @@ describe("cypher directive filtering - List Auth", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(filter: [{ where: { node: { custom_list_INCLUDES: "$jwt.custom_value" } } }]) {
+                @authorization(filter: [{ where: { node: { custom_list: { includes: "$jwt.custom_value" } } } }]) {
                 title: String
                 custom_list: [String]
                     @cypher(
@@ -125,7 +126,7 @@ describe("cypher directive filtering - List Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -153,7 +154,8 @@ describe("cypher directive filtering - List Auth", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -194,11 +196,11 @@ describe("cypher directive filtering - List Auth", () => {
                         """
                         columnName: "list"
                     )
-                    @authorization(filter: [{ where: { node: { custom_list_INCLUDES: "$jwt.custom_value" } } }])
+                    @authorization(filter: [{ where: { node: { custom_list: { includes: "$jwt.custom_value" } } } }])
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -226,7 +228,8 @@ describe("cypher directive filtering - List Auth", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -279,11 +282,11 @@ describe("cypher directive filtering - List Auth", () => {
                         """
                         columnName: "list"
                     )
-                    @authorization(filter: [{ where: { node: { custom_list: "$jwt.custom_value" } } }])
+                    @authorization(filter: [{ where: { node: { custom_list: { eq: "$jwt.custom_value" } } } }])
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -311,7 +314,8 @@ describe("cypher directive filtering - List Auth", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             RETURN this { .title } AS this"
         `);
 
@@ -334,7 +338,10 @@ describe("cypher directive filtering - List Auth", () => {
             }
 
             type Actor
-                @authorization(filter: [{ where: { node: { movies_SOME: { custom_list: "$jwt.custom_value" } } } }]) {
+                @node
+                @authorization(
+                    filter: [{ where: { node: { movies: { some: { custom_list: { eq: "$jwt.custom_value" } } } } } }]
+                ) {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -362,7 +369,8 @@ describe("cypher directive filtering - List Auth", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this0:Movie)
@@ -402,7 +410,7 @@ describe("cypher directive filtering - List Auth", () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
-                    @authorization(filter: [{ where: { node: { custom_list_INCLUDES: "$jwt.custom_value" } } }])
+                    @authorization(filter: [{ where: { node: { custom_list: { includes: "$jwt.custom_value" } } } }])
                 custom_list: [String]
                     @cypher(
                         statement: """
@@ -414,7 +422,7 @@ describe("cypher directive filtering - List Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -442,7 +450,8 @@ describe("cypher directive filtering - List Auth", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -475,7 +484,7 @@ describe("cypher directive filtering - List Auth", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(validate: [{ where: { node: { custom_list_INCLUDES: "$jwt.custom_value" } } }]) {
+                @authorization(validate: [{ where: { node: { custom_list: { includes: "$jwt.custom_value" } } } }]) {
                 title: String
                 custom_list: [String]
                     @cypher(
@@ -516,7 +525,8 @@ describe("cypher directive filtering - List Auth", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {

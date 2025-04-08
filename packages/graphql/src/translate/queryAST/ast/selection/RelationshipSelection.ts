@@ -26,17 +26,15 @@ import type { QueryASTContext } from "../QueryASTContext";
 import { EntitySelection, type SelectionClause } from "./EntitySelection";
 
 export class RelationshipSelection extends EntitySelection {
-    protected relationship: RelationshipAdapter;
+    private relationship: RelationshipAdapter;
     // Overrides relationship target for composite entities
     private targetOverride: ConcreteEntityAdapter | undefined;
     private alias: string | undefined;
-    private directed?: boolean;
     private optional: boolean;
 
     constructor({
         relationship,
         alias,
-        directed,
         targetOverride,
         optional,
     }: {
@@ -49,7 +47,6 @@ export class RelationshipSelection extends EntitySelection {
         super();
         this.relationship = relationship;
         this.alias = alias;
-        this.directed = directed;
         this.targetOverride = targetOverride;
         this.optional = optional ?? false;
     }
@@ -64,7 +61,7 @@ export class RelationshipSelection extends EntitySelection {
         const relationshipTarget = this.targetOverride ?? this.relationship.target;
         const targetNode = createNode(this.alias);
         const labels = getEntityLabels(relationshipTarget, context.neo4jGraphQLContext);
-        const relDirection = this.getRelationshipDirection();
+        const relDirection = this.relationship.getCypherDirection();
 
         const pattern = new Cypher.Pattern(context.target)
             .related(relVar, { direction: relDirection, type: this.relationship.type })
@@ -80,16 +77,5 @@ export class RelationshipSelection extends EntitySelection {
             nestedContext: nestedContext,
             selection: match,
         };
-    }
-
-    protected getRelationshipDirection(): "left" | "right" | "undirected" {
-        return this.relationship.getCypherDirection(this.directed);
-    }
-}
-
-/** Enforces direction on the relationship selection, regardless of direction configuration **/
-export class DirectedRelationshipSelection extends RelationshipSelection {
-    protected getRelationshipDirection(): "left" | "right" {
-        return this.relationship.cypherDirectionFromRelDirection();
     }
 }

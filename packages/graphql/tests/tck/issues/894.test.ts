@@ -27,13 +27,13 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type User @node {
-                id: ID! @id @unique @alias(property: "_id")
+                id: ID! @id @alias(property: "_id")
                 name: String!
-                activeOrganization: Organization @relationship(type: "ACTIVELY_MANAGING", direction: OUT)
+                activeOrganization: [Organization!]! @relationship(type: "ACTIVELY_MANAGING", direction: OUT)
             }
 
             type Organization @node {
-                id: ID! @id @unique @alias(property: "_id")
+                id: ID! @id @alias(property: "_id")
                 name: String!
             }
         `;
@@ -47,11 +47,11 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
         const query = /* GraphQL */ `
             mutation SwapSides {
                 updateUsers(
-                    where: { name_EQ: "Luke Skywalker" }
+                    where: { name: { eq: "Luke Skywalker" } }
                     update: {
                         activeOrganization: {
-                            connect: { where: { node: { id_EQ: "test-id" } } }
-                            disconnect: { where: { node: { NOT: { id_EQ: "test-id" } } } }
+                            connect: { where: { node: { id: { eq: "test-id" } } } }
+                            disconnect: { where: { node: { NOT: { id: { eq: "test-id" } } } } }
                         }
                     }
                 ) {
@@ -65,13 +65,14 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WHERE this.name = $param0
             WITH this
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_activeOrganization0_disconnect0_rel:ACTIVELY_MANAGING]->(this_activeOrganization0_disconnect0:Organization)
-            WHERE NOT (this_activeOrganization0_disconnect0._id = $updateUsers_args_update_activeOrganization_disconnect_where_Organization_this_activeOrganization0_disconnect0param0)
+            WHERE NOT (this_activeOrganization0_disconnect0._id = $updateUsers_args_update_activeOrganization0_disconnect0_where_Organization_this_activeOrganization0_disconnect0param0)
             CALL {
             	WITH this_activeOrganization0_disconnect0, this_activeOrganization0_disconnect0_rel, this
             	WITH collect(this_activeOrganization0_disconnect0) as this_activeOrganization0_disconnect0, this_activeOrganization0_disconnect0_rel, this
@@ -92,19 +93,11 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_activeOrganization0_connect0_node
-            			MERGE (this)-[:ACTIVELY_MANAGING]->(this_activeOrganization0_connect0_node)
+            			CREATE (this)-[:ACTIVELY_MANAGING]->(this_activeOrganization0_connect0_node)
             		}
             	}
             WITH this, this_activeOrganization0_connect0_node
             	RETURN count(*) AS connect_this_activeOrganization0_connect_Organization0
-            }
-            WITH *
-            CALL {
-            	WITH this
-            	MATCH (this)-[this_activeOrganization_Organization_unique:ACTIVELY_MANAGING]->(:Organization)
-            	WITH count(this_activeOrganization_Organization_unique) as c
-            	WHERE apoc.util.validatePredicate(NOT (c <= 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDUser.activeOrganization must be less than or equal to one', [0])
-            	RETURN c AS this_activeOrganization_Organization_unique_ignored
             }
             RETURN collect(DISTINCT this { id: this._id }) AS data"
         `);
@@ -112,30 +105,39 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Luke Skywalker\\",
-                \\"updateUsers_args_update_activeOrganization_disconnect_where_Organization_this_activeOrganization0_disconnect0param0\\": \\"test-id\\",
+                \\"updateUsers_args_update_activeOrganization0_disconnect0_where_Organization_this_activeOrganization0_disconnect0param0\\": \\"test-id\\",
                 \\"this_activeOrganization0_connect0_node_param0\\": \\"test-id\\",
                 \\"updateUsers\\": {
                     \\"args\\": {
                         \\"update\\": {
-                            \\"activeOrganization\\": {
-                                \\"connect\\": {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"id_EQ\\": \\"test-id\\"
-                                        }
-                                    },
-                                    \\"overwrite\\": true
-                                },
-                                \\"disconnect\\": {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"NOT\\": {
-                                                \\"id_EQ\\": \\"test-id\\"
+                            \\"activeOrganization\\": [
+                                {
+                                    \\"connect\\": [
+                                        {
+                                            \\"where\\": {
+                                                \\"node\\": {
+                                                    \\"id\\": {
+                                                        \\"eq\\": \\"test-id\\"
+                                                    }
+                                                }
                                             }
                                         }
-                                    }
+                                    ],
+                                    \\"disconnect\\": [
+                                        {
+                                            \\"where\\": {
+                                                \\"node\\": {
+                                                    \\"NOT\\": {
+                                                        \\"id\\": {
+                                                            \\"eq\\": \\"test-id\\"
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    ]
                                 }
-                            }
+                            ]
                         }
                     }
                 },

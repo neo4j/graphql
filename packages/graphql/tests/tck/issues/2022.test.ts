@@ -27,24 +27,24 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type ArtPiece @node {
-                dbId: ID! @id @unique @relayId @alias(property: "id")
+                dbId: ID! @id @relayId @alias(property: "id")
                 title: String!
-                auction: AuctionItem! @relationship(type: "SOLD_AT_AUCTION_AS", direction: OUT)
-                owner: Organization! @relationship(type: "OWNED_BY", direction: OUT)
+                auction: [AuctionItem!]! @relationship(type: "SOLD_AT_AUCTION_AS", direction: OUT)
+                owner: [Organization!]! @relationship(type: "OWNED_BY", direction: OUT)
             }
 
             type AuctionItem @node {
-                dbId: ID! @id @unique @relayId @alias(property: "id")
+                dbId: ID! @id @relayId @alias(property: "id")
                 auctionName: String!
                 lotNumber: Int!
 
-                item: ArtPiece! @relationship(type: "SOLD_AT_AUCTION_AS", direction: IN)
-                buyer: Organization! @relationship(type: "BOUGHT_ITEM_AT_AUCTION", direction: IN)
-                seller: Organization! @relationship(type: "SOLD_ITEM_AT_AUCTION", direction: IN)
+                item: [ArtPiece!]! @relationship(type: "SOLD_AT_AUCTION_AS", direction: IN)
+                buyer: [Organization!]! @relationship(type: "BOUGHT_ITEM_AT_AUCTION", direction: IN)
+                seller: [Organization!]! @relationship(type: "SOLD_ITEM_AT_AUCTION", direction: IN)
             }
 
             type Organization @node {
-                dbId: ID! @id @unique @relayId @alias(property: "id")
+                dbId: ID! @id @relayId @alias(property: "id")
                 name: String!
 
                 artCollection: [ArtPiece!]! @relationship(type: "OWNED_BY", direction: IN)
@@ -88,7 +88,8 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:ArtPiece)
+            "CYPHER 5
+            MATCH (this0:ArtPiece)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -98,20 +99,23 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:SOLD_AT_AUCTION_AS]->(this2:AuctionItem)
+                    WITH DISTINCT this2
                     CALL {
                         WITH this2
                         MATCH (this2)<-[this3:BOUGHT_ITEM_AT_AUCTION]-(this4:Organization)
+                        WITH DISTINCT this4
                         WITH this4 { .name, dbId: this4.id } AS this4
-                        RETURN head(collect(this4)) AS var5
+                        RETURN collect(this4) AS var5
                     }
                     WITH this2 { .auctionName, .lotNumber, dbId: this2.id, buyer: var5 } AS this2
-                    RETURN head(collect(this2)) AS var6
+                    RETURN collect(this2) AS var6
                 }
                 CALL {
                     WITH this0
                     MATCH (this0)-[this7:OWNED_BY]->(this8:Organization)
+                    WITH DISTINCT this8
                     WITH this8 { .name, dbId: this8.id } AS this8
-                    RETURN head(collect(this8)) AS var9
+                    RETURN collect(this8) AS var9
                 }
                 RETURN collect({ node: { dbId: this0.id, title: this0.title, auction: var6, owner: var9, __resolveType: \\"ArtPiece\\" } }) AS var10
             }

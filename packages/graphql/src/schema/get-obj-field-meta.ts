@@ -21,18 +21,16 @@ import type { IResolvers } from "@graphql-tools/utils";
 import type {
     BooleanValueNode,
     DirectiveNode,
-    EnumTypeDefinitionNode,
     EnumValueNode,
     InterfaceTypeDefinitionNode,
     ListValueNode,
     NamedTypeNode,
     ObjectTypeDefinitionNode,
-    ScalarTypeDefinitionNode,
     StringValueNode,
-    UnionTypeDefinitionNode,
 } from "graphql";
 import { Kind } from "graphql";
 import { SCALAR_TYPES, SPATIAL_TYPES, TEMPORAL_SCALAR_TYPES } from "../constants";
+import type { DefinitionCollection } from "../schema-model/parser/definition-collection";
 import { parseArgumentsFromUnknownDirective } from "../schema-model/parser/parse-arguments";
 import { parseValueNode } from "../schema-model/parser/parse-value-node";
 import type {
@@ -62,7 +60,6 @@ import { getCypherMeta } from "./get-cypher-meta";
 import getFieldTypeMeta from "./get-field-type-meta";
 import { getPopulatedByMeta } from "./get-populated-by-meta";
 import getRelationshipMeta from "./get-relationship-meta";
-import getUniqueMeta from "./parse/get-unique-meta";
 
 export interface ObjectFields {
     relationFields: RelationField[];
@@ -79,26 +76,22 @@ export interface ObjectFields {
     customResolverFields: CustomResolverField[];
 }
 
-function getObjFieldMeta({
+export function getObjFieldMeta({
     obj,
-    objects,
+    definitionCollection,
     interfaces,
-    scalars,
-    unions,
-    enums,
     callbacks,
     customResolvers,
 }: {
     obj: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
-    objects: ObjectTypeDefinitionNode[];
+    definitionCollection: DefinitionCollection;
     interfaces: InterfaceTypeDefinitionNode[];
-    unions: UnionTypeDefinitionNode[];
-    scalars: ScalarTypeDefinitionNode[];
-    enums: EnumTypeDefinitionNode[];
     callbacks?: Neo4jGraphQLCallbacks;
     customResolvers?: IResolvers | Array<IResolvers>;
 }): ObjectFields {
     const objInterfaceNames = [...(obj.interfaces || [])] as NamedTypeNode[];
+    const objects = [...definitionCollection.nodes.values()];
+    const unions = [...definitionCollection.unionTypes.values()];
     const objInterfaces = interfaces.filter((i) => objInterfaceNames.map((n) => n.name.value).includes(i.name.value));
 
     return obj?.fields?.reduce(
@@ -141,13 +134,12 @@ function getObjFieldMeta({
             const selectableDirective = directives.find((x) => x.name.value === "selectable");
             const settableDirective = directives.find((x) => x.name.value === "settable");
             const filterableDirective = directives.find((x) => x.name.value === "filterable");
-            const unique = getUniqueMeta(directives, obj, field.name.value);
 
-            const fieldInterface = interfaces.find((x) => x.name.value === typeMeta.name);
-            const fieldUnion = unions.find((x) => x.name.value === typeMeta.name);
-            const fieldScalar = scalars.find((x) => x.name.value === typeMeta.name);
-            const fieldEnum = enums.find((x) => x.name.value === typeMeta.name);
-            const fieldObject = objects.find((x) => x.name.value === typeMeta.name);
+            const fieldInterface = definitionCollection.interfaceTypes.get(typeMeta.name);
+            const fieldUnion = definitionCollection.unionTypes.get(typeMeta.name);
+            const fieldScalar = definitionCollection.scalarTypes.get(typeMeta.name);
+            const fieldEnum = definitionCollection.enumTypes.get(typeMeta.name);
+            const fieldObject = definitionCollection.objectTypes.get(typeMeta.name);
             const fieldTemporal = TEMPORAL_SCALAR_TYPES.includes(typeMeta.name);
             const fieldPoint = SPATIAL_TYPES.includes(typeMeta.name);
 
@@ -175,7 +167,6 @@ function getObjFieldMeta({
                             "coalesce",
                             "timestamp",
                             "alias",
-                            "unique",
                             "callback",
                             "populatedBy",
                             "jwtClaim",
@@ -188,7 +179,6 @@ function getObjFieldMeta({
                 ),
                 arguments: [...(field.arguments || [])],
                 description: field.description?.value,
-                ...(unique ? { unique } : {}),
             };
 
             if (aliasDirective) {
@@ -290,7 +280,6 @@ function getObjFieldMeta({
 
                 res.relationFields.push(relationField);
                 res.connectionFields.push(connectionField);
-                // }
             } else if (cypherMeta) {
                 const cypherField: CypherField = {
                     ...baseField,
@@ -511,8 +500,6 @@ function getObjFieldMeta({
         }
     ) as ObjectFields;
 }
-
-export default getObjFieldMeta;
 
 function parseSelectableDirective(directive: DirectiveNode | undefined): SelectableOptions {
     const defaultArguments = {

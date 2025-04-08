@@ -43,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/4477", () => {
             }
 
             type ${Service} @node {
-                collection: ${Collection} @relationship(type: "HAS_SERVICE", direction: IN)
+                collection: [${Collection}!]! @relationship(type: "HAS_SERVICE", direction: IN)
             }
         `;
 
@@ -84,8 +84,12 @@ describe("https://github.com/neo4j/graphql/issues/4477", () => {
                 ${Brand.plural} {
                     name
                     services(where: { collectionAggregate: { count_EQ: 1 } }) {
-                        collectionAggregate {
-                            count
+                        collectionConnection {
+                            aggregate {
+                                count {
+                                    nodes
+                                }
+                            }
                         }
                     }
                 }
@@ -101,13 +105,21 @@ describe("https://github.com/neo4j/graphql/issues/4477", () => {
                     name: "brand1",
                     services: [
                         {
-                            collectionAggregate: {
-                                count: 1,
+                            collectionConnection: {
+                                aggregate: {
+                                    count: {
+                                        nodes: 1,
+                                    },
+                                },
                             },
                         },
                         {
-                            collectionAggregate: {
-                                count: 1,
+                            collectionConnection: {
+                                aggregate: {
+                                    count: {
+                                        nodes: 1,
+                                    },
+                                },
                             },
                         },
                     ],
@@ -116,8 +128,12 @@ describe("https://github.com/neo4j/graphql/issues/4477", () => {
                     name: "brand2",
                     services: [
                         {
-                            collectionAggregate: {
-                                count: 1,
+                            collectionConnection: {
+                                aggregate: {
+                                    count: {
+                                        nodes: 1,
+                                    },
+                                },
                             },
                         },
                     ],

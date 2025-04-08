@@ -347,12 +347,14 @@ describe("Related Fields", () => {
                 id: ID!
                 firstName: String!
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address: [${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city }")
             }
         `;
 
-        const fullNameResolver = ({ firstName, lastName, address }) => `${firstName} ${lastName} from ${address.city}`;
+        const fullNameResolver = ({ firstName, lastName, address }) => {
+            return `${firstName} ${lastName} from ${address[0].city}`;
+        };
 
         const resolvers = {
             [User.name]: {
@@ -379,11 +381,7 @@ describe("Related Fields", () => {
         expect(result.data as any).toEqual({
             [User.plural]: [
                 {
-                    fullName: fullNameResolver({
-                        firstName: userInput1.firstName,
-                        lastName: userInput1.lastName,
-                        address: { city: addressInput1.city },
-                    }),
+                    fullName: "First Last from some city",
                 },
             ],
         });
@@ -405,7 +403,7 @@ describe("Related Fields", () => {
                 id: ID!
                 firstName: String!
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address: [${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city } doesNotExist")
             }
         `;
@@ -444,7 +442,7 @@ describe("Related Fields", () => {
                 id: ID!
                 firstName: String!
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address: [${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city doesNotExist }")
             }
         `;
@@ -483,12 +481,13 @@ describe("Related Fields", () => {
                 id: ID!
                 firstName: String!
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address: [${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city }")
             }
         `;
 
-        const fullNameResolver = ({ firstName, lastName, address }) => `${firstName} ${lastName} from ${address.city}`;
+        const fullNameResolver = ({ firstName, lastName, address }) =>
+            `${firstName} ${lastName} from ${address[0].city}`;
 
         const resolvers = {
             [User.name]: {
@@ -521,11 +520,11 @@ describe("Related Fields", () => {
             [User.plural]: [
                 {
                     id: userInput1.id,
-                    address: addressInput1,
+                    address: [addressInput1],
                     fullName: fullNameResolver({
                         firstName: userInput1.firstName,
                         lastName: userInput1.lastName,
-                        address: { city: addressInput1.city },
+                        address: [{ city: addressInput1.city }],
                     }),
                 },
             ],
@@ -551,12 +550,13 @@ describe("Related Fields", () => {
                 id: ID!
                 firstName: String!
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address:[${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city }")
             }
         `;
 
-        const fullNameResolver = ({ firstName, lastName, address }) => `${firstName} ${lastName} from ${address.city}`;
+        const fullNameResolver = ({ firstName, lastName, address }) =>
+            `${firstName} ${lastName} from ${address[0].city}`;
 
         const resolvers = {
             [User.name]: {
@@ -589,20 +589,20 @@ describe("Related Fields", () => {
             [User.plural]: expect.toIncludeSameMembers([
                 {
                     id: userInput1.id,
-                    address: addressInput1,
+                    address: [addressInput1],
                     fullName: fullNameResolver({
                         firstName: userInput1.firstName,
                         lastName: userInput1.lastName,
-                        address: { city: addressInput1.city },
+                        address: [{ city: addressInput1.city }],
                     }),
                 },
                 {
                     id: userInput2.id,
-                    address: addressInput2,
+                    address: [addressInput2],
                     fullName: fullNameResolver({
                         firstName: userInput2.firstName,
                         lastName: userInput2.lastName,
-                        address: { city: addressInput2.city },
+                        address: [{ city: addressInput2.city }],
                     }),
                 },
             ]),
@@ -628,12 +628,13 @@ describe("Related Fields", () => {
                 id: ID!
                 firstName: String!
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address: [${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName address { city } lastName")
             }
         `;
 
-        const fullNameResolver = ({ firstName, lastName, address }) => `${firstName} ${lastName} from ${address.city}`;
+        const fullNameResolver = ({ firstName, lastName, address }) =>
+            `${firstName} ${lastName} from ${address[0].city}`;
 
         const resolvers = {
             [User.name]: {
@@ -666,20 +667,20 @@ describe("Related Fields", () => {
             [User.plural]: expect.toIncludeSameMembers([
                 {
                     id: userInput1.id,
-                    address: addressInput1,
+                    address: [addressInput1],
                     fullName: fullNameResolver({
                         firstName: userInput1.firstName,
                         lastName: userInput1.lastName,
-                        address: { city: addressInput1.city },
+                        address: [{ city: addressInput1.city }],
                     }),
                 },
                 {
                     id: userInput2.id,
-                    address: addressInput2,
+                    address: [addressInput2],
                     fullName: fullNameResolver({
                         firstName: userInput2.firstName,
                         lastName: userInput2.lastName,
-                        address: { city: addressInput2.city },
+                        address: [{ city: addressInput2.city }],
                     }),
                 },
             ]),
@@ -705,23 +706,23 @@ describe("Related Fields", () => {
 
             type ${Address} @node {
                 street: String!
-                city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
+                city: [${City}!]! @relationship(type: "IN_CITY", direction: OUT)
             }
 
             type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address: [${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
             }
         `;
 
         const fullNameResolver = ({ firstName, lastName, address }) => {
-            if (address.city.population) {
-                return `${firstName} ${lastName} from ${address.city.name} with population of ${address.city.population}`;
+            if (address[0].city[0].population) {
+                return `${firstName} ${lastName} from ${address[0].city[0].name} with population of ${address[0].city[0].population}`;
             }
-            return `${firstName} ${lastName} from ${address.city.name}`;
+            return `${firstName} ${lastName} from ${address[0].city[0].name}`;
         };
 
         const resolvers = {
@@ -752,23 +753,27 @@ describe("Related Fields", () => {
         expect(result.data as any).toEqual({
             [User.plural]: expect.toIncludeSameMembers([
                 {
-                    address: {
-                        street: addressInput1.street,
-                    },
+                    address: [
+                        {
+                            street: addressInput1.street,
+                        },
+                    ],
                     fullName: fullNameResolver({
                         firstName: userInput1.firstName,
                         lastName: userInput1.lastName,
-                        address: { city: cityInput1 },
+                        address: [{ city: [cityInput1] }],
                     }),
                 },
                 {
-                    address: {
-                        street: addressInput2.street,
-                    },
+                    address: [
+                        {
+                            street: addressInput2.street,
+                        },
+                    ],
                     fullName: fullNameResolver({
                         firstName: userInput2.firstName,
                         lastName: userInput2.lastName,
-                        address: { city: cityInput2 },
+                        address: [{ city: [cityInput2] }],
                     }),
                 },
             ]),
@@ -796,28 +801,28 @@ describe("Related Fields", () => {
             type ${City} @node {
                 name: String!
                 population: Int
-                state: ${State}! @relationship(type: "IN_STATE", direction: OUT)
+                state: [${State}!]! @relationship(type: "IN_STATE", direction: OUT)
             }
 
             type ${Address} @node {
                 street: String!
-                city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
+                city:[${City}!]! @relationship(type: "IN_CITY", direction: OUT)
             }
 
             type ${User} @node {
                 id: ID!
                 firstName: String!
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address: [${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city { name state { someValue } population } }")
             }
         `;
 
         const fullNameResolver = ({ firstName, lastName, address }) => {
-            if (address.city.population) {
-                return `${firstName} ${lastName} from ${address.city.name} with population of ${address.city.population} with ${address.city.state.someValue}`;
+            if (address[0].city[0].population) {
+                return `${firstName} ${lastName} from ${address[0].city[0].name} with population of ${address[0].city[0].population} with ${address[0].city[0].state[0].someValue}`;
             }
-            return `${firstName} ${lastName} from ${address.city.name}`;
+            return `${firstName} ${lastName} from ${address[0].city[0].name}`;
         };
 
         const resolvers = {
@@ -848,35 +853,47 @@ describe("Related Fields", () => {
         expect(result.data as any).toEqual({
             [User.plural]: expect.toIncludeSameMembers([
                 {
-                    address: {
-                        street: addressInput1.street,
-                    },
+                    address: [
+                        {
+                            street: addressInput1.street,
+                        },
+                    ],
                     fullName: fullNameResolver({
                         firstName: userInput1.firstName,
                         lastName: userInput1.lastName,
-                        address: {
-                            city: {
-                                name: cityInput1.name,
-                                population: cityInput1.population,
-                                state: stateInput,
+                        address: [
+                            {
+                                city: [
+                                    {
+                                        name: cityInput1.name,
+                                        population: cityInput1.population,
+                                        state: [stateInput],
+                                    },
+                                ],
                             },
-                        },
+                        ],
                     }),
                 },
                 {
-                    address: {
-                        street: addressInput2.street,
-                    },
+                    address: [
+                        {
+                            street: addressInput2.street,
+                        },
+                    ],
                     fullName: fullNameResolver({
                         firstName: userInput2.firstName,
                         lastName: userInput2.lastName,
-                        address: {
-                            city: {
-                                name: cityInput2.name,
-                                population: cityInput2.population,
-                                state: stateInput,
+                        address: [
+                            {
+                                city: [
+                                    {
+                                        name: cityInput2.name,
+                                        population: cityInput2.population,
+                                        state: [stateInput],
+                                    },
+                                ],
                             },
-                        },
+                        ],
                     }),
                 },
             ]),
@@ -907,12 +924,12 @@ describe("Related Fields", () => {
 
             type ${Book} @node {
                 title: String!
-                author: ${Author}! @relationship(type: "WROTE", direction: IN)
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
 
             type ${Journal} @node {
                 subject: String!
-                author: ${Author}! @relationship(type: "WROTE", direction: IN)
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
         `;
 
@@ -989,23 +1006,23 @@ describe("Related Fields", () => {
 
             type ${Address} @node {
                 street: String!
-                city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
+                city: [${City}!]! @relationship(type: "IN_CITY", direction: OUT)
             }
 
             type ${User} @node {
                 id: ID!
                 firstName: String! @alias(property: "first")
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address: [${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
             }
         `;
 
         const fullNameResolver = ({ firstName, lastName, address }) => {
-            if (address.city.population) {
-                return `${firstName} ${lastName} from ${address.city.name} with population of ${address.city.population}`;
+            if (address[0].city[0].population) {
+                return `${firstName} ${lastName} from ${address[0].city[0].name} with population of ${address[0].city[0].population}`;
             }
-            return `${firstName} ${lastName} from ${address.city.name}`;
+            return `${firstName} ${lastName} from ${address[0].city[0].name}`;
         };
 
         const resolvers = {
@@ -1037,25 +1054,29 @@ describe("Related Fields", () => {
         expect(result.data as any).toEqual({
             [User.plural]: expect.toIncludeSameMembers([
                 {
-                    address: {
-                        street: addressInput1.street,
-                    },
+                    address: [
+                        {
+                            street: addressInput1.street,
+                        },
+                    ],
                     firstName: userInput1.firstName,
                     fullName: fullNameResolver({
                         firstName: userInput1.firstName,
                         lastName: userInput1.lastName,
-                        address: { city: cityInput1 },
+                        address: [{ city: [cityInput1] }],
                     }),
                 },
                 {
-                    address: {
-                        street: addressInput2.street,
-                    },
+                    address: [
+                        {
+                            street: addressInput2.street,
+                        },
+                    ],
                     firstName: userInput2.firstName,
                     fullName: fullNameResolver({
                         firstName: userInput2.firstName,
                         lastName: userInput2.lastName,
-                        address: { city: cityInput2 },
+                        address: [{ city: [cityInput2] }],
                     }),
                 },
             ]),
@@ -1092,14 +1113,14 @@ describe("Related Fields", () => {
 
             type ${Address} @node {
                 street: String!
-                city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
+                city: [${City}!]! @relationship(type: "IN_CITY", direction: OUT)
             }
 
             type ${User} @node {
                 id: ID!
                 firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }])
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address: [${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
             }
         `;
@@ -1170,14 +1191,14 @@ describe("Related Fields", () => {
 
             type ${Address} @node {
                 street: String!
-                city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
+                city: [${City}!]! @relationship(type: "IN_CITY", direction: OUT)
             }
 
             type ${User} @node {
                 id: ID!
                 firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }])
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address: [${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
             }
         `;
@@ -1250,14 +1271,14 @@ describe("Related Fields", () => {
 
             type ${Address} @node {
                 street: String!
-                city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
+                city: [${City}!]! @relationship(type: "IN_CITY", direction: OUT)
             }
 
             type ${User} @node {
                 id: ID!
                 firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }])
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address: [${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
             }
         `;
@@ -1330,23 +1351,23 @@ describe("Related Fields", () => {
 
             type ${Address} @node {
                 street: String!
-                city: ${City}! @relationship(type: "IN_CITY", direction: OUT)
+                city: [${City}!]! @relationship(type: "IN_CITY", direction: OUT)
             }
 
             type ${User} @node {
                 id: ID!
                 firstName: String! @authorization(validate: [{ when: [BEFORE], where: { node: { id_EQ: "$jwt.sub" } } }])
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address: [${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { city { name population } }")
             }
         `;
 
         const fullNameResolver = ({ firstName, lastName, address }) => {
-            if (address.city.population) {
-                return `${firstName} ${lastName} from ${address.city.name} with population of ${address.city.population}`;
+            if (address[0].city[0].population) {
+                return `${firstName} ${lastName} from ${address[0].city[0].name} with population of ${address[0].city[0].population}`;
             }
-            return `${firstName} ${lastName} from ${address.city.name}`;
+            return `${firstName} ${lastName} from ${address[0].city[0].name}`;
         };
 
         const resolvers = {
@@ -1381,14 +1402,16 @@ describe("Related Fields", () => {
         expect(result.data as any).toEqual({
             [User.plural]: expect.toIncludeSameMembers([
                 {
-                    address: {
-                        street: addressInput1.street,
-                    },
+                    address: [
+                        {
+                            street: addressInput1.street,
+                        },
+                    ],
                     firstName: userInput1.firstName,
                     fullName: fullNameResolver({
                         firstName: userInput1.firstName,
                         lastName: userInput1.lastName,
-                        address: { city: cityInput1 },
+                        address: [{ city: [cityInput1] }],
                     }),
                 },
             ]),
@@ -1610,12 +1633,12 @@ describe("Related Fields", () => {
 
             type ${Book} @node {
                 title: String!
-                author: ${Author}! @relationship(type: "WROTE", direction: IN)
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
 
             type ${Journal} @node {
                 subject: String!
-                author: ${Author}! @relationship(type: "WROTE", direction: IN)
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
         `;
 
@@ -1704,12 +1727,12 @@ describe("Related Fields", () => {
 
             type ${Book} @node {
                 title: String!
-                author: ${Author}! @relationship(type: "WROTE", direction: IN)
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
 
             type ${Journal} @node {
                 subject: String!
-                author: ${Author}! @relationship(type: "WROTE", direction: IN)
+                author: [${Author}!]! @relationship(type: "WROTE", direction: IN)
             }
         `;
 
@@ -2133,13 +2156,13 @@ describe("Related Fields", () => {
                 id: ID!
                 firstName: String!
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address: [${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { houseNumber street }")
             }
         `;
 
         const fullNameResolver = ({ firstName, lastName, address }) =>
-            `${firstName} ${lastName} from ${address.houseNumber} ${address.street} ${address.city}`;
+            `${firstName} ${lastName} from ${address[0].houseNumber} ${address[0].street} ${address[0].city}`;
 
         const resolvers = {
             [User.name]: {
@@ -2169,7 +2192,7 @@ describe("Related Fields", () => {
                     fullName: fullNameResolver({
                         firstName: userInput1.firstName,
                         lastName: userInput1.lastName,
-                        address: { street: addressInput1.street, houseNumber: 12 },
+                        address: [{ street: addressInput1.street, houseNumber: 12 }],
                     }),
                 },
             ],
@@ -2193,13 +2216,13 @@ describe("Related Fields", () => {
                 id: ID!
                 firstName: String!
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address: [${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { houseNumber street }")
             }
         `;
 
         const fullNameResolver = ({ firstName, lastName, address }) =>
-            `${firstName} ${lastName} from ${address.houseNumber} ${address.street}`;
+            `${firstName} ${lastName} from ${address[0].houseNumber} ${address[0].street}`;
 
         const resolvers = {
             [User.name]: {
@@ -2229,7 +2252,7 @@ describe("Related Fields", () => {
                     fullName: fullNameResolver({
                         firstName: userInput1.firstName,
                         lastName: userInput1.lastName,
-                        address: { street: addressInput1.street, houseNumber: 12 },
+                        address: [{ street: addressInput1.street, houseNumber: 12 }],
                     }),
                 },
             ],
@@ -2248,7 +2271,7 @@ describe("Related Fields", () => {
                 id: ID!
                 firstName: String!
                 lastName: String!
-                address: ${Address} @relationship(type: "LIVES_AT", direction: OUT)
+                address: [${Address}!]! @relationship(type: "LIVES_AT", direction: OUT)
                 fullName: String @customResolver(requires: "firstName lastName address { houseNumber street }")
             }
 

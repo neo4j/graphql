@@ -145,7 +145,7 @@ describe("unwind-create field-level auth rules", () => {
             }
             type ${Post} @node {
                 title: String
-                creator: ${User} @relationship(type: "HAS_POST", direction: IN)
+                creator: [${User}!]! @relationship(type: "HAS_POST", direction: IN)
             }
             extend type ${User} {
                 id: ID @authorization(validate: [{ operations: [CREATE], where: { node: { id_EQ: "$jwt.sub" } } }])

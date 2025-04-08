@@ -36,7 +36,6 @@ export const defaultNestedOperations = [
     RelationshipNestedOperationsOption.DELETE,
     RelationshipNestedOperationsOption.CONNECT,
     RelationshipNestedOperationsOption.DISCONNECT,
-    RelationshipNestedOperationsOption.CONNECT_OR_CREATE,
 ];
 
 export const relationshipDirective = new GraphQLDirective({
@@ -50,8 +49,8 @@ export const relationshipDirective = new GraphQLDirective({
         },
         queryDirection: {
             type: RelationshipQueryDirectionEnum,
-            defaultValue: RelationshipQueryDirectionOption.DEFAULT_DIRECTED,
-            description: "Valid and default directions for this relationship.",
+            defaultValue: RelationshipQueryDirectionOption.DIRECTED,
+            description: "Directions to query this relationship.",
         },
         direction: {
             type: new GraphQLNonNull(RelationshipDirectionEnum),

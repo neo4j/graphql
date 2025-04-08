@@ -50,7 +50,7 @@ describe("Cypher Update", () => {
     test("Simple Update", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { id_EQ: "1" }, update: { id_SET: "2" }) {
+                updateMovies(where: { id: { eq: "1" } }, update: { id_SET: "2" }) {
                     movies {
                         id
                     }
@@ -61,7 +61,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             SET this.id = $this_update_id_SET
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -80,10 +81,16 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id_EQ: "1" }
+                    where: { id: { eq: "1" } }
                     update: {
                         actors: [
-                            { where: { node: { name_EQ: "old name" } }, update: { node: { name_SET: "new name" } } }
+                            {
+                                # where: { node: { name: { eq: "old name" } } }
+                                update: {
+                                    where: { node: { name: { eq: "old name" } } }
+                                    node: { name_SET: "new name" }
+                                }
+                            }
                         ]
                     }
                 ) {
@@ -97,7 +104,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -120,14 +128,16 @@ describe("Cypher Update", () => {
                         \\"update\\": {
                             \\"actors\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name_EQ\\": \\"old name\\"
-                                        }
-                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"name_SET\\": \\"new name\\"
+                                        },
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"name\\": {
+                                                    \\"eq\\": \\"old name\\"
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -144,18 +154,20 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id_EQ: "1" }
+                    where: { id: { eq: "1" } }
                     update: {
                         actors: [
                             {
-                                where: { node: { name_EQ: "old actor name" } }
                                 update: {
+                                    where: { node: { name: { eq: "old actor name" } } }
                                     node: {
                                         name_SET: "new actor name"
                                         movies: [
                                             {
-                                                where: { node: { id_EQ: "old movie title" } }
-                                                update: { node: { title_SET: "new movie title" } }
+                                                update: {
+                                                    where: { node: { id: { eq: "old movie title" } } }
+                                                    node: { title_SET: "new movie title" }
+                                                }
                                             }
                                         ]
                                     }
@@ -174,7 +186,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -207,28 +220,32 @@ describe("Cypher Update", () => {
                         \\"update\\": {
                             \\"actors\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name_EQ\\": \\"old actor name\\"
-                                        }
-                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"name_SET\\": \\"new actor name\\",
                                             \\"movies\\": [
                                                 {
-                                                    \\"where\\": {
-                                                        \\"node\\": {
-                                                            \\"id_EQ\\": \\"old movie title\\"
-                                                        }
-                                                    },
                                                     \\"update\\": {
                                                         \\"node\\": {
                                                             \\"title_SET\\": \\"new movie title\\"
+                                                        },
+                                                        \\"where\\": {
+                                                            \\"node\\": {
+                                                                \\"id\\": {
+                                                                    \\"eq\\": \\"old movie title\\"
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }
                                             ]
+                                        },
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"name\\": {
+                                                    \\"eq\\": \\"old actor name\\"
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -245,8 +262,8 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id_EQ: "1" }
-                    update: { actors: { connect: [{ where: { node: { name_EQ: "Daniel" } } }] } }
+                    where: { id: { eq: "1" } }
+                    update: { actors: { connect: [{ where: { node: { name: { eq: "Daniel" } } } }] } }
                 ) {
                     movies {
                         id
@@ -258,7 +275,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -272,7 +290,7 @@ describe("Cypher Update", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors0_connect0_node
-            			MERGE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
+            			CREATE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
             		}
             	}
             WITH this, this_actors0_connect0_node
@@ -294,12 +312,12 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id_EQ: "1" }
+                    where: { id: { eq: "1" } }
                     update: {
                         actors: {
                             connect: [
-                                { where: { node: { name_EQ: "Daniel" } } }
-                                { where: { node: { name_EQ: "Darrell" } } }
+                                { where: { node: { name: { eq: "Daniel" } } } }
+                                { where: { node: { name: { eq: "Darrell" } } } }
                             ]
                         }
                     }
@@ -314,7 +332,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -328,7 +347,7 @@ describe("Cypher Update", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors0_connect0_node
-            			MERGE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
+            			CREATE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
             		}
             	}
             WITH this, this_actors0_connect0_node
@@ -346,7 +365,7 @@ describe("Cypher Update", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors0_connect1_node
-            			MERGE (this)<-[this_actors0_connect1_relationship:ACTED_IN]-(this_actors0_connect1_node)
+            			CREATE (this)<-[this_actors0_connect1_relationship:ACTED_IN]-(this_actors0_connect1_node)
             		}
             	}
             WITH this, this_actors0_connect1_node
@@ -369,8 +388,8 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id_EQ: "1" }
-                    update: { actors: { disconnect: [{ where: { node: { name_EQ: "Daniel" } } }] } }
+                    where: { id: { eq: "1" } }
+                    update: { actors: { disconnect: [{ where: { node: { name: { eq: "Daniel" } } } }] } }
                 ) {
                     movies {
                         id
@@ -382,7 +401,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -413,7 +433,9 @@ describe("Cypher Update", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"name_EQ\\": \\"Daniel\\"
+                                                    \\"name\\": {
+                                                        \\"eq\\": \\"Daniel\\"
+                                                    }
                                                 }
                                             }
                                         }
@@ -432,12 +454,12 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id_EQ: "1" }
+                    where: { id: { eq: "1" } }
                     update: {
                         actors: {
                             disconnect: [
-                                { where: { node: { name_EQ: "Daniel" } } }
-                                { where: { node: { name_EQ: "Darrell" } } }
+                                { where: { node: { name: { eq: "Daniel" } } } }
+                                { where: { node: { name: { eq: "Darrell" } } } }
                             ]
                         }
                     }
@@ -452,7 +474,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -497,14 +520,18 @@ describe("Cypher Update", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"name_EQ\\": \\"Daniel\\"
+                                                    \\"name\\": {
+                                                        \\"eq\\": \\"Daniel\\"
+                                                    }
                                                 }
                                             }
                                         },
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"name_EQ\\": \\"Darrell\\"
+                                                    \\"name\\": {
+                                                        \\"eq\\": \\"Darrell\\"
+                                                    }
                                                 }
                                             }
                                         }
@@ -523,7 +550,7 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateActors(
-                    where: { name_EQ: "Dan" }
+                    where: { name: { eq: "Dan" } }
                     update: { movies: { create: [{ node: { id: "dan_movie_id", title: "The Story of Beer" } }] } }
                 ) {
                     actors {
@@ -540,7 +567,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.name = $param0
             WITH this
             CREATE (this_movies0_create0_node:Movie)
@@ -551,6 +579,7 @@ describe("Cypher Update", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
+                WITH DISTINCT update_this1
                 WITH update_this1 { .id, .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
@@ -571,7 +600,7 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateActors(
-                    where: { name_EQ: "Dan" }
+                    where: { name: { eq: "Dan" } }
                     update: { movies: { create: [{ node: { id: "dan_movie_id", title: "The Story of Beer" } }] } }
                 ) {
                     actors {
@@ -588,7 +617,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.name = $param0
             WITH this
             CREATE (this_movies0_create0_node:Movie)
@@ -599,6 +629,7 @@ describe("Cypher Update", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
+                WITH DISTINCT update_this1
                 WITH update_this1 { .id, .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
@@ -619,7 +650,7 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateActors(
-                    where: { name_EQ: "Dan" }
+                    where: { name: { eq: "Dan" } }
                     update: {
                         movies: {
                             create: [
@@ -643,7 +674,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.name = $param0
             WITH this
             CREATE (this_movies0_create0_node:Movie)
@@ -658,6 +690,7 @@ describe("Cypher Update", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
+                WITH DISTINCT update_this1
                 WITH update_this1 { .id, .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
@@ -680,10 +713,12 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id_EQ: "1" }
+                    where: { id: { eq: "1" } }
                     update: {
                         actors: {
-                            delete: { where: { node: { name_EQ: "Actor to delete" }, edge: { screenTime_EQ: 60 } } }
+                            delete: {
+                                where: { node: { name: { eq: "Actor to delete" } }, edge: { screenTime: { eq: 60 } } }
+                            }
                         }
                     }
                 ) {
@@ -697,7 +732,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -731,12 +767,16 @@ describe("Cypher Update", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"name_EQ\\": \\"Actor to delete\\"
+                                                    \\"name\\": {
+                                                        \\"eq\\": \\"Actor to delete\\"
+                                                    }
                                                 },
                                                 \\"edge\\": {
-                                                    \\"screenTime_EQ\\": {
-                                                        \\"low\\": 60,
-                                                        \\"high\\": 0
+                                                    \\"screenTime\\": {
+                                                        \\"eq\\": {
+                                                            \\"low\\": 60,
+                                                            \\"high\\": 0
+                                                        }
                                                     }
                                                 }
                                             }
@@ -756,12 +796,14 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id_EQ: "1" }
+                    where: { id: { eq: "1" } }
                     update: {
                         actors: {
-                            where: { node: { name_EQ: "Actor to update" } }
-                            update: { node: { name_SET: "Updated name" } }
-                            delete: { where: { node: { name_EQ: "Actor to delete" } } }
+                            update: {
+                                where: { node: { name: { eq: "Actor to update" } } }
+                                node: { name_SET: "Updated name" }
+                            }
+                            delete: { where: { node: { name: { eq: "Actor to delete" } } } }
                         }
                     }
                 ) {
@@ -775,7 +817,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -811,21 +854,25 @@ describe("Cypher Update", () => {
                         \\"update\\": {
                             \\"actors\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name_EQ\\": \\"Actor to update\\"
-                                        }
-                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"name_SET\\": \\"Updated name\\"
+                                        },
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"name\\": {
+                                                    \\"eq\\": \\"Actor to update\\"
+                                                }
+                                            }
                                         }
                                     },
                                     \\"delete\\": [
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"name_EQ\\": \\"Actor to delete\\"
+                                                    \\"name\\": {
+                                                        \\"eq\\": \\"Actor to delete\\"
+                                                    }
                                                 }
                                             }
                                         }
@@ -844,8 +891,8 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id_EQ: "1" }
-                    update: { actors: { delete: { where: { node: { name_EQ: "Actor to delete" } } } } }
+                    where: { id: { eq: "1" } }
+                    update: { actors: { delete: { where: { node: { name: { eq: "Actor to delete" } } } } } }
                 ) {
                     movies {
                         id
@@ -857,7 +904,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -887,7 +935,9 @@ describe("Cypher Update", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"name_EQ\\": \\"Actor to delete\\"
+                                                    \\"name\\": {
+                                                        \\"eq\\": \\"Actor to delete\\"
+                                                    }
                                                 }
                                             }
                                         }
@@ -906,12 +956,12 @@ describe("Cypher Update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id_EQ: "1" }
+                    where: { id: { eq: "1" } }
                     update: {
                         actors: {
                             delete: {
-                                where: { node: { name_EQ: "Actor to delete" } }
-                                delete: { movies: { where: { node: { id_EQ: "2" } } } }
+                                where: { node: { name: { eq: "Actor to delete" } } }
+                                delete: { movies: { where: { node: { id: { eq: "2" } } } } }
                             }
                         }
                     }
@@ -926,7 +976,8 @@ describe("Cypher Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -969,7 +1020,9 @@ describe("Cypher Update", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"name_EQ\\": \\"Actor to delete\\"
+                                                    \\"name\\": {
+                                                        \\"eq\\": \\"Actor to delete\\"
+                                                    }
                                                 }
                                             },
                                             \\"delete\\": {
@@ -977,7 +1030,9 @@ describe("Cypher Update", () => {
                                                     {
                                                         \\"where\\": {
                                                             \\"node\\": {
-                                                                \\"id_EQ\\": \\"2\\"
+                                                                \\"id\\": {
+                                                                    \\"eq\\": \\"2\\"
+                                                                }
                                                             }
                                                         }
                                                     }

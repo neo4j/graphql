@@ -58,30 +58,30 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
                 roles: [String]
             }
             type ${User.name} @authorization(validate: [{ where: { node: { userId_EQ: "$jwt.id" } }, operations: [READ] }]) @node {
-                userId: String! @unique
+                userId: String!
                 adminAccess: [${Tenant.name}!]! @relationship(type: "ADMIN_IN", direction: OUT)
             }
     
             type ${Tenant.name} @authorization(validate: [{ where: { node: { admins_SOME: { userId_EQ: "$jwt.id" } } } }]) @node {
                 id: ID! @id
-                settings: ${Settings.name}! @relationship(type: "VEHICLECARD_OWNER", direction: IN)
+                settings: [${Settings.name}!]! @relationship(type: "VEHICLECARD_OWNER", direction: IN)
                 admins: [${User.name}!]! @relationship(type: "ADMIN_IN", direction: IN)
             }
     
-            type ${Settings.name} @authorization(validate: [{ where: { node: { tenant: { admins_SOME: { userId_EQ: "$jwt.id" } } } } }]) @node {
+            type ${Settings.name} @authorization(validate: [{ where: { node: { tenant_SOME: { admins_SOME: { userId_EQ: "$jwt.id" } } } } }]) @node {
                 id: ID! @id
                 openingDays: [${OpeningDay.name}!]!  @relationship(type: "VALID_GARAGES", direction: OUT)
-                myWorkspace: ${MyWorkspace.name}! @relationship(type: "HAS_WORKSPACE_SETTINGS", direction: OUT)
-                tenant: ${Tenant.name}! @relationship(type: "VEHICLECARD_OWNER", direction: OUT)
+                myWorkspace: [${MyWorkspace.name}!]! @relationship(type: "HAS_WORKSPACE_SETTINGS", direction: OUT)
+                tenant: [${Tenant.name}!]! @relationship(type: "VEHICLECARD_OWNER", direction: OUT)
             }
     
             type ${OpeningDay.name}
                 @node
                 @authorization(
-                    validate: [{ where: { node: { settings: { tenant: { admins_SOME: { userId_EQ: "$jwt.id" } } } } } }]
+                    validate: [{ where: { node: { settings_SOME: { tenant_SOME: { admins_SOME: { userId_EQ: "$jwt.id" } } } } } }]
                 ) {
                 id: ID! @id
-                settings: ${Settings.name} @relationship(type: "VALID_GARAGES", direction: IN)
+                settings: [${Settings.name}!]! @relationship(type: "VALID_GARAGES", direction: IN)
                 open: [${OpeningHoursInterval.name}!]! @relationship(type: "HAS_OPEN_INTERVALS", direction: OUT)
             }
     
@@ -89,11 +89,11 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
                 @node
                 @authorization(
                     validate: [
-                        { where: { node: { openingDay: { settings: { tenant: { admins_SOME: { userId_EQ: "$jwt.id" } } } } } } }
+                        { where: { node: { openingDay_SOME: { settings_SOME: { tenant_SOME: { admins_SOME: { userId_EQ: "$jwt.id" } } } } } } }
                     ]
                 ) {
                 name: String
-                openingDay: ${OpeningDay.name}! @relationship(type: "HAS_OPEN_INTERVALS", direction: IN)
+                openingDay: [${OpeningDay.name}!]! @relationship(type: "HAS_OPEN_INTERVALS", direction: IN)
             }
             
             type ${MyWorkspace.name}
@@ -103,13 +103,13 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
                         {
                             where: {
                                 node: {
-                                    settings: { tenant: { admins_SOME: { userId_EQ: "$jwt.id" } } }
+                                    settings_SOME: { tenant_SOME: { admins_SOME: { userId_EQ: "$jwt.id" } } }
                                 }
                             }
                         }
                     ]
                 ) {
-                settings: ${Settings.name}!
+                settings: [${Settings.name}!]!
                     @relationship(type: "HAS_WORKSPACE_SETTINGS", direction: IN)
                 workspace: String
                 updatedBy: String

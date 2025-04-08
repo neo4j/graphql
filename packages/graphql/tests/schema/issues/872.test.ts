@@ -27,7 +27,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
         const typeDefs = gql`
             type Movie @node {
                 title: String!
-                id: ID! @id @unique
+                id: ID! @id
             }
 
             type Actor @node {
@@ -50,16 +50,14 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type Actor {
-              movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-              moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
               name: String!
             }
 
             type Actor2 {
-              movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): Actor2MovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-              moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [Actor2MoviesConnectionSort!], where: Actor2MoviesConnectionWhere): Actor2MoviesConnection!
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              moviesConnection(after: String, first: Int, sort: [Actor2MoviesConnectionSort!], where: Actor2MoviesConnectionWhere): Actor2MoviesConnection!
               name: String!
             }
 
@@ -69,11 +67,6 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type Actor2AggregateNode {
-              name: StringAggregateSelection!
-            }
-
-            type Actor2AggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -96,13 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               node: Actor2MovieMoviesNodeAggregateSelection
             }
 
-            type Actor2MovieMoviesAggregationSelection {
-              count: Int!
-              node: Actor2MovieMoviesNodeAggregateSelection
-            }
-
             type Actor2MovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!
             }
 
@@ -110,7 +97,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               AND: [Actor2MoviesAggregateInput!]
               NOT: Actor2MoviesAggregateInput
               OR: [Actor2MoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -120,20 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             input Actor2MoviesConnectFieldInput {
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
               where: MovieConnectWhere
-            }
-
-            input Actor2MoviesConnectOrCreateFieldInput {
-              onCreate: Actor2MoviesConnectOrCreateFieldInputOnCreate!
-              where: MovieConnectOrCreateWhere!
-            }
-
-            input Actor2MoviesConnectOrCreateFieldInputOnCreate {
-              node: MovieOnCreateInput!
             }
 
             type Actor2MoviesConnection {
@@ -141,6 +115,37 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               edges: [Actor2MoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input Actor2MoviesConnectionAggregateInput {
+              AND: [Actor2MoviesConnectionAggregateInput!]
+              NOT: Actor2MoviesConnectionAggregateInput
+              OR: [Actor2MoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: Actor2MoviesNodeAggregationWhereInput
+            }
+
+            input Actor2MoviesConnectionFilters {
+              \\"\\"\\"
+              Filter Actor2s by aggregating results on related Actor2MoviesConnections
+              \\"\\"\\"
+              aggregate: Actor2MoviesConnectionAggregateInput
+              \\"\\"\\"
+              Return Actor2s where all of the related Actor2MoviesConnections match this filter
+              \\"\\"\\"
+              all: Actor2MoviesConnectionWhere
+              \\"\\"\\"
+              Return Actor2s where none of the related Actor2MoviesConnections match this filter
+              \\"\\"\\"
+              none: Actor2MoviesConnectionWhere
+              \\"\\"\\"
+              Return Actor2s where one of the related Actor2MoviesConnections match this filter
+              \\"\\"\\"
+              single: Actor2MoviesConnectionWhere
+              \\"\\"\\"
+              Return Actor2s where some of the related Actor2MoviesConnections match this filter
+              \\"\\"\\"
+              some: Actor2MoviesConnectionWhere
             }
 
             input Actor2MoviesConnectionSort {
@@ -168,7 +173,6 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input Actor2MoviesFieldInput {
               connect: [Actor2MoviesConnectFieldInput!]
-              connectOrCreate: [Actor2MoviesConnectOrCreateFieldInput!] @deprecated(reason: \\"The connectOrCreate operation is deprecated and will be removed\\")
               create: [Actor2MoviesCreateFieldInput!]
             }
 
@@ -176,31 +180,22 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               AND: [Actor2MoviesNodeAggregationWhereInput!]
               NOT: Actor2MoviesNodeAggregationWhereInput
               OR: [Actor2MoviesNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              title_AVERAGE_LENGTH_EQUAL: Float
-              title_AVERAGE_LENGTH_GT: Float
-              title_AVERAGE_LENGTH_GTE: Float
-              title_AVERAGE_LENGTH_LT: Float
-              title_AVERAGE_LENGTH_LTE: Float
-              title_LONGEST_LENGTH_EQUAL: Int
-              title_LONGEST_LENGTH_GT: Int
-              title_LONGEST_LENGTH_GTE: Int
-              title_LONGEST_LENGTH_LT: Int
-              title_LONGEST_LENGTH_LTE: Int
-              title_SHORTEST_LENGTH_EQUAL: Int
-              title_SHORTEST_LENGTH_GT: Int
-              title_SHORTEST_LENGTH_GTE: Int
-              title_SHORTEST_LENGTH_LT: Int
-              title_SHORTEST_LENGTH_LTE: Int
+              title: StringScalarAggregationFilters
+              title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { eq: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gte: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { eq: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { eq: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type Actor2MoviesRelationship {
@@ -215,21 +210,10 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input Actor2MoviesUpdateFieldInput {
               connect: [Actor2MoviesConnectFieldInput!]
-              connectOrCreate: [Actor2MoviesConnectOrCreateFieldInput!]
               create: [Actor2MoviesCreateFieldInput!]
               delete: [Actor2MoviesDeleteFieldInput!]
               disconnect: [Actor2MoviesDisconnectFieldInput!]
               update: Actor2MoviesUpdateConnectionInput
-              where: Actor2MoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"Actor2MoviesUpdateConnectionInput\\\\\\" instead\\")
-            }
-
-            input Actor2Options {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more Actor2Sort objects to sort Actor2s by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [Actor2Sort!]
             }
 
             \\"\\"\\"
@@ -241,45 +225,47 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input Actor2UpdateInput {
               movies: [Actor2MoviesUpdateFieldInput!]
-              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              name_SET: String
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input Actor2Where {
               AND: [Actor2Where!]
               NOT: Actor2Where
               OR: [Actor2Where!]
-              moviesAggregate: Actor2MoviesAggregateInput
+              movies: MovieRelationshipFilters
+              moviesAggregate: Actor2MoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
+              moviesConnection: Actor2MoviesConnectionFilters
               \\"\\"\\"
               Return Actor2s where all of the related Actor2MoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: Actor2MoviesConnectionWhere
+              moviesConnection_ALL: Actor2MoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actor2s where none of the related Actor2MoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: Actor2MoviesConnectionWhere
+              moviesConnection_NONE: Actor2MoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actor2s where one of the related Actor2MoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: Actor2MoviesConnectionWhere
+              moviesConnection_SINGLE: Actor2MoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actor2s where some of the related Actor2MoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: Actor2MoviesConnectionWhere
+              moviesConnection_SOME: Actor2MoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actor2s where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Actor2s where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Actor2s where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actor2s where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type Actor2sConnection {
@@ -295,11 +281,6 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type ActorAggregateNode {
-              name: StringAggregateSelection!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
               name: StringAggregateSelection!
             }
 
@@ -322,13 +303,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               node: ActorMovieMoviesNodeAggregateSelection
             }
 
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
-              node: ActorMovieMoviesNodeAggregateSelection
-            }
-
             type ActorMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!
             }
 
@@ -336,7 +311,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               AND: [ActorMoviesAggregateInput!]
               NOT: ActorMoviesAggregateInput
               OR: [ActorMoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -346,20 +321,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             input ActorMoviesConnectFieldInput {
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
               where: MovieConnectWhere
-            }
-
-            input ActorMoviesConnectOrCreateFieldInput {
-              onCreate: ActorMoviesConnectOrCreateFieldInputOnCreate!
-              where: MovieConnectOrCreateWhere!
-            }
-
-            input ActorMoviesConnectOrCreateFieldInputOnCreate {
-              node: MovieOnCreateInput!
             }
 
             type ActorMoviesConnection {
@@ -367,6 +329,35 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
+            input ActorMoviesConnectionFilters {
+              \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+              aggregate: ActorMoviesConnectionAggregateInput
+              \\"\\"\\"
+              Return Actors where all of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              all: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              none: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              single: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              some: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesConnectionSort {
@@ -394,7 +385,6 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input ActorMoviesFieldInput {
               connect: [ActorMoviesConnectFieldInput!]
-              connectOrCreate: [ActorMoviesConnectOrCreateFieldInput!] @deprecated(reason: \\"The connectOrCreate operation is deprecated and will be removed\\")
               create: [ActorMoviesCreateFieldInput!]
             }
 
@@ -402,31 +392,22 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               AND: [ActorMoviesNodeAggregationWhereInput!]
               NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              title_AVERAGE_LENGTH_EQUAL: Float
-              title_AVERAGE_LENGTH_GT: Float
-              title_AVERAGE_LENGTH_GTE: Float
-              title_AVERAGE_LENGTH_LT: Float
-              title_AVERAGE_LENGTH_LTE: Float
-              title_LONGEST_LENGTH_EQUAL: Int
-              title_LONGEST_LENGTH_GT: Int
-              title_LONGEST_LENGTH_GTE: Int
-              title_LONGEST_LENGTH_LT: Int
-              title_LONGEST_LENGTH_LTE: Int
-              title_SHORTEST_LENGTH_EQUAL: Int
-              title_SHORTEST_LENGTH_GT: Int
-              title_SHORTEST_LENGTH_GTE: Int
-              title_SHORTEST_LENGTH_LT: Int
-              title_SHORTEST_LENGTH_LTE: Int
+              title: StringScalarAggregationFilters
+              title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { eq: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gte: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lt: ... } } }' instead.\\")
+              title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { eq: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gte: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lt: ... } } }' instead.\\")
+              title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { eq: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gte: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lt: ... } } }' instead.\\")
+              title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type ActorMoviesRelationship {
@@ -441,21 +422,10 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input ActorMoviesUpdateFieldInput {
               connect: [ActorMoviesConnectFieldInput!]
-              connectOrCreate: [ActorMoviesConnectOrCreateFieldInput!]
               create: [ActorMoviesCreateFieldInput!]
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorMoviesUpdateConnectionInput\\\\\\" instead\\")
-            }
-
-            input ActorOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [ActorSort!]
             }
 
             \\"\\"\\"
@@ -467,45 +437,47 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
 
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
-              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              name_SET: String
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              moviesAggregate: ActorMoviesAggregateInput
+              movies: MovieRelationshipFilters
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
+              moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: ActorMoviesConnectionWhere
+              moviesConnection_ALL: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: ActorMoviesConnectionWhere
+              moviesConnection_NONE: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: ActorMoviesConnectionWhere
+              moviesConnection_SINGLE: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: ActorMoviesConnectionWhere
+              moviesConnection_SOME: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -513,6 +485,11 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type Count {
@@ -555,9 +532,33 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Movie {
@@ -571,18 +572,7 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type MovieAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              title: StringAggregateSelection!
-            }
-
-            input MovieConnectOrCreateWhere {
-              node: MovieUniqueWhere!
             }
 
             input MovieConnectWhere {
@@ -598,17 +588,15 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               node: Movie!
             }
 
-            input MovieOnCreateInput {
-              title: String!
-            }
-
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"
@@ -619,32 +607,27 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
               title: SortDirection
             }
 
-            input MovieUniqueWhere {
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_EQ: ID
-            }
-
             input MovieUpdateInput {
-              title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              title_SET: String
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -675,14 +658,11 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             }
 
             type Query {
-              actor2s(limit: Int, offset: Int, options: Actor2Options @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [Actor2Sort!], where: Actor2Where): [Actor2!]!
-              actor2sAggregate(where: Actor2Where): Actor2AggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actor2sConnection\\\\\\" instead\\")
+              actor2s(limit: Int, offset: Int, sort: [Actor2Sort!], where: Actor2Where): [Actor2!]!
               actor2sConnection(after: String, first: Int, sort: [Actor2Sort!], where: Actor2Where): Actor2sConnection!
-              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
+              actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -697,6 +677,27 @@ describe("https://github.com/neo4j/graphql/issues/872", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActor2sMutationResponse {

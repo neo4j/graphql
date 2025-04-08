@@ -478,7 +478,7 @@ describe("@vector directive - Auth", () => {
 
         const query = /* GraphQL */ `
             query($vector: [Float!]) {
-                ${queryName}(vector: $vector, where: { node: { name: "${person2.name}" } }) {
+                ${queryName}(vector: $vector, where: { node: { name_EQ: "${person2.name}" } }) {
                     edges {
                         score
                         node {

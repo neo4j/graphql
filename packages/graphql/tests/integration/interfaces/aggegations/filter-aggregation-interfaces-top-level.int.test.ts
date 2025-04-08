@@ -69,49 +69,11 @@ describe("Top-level filter interface query fields", () => {
     test("top level count", async () => {
         const query = `
             query {
-                productionsAggregate(where: { title_EQ: "The Show" }) {
-                    count
-                }
-            }
-        `;
-
-        const token = createBearerToken(secret, {});
-        const queryResult = await testHelper.executeGraphQLWithToken(query, token);
-        expect(queryResult.errors).toBeUndefined();
-        expect(queryResult.data).toEqual({
-            productionsAggregate: {
-                count: 1,
-            },
-        });
-    });
-
-    test("top level count with logical operator", async () => {
-        const query = `
-            query {
-                productionsAggregate(where: { OR: [{title_EQ: "The Show"}, {title_EQ: "A Movie"}] }) {
-                    count
-                }
-            }
-        `;
-
-        const token = createBearerToken(secret, {});
-        const queryResult = await testHelper.executeGraphQLWithToken(query, token);
-        expect(queryResult.errors).toBeUndefined();
-        expect(queryResult.data).toEqual({
-            productionsAggregate: {
-                count: 2,
-            },
-        });
-    });
-
-    test("top level count and string fields", async () => {
-        const query = `
-            query {
-                productionsAggregate(where: { title_STARTS_WITH: "The" }) {
-                    count
-                    title {
-                        longest
-                        shortest
+                productionsConnection(where: { title_EQ: "The Show" }) {
+                    aggregate {
+                        count {
+                            nodes
+                        }
                     }
                 }
             }
@@ -121,11 +83,77 @@ describe("Top-level filter interface query fields", () => {
         const queryResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
-            productionsAggregate: {
-                count: 2,
-                title: {
-                    longest: "The Matrix is a very interesting movie: The Documentary",
-                    shortest: "The Show",
+            productionsConnection: {
+                aggregate: {
+                    count: {
+                        nodes: 1,
+                    },
+                },
+            },
+        });
+    });
+
+    test("top level count with logical operator", async () => {
+        const query = `
+            query {
+                productionsConnection(where: { OR: [{title_EQ: "The Show"}, {title_EQ: "A Movie"}] }) {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, {});
+        const queryResult = await testHelper.executeGraphQLWithToken(query, token);
+        expect(queryResult.errors).toBeUndefined();
+        expect(queryResult.data).toEqual({
+            productionsConnection: {
+                aggregate: {
+                    count: {
+                        nodes: 2,
+                    },
+                },
+            },
+        });
+    });
+
+    test("top level count and string fields", async () => {
+        const query = `
+            query {
+                productionsConnection(where: { title_STARTS_WITH: "The" }) {
+                aggregate {
+                    count {
+                        nodes
+                    }
+                    node {
+                        title {
+                            longest
+                            shortest
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const token = createBearerToken(secret, {});
+        const queryResult = await testHelper.executeGraphQLWithToken(query, token);
+        expect(queryResult.errors).toBeUndefined();
+        expect(queryResult.data).toEqual({
+            productionsConnection: {
+                aggregate: {
+                    count: {
+                        nodes: 2,
+                    },
+                    node: {
+                        title: {
+                            longest: "The Matrix is a very interesting movie: The Documentary",
+                            shortest: "The Show",
+                        },
+                    },
                 },
             },
         });

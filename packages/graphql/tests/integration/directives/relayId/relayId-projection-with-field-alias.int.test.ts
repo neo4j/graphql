@@ -35,19 +35,19 @@ describe("RelayId projection with GraphQL field alias", () => {
     beforeAll(async () => {
         const typeDefs = `
             type ${Movie} @node {
-                dbId: ID! @id @unique @relayId
+                dbId: ID! @id @relayId
                 title: String!
-                genre: ${Genre}! @relationship(type: "HAS_GENRE", direction: OUT)
+                genre: [${Genre}!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type ${Genre} @node {
-                dbId: ID! @id @unique @relayId
+                dbId: ID! @id @relayId
                 name: String!
             }
 
             type ${Actor} @node {
-                dbId: ID! @id @unique @relayId
+                dbId: ID! @id @relayId
                 name: String!
             }
         `;
@@ -102,11 +102,13 @@ describe("RelayId projection with GraphQL field alias", () => {
                 testAliasID: expect.toBeString(),
                 testAliasDBID: expect.toBeString(),
                 title: "Movie1",
-                genre: {
-                    testAliasID: expect.toBeString(),
-                    testAliasDBID: expect.toBeString(),
-                    name: "Action",
-                },
+                genre: [
+                    {
+                        testAliasID: expect.toBeString(),
+                        testAliasDBID: expect.toBeString(),
+                        name: "Action",
+                    },
+                ],
                 actors: [
                     {
                         testAliasID: expect.toBeString(),
@@ -121,8 +123,8 @@ describe("RelayId projection with GraphQL field alias", () => {
         expect(dbId).toBe(movieDatabaseID);
         expect(id).toBe(toGlobalId({ typeName: Movie.name, field: "dbId", id: dbId }));
 
-        const genreId = (queryResult.data as any)?.[Movie.plural][0].genre?.testAliasID;
-        const genreDbId = (queryResult.data as any)?.[Movie.plural][0].genre?.testAliasDBID;
+        const genreId = (queryResult.data as any)?.[Movie.plural][0].genre[0]?.testAliasID;
+        const genreDbId = (queryResult.data as any)?.[Movie.plural][0].genre[0]?.testAliasDBID;
         expect(genreDbId).toBe(genreDatabaseID);
         expect(genreId).toBe(toGlobalId({ typeName: Genre.name, field: "dbId", id: genreDbId }));
 
@@ -170,11 +172,13 @@ describe("RelayId projection with GraphQL field alias", () => {
                         testAliasID: expect.toBeString(),
                         testAliasDBID: expect.toBeString(),
                         title: "Movie1",
-                        genre: {
-                            testAliasID: expect.toBeString(),
-                            testAliasDBID: expect.toBeString(),
-                            name: "Action",
-                        },
+                        genre: [
+                            {
+                                testAliasID: expect.toBeString(),
+                                testAliasDBID: expect.toBeString(),
+                                name: "Action",
+                            },
+                        ],
                         actors: [
                             {
                                 testAliasID: expect.toBeString(),
@@ -192,9 +196,9 @@ describe("RelayId projection with GraphQL field alias", () => {
         expect(dbId).toBe(movieDatabaseID);
         expect(id).toBe(toGlobalId({ typeName: Movie.name, field: "dbId", id: dbId }));
 
-        const genreId = (connectionQueryResult.data as any)?.[Movie.operations.connection]?.edges[0]?.node?.genre
+        const genreId = (connectionQueryResult.data as any)?.[Movie.operations.connection]?.edges[0]?.node?.genre[0]
             ?.testAliasID;
-        const genreDbId = (connectionQueryResult.data as any)?.[Movie.operations.connection]?.edges[0]?.node?.genre
+        const genreDbId = (connectionQueryResult.data as any)?.[Movie.operations.connection]?.edges[0]?.node?.genre[0]
             ?.testAliasDBID;
         expect(genreDbId).toBe(genreDatabaseID);
         expect(genreId).toBe(toGlobalId({ typeName: Genre.name, field: "dbId", id: genreDbId }));

@@ -26,7 +26,7 @@ describe("200", () => {
     test("Preserve schema array non null", async () => {
         const typeDefs = gql`
             type Category @node {
-                categoryId: ID! @id @unique
+                categoryId: ID! @id
                 name: String!
                 description: String! @default(value: "")
                 exampleImageLocations: [String!]
@@ -61,14 +61,6 @@ describe("200", () => {
             }
 
             type CategoryAggregateNode {
-              categoryId: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              description: StringAggregateSelection!
-              name: StringAggregateSelection!
-            }
-
-            type CategoryAggregateSelection {
-              categoryId: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              count: Int!
               description: StringAggregateSelection!
               name: StringAggregateSelection!
             }
@@ -84,15 +76,6 @@ describe("200", () => {
               node: Category!
             }
 
-            input CategoryOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more CategorySort objects to sort Categories by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [CategorySort!]
-            }
-
             \\"\\"\\"
             Fields to sort Categories by. The order in which sorts are applied is not guaranteed when specifying many fields in one CategorySort object.
             \\"\\"\\"
@@ -103,41 +86,41 @@ describe("200", () => {
             }
 
             input CategoryUpdateInput {
-              description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              description_SET: String
-              exampleImageLocations: [String!] @deprecated(reason: \\"Please use the explicit _SET field\\")
-              exampleImageLocations_POP: Int
-              exampleImageLocations_PUSH: [String!]
-              exampleImageLocations_SET: [String!]
-              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              name_SET: String
+              description: StringScalarMutations
+              description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+              exampleImageLocations: ListStringMutations
+              exampleImageLocations_POP: Int @deprecated(reason: \\"Please use the generic mutation 'exampleImageLocations: { pop: ... } }' instead.\\")
+              exampleImageLocations_PUSH: [String!] @deprecated(reason: \\"Please use the generic mutation 'exampleImageLocations: { push: ... } }' instead.\\")
+              exampleImageLocations_SET: [String!] @deprecated(reason: \\"Please use the generic mutation 'exampleImageLocations: { set: ... } }' instead.\\")
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input CategoryWhere {
               AND: [CategoryWhere!]
               NOT: CategoryWhere
               OR: [CategoryWhere!]
-              categoryId: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              categoryId_CONTAINS: ID
-              categoryId_ENDS_WITH: ID
-              categoryId_EQ: ID
-              categoryId_IN: [ID!]
-              categoryId_STARTS_WITH: ID
-              description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              description_CONTAINS: String
-              description_ENDS_WITH: String
-              description_EQ: String
-              description_IN: [String!]
-              description_STARTS_WITH: String
-              exampleImageLocations: [String!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              exampleImageLocations_EQ: [String!]
-              exampleImageLocations_INCLUDES: String
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              categoryId: IDScalarFilters
+              categoryId_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter categoryId: { contains: ... }\\")
+              categoryId_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter categoryId: { endsWith: ... }\\")
+              categoryId_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter categoryId: { eq: ... }\\")
+              categoryId_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter categoryId: { in: ... }\\")
+              categoryId_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter categoryId: { startsWith: ... }\\")
+              description: StringScalarFilters
+              description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+              description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+              description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+              description_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+              description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+              exampleImageLocations: StringListFilters
+              exampleImageLocations_EQ: [String!] @deprecated(reason: \\"Please use the relevant generic filter exampleImageLocations: { eq: ... }\\")
+              exampleImageLocations_INCLUDES: String @deprecated(reason: \\"Please use the relevant generic filter exampleImageLocations: { includes: ... }\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type Count {
@@ -165,9 +148,20 @@ describe("200", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"Mutations for a list for String\\"\\"\\"
+            input ListStringMutations {
+              pop: Int
+              push: [String!]
+              set: [String!]
             }
 
             type Mutation {
@@ -185,8 +179,7 @@ describe("200", () => {
             }
 
             type Query {
-              categories(limit: Int, offset: Int, options: CategoryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [CategorySort!], where: CategoryWhere): [Category!]!
-              categoriesAggregate(where: CategoryWhere): CategoryAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"categoriesConnection\\\\\\" instead\\")
+              categories(limit: Int, offset: Int, sort: [CategorySort!], where: CategoryWhere): [Category!]!
               categoriesConnection(after: String, first: Int, sort: [CategorySort!], where: CategoryWhere): CategoriesConnection!
             }
 
@@ -201,6 +194,26 @@ describe("200", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String list filters\\"\\"\\"
+            input StringListFilters {
+              eq: [String!]
+              includes: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateCategoriesMutationResponse {

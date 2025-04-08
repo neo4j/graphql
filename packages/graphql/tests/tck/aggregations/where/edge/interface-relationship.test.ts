@@ -79,7 +79,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1)
@@ -119,7 +120,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this0:Actor)
                 CALL {
                     WITH this0
@@ -173,30 +175,37 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this0:Actor)
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:ACTED_IN]->(this2)
                     WHERE (this2:Movie OR this2:Series)
-                    RETURN (count(this2) <= $param0 AND avg(size(this1.role)) < $param1) AS var3
+                    RETURN count(this2) <= $param0 AS var3
+                }
+                CALL {
+                    WITH this0
+                    MATCH (this0)-[this4:ACTED_IN]->(this5)
+                    WHERE (this5:Movie OR this5:Series)
+                    RETURN avg(size(this4.role)) < $param1 AS var6
                 }
                 WITH *
-                WHERE var3 = true
+                WHERE (var3 = true AND var6 = true)
                 WITH this0 { .name, __resolveType: \\"Actor\\", __id: id(this0) } AS this0
                 RETURN this0 AS this
                 UNION
-                MATCH (this4:Cameo)
+                MATCH (this7:Cameo)
                 CALL {
-                    WITH this4
-                    MATCH (this4)-[this5:APPEARED_IN]->(this6)
-                    WHERE (this6:Movie OR this6:Series)
-                    RETURN count(this6) <= $param2 AS var7
+                    WITH this7
+                    MATCH (this7)-[this8:APPEARED_IN]->(this9)
+                    WHERE (this9:Movie OR this9:Series)
+                    RETURN count(this9) <= $param2 AS var10
                 }
                 WITH *
-                WHERE var7 = true
-                WITH this4 { .name, __resolveType: \\"Cameo\\", __id: id(this4) } AS this4
-                RETURN this4 AS this
+                WHERE var10 = true
+                WITH this7 { .name, __resolveType: \\"Cameo\\", __id: id(this7) } AS this7
+                RETURN this7 AS this
             }
             WITH this
             RETURN this AS this"

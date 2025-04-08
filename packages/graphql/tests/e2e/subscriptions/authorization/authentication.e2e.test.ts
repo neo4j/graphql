@@ -45,7 +45,7 @@ describe("Subscription authentication", () => {
             typeMovie = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} @node @subscription {
                 title: String!
             }
 
@@ -171,7 +171,7 @@ describe("Subscription authentication", () => {
             typeMovie = testHelper.createUniqueType("Movie");
 
             const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} @node @subscription {
                 title: String!
             }
 
@@ -266,7 +266,7 @@ describe("Subscription authentication", () => {
                 permissions: [String!]!
             }
 
-            type ${typeMovie} @authentication(operations: [SUBSCRIBE]) @node {
+            type ${typeMovie} @authentication(operations: [SUBSCRIBE]) @node @subscription {
                 title: String! @authentication(operations: [READ], jwt: { permissions_INCLUDES: "r" })
             }
             `;
@@ -377,7 +377,7 @@ describe("Subscription authentication", () => {
         beforeAll(async () => {
             typeMovie = testHelper.createUniqueType("Movie");
             const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} @node @subscription {
                 title: String! 
                 name: String @authentication(operations: [READ])
             }
@@ -488,7 +488,7 @@ describe("Subscription authentication", () => {
             beforeAll(async () => {
                 typeMovie = testHelper.createUniqueType("Movie");
                 const typeDefs = `
-                type ${typeMovie} @node {
+                type ${typeMovie} @node @subscription {
                     title: String! 
                     name: String 
                 }
@@ -579,7 +579,7 @@ describe("Subscription authentication", () => {
                 typeMovie = testHelper.createUniqueType("Movie");
 
                 const typeDefs = `
-                type ${typeMovie} @node {
+                type ${typeMovie} @node @subscription {
                     title: String!
                 }
     
@@ -684,12 +684,12 @@ describe("Subscription authentication", () => {
                 actors: [${typeActor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                 directors: [Director!]! @relationship(type: "DIRECTED", properties: "Directed", direction: IN)
                 reviewers: [Reviewer!]! @relationship(type: "REVIEWED", properties: "Review", direction: IN)
-                imdbId: Int @unique
+                imdbId: Int 
             } 
             
             type ${typeActor} @authentication(operations: [READ]) @node {
                 name: String!
-                id: Int @unique
+                id: Int
                 movies: [${typeMovie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
             
@@ -708,8 +708,8 @@ describe("Subscription authentication", () => {
             type ${typePerson} implements Reviewer  @node {
                 name: String! 
                 reputation: Int! @authentication(operations: [READ])
-                id: Int @unique 
-                reviewerId: Int @unique @authentication(operations: [READ])
+                id: Int  
+                reviewerId: Int @authentication(operations: [READ])
                 movies: [${typeMovie}!]! @relationship(type: "REVIEWED", direction: OUT, properties: "Review")
             }
             
@@ -724,8 +724,9 @@ describe("Subscription authentication", () => {
             interface Reviewer {
                 reputation: Int! 
                 reviewerId: Int
-
             }
+
+            extend schema @subscription
         `;
 
             const neoSchema = await testHelper.initNeo4jGraphQL({
@@ -1008,7 +1009,7 @@ describe("Subscription authentication", () => {
                                 title_EQ: "Matrix",
                             }
                             update: {
-                                title: "Matrix 2"
+                                title_SET: "Matrix 2"
                             }
                         ) {
                             ${typeMovie.plural} {
@@ -1096,7 +1097,7 @@ describe("Subscription authentication", () => {
                                 title_EQ: "Matrix",
                             }
                             update: {
-                                title: "Matrix 2"
+                                title_SET: "Matrix 2"
                             }
                         ) {
                             ${typeMovie.plural} {
@@ -1184,7 +1185,7 @@ describe("Subscription authentication", () => {
                                 title_EQ: "Matrix",
                             }
                             update: {
-                                title: "Matrix 2"
+                                title_SET: "Matrix 2"
                             }
                         ) {
                             ${typeMovie.plural} {
@@ -1264,7 +1265,7 @@ describe("Subscription authentication", () => {
                                 title_EQ: "Matrix",
                             }
                             update: {
-                                title: "Matrix 2"
+                                title_SET: "Matrix 2"
                             }
                         ) {
                             ${typeMovie.plural} {
@@ -1340,7 +1341,7 @@ describe("Subscription authentication", () => {
                                 name_EQ: "Keanu"
                             },
                             update: {
-                                name: "Keanu Reeves"
+                                name_SET: "Keanu Reeves"
                             }
                         ) {
                             info {
@@ -1977,7 +1978,7 @@ describe("Subscription authentication", () => {
                                 name_EQ: "Bob"
                             }
                             update: {
-                                name: "John"
+                                name_SET: "John"
                             }
                         ) {
                             ${typePerson.plural} {
@@ -2067,7 +2068,7 @@ describe("Subscription authentication", () => {
                                 name_EQ: "Bob"
                             }
                             update: {
-                                name: "John"
+                                name_SET: "John"
                             }
                         ) {
                             ${typePerson.plural} {
@@ -2158,7 +2159,7 @@ describe("Subscription authentication", () => {
                                 name_EQ: "Bob"
                             }
                             update: {
-                                name: "John"
+                                name_SET: "John"
                             }
                         ) {
                             ${typePerson.plural} {
@@ -2239,7 +2240,7 @@ describe("Subscription authentication", () => {
                                 url_EQ: "/bob"
                             }
                             update: {
-                               url: "/john"
+                               url_SET: "/john"
                             }
                         ) {
                             ${typeInfluencer.plural} {
@@ -2820,7 +2821,7 @@ describe("Subscription authentication", () => {
         beforeAll(async () => {
             typeMovie = testHelper.createUniqueType("Movie");
             const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} @node @subscription {
                 title: String!
             }
 
@@ -2912,7 +2913,7 @@ describe("Subscription authentication", () => {
         beforeAll(async () => {
             typeMovie = testHelper.createUniqueType("Movie");
             const typeDefs = `
-            type ${typeMovie} @node {
+            type ${typeMovie} @node @subscription {
                 title: String!
             }
 

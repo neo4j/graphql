@@ -36,8 +36,8 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
         const typeDefs = gql`
             type ${riskType.name} @node {
                 code: String!
-                ownedBy: ${teamType.name} @relationship(type: "OWNS_RISK", direction: IN)
-                mitigationState: [${mitigationStateType.name}] 
+                ownedBy: [${teamType.name}!]! @relationship(type: "OWNS_RISK", direction: IN)
+                mitigationState: [${mitigationStateType.name}!] 
             }
         
             type ${teamType.name} @node {
@@ -73,16 +73,24 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
         const query = `
             query getAggreationOnTeams {
                 stats: ${teamType.plural} {
-                    accepted: ownsRisksAggregate(
-                      where: { mitigationState_INCLUDES: Accepted }
+                    accepted: ownsRisksConnection(
+                      where: { node: { mitigationState: { includes: Accepted } } }
                     ) {
-                        count
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
 
-                    identified: ownsRisksAggregate(
-                        where: { mitigationState_INCLUDES: Identified }
+                    identified: ownsRisksConnection(
+                        where: { node: { mitigationState: { includes: Identified } } }
                     ) {
-                        count
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -90,18 +98,25 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
         const res = await testHelper.executeGraphQL(query);
 
         expect(res.errors).toBeUndefined();
-        const expectedReturn = {
+        expect(res.data).toEqual({
             stats: [
                 {
                     accepted: {
-                        count: 1,
+                        aggregate: {
+                            count: {
+                                nodes: 1,
+                            },
+                        },
                     },
                     identified: {
-                        count: 0,
+                        aggregate: {
+                            count: {
+                                nodes: 0,
+                            },
+                        },
                     },
                 },
             ],
-        };
-        expect(res.data).toEqual(expectedReturn);
+        });
     });
 });

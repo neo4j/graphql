@@ -13,8 +13,15 @@ query SimpleQueryWithRelationship {
     }
 }
 
+# https://github.com/neo4j/graphql/issues/187
+query QueryWhere {
+    movies(where: { actors_SOME: { name: { eq: "Keanu Reeves" } } }) {
+        released
+    }
+}
+
 query SimpleQueryWithNestedWhere {
-    movies(where: { actors_SOME: { name: "Keanu Reeves" } }) {
+    movies(where: { actors_SOME: { name: { eq: "Keanu Reeves" } } }) {
         title
         actors {
             name
@@ -59,30 +66,16 @@ query Nested {
     }
 }
 
-query NestedWithFilter {
-    movies {
-        actors(where: { born_GT: 1000 }) {
-            name
-            movies(where: { title_CONTAINS: "Shark" }) {
-                title
-                actors {
-                    name
-                }
-            }
-        }
-    }
-}
-
 query OrFilterOnRelationships {
     movies(
         where: {
             OR: [
-                { actors_SOME: { born: 1997 } }
-                { actors_SOME: { born: 1998 } }
-                { actors_SOME: { born: 1999 } }
-                { actors_SOME: { born: 1956 } }
-                { actors_SOME: { born: 1975 } }
-                { actors_SOME: { born: 1976 } }
+                { actors_SOME: { born: { eq: 1997 } } }
+                { actors_SOME: { born: { eq: 1998 } } }
+                { actors_SOME: { born: { eq: 1999 } } }
+                { actors_SOME: { born: { eq: 1956 } } }
+                { actors_SOME: { born: { eq: 1975 } } }
+                { actors_SOME: { born: { eq: 1976 } } }
             ]
         }
     ) {
@@ -98,12 +91,12 @@ query OrFilterOnRelationshipsAndNested {
     movies(
         where: {
             OR: [
-                { actors_SOME: { born: 1997 } }
-                { actors_SOME: { born: 1998 } }
-                { actors_SOME: { born: 1956 } }
-                { directors_SOME: { movies_SOME: { title: "Matrix" } } }
-                { directors_SOME: { movies_SOME: { title: "foo" } } }
-                { directors_SOME: { movies_SOME: { title: "bar" } } }
+                { actors_SOME: { born: { eq: 1997 } } }
+                { actors_SOME: { born: { eq: 1998 } } }
+                { actors_SOME: { born: { eq: 1956 } } }
+                { directors_SOME: { movies_SOME: { title: { eq: "Matrix" } } } }
+                { directors_SOME: { movies_SOME: { title: { eq: "foo" } } } }
+                { directors_SOME: { movies_SOME: { title: { eq: "bar" } } } }
             ]
         }
     ) {
@@ -129,7 +122,9 @@ query QueryWithNestedIn {
 query NestedConnectionWhere {
     movies(
         where: {
-            actorsConnection_SOME: { node: { name: "Hugo Weaving", moviesConnection_NONE: { node: { title: "No" } } } }
+            actorsConnection_SOME: {
+                node: { name: { eq: "Hugo Weaving" }, moviesConnection_NONE: { node: { title: { eq: "No" } } } }
+            }
         }
     ) {
         title
@@ -141,9 +136,12 @@ query DeeplyNestedConnectionWhere {
         where: {
             actorsConnection_SOME: {
                 node: {
-                    name: "Hugo Weaving"
+                    name: { eq: "Hugo Weaving" }
                     moviesConnection_NONE: {
-                        node: { title: "The Matrix", directorsConnection_SOME: { node: { name_CONTAINS: "Lana" } } }
+                        node: {
+                            title: { eq: "The Matrix" }
+                            directorsConnection_SOME: { node: { name_CONTAINS: "Lana" } }
+                        }
                     }
                 }
             }
@@ -162,8 +160,8 @@ query DeeplyNestedWithRelationshipFilters {
                 actors_SOME: {
                     name_CONTAINS: "i"
                     movies_SOME: {
-                        NOT: { title: "non-existent" }
-                        actors_SOME: { name_CONTAINS: "i", movies_NONE: { title: "The Matrix" } }
+                        NOT: { title: { eq: "non-existent" } }
+                        actors_SOME: { name_CONTAINS: "i", movies_NONE: { title: { eq: "The Matrix" } } }
                     }
                 }
             }
@@ -204,23 +202,27 @@ query DeeplyNestedWithRelationshipSingleFilters_skip {
 
 query Fulltext {
     movieTaglineFulltextQuery(phrase: "the real world") {
-        movie {
-            title
-            tagline
+        edges {
+            node {
+                title
+                tagline
+            }
+            score
         }
-        score
     }
 }
 
 query FulltextWithNestedQuery {
     movieTaglineFulltextQuery(phrase: "the real world") {
-        movie {
-            title
-            tagline
-            actors {
-                name
+        edges {
+            node {
+                title
+                tagline
+                actors {
+                    name
+                }
             }
+            score
         }
-        score
     }
 }

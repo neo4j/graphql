@@ -60,7 +60,7 @@ describe("aggregations-where-count", () => {
 
         const query = /* GraphQL */ `
                 {
-                    ${Post.plural}(where: { title_EQ: "hello world", likesAggregate: { count: 2 } }) {
+                    ${Post.plural}(where: { title_EQ: "hello world", likesAggregate: { count_EQ: 2 } }) {
                         title
                         likes {
                             name

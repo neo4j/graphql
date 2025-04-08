@@ -31,13 +31,13 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
 
         const typeDefs = `
         type ${testUser.name} @node {
-            id: ID! @id @unique @alias(property: "_id")
+            id: ID! @id @alias(property: "_id")
             name: String!
-            activeOrganization: ${testOrganization.name} @relationship(type: "ACTIVELY_MANAGING", direction: OUT)
+            activeOrganization: [${testOrganization.name}!]! @relationship(type: "ACTIVELY_MANAGING", direction: OUT)
         }
 
         type ${testOrganization.name} @node {
-            id: ID! @id @unique @alias(property: "_id")
+            id: ID! @id @alias(property: "_id")
             name: String!
         }
         `;

@@ -33,7 +33,7 @@ describe("Interfaces", () => {
 
             type Movie implements MovieNode @node {
                 id: ID
-                nodes: [MovieNode]
+                nodes: [MovieNode!]
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
                     @cypher(
@@ -52,6 +52,11 @@ describe("Interfaces", () => {
             "schema {
               query: Query
               mutation: Mutation
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type Count {
@@ -79,32 +84,40 @@ describe("Interfaces", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Movie implements MovieNode {
               customQuery: [Movie]
               id: ID
-              movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): MovieMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-              moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
-              nodes: [MovieNode]
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
+              nodes: [MovieNode!]
             }
 
             type MovieAggregate {
               count: Count!
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input MovieConnectInput {
@@ -133,35 +146,51 @@ describe("Interfaces", () => {
               node: Movie!
             }
 
-            type MovieMovieMoviesAggregationSelection {
-              count: Int!
-              node: MovieMovieMoviesNodeAggregateSelection
-            }
-
-            type MovieMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
             input MovieMoviesAggregateInput {
               AND: [MovieMoviesAggregateInput!]
               NOT: MovieMoviesAggregateInput
               OR: [MovieMoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: MovieMoviesNodeAggregationWhereInput
             }
 
             input MovieMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
               where: MovieConnectWhere
+            }
+
+            input MovieMoviesConnectionAggregateInput {
+              AND: [MovieMoviesConnectionAggregateInput!]
+              NOT: MovieMoviesConnectionAggregateInput
+              OR: [MovieMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
+            input MovieMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter Movies by aggregating results on related MovieNodeMoviesConnections
+              \\"\\"\\"
+              aggregate: MovieMoviesConnectionAggregateInput
+              \\"\\"\\"
+              Return Movies where all of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              all: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              none: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              single: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              some: MovieNodeMoviesConnectionWhere
             }
 
             input MovieMoviesCreateFieldInput {
@@ -171,22 +200,6 @@ describe("Interfaces", () => {
             input MovieMoviesFieldInput {
               connect: [MovieMoviesConnectFieldInput!]
               create: [MovieMoviesCreateFieldInput!]
-            }
-
-            input MovieMoviesNodeAggregationWhereInput {
-              AND: [MovieMoviesNodeAggregationWhereInput!]
-              NOT: MovieMoviesNodeAggregationWhereInput
-              OR: [MovieMoviesNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input MovieMoviesUpdateConnectionInput {
@@ -200,28 +213,17 @@ describe("Interfaces", () => {
               delete: [MovieNodeMoviesDeleteFieldInput!]
               disconnect: [MovieNodeMoviesDisconnectFieldInput!]
               update: MovieMoviesUpdateConnectionInput
-              where: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             interface MovieNode {
               customQuery: [Movie]
               id: ID
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
             }
 
             type MovieNodeAggregate {
               count: Count!
-              node: MovieNodeAggregateNode!
-            }
-
-            type MovieNodeAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type MovieNodeAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type MovieNodeEdge {
@@ -237,19 +239,48 @@ describe("Interfaces", () => {
               AND: [MovieNodeMoviesAggregateInput!]
               NOT: MovieNodeMoviesAggregateInput
               OR: [MovieNodeMoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: MovieNodeMoviesNodeAggregationWhereInput
             }
 
             type MovieNodeMoviesConnection {
               edges: [MovieNodeMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input MovieNodeMoviesConnectionAggregateInput {
+              AND: [MovieNodeMoviesConnectionAggregateInput!]
+              NOT: MovieNodeMoviesConnectionAggregateInput
+              OR: [MovieNodeMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
+            input MovieNodeMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter MovieNodes by aggregating results on related MovieNodeMoviesConnections
+              \\"\\"\\"
+              aggregate: MovieNodeMoviesConnectionAggregateInput
+              \\"\\"\\"
+              Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              all: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return MovieNodes where none of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              none: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return MovieNodes where one of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              single: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return MovieNodes where some of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              some: MovieNodeMoviesConnectionWhere
             }
 
             input MovieNodeMoviesConnectionSort {
@@ -273,34 +304,9 @@ describe("Interfaces", () => {
               where: MovieNodeMoviesConnectionWhere
             }
 
-            input MovieNodeMoviesNodeAggregationWhereInput {
-              AND: [MovieNodeMoviesNodeAggregationWhereInput!]
-              NOT: MovieNodeMoviesNodeAggregationWhereInput
-              OR: [MovieNodeMoviesNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
             type MovieNodeMoviesRelationship {
               cursor: String!
               node: Movie!
-            }
-
-            input MovieNodeOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieNodeSort objects to sort MovieNodes by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieNodeSort!]
             }
 
             \\"\\"\\"
@@ -314,39 +320,40 @@ describe("Interfaces", () => {
               AND: [MovieNodeWhere!]
               NOT: MovieNodeWhere
               OR: [MovieNodeWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              moviesAggregate: MovieNodeMoviesAggregateInput
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              movies: MovieRelationshipFilters
+              moviesAggregate: MovieNodeMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
+              moviesConnection: MovieNodeMoviesConnectionFilters
               \\"\\"\\"
               Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: MovieNodeMoviesConnectionWhere
+              moviesConnection_ALL: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return MovieNodes where none of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: MovieNodeMoviesConnectionWhere
+              moviesConnection_NONE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return MovieNodes where one of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
+              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return MovieNodes where some of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: MovieNodeMoviesConnectionWhere
+              moviesConnection_SOME: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return MovieNodes where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return MovieNodes where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return MovieNodes where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return MovieNodes where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               typename: [MovieNodeImplementation!]
-              typename_IN: [MovieNodeImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
             }
 
             type MovieNodesConnection {
@@ -356,13 +363,15 @@ describe("Interfaces", () => {
               totalCount: Int!
             }
 
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"
@@ -373,8 +382,8 @@ describe("Interfaces", () => {
             }
 
             input MovieUpdateInput {
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               movies: [MovieMoviesUpdateFieldInput!]
             }
 
@@ -382,42 +391,44 @@ describe("Interfaces", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              customQuery: MovieWhere
+              customQuery: MovieRelationshipFilters
               customQuery_ALL: MovieWhere
               customQuery_NONE: MovieWhere
               customQuery_SINGLE: MovieWhere
               customQuery_SOME: MovieWhere
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              moviesAggregate: MovieMoviesAggregateInput
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              movies: MovieRelationshipFilters
+              moviesAggregate: MovieMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
+              moviesConnection: MovieMoviesConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: MovieNodeMoviesConnectionWhere
+              moviesConnection_ALL: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: MovieNodeMoviesConnectionWhere
+              moviesConnection_NONE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
+              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: MovieNodeMoviesConnectionWhere
+              moviesConnection_SOME: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
             }
 
             type MoviesConnection {
@@ -442,11 +453,9 @@ describe("Interfaces", () => {
             }
 
             type Query {
-              movieNodes(limit: Int, offset: Int, options: MovieNodeOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieNodeSort!], where: MovieNodeWhere): [MovieNode!]!
-              movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"movieNodesConnection\\\\\\" instead\\")
+              movieNodes(limit: Int, offset: Int, sort: [MovieNodeSort!], where: MovieNodeWhere): [MovieNode!]!
               movieNodesConnection(after: String, first: Int, sort: [MovieNodeSort!], where: MovieNodeWhere): MovieNodesConnection!
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -486,7 +495,7 @@ describe("Interfaces", () => {
 
             type Movie implements MovieNode @node {
                 id: ID
-                nodes: [MovieNode]
+                nodes: [MovieNode!]
                 movies: [Movie!]! @relationship(type: "HAS_MOVIE", direction: OUT)
                 customQuery: [Movie]
                     @cypher(
@@ -508,6 +517,11 @@ describe("Interfaces", () => {
             }
 
             directive @something(something: String) on INTERFACE
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
 
             type Count {
               nodes: Int!
@@ -534,32 +548,40 @@ describe("Interfaces", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Movie implements MovieNode {
               customQuery: [Movie]
               id: ID
-              movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): MovieMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-              moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
-              nodes: [MovieNode]
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
+              nodes: [MovieNode!]
             }
 
             type MovieAggregate {
               count: Count!
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input MovieConnectInput {
@@ -588,35 +610,51 @@ describe("Interfaces", () => {
               node: Movie!
             }
 
-            type MovieMovieMoviesAggregationSelection {
-              count: Int!
-              node: MovieMovieMoviesNodeAggregateSelection
-            }
-
-            type MovieMovieMoviesNodeAggregateSelection {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
             input MovieMoviesAggregateInput {
               AND: [MovieMoviesAggregateInput!]
               NOT: MovieMoviesAggregateInput
               OR: [MovieMoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: MovieMoviesNodeAggregationWhereInput
             }
 
             input MovieMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
               where: MovieConnectWhere
+            }
+
+            input MovieMoviesConnectionAggregateInput {
+              AND: [MovieMoviesConnectionAggregateInput!]
+              NOT: MovieMoviesConnectionAggregateInput
+              OR: [MovieMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
+            input MovieMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter Movies by aggregating results on related MovieNodeMoviesConnections
+              \\"\\"\\"
+              aggregate: MovieMoviesConnectionAggregateInput
+              \\"\\"\\"
+              Return Movies where all of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              all: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              none: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              single: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              some: MovieNodeMoviesConnectionWhere
             }
 
             input MovieMoviesCreateFieldInput {
@@ -626,22 +664,6 @@ describe("Interfaces", () => {
             input MovieMoviesFieldInput {
               connect: [MovieMoviesConnectFieldInput!]
               create: [MovieMoviesCreateFieldInput!]
-            }
-
-            input MovieMoviesNodeAggregationWhereInput {
-              AND: [MovieMoviesNodeAggregationWhereInput!]
-              NOT: MovieMoviesNodeAggregationWhereInput
-              OR: [MovieMoviesNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input MovieMoviesUpdateConnectionInput {
@@ -655,28 +677,17 @@ describe("Interfaces", () => {
               delete: [MovieNodeMoviesDeleteFieldInput!]
               disconnect: [MovieNodeMoviesDisconnectFieldInput!]
               update: MovieMoviesUpdateConnectionInput
-              where: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
             interface MovieNode @something(something: \\"test\\") {
               customQuery: [Movie]
               id: ID
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieNodeMoviesConnectionSort!], where: MovieNodeMoviesConnectionWhere): MovieNodeMoviesConnection!
             }
 
             type MovieNodeAggregate {
               count: Count!
-              node: MovieNodeAggregateNode!
-            }
-
-            type MovieNodeAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type MovieNodeAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             type MovieNodeEdge {
@@ -692,19 +703,48 @@ describe("Interfaces", () => {
               AND: [MovieNodeMoviesAggregateInput!]
               NOT: MovieNodeMoviesAggregateInput
               OR: [MovieNodeMoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: MovieNodeMoviesNodeAggregationWhereInput
             }
 
             type MovieNodeMoviesConnection {
               edges: [MovieNodeMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input MovieNodeMoviesConnectionAggregateInput {
+              AND: [MovieNodeMoviesConnectionAggregateInput!]
+              NOT: MovieNodeMoviesConnectionAggregateInput
+              OR: [MovieNodeMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
+            input MovieNodeMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter MovieNodes by aggregating results on related MovieNodeMoviesConnections
+              \\"\\"\\"
+              aggregate: MovieNodeMoviesConnectionAggregateInput
+              \\"\\"\\"
+              Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              all: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return MovieNodes where none of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              none: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return MovieNodes where one of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              single: MovieNodeMoviesConnectionWhere
+              \\"\\"\\"
+              Return MovieNodes where some of the related MovieNodeMoviesConnections match this filter
+              \\"\\"\\"
+              some: MovieNodeMoviesConnectionWhere
             }
 
             input MovieNodeMoviesConnectionSort {
@@ -728,34 +768,9 @@ describe("Interfaces", () => {
               where: MovieNodeMoviesConnectionWhere
             }
 
-            input MovieNodeMoviesNodeAggregationWhereInput {
-              AND: [MovieNodeMoviesNodeAggregationWhereInput!]
-              NOT: MovieNodeMoviesNodeAggregationWhereInput
-              OR: [MovieNodeMoviesNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
             type MovieNodeMoviesRelationship {
               cursor: String!
               node: Movie!
-            }
-
-            input MovieNodeOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieNodeSort objects to sort MovieNodes by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieNodeSort!]
             }
 
             \\"\\"\\"
@@ -769,39 +784,40 @@ describe("Interfaces", () => {
               AND: [MovieNodeWhere!]
               NOT: MovieNodeWhere
               OR: [MovieNodeWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              moviesAggregate: MovieNodeMoviesAggregateInput
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              movies: MovieRelationshipFilters
+              moviesAggregate: MovieNodeMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
+              moviesConnection: MovieNodeMoviesConnectionFilters
               \\"\\"\\"
               Return MovieNodes where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: MovieNodeMoviesConnectionWhere
+              moviesConnection_ALL: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return MovieNodes where none of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: MovieNodeMoviesConnectionWhere
+              moviesConnection_NONE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return MovieNodes where one of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
+              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return MovieNodes where some of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: MovieNodeMoviesConnectionWhere
+              moviesConnection_SOME: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return MovieNodes where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return MovieNodes where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return MovieNodes where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return MovieNodes where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               typename: [MovieNodeImplementation!]
-              typename_IN: [MovieNodeImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
             }
 
             type MovieNodesConnection {
@@ -811,13 +827,15 @@ describe("Interfaces", () => {
               totalCount: Int!
             }
 
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"
@@ -828,8 +846,8 @@ describe("Interfaces", () => {
             }
 
             input MovieUpdateInput {
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
               movies: [MovieMoviesUpdateFieldInput!]
             }
 
@@ -837,42 +855,44 @@ describe("Interfaces", () => {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              customQuery: MovieWhere
+              customQuery: MovieRelationshipFilters
               customQuery_ALL: MovieWhere
               customQuery_NONE: MovieWhere
               customQuery_SINGLE: MovieWhere
               customQuery_SOME: MovieWhere
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              moviesAggregate: MovieMoviesAggregateInput
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              movies: MovieRelationshipFilters
+              moviesAggregate: MovieMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
+              moviesConnection: MovieMoviesConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: MovieNodeMoviesConnectionWhere
+              moviesConnection_ALL: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: MovieNodeMoviesConnectionWhere
+              moviesConnection_NONE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere
+              moviesConnection_SINGLE: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieNodeMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: MovieNodeMoviesConnectionWhere
+              moviesConnection_SOME: MovieNodeMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
             }
 
             type MoviesConnection {
@@ -897,11 +917,9 @@ describe("Interfaces", () => {
             }
 
             type Query {
-              movieNodes(limit: Int, offset: Int, options: MovieNodeOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieNodeSort!], where: MovieNodeWhere): [MovieNode!]!
-              movieNodesAggregate(where: MovieNodeWhere): MovieNodeAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"movieNodesConnection\\\\\\" instead\\")
+              movieNodes(limit: Int, offset: Int, sort: [MovieNodeSort!], where: MovieNodeWhere): [MovieNode!]!
               movieNodesConnection(after: String, first: Int, sort: [MovieNodeSort!], where: MovieNodeWhere): MovieNodesConnection!
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 

@@ -83,7 +83,8 @@ describe("Cypher -> Connections -> Interfaces", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
@@ -116,7 +117,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             query {
                 actors {
                     name
-                    actedInConnection(where: { node: { title_STARTS_WITH: "The " } }) {
+                    actedInConnection(where: { node: { title: { startsWith: "The " } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -139,7 +140,8 @@ describe("Cypher -> Connections -> Interfaces", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
@@ -179,7 +181,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             query {
                 actors {
                     name
-                    actedInConnection(where: { edge: { screenTime_GT: 60 } }) {
+                    actedInConnection(where: { edge: { screenTime: { gt: 60 } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -202,7 +204,8 @@ describe("Cypher -> Connections -> Interfaces", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
@@ -273,7 +276,8 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Actor)
+                    "CYPHER 5
+                    MATCH (this:Actor)
                     CALL {
                         WITH this
                         CALL {
@@ -336,7 +340,8 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Actor)
+                    "CYPHER 5
+                    MATCH (this:Actor)
                     CALL {
                         WITH this
                         CALL {
@@ -398,7 +403,8 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Actor)
+                    "CYPHER 5
+                    MATCH (this:Actor)
                     CALL {
                         WITH this
                         CALL {
@@ -460,7 +466,8 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Actor)
+                    "CYPHER 5
+                    MATCH (this:Actor)
                     CALL {
                         WITH this
                         CALL {

@@ -16,38 +16,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { GraphQLInt, GraphQLString, type DirectiveNode, type GraphQLResolveInfo } from "graphql";
+import { GraphQLInt, GraphQLNonNull, GraphQLString, type DirectiveNode, type GraphQLResolveInfo } from "graphql";
 import type { Directive, ObjectTypeComposerArgumentConfigMapDefinition, SchemaComposer } from "graphql-compose";
 
 import type { Subgraph } from "../../classes/Subgraph";
 import { DEPRECATED } from "../../constants";
-import { QueryOptions } from "../../graphql/input-objects/QueryOptions";
 import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { ConnectionQueryArgs, Neo4jFeaturesSettings } from "../../types";
-import { DEPRECATE_OPTIONS_ARGUMENT } from "../constants";
-import { addDirectedArgument, getDirectedArgument } from "../directed-argument";
 import { connectionFieldResolver } from "../pagination";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import { withConnectionObjectType } from "./connection-object-type";
 import { makeConnectionWhereInputType, withConnectionSortInputType } from "./connection-where-input";
 import { makeSortInput } from "./sort-and-options-input";
-import { shouldAddDeprecatedFields } from "./utils";
 
 export function augmentObjectOrInterfaceTypeWithRelationshipField({
     relationshipAdapter,
     userDefinedFieldDirectives,
     subgraph,
-    features,
     composer,
+    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     subgraph?: Subgraph | undefined;
-    features?: Neo4jFeaturesSettings;
     composer: SchemaComposer;
+    features: Neo4jFeaturesSettings | undefined;
 }): Record<string, { type: string; description?: string; directives: Directive[]; args?: any }> {
     const fields = {};
     const relationshipField: { type: string; description?: string; directives: Directive[]; args?: any } = {
@@ -71,16 +67,12 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField({
                 ? relationshipAdapter.originalTarget
                 : relationshipAdapter.target;
 
-        const optionsTypeName =
-            relationshipTarget instanceof UnionEntityAdapter
-                ? QueryOptions
-                : relationshipTarget.operations.optionsInputTypeName;
         const whereTypeName = relationshipTarget.operations.whereInputTypeName;
 
         const nodeFieldsArgs = {
             where: whereTypeName,
-            limit: "Int",
-            offset: "Int",
+            limit: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
+            offset: GraphQLInt,
         };
         if (!(relationshipTarget instanceof UnionEntityAdapter)) {
             const sortConfig = makeSortInput({
@@ -92,20 +84,7 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField({
                 nodeFieldsArgs["sort"] = sortConfig.NonNull.List;
             }
         }
-        // SOFT_DEPRECATION: OPTIONS-ARGUMENT
-        if (shouldAddDeprecatedFields(features, "deprecatedOptionsArgument")) {
-            nodeFieldsArgs["options"] = {
-                type: optionsTypeName,
-                directives: [DEPRECATE_OPTIONS_ARGUMENT],
-            };
-        }
 
-        if (relationshipAdapter instanceof RelationshipAdapter) {
-            const directedArg = getDirectedArgument(relationshipAdapter, features);
-            if (directedArg) {
-                nodeFieldsArgs["directed"] = directedArg;
-            }
-        }
         relationshipField.args = nodeFieldsArgs;
     }
 
@@ -127,22 +106,18 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
             (directive) => directive.name.value === DEPRECATED
         )
     );
-    const composeNodeArgs = addDirectedArgument<ObjectTypeComposerArgumentConfigMapDefinition>(
-        {
-            where: makeConnectionWhereInputType({
-                relationshipAdapter,
-                composer: schemaComposer,
-            }),
-            first: {
-                type: GraphQLInt,
-            },
-            after: {
-                type: GraphQLString,
-            },
+    const composeNodeArgs: ObjectTypeComposerArgumentConfigMapDefinition = {
+        where: makeConnectionWhereInputType({
+            relationshipAdapter,
+            composer: schemaComposer,
+        }),
+        first: {
+            type: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
         },
-        relationshipAdapter,
-        features
-    );
+        after: {
+            type: GraphQLString,
+        },
+    };
     const connectionSortITC = withConnectionSortInputType({
         relationshipAdapter,
         composer: schemaComposer,
@@ -164,7 +139,7 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
             resolve: (source: any, args: ConnectionQueryArgs, _ctx: any, info: GraphQLResolveInfo) => {
                 return connectionFieldResolver({
                     connectionFieldName: relationshipAdapter.operations.connectionFieldName,
-                    args,
+                args,
                     info,
                     source,
                 });

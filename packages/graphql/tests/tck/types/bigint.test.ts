@@ -40,7 +40,7 @@ describe("Cypher BigInt", () => {
     test("Querying with native BigInt in AST", async () => {
         const query = /* GraphQL */ `
             query {
-                files(where: { size_EQ: 9223372036854775807 }) {
+                files(where: { size: { eq: 9223372036854775807 } }) {
                     name
                 }
             }
@@ -49,7 +49,8 @@ describe("Cypher BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:File)
+            "CYPHER 5
+            MATCH (this:File)
             WHERE this.size = $param0
             RETURN this { .name } AS this"
         `);
@@ -67,7 +68,7 @@ describe("Cypher BigInt", () => {
     test("Querying with BigInt as string in AST", async () => {
         const query = /* GraphQL */ `
             query {
-                files(where: { size_EQ: "9223372036854775807" }) {
+                files(where: { size: { eq: "9223372036854775807" } }) {
                     name
                 }
             }
@@ -76,7 +77,8 @@ describe("Cypher BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:File)
+            "CYPHER 5
+            MATCH (this:File)
             WHERE this.size = $param0
             RETURN this { .name } AS this"
         `);
@@ -94,7 +96,7 @@ describe("Cypher BigInt", () => {
     test("Querying with BigInt as string in variables", async () => {
         const query = /* GraphQL */ `
             query Files($size: BigInt) {
-                files(where: { size_EQ: $size }) {
+                files(where: { size: { eq: $size } }) {
                     name
                 }
             }
@@ -105,7 +107,8 @@ describe("Cypher BigInt", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:File)
+            "CYPHER 5
+            MATCH (this:File)
             WHERE this.size = $param0
             RETURN this { .name } AS this"
         `);

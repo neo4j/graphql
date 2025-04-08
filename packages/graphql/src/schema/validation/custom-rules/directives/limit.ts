@@ -16,25 +16,108 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import type { DirectiveNode } from "graphql";
-import { DocumentValidationError } from "../utils/document-validation-error";
+
+import type { ASTVisitor, DirectiveNode, InterfaceTypeDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
+import { limitDirective } from "../../../../graphql/directives";
+import { asArray } from "../../../../utils/utils";
+import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import type { AssertionResponse } from "../utils/document-validation-error";
+import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
+import { typeIsANodeType } from "../utils/location-helpers/is-node-type";
 import { parseArgumentToInt } from "../utils/utils";
 
-export function verifyLimit({ directiveNode }: { directiveNode: DirectiveNode }) {
-    const defaultArg = directiveNode.arguments?.find((a) => a.name.value === "default");
-    const maxArg = directiveNode.arguments?.find((a) => a.name.value === "max");
+export function validateLimitDirective(context: Neo4jValidationContext): ASTVisitor {
+    const typeMapWithExtensions = context.typeMapWithExtensions;
+    if (!typeMapWithExtensions) {
+        throw new Error("No typeMapWithExtensions found in the context");
+    }
+    return {
+        InterfaceTypeDefinition(
+            interfaceTypeDefinitionNode: InterfaceTypeDefinitionNode,
+            _key,
+            _parent,
+            _path,
+            _ancestors
+        ) {
+            const { directives } = interfaceTypeDefinitionNode;
+            const objectTypeExtensionNodes = typeMapWithExtensions[interfaceTypeDefinitionNode.name.value]?.extensions;
+            const extensionsDirectives = asArray(objectTypeExtensionNodes).flatMap((extensionNode) => {
+                return extensionNode.directives ?? [];
+            });
+            const allDirectives = [...(directives ?? []), ...extensionsDirectives];
+            const appliedLimitDirective = allDirectives.find(
+                (directive) => directive.name.value === limitDirective.name
+            );
+            if (!appliedLimitDirective) {
+                return;
+            }
+
+            const { isValid, errorMsg, errorPath } = assertValid(() => {
+                assertLimitDirectiveIsValid(appliedLimitDirective);
+            });
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [interfaceTypeDefinitionNode],
+                        path: [interfaceTypeDefinitionNode.name.value, `@${limitDirective.name}`, ...errorPath],
+                        errorMsg,
+                    })
+                );
+            }
+        },
+        ObjectTypeDefinition(objectTypeDefinitionNode: ObjectTypeDefinitionNode, _key, _parent, _path, _ancestors) {
+            const { directives } = objectTypeDefinitionNode;
+            const objectTypeExtensionNodes = typeMapWithExtensions[objectTypeDefinitionNode.name.value]?.extensions;
+            const extensionsDirectives = asArray(objectTypeExtensionNodes).flatMap((extensionNode) => {
+                return extensionNode.directives ?? [];
+            });
+            const allDirectives = [...(directives ?? []), ...extensionsDirectives];
+            const appliedLimitDirective = allDirectives.find(
+                (directive) => directive.name.value === limitDirective.name
+            );
+            if (!appliedLimitDirective) {
+                return;
+            }
+            const { isValid, errorMsg, errorPath } = assertValid(() => {
+                const isValidLocation = typeIsANodeType({ objectTypeDefinitionNode, typeMapWithExtensions });
+                if (!isValidLocation) {
+                    throw new DocumentValidationError(
+                        `Directive "${limitDirective.name}" requires in a type with "@node" or in an interface type`,
+                        []
+                    );
+                }
+                assertLimitDirectiveIsValid(appliedLimitDirective);
+            });
+            if (!isValid) {
+                context.reportError(
+                    createGraphQLError({
+                        nodes: [objectTypeDefinitionNode],
+                        path: [objectTypeDefinitionNode.name.value, `@${limitDirective.name}`, ...errorPath],
+                        errorMsg,
+                    })
+                );
+            }
+        },
+    };
+}
+
+// shared assertion code between limit validation between interface and object types
+function assertLimitDirectiveIsValid(appliedLimitDirective: DirectiveNode): AssertionResponse | undefined {
+    const defaultArg = appliedLimitDirective.arguments?.find((a) => a.name.value === "default");
+    const maxArg = appliedLimitDirective.arguments?.find((a) => a.name.value === "max");
     if (!defaultArg && !maxArg) {
         // nothing to check, fields are optional
         return;
     }
     const defaultLimit = parseArgumentToInt(defaultArg);
     const maxLimit = parseArgumentToInt(maxArg);
+
     if (defaultLimit) {
         const defaultValue = defaultLimit.toNumber();
         // default must be greater than 0
         if (defaultValue <= 0) {
             throw new DocumentValidationError(
-                `@limit.default invalid value: ${defaultValue}. Must be greater than 0.`,
+                `@${limitDirective.name}.default invalid value: ${defaultValue}. Must be greater than 0.`,
                 ["default"]
             );
         }
@@ -43,9 +126,10 @@ export function verifyLimit({ directiveNode }: { directiveNode: DirectiveNode })
         const maxValue = maxLimit.toNumber();
         // max must be greater than 0
         if (maxValue <= 0) {
-            throw new DocumentValidationError(`@limit.max invalid value: ${maxValue}. Must be greater than 0.`, [
-                "max",
-            ]);
+            throw new DocumentValidationError(
+                `@${limitDirective.name}.max invalid value: ${maxValue}. Must be greater than 0.`,
+                ["max"]
+            );
         }
     }
     if (defaultLimit && maxLimit) {
@@ -54,7 +138,7 @@ export function verifyLimit({ directiveNode }: { directiveNode: DirectiveNode })
         // default must be smaller than max
         if (maxLimit < defaultLimit) {
             throw new DocumentValidationError(
-                `@limit.max invalid value: ${maxValue}. Must be greater than limit.default: ${defaultValue}.`,
+                `@${limitDirective.name}.max invalid value: ${maxValue}. Must be greater than limit.default: ${defaultValue}.`,
                 ["max"]
             );
         }

@@ -23,11 +23,9 @@ import type { Annotations } from "../../annotation/Annotation";
 import type { Argument } from "../../argument/Argument";
 import type { Attribute } from "../../attribute/Attribute";
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
-import { ListFiltersAdapter } from "../../attribute/model-adapters/ListFiltersAdapter";
 import type { Entity } from "../../entity/Entity";
 import type { EntityAdapter } from "../../entity/EntityAdapter";
-import { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
-import { InterfaceEntityAdapter } from "../../entity/model-adapters/InterfaceEntityAdapter";
+import type { ConcreteEntityAdapter } from "../../entity/model-adapters/ConcreteEntityAdapter";
 import { UnionEntityAdapter } from "../../entity/model-adapters/UnionEntityAdapter";
 import { getEntityAdapter } from "../../utils/get-entity-adapter";
 import { plural, singular } from "../../utils/string-manipulation";
@@ -35,7 +33,6 @@ import type { NestedOperation, QueryDirection, Relationship, RelationshipDirecti
 import { RelationshipOperations } from "./RelationshipOperations";
 
 export class RelationshipAdapter {
-    private _listFiltersModel: ListFiltersAdapter | undefined;
     public readonly name: string;
     public readonly type: string;
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
@@ -116,15 +113,6 @@ export class RelationshipAdapter {
         }
         return this._operations;
     }
-    public get listFiltersModel(): ListFiltersAdapter | undefined {
-        if (!this._listFiltersModel) {
-            if (!this.isList) {
-                return;
-            }
-            this._listFiltersModel = new ListFiltersAdapter(this);
-        }
-        return this._listFiltersModel;
-    }
 
     public get singular(): string {
         if (!this._singular) {
@@ -156,13 +144,8 @@ export class RelationshipAdapter {
      * @param directed the direction asked during the query, for instance "friends(directed: true)"
      * @returns the direction to use in the CypherBuilder
      **/
-    public getCypherDirection(directed?: boolean): "left" | "right" | "undirected" {
-        if (
-            directed === false ||
-            this.queryDirection === "UNDIRECTED_ONLY" ||
-            this.queryDirection === "UNDIRECTED" ||
-            (directed === undefined && this.queryDirection === "DEFAULT_UNDIRECTED")
-        ) {
+    public getCypherDirection(): "left" | "right" | "undirected" {
+        if (this.queryDirection === "UNDIRECTED") {
             return "undirected";
         }
         return this.cypherDirectionFromRelDirection();
@@ -197,7 +180,12 @@ export class RelationshipAdapter {
         return this.annotations.filterable?.byValue !== false;
     }
 
+    // this.aggregate refers to the @relationship.aggregate argument and does not have effect on the aggregation filters
     public isFilterableByAggregate(): boolean {
+        if (this.target instanceof UnionEntityAdapter) {
+            return false;
+        }
+
         return this.annotations.filterable?.byAggregate !== false;
     }
 
@@ -209,39 +197,20 @@ export class RelationshipAdapter {
         return this.annotations.settable?.onUpdate !== false;
     }
 
-    public shouldGenerateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
-        let relationshipTarget = this.target;
-        if (ifUnionRelationshipTargetEntity) {
-            relationshipTarget = ifUnionRelationshipTargetEntity;
-        }
+    public shouldGenerateFieldInputType(): boolean {
         return (
             this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT) ||
-            this.nestedOperations.has(RelationshipNestedOperationsOption.CREATE) ||
-            // The connectOrCreate field is not generated if the related type does not have a unique field
-            (this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE) &&
-                relationshipTarget instanceof ConcreteEntityAdapter &&
-                relationshipTarget.uniqueFields.length > 0)
+            this.nestedOperations.has(RelationshipNestedOperationsOption.CREATE)
         );
     }
 
     public shouldGenerateUpdateFieldInputType(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): boolean {
-        const onlyConnectOrCreate =
-            this.nestedOperations.size === 1 &&
-            this.nestedOperations.has(RelationshipNestedOperationsOption.CONNECT_OR_CREATE);
-
-        if (this.target instanceof InterfaceEntityAdapter) {
-            return this.nestedOperations.size > 0 && !onlyConnectOrCreate;
-        }
         if (this.target instanceof UnionEntityAdapter) {
             if (!ifUnionRelationshipTargetEntity) {
                 throw new Error("Expected member entity");
             }
-            const onlyConnectOrCreateAndNoUniqueFields =
-                onlyConnectOrCreate && !ifUnionRelationshipTargetEntity.uniqueFields.length;
-            return this.nestedOperations.size > 0 && !onlyConnectOrCreateAndNoUniqueFields;
         }
-        const onlyConnectOrCreateAndNoUniqueFields = onlyConnectOrCreate && !this.target.uniqueFields.length;
-        return this.nestedOperations.size > 0 && !onlyConnectOrCreateAndNoUniqueFields;
+        return this.nestedOperations.size > 0;
     }
 
     public get hasNonNullCreateInputFields(): boolean {

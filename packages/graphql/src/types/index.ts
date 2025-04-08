@@ -28,6 +28,7 @@ import type { Neo4jGraphQLSubscriptionsCDCEngine } from "../classes/subscription
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import type { DefaultAnnotationValue } from "../schema-model/annotation/DefaultAnnotation";
+import type { FulltextField } from "../schema-model/annotation/FulltextAnnotation";
 import type { VectorField } from "../schema-model/annotation/VectorAnnotation";
 import type { RelationshipDirection } from "../schema-model/relationship/Relationship";
 import type { JwtPayload } from "./jwt-payload";
@@ -44,11 +45,9 @@ export type AuthorizationContext = {
 };
 
 export type FulltextContext = {
-    name: string | undefined;
-    fields: string[];
+    index: FulltextField;
+    queryName: string;
     queryType: string;
-    queryName: string | undefined;
-    indexName: string | undefined; // TODO: not undefined once name is removed.
     scoreVariable: Cypher.Variable;
 };
 
@@ -232,7 +231,7 @@ export interface ConnectionQueryArgs {
  * Representation of the options arg
  * passed to resolvers.
  */
-export interface GraphQLOptionsArg {
+export interface GraphQLSortingAndPaginationArgs {
     limit?: number | Integer;
     offset?: number | Integer;
     sort?: GraphQLSortArg[];
@@ -362,8 +361,6 @@ export type SubscriptionEngineContext = {
 export interface Neo4jGraphQLSubscriptionsEngine {
     events: EventEmitter;
 
-    publish(eventMeta: SubscriptionsEvent): Promise<void> | void;
-
     /** To be called, if needed, in getSchema */
     init?(context: SubscriptionEngineContext): Promise<void>;
 
@@ -448,17 +445,13 @@ export type Neo4jFeaturesSettings = {
      *
      * NOTE: this will not remove user defined deprecated fields
      **/
+
     excludeDeprecatedFields?: {
-        implicitEqualFilters?: boolean;
-        implicitSet?: boolean;
-        deprecatedOptionsArgument?: boolean;
-        directedArgument?: boolean;
-        connectOrCreate?: boolean;
-        idAggregations?: boolean;
-        typename_IN?: boolean;
-        deprecatedAggregateOperations?: boolean;
-        nonNestedUpdateWhere?: boolean;
-        overwriteArgument?: boolean;
+        mutationOperations?: boolean;
+        aggregationFilters?: boolean;
+        aggregationFiltersOutsideConnection?: boolean;
+        relationshipFilters?: boolean;
+        attributeFilters?: boolean;
     };
 
     /** Options for disabling automatic escaping of potentially unsafe strings.
@@ -478,6 +471,8 @@ export type Neo4jFeaturesSettings = {
         disableRelationshipTypeEscaping?: boolean;
     };
     vector?: Neo4jVectorSettings;
+    limitRequired?: boolean;
+    complexityEstimators?: boolean;
 };
 
 /** Parsed features used in context */

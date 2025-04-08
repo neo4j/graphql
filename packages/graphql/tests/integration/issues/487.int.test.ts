@@ -47,12 +47,12 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
 
             type ${typeBook.name} @node {
                 id: ID!
-                author: ${typeAuthor.name}! @relationship(type: "WROTE", direction: IN)
+                author: [${typeAuthor.name}!]! @relationship(type: "WROTE", direction: IN)
             }
 
             type ${typeMovie.name} @node {
                 id: ID!
-                director: ${typeDirector.name}! @relationship(type: "DIRECTED", direction: IN)
+                director: [${typeDirector.name}!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
             union Thing = ${typeBook.name} | ${typeMovie.name}
@@ -130,17 +130,21 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
 
         expect(movie).toEqual({
             id: movieId,
-            director: {
-                id: directorId,
-            },
+            director: [
+                {
+                    id: directorId,
+                },
+            ],
             __typename: typeMovie.name,
         });
 
         expect(book).toEqual({
             id: bookId,
-            author: {
-                id: authorId,
-            },
+            author: [
+                {
+                    id: authorId,
+                },
+            ],
             __typename: typeBook.name,
         });
     });
@@ -162,12 +166,12 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
 
             type ${typeBook.name} implements Thing @node {
                 id: ID!
-                author: ${typeAuthor.name}! @relationship(type: "WROTE", direction: IN)
+                author: [${typeAuthor.name}!]! @relationship(type: "WROTE", direction: IN)
             }
 
             type ${typeMovie.name} implements Thing @node {
                 id: ID!
-                director: ${typeDirector.name}! @relationship(type: "DIRECTED", direction: IN)
+                director: [${typeDirector.name}!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
             interface Thing {
@@ -247,17 +251,21 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
 
         expect(movie).toEqual({
             id: movieId,
-            director: {
-                id: directorId,
-            },
+            director: [
+                {
+                    id: directorId,
+                },
+            ],
             __typename: typeMovie.name,
         });
 
         expect(book).toEqual({
             id: bookId,
-            author: {
-                id: authorId,
-            },
+            author: [
+                {
+                    id: authorId,
+                },
+            ],
             __typename: typeBook.name,
         });
     });

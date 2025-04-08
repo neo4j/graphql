@@ -27,8 +27,6 @@ import {
     createAuthorizationAfterAndParamsField,
 } from "./authorization/compatibility/create-authorization-after-and-params";
 import createConnectAndParams from "./create-connect-and-params";
-import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
-import { createRelationshipValidationString } from "./create-relationship-validation-string";
 import { createSetRelationshipProperties } from "./create-set-relationship-properties";
 import { assertNonAmbiguousUpdate } from "./utils/assert-non-ambiguous-update";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
@@ -58,7 +56,6 @@ function createCreateAndParams({
     context,
     callbackBucket,
     withVars,
-    includeRelationshipValidation,
     topLevelNodeVariable,
     authorizationPrefix = [0],
 }: {
@@ -68,7 +65,6 @@ function createCreateAndParams({
     context: Neo4jGraphQLTranslationContext;
     callbackBucket: CallbackBucket;
     withVars: string[];
-    includeRelationshipValidation?: boolean;
     topLevelNodeVariable?: string;
     //used to build authorization variable in auth subqueries
     authorizationPrefix?: number[];
@@ -81,6 +77,7 @@ function createCreateAndParams({
         const relationField = node.relationFields.find((x) => key === x.fieldName);
         const primitiveField = node.primitiveFields.find((x) => key === x.fieldName);
         const pointField = node.pointFields.find((x) => key === x.fieldName);
+        const temporalField = node.temporalFields.find((x) => key === x.fieldName);
         const dbFieldName = mapToDbProperty(node, key);
 
         if (primitiveField) {
@@ -145,7 +142,6 @@ function createCreateAndParams({
                             node: refNode,
                             varName: nodeName,
                             withVars: [...withVars, nodeName],
-                            includeRelationshipValidation: false,
                             topLevelNodeVariable,
                             authorizationPrefix: [...authorizationPrefix, reducerIndex, createIndex, refNodeIndex],
                         });
@@ -185,16 +181,6 @@ function createCreateAndParams({
                             }
                             res.meta.authorizationPredicates.push(...authorizationPredicates);
                         }
-
-                        const relationshipValidationStr = createRelationshipValidationString({
-                            node: refNode,
-                            context,
-                            varName: nodeName,
-                        });
-                        if (relationshipValidationStr) {
-                            res.creates.push(`WITH *`);
-                            res.creates.push(relationshipValidationStr);
-                        }
                     });
                 }
 
@@ -215,22 +201,6 @@ function createCreateAndParams({
                     });
                     res.creates.push(connectAndParams[0]);
                     res.params = { ...res.params, ...connectAndParams[1] };
-                }
-
-                if (v.connectOrCreate) {
-                    const { cypher, params } = createConnectOrCreateAndParams({
-                        input: v.connectOrCreate,
-                        varName: `${varNameKey}${relationField.union ? "_" : ""}${unionTypeName}_connectOrCreate`,
-                        parentVar: varName,
-                        relationField,
-                        refNode,
-                        node,
-                        context,
-                        withVars,
-                        callbackBucket,
-                    });
-                    res.creates.push(cypher);
-                    res.params = { ...res.params, ...params };
                 }
             });
 
@@ -283,6 +253,22 @@ function createCreateAndParams({
                 res.creates.push(`SET ${varName}.${dbFieldName} = [p in $${varNameKey} | point(p)]`);
             } else {
                 res.creates.push(`SET ${varName}.${dbFieldName} = point($${varNameKey})`);
+            }
+
+            res.params[varNameKey] = value;
+
+            return res;
+        }
+
+        if (temporalField && ["DateTime", "Time"].includes(temporalField.typeMeta.name)) {
+            if (temporalField.typeMeta.array) {
+                res.creates.push(
+                    `SET ${varName}.${dbFieldName} = [t in $${varNameKey} | ${temporalField.typeMeta.name.toLowerCase()}(t)]`
+                );
+            } else {
+                res.creates.push(
+                    `SET ${varName}.${dbFieldName} = ${temporalField.typeMeta.name.toLowerCase()}($${varNameKey})`
+                );
             }
 
             res.params[varNameKey] = value;
@@ -346,15 +332,6 @@ function createCreateAndParams({
         }
         authorizationPredicates.push(cypher);
         params = { ...params, ...authParams };
-    }
-
-    if (includeRelationshipValidation) {
-        const str = createRelationshipValidationString({ node, context, varName });
-
-        if (str) {
-            creates.push(`WITH *`);
-            creates.push(str);
-        }
     }
 
     return { create: creates.join("\n"), params, authorizationPredicates, authorizationSubqueries };

@@ -18,7 +18,7 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
@@ -74,7 +74,6 @@ export class AggregateFactory {
 
                 const selection = new RelationshipSelection({
                     relationship: entityOrRel,
-                    directed: Boolean(resolveTree.args?.directed ?? true),
                 });
 
                 const operation = new AggregationOperation({
@@ -263,7 +262,7 @@ export class AggregateFactory {
 
                 const nodeRawFields = {
                     ...parsedProjectionFields.node?.fieldsByTypeName[
-                        entityOrRel.operations.getAggregationFieldTypename("node")
+                        entityOrRel.operations.getAggregateFieldTypename("node")
                     ],
                 };
 
@@ -383,22 +382,8 @@ export class AggregateFactory {
         edge: ResolveTree | undefined;
         fields: Record<string, ResolveTree>;
     } {
-        let nodeFields: Record<string, ResolveTree> = {};
-        if (adapter instanceof ConcreteEntityAdapter) {
-            nodeFields = {
-                ...(resolveTree.fieldsByTypeName[adapter.operations.aggregateTypeNames.node] ?? {}),
-                ...(resolveTree.fieldsByTypeName[adapter.operations.aggregateTypeNames.connection] ?? {}),
-            };
-        }
-        if (adapter instanceof RelationshipAdapter) {
-            nodeFields = resolveTree.fieldsByTypeName[adapter.operations.getAggregationFieldTypename("node")] ?? {};
-        }
-
         const rawProjectionFields = {
-            // Handle deprecated aggregations
-            ...resolveTree.fieldsByTypeName[adapter.operations.getAggregationFieldTypename()],
             ...resolveTree.fieldsByTypeName[adapter.operations.getAggregateFieldTypename()],
-            ...nodeFields,
         };
         return this.queryASTFactory.operationsFactory.splitConnectionFields(rawProjectionFields);
     }
@@ -574,13 +559,13 @@ export class AggregateFactory {
 
             const edgeRawFields = {
                 ...parsedProjectionFields.edge?.fieldsByTypeName[
-                    relationship.operations.getAggregationFieldTypename("edge")
+                    relationship.operations.getAggregateFieldTypename("edge")
                 ],
             };
 
             const nodeRawFields = {
                 ...parsedProjectionFields.node?.fieldsByTypeName[
-                    relationship.operations.getAggregationFieldTypename("node")
+                    relationship.operations.getAggregateFieldTypename("node")
                 ],
             };
 

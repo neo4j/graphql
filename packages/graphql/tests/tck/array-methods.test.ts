@@ -48,7 +48,8 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
@@ -93,7 +94,8 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
@@ -152,7 +154,8 @@ describe("Arrays Methods", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(this.filmingLocations IS NULL, \\"Property %s cannot be NULL\\", ['filmingLocations'])
             SET this.filmingLocations = this.filmingLocations + [p in $this_update_filmingLocations_PUSH | point(p)]
@@ -182,7 +185,9 @@ describe("Arrays Methods", () => {
             type Movie @node {
                 title: String!
                 ratings: [Float!]!
-                    @authorization(validate: [{ operations: [UPDATE], where: { jwt: { roles_INCLUDES: "update" } } }])
+                    @authorization(
+                        validate: [{ operations: [UPDATE], where: { jwt: { roles: { includes: "update" } } } }]
+                    )
             }
         `;
 
@@ -207,7 +212,8 @@ describe("Arrays Methods", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
@@ -258,7 +264,8 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings[0..-$this_update_ratings_POP]
@@ -304,7 +311,8 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
             SET this.ratings = this.ratings[0..-$this_update_ratings_POP]
@@ -336,7 +344,9 @@ describe("Arrays Methods", () => {
             type Movie @node {
                 title: String!
                 ratings: [Float!]!
-                    @authorization(validate: [{ operations: [UPDATE], where: { jwt: { roles_INCLUDES: "update" } } }])
+                    @authorization(
+                        validate: [{ operations: [UPDATE], where: { jwt: { roles: { includes: "update" } } } }]
+                    )
             }
         `;
 
@@ -361,7 +371,8 @@ describe("Arrays Methods", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
             SET this.ratings = this.ratings[0..-$this_update_ratings_POP]
@@ -415,7 +426,8 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             WHERE apoc.util.validatePredicate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
             SET this.ratings = this.ratings + $this_update_ratings_PUSH
@@ -451,7 +463,7 @@ describe("Arrays Methods", () => {
             }
 
             type ActedIn @relationshipProperties {
-                pay: [Float]
+                pay: [Float!]
             }
         `;
 
@@ -461,7 +473,7 @@ describe("Arrays Methods", () => {
 
         const query = /* GraphQL */ `
             mutation {
-                updateActors(where: { id_EQ: 1 }, update: { actedIn: [{ update: { edge: { pay_PUSH: 10 } } }] }) {
+                updateActors(where: { id: { eq: 1 } }, update: { actedIn: [{ update: { edge: { pay_PUSH: 10 } } }] }) {
                     actors {
                         name
                         actedIn {
@@ -482,7 +494,8 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -495,6 +508,7 @@ describe("Arrays Methods", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
+                WITH DISTINCT update_this1
                 WITH update_this1 { .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
@@ -553,7 +567,7 @@ describe("Arrays Methods", () => {
             }
 
             type ActedIn @relationshipProperties {
-                pay: [Float]
+                pay: [Float!]
             }
         `;
 
@@ -563,7 +577,7 @@ describe("Arrays Methods", () => {
 
         const query = /* GraphQL */ `
             mutation {
-                updateActors(where: { id_EQ: 1 }, update: { actedIn: [{ update: { edge: { pay_POP: 1 } } }] }) {
+                updateActors(where: { id: { eq: 1 } }, update: { actedIn: [{ update: { edge: { pay_POP: 1 } } }] }) {
                     actors {
                         name
                         actedIn {
@@ -584,7 +598,8 @@ describe("Arrays Methods", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.id = $param0
             WITH this
             CALL {
@@ -597,6 +612,7 @@ describe("Arrays Methods", () => {
             CALL {
                 WITH this
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
+                WITH DISTINCT update_this1
                 WITH update_this1 { .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }

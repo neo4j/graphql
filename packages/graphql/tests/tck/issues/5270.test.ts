@@ -31,18 +31,28 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
             type User
                 @node(labels: ["User"])
                 @authorization(
-                    filter: [{ where: { node: { NOT: { blockedUsers_SOME: { to: { id_EQ: "$jwt.sub" } } } } } }]
+                    filter: [
+                        {
+                            where: {
+                                node: { NOT: { blockedUsers: { some: { to: { some: { id: { eq: "$jwt.sub" } } } } } } }
+                            }
+                        }
+                    ]
                 ) {
-                id: ID! @unique @id
+                id: ID! @id
                 blockedUsers: [UserBlockedUser!]! @relationship(type: "HAS_BLOCKED", direction: OUT)
             }
 
             type UserBlockedUser
                 @node(labels: ["UserBlockedUser"])
-                @authorization(filter: [{ where: { node: { from: { id_EQ: "$jwt.sub" } } } }]) {
-                id: ID! @id @unique
-                from: User! @relationship(type: "HAS_BLOCKED", direction: IN) @settable(onCreate: true, onUpdate: false)
-                to: User! @relationship(type: "IS_BLOCKING", direction: OUT) @settable(onCreate: true, onUpdate: false)
+                @authorization(filter: [{ where: { node: { from: { some: { id: { eq: "$jwt.sub" } } } } } }]) {
+                id: ID! @id
+                from: [User!]!
+                    @relationship(type: "HAS_BLOCKED", direction: IN)
+                    @settable(onCreate: true, onUpdate: false)
+                to: [User!]!
+                    @relationship(type: "IS_BLOCKING", direction: OUT)
+                    @settable(onCreate: true, onUpdate: false)
             }
 
             type Query {
@@ -85,21 +95,19 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 OPTIONAL MATCH (u:User {id: $jwt.sub}) RETURN u
             }
             WITH u AS this0
-            CALL {
-                WITH this0
-                MATCH (this0)-[:HAS_BLOCKED]->(this1:UserBlockedUser)
-                OPTIONAL MATCH (this1)-[:IS_BLOCKING]->(this2:User)
-                WITH *, count(this2) AS var3
-                WITH *
-                WHERE (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))
-                RETURN count(this1) > 0 AS var4
-            }
             WITH *
-            WHERE ($isAuthenticated = true AND NOT (var4 = true))
+            WHERE ($isAuthenticated = true AND NOT (EXISTS {
+                MATCH (this0)-[:HAS_BLOCKED]->(this1:UserBlockedUser)
+                WHERE EXISTS {
+                    MATCH (this1)-[:IS_BLOCKING]->(this2:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+                }
+            }))
             WITH this0 { .id } AS this0
             RETURN this0 AS this"
         `);

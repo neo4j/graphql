@@ -76,7 +76,7 @@ describe("aggregations-where-edge-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someInt_AVERAGE_EQUAL: ${avg} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesConnection: { aggregate: { edge: { someInt: { average: { eq: ${avg} } } } } } }) {
                             testString
                             likes {
                                 testString
@@ -115,7 +115,7 @@ describe("aggregations-where-edge-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someInt_AVERAGE_GT: ${avgGT} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesConnection: { aggregate: { edge: { someInt: { average: { gt: ${avgGT} } } } } } }) {
                             testString
                             likes {
                                 testString
@@ -153,7 +153,7 @@ describe("aggregations-where-edge-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someInt_AVERAGE_GTE: ${avg} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesConnection: { aggregate: { edge: { someInt: { average: { gte: ${avg} } } } } } }) {
                             testString
                             likes {
                                 testString
@@ -191,7 +191,7 @@ describe("aggregations-where-edge-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someInt_AVERAGE_LT: ${avgLT} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesConnection: { aggregate: { edge: { someInt: { average: { lt: ${avgLT} } } } } } }) {
                             testString
                             likes {
                                 testString
@@ -229,7 +229,7 @@ describe("aggregations-where-edge-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someInt_AVERAGE_LTE: ${avg} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesConnection: { aggregate: { edge: { someInt: { average: { lte: ${avg} } } } } } }) {
                             testString
                             likes {
                                 testString
@@ -273,7 +273,7 @@ describe("aggregations-where-edge-int", () => {
 
             const query = `
                     {
-                        ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { edge: { someInt_SUM_EQUAL: ${sum} } } }) {
+                        ${Post.plural}(where: { testString: { eq: "${testString}" }, likesConnection: { aggregate: { edge: { someInt: { sum: { eq: ${sum} } } } } } }) {
                             testString
                             likes {
                                 testString

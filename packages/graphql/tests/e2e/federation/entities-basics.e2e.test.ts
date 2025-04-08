@@ -61,7 +61,7 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
             type ${Review} @node {
                 score: Int!
                 description: String!
-                product: ${Product}! @relationship(type: "HAS_REVIEW", direction: IN)
+                product: [${Product}!]! @relationship(type: "HAS_REVIEW", direction: IN)
             }
         `;
 
@@ -121,7 +121,9 @@ describe("Federation 2 Entities Basics (https://www.apollographql.com/docs/feder
         expect(response.status).toBe(200);
         expect(response.body).toEqual({
             data: {
-                [Review.plural]: [{ description: "review", score: 5, product: { id: "1", price: 5, name: "product" } }],
+                [Review.plural]: [
+                    { description: "review", score: 5, product: [{ id: "1", price: 5, name: "product" }] },
+                ],
             },
         });
     });

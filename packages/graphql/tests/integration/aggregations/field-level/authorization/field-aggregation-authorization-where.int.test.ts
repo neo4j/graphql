@@ -75,8 +75,12 @@ describe(`Field Level Authorization Where Requests`, () => {
     test("authenticated query", async () => {
         const query = `query {
             ${typeMovie.plural} {
-                ${typeActor.plural}Aggregate {
-                    count
+                ${typeActor.operations.connection} {
+                    aggregate {
+                        count {
+                            nodes
+                            }
+                        }
                     }
                 }
             }`;
@@ -84,16 +88,30 @@ describe(`Field Level Authorization Where Requests`, () => {
         const token = createBearerToken(secret, { sub: "1234" });
         const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
-            count: 1,
+        expect(gqlResult.data).toEqual({
+            [typeMovie.plural]: [
+                {
+                    [typeActor.operations.connection]: {
+                        aggregate: {
+                            count: {
+                                nodes: 1,
+                            },
+                        },
+                    },
+                },
+            ],
         });
     });
 
     test("unauthenticated query", async () => {
         const query = `query {
             ${typeMovie.plural} {
-                ${typeActor.plural}Aggregate {
-                    count
+                ${typeActor.operations.connection} {
+                    aggregate {
+                        count {
+                            nodes
+                            }
+                        }
                     }
                 }
             }`;
@@ -101,16 +119,20 @@ describe(`Field Level Authorization Where Requests`, () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect(gqlResult.data as any).toEqual({
-            [typeMovie.plural]: [{ [`${typeActor.plural}Aggregate`]: { count: 0 } }],
+        expect(gqlResult.data).toEqual({
+            [typeMovie.plural]: [{ [typeActor.operations.connection]: { aggregate: { count: { nodes: 0 } } } }],
         });
     });
 
     test("authenticated query with wrong credentials", async () => {
         const query = `query {
             ${typeMovie.plural} {
-                ${typeActor.plural}Aggregate {
-                    count
+                ${typeActor.operations.connection} {
+                    aggregate {
+                        count {
+                            nodes
+                            }
+                        }
                     }
                 }
             }`;
@@ -118,8 +140,8 @@ describe(`Field Level Authorization Where Requests`, () => {
         const invalidToken = createBearerToken(secret, { sub: "2222" });
         const gqlResult = await testHelper.executeGraphQLWithToken(query, invalidToken);
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[typeMovie.plural][0][`${typeActor.plural}Aggregate`]).toEqual({
-            count: 0,
+        expect(gqlResult.data).toEqual({
+            [typeMovie.plural]: [{ [typeActor.operations.connection]: { aggregate: { count: { nodes: 0 } } } }],
         });
     });
 });

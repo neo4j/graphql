@@ -77,8 +77,8 @@ describe("Startup Validation", () => {
             id: ID!
             firstName: String!
             lastName: String!
-            friend1: User! @relationship(type: "FRIENDS_WITH", direction: IN)
-            friend2: User! @relationship(type: "FRIENDS_WITH", direction: IN)
+            friend1: [User!]! @relationship(type: "FRIENDS_WITH", direction: IN)
+            friend2: [User!]! @relationship(type: "FRIENDS_WITH", direction: IN)
         }
     `;
 
@@ -88,8 +88,8 @@ describe("Startup Validation", () => {
             firstName: String!
             lastName: String!
             fullName: String @customResolver(requires: "firstName lastName")
-            friend1: User! @relationship(type: "FRIENDS_WITH", direction: IN)
-            friend2: User! @relationship(type: "FRIENDS_WITH", direction: IN)
+            friend1: [User!]! @relationship(type: "FRIENDS_WITH", direction: IN)
+            friend2: [User!]! @relationship(type: "FRIENDS_WITH", direction: IN)
         }
 
         type Point @node {

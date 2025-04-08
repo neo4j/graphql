@@ -49,7 +49,7 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
     test("Connection can be selected following update Mutation", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { title_EQ: "Forrest Gump" }) {
+                updateMovies(where: { title: { eq: "Forrest Gump" } }) {
                     movies {
                         title
                         actorsConnection {
@@ -70,7 +70,8 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             WITH *
             CALL {

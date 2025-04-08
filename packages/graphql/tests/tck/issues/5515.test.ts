@@ -34,32 +34,36 @@ describe("https://github.com/neo4j/graphql/issues/5515", () => {
                 @node
                 @authorization(
                     validate: [
-                        { operations: [CREATE, DELETE], where: { jwt: { roles_INCLUDES: "admin" } } }
-                        { operations: [READ, UPDATE], where: { node: { id_EQ: "$jwt.sub" } } }
+                        { operations: [CREATE, DELETE], where: { jwt: { roles: { includes: "admin" } } } }
+                        { operations: [READ, UPDATE], where: { node: { id: { eq: "$jwt.sub" } } } }
                     ]
-                    filter: [{ where: { node: { id: "$jwt.sub" } } }]
+                    filter: [{ where: { node: { id: { eq: "$jwt.sub" } } } }]
                 ) {
                 id: ID!
                 cabinets: [Cabinet!]! @relationship(type: "HAS_CABINET", direction: OUT)
             }
 
-            type Cabinet @authorization(filter: [{ where: { node: { user: { id_EQ: "$jwt.sub" } } } }]) @node {
+            type Cabinet
+                @authorization(filter: [{ where: { node: { user: { some: { id: { eq: "$jwt.sub" } } } } } }])
+                @node {
                 id: ID! @id
                 categories: [Category!]! @relationship(type: "HAS_CATEGORY", direction: OUT)
-                user: User! @relationship(type: "HAS_CABINET", direction: IN)
+                user: [User!]! @relationship(type: "HAS_CABINET", direction: IN)
             }
 
             type Category
-                @authorization(filter: [{ where: { node: { cabinet: { user: { id_EQ: "$jwt.sub" } } } } }])
+                @authorization(
+                    filter: [{ where: { node: { cabinet: { some: { user: { some: { id: { eq: "$jwt.sub" } } } } } } } }]
+                )
                 @node {
                 id: ID! @id
                 files: [File!]! @relationship(type: "HAS_FILE", direction: OUT)
-                cabinet: Cabinet! @relationship(type: "HAS_CATEGORY", direction: IN)
+                cabinet: [Cabinet!]! @relationship(type: "HAS_CATEGORY", direction: IN)
             }
 
             type File @node {
-                id: ID! @unique
-                category: Category @relationship(type: "HAS_FILE", direction: IN)
+                id: ID!
+                category: [Category!]! @relationship(type: "HAS_FILE", direction: IN)
             }
         `;
 
@@ -71,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/5515", () => {
     test("should delete categories with auth filters", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteCategories(where: { id_EQ: "category-video" }) {
+                deleteCategories(where: { id: { eq: "category-video" } }) {
                     __typename
                     nodesDeleted
                     relationshipsDeleted
@@ -82,26 +86,23 @@ describe("https://github.com/neo4j/graphql/issues/5515", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Category)
-            CALL {
-                WITH this
+            "CYPHER 5
+            MATCH (this:Category)
+            WHERE (this.id = $param0 AND ($isAuthenticated = true AND EXISTS {
                 MATCH (this)<-[:HAS_CATEGORY]-(this0:Cabinet)
-                OPTIONAL MATCH (this0)<-[:HAS_CABINET]-(this1:User)
-                WITH *, count(this1) AS var2
-                WITH *
-                WHERE (var2 <> 0 AND ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub))
-                RETURN count(this0) = 1 AS var3
-            }
-            WITH *
-            WHERE (this.id = $param1 AND ($isAuthenticated = true AND var3 = true))
+                WHERE EXISTS {
+                    MATCH (this0)<-[:HAS_CABINET]-(this1:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)
+                }
+            }))
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"jwt\\": {},
-                \\"param1\\": \\"category-video\\",
-                \\"isAuthenticated\\": false
+                \\"param0\\": \\"category-video\\",
+                \\"isAuthenticated\\": false,
+                \\"jwt\\": {}
             }"
         `);
     });

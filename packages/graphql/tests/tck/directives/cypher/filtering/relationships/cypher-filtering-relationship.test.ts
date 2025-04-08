@@ -54,7 +54,7 @@ describe("cypher directive filtering - Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { NOT: { actors_SOME: { name_EQ: "Jada Pinkett Smith" } } }) {
+                movies(where: { NOT: { actors: { some: { name: { eq: "Jada Pinkett Smith" } } } } }) {
                     title
                 }
             }
@@ -63,7 +63,8 @@ describe("cypher directive filtering - Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -119,7 +120,7 @@ describe("cypher directive filtering - Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { actors_ALL: { name_EQ: "Keanu Reeves" } }) {
+                movies(where: { actors: { all: { name: { eq: "Keanu Reeves" } } } }) {
                     title
                 }
             }
@@ -128,7 +129,8 @@ describe("cypher directive filtering - Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -184,7 +186,7 @@ describe("cypher directive filtering - Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { actors_SINGLE: { name_EQ: "Carrie-Anne Moss" } }) {
+                movies(where: { actors: { single: { name: { eq: "Carrie-Anne Moss" } } } }) {
                     title
                 }
             }
@@ -193,7 +195,8 @@ describe("cypher directive filtering - Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -249,7 +252,7 @@ describe("cypher directive filtering - Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { actors_SOME: { name_EQ: "Keanu Reeves" } }) {
+                movies(where: { actors: { some: { name: { eq: "Keanu Reeves" } } } }) {
                     title
                 }
             }
@@ -258,7 +261,8 @@ describe("cypher directive filtering - Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -313,7 +317,7 @@ describe("cypher directive filtering - Relationship", () => {
         });
         const query = /* GraphQL */ `
             query {
-                movies(where: { actors_NONE: { name_EQ: "Keanu Reeves" } }) {
+                movies(where: { actors: { none: { name: { eq: "Keanu Reeves" } } } }) {
                     title
                 }
             }
@@ -322,7 +326,8 @@ describe("cypher directive filtering - Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -401,8 +406,8 @@ describe("cypher directive filtering - Relationship", () => {
                 movies(
                     where: {
                         OR: [
-                            { actors_SOME: { name_EQ: "Jada Pinkett Smith" } }
-                            { genres_SOME: { name_EQ: "Romance" } }
+                            { actors: { some: { name: { eq: "Jada Pinkett Smith" } } } }
+                            { genres: { some: { name: { eq: "Romance" } } } }
                         ]
                     }
                 ) {
@@ -414,7 +419,8 @@ describe("cypher directive filtering - Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {

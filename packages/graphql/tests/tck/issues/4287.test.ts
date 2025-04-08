@@ -49,7 +49,9 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
             query {
                 actors {
                     actedInConnection(
-                        where: { OR: [{ node: { title_EQ: "something" } }, { node: { title_EQ: "whatever" } }] }
+                        where: {
+                            OR: [{ node: { title: { eq: "something" } } }, { node: { title: { eq: "whatever" } } }]
+                        }
                     ) {
                         edges {
                             node {
@@ -65,7 +67,8 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {

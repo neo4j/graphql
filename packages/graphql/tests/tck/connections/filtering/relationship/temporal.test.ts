@@ -53,7 +53,9 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
                 movies {
                     title
                     actorsConnection(
-                        where: { edge: { startDate_GT: "2000-01-01", endDateTime_LT: "2010-01-01T00:00:00.000Z" } }
+                        where: {
+                            edge: { startDate: { gt: "2000-01-01" }, endDateTime: { lt: "2010-01-01T00:00:00.000Z" } }
+                        }
                     ) {
                         edges {
                             properties {
@@ -72,11 +74,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE (this0.startDate > $param0 AND this0.endDateTime < $param1)
+                WHERE (this0.startDate > $param0 AND this0.endDateTime < datetime($param1))
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
                 CALL {
@@ -97,16 +100,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
                     \\"month\\": 1,
                     \\"day\\": 1
                 },
-                \\"param1\\": {
-                    \\"year\\": 2010,
-                    \\"month\\": 1,
-                    \\"day\\": 1,
-                    \\"hour\\": 0,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param1\\": \\"2010-01-01T00:00:00.000Z\\"
             }"
         `);
     });

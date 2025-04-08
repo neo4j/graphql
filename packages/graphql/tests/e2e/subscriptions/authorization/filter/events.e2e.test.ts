@@ -48,6 +48,7 @@ describe("Subscriptions authorization with create events", () => {
             }
 
             type ${User} @node
+            @subscription
                 @subscriptionsAuthorization(
                     filter: [
                         { events: [CREATED], where: { node: { id_EQ: "$jwt.sub" } } }

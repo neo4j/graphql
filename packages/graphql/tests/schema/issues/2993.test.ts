@@ -50,6 +50,11 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               mutation: Mutation
             }
 
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
             type Count {
               nodes: Int!
             }
@@ -80,6 +85,27 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               min: DateTime
             }
 
+            \\"\\"\\"Filters for an aggregation of an DateTime input field\\"\\"\\"
+            input DateTimeScalarAggregationFilters {
+              max: DateTimeScalarFilters
+              min: DateTimeScalarFilters
+            }
+
+            \\"\\"\\"DateTime filters\\"\\"\\"
+            input DateTimeScalarFilters {
+              eq: DateTime
+              gt: DateTime
+              gte: DateTime
+              in: [DateTime!]
+              lt: DateTime
+              lte: DateTime
+            }
+
+            \\"\\"\\"DateTime mutations\\"\\"\\"
+            input DateTimeScalarMutations {
+              set: DateTime
+            }
+
             \\"\\"\\"
             Information about the number of nodes and relationships deleted during a delete mutation
             \\"\\"\\"
@@ -100,16 +126,17 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [FOLLOWSAggregationWhereInput!]
               NOT: FOLLOWSAggregationWhereInput
               OR: [FOLLOWSAggregationWhereInput!]
-              since_MAX_EQUAL: DateTime
-              since_MAX_GT: DateTime
-              since_MAX_GTE: DateTime
-              since_MAX_LT: DateTime
-              since_MAX_LTE: DateTime
-              since_MIN_EQUAL: DateTime
-              since_MIN_GT: DateTime
-              since_MIN_GTE: DateTime
-              since_MIN_LT: DateTime
-              since_MIN_LTE: DateTime
+              since: DateTimeScalarAggregationFilters
+              since_MAX_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { max: { eq: ... } } }' instead.\\")
+              since_MAX_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { max: { gt: ... } } }' instead.\\")
+              since_MAX_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { max: { gte: ... } } }' instead.\\")
+              since_MAX_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { max: { lt: ... } } }' instead.\\")
+              since_MAX_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { max: { lte: ... } } }' instead.\\")
+              since_MIN_EQUAL: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { min: { eq: ... } } }' instead.\\")
+              since_MIN_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { min: { gt: ... } } }' instead.\\")
+              since_MIN_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { min: { gte: ... } } }' instead.\\")
+              since_MIN_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { min: { lt: ... } } }' instead.\\")
+              since_MIN_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter 'since: { min: { lte: ... } } }' instead.\\")
             }
 
             input FOLLOWSSort {
@@ -117,26 +144,55 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input FOLLOWSUpdateInput {
-              since: DateTime @deprecated(reason: \\"Please use the explicit _SET field\\")
-              since_SET: DateTime
+              since: DateTimeScalarMutations
+              since_SET: DateTime @deprecated(reason: \\"Please use the generic mutation 'since: { set: ... } }' instead.\\")
             }
 
             input FOLLOWSWhere {
               AND: [FOLLOWSWhere!]
               NOT: FOLLOWSWhere
               OR: [FOLLOWSWhere!]
-              since: DateTime @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              since_EQ: DateTime
-              since_GT: DateTime
-              since_GTE: DateTime
-              since_IN: [DateTime!]
-              since_LT: DateTime
-              since_LTE: DateTime
+              since: DateTimeScalarFilters
+              since_EQ: DateTime @deprecated(reason: \\"Please use the relevant generic filter since: { eq: ... }\\")
+              since_GT: DateTime @deprecated(reason: \\"Please use the relevant generic filter since: { gt: ... }\\")
+              since_GTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter since: { gte: ... }\\")
+              since_IN: [DateTime!] @deprecated(reason: \\"Please use the relevant generic filter since: { in: ... }\\")
+              since_LT: DateTime @deprecated(reason: \\"Please use the relevant generic filter since: { lt: ... }\\")
+              since_LTE: DateTime @deprecated(reason: \\"Please use the relevant generic filter since: { lte: ... }\\")
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Mutation {
@@ -164,13 +220,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type ProfileAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              userName: StringAggregateSelection!
-            }
-
-            type ProfileAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               userName: StringAggregateSelection!
             }
 
@@ -191,13 +240,15 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               User
             }
 
-            input ProfileOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more ProfileSort objects to sort Profiles by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [ProfileSort!]
+            input ProfileRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Profiles match this filter\\"\\"\\"
+              all: ProfileWhere
+              \\"\\"\\"Filter type where none of the related Profiles match this filter\\"\\"\\"
+              none: ProfileWhere
+              \\"\\"\\"Filter type where one of the related Profiles match this filter\\"\\"\\"
+              single: ProfileWhere
+              \\"\\"\\"Filter type where some of the related Profiles match this filter\\"\\"\\"
+              some: ProfileWhere
             }
 
             \\"\\"\\"
@@ -209,30 +260,29 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             input ProfileUpdateInput {
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              userName: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              userName_SET: String
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              userName: StringScalarMutations
+              userName_SET: String @deprecated(reason: \\"Please use the generic mutation 'userName: { set: ... } }' instead.\\")
             }
 
             input ProfileWhere {
               AND: [ProfileWhere!]
               NOT: ProfileWhere
               OR: [ProfileWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               typename: [ProfileImplementation!]
-              typename_IN: [ProfileImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
-              userName: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              userName_CONTAINS: String
-              userName_ENDS_WITH: String
-              userName_EQ: String
-              userName_IN: [String!]
-              userName_STARTS_WITH: String
+              userName: StringScalarFilters
+              userName_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter userName: { contains: ... }\\")
+              userName_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { endsWith: ... }\\")
+              userName_EQ: String @deprecated(reason: \\"Please use the relevant generic filter userName: { eq: ... }\\")
+              userName_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter userName: { in: ... }\\")
+              userName_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { startsWith: ... }\\")
             }
 
             type ProfilesConnection {
@@ -243,11 +293,9 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type Query {
-              profiles(limit: Int, offset: Int, options: ProfileOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProfileSort!], where: ProfileWhere): [Profile!]!
-              profilesAggregate(where: ProfileWhere): ProfileAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"profilesConnection\\\\\\" instead\\")
+              profiles(limit: Int, offset: Int, sort: [ProfileSort!], where: ProfileWhere): [Profile!]!
               profilesConnection(after: String, first: Int, sort: [ProfileSort!], where: ProfileWhere): ProfilesConnection!
-              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
+              users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -262,6 +310,27 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -280,9 +349,8 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type User implements Profile {
-              following(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ProfileOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProfileSort!], where: ProfileWhere): [Profile!]!
-              followingAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ProfileWhere): UserProfileFollowingAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"followingConnection\\\\\\" instead\\")
-              followingConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [UserFollowingConnectionSort!], where: UserFollowingConnectionWhere): UserFollowingConnection!
+              following(limit: Int, offset: Int, sort: [ProfileSort!], where: ProfileWhere): [Profile!]!
+              followingConnection(after: String, first: Int, sort: [UserFollowingConnectionSort!], where: UserFollowingConnectionWhere): UserFollowingConnection!
               id: ID!
               userName: String!
             }
@@ -293,13 +361,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type UserAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              userName: StringAggregateSelection!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               userName: StringAggregateSelection!
             }
 
@@ -321,7 +382,7 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [UserFollowingAggregateInput!]
               NOT: UserFollowingAggregateInput
               OR: [UserFollowingAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -340,6 +401,38 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               edges: [UserFollowingRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input UserFollowingConnectionAggregateInput {
+              AND: [UserFollowingConnectionAggregateInput!]
+              NOT: UserFollowingConnectionAggregateInput
+              OR: [UserFollowingConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: FOLLOWSAggregationWhereInput
+              node: UserFollowingNodeAggregationWhereInput
+            }
+
+            input UserFollowingConnectionFilters {
+              \\"\\"\\"
+              Filter Users by aggregating results on related UserFollowingConnections
+              \\"\\"\\"
+              aggregate: UserFollowingConnectionAggregateInput
+              \\"\\"\\"
+              Return Users where all of the related UserFollowingConnections match this filter
+              \\"\\"\\"
+              all: UserFollowingConnectionWhere
+              \\"\\"\\"
+              Return Users where none of the related UserFollowingConnections match this filter
+              \\"\\"\\"
+              none: UserFollowingConnectionWhere
+              \\"\\"\\"
+              Return Users where one of the related UserFollowingConnections match this filter
+              \\"\\"\\"
+              single: UserFollowingConnectionWhere
+              \\"\\"\\"
+              Return Users where some of the related UserFollowingConnections match this filter
+              \\"\\"\\"
+              some: UserFollowingConnectionWhere
             }
 
             input UserFollowingConnectionSort {
@@ -376,31 +469,22 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               AND: [UserFollowingNodeAggregationWhereInput!]
               NOT: UserFollowingNodeAggregationWhereInput
               OR: [UserFollowingNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              userName_AVERAGE_LENGTH_EQUAL: Float
-              userName_AVERAGE_LENGTH_GT: Float
-              userName_AVERAGE_LENGTH_GTE: Float
-              userName_AVERAGE_LENGTH_LT: Float
-              userName_AVERAGE_LENGTH_LTE: Float
-              userName_LONGEST_LENGTH_EQUAL: Int
-              userName_LONGEST_LENGTH_GT: Int
-              userName_LONGEST_LENGTH_GTE: Int
-              userName_LONGEST_LENGTH_LT: Int
-              userName_LONGEST_LENGTH_LTE: Int
-              userName_SHORTEST_LENGTH_EQUAL: Int
-              userName_SHORTEST_LENGTH_GT: Int
-              userName_SHORTEST_LENGTH_GTE: Int
-              userName_SHORTEST_LENGTH_LT: Int
-              userName_SHORTEST_LENGTH_LTE: Int
+              userName: StringScalarAggregationFilters
+              userName_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'userName: { averageLength: { eq: ... } } }' instead.\\")
+              userName_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'userName: { averageLength: { gt: ... } } }' instead.\\")
+              userName_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'userName: { averageLength: { gte: ... } } }' instead.\\")
+              userName_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'userName: { averageLength: { lt: ... } } }' instead.\\")
+              userName_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'userName: { averageLength: { lte: ... } } }' instead.\\")
+              userName_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { longestLength: { eq: ... } } }' instead.\\")
+              userName_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { longestLength: { gt: ... } } }' instead.\\")
+              userName_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { longestLength: { gte: ... } } }' instead.\\")
+              userName_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { longestLength: { lt: ... } } }' instead.\\")
+              userName_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { longestLength: { lte: ... } } }' instead.\\")
+              userName_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { shortestLength: { eq: ... } } }' instead.\\")
+              userName_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { shortestLength: { gt: ... } } }' instead.\\")
+              userName_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { shortestLength: { gte: ... } } }' instead.\\")
+              userName_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { shortestLength: { lt: ... } } }' instead.\\")
+              userName_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'userName: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type UserFollowingRelationship {
@@ -421,26 +505,10 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
               delete: [UserFollowingDeleteFieldInput!]
               disconnect: [UserFollowingDisconnectFieldInput!]
               update: UserFollowingUpdateConnectionInput
-              where: UserFollowingConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserFollowingUpdateConnectionInput\\\\\\" instead\\")
-            }
-
-            input UserOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [UserSort!]
             }
 
             type UserProfileFollowingAggregateSelection {
               count: CountConnection!
-              edge: UserProfileFollowingEdgeAggregateSelection
-              node: UserProfileFollowingNodeAggregateSelection
-            }
-
-            type UserProfileFollowingAggregationSelection {
-              count: Int!
               edge: UserProfileFollowingEdgeAggregateSelection
               node: UserProfileFollowingNodeAggregateSelection
             }
@@ -450,7 +518,6 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
             }
 
             type UserProfileFollowingNodeAggregateSelection {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               userName: StringAggregateSelection!
             }
 
@@ -464,51 +531,53 @@ describe("https://github.com/neo4j/graphql/issues/2993", () => {
 
             input UserUpdateInput {
               following: [UserFollowingUpdateFieldInput!]
-              userName: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              userName_SET: String
+              userName: StringScalarMutations
+              userName_SET: String @deprecated(reason: \\"Please use the generic mutation 'userName: { set: ... } }' instead.\\")
             }
 
             input UserWhere {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              followingAggregate: UserFollowingAggregateInput
+              following: ProfileRelationshipFilters
+              followingAggregate: UserFollowingAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the followingConnection filter, please use { followingConnection: { aggregate: {...} } } instead\\")
+              followingConnection: UserFollowingConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserFollowingConnections match this filter
               \\"\\"\\"
-              followingConnection_ALL: UserFollowingConnectionWhere
+              followingConnection_ALL: UserFollowingConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'followingConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where none of the related UserFollowingConnections match this filter
               \\"\\"\\"
-              followingConnection_NONE: UserFollowingConnectionWhere
+              followingConnection_NONE: UserFollowingConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'followingConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserFollowingConnections match this filter
               \\"\\"\\"
-              followingConnection_SINGLE: UserFollowingConnectionWhere
+              followingConnection_SINGLE: UserFollowingConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'followingConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where some of the related UserFollowingConnections match this filter
               \\"\\"\\"
-              followingConnection_SOME: UserFollowingConnectionWhere
+              followingConnection_SOME: UserFollowingConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'followingConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Users where all of the related Profiles match this filter\\"\\"\\"
-              following_ALL: ProfileWhere
+              following_ALL: ProfileWhere @deprecated(reason: \\"Please use the relevant generic filter 'following: { all: ... }' instead.\\")
               \\"\\"\\"Return Users where none of the related Profiles match this filter\\"\\"\\"
-              following_NONE: ProfileWhere
+              following_NONE: ProfileWhere @deprecated(reason: \\"Please use the relevant generic filter 'following: { none: ... }' instead.\\")
               \\"\\"\\"Return Users where one of the related Profiles match this filter\\"\\"\\"
-              following_SINGLE: ProfileWhere
+              following_SINGLE: ProfileWhere @deprecated(reason: \\"Please use the relevant generic filter 'following: {  single: ... }' instead.\\")
               \\"\\"\\"Return Users where some of the related Profiles match this filter\\"\\"\\"
-              following_SOME: ProfileWhere
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
-              userName: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              userName_CONTAINS: String
-              userName_ENDS_WITH: String
-              userName_EQ: String
-              userName_IN: [String!]
-              userName_STARTS_WITH: String
+              following_SOME: ProfileWhere @deprecated(reason: \\"Please use the relevant generic filter 'following: {  some: ... }' instead.\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              userName: StringScalarFilters
+              userName_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter userName: { contains: ... }\\")
+              userName_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { endsWith: ... }\\")
+              userName_EQ: String @deprecated(reason: \\"Please use the relevant generic filter userName: { eq: ... }\\")
+              userName_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter userName: { in: ... }\\")
+              userName_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter userName: { startsWith: ... }\\")
             }
 
             type UsersConnection {

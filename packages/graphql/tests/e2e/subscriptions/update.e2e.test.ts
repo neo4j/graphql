@@ -39,15 +39,14 @@ describe("Delete Subscription", () => {
     beforeEach(async () => {
         typeMovie = testHelper.createUniqueType("Movie");
         typeActor = testHelper.createUniqueType("Actor");
-        const typeDefs = `
-         type ${typeMovie} @node {
+        const typeDefs = /* GraphQL */ `
+        type ${typeMovie} @node @subscription {
             title: String
-            actors: [${typeActor}]
-         }
-         type ${typeActor} @subscription(events: []) @node {
-            name: String
-         }
-         `;
+            actors: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
+        }
+        type ${typeActor} @subscription(events: []) @node {
+           name: String
+        }`;
 
         const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
@@ -236,7 +235,7 @@ describe("Delete Subscription", () => {
             .send({
                 query: `
                         mutation {
-                            ${typeMovie.operations.update}(where: { title_EQ: "${oldTitle}" }, update: { title: "${newTitle}" }) {
+                            ${typeMovie.operations.update}(where: { title_EQ: "${oldTitle}" }, update: { title_SET: "${newTitle}" }) {
                                 ${typeMovie.plural} {
                                     title
                                 }
@@ -253,7 +252,7 @@ describe("Delete Subscription", () => {
             .send({
                 query: `
                         mutation {
-                            ${typeActor.operations.update}(where: { name_EQ: "${oldName}" }, update: { name: "${newName}" }) {
+                            ${typeActor.operations.update}(where: { name_EQ: "${oldName}" }, update: { name_SET: "${newName}" }) {
                                 ${typeActor.plural} {
                                     name
                                 }

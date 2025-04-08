@@ -28,7 +28,7 @@ describe("Cypher Points", () => {
         typeDefs = /* GraphQL */ `
             type PointContainer @node {
                 id: String
-                points: [Point]
+                points: [Point!]
             }
         `;
 
@@ -40,7 +40,7 @@ describe("Cypher Points", () => {
     test("Simple Points query", async () => {
         const query = /* GraphQL */ `
             {
-                pointContainers(where: { points_EQ: [{ longitude: 1.0, latitude: 2.0 }] }) {
+                pointContainers(where: { points: { eq: [{ longitude: 1.0, latitude: 2.0 }] } }) {
                     points {
                         longitude
                         latitude
@@ -53,7 +53,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE this.points = [var0 IN $param0 | point(var0)]
             RETURN this { .points } AS this"
         `);
@@ -73,7 +74,7 @@ describe("Cypher Points", () => {
     test("Simple Points NOT query", async () => {
         const query = /* GraphQL */ `
             {
-                pointContainers(where: { NOT: { points_EQ: [{ longitude: 1.0, latitude: 2.0 }] } }) {
+                pointContainers(where: { NOT: { points: { eq: [{ longitude: 1.0, latitude: 2.0 }] } } }) {
                     points {
                         longitude
                         latitude
@@ -85,7 +86,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE NOT (this.points = [var0 IN $param0 | point(var0)])
             RETURN this { .points } AS this"
         `);
@@ -105,7 +107,7 @@ describe("Cypher Points", () => {
     test("Simple Points INCLUDES query", async () => {
         const query = /* GraphQL */ `
             {
-                pointContainers(where: { points_INCLUDES: { longitude: 1.0, latitude: 2.0 } }) {
+                pointContainers(where: { points: { includes: { longitude: 1.0, latitude: 2.0 } } }) {
                     points {
                         longitude
                         latitude
@@ -118,7 +120,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE point($param0) IN this.points
             RETURN this { .points } AS this"
         `);
@@ -151,7 +154,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:PointContainer)
@@ -182,7 +186,7 @@ describe("Cypher Points", () => {
         const query = /* GraphQL */ `
             mutation {
                 updatePointContainers(
-                    where: { id_EQ: "id" }
+                    where: { id: { eq: "id" } }
                     update: { points_SET: [{ longitude: 1.0, latitude: 2.0 }] }
                 ) {
                     pointContainers {
@@ -199,7 +203,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE this.id = $param0
             SET this.points = [p in $this_update_points_SET | point(p)]
             RETURN collect(DISTINCT this { .points }) AS data"

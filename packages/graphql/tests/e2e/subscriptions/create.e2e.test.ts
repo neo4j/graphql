@@ -39,10 +39,10 @@ describe("Create Subscription", () => {
         typeMovie = testHelper.createUniqueType("Movie");
         typeActor = testHelper.createUniqueType("Actor");
 
-        const typeDefs = `
-         type ${typeMovie} @node {
+        const typeDefs = /* GraphQL */ `
+         type ${typeMovie} @node @subscription {
              title: String
-             actors: [${typeActor}]
+             actors: [${typeActor}!]! @relationship(type: "ACTED_IN", direction: IN)
          }
          type ${typeActor} @subscription(events: []) @node {
             name: String

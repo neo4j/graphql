@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { upperFirst } from "../../../utils/upper-first";
 import type { ConcreteEntityAdapter } from "./ConcreteEntityAdapter";
 import type { RootTypeFieldNames as ImplementingTypeRootTypeFieldNames } from "./ImplementingEntityOperations";
 import { ImplementingEntityOperations } from "./ImplementingEntityOperations";
@@ -31,13 +30,7 @@ type RootTypeFieldNames = ImplementingTypeRootTypeFieldNames & {
     };
 };
 
-type FulltextTypeNames = {
-    result: string;
-    where: string;
-    sort: string;
-};
-
-type VectorTypeNames = {
+type IndexTypeNames = {
     connection: string;
     edge: string;
     where: string;
@@ -47,18 +40,6 @@ type VectorTypeNames = {
 export class ConcreteEntityOperations extends ImplementingEntityOperations<ConcreteEntityAdapter> {
     constructor(concreteEntityAdapter: ConcreteEntityAdapter) {
         super(concreteEntityAdapter);
-    }
-
-    public get fullTextInputTypeName(): string {
-        return `${this.entityAdapter.name}Fulltext`;
-    }
-
-    public getFullTextIndexInputTypeName(indexName: string): string {
-        return `${this.entityAdapter.name}${upperFirst(indexName)}Fulltext`;
-    }
-
-    public getFullTextIndexQueryFieldName(indexName: string): string {
-        return `${this.entityAdapter.plural}Fulltext${upperFirst(indexName)}`;
     }
 
     public get relationshipsSubscriptionWhereInputTypeName(): string {
@@ -85,20 +66,21 @@ export class ConcreteEntityOperations extends ImplementingEntityOperations<Concr
         };
     }
 
-    public get fulltextTypeNames(): FulltextTypeNames {
+    public get fulltextTypeNames(): IndexTypeNames {
         return {
-            result: `${this.pascalCaseSingular}FulltextResult`,
-            where: `${this.pascalCaseSingular}FulltextWhere`,
-            sort: `${this.pascalCaseSingular}FulltextSort`,
+            connection: `${this.pascalCasePlural}IndexConnection`,
+            edge: `${this.pascalCaseSingular}IndexEdge`,
+            where: `${this.pascalCaseSingular}IndexWhere`,
+            sort: `${this.pascalCaseSingular}IndexSort`,
         };
     }
 
-    public get vectorTypeNames(): VectorTypeNames {
+    public get vectorTypeNames(): IndexTypeNames {
         return {
-            connection: `${this.pascalCasePlural}VectorConnection`,
-            edge: `${this.pascalCaseSingular}VectorEdge`,
-            where: `${this.pascalCaseSingular}VectorWhere`,
-            sort: `${this.pascalCaseSingular}VectorSort`,
+            connection: `${this.pascalCasePlural}IndexConnection`,
+            edge: `${this.pascalCaseSingular}IndexEdge`,
+            where: `${this.pascalCaseSingular}IndexWhere`,
+            sort: `${this.pascalCaseSingular}IndexSort`,
         };
     }
 }

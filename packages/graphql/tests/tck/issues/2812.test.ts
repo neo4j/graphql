@@ -29,24 +29,26 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         }
 
         type Actor
-            @authorization(validate: [{ when: [BEFORE], where: { node: { nodeCreatedBy_EQ: "$jwt.sub" } } }])
+            @authorization(validate: [{ when: [BEFORE], where: { node: { nodeCreatedBy: { eq: "$jwt.sub" } } } }])
             @node {
-            id: ID! @id @unique
+            id: ID! @id
             name: String
             nodeCreatedBy: String
             fieldA: String
                 @authorization(
-                    validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "role-A" } } }]
+                    validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles: { includes: "role-A" } } } }]
                 )
             fieldB: String
                 @authorization(
-                    validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "role-B" } } }]
+                    validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles: { includes: "role-B" } } } }]
                 )
             movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
         }
         type Movie
             @node
-            @authorization(validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles_INCLUDES: "admin" } } }]) {
+            @authorization(
+                validate: [{ operations: [CREATE, UPDATE], where: { jwt: { roles: { includes: "admin" } } } }]
+            ) {
             id: ID
             actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
         }
@@ -82,7 +84,8 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -112,6 +115,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 WITH create_this1
                 MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this7.nodeCreatedBy = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH DISTINCT create_this7
                 WITH create_this7 { .name } AS create_this7
                 RETURN collect(create_this7) AS create_var8
             }
@@ -192,7 +196,8 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -222,6 +227,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 WITH create_this1
                 MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this7.nodeCreatedBy = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH DISTINCT create_this7
                 WITH create_this7 { .name } AS create_this7
                 RETURN collect(create_this7) AS create_var8
             }
@@ -300,7 +306,8 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -328,6 +335,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
                 WITH create_this1
                 MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this7.nodeCreatedBy = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH DISTINCT create_this7
                 WITH create_this7 { .name } AS create_this7
                 RETURN collect(create_this7) AS create_var8
             }

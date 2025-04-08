@@ -40,7 +40,7 @@ describe("Cypher Arrays", () => {
     test("WHERE INCLUDES", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { ratings_INCLUDES: 4.0 }) {
+                movies(where: { ratings: { includes: 4.0 } }) {
                     title
                     ratings
                 }
@@ -50,7 +50,8 @@ describe("Cypher Arrays", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE $param0 IN this.ratings
             RETURN this { .title, .ratings } AS this"
         `);
@@ -61,6 +62,4 @@ describe("Cypher Arrays", () => {
             }"
         `);
     });
-
-   
 });

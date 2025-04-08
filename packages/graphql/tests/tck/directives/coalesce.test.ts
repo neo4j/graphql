@@ -62,13 +62,13 @@ describe("Cypher coalesce()", () => {
             ) {
                 users(
                     where: {
-                        id_EQ: $id
-                        name_MATCHES: $name
-                        NOT: { verified_EQ: $verified }
-                        numberOfFriends_GT: $numberOfFriends
-                        rating_LT: $rating
-                        fromInterface_EQ: $fromInterface
-                        toBeOverridden_EQ: $toBeOverridden
+                        id: { eq: $id }
+                        name: { matches: $name }
+                        NOT: { verified: { eq: $verified } }
+                        numberOfFriends: { gt: $numberOfFriends }
+                        rating: { lt: $rating }
+                        fromInterface: { eq: $fromInterface }
+                        toBeOverridden: { eq: $toBeOverridden }
                     }
                 ) {
                     name
@@ -89,9 +89,10 @@ describe("Cypher coalesce()", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WHERE (coalesce(this.id, \\"00000000-00000000-00000000-00000000\\") = $param0 AND coalesce(this.name, \\"Jane Smith\\") =~ $param1 AND coalesce(this.numberOfFriends, 0) > $param2 AND coalesce(this.rating, 2.5) < $param3 AND this.fromInterface = $param4 AND coalesce(this.toBeOverridden, \\"Overridden\\") = $param5 AND NOT (coalesce(this.verified, false) = $param6))
-            RETURN this { .name } AS this"
+            RETURN this { name: coalesce(this.name, \\"Jane Smith\\") } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -135,7 +136,7 @@ describe("Cypher coalesce()", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { status_EQ: ACTIVE }) {
+                movies(where: { status: { eq: ACTIVE } }) {
                     id
                     status
                 }
@@ -145,9 +146,10 @@ describe("Cypher coalesce()", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE coalesce(this.status, \\"ACTIVE\\") = $param0
-            RETURN this { .id, .status } AS this"
+            RETURN this { .id, status: coalesce(this.status, \\"ACTIVE\\") } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -187,7 +189,7 @@ describe("Cypher coalesce()", () => {
         const query = /* GraphQL */ `
             query Actors {
                 actors {
-                    moviesConnection(where: { node: { status_EQ: ACTIVE } }) {
+                    moviesConnection(where: { node: { status: { eq: ACTIVE } } }) {
                         edges {
                             node {
                                 id
@@ -202,7 +204,8 @@ describe("Cypher coalesce()", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
@@ -213,7 +216,7 @@ describe("Cypher coalesce()", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { id: this1.id, status: this1.status, __resolveType: \\"Movie\\" } }) AS var2
+                    RETURN collect({ node: { id: this1.id, status: coalesce(this1.status, \\"ACTIVE\\"), __resolveType: \\"Movie\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }
@@ -250,7 +253,7 @@ describe("Cypher coalesce()", () => {
         const query = /* GraphQL */ `
             query Actors {
                 actors {
-                    moviesConnection(where: { node: { statuses_EQ: [ACTIVE, INACTIVE] } }) {
+                    moviesConnection(where: { node: { statuses: { eq: [ACTIVE, INACTIVE] } } }) {
                         edges {
                             node {
                                 id
@@ -265,7 +268,8 @@ describe("Cypher coalesce()", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
@@ -276,7 +280,7 @@ describe("Cypher coalesce()", () => {
                     WITH edges
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { id: this1.id, statuses: this1.statuses, __resolveType: \\"Movie\\" } }) AS var2
+                    RETURN collect({ node: { id: this1.id, statuses: coalesce(this1.statuses, [\\"ACTIVE\\", \\"INACTIVE\\"]), __resolveType: \\"Movie\\" } }) AS var2
                 }
                 RETURN { edges: var2, totalCount: totalCount } AS var3
             }

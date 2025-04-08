@@ -25,16 +25,16 @@ import { Neo4jGraphQL } from "../../src";
 describe("Authorization", () => {
     test("Authorization", async () => {
         const typeDefs = gql`
-            type User @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @node {
+            type User @authorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) @node {
                 id: ID!
                 name: String!
                 posts: [User!]! @relationship(type: "HAS_AUTHOR", direction: OUT)
             }
 
-            type Post @authorization(filter: [{ where: { node: { id: "$jwt.sub" } } }]) @node {
+            type Post @authorization(filter: [{ where: { node: { id_EQ: "$jwt.sub" } } }]) @node {
                 id: ID!
                 name: String!
-                author: User! @relationship(type: "HAS_AUTHOR", direction: IN)
+                author: [User!]! @relationship(type: "HAS_AUTHOR", direction: IN)
             }
         `;
 
@@ -45,6 +45,11 @@ describe("Authorization", () => {
             "schema {
               query: Query
               mutation: Mutation
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type Count {
@@ -82,9 +87,38 @@ describe("Authorization", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
             }
 
             type Mutation {
@@ -105,9 +139,8 @@ describe("Authorization", () => {
             }
 
             type Post {
-              author(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): User!
-              authorAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: UserWhere): PostUserAuthorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"authorConnection\\\\\\" instead\\")
-              authorConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
+              author(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
+              authorConnection(after: String, first: Int, sort: [PostAuthorConnectionSort!], where: PostAuthorConnectionWhere): PostAuthorConnection!
               id: ID!
               name: String!
             }
@@ -118,13 +151,6 @@ describe("Authorization", () => {
             }
 
             type PostAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              name: StringAggregateSelection!
-            }
-
-            type PostAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               name: StringAggregateSelection!
             }
 
@@ -132,7 +158,7 @@ describe("Authorization", () => {
               AND: [PostAuthorAggregateInput!]
               NOT: PostAuthorAggregateInput
               OR: [PostAuthorAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -142,11 +168,7 @@ describe("Authorization", () => {
             }
 
             input PostAuthorConnectFieldInput {
-              connect: UserConnectInput
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
+              connect: [UserConnectInput!]
               where: UserConnectWhere
             }
 
@@ -155,6 +177,35 @@ describe("Authorization", () => {
               edges: [PostAuthorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input PostAuthorConnectionAggregateInput {
+              AND: [PostAuthorConnectionAggregateInput!]
+              NOT: PostAuthorConnectionAggregateInput
+              OR: [PostAuthorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PostAuthorNodeAggregationWhereInput
+            }
+
+            input PostAuthorConnectionFilters {
+              \\"\\"\\"Filter Posts by aggregating results on related PostAuthorConnections\\"\\"\\"
+              aggregate: PostAuthorConnectionAggregateInput
+              \\"\\"\\"
+              Return Posts where all of the related PostAuthorConnections match this filter
+              \\"\\"\\"
+              all: PostAuthorConnectionWhere
+              \\"\\"\\"
+              Return Posts where none of the related PostAuthorConnections match this filter
+              \\"\\"\\"
+              none: PostAuthorConnectionWhere
+              \\"\\"\\"
+              Return Posts where one of the related PostAuthorConnections match this filter
+              \\"\\"\\"
+              single: PostAuthorConnectionWhere
+              \\"\\"\\"
+              Return Posts where some of the related PostAuthorConnections match this filter
+              \\"\\"\\"
+              some: PostAuthorConnectionWhere
             }
 
             input PostAuthorConnectionSort {
@@ -183,39 +234,30 @@ describe("Authorization", () => {
             }
 
             input PostAuthorFieldInput {
-              connect: PostAuthorConnectFieldInput
-              create: PostAuthorCreateFieldInput
+              connect: [PostAuthorConnectFieldInput!]
+              create: [PostAuthorCreateFieldInput!]
             }
 
             input PostAuthorNodeAggregationWhereInput {
               AND: [PostAuthorNodeAggregationWhereInput!]
               NOT: PostAuthorNodeAggregationWhereInput
               OR: [PostAuthorNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type PostAuthorRelationship {
@@ -229,12 +271,11 @@ describe("Authorization", () => {
             }
 
             input PostAuthorUpdateFieldInput {
-              connect: PostAuthorConnectFieldInput
-              create: PostAuthorCreateFieldInput
-              delete: PostAuthorDeleteFieldInput
-              disconnect: PostAuthorDisconnectFieldInput
+              connect: [PostAuthorConnectFieldInput!]
+              create: [PostAuthorCreateFieldInput!]
+              delete: [PostAuthorDeleteFieldInput!]
+              disconnect: [PostAuthorDisconnectFieldInput!]
               update: PostAuthorUpdateConnectionInput
-              where: PostAuthorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PostAuthorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input PostCreateInput {
@@ -244,21 +285,12 @@ describe("Authorization", () => {
             }
 
             input PostDeleteInput {
-              author: PostAuthorDeleteFieldInput
+              author: [PostAuthorDeleteFieldInput!]
             }
 
             type PostEdge {
               cursor: String!
               node: Post!
-            }
-
-            input PostOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more PostSort objects to sort Posts by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [PostSort!]
             }
 
             \\"\\"\\"
@@ -270,11 +302,11 @@ describe("Authorization", () => {
             }
 
             input PostUpdateInput {
-              author: PostAuthorUpdateFieldInput
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              name_SET: String
+              author: [PostAuthorUpdateFieldInput!]
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             type PostUserAuthorAggregateSelection {
@@ -282,13 +314,7 @@ describe("Authorization", () => {
               node: PostUserAuthorNodeAggregateSelection
             }
 
-            type PostUserAuthorAggregationSelection {
-              count: Int!
-              node: PostUserAuthorNodeAggregateSelection
-            }
-
             type PostUserAuthorNodeAggregateSelection {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               name: StringAggregateSelection!
             }
 
@@ -296,21 +322,45 @@ describe("Authorization", () => {
               AND: [PostWhere!]
               NOT: PostWhere
               OR: [PostWhere!]
-              author: UserWhere
-              authorAggregate: PostAuthorAggregateInput
-              authorConnection: PostAuthorConnectionWhere
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              author: UserRelationshipFilters
+              authorAggregate: PostAuthorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the authorConnection filter, please use { authorConnection: { aggregate: {...} } } instead\\")
+              authorConnection: PostAuthorConnectionFilters
+              \\"\\"\\"
+              Return Posts where all of the related PostAuthorConnections match this filter
+              \\"\\"\\"
+              authorConnection_ALL: PostAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { all: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return Posts where none of the related PostAuthorConnections match this filter
+              \\"\\"\\"
+              authorConnection_NONE: PostAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { none: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return Posts where one of the related PostAuthorConnections match this filter
+              \\"\\"\\"
+              authorConnection_SINGLE: PostAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { single: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return Posts where some of the related PostAuthorConnections match this filter
+              \\"\\"\\"
+              authorConnection_SOME: PostAuthorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'authorConnection: { some: { node: ... } } }' instead.\\")
+              \\"\\"\\"Return Posts where all of the related Users match this filter\\"\\"\\"
+              author_ALL: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: { all: ... }' instead.\\")
+              \\"\\"\\"Return Posts where none of the related Users match this filter\\"\\"\\"
+              author_NONE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: { none: ... }' instead.\\")
+              \\"\\"\\"Return Posts where one of the related Users match this filter\\"\\"\\"
+              author_SINGLE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  single: ... }' instead.\\")
+              \\"\\"\\"Return Posts where some of the related Users match this filter\\"\\"\\"
+              author_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'author: {  some: ... }' instead.\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type PostsConnection {
@@ -321,11 +371,9 @@ describe("Authorization", () => {
             }
 
             type Query {
-              posts(limit: Int, offset: Int, options: PostOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PostSort!], where: PostWhere): [Post!]!
-              postsAggregate(where: PostWhere): PostAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\" instead\\")
+              posts(limit: Int, offset: Int, sort: [PostSort!], where: PostWhere): [Post!]!
               postsConnection(after: String, first: Int, sort: [PostSort!], where: PostWhere): PostsConnection!
-              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
+              users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -340,6 +388,27 @@ describe("Authorization", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -365,9 +434,8 @@ describe("Authorization", () => {
             type User {
               id: ID!
               name: String!
-              posts(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              postsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: UserWhere): UserUserPostsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"postsConnection\\\\\\" instead\\")
-              postsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
+              posts(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
+              postsConnection(after: String, first: Int, sort: [UserPostsConnectionSort!], where: UserPostsConnectionWhere): UserPostsConnection!
             }
 
             type UserAggregate {
@@ -376,13 +444,6 @@ describe("Authorization", () => {
             }
 
             type UserAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              name: StringAggregateSelection!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               name: StringAggregateSelection!
             }
 
@@ -413,20 +474,11 @@ describe("Authorization", () => {
               node: User!
             }
 
-            input UserOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [UserSort!]
-            }
-
             input UserPostsAggregateInput {
               AND: [UserPostsAggregateInput!]
               NOT: UserPostsAggregateInput
               OR: [UserPostsAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -437,10 +489,6 @@ describe("Authorization", () => {
 
             input UserPostsConnectFieldInput {
               connect: [UserConnectInput!]
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
               where: UserConnectWhere
             }
 
@@ -449,6 +497,35 @@ describe("Authorization", () => {
               edges: [UserPostsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input UserPostsConnectionAggregateInput {
+              AND: [UserPostsConnectionAggregateInput!]
+              NOT: UserPostsConnectionAggregateInput
+              OR: [UserPostsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: UserPostsNodeAggregationWhereInput
+            }
+
+            input UserPostsConnectionFilters {
+              \\"\\"\\"Filter Users by aggregating results on related UserPostsConnections\\"\\"\\"
+              aggregate: UserPostsConnectionAggregateInput
+              \\"\\"\\"
+              Return Users where all of the related UserPostsConnections match this filter
+              \\"\\"\\"
+              all: UserPostsConnectionWhere
+              \\"\\"\\"
+              Return Users where none of the related UserPostsConnections match this filter
+              \\"\\"\\"
+              none: UserPostsConnectionWhere
+              \\"\\"\\"
+              Return Users where one of the related UserPostsConnections match this filter
+              \\"\\"\\"
+              single: UserPostsConnectionWhere
+              \\"\\"\\"
+              Return Users where some of the related UserPostsConnections match this filter
+              \\"\\"\\"
+              some: UserPostsConnectionWhere
             }
 
             input UserPostsConnectionSort {
@@ -485,31 +562,22 @@ describe("Authorization", () => {
               AND: [UserPostsNodeAggregationWhereInput!]
               NOT: UserPostsNodeAggregationWhereInput
               OR: [UserPostsNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type UserPostsRelationship {
@@ -528,7 +596,17 @@ describe("Authorization", () => {
               delete: [UserPostsDeleteFieldInput!]
               disconnect: [UserPostsDisconnectFieldInput!]
               update: UserPostsUpdateConnectionInput
-              where: UserPostsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"UserPostsUpdateConnectionInput\\\\\\" instead\\")
+            }
+
+            input UserRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Users match this filter\\"\\"\\"
+              all: UserWhere
+              \\"\\"\\"Filter type where none of the related Users match this filter\\"\\"\\"
+              none: UserWhere
+              \\"\\"\\"Filter type where one of the related Users match this filter\\"\\"\\"
+              single: UserWhere
+              \\"\\"\\"Filter type where some of the related Users match this filter\\"\\"\\"
+              some: UserWhere
             }
 
             \\"\\"\\"
@@ -540,10 +618,10 @@ describe("Authorization", () => {
             }
 
             input UserUpdateInput {
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              name_SET: String
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
               posts: [UserPostsUpdateFieldInput!]
             }
 
@@ -552,13 +630,7 @@ describe("Authorization", () => {
               node: UserUserPostsNodeAggregateSelection
             }
 
-            type UserUserPostsAggregationSelection {
-              count: Int!
-              node: UserUserPostsNodeAggregateSelection
-            }
-
             type UserUserPostsNodeAggregateSelection {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               name: StringAggregateSelection!
             }
 
@@ -566,43 +638,45 @@ describe("Authorization", () => {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
-              postsAggregate: UserPostsAggregateInput
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+              posts: UserRelationshipFilters
+              postsAggregate: UserPostsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the postsConnection filter, please use { postsConnection: { aggregate: {...} } } instead\\")
+              postsConnection: UserPostsConnectionFilters
               \\"\\"\\"
               Return Users where all of the related UserPostsConnections match this filter
               \\"\\"\\"
-              postsConnection_ALL: UserPostsConnectionWhere
+              postsConnection_ALL: UserPostsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where none of the related UserPostsConnections match this filter
               \\"\\"\\"
-              postsConnection_NONE: UserPostsConnectionWhere
+              postsConnection_NONE: UserPostsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where one of the related UserPostsConnections match this filter
               \\"\\"\\"
-              postsConnection_SINGLE: UserPostsConnectionWhere
+              postsConnection_SINGLE: UserPostsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Users where some of the related UserPostsConnections match this filter
               \\"\\"\\"
-              postsConnection_SOME: UserPostsConnectionWhere
+              postsConnection_SOME: UserPostsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'postsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Users where all of the related Users match this filter\\"\\"\\"
-              posts_ALL: UserWhere
+              posts_ALL: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'posts: { all: ... }' instead.\\")
               \\"\\"\\"Return Users where none of the related Users match this filter\\"\\"\\"
-              posts_NONE: UserWhere
+              posts_NONE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'posts: { none: ... }' instead.\\")
               \\"\\"\\"Return Users where one of the related Users match this filter\\"\\"\\"
-              posts_SINGLE: UserWhere
+              posts_SINGLE: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'posts: {  single: ... }' instead.\\")
               \\"\\"\\"Return Users where some of the related Users match this filter\\"\\"\\"
-              posts_SOME: UserWhere
+              posts_SOME: UserWhere @deprecated(reason: \\"Please use the relevant generic filter 'posts: {  some: ... }' instead.\\")
             }
 
             type UsersConnection {

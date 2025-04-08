@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
             type Book @node {
                 name: String!
                 year: Int
-                refID: ID @id @unique
+                refID: ID @id
                 soldCopies: Int
                     @cypher(
                         statement: "OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result"
@@ -90,7 +90,8 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "CYPHER 5
+            MATCH (this:Author)
             CALL {
                 WITH this
                 CALL {
@@ -134,7 +135,8 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Author)
+            "CYPHER 5
+            MATCH (this:Author)
             CALL {
                 WITH this
                 CALL {

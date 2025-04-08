@@ -29,23 +29,30 @@ import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
 import { PageInfo } from "../../../graphql/objects/PageInfo";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { translateRead } from "../../../translate";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { isNeoInt } from "../../../utils/utils";
+import { makeSortInput } from "../../generation/sort-and-options-input";
 import { createConnectionWithEdgeProperties } from "../../pagination";
 import { graphqlDirectivesToCompose } from "../../to-compose";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 import { emptyConnection } from "./empty-connection";
+import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
 
 export function rootConnectionResolver({
     composer,
     entityAdapter,
     propagatedDirectives,
+    isLimitRequired,
+    schemaModel,
 }: {
     composer: SchemaComposer;
     entityAdapter: InterfaceEntityAdapter | ConcreteEntityAdapter;
     propagatedDirectives: DirectiveNode[];
+    isLimitRequired: boolean | undefined;
+    schemaModel: Neo4jGraphQLSchemaModel;
 }) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info, { args });
@@ -99,7 +106,7 @@ export function rootConnectionResolver({
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
 
-    if (entityAdapter.isReadable) {
+    if (entityAdapter.isReadable(schemaModel)) {
         rootConnection.addFields({
             edges: rootEdge.NonNull.List.NonNull,
             totalCount: new GraphQLNonNull(GraphQLInt),
@@ -107,7 +114,7 @@ export function rootConnectionResolver({
         });
     }
 
-    if (entityAdapter.isAggregable) {
+    if (entityAdapter.isAggregable(schemaModel)) {
         rootConnection.addFields({
             aggregate: `${entityAdapter.operations.aggregateTypeNames.connection}!`,
         });
@@ -115,27 +122,18 @@ export function rootConnectionResolver({
 
     // since sort is not created when there is nothing to sort, we check for its existence
     let sortArg: InputTypeComposer | undefined;
-    if (composer.has(entityAdapter.operations.sortInputTypeName)) {
-        sortArg = composer.getITC(entityAdapter.operations.sortInputTypeName);
+    if (!(entityAdapter instanceof UnionEntityAdapter)) {
+        sortArg = makeSortInput({ entityAdapter, userDefinedFieldDirectives: new Map(), composer });
     }
 
     return {
         type: rootConnection.NonNull,
         resolve,
         args: {
-            first: GraphQLInt,
+            first: isLimitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
             after: GraphQLString,
             where: entityAdapter.operations.whereInputTypeName,
             ...(sortArg ? { sort: sortArg.NonNull.List } : {}),
-            ...(entityAdapter.annotations.fulltext
-                ? {
-                      fulltext: {
-                          type: entityAdapter.operations.fullTextInputTypeName,
-                          description:
-                              "Query a full-text index. Allows for the aggregation of results, but does not return the query score. Use the root full-text query fields if you require the score.",
-                      },
-                  }
-                : {}),
         },
     };
 }

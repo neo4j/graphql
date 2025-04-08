@@ -38,9 +38,9 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
         testNameDetails = testHelper.createUniqueType("NameDetails");
         testMasterData = testHelper.createUniqueType("MasterData");
 
-        typeDefs = `
+        typeDefs = /* GraphQL */ `
             type ${testSeries} @node {
-                id: ID! @unique
+                id: ID!
                 current: Boolean!
                 architecture: [${testMasterData}!]!
                     @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
@@ -55,15 +55,15 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
             }
     
             type ${testMasterData} @node {
-                id: ID! @unique
+                id: ID!
                 current: Boolean!
-                nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
+                nameDetails: [${testNameDetails}!]! @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
             }
         `;
 
         extendedTypeDefs = `
             type ${testMain} @node {
-                id: ID! @unique
+                id: ID!
                 current: Boolean!
                 main: [${testSeries}!]! @relationship(type: "MAIN", properties: "RelationProps", direction: OUT)
             }
@@ -91,7 +91,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 CREATE (:${testNameDetails} { fullName: "MHBB" })<-[:HAS_NAME { current: true }]-(:${testMasterData} { current: true, id: "523" })<-[:ARCHITECTURE { current: true }]-(:${testSeries} { current: true, id: "621" })
             `);
 
-        const query = `
+        const query = /* GraphQL */ `
                 query (
                     $where: ${testSeries}Where = { current_EQ: true }
                     $connectionWhere: RelationPropsWhere = { current_EQ: true }
@@ -120,7 +120,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 current_EQ: true,
                 architectureConnection_SINGLE: {
                     node: {
-                        nameDetailsConnection: {
+                        nameDetailsConnection_SINGLE: {
                             node: {
                                 fullName_EQ: "MHA",
                             },
@@ -207,7 +207,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 current_EQ: true,
                 architectureConnection_SINGLE: {
                     node: {
-                        nameDetailsConnection: {
+                        nameDetailsConnection_SINGLE: {
                             node: {
                                 fullName_EQ: "MHA",
                             },
@@ -315,7 +315,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                 current_EQ: true,
                 architectureConnection_SINGLE: {
                     node: {
-                        nameDetailsConnection: {
+                        nameDetailsConnection_SINGLE: {
                             node: {
                                 fullName_EQ: "MHA",
                             },
@@ -397,8 +397,8 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
 
         const query = `
                 query (
-                    $where: ${testMain}Where = { current: true }
-                    $connectionWhere: RelationPropsWhere = { current: true }
+                    $where: ${testMain}Where = { current_EQ: true }
+                    $connectionWhere: RelationPropsWhere = { current_EQ: true }
                 ) {
                     ${testMain.plural}(where: $where) {
                         id
@@ -432,7 +432,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                     node: {
                         architectureConnection_SINGLE: {
                             node: {
-                                nameDetailsConnection: {
+                                nameDetailsConnection_SINGLE: {
                                     node: {
                                         fullName_EQ: "MHA",
                                     },
@@ -540,7 +540,7 @@ describe("https://github.com/neo4j/graphql/issues/1221", () => {
                     node: {
                         architectureConnection_SINGLE: {
                             node: {
-                                nameDetailsConnection: {
+                                nameDetailsConnection_SINGLE: {
                                     node: {
                                         fullName_EQ: "MHA",
                                     },

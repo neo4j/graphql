@@ -30,12 +30,9 @@ import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/Uni
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
-import { DEPRECATE_CONNECT_OR_CREATE } from "../constants";
 import { concreteEntityToCreateInputFields } from "../to-compose";
 import { withConnectFieldInputType } from "./connect-input";
-import { withConnectOrCreateFieldInputType } from "./connect-or-create-input";
 import { withCreateFieldInputType } from "./relation-input";
-import { shouldAddDeprecatedFields } from "./utils";
 
 export function withCreateInputType({
     entityAdapter,
@@ -157,7 +154,7 @@ function makeRelationshipsInputType({
             features,
         });
     } else {
-        return withFieldInputType({ relationshipAdapter, composer, userDefinedFieldDirectives, features });
+        return withFieldInputType({ relationshipAdapter, composer, userDefinedFieldDirectives });
     }
 }
 
@@ -200,7 +197,6 @@ function makeUnionCreateInputTypeFields({
     composer,
     deprecatedDirectives,
     userDefinedFieldDirectives,
-    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
@@ -218,7 +214,6 @@ function makeUnionCreateInputTypeFields({
             ifUnionMemberEntity: memberEntity,
             composer,
             userDefinedFieldDirectives,
-            features,
         });
         if (fieldInput) {
             fields[memberEntity.name] = {
@@ -235,19 +230,17 @@ export function withFieldInputType({
     composer,
     userDefinedFieldDirectives,
     ifUnionMemberEntity,
-    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
-    features?: Neo4jFeaturesSettings;
 }): InputTypeComposer | undefined {
     const typeName = relationshipAdapter.operations.getFieldInputTypeName(ifUnionMemberEntity);
     if (composer.has(typeName)) {
         return composer.getITC(typeName);
     }
-    if (!relationshipAdapter.shouldGenerateFieldInputType(ifUnionMemberEntity)) {
+    if (!relationshipAdapter.shouldGenerateFieldInputType()) {
         return;
     }
     const fields = makeFieldInputTypeFields({
@@ -255,7 +248,6 @@ export function withFieldInputType({
         composer,
         userDefinedFieldDirectives,
         ifUnionMemberEntity,
-        features,
     });
     if (!Object.keys(fields).length) {
         return;
@@ -272,50 +264,18 @@ function makeFieldInputTypeFields({
     composer,
     userDefinedFieldDirectives,
     ifUnionMemberEntity,
-    features,
 }: {
     relationshipAdapter: RelationshipAdapter | RelationshipDeclarationAdapter;
     composer: SchemaComposer;
     userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
     ifUnionMemberEntity?: ConcreteEntityAdapter;
-    features?: Neo4jFeaturesSettings;
 }): InputTypeComposerFieldConfigMapDefinition {
     const fields = {};
-
-    if (shouldAddDeprecatedFields(features, "connectOrCreate")) {
-        let connectOrCreateFieldInputType: InputTypeComposer | undefined;
-        if (relationshipAdapter.target instanceof ConcreteEntityAdapter) {
-            connectOrCreateFieldInputType = withConnectOrCreateFieldInputType({
-                relationshipAdapter,
-                composer,
-                userDefinedFieldDirectives,
-            });
-        } else if (relationshipAdapter.target instanceof UnionEntityAdapter) {
-            if (!ifUnionMemberEntity) {
-                throw new Error("Member Entity required.");
-            }
-            connectOrCreateFieldInputType = withConnectOrCreateFieldInputType({
-                relationshipAdapter,
-                composer,
-                userDefinedFieldDirectives,
-                ifUnionMemberEntity,
-            });
-        }
-        if (connectOrCreateFieldInputType) {
-            fields["connectOrCreate"] = {
-                type: relationshipAdapter.isList
-                    ? connectOrCreateFieldInputType.NonNull.List
-                    : connectOrCreateFieldInputType,
-                directives: [DEPRECATE_CONNECT_OR_CREATE],
-            };
-        }
-    }
 
     const connectFieldInputType = withConnectFieldInputType({
         relationshipAdapter,
         ifUnionMemberEntity,
         composer,
-        features,
     });
     if (connectFieldInputType) {
         fields["connect"] = {

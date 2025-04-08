@@ -80,9 +80,18 @@ describe("aggregations-where-node-string - connections", () => {
                     `
         );
 
-        const query = `
+        const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_SHORTEST_LENGTH_EQUAL: ${shortestTestString.length} } } }) {
+                        ${Post.operations.connection}(where: { 
+                            testString: { eq: "${testString}" },
+                            likesConnection: {
+                                aggregate: {
+                                    node: { 
+                                        testString: { shortestLength: { eq: ${shortestTestString.length} } } 
+                                    }
+                                }
+                            }
+                        }) {
                             edges {
                                 node {
                                     testString
@@ -147,9 +156,18 @@ describe("aggregations-where-node-string - connections", () => {
                     `
         );
 
-        const query = `
+        const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_LONGEST_LENGTH_EQUAL: ${longestTestString.length} } } }) {
+                        ${Post.operations.connection}(where: { 
+                            testString: { eq: "${testString}" },
+                            likesConnection: {
+                                aggregate: {
+                                    node: { 
+                                        testString: { longestLength: { eq: ${longestTestString.length} } } 
+                                    }
+                                }
+                            }
+                        }) {
                             edges {
                                 node {
                                     testString
@@ -220,9 +238,18 @@ describe("aggregations-where-node-string - connections", () => {
                     `
             );
 
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_EQUAL: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { 
+                            testString: { eq: "${testString}" },
+                            likesConnection: {
+                                aggregate: {
+                                    node: { 
+                                        testString: { averageLength: { eq: ${avg} } } 
+                                    }
+                                }
+                            }
+                        }) {
                             edges {
                                 node {
                                     testString
@@ -286,9 +313,18 @@ describe("aggregations-where-node-string - connections", () => {
                     `
             );
 
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_GT: ${avgGT} } } }) {
+                        ${Post.operations.connection}(where: { 
+                            testString: { eq: "${testString}" },
+                            likesConnection: {
+                                aggregate: {
+                                    node: { 
+                                        testString: { averageLength: { gt: ${avgGT} } } 
+                                    }
+                                }
+                            }
+                        }) {
                             edges {
                                 node {
                                     testString
@@ -351,9 +387,18 @@ describe("aggregations-where-node-string - connections", () => {
                     `
             );
 
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_GTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { 
+                            testString: { eq: "${testString}" },
+                            likesConnection: {
+                                aggregate: {
+                                    node: { 
+                                        testString: { averageLength: { gte: ${avg} } } 
+                                    }
+                                }
+                            }
+                        }) {
                             edges {
                                 node {
                                     testString
@@ -417,9 +462,18 @@ describe("aggregations-where-node-string - connections", () => {
                     `
             );
 
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_LT: ${avgLT} } } }) {
+                        ${Post.operations.connection}(where: { 
+                            testString: { eq: "${testString}" },
+                            likesConnection: {
+                                aggregate: {
+                                    node: { 
+                                        testString: { averageLength: { lt: ${avgLT} } } 
+                                    }
+                                }
+                            }
+                        }) {
                             edges {
                                 node {
                                     testString
@@ -482,9 +536,18 @@ describe("aggregations-where-node-string - connections", () => {
                     `
             );
 
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_LTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { 
+                            testString: { eq: "${testString}" },
+                            likesConnection: {
+                                aggregate: {
+                                    node: { 
+                                        testString: { averageLength: { lte: ${avg} } } 
+                                    }
+                                }
+                            }
+                        }) {
                             edges {
                                 node {
                                     testString
@@ -581,9 +644,18 @@ describe("aggregations-where-node-string - connections - interface relationships
                     `
         );
 
-        const query = `
+        const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_SHORTEST_LENGTH_EQUAL: ${shortestTestString.length} } } }) {
+                        ${Post.operations.connection}(where: { 
+                            testString: { eq: "${testString}" },
+                            likesConnection: {
+                                aggregate: {
+                                    node: { 
+                                        testString: { shortestLength: { eq: ${shortestTestString.length} } } 
+                                    }
+                                }
+                            }
+                        }) {
                            edges {
                             node {
                                  testString
@@ -648,9 +720,18 @@ describe("aggregations-where-node-string - connections - interface relationships
                     `
         );
 
-        const query = `
+        const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_LONGEST_LENGTH_EQUAL: ${longestTestString.length} } } }) {
+                        ${Post.operations.connection}(where: { 
+                            testString: { eq: "${testString}" },
+                            likesConnection: {
+                                aggregate: {
+                                    node: { 
+                                        testString: { longestLength: { eq: ${longestTestString.length} } } 
+                                    }
+                                }
+                            }
+                        }) {
                             edges {
                                 node {
                                     testString
@@ -721,9 +802,18 @@ describe("aggregations-where-node-string - connections - interface relationships
                     `
             );
 
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_EQUAL: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { 
+                            testString: { eq: "${testString}" },
+                            likesConnection: {
+                                aggregate: {
+                                    node: { 
+                                        testString: { averageLength: { eq: ${avg} } } 
+                                    }
+                                }
+                            }
+                        }) {
                             edges {
                                 node {
                                     testString
@@ -787,9 +877,18 @@ describe("aggregations-where-node-string - connections - interface relationships
                     `
             );
 
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_GT: ${avgGT} } } }) {
+                        ${Post.operations.connection}(where: { 
+                            testString: { eq: "${testString}" },
+                            likesConnection: {
+                                aggregate: {
+                                    node: { 
+                                        testString: { averageLength: { gt: ${avgGT} } } 
+                                    }
+                                }
+                            }
+                        }) {
                             edges {
                                 node {
                                     testString
@@ -852,9 +951,18 @@ describe("aggregations-where-node-string - connections - interface relationships
                     `
             );
 
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_GTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { 
+                            testString: { eq: "${testString}" },
+                            likesConnection: {
+                                aggregate: {
+                                    node: { 
+                                        testString: { averageLength: { gte: ${avg} } } 
+                                    }
+                                }
+                            }
+                        }) {
                             edges {
                                 node {
                                     testString
@@ -918,9 +1026,18 @@ describe("aggregations-where-node-string - connections - interface relationships
                     `
             );
 
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_LT: ${avgLT} } } }) {
+                        ${Post.operations.connection}(where: { 
+                            testString: { eq: "${testString}" },
+                            likesConnection: {
+                                aggregate: {
+                                    node: { 
+                                        testString: { averageLength: { lt: ${avgLT} } } 
+                                    }
+                                }
+                            }
+                        }) {
                             edges {
                                 node {
                                     testString
@@ -983,9 +1100,18 @@ describe("aggregations-where-node-string - connections - interface relationships
                     `
             );
 
-            const query = `
+            const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_AVERAGE_LENGTH_LTE: ${avg} } } }) {
+                        ${Post.operations.connection}(where: { 
+                            testString: { eq: "${testString}" },
+                            likesConnection: {
+                                aggregate: {
+                                    node: { 
+                                        testString: { averageLength: { lte: ${avg} } } 
+                                    }
+                                }
+                            }
+                        }) {
                             edges {
                                 node {
                                     testString
@@ -1087,9 +1213,18 @@ describe("aggregations-where-node-string - connections - relationships of interf
                     `
         );
 
-        const query = `
+        const query = /* GraphQL */ `
                     {
-                        ${Post.operations.connection}(where: { testString_EQ: "${testString}", likesAggregate: { node: { testString_SHORTEST_LENGTH_EQUAL: ${shortestTestString.length} } } }) {
+                        ${Post.operations.connection}(where: { 
+                            testString: { eq: "${testString}" },
+                            likesConnection: {
+                                aggregate: {
+                                    node: { 
+                                        testString: { shortestLength: { eq: ${shortestTestString.length} } } 
+                                    }
+                                }
+                            }
+                        }) {
                             edges {
                                 node {
                                     testString

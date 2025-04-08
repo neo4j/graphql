@@ -49,7 +49,7 @@ describe("Cypher Create Pringles", () => {
                 id: ID!
                 description: String!
                 url: String!
-                color: Color! @relationship(type: "OF_COLOR", direction: OUT)
+                color: [Color!]! @relationship(type: "OF_COLOR", direction: OUT)
             }
         `;
 
@@ -80,7 +80,7 @@ describe("Cypher Create Pringles", () => {
                                             id: 106
                                             description: "Green photo"
                                             url: "g.png"
-                                            color: { connect: { where: { node: { id_EQ: "102" } } } }
+                                            color: { connect: { where: { node: { id: { eq: "102" } } } } }
                                         }
                                     }
                                     {
@@ -88,7 +88,7 @@ describe("Cypher Create Pringles", () => {
                                             id: 107
                                             description: "Red photo"
                                             url: "r.png"
-                                            color: { connect: { where: { node: { id_EQ: "100" } } } }
+                                            color: { connect: { where: { node: { id: { eq: "100" } } } } }
                                         }
                                     }
                                 ]
@@ -106,7 +106,8 @@ describe("Cypher Create Pringles", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Product)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
@@ -137,14 +138,6 @@ describe("Cypher Create Pringles", () => {
             SET this0_photos0_node.url = $this0_photos0_node_url
             MERGE (this0)-[:HAS_PHOTO]->(this0_photos0_node)
             WITH *
-            CALL {
-            	WITH this0_photos0_node
-            	MATCH (this0_photos0_node)-[this0_photos0_node_color_Color_unique:OF_COLOR]->(:Color)
-            	WITH count(this0_photos0_node_color_Color_unique) as c
-            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
-            	RETURN c AS this0_photos0_node_color_Color_unique_ignored
-            }
-            WITH *
             CREATE (this0_photos1_node:Photo)
             SET this0_photos1_node.id = $this0_photos1_node_id
             SET this0_photos1_node.description = $this0_photos1_node_description
@@ -161,21 +154,13 @@ describe("Cypher Create Pringles", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0_photos1_node
             			UNWIND connectedNodes as this0_photos1_node_color_connect0_node
-            			MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
+            			CREATE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
             		}
             	}
             WITH this0, this0_photos1_node, this0_photos1_node_color_connect0_node
             	RETURN count(*) AS connect_this0_photos1_node_color_connect_Color0
             }
             MERGE (this0)-[:HAS_PHOTO]->(this0_photos1_node)
-            WITH *
-            CALL {
-            	WITH this0_photos1_node
-            	MATCH (this0_photos1_node)-[this0_photos1_node_color_Color_unique:OF_COLOR]->(:Color)
-            	WITH count(this0_photos1_node_color_Color_unique) as c
-            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
-            	RETURN c AS this0_photos1_node_color_Color_unique_ignored
-            }
             WITH *
             CREATE (this0_photos2_node:Photo)
             SET this0_photos2_node.id = $this0_photos2_node_id
@@ -193,21 +178,13 @@ describe("Cypher Create Pringles", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0_photos2_node
             			UNWIND connectedNodes as this0_photos2_node_color_connect0_node
-            			MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
+            			CREATE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
             		}
             	}
             WITH this0, this0_photos2_node, this0_photos2_node_color_connect0_node
             	RETURN count(*) AS connect_this0_photos2_node_color_connect_Color0
             }
             MERGE (this0)-[:HAS_PHOTO]->(this0_photos2_node)
-            WITH *
-            CALL {
-            	WITH this0_photos2_node
-            	MATCH (this0_photos2_node)-[this0_photos2_node_color_Color_unique:OF_COLOR]->(:Color)
-            	WITH count(this0_photos2_node_color_Color_unique) as c
-            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
-            	RETURN c AS this0_photos2_node_color_Color_unique_ignored
-            }
             RETURN this0
             }
             CALL {
@@ -249,17 +226,17 @@ describe("Cypher Create Pringles", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateProducts(
-                    where: { name_EQ: "Pringles" }
+                    where: { name: { eq: "Pringles" } }
                     update: {
                         photos: [
                             {
-                                where: { node: { description_EQ: "Green Photo" } }
                                 update: {
+                                    where: { node: { description: { eq: "Green Photo" } } }
                                     node: {
                                         description_SET: "Light Green Photo"
                                         color: {
-                                            connect: { where: { node: { name_EQ: "Light Green" } } }
-                                            disconnect: { where: { node: { name_EQ: "Green" } } }
+                                            connect: { where: { node: { name: { eq: "Light Green" } } } }
+                                            disconnect: { where: { node: { name: { eq: "Green" } } } }
                                         }
                                     }
                                 }
@@ -277,7 +254,8 @@ describe("Cypher Create Pringles", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Product)
+            "CYPHER 5
+            MATCH (this:Product)
             WHERE this.name = $param0
             WITH this
             CALL {
@@ -289,7 +267,7 @@ describe("Cypher Create Pringles", () => {
             	CALL {
             	WITH this, this_photos0
             	OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
-            	WHERE this_photos0_color0_disconnect0.name = $updateProducts_args_update_photos0_update_node_color_disconnect_where_Color_this_photos0_color0_disconnect0param0
+            	WHERE this_photos0_color0_disconnect0.name = $updateProducts_args_update_photos0_update_node_color0_disconnect0_where_Color_this_photos0_color0_disconnect0param0
             	CALL {
             		WITH this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
             		WITH collect(this_photos0_color0_disconnect0) as this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
@@ -310,19 +288,11 @@ describe("Cypher Create Pringles", () => {
             				WITH connectedNodes, parentNodes
             				UNWIND parentNodes as this_photos0
             				UNWIND connectedNodes as this_photos0_color0_connect0_node
-            				MERGE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
+            				CREATE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
             			}
             		}
             	WITH this, this_photos0, this_photos0_color0_connect0_node
             		RETURN count(*) AS connect_this_photos0_color0_connect_Color0
-            	}
-            	WITH this, this_photos0
-            	CALL {
-            		WITH this_photos0
-            		MATCH (this_photos0)-[this_photos0_color_Color_unique:OF_COLOR]->(:Color)
-            		WITH count(this_photos0_color_Color_unique) as c
-            		WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPhoto.color required exactly once', [0])
-            		RETURN c AS this_photos0_color_Color_unique_ignored
             	}
             	RETURN count(*) AS update_this_photos0
             }
@@ -334,36 +304,47 @@ describe("Cypher Create Pringles", () => {
                 \\"param0\\": \\"Pringles\\",
                 \\"updateProducts_args_update_photos0_where_this_photos0param0\\": \\"Green Photo\\",
                 \\"this_update_photos0_description_SET\\": \\"Light Green Photo\\",
-                \\"updateProducts_args_update_photos0_update_node_color_disconnect_where_Color_this_photos0_color0_disconnect0param0\\": \\"Green\\",
+                \\"updateProducts_args_update_photos0_update_node_color0_disconnect0_where_Color_this_photos0_color0_disconnect0param0\\": \\"Green\\",
                 \\"this_photos0_color0_connect0_node_param0\\": \\"Light Green\\",
                 \\"updateProducts\\": {
                     \\"args\\": {
                         \\"update\\": {
                             \\"photos\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"description_EQ\\": \\"Green Photo\\"
-                                        }
-                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"description_SET\\": \\"Light Green Photo\\",
-                                            \\"color\\": {
-                                                \\"connect\\": {
-                                                    \\"where\\": {
-                                                        \\"node\\": {
-                                                            \\"name_EQ\\": \\"Light Green\\"
+                                            \\"color\\": [
+                                                {
+                                                    \\"connect\\": [
+                                                        {
+                                                            \\"where\\": {
+                                                                \\"node\\": {
+                                                                    \\"name\\": {
+                                                                        \\"eq\\": \\"Light Green\\"
+                                                                    }
+                                                                }
+                                                            }
                                                         }
-                                                    },
-                                                    \\"overwrite\\": true
-                                                },
-                                                \\"disconnect\\": {
-                                                    \\"where\\": {
-                                                        \\"node\\": {
-                                                            \\"name_EQ\\": \\"Green\\"
+                                                    ],
+                                                    \\"disconnect\\": [
+                                                        {
+                                                            \\"where\\": {
+                                                                \\"node\\": {
+                                                                    \\"name\\": {
+                                                                        \\"eq\\": \\"Green\\"
+                                                                    }
+                                                                }
+                                                            }
                                                         }
-                                                    }
+                                                    ]
+                                                }
+                                            ]
+                                        },
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"description\\": {
+                                                    \\"eq\\": \\"Green Photo\\"
                                                 }
                                             }
                                         }

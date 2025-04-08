@@ -67,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/4056", () => {
                     { where: { jwt: { roles_INCLUDES: "overlord" } } }
                 ]
             ) {
-            userId: String! @unique
+            userId: String!
             adminAccess: [${Tenant}!]! @relationship(type: "ADMIN_IN", direction: OUT)
           }
           
@@ -81,14 +81,14 @@ describe("https://github.com/neo4j/graphql/issues/4056", () => {
                 ]
             ) {
             id: ID! @id
-            settings: ${Settings}! @relationship(type: "HAS_SETTINGS", direction: OUT)
+            settings: [${Settings}!]! @relationship(type: "HAS_SETTINGS", direction: OUT)
             admins: [${User}!]! @relationship(type: "ADMIN_IN", direction: IN)
           }
           
           
           type ${Settings} @node {
             id: ID! @id
-            tenant: ${Tenant}! @relationship(type: "HAS_SETTINGS", direction: IN)
+            tenant: [${Tenant}!]! @relationship(type: "HAS_SETTINGS", direction: IN)
             openingDays: [${OpeningDay}!]! @relationship(type: "VALID_OPENING_DAYS", direction: OUT)
             name: String
             updatedBy: String @populatedBy(callback: "getUserIDFromContext", operations: [CREATE, UPDATE])
@@ -98,12 +98,12 @@ describe("https://github.com/neo4j/graphql/issues/4056", () => {
             @node
             @authorization(
                 validate: [
-                {  where: { node: {settings: { tenant: { admins_SOME: { userId_EQ: "$jwt.id" } } } } } }
+                {  where: { node: {settings_SOME: { tenant_SOME: { admins_SOME: { userId_EQ: "$jwt.id" } } } } } }
                 { where: { jwt: { roles_INCLUDES: "overlord" } } }
             ]
             ) {
             id: ID! @id
-            settings: ${Settings} @relationship(type: "VALID_OPENING_DAYS", direction: IN)
+            settings: [${Settings}!]! @relationship(type: "VALID_OPENING_DAYS", direction: IN)
             name: String
             updatedBy: String @populatedBy(callback: "getUserIDFromContext", operations: [CREATE, UPDATE])
           }

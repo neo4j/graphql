@@ -49,7 +49,7 @@ describe("delete union relationships", () => {
         const typeDefs = gql`
             type ${episodeType.name} @node {
                 runtime: Int!
-                series: ${seriesType.name} ! @relationship(type: "HAS_EPISODE", direction: IN)
+                series: [${seriesType.name}!]! @relationship(type: "HAS_EPISODE", direction: IN)
             }
 
             union Production = ${movieType.name} | ${seriesType.name}

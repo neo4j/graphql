@@ -31,13 +31,13 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
             type JWT @jwt {
                 id: String
             }
-            type User @authorization(filter: [{ where: { node: { userId_EQ: "$jwt.id" } } }]) @node {
-                userId: String! @unique
+            type User @authorization(filter: [{ where: { node: { userId: { eq: "$jwt.id" } } } }]) @node {
+                userId: String!
                 adminAccess: [Tenant!]! @relationship(type: "ADMIN_IN", direction: OUT, aggregate: false)
             }
 
             type Tenant
-                @authorization(validate: [{ where: { node: { admins_SOME: { userId_EQ: "$jwt.id" } } } }])
+                @authorization(validate: [{ where: { node: { admins: { some: { userId: { eq: "$jwt.id" } } } } } }])
                 @node {
                 id: ID! @id
                 admins: [User!]! @relationship(type: "ADMIN_IN", direction: IN, aggregate: false)
@@ -67,9 +67,13 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
             type Car
                 @node
                 @mutation(operations: [UPDATE])
-                @authorization(validate: [{ where: { node: { owner: { admins_SOME: { userId_EQ: "$jwt.id" } } } } }]) {
+                @authorization(
+                    validate: [
+                        { where: { node: { owner: { some: { admins: { some: { userId: { eq: "$jwt.id" } } } } } } } }
+                    ]
+                ) {
                 id: ID! @id
-                owner: Tenant! @relationship(type: "OWNED_BY", direction: OUT, aggregate: false)
+                owner: [Tenant!]! @relationship(type: "OWNED_BY", direction: OUT, aggregate: false)
                 name: String!
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
@@ -78,9 +82,13 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
             type DeletedCar
                 @node
                 @mutation(operations: [UPDATE])
-                @authorization(validate: [{ where: { node: { owner: { admins_SOME: { userId_EQ: "$jwt.id" } } } } }]) {
+                @authorization(
+                    validate: [
+                        { where: { node: { owner: { some: { admins: { some: { userId: { eq: "$jwt.id" } } } } } } } }
+                    ]
+                ) {
                 id: ID! @id
-                owner: Tenant! @relationship(type: "OWNED_BY", direction: OUT, aggregate: false)
+                owner: [Tenant!]! @relationship(type: "OWNED_BY", direction: OUT, aggregate: false)
                 name: String!
                 reason: String!
                 createdAt: DateTime! @timestamp(operations: [CREATE])
@@ -117,7 +125,8 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH(s:Car)
                 WHERE (s.id = $param0.carId)
                 REMOVE s:Car
@@ -126,10 +135,14 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
                 RETURN s AS s
             }
             WITH s AS this0
-            OPTIONAL MATCH (this0)-[:OWNED_BY]->(this1:Tenant)
-            WITH *, count(this1) AS var2
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (var2 <> 0 AND size([(this1)<-[:ADMIN_IN]-(this3:User) WHERE ($jwt.id IS NOT NULL AND this3.userId = $jwt.id) | 1]) > 0)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this0)-[:OWNED_BY]->(this1:Tenant)
+                WHERE EXISTS {
+                    MATCH (this1)<-[:ADMIN_IN]-(this2:User)
+                    WHERE ($jwt.id IS NOT NULL AND this2.userId = $jwt.id)
+                }
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this0 { .id } AS this0
             RETURN this0 AS this"
         `);

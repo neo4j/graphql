@@ -1,26 +1,26 @@
 export const queries = {
     simpleQuery: `#graphql
         query SimpleQuery {
-            movies(options: { limit: 10 }) {
+            movies( limit: 10) {
                 title
             }
         }
     `,
     highComplexityQueryWithLimit: `#graphql
         query highComplexityQueryWithLimit {
-            movies(options: { sort: { title: DESC }, limit: 10 }) {
+            movies( sort: { title: DESC }, limit: 10) {
                 released
                 tagline
                 title
-                actors(options: { sort: { name: DESC }, limit: 2 }) {
+                actors( sort: { name: DESC }, limit: 2) {
                     name
-                    movies(options: { sort: { title: DESC }, limit: 2 }) {
+                    movies( sort: { title: DESC }, limit: 2) {
                         released
                         tagline
                         title
-                        actors(options: {sort: {name: DESC}, limit: 2}) {
+                        actors(sort: {name: DESC}, limit: ) {
                             name
-                            movies(options: { sort: { title: DESC }, limit: 2 }) {
+                            movies( sort: { title: DESC }, limit: 2) {
                                 released
                                 tagline
                                 title

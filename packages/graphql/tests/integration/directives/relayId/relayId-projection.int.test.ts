@@ -34,19 +34,19 @@ describe("RelayId projection", () => {
     beforeAll(async () => {
         const typeDefs = `
             type ${Movie} @node {
-                dbId: ID! @id @unique @relayId
+                dbId: ID! @id @relayId
                 title: String!
-                genre: ${Genre}! @relationship(type: "HAS_GENRE", direction: OUT)
+                genre: [${Genre}!]! @relationship(type: "HAS_GENRE", direction: OUT)
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type ${Genre} @node {
-                dbId: ID! @id @unique @relayId
+                dbId: ID! @id @relayId
                 name: String!
             }
 
             type ${Actor} @node {
-                dbId: ID! @id @unique @relayId
+                dbId: ID! @id @relayId
                 name: String!
             }
         `;
@@ -100,11 +100,13 @@ describe("RelayId projection", () => {
                 id: expect.toBeString(),
                 dbId: expect.toBeString(),
                 title: "Movie1",
-                genre: {
-                    id: expect.toBeString(),
-                    dbId: expect.toBeString(),
-                    name: "Action",
-                },
+                genre: [
+                    {
+                        id: expect.toBeString(),
+                        dbId: expect.toBeString(),
+                        name: "Action",
+                    },
+                ],
                 actors: [
                     {
                         id: expect.toBeString(),
@@ -119,8 +121,8 @@ describe("RelayId projection", () => {
         expect(dbId).toBe(movieDatabaseID);
         expect(id).toBe(toGlobalId({ typeName: Movie.name, field: "dbId", id: dbId }));
 
-        const genreId = (queryResult.data as any)?.[Movie.plural][0].genre?.id;
-        const genreDbId = (queryResult.data as any)?.[Movie.plural][0].genre?.dbId;
+        const genreId = (queryResult.data as any)?.[Movie.plural][0].genre[0]?.id;
+        const genreDbId = (queryResult.data as any)?.[Movie.plural][0].genre[0]?.dbId;
         expect(genreDbId).toBe(genreDatabaseID);
         expect(genreId).toBe(toGlobalId({ typeName: Genre.name, field: "dbId", id: genreDbId }));
 
@@ -168,11 +170,13 @@ describe("RelayId projection", () => {
                         id: expect.toBeString(),
                         dbId: expect.toBeString(),
                         title: "Movie1",
-                        genre: {
-                            id: expect.toBeString(),
-                            dbId: expect.toBeString(),
-                            name: "Action",
-                        },
+                        genre: [
+                            {
+                                id: expect.toBeString(),
+                                dbId: expect.toBeString(),
+                                name: "Action",
+                            },
+                        ],
                         actors: [
                             {
                                 id: expect.toBeString(),
@@ -190,8 +194,9 @@ describe("RelayId projection", () => {
         expect(dbId).toBe(movieDatabaseID);
         expect(id).toBe(toGlobalId({ typeName: Movie.name, field: "dbId", id: dbId }));
 
-        const genreId = (connectionQueryResult.data as any)?.[Movie.operations.connection]?.edges[0]?.node?.genre?.id;
-        const genreDbId = (connectionQueryResult.data as any)?.[Movie.operations.connection]?.edges[0]?.node?.genre
+        const genreId = (connectionQueryResult.data as any)?.[Movie.operations.connection]?.edges[0]?.node?.genre[0]
+            ?.id;
+        const genreDbId = (connectionQueryResult.data as any)?.[Movie.operations.connection]?.edges[0]?.node?.genre[0]
             ?.dbId;
         expect(genreDbId).toBe(genreDatabaseID);
         expect(genreId).toBe(toGlobalId({ typeName: Genre.name, field: "dbId", id: genreDbId }));

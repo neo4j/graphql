@@ -32,24 +32,24 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
             }
 
             type Agent @mutation(operations: [CREATE, UPDATE]) @node {
-                uuid: ID! @id @unique
+                uuid: ID! @id
                 archivedAt: DateTime
 
                 valuations: [Valuation!]! @relationship(type: "IS_VALUATION_AGENT", direction: OUT)
             }
             extend type Agent
                 @authorization(
-                    validate: [{ operations: [CREATE], where: { jwt: { roles_INCLUDES: "Admin" } } }]
-                    filter: [{ where: { node: { archivedAt_EQ: null } } }]
+                    validate: [{ operations: [CREATE], where: { jwt: { roles: { includes: "Admin" } } } }]
+                    filter: [{ where: { node: { archivedAt: { eq: null } } } }]
                 )
 
             type Valuation @mutation(operations: [CREATE, UPDATE]) @node {
-                uuid: ID! @id @unique
+                uuid: ID! @id
                 archivedAt: DateTime
 
-                agent: Agent! @relationship(type: "IS_VALUATION_AGENT", direction: IN)
+                agent: [Agent!]! @relationship(type: "IS_VALUATION_AGENT", direction: IN)
             }
-            extend type Valuation @authorization(filter: [{ where: { node: { archivedAt_EQ: null } } }])
+            extend type Valuation @authorization(filter: [{ where: { node: { archivedAt: { eq: null } } } }])
         `;
 
         neoSchema = new Neo4jGraphQL({
@@ -61,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
     test("query and limits nested connections", async () => {
         const query = /* GraphQL */ `
             query Agents {
-                agents(where: { uuid_EQ: "a1" }) {
+                agents(where: { uuid: { eq: "a1" } }) {
                     uuid
                     valuationsConnection(first: 10) {
                         edges {
@@ -81,7 +81,8 @@ describe("https://github.com/neo4j/graphql/issues/2437", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Agent)
+            "CYPHER 5
+            MATCH (this:Agent)
             WITH *
             WHERE (this.uuid = $param0 AND ($isAuthenticated = true AND this.archivedAt IS NULL))
             CALL {

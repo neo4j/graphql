@@ -40,9 +40,13 @@ describe("Cypher Aggregations String", () => {
     test("Shortest", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    title {
-                        shortest
+                moviesConnection {
+                    aggregate {
+                        node {
+                            title {
+                                shortest
+                            }
+                        }
                     }
                 }
             }
@@ -51,14 +55,15 @@ describe("Cypher Aggregations String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
                 RETURN { shortest: last(list) } AS var0
             }
-            RETURN { title: var0 }"
+            RETURN { aggregate: { node: { title: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -67,9 +72,13 @@ describe("Cypher Aggregations String", () => {
     test("Longest", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    title {
-                        longest
+                moviesConnection {
+                    aggregate {
+                        node {
+                            title {
+                                longest
+                            }
+                        }
                     }
                 }
             }
@@ -78,14 +87,15 @@ describe("Cypher Aggregations String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
                 RETURN { longest: head(list) } AS var0
             }
-            RETURN { title: var0 }"
+            RETURN { aggregate: { node: { title: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -94,10 +104,14 @@ describe("Cypher Aggregations String", () => {
     test("Shortest and longest", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    title {
-                        shortest
-                        longest
+                moviesConnection {
+                    aggregate {
+                        node {
+                            title {
+                                shortest
+                                longest
+                            }
+                        }
                     }
                 }
             }
@@ -106,14 +120,15 @@ describe("Cypher Aggregations String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
                 RETURN { longest: head(list), shortest: last(list) } AS var0
             }
-            RETURN { title: var0 }"
+            RETURN { aggregate: { node: { title: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -122,9 +137,13 @@ describe("Cypher Aggregations String", () => {
     test("Shortest with filter", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate(where: { testId_EQ: "10" }) {
-                    title {
-                        shortest
+                moviesConnection(where: { testId: { eq: "10" } }) {
+                    aggregate {
+                        node {
+                            title {
+                                shortest
+                            }
+                        }
                     }
                 }
             }
@@ -133,15 +152,16 @@ describe("Cypher Aggregations String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 WHERE this.testId = $param0
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
                 RETURN { shortest: last(list) } AS var0
             }
-            RETURN { title: var0 }"
+            RETURN { aggregate: { node: { title: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

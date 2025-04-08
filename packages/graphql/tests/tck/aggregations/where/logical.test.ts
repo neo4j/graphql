@@ -44,7 +44,13 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     test("AND", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { AND: [{ count_GT: 10 }, { count_LT: 20 }] } }) {
+                posts(
+                    where: {
+                        likesConnection: {
+                            aggregate: { AND: [{ count: { nodes: { gt: 10 } } }, { count: { nodes: { lt: 20 } } }] }
+                        }
+                    }
+                ) {
                     content
                 }
             }
@@ -53,14 +59,22 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN (count(this1) > $param0 AND count(this1) < $param1) AS var2
+                WITH DISTINCT this1
+                RETURN count(this1) > $param0 AS var2
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this3:LIKES]-(this4:User)
+                WITH DISTINCT this4
+                RETURN count(this4) < $param1 AS var5
             }
             WITH *
-            WHERE var2 = true
+            WHERE (var2 = true AND var5 = true)
             RETURN this { .content } AS this"
         `);
 
@@ -81,7 +95,13 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     test("OR", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { OR: [{ count_GT: 10 }, { count_LT: 20 }] } }) {
+                posts(
+                    where: {
+                        likesConnection: {
+                            aggregate: { OR: [{ count: { nodes: { gt: 10 } } }, { count: { nodes: { lt: 20 } } }] }
+                        }
+                    }
+                ) {
                     content
                 }
             }
@@ -90,14 +110,22 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN (count(this1) > $param0 OR count(this1) < $param1) AS var2
+                WITH DISTINCT this1
+                RETURN count(this1) > $param0 AS var2
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this3:LIKES]-(this4:User)
+                WITH DISTINCT this4
+                RETURN count(this4) < $param1 AS var5
             }
             WITH *
-            WHERE var2 = true
+            WHERE (var2 = true OR var5 = true)
             RETURN this { .content } AS this"
         `);
 
@@ -118,7 +146,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
     test("NOT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { NOT: { count_GT: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { NOT: { count: { nodes: { gt: 10 } } } } } }) {
                     content
                 }
             }
@@ -127,14 +155,16 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN NOT (count(this1) > $param0) AS var2
+                WITH DISTINCT this1
+                RETURN count(this1) > $param0 AS var2
             }
             WITH *
-            WHERE var2 = true
+            WHERE NOT (var2 = true)
             RETURN this { .content } AS this"
         `);
 
@@ -153,9 +183,11 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             {
                 posts(
                     where: {
-                        likesAggregate: {
-                            AND: [{ count_GT: 10 }, { count_LT: 20 }]
-                            OR: [{ count_GT: 10 }, { count_LT: 20 }]
+                        likesConnection: {
+                            aggregate: {
+                                AND: [{ count: { nodes: { gt: 10 } } }, { count: { nodes: { lt: 20 } } }]
+                                OR: [{ count: { nodes: { gt: 10 } } }, { count: { nodes: { lt: 20 } } }]
+                            }
                         }
                     }
                 ) {
@@ -167,14 +199,34 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN ((count(this1) > $param0 AND count(this1) < $param1) AND (count(this1) > $param2 OR count(this1) < $param3)) AS var2
+                WITH DISTINCT this1
+                RETURN count(this1) > $param0 AS var2
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this3:LIKES]-(this4:User)
+                WITH DISTINCT this4
+                RETURN count(this4) < $param1 AS var5
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this6:LIKES]-(this7:User)
+                WITH DISTINCT this7
+                RETURN count(this7) > $param2 AS var8
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this9:LIKES]-(this10:User)
+                WITH DISTINCT this10
+                RETURN count(this10) < $param3 AS var11
             }
             WITH *
-            WHERE var2 = true
+            WHERE ((var2 = true AND var5 = true) AND (var8 = true OR var11 = true))
             RETURN this { .content } AS this"
         `);
 
@@ -205,10 +257,15 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
             {
                 posts(
                     where: {
-                        likesAggregate: {
-                            count_GT: 10
-                            count_LT: 20
-                            OR: [{ count_GT: 10 }, { count_LT: 20 }, { count_LT: 54 }]
+                        likesConnection: {
+                            aggregate: {
+                                count: { nodes: { gt: 10, lt: 20 } }
+                                OR: [
+                                    { count: { nodes: { gt: 10 } } }
+                                    { count: { nodes: { lt: 20 } } }
+                                    { count: { nodes: { lt: 54 } } }
+                                ]
+                            }
                         }
                     }
                 ) {
@@ -220,25 +277,51 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN (count(this1) < $param0 AND count(this1) > $param1 AND (count(this1) > $param2 OR count(this1) < $param3 OR count(this1) < $param4)) AS var2
+                WITH DISTINCT this1
+                RETURN count(this1) > $param0 AS var2
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this3:LIKES]-(this4:User)
+                WITH DISTINCT this4
+                RETURN count(this4) < $param1 AS var5
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this6:LIKES]-(this7:User)
+                WITH DISTINCT this7
+                RETURN count(this7) > $param2 AS var8
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this9:LIKES]-(this10:User)
+                WITH DISTINCT this10
+                RETURN count(this10) < $param3 AS var11
+            }
+            CALL {
+                WITH this
+                MATCH (this)<-[this12:LIKES]-(this13:User)
+                WITH DISTINCT this13
+                RETURN count(this13) < $param4 AS var14
             }
             WITH *
-            WHERE var2 = true
+            WHERE (var2 = true AND var5 = true AND (var8 = true OR var11 = true OR var14 = true))
             RETURN this { .content } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": {
-                    \\"low\\": 20,
+                    \\"low\\": 10,
                     \\"high\\": 0
                 },
                 \\"param1\\": {
-                    \\"low\\": 10,
+                    \\"low\\": 20,
                     \\"high\\": 0
                 },
                 \\"param2\\": {

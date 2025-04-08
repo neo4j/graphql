@@ -70,7 +70,8 @@ describe("Relationship Properties Connect Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
             WITH *
@@ -84,7 +85,7 @@ describe("Relationship Properties Connect Cypher", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
-            			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+            			CREATE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
             			SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
             		}
             	}
@@ -133,7 +134,7 @@ describe("Relationship Properties Connect Cypher", () => {
                         {
                             title: "Forrest Gump"
                             actors: {
-                                connect: [{ where: { node: { name_EQ: "Tom Hanks" } }, edge: { screenTime: 60 } }]
+                                connect: [{ where: { node: { name: { eq: "Tom Hanks" } } }, edge: { screenTime: 60 } }]
                             }
                         }
                     ]
@@ -158,7 +159,8 @@ describe("Relationship Properties Connect Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
             WITH *
@@ -173,7 +175,7 @@ describe("Relationship Properties Connect Cypher", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
-            			MERGE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
+            			CREATE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
             			SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
             		}
             	}
@@ -219,7 +221,7 @@ describe("Relationship Properties Connect Cypher", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title_EQ: "Forrest Gump" }
+                    where: { title: { eq: "Forrest Gump" } }
                     update: { actors: { connect: { edge: { screenTime: 60 } } } }
                 ) {
                     movies {
@@ -242,7 +244,8 @@ describe("Relationship Properties Connect Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             WITH *
             CALL {
@@ -255,7 +258,7 @@ describe("Relationship Properties Connect Cypher", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors0_connect0_node
-            			MERGE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
+            			CREATE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
             			SET this_actors0_connect0_relationship.screenTime = $this_actors0_connect0_relationship_screenTime
             		}
             	}
@@ -295,9 +298,11 @@ describe("Relationship Properties Connect Cypher", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title_EQ: "Forrest Gump" }
+                    where: { title: { eq: "Forrest Gump" } }
                     update: {
-                        actors: { connect: { where: { node: { name_EQ: "Tom Hanks" } }, edge: { screenTime: 60 } } }
+                        actors: {
+                            connect: { where: { node: { name: { eq: "Tom Hanks" } } }, edge: { screenTime: 60 } }
+                        }
                     }
                 ) {
                     movies {
@@ -320,7 +325,8 @@ describe("Relationship Properties Connect Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             WITH *
             CALL {
@@ -334,7 +340,7 @@ describe("Relationship Properties Connect Cypher", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors0_connect0_node
-            			MERGE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
+            			CREATE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
             			SET this_actors0_connect0_relationship.screenTime = $this_actors0_connect0_relationship_screenTime
             		}
             	}

@@ -129,7 +129,7 @@ describe("auth/allow", () => {
             const typeDefs = `
                 type ${postType.name} @node {
                     id: ID
-                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
+                    creator: [${userType.name}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type ${userType.name} @node {
@@ -183,7 +183,7 @@ describe("auth/allow", () => {
             const typeDefs = `
                 type ${postType.name} @node {
                     id: ID
-                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
+                    creator: [${userType.name}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type ${userType.name} @node {
@@ -241,7 +241,7 @@ describe("auth/allow", () => {
             const typeDefs = `
                 type ${postType.name} @node {
                     content: String
-                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
+                    creator: [${userType.name}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type ${userType.name} @node {
@@ -251,7 +251,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${postType.name}
-                @authorization(validate: [ { operations: [READ], when: BEFORE, where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
+                @authorization(validate: [ { operations: [READ], when: BEFORE, where: { node: { creator_SINGLE: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -297,7 +297,7 @@ describe("auth/allow", () => {
             const typeDefs = `
                 type ${postType.name} @node {
                     content: String
-                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
+                    creator: [${userType.name}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type ${userType.name} @node {
@@ -307,7 +307,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${postType.name}
-                @authorization(validate: [ { operations: [READ], when: BEFORE, where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
+                @authorization(validate: [ { operations: [READ], when: BEFORE, where: { node: { creator_SINGLE: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -358,13 +358,13 @@ describe("auth/allow", () => {
                 type ${commentType.name}  @node {
                     id: ID
                     content: String
-                    creator: ${userType.name}! @relationship(type: "HAS_COMMENT", direction: IN)
+                    creator: [${userType.name}!]! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
                 type ${postType.name} @node {
                     id: ID
                     content: String
-                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
+                    creator: [${userType.name}!]! @relationship(type: "HAS_POST", direction: IN)
                     comments: [${commentType.name}!]! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
@@ -375,7 +375,7 @@ describe("auth/allow", () => {
                 }
 
                 extend type ${commentType.name}
-                @authorization(validate: [ { operations: [READ], when: BEFORE, where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
+                @authorization(validate: [ { operations: [READ], when: BEFORE, where: { node: { creator_SINGLE: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -520,7 +520,7 @@ describe("auth/allow", () => {
                 type ${postType.name} @node {
                     id: ID
                     content: String
-                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
+                    creator: [${userType.name}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type ${userType.name} @node {
@@ -576,7 +576,7 @@ describe("auth/allow", () => {
                 type ${postType.name} @node {
                     id: ID
                     content: String
-                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
+                    creator: [${userType.name}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type ${userType.name} @node {
@@ -684,10 +684,10 @@ describe("auth/allow", () => {
                 type ${postType.name} @node {
                     id: ID
                     name: String
-                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
+                    creator: [${userType.name}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
-                extend type ${postType.name} @authorization(validate: [ { operations: [DELETE], when: BEFORE, where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
+                extend type ${postType.name} @authorization(validate: [ { operations: [DELETE], when: BEFORE, where: { node: { creator_SINGLE: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -743,7 +743,7 @@ describe("auth/allow", () => {
             const typeDefs = `
                 type ${postType.name} @node {
                     id: ID
-                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
+                    creator: [${userType.name}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type ${userType.name} @node {
@@ -751,7 +751,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @authorization(validate: [ { operations: [DELETE_RELATIONSHIP], when: BEFORE, where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
+                extend type ${postType.name} @authorization(validate: [ { operations: [DELETE_RELATIONSHIP], when: BEFORE, where: { node: { creator_SINGLE: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -800,13 +800,13 @@ describe("auth/allow", () => {
                 type ${commentType.name} @node {
                     id: ID
                     content: String
-                    post: ${postType.name}! @relationship(type: "HAS_COMMENT", direction: IN)
+                    post: [${postType.name}!]! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
                 type ${postType.name} @node {
                     id: ID
-                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
-                    comments: ${commentType.name}! @relationship(type: "HAS_COMMENT", direction: OUT)
+                    creator: [${userType.name}!]! @relationship(type: "HAS_POST", direction: IN)
+                    comments: [${commentType.name}!]! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
                 type ${userType.name} @node {
@@ -814,7 +814,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @authorization(validate: [ { operations: [DELETE_RELATIONSHIP], when: BEFORE, where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
+                extend type ${postType.name} @authorization(validate: [ { operations: [DELETE_RELATIONSHIP], when: BEFORE, where: { node: { creator_SINGLE: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -880,7 +880,7 @@ describe("auth/allow", () => {
             const typeDefs = `
                 type ${postType.name} @node {
                     id: ID
-                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
+                    creator: [${userType.name}!]! @relationship(type: "HAS_POST", direction: IN)
                 }
 
                 type ${userType.name} @node {
@@ -888,7 +888,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @authorization(validate: [ { operations: [CREATE_RELATIONSHIP], when: BEFORE, where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
+                extend type ${postType.name} @authorization(validate: [ { operations: [CREATE_RELATIONSHIP], when: BEFORE, where: { node: { creator_SINGLE: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({
@@ -938,13 +938,13 @@ describe("auth/allow", () => {
                 type ${commentType.name} @node {
                     id: ID
                     content: String
-                    post: ${postType.name}! @relationship(type: "HAS_COMMENT", direction: IN)
+                    post: [${postType.name}!]! @relationship(type: "HAS_COMMENT", direction: IN)
                 }
 
                 type ${postType.name} @node {
                     id: ID
-                    creator: ${userType.name}! @relationship(type: "HAS_POST", direction: IN)
-                    comments: ${commentType.name}! @relationship(type: "HAS_COMMENT", direction: OUT)
+                    creator: [${userType.name}!]! @relationship(type: "HAS_POST", direction: IN)
+                    comments: [${commentType.name}!]! @relationship(type: "HAS_COMMENT", direction: OUT)
                 }
 
                 type ${userType.name} @node {
@@ -952,7 +952,7 @@ describe("auth/allow", () => {
                     posts: [${postType.name}!]! @relationship(type: "HAS_POST", direction: OUT)
                 }
 
-                extend type ${postType.name} @authorization(validate: [ { operations: [CREATE_RELATIONSHIP], when: BEFORE, where: { node: { creator: { id_EQ: "$jwt.sub" } } } }])
+                extend type ${postType.name} @authorization(validate: [ { operations: [CREATE_RELATIONSHIP], when: BEFORE, where: { node: { creator_SINGLE: { id_EQ: "$jwt.sub" } } } }])
             `;
 
             const userId = generate({

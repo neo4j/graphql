@@ -61,7 +61,6 @@ export const FIELD_DIRECTIVES = [
     "relayId",
     "subscriptionsAuthorization",
     "timestamp",
-    "unique",
     "declareRelationship",
     ...SCHEMA_CONFIGURATION_FIELD_DIRECTIVES,
 ] as const satisfies readonly LibraryDirectives[];

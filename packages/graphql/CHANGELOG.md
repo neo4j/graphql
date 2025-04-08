@@ -1,5 +1,649 @@
 # @neo4j/graphql
 
+## 7.0.0-alpha.7
+
+### Patch Changes
+
+- [#6180](https://github.com/neo4j/graphql/pull/6180) [`eae9bb4`](https://github.com/neo4j/graphql/commit/eae9bb427bb41f8436951400b36aa4f30a8e2b9c) Thanks [@angrykoala](https://github.com/angrykoala)! - Revert dual package bundling. Publishing only cjs package
+
+## 7.0.0-alpha.6
+
+### Major Changes
+
+- [#6153](https://github.com/neo4j/graphql/pull/6153) [`0779691`](https://github.com/neo4j/graphql/commit/0779691eb9eeb0b36df260d7366eabe20fb6ca37) Thanks [@angrykoala](https://github.com/angrykoala)! - Fails schema validation if a field with `@relationship` targets a type without `@node`.
+
+    For example, the following schema will fail:
+
+    ```graphql
+    type Movie @node {
+        someActors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
+    }
+
+    type Actor {
+        name: String
+    }
+    ```
+
+- [#6158](https://github.com/neo4j/graphql/pull/6158) [`19dc0dd`](https://github.com/neo4j/graphql/commit/19dc0dd7e92daad354fcc3effcc6909df3a891c6) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove option `CONNECT_OR_CREATE` from argument `nestedOperations` from `@relationship` directives as it is no longer relevant after `connectOrCreate` have been removed
+
+- [#6109](https://github.com/neo4j/graphql/pull/6109) [`6801d70`](https://github.com/neo4j/graphql/commit/6801d7003f6f8f0f8bfd3ae9431ba081799dfcb5) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The `where` field for nested update operations has been moved within the `update` input field.
+  The `where` in its previous location was a no-op for all nested operations apart from `update`.
+
+    For example, the following syntax would filter the `Post` nodes to update in Version 6:
+
+    ```graphql
+    mutation {
+        updateUsers(
+            where: { name: { eq: "Darrell" } }
+            update: {
+                posts: {
+                    where: { node: { title: { eq: "Version 7 Release Notes" } } }
+                    update: { node: { title: { set: "Version 7 Release Announcement" } } }
+                }
+            }
+        )
+    }
+    ```
+
+    In Version 7, this `where` has been moved inside the `update` operation:
+
+    ```graphql
+    mutation {
+        updateUsers(
+            where: { name: { eq: "Darrell" } }
+            update: {
+                posts: {
+                    update: {
+                        where: { node: { title: { eq: "Version 7 Release Notes" } } }
+                        node: { title: { set: "Version 7 Release Announcement" } }
+                    }
+                }
+            }
+        )
+    }
+    ```
+
+- [#6124](https://github.com/neo4j/graphql/pull/6124) [`d9cfd69`](https://github.com/neo4j/graphql/commit/d9cfd69f7e7daa8b7ad23a1046fee734aa038199) Thanks [@angrykoala](https://github.com/angrykoala)! - Fixed incorrect behavior of `single` and `some` filters on relationships to unions.
+
+    Given the following union and relationship:
+
+    ```graphql
+    union Production = Movie | Series
+    ```
+
+    and a relationship to this union:
+
+    ```graphql
+    type Actor @node {
+        name: String!
+        actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT)
+    }
+    ```
+
+    These queries previously returned incorrect results:
+
+    ```graphql
+    query {
+        actors(
+            where: {
+                actedIn: { single: { Movie: { title_CONTAINS: "The Office" }, Series: { title_ENDS_WITH: "Office" } } }
+            }
+        ) {
+            name
+        }
+    }
+    ```
+
+    ```graphql
+    query {
+        actors(
+            where: {
+                actedIn: { some: { Movie: { title_CONTAINS: "The Office" }, Series: { title_ENDS_WITH: "Office" } } }
+            }
+        ) {
+            name
+        }
+    }
+    ```
+
+    Previously, conditions inside single and some were evaluated separately for each concrete type in the union, requiring all to match. This was incorrect.
+
+    New behavior:
+
+    - `single`: Now correctly returns actors with exactly one related node across the whole union, rather than per type.
+    - `some`: Now correctly returns actors with at least one matching related node of any type in the union.
+
+    This fix also applies to the deprecated filters `actedIn_SINGLE` and `actedIn_SOME`.
+
+- [#6125](https://github.com/neo4j/graphql/pull/6125) [`c51c9c0`](https://github.com/neo4j/graphql/commit/c51c9c06e381f69432d1685badf0ebba093e6280) Thanks [@angrykoala](https://github.com/angrykoala)! - Does not generate queries for interfaces without an implementing type with the `@node` directive.
+
+    For example. The following type definitions:
+
+    ```graphql
+    interface Production {
+        title: String!
+    }
+
+    type Movie @node {
+        title: String!
+    }
+
+    type NotANode implements Production {
+        title: String!
+    }
+    ```
+
+    Will no longer generate the queries and types related to the interface `Production`:
+
+    ```graphql
+    type Query {
+        productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
+        productionsConnection(
+            after: String
+            first: Int
+            sort: [ProductionSort!]
+            where: ProductionWhere
+        ): ProductionsConnection!
+    }
+    ```
+
+- [#6152](https://github.com/neo4j/graphql/pull/6152) [`3e642d9`](https://github.com/neo4j/graphql/commit/3e642d9ea7dd0b661132d006f678575a9b11f5b2) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The `@query` directive used on the schema will now also apply to the generation of queries for interface and union types.
+
+    The following type definitions will not produce query fields for the `Production` or `Media` types.
+
+    ```graphql
+    interface Production {
+        title: String!
+    }
+
+    type Movie implements Production @node {
+        title: String!
+    }
+
+    type Series implements Production @node {
+        title: String!
+    }
+
+    union Media = Movie | Series
+
+    extend schema @query(read: false, aggregate: false)
+    ```
+
+- [#6159](https://github.com/neo4j/graphql/pull/6159) [`2adfdec`](https://github.com/neo4j/graphql/commit/2adfdec38f6d371988eaf9573e49220a5a444e6f) Thanks [@angrykoala](https://github.com/angrykoala)! - Fails schema validation if an interface is implemented by a type with `@node` but not all implemented types use `@node`. For example, the following is invalid:
+
+    ```graphql
+    interface Person {
+        name: String
+    }
+
+    type Director implements Person {
+        name: String
+    }
+
+    type Actor implements Person @node {
+        name: String
+    }
+    ```
+
+- [#6165](https://github.com/neo4j/graphql/pull/6165) [`992c53a`](https://github.com/neo4j/graphql/commit/992c53a38a7731c2f51a1365825b63e3b3bbb2b1) Thanks [@angrykoala](https://github.com/angrykoala)! - Fails schema validation if an union is composed of a type with `@node` but not all other types. For example, the following is invalid:
+
+    ```graphql
+    union Person = Director | Actor
+
+    type Director {
+        name: String
+    }
+
+    type Actor @node {
+        name: String
+    }
+    ```
+
+### Minor Changes
+
+- [#6178](https://github.com/neo4j/graphql/pull/6178) [`7aa1b95`](https://github.com/neo4j/graphql/commit/7aa1b95eb52b5fb5ed2259669b09fa8e8e840f3e) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The Neo4j GraphQL Library is now bundled as a dual package containing both CommonJS and ESM builds. This is a changelog entry for #6177.
+
+### Patch Changes
+
+- [#6154](https://github.com/neo4j/graphql/pull/6154) [`5fedc91`](https://github.com/neo4j/graphql/commit/5fedc9115b2b8e68e26b478c9571d7cadfbe9cdd) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed a bug that allowed the `queryName` and `fields` arguments of the `@fulltext` directive to be undefined.
+
+## 7.0.0-alpha.5
+
+### Patch Changes
+
+- [#6099](https://github.com/neo4j/graphql/pull/6099) [`d502b93`](https://github.com/neo4j/graphql/commit/d502b93f94bb7426cd32f64909e522f7cbc47699) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Typescript version has been updated to 5.8.2 slightly changing the emitted code. This change is not expected to have any impact on the generated code or the runtime behavior of the library.
+
+## 7.0.0-alpha.4
+
+### Major Changes
+
+- [#6048](https://github.com/neo4j/graphql/pull/6048) [`c667618`](https://github.com/neo4j/graphql/commit/c667618ed90a0f645b8550711a7fad276ec57d01) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Subscriptions are now an opt-in feature which can be enabled by using the `@subscription` directive on either schema or type.
+
+    For example, to enable subscriptions for the whole schema (equivalent to before this breaking change):
+
+    ```graphql
+    type Movie @node {
+        title: String!
+    }
+
+    extend schema @subscription
+    ```
+
+    To enable subscriptions just for the `Movie` type:
+
+    ```graphql
+    type Movie @node @subscription {
+        title: String!
+    }
+    ```
+
+- [#6077](https://github.com/neo4j/graphql/pull/6077) [`4cf7c07`](https://github.com/neo4j/graphql/commit/4cf7c07166e7193bb985223ba0191a2f97a57454) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Values specified within the `@coalesce` directive are now also returned when selecting those fields, and not just when those fields are used in a filter.
+
+- [#6027](https://github.com/neo4j/graphql/pull/6027) [`fd7d373`](https://github.com/neo4j/graphql/commit/fd7d373013f3c7b159af6e05a23945ec43937efa) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove deprecated fields `*aggregate` in favor of the `aggregate` field in connections. Remove option `deprecatedAggregateOperations` from the `excludeDeprecatedFields` setting.
+
+### Minor Changes
+
+- [#6024](https://github.com/neo4j/graphql/pull/6024) [`2318336`](https://github.com/neo4j/graphql/commit/2318336606c668778090edd4ebf56178264f41ca) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Aggregations filters are moved to the connection input field.
+
+    **Current aggregation filters:**
+
+    ```graphql
+    {
+        posts(where: { likesConnection: { aggregate: { node: { someInt: { average: { eq: 10 } } } } } }) {
+            content
+        }
+    }
+    ```
+
+    **Deprecated aggregation filters:**
+
+    ```graphql
+    {
+        posts(where: { likesAggregate: { node: { someInt: { average: { eq: 10 } } } } }) {
+            content
+        }
+    }
+    ```
+
+- [#6024](https://github.com/neo4j/graphql/pull/6024) [`2318336`](https://github.com/neo4j/graphql/commit/2318336606c668778090edd4ebf56178264f41ca) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - The aggregation filter `count` now supports both, nodes and relationships.
+
+    **Count filter on nodes:**
+
+    ```graphql
+    {
+        posts(where: { likesConnection: { aggregate: { count: { nodes: { eq: 2 } } } } }) {
+            title
+            likes {
+                name
+            }
+        }
+    }
+    ```
+
+    **Count filter on edges:**
+
+    ```graphql
+    {
+        posts(where: { likesConnection: { aggregate: { count: { edges: { eq: 2 } } } } }) {
+            title
+            likes {
+                name
+            }
+        }
+    }
+    ```
+
+### Patch Changes
+
+- [#6024](https://github.com/neo4j/graphql/pull/6024) [`667e75c`](https://github.com/neo4j/graphql/commit/667e75c3219886fc24de472dc3edbf3d0bce913b) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Following the changes of moving aggregations inside the connection fields,
+  the previous aggregations filters outside the connection filters are now deprecated.
+
+    The flag `aggregationFiltersOutsideConnection` has been added to the excludeDeprecatedFields setting.
+
+    ```ts
+    const neoSchema = new Neo4jGraphQL({
+        typeDefs,
+        features: { excludeDeprecatedFields: { aggregationFiltersOutsideConnection: true } },
+    });
+    ```
+
+- [#6000](https://github.com/neo4j/graphql/pull/6000) [`271a0a3`](https://github.com/neo4j/graphql/commit/271a0a306bf33959382255eac47749c6de46798d) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Add `addVersionPrefix` to `cypherQueryOptions` in context to add a Cypher version with `CYPHER` before each query:
+
+    ```js
+    {
+        cypherQueryOptions: {
+            addVersionPrefix: true,
+        },
+    }
+    ```
+
+    This prepends all Cypher queries with a `CYPHER [version]` statement:
+
+    ```cypher
+    CYPHER 5
+    MATCH (this:Movie)
+    WHERE this.title = $param0
+    RETURN this { .title } AS this
+    ```
+
+## 7.0.0-alpha.3
+
+### Major Changes
+
+- [#5997](https://github.com/neo4j/graphql/pull/5997) [`a716ef8`](https://github.com/neo4j/graphql/commit/a716ef8ec858aa8c6b51c285b3e2d899254c83fe) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove `publish` method from `Neo4jGraphQLSubscriptionsEngine` interface as it is no longer used with CDC-based subscriptions. Implementing this method on custom engines will no longer have an effect, and it is no longer possible to call `publish` directly on `Neo4jGraphQLSubscriptionsCDCEngine`
+
+- [#5976](https://github.com/neo4j/graphql/pull/5976) [`7ddde75`](https://github.com/neo4j/graphql/commit/7ddde75d9828c737e3849c49b6b91f4b2b9b8044) Thanks [@angrykoala](https://github.com/angrykoala)! - Sets addVersionPrefix to true by default, this will prepend the Cypher version to all queries by default, ensuring that the correct Cypher version is used in Neo4j:
+
+    ```cypher
+    CYPHER 5
+    MATCH(this:Movie)
+    ```
+
+    This may be incompatible with older versions of Neo4j and can be disabled by setting `cypherQueryOption.addVersionPrefix` in the context to false:
+
+    ```js
+    {
+        cypherQueryOptions: {
+            addVersionPrefix: true,
+        },
+    }
+    ```
+
+    For example, for an apollo server:
+
+    ```js
+    await startStandaloneServer(server, {
+        context: async ({ req }) => ({
+            req,
+            cypherQueryOptions: {
+                addVersionPrefix: false,
+            },
+        }),
+        listen: { port: 4000 },
+    });
+    ```
+
+### Patch Changes
+
+- [#6007](https://github.com/neo4j/graphql/pull/6007) [`48aec51`](https://github.com/neo4j/graphql/commit/48aec512b4707d9b9aa74f05d382eb6980e08971) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Allow `app` to be overwritten in transaction metadata
+
+## 7.0.0-alpha.2
+
+### Major Changes
+
+- [#5936](https://github.com/neo4j/graphql/pull/5936) [`d48ea32`](https://github.com/neo4j/graphql/commit/d48ea327db022774c73a8adfada1a8d498590c2d) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Changes the result projection where there are multiple relationships between two nodes.
+
+    In the case of using the connection API then multiple relationships will still be represented, as there is the ability to select the relationship properties. In the non-connection API case, the duplicate results will only return distinct results.
+
+- [#5931](https://github.com/neo4j/graphql/pull/5931) [`5ce7d1d`](https://github.com/neo4j/graphql/commit/5ce7d1dff5287aa9d24beaf3992f1f66c7b62d94) Thanks [@darrellwarde](https://github.com/darrellwarde)! - `DateTime` and `Time` values are now converted from strings into temporal types in the generated Cypher instead of in server code using the driver. This could result in different values when the database is in a different timezone to the GraphQL server.
+
+- [#5933](https://github.com/neo4j/graphql/pull/5933) [`8bdcf6b`](https://github.com/neo4j/graphql/commit/8bdcf6b36fba1442f75fe8401cf170ed17339cdb) Thanks [@mjfwebb](https://github.com/mjfwebb)! - When performing a `connect` operation, new relationships are always created.
+
+## 7.0.0-alpha.1
+
+### Major Changes
+
+- [#5927](https://github.com/neo4j/graphql/pull/5927) [`530d8cd`](https://github.com/neo4j/graphql/commit/530d8cddf91f031b849bbab6a668277b2c5986bf) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - The `typename_IN` filter has been renamed to `typename`.
+
+- [#5898](https://github.com/neo4j/graphql/pull/5898) [`a912404`](https://github.com/neo4j/graphql/commit/a91240457f8ccf51d3f6b11ecedf1101678306cd) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Aggregations are no longer generated for `ID` fields.
+
+### Minor Changes
+
+- [#5868](https://github.com/neo4j/graphql/pull/5868) [`46ab2fa`](https://github.com/neo4j/graphql/commit/46ab2fa03b31610a26fa559189fd3af22ab7438e) Thanks [@angrykoala](https://github.com/angrykoala)! - Add suport for generic update operators:
+
+    ```graphql
+    mutation {
+        updateMovies(update: { name: { set: "The Matrix" } }) {
+            movies {
+                id
+    ```
+
+## 7.0.0-alpha.0
+
+### Major Changes
+
+- [#5899](https://github.com/neo4j/graphql/pull/5899) [`7335d8f`](https://github.com/neo4j/graphql/commit/7335d8f416bbfa08feab0fe4983f89590f984e1c) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Nested mutation operations now follow the relationship direction behaviour as defined in `queryDirection`
+
+- [#5872](https://github.com/neo4j/graphql/pull/5872) [`925ad8d`](https://github.com/neo4j/graphql/commit/925ad8dedc307200d1c3fd813e531325940d8f8f) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove `@private` directive. This directive was intended to be used with the library `@neo4j/graphql-ogm` which is no longer supported.
+
+- [#5895](https://github.com/neo4j/graphql/pull/5895) [`6afcadd`](https://github.com/neo4j/graphql/commit/6afcaddbfc62549c6c610a2199513bf4c719486c) Thanks [@angrykoala](https://github.com/angrykoala)! - Fails schema generation if there are conflicting plural names in types. For example, the following schema will fail, due to ambiguous `Techs` plural
+
+    ```graphql
+    type Tech @node(plural: "Techs") {
+        name: String
+    }
+
+    type Techs {
+        value: String
+    }
+    ```
+
+- [#5755](https://github.com/neo4j/graphql/pull/5755) [`9c75f92`](https://github.com/neo4j/graphql/commit/9c75f925884de42f64e1b5c3086cc87c114727bd) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove support for `connectOrCreate` operations
+
+- [#5778](https://github.com/neo4j/graphql/pull/5778) [`56022ba`](https://github.com/neo4j/graphql/commit/56022ba38d8beb6cb5d7bbfb5e856fd57d9660c5) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The deprecated `directed` argument has been removed, and `queryDirection` now only accepts two possible values - `DIRECTED` (default) and `UNDIRECTED`.
+
+    Additionally, the `directedArgument` setting of `excludeDeprecatedFields` has been removed as these deprecated fields have been removed.
+
+- [#5819](https://github.com/neo4j/graphql/pull/5819) [`ac1fa62`](https://github.com/neo4j/graphql/commit/ac1fa629f1eb8b248116bd9dedaabc02117fdbee) Thanks [@angrykoala](https://github.com/angrykoala)! - Single element relationships have been removed in favor of list relationships:
+
+    Before
+
+    ```graphql
+    type Movie {
+        director: Person @relationship(type: "DIRECTED", direction: "IN")
+    }
+    ```
+
+    After
+
+    ```graphql
+    type Movie {
+        director: [Person!]! @relationship(type: "DIRECTED", direction: "IN")
+    }
+    ```
+
+    This requires updating filters, clients and auth rules to use the list filter operations.
+
+    Single element relationships cannot be reliably enforced, leading to a data inconsistent with the schema. If the GraphQL model requires 1-1 relationships (such as in federations) these can now be achieved with the `@cypher` directive instead:
+
+    ```graphql
+    type Movie {
+        director: Person
+            @cypher(
+                statement: """
+                MATCH(this)-[:ACTED_IN]->(p:Person)
+                RETURN p
+                """
+                columnName: "p"
+            )
+    }
+    ```
+
+- [#5762](https://github.com/neo4j/graphql/pull/5762) [`87e416b`](https://github.com/neo4j/graphql/commit/87e416b2547b75824d9782fd5da90c003437e7c0) Thanks [@darrellwarde](https://github.com/darrellwarde)! - There have been major changes to the way that full-text search operates.
+
+    The directive now requires the specification of an index name, query name, and indexed fields.
+
+    ```graphql
+    input FulltextInput {
+        indexName: String!
+        queryName: String!
+        fields: [String]!
+    }
+
+    """
+    Informs @neo4j/graphql that there should be a fulltext index in the database, allows users to search by the index in the generated schema.
+    """
+    directive @fulltext(indexes: [FulltextInput]!) on OBJECT
+    ```
+
+    Here is an example of how this might be used:
+
+    ```graphql
+    type Movie @node @fulltext(indexName: "movieTitleIndex", queryName: "moviesByTitle", fields: ["title"]) {
+        title: String!
+    }
+    ```
+
+    Full-text search was previously available in two different locations.
+
+    The following form has now been completely removed:
+
+    ```graphql
+    # Removed
+    {
+        movies(fulltext: { movieTitleIndex: { phrase: "The Matrix" } }) {
+            title
+        }
+    }
+    ```
+
+    The following form as a root-level query has been changed:
+
+    ```graphql
+    # Old query
+    query {
+        moviesByTitle(phrase: "The Matrix") {
+            score
+            movies {
+                title
+            }
+        }
+    }
+
+    # New query
+    query {
+        moviesByTitle(phrase: "The Matrix") {
+            edges {
+                score
+                node {
+                    title
+                }
+            }
+        }
+    }
+    ```
+
+    The new form is as a Relay connection, which allows for pagination using cursors and access to the `pageInfo` field.
+
+- [#5820](https://github.com/neo4j/graphql/pull/5820) [`d8d59f8`](https://github.com/neo4j/graphql/commit/d8d59f80480017d27b49b062321a9a15b6494a96) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Change the way how `@node` behaves, `@node` is now required, and GraphQL Object types without the directive `@node` will no longer considered as a Neo4j Nodes representation.
+  Queries and Mutations will be generated only for types with the `@node` directive.
+
+- [#5801](https://github.com/neo4j/graphql/pull/5801) [`95ce8bb`](https://github.com/neo4j/graphql/commit/95ce8bb884bddaf20d751f2448b5504a7b94d081) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Implicit filtering fields have been removed, please use the explicit versions:
+
+    ```graphql
+    # Old syntax
+    {
+        movies(where: { title: "The Matrix" }) {
+            title
+        }
+    }
+
+    # New syntax
+    {
+        movies(where: { title_EQ: "The Matrix" }) {
+            title
+        }
+    }
+    ```
+
+    The `implicitEqualFilters` option of `excludeDeprecatedFields` has been removed.
+
+- [#5755](https://github.com/neo4j/graphql/pull/5755) [`9c75f92`](https://github.com/neo4j/graphql/commit/9c75f925884de42f64e1b5c3086cc87c114727bd) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove support for `@unique` directive
+
+- [#5768](https://github.com/neo4j/graphql/pull/5768) [`e338590`](https://github.com/neo4j/graphql/commit/e338590d25216cced8252cfe3d0789d97952c20d) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove `overwrite` field in connect operations
+
+- [#5777](https://github.com/neo4j/graphql/pull/5777) [`0ecfd71`](https://github.com/neo4j/graphql/commit/0ecfd71a1431c5f98fde30319eefd5b018a06701) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The deprecated `options` argument has been removed.
+
+    Consider the following type definitions:
+
+    ```graphql
+    type Movie {
+        title: String!
+    }
+    ```
+
+    The migration is as below:
+
+    ```graphql
+    # Old syntax
+    {
+        movies(options: { first: 10, offset: 10, sort: [{ title: ASC }] }) {
+            title
+        }
+    }
+
+    # New syntax
+    {
+        movies(first: 10, offset: 10, sort: [{ title: ASC }]) {
+            title
+        }
+    }
+    ```
+
+    The `deprecatedOptionsArgument` of `excludeDeprecatedFields` has been removed as it is now a no-op.
+
+- [#5802](https://github.com/neo4j/graphql/pull/5802) [`99cb9aa`](https://github.com/neo4j/graphql/commit/99cb9aa866eed04224d790bfccab9c3d3add78b7) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Implicit set operations have been removed. For example:
+
+    ```graphql
+    # Old syntax
+    mutation {
+        updateMovies(where: { title_EQ: "Matrix" }, update: { title: "The Matrix" }) {
+            movies {
+                title
+            }
+        }
+    }
+
+    # New syntax
+    mutation {
+        updateMovies(where: { title_EQ: "Matrix" }, update: { title_SET: "The Matrix" }) {
+            movies {
+                title
+            }
+        }
+    }
+    ```
+
+    The `implicitSet` argument of `excludeDeprecatedFields` has been removed.
+
+- [#5789](https://github.com/neo4j/graphql/pull/5789) [`1a07d40`](https://github.com/neo4j/graphql/commit/1a07d40888e89c5cd9a40edc16f1742e27bff687) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The Neo4j GraphQL Library and Introspector now required Node.js 22 or greater.
+
+### Patch Changes
+
+- [#5837](https://github.com/neo4j/graphql/pull/5837) [`721691a`](https://github.com/neo4j/graphql/commit/721691a84eaa34996c0c97edb7ede1ae4775dd2f) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Added a validation rule to avoid defining fields as lists of nullable elements, as Neo4j does not support this.
+  Will normally generate the following Cypher for the relationship:
+
+    ```cypher
+    MATCH (this:Movie)-[this0:`ACTED IN`]->(this1:Actor)
+    ```
+
+    The label `ACTED IN` is escaped by placing it inside backticks (`\``), as some characters in it are susceptible of code injection.
+
+    If the option `disableRelationshipTypeEscaping` is set in `Neo4jGraphQL`, this safety mechanism will be disabled:
+
+    ```js
+    new Neo4jGraphQL({
+        typeDefs,
+        features: {
+            unsafeEscapeOptions: {
+                disableRelationshipTypeEscaping: true,
+            },
+        },
+    });
+    ```
+
+    Generating the following (incorrect) Cypher instead:
+
+    ```cypher
+    MATCH (this:Movie)-[this0:ACTED IN]->(this1:Actor)
+    ```
+
+    This can be useful in very custom scenarios where the Cypher needs to be tweaked or if the labels and types have already been escaped.
+
+    > Warning: This is a safety mechanism to avoid Cypher injection. Changing these options may lead to code injection and an unsafe server.
+
+- [#6042](https://github.com/neo4j/graphql/pull/6042) [`9ff8a10`](https://github.com/neo4j/graphql/commit/9ff8a1010d1e87d494adc3969f0f8110351ee584) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed bug that causes connection fields for interfaces to not be able to be filtered using the typename filters.
+
 ## 6.6.1
 
 ### Patch Changes
@@ -50,6 +694,8 @@
     }
     RETURN { edges: var2, totalCount: totalCount, aggregate: { count: var0 } } AS this
     ```
+
+> > > > > > > origin/dev
 
 ## 6.6.0
 
@@ -249,38 +895,95 @@
     }
     ```
 
-    Will normally generate the following Cypher for the relationship:
+- [#5873](https://github.com/neo4j/graphql/pull/5873) [`17911fc`](https://github.com/neo4j/graphql/commit/17911fc197105f5fafc06ce851669af6fc07b18a) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Introduce a new style for filtering relationships and connections.
+  The quantifiers `SOME` | `NONE` | `SINGLE` | `ALL` are now available as a nested input object.
 
-    ```cypher
-    MATCH (this:Movie)-[this0:`ACTED IN`]->(this1:Actor)
+    **Relationship**
+
+    ```graphql
+    {
+        movies(where: { genres: { some: { name: { equals: "some genre" } } } }) {
+            actorCount
+        }
+    }
     ```
 
-    The label `ACTED IN` is escaped by placing it inside backticks (`\``), as some characters in it are susceptible of code injection.
+    **Connection**
 
-    If the option `disableRelationshipTypeEscaping` is set in `Neo4jGraphQL`, this safety mechanism will be disabled:
+    ```graphql
+    {
+        movies(where: { genresConnection: { some: { node: { name: { equals: "some genre" } } } } }) {
+            actorCount
+        }
+    }
+    ```
+
+### Patch Changes
+
+- [#5871](https://github.com/neo4j/graphql/pull/5871) [`722c650`](https://github.com/neo4j/graphql/commit/722c6507977072122041e985b94a84a707179f39) Thanks [@angrykoala](https://github.com/angrykoala)! - Deprecate individual mutations in favor of generic mutations
+
+    - `_SET`
+    - `_POP`
+    - `_PUSH`
+    - `_INCREMENT`
+    - `_ADD`
+    - `_DECREMENT`
+    - `_SUBTRACT`
+    - `_MULTIPLY`
+    - `_DIVIDE`
+
+- [#5882](https://github.com/neo4j/graphql/pull/5882) [`7254acf`](https://github.com/neo4j/graphql/commit/7254acf1b7bb83a35cea580143a6012355bc02d8) Thanks [@angrykoala](https://github.com/angrykoala)! - Deprecates old aggregation filters for relationships in favor of more generic filters:
+
+    Before:
 
     ```js
-    new Neo4jGraphQL({
+    query Movies {
+      movies(
+        where: { actorsAggregate: { node: { lastRating_AVERAGE_GT: 6 } } }
+      ) {
+        title
+      }
+    }
+    ```
+
+    Now:
+
+    ```js
+    query Movies {
+      movies(
+        where: {
+          actorsAggregate: { node: { lastRating: { average: { gt: 6 } } } }
+        }
+      ) {
+        title
+      }
+    }
+    ```
+
+- [#5897](https://github.com/neo4j/graphql/pull/5897) [`4f3b068`](https://github.com/neo4j/graphql/commit/4f3b068cfe4123109bb8a27bacef775fb897a87e) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Deprecate relationship filtering using the non-generic version such as `actors_SOME: { title_EQ: "The Matrix" }` in favor of the generic input `actors: { some: { title: { eq: "The Matrix" } } }`.
+  The setting `excludeDeprecatedFields` now contains the option `relationshipFilters` to remove these deprecated filters.
+
+- [#5897](https://github.com/neo4j/graphql/pull/5897) [`917482b`](https://github.com/neo4j/graphql/commit/917482b675ec3de7dc06ca110e2fccf93024115f) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Deprecate attribute filtering using the non-generic version such as `title_EQ: "The Matrix"` in favor of the generic input `title: { eq: "The Matrix" }`.
+  The setting `excludeDeprecatedFields` now contains the option `attributeFilters` to remove these deprecated filters.
+
+- [#5879](https://github.com/neo4j/graphql/pull/5879) [`5c7ba22`](https://github.com/neo4j/graphql/commit/5c7ba22afc8fc0df86a148f31ce61691586f8cf3) Thanks [@angrykoala](https://github.com/angrykoala)! - Add generic filters for aggregations:
+
+    ```graphql
+    {
+        posts(where: { likesAggregate: { node: { rating: { average: { eq: 3.2 } } } } }) {
+            title
+        }
+    }
+    ```
+
+- [#5882](https://github.com/neo4j/graphql/pull/5882) [`7254acf`](https://github.com/neo4j/graphql/commit/7254acf1b7bb83a35cea580143a6012355bc02d8) Thanks [@angrykoala](https://github.com/angrykoala)! - Introduce the flag "aggregationFilters" to remove deprecated aggregation filters:
+
+    ```js
+    const neoSchema = new Neo4jGraphQL({
         typeDefs,
-        features: {
-            unsafeEscapeOptions: {
-                disableRelationshipTypeEscaping: true,
-            },
-        },
+        features: { excludeDeprecatedFields: { aggregationFilters: true } },
     });
     ```
-
-    Generating the following (incorrect) Cypher instead:
-
-    ```cypher
-    MATCH (this:Movie)-[this0:ACTED IN]->(this1:Actor)
-    ```
-
-    This can be useful in very custom scenarios where the Cypher needs to be tweaked or if the labels and types have already been escaped.
-
-    > Warning: This is a safety mechanism to avoid Cypher injection. Changing these options may lead to code injection and an unsafe server.
-
-- [#6042](https://github.com/neo4j/graphql/pull/6042) [`9ff8a10`](https://github.com/neo4j/graphql/commit/9ff8a1010d1e87d494adc3969f0f8110351ee584) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed bug that causes connection fields for interfaces to not be able to be filtered using the typename filters.
 
 ## 6.3.1
 

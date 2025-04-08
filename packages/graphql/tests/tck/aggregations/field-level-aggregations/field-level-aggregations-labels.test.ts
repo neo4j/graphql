@@ -51,10 +51,12 @@ describe("Field Level Aggregations Alias", () => {
         const query = /* GraphQL */ `
             query {
                 movies {
-                    actorsAggregate {
-                        node {
-                            name {
-                                shortest
+                    actorsConnection {
+                        aggregate {
+                            node {
+                                name {
+                                    shortest
+                                }
                             }
                         }
                     }
@@ -65,16 +67,21 @@ describe("Field Level Aggregations Alias", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                WITH this1
-                ORDER BY size(this1.name) DESC
-                WITH collect(this1.name) AS list
-                RETURN { shortest: last(list) } AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                    WITH DISTINCT this1
+                    ORDER BY size(this1.name) DESC
+                    WITH collect(this1.name) AS list
+                    RETURN { shortest: last(list) } AS var2
+                }
+                RETURN { aggregate: { node: { name: var2 } } } AS var3
             }
-            RETURN this { actorsAggregate: { node: { name: var2 } } } AS this"
+            RETURN this { actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

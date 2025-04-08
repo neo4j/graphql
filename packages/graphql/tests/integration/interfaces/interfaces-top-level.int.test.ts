@@ -40,14 +40,14 @@ describe("Top-level interface query fields", () => {
 
         typeDefs = `
             type ${SomeNodeType} implements MyOtherInterface & MyInterface @node {
-                id: ID! @id @unique
+                id: ID! @id
                 something: String
                 somethingElse: String
                 other: [${OtherNodeType}!]! @relationship(type: "HAS_OTHER_NODES", direction: OUT)
             }
             type ${OtherNodeType} @node {
-                id: ID! @id @unique
-                interfaceField: MyInterface! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
+                id: ID! @id
+                interfaceField: [MyInterface!]! @relationship(type: "HAS_INTERFACE_NODES", direction: OUT)
             }
             interface MyInterface {
                 id: ID!
@@ -58,11 +58,11 @@ describe("Top-level interface query fields", () => {
             }
 
             type ${MyImplementationType} implements MyInterface @node {
-                id: ID! @id @unique
+                id: ID! @id
             }
 
             type ${MyOtherImplementationType} implements MyInterface @node {
-                id: ID! @id @unique
+                id: ID! @id
                 someField: String
             }
 

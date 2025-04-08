@@ -41,7 +41,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                         """
                         columnName: "markedAttendance"
                     )
-                serviceDate: TimeGraph! @relationship(type: "BUSSED_ON", direction: OUT)
+                serviceDate: [TimeGraph!]! @relationship(type: "BUSSED_ON", direction: OUT)
             }
 
             interface Church {
@@ -51,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             }
 
             type Bacenta implements Church @node {
-                id: ID @id @unique
+                id: ID @id
                 name: String!
                 serviceLogs: [ServiceLog!]! @relationship(type: "HAS_HISTORY", direction: OUT)
                 bussing(limit: Int!): [BussingRecord!]!
@@ -73,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 id: ID!
                 attendance: Int
                 markedAttendance: Boolean!
-                serviceDate: TimeGraph! @declareRelationship
+                serviceDate: [TimeGraph!]! @declareRelationship
             }
         `;
 
@@ -85,7 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
     test("query nested relations under a root connection field", async () => {
         const query = /* GraphQL */ `
             query {
-                bacentas(where: { id_EQ: 1 }) {
+                bacentas(where: { id: { eq: 1 } }) {
                     id
                     name
                     bussing(limit: 10) {
@@ -105,7 +105,8 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Bacenta)
+            "CYPHER 5
+            MATCH (this:Bacenta)
             WHERE this.id = $param0
             CALL {
                 WITH this
@@ -120,8 +121,9 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:BUSSED_ON]->(this2:TimeGraph)
+                    WITH DISTINCT this2
                     WITH this2 { .date } AS this2
-                    RETURN head(collect(this2)) AS var3
+                    RETURN collect(this2) AS var3
                 }
                 CALL {
                     WITH this0

@@ -82,11 +82,6 @@ describe("Cypher Sort tests", () => {
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
-            features: {
-                excludeDeprecatedFields: {
-                    deprecatedOptionsArgument: true,
-                },
-            },
         });
     });
 
@@ -102,7 +97,8 @@ describe("Cypher Sort tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -134,7 +130,8 @@ describe("Cypher Sort tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -167,7 +164,8 @@ describe("Cypher Sort tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -204,7 +202,7 @@ describe("Cypher Sort tests", () => {
                     sort: [{ numberOfActors: DESC }, { title: ASC }]
                     offset: 10
                     limit: 10
-                    where: { title_EQ: "The Matrix" }
+                    where: { title: { eq: "The Matrix" } }
                 ) {
                     id
                     title
@@ -215,7 +213,8 @@ describe("Cypher Sort tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this
@@ -263,10 +262,12 @@ describe("Cypher Sort tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
+                WITH DISTINCT this1
                 CALL {
                     WITH this1
                     CALL {

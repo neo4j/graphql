@@ -25,7 +25,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
     test("simple match with single fulltext property and static additionalLabels", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie
-                @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
+                @fulltext(indexes: [{ indexName: "MovieTitle", queryName: "moviesByTitle", fields: ["title"] }])
                 @node(labels: ["Movie", "AnotherLabel"]) {
                 title: String
             }
@@ -37,8 +37,12 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                    title
+                moviesByTitle(phrase: "something AND something") {
+                    edges {
+                        node {
+                            title
+                        }
+                    }
                 }
             }
         `;
@@ -46,9 +50,18 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND $param2 IN labels(this0))
-            RETURN this0 { .title } AS this"
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var2
+            }
+            RETURN { edges: var2, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -63,7 +76,7 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
     test("simple match with single fulltext property and jwt additionalLabels", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie
-                @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
+                @fulltext(indexes: [{ indexName: "MovieTitle", queryName: "moviesByTitle", fields: ["title"] }])
                 @node(labels: ["Movie", "$jwt.label"]) {
                 title: String
             }
@@ -80,8 +93,12 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                    title
+                moviesByTitle(phrase: "something AND something") {
+                    edges {
+                        node {
+                            title
+                        }
+                    }
                 }
             }
         `;
@@ -92,9 +109,18 @@ describe("Cypher -> fulltext -> Additional Labels", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND $param2 IN labels(this0))
-            RETURN this0 { .title } AS this"
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var2
+            }
+            RETURN { edges: var2, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

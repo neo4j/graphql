@@ -61,11 +61,11 @@ describe("Update using aggregate where", () => {
             CREATE (u:${userType.name} {name: "${userName}"})
             CREATE (u2:${userType.name} {name: "${userName2}"})
             CREATE (u)-[:LIKES { likedAt: dateTime("${date1.toISOString()}")}]->(p:${
-            postType.name
-        } {id: "${postId1}", content: "${originalContent}"})
+                postType.name
+            } {id: "${postId1}", content: "${originalContent}"})
             CREATE (u)-[:LIKES { likedAt: dateTime("${date2.toISOString()}")}]->(p2:${
-            postType.name
-        } {id: "${postId2}", content: "${originalContent}"})
+                postType.name
+            } {id: "${postId2}", content: "${originalContent}"})
             CREATE (u2)-[:LIKES { likedAt: dateTime("${date3.toISOString()}") }]->(p2)
         `);
 
@@ -82,19 +82,21 @@ describe("Update using aggregate where", () => {
         const query = /* GraphQL */ `
             mutation {
                 ${userType.operations.update}(
-                    where: { name_EQ: "${userName}" }
+                    where: { name: { eq: "${userName}" } }
                     update: { 
                         likedPosts: {
-                            where: { 
-                                node: {
-                                    likesAggregate: {
-                                        count_EQ: 2
-                                    }
-                                } 
-                            } 
                             update: {
+                                where: { 
+                                    node: {
+                                        likesConnection: {
+                                            aggregate: {
+                                                count: { nodes: { eq: 2 } }
+                                            }
+                                        }
+                                    } 
+                                } 
                                 node: {
-                                    content_SET: "${expectedContent}"
+                                    content: { set: "${expectedContent}" }
                                 } 
                             } 
                         } 
@@ -153,31 +155,30 @@ describe("Update using aggregate where", () => {
         const query = /* GraphQL */ `
              mutation {
                  ${userType.operations.update}(
-                     where: { name_EQ: "${userName}" }
+                     where: { name: { eq: "${userName}" } }
                      update: { 
                          likedPosts: {
-                            where: { 
-                                node: {
-                                    likesAggregate: {
-                                       OR: [
-                                       {
-                                           count_EQ: 2
-                                           
-                                       },
-                                       {
-                                           node: {
-                                               name_SHORTEST_LENGTH_LT: 10 
-                                           }
+                            update: {
+                                where: { 
+                                    node: {
+                                        likesConnection: {
+                                            aggregate: {
+                                                OR: [
+                                                    { count: { nodes: { eq: 2 } } },
+                                                    {
+                                                        node: {
+                                                            name: { shortestLength: { lt: 10 } }
+                                                        }
+                                                    }
+                                                ]
+                                            }
                                         }
-                                       ]
-                                    }
+                                    } 
                                 } 
-                            } 
-                             update: {
                                 node: {
-                                    content_SET: "${expectedContent}"
+                                    content: { set: "${expectedContent}" }
                                 }
-                             } 
+                            } 
                          } 
                  }) {
                      ${userType.plural} {

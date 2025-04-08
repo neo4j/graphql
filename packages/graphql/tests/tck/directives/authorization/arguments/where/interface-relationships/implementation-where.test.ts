@@ -31,7 +31,7 @@ describe("Cypher Auth Where", () => {
             interface Content {
                 id: ID
                 content: String
-                creator: User! @declareRelationship
+                creator: [User!]! @declareRelationship
             }
 
             type User @node {
@@ -43,7 +43,7 @@ describe("Cypher Auth Where", () => {
             type Comment implements Content @node {
                 id: ID
                 content: String
-                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: [User!]! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             type Post implements Content
@@ -52,13 +52,13 @@ describe("Cypher Auth Where", () => {
                     filter: [
                         {
                             operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { node: { creator: { id_EQ: "$jwt.sub" } } }
+                            where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } }
                         }
                     ]
                 ) {
                 id: ID
                 content: String
-                creator: User! @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: [User!]! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             extend type User
@@ -66,20 +66,22 @@ describe("Cypher Auth Where", () => {
                     filter: [
                         {
                             operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { node: { id_EQ: "$jwt.sub" } }
+                            where: { node: { id: { eq: "$jwt.sub" } } }
                         }
                     ]
                 )
 
             extend type User {
                 password: String!
-                    @authorization(filter: [{ operations: [READ], where: { node: { id_EQ: "$jwt.sub" } } }])
+                    @authorization(filter: [{ operations: [READ], where: { node: { id: { eq: "$jwt.sub" } } } }])
             }
 
             extend type Post {
                 secretKey: String!
                     @authorization(
-                        filter: [{ operations: [READ], where: { node: { creator: { id_EQ: "$jwt.sub" } } } }]
+                        filter: [
+                            { operations: [READ], where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } } }
+                        ]
                     )
             }
         `;
@@ -107,11 +109,13 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-            WITH *, count(this0) AS var1
+            "CYPHER 5
+            MATCH (this:Post)
             WITH *
-            WHERE ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)))
+            WHERE ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_CONTENT]-(this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+            })
             RETURN this { .id } AS this"
         `);
 
@@ -131,7 +135,7 @@ describe("Cypher Auth Where", () => {
     test("Read Node + User Defined Where", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { content_EQ: "bob" }) {
+                posts(where: { content: { eq: "bob" } }) {
                     id
                 }
             }
@@ -141,11 +145,13 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-            WITH *, count(this0) AS var1
+            "CYPHER 5
+            MATCH (this:Post)
             WITH *
-            WHERE (this.content = $param0 AND ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))))
+            WHERE (this.content = $param0 AND ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_CONTENT]-(this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+            }))
             RETURN this { .id } AS this"
         `);
 
@@ -181,7 +187,8 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             CALL {
@@ -194,10 +201,10 @@ describe("Cypher Auth Where", () => {
                     UNION
                     WITH *
                     MATCH (this)-[this3:HAS_CONTENT]->(this4:Post)
-                    OPTIONAL MATCH (this4)<-[:HAS_CONTENT]-(this5:User)
-                    WITH *, count(this5) AS var6
-                    WITH *
-                    WHERE ($isAuthenticated = true AND (var6 <> 0 AND ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)))
+                    WHERE ($isAuthenticated = true AND EXISTS {
+                        MATCH (this4)<-[:HAS_CONTENT]-(this5:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)
+                    })
                     WITH this4 { .id, __resolveType: \\"Post\\", __id: id(this4) } AS this4
                     RETURN this4 AS var2
                 }
@@ -242,7 +249,8 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             CALL {
@@ -257,10 +265,10 @@ describe("Cypher Auth Where", () => {
                         UNION
                         WITH this
                         MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
-                        OPTIONAL MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                        WITH *, count(this4) AS var5
-                        WITH *
-                        WHERE ($isAuthenticated = true AND (var5 <> 0 AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)))
+                        WHERE ($isAuthenticated = true AND EXISTS {
+                            MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                            WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                        })
                         WITH { node: { __resolveType: \\"Post\\", __id: id(this3), id: this3.id } } AS edge
                         RETURN edge
                     }
@@ -268,9 +276,9 @@ describe("Cypher Auth Where", () => {
                 }
                 WITH edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var6
+                RETURN { edges: edges, totalCount: totalCount } AS var5
             }
-            RETURN this { .id, contentConnection: var6 } AS this"
+            RETURN this { .id, contentConnection: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -291,7 +299,7 @@ describe("Cypher Auth Where", () => {
             {
                 users {
                     id
-                    contentConnection(where: { node: { id_EQ: "some-id" } }) {
+                    contentConnection(where: { node: { id: { eq: "some-id" } } }) {
                         edges {
                             node {
                                 ... on Post {
@@ -308,7 +316,8 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             CALL {
@@ -324,10 +333,10 @@ describe("Cypher Auth Where", () => {
                         UNION
                         WITH this
                         MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
-                        OPTIONAL MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                        WITH *, count(this4) AS var5
-                        WITH *
-                        WHERE (this3.id = $param3 AND ($isAuthenticated = true AND (var5 <> 0 AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub))))
+                        WHERE (this3.id = $param3 AND ($isAuthenticated = true AND EXISTS {
+                            MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                            WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                        }))
                         WITH { node: { __resolveType: \\"Post\\", __id: id(this3), id: this3.id } } AS edge
                         RETURN edge
                     }
@@ -335,9 +344,9 @@ describe("Cypher Auth Where", () => {
                 }
                 WITH edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var6
+                RETURN { edges: edges, totalCount: totalCount } AS var5
             }
-            RETURN this { .id, contentConnection: var6 } AS this"
+            RETURN this { .id, contentConnection: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -370,24 +379,19 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-            WITH *, count(this0) AS var1
+            "CYPHER 5
+            MATCH (this:Post)
             WITH *
-            WHERE ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)))
+            WHERE ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_CONTENT]-(this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+            })
             SET this.content = $this_update_content_SET
             WITH *
-            CALL {
-            	WITH this
-            	MATCH (this)<-[this_creator_User_unique:HAS_CONTENT]-(:User)
-            	WITH count(this_creator_User_unique) as c
-            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
-            	RETURN c AS this_creator_User_unique_ignored
-            }
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(update_this0:User)
-            WITH *, count(update_this0) AS update_var1
-            WITH *
-            WHERE ($isAuthenticated = true AND (update_var1 <> 0 AND ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)))
+            WHERE ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_CONTENT]-(update_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)
+            })
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -409,7 +413,7 @@ describe("Cypher Auth Where", () => {
     test("Update Node + User Defined Where", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updatePosts(where: { content_EQ: "bob" }, update: { content_SET: "Bob" }) {
+                updatePosts(where: { content: { eq: "bob" } }, update: { content_SET: "Bob" }) {
                     posts {
                         id
                     }
@@ -421,24 +425,19 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-            WITH *, count(this0) AS var1
+            "CYPHER 5
+            MATCH (this:Post)
             WITH *
-            WHERE (this.content = $param0 AND ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))))
+            WHERE (this.content = $param0 AND ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_CONTENT]-(this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+            }))
             SET this.content = $this_update_content_SET
             WITH *
-            CALL {
-            	WITH this
-            	MATCH (this)<-[this_creator_User_unique:HAS_CONTENT]-(:User)
-            	WITH count(this_creator_User_unique) as c
-            	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
-            	RETURN c AS this_creator_User_unique_ignored
-            }
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(update_this0:User)
-            WITH *, count(update_this0) AS update_var1
-            WITH *
-            WHERE ($isAuthenticated = true AND (update_var1 <> 0 AND ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)))
+            WHERE ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_CONTENT]-(update_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)
+            })
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -473,7 +472,8 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             WITH this
@@ -484,14 +484,6 @@ describe("Cypher Auth Where", () => {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
             	SET this_content0.id = $this_update_content0_id_SET
-            	WITH this, this_content0
-            	CALL {
-            		WITH this_content0
-            		MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
-            		WITH count(this_content0_creator_User_unique) as c
-            		WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDComment.creator required exactly once', [0])
-            		RETURN c AS this_content0_creator_User_unique_ignored
-            	}
             	RETURN count(*) AS update_this_content0
             }
             RETURN count(*) AS update_this_Comment
@@ -502,18 +494,11 @@ describe("Cypher Auth Where", () => {
             CALL {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
-            	OPTIONAL MATCH (this_content0)<-[:HAS_CONTENT]-(authorization_updatebefore_this1:User)
-            	WITH *, count(authorization_updatebefore_this1) AS authorization_updatebefore_var0
-            	WHERE ($isAuthenticated = true AND (authorization_updatebefore_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization_updatebefore_this1.id = $jwt.sub)))
+            	WHERE ($isAuthenticated = true AND EXISTS {
+            	    MATCH (this_content0)<-[:HAS_CONTENT]-(authorization_updatebefore_this0:User)
+            	    WHERE ($jwt.sub IS NOT NULL AND authorization_updatebefore_this0.id = $jwt.sub)
+            	})
             	SET this_content0.id = $this_update_content0_id_SET
-            	WITH this, this_content0
-            	CALL {
-            		WITH this_content0
-            		MATCH (this_content0)<-[this_content0_creator_User_unique:HAS_CONTENT]-(:User)
-            		WITH count(this_content0_creator_User_unique) as c
-            		WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
-            		RETURN c AS this_content0_creator_User_unique_ignored
-            	}
             	RETURN count(*) AS update_this_content0
             }
             RETURN count(*) AS update_this_Post
@@ -551,10 +536,12 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-            WITH *, count(this0) AS var1
-            WHERE ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)))
+            "CYPHER 5
+            MATCH (this:Post)
+            WHERE ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_CONTENT]-(this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+            })
             DETACH DELETE this"
         `);
 
@@ -574,7 +561,7 @@ describe("Cypher Auth Where", () => {
     test("Delete Node + User Defined Where", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deletePosts(where: { content_EQ: "Bob" }) {
+                deletePosts(where: { content: { eq: "Bob" } }) {
                     nodesDeleted
                 }
             }
@@ -584,10 +571,12 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-            WITH *, count(this0) AS var1
-            WHERE (this.content = $param0 AND ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))))
+            "CYPHER 5
+            MATCH (this:Post)
+            WHERE (this.content = $param0 AND ($isAuthenticated = true AND EXISTS {
+                MATCH (this)<-[:HAS_CONTENT]-(this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+            }))
             DETACH DELETE this"
         `);
 
@@ -618,7 +607,8 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             WITH *
             CALL {
@@ -634,14 +624,15 @@ describe("Cypher Auth Where", () => {
             CALL {
                 WITH *
                 OPTIONAL MATCH (this)-[this4:HAS_CONTENT]->(this5:Post)
-                OPTIONAL MATCH (this5)<-[:HAS_CONTENT]-(this6:User)
-                WITH *, count(this6) AS var7
-                WHERE ($isAuthenticated = true AND (var7 <> 0 AND ($jwt.sub IS NOT NULL AND this6.id = $jwt.sub)))
-                WITH this4, collect(DISTINCT this5) AS var8
+                WHERE ($isAuthenticated = true AND EXISTS {
+                    MATCH (this5)<-[:HAS_CONTENT]-(this6:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this6.id = $jwt.sub)
+                })
+                WITH this4, collect(DISTINCT this5) AS var7
                 CALL {
-                    WITH var8
-                    UNWIND var8 AS var9
-                    DETACH DELETE var9
+                    WITH var7
+                    UNWIND var7 AS var8
+                    DETACH DELETE var8
                 }
             }
             WITH *
@@ -680,7 +671,8 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:User)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
@@ -696,7 +688,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_content_connect0_node
-            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            			CREATE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
             		}
             	}
             WITH this0, this0_content_connect0_node
@@ -705,10 +697,10 @@ describe("Cypher Auth Where", () => {
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_content_connect1_node:Post)
-            OPTIONAL MATCH (this0_content_connect1_node)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            	WHERE ($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub)))
+            	WHERE ($isAuthenticated = true AND EXISTS {
+                MATCH (this0_content_connect1_node)<-[:HAS_CONTENT]-(authorization__before_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
+            })
             	CALL {
             		WITH *
             		WITH collect(this0_content_connect1_node) as connectedNodes, collect(this0) as parentNodes
@@ -716,7 +708,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_content_connect1_node
-            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect1_node)
+            			CREATE (this0)-[:HAS_CONTENT]->(this0_content_connect1_node)
             		}
             	}
             WITH this0, this0_content_connect1_node
@@ -757,7 +749,7 @@ describe("Cypher Auth Where", () => {
                             id: "123"
                             name: "Bob"
                             password: "password"
-                            content: { connect: { where: { node: { id_EQ: "post-id" } } } }
+                            content: { connect: { where: { node: { id: { eq: "post-id" } } } } }
                         }
                     ]
                 ) {
@@ -772,7 +764,8 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:User)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
@@ -789,7 +782,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_content_connect0_node
-            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
+            			CREATE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
             		}
             	}
             WITH this0, this0_content_connect0_node
@@ -798,10 +791,10 @@ describe("Cypher Auth Where", () => {
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_content_connect1_node:Post)
-            OPTIONAL MATCH (this0_content_connect1_node)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            	WHERE this0_content_connect1_node.id = $this0_content_connect1_node_param0 AND ($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub)))
+            	WHERE this0_content_connect1_node.id = $this0_content_connect1_node_param0 AND ($isAuthenticated = true AND EXISTS {
+                MATCH (this0_content_connect1_node)<-[:HAS_CONTENT]-(authorization__before_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
+            })
             	CALL {
             		WITH *
             		WITH collect(this0_content_connect1_node) as connectedNodes, collect(this0) as parentNodes
@@ -809,7 +802,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_content_connect1_node
-            			MERGE (this0)-[:HAS_CONTENT]->(this0_content_connect1_node)
+            			CREATE (this0)-[:HAS_CONTENT]->(this0_content_connect1_node)
             		}
             	}
             WITH this0, this0_content_connect1_node
@@ -858,7 +851,8 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             WITH this
@@ -876,7 +870,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_content0_connect0_node
-            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            			CREATE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
             		}
             	}
             WITH this, this_content0_connect0_node
@@ -890,10 +884,10 @@ describe("Cypher Auth Where", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
-            OPTIONAL MATCH (this_content0_connect0_node)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            	WHERE (($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
+            	WHERE (($isAuthenticated = true AND EXISTS {
+                MATCH (this_content0_connect0_node)<-[:HAS_CONTENT]-(authorization__before_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
+            }) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             	CALL {
             		WITH *
             		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
@@ -901,7 +895,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_content0_connect0_node
-            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            			CREATE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
             		}
             	}
             WITH this, this_content0_connect0_node
@@ -931,7 +925,7 @@ describe("Cypher Auth Where", () => {
     test("Connect Node + User Defined Where (from update update)", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(update: { content: { connect: { where: { node: { id_EQ: "new-id" } } } } }) {
+                updateUsers(update: { content: { connect: { where: { node: { id: { eq: "new-id" } } } } } }) {
                     users {
                         id
                     }
@@ -943,7 +937,8 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             WITH this
@@ -961,7 +956,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_content0_connect0_node
-            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            			CREATE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
             		}
             	}
             WITH this, this_content0_connect0_node
@@ -975,10 +970,10 @@ describe("Cypher Auth Where", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
-            OPTIONAL MATCH (this_content0_connect0_node)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            	WHERE this_content0_connect0_node.id = $this_content0_connect0_node_param0 AND (($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
+            	WHERE this_content0_connect0_node.id = $this_content0_connect0_node_param0 AND (($isAuthenticated = true AND EXISTS {
+                MATCH (this_content0_connect0_node)<-[:HAS_CONTENT]-(authorization__before_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
+            }) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             	CALL {
             		WITH *
             		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
@@ -986,7 +981,7 @@ describe("Cypher Auth Where", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_content0_connect0_node
-            			MERGE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
+            			CREATE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
             		}
             	}
             WITH this, this_content0_connect0_node
@@ -1029,7 +1024,8 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             WITH this
@@ -1056,10 +1052,10 @@ describe("Cypher Auth Where", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
-            OPTIONAL MATCH (this_content0_disconnect0)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))))
+            WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND EXISTS {
+                MATCH (this_content0_disconnect0)<-[:HAS_CONTENT]-(authorization__before_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
+            }))
             CALL {
             	WITH this_content0_disconnect0, this_content0_disconnect0_rel, this
             	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel, this
@@ -1092,7 +1088,7 @@ describe("Cypher Auth Where", () => {
     test("Disconnect Node + User Defined Where (from update update)", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateUsers(update: { content: [{ disconnect: { where: { node: { id_EQ: "new-id" } } } }] }) {
+                updateUsers(update: { content: [{ disconnect: { where: { node: { id: { eq: "new-id" } } } } }] }) {
                     users {
                         id
                     }
@@ -1104,7 +1100,8 @@ describe("Cypher Auth Where", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             WITH this
@@ -1131,10 +1128,10 @@ describe("Cypher Auth Where", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
-            OPTIONAL MATCH (this_content0_disconnect0)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            WHERE this_content0_disconnect0.id = $updateUsers_args_update_content0_disconnect0_where_Post_this_content0_disconnect0param0 AND (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))))
+            WHERE this_content0_disconnect0.id = $updateUsers_args_update_content0_disconnect0_where_Post_this_content0_disconnect0param0 AND (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND EXISTS {
+                MATCH (this_content0_disconnect0)<-[:HAS_CONTENT]-(authorization__before_this0:User)
+                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
+            }))
             CALL {
             	WITH this_content0_disconnect0, this_content0_disconnect0_rel, this
             	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel, this
@@ -1170,7 +1167,9 @@ describe("Cypher Auth Where", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id_EQ\\": \\"new-id\\"
+                                                    \\"id\\": {
+                                                        \\"eq\\": \\"new-id\\"
+                                                    }
                                                 }
                                             }
                                         }

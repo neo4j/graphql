@@ -72,7 +72,6 @@ export class ConnectionFactory {
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
     }): CompositeConnectionReadOperation {
-        const directed = resolveTree.args.directed as boolean | undefined;
         const resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
 
         let nodeWhere: Record<string, any>;
@@ -90,7 +89,6 @@ export class ConnectionFactory {
             if (relationship) {
                 selection = new RelationshipSelection({
                     relationship,
-                    directed,
                     targetOverride: concreteEntity,
                 });
                 resolveTreeEdgeFields = this.parseConnectionFields({
@@ -195,7 +193,6 @@ export class ConnectionFactory {
         if (relationship) {
             selection = new RelationshipSelection({
                 relationship,
-                directed: resolveTree.args.directed as boolean | undefined,
             });
             const { edges, totalCount, pageInfo } = this.parseConnectionFields({
                 entityOrRel: relationship,
@@ -274,6 +271,7 @@ export class ConnectionFactory {
         if (relationship) {
             const resolveTreeAggregateFields =
                 resolveTreeAggregate?.fieldsByTypeName[relationship.operations.getAggregateFieldTypename()];
+
             if (resolveTreeAggregate && resolveTreeAggregateFields) {
                 const aggregationOperation = this.aggregateFactory.createAggregationOperation({
                     entityOrRel: relationship ?? target,
@@ -281,8 +279,6 @@ export class ConnectionFactory {
                     context,
                     extraWhereArgs: whereArgs,
                 });
-                // NOTE: This will always be true on 7.x and this attribute should be removed
-                aggregationOperation.isInConnectionField = true;
                 const aggregationField = new ConnectionAggregationField({
                     alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
                     nodeAlias: "node",
@@ -302,8 +298,7 @@ export class ConnectionFactory {
                     context,
                     extraWhereArgs: whereArgs,
                 });
-                // NOTE: This will always be true on 7.x and this attribute should be removed
-                aggregationOperation.isInConnectionField = true;
+
                 const aggregationField = new ConnectionAggregationField({
                     alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
                     nodeAlias: "node",
@@ -412,11 +407,11 @@ export class ConnectionFactory {
 
     private getConnectionOptions(
         entity: ConcreteEntityAdapter | InterfaceEntityAdapter,
-        options: Record<string, any>
+        args: Record<string, any>
     ): Pick<ConnectionQueryArgs, "first" | "after" | "sort"> | undefined {
         const limitDirective = entity.annotations.limit;
 
-        let limit: Integer | number | undefined = options?.first ?? limitDirective?.default ?? limitDirective?.max;
+        let limit: Integer | number | undefined = args?.first ?? limitDirective?.default ?? limitDirective?.max;
         if (limit instanceof Integer) {
             limit = limit.toNumber();
         }
@@ -425,12 +420,12 @@ export class ConnectionFactory {
             limit = Math.min(limit, maxLimit);
         }
 
-        if (limit === undefined && options.after === undefined && options.sort === undefined) return undefined;
+        if (limit === undefined && args.after === undefined && args.sort === undefined) return undefined;
 
         return {
             first: limit,
-            after: options.after,
-            sort: options.sort,
+            after: args.after,
+            sort: args.sort,
         };
     }
 

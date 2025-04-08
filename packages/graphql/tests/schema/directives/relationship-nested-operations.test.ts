@@ -50,6 +50,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -85,15 +90,43 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -101,7 +134,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -115,6 +148,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -132,21 +194,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -156,16 +219,6 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -177,22 +230,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -208,45 +247,47 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieUpdateInput {
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -293,11 +334,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   name: String
                 }
@@ -307,13 +343,15 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -324,28 +362,26 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -360,6 +396,27 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -404,6 +461,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -439,15 +501,43 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -455,7 +545,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -469,6 +559,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -494,21 +613,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -518,21 +638,10 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   create: [MovieActorsCreateFieldInput!]
-                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -545,22 +654,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -577,45 +672,47 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -662,11 +759,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   name: String
                 }
@@ -676,13 +768,15 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -693,28 +787,26 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -729,6 +821,27 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -773,6 +886,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -808,15 +926,43 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -824,7 +970,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -834,10 +980,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsConnectFieldInput {
-                  \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties.
-                  \\"\\"\\"
-                  overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
                   where: PersonConnectWhere
                 }
 
@@ -846,6 +988,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -867,21 +1038,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -891,21 +1063,10 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   connect: [MovieActorsConnectFieldInput!]
-                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -918,22 +1079,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -950,45 +1097,47 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -1035,11 +1184,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonConnectWhere {
                   node: PersonWhere!
                 }
@@ -1053,13 +1197,15 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -1070,28 +1216,26 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -1106,6 +1250,27 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -1150,6 +1315,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -1185,15 +1355,43 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -1201,7 +1399,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -1215,6 +1413,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -1232,21 +1459,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -1261,21 +1489,10 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   update: MovieActorsUpdateConnectionInput
-                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -1287,22 +1504,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -1319,45 +1522,47 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -1404,11 +1609,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   name: String
                 }
@@ -1418,13 +1618,15 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -1435,28 +1637,26 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -1471,6 +1671,27 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -1515,6 +1736,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -1550,15 +1776,43 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -1566,7 +1820,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -1580,6 +1834,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -1601,21 +1884,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -1625,21 +1909,10 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   delete: [MovieActorsDeleteFieldInput!]
-                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -1655,22 +1928,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -1687,45 +1946,47 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -1772,11 +2033,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   name: String
                 }
@@ -1786,13 +2042,15 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -1803,28 +2061,26 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -1839,6 +2095,27 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -1883,6 +2160,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -1918,15 +2200,43 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -1934,7 +2244,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -1948,6 +2258,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -1969,21 +2308,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -1993,21 +2333,10 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   disconnect: [MovieActorsDisconnectFieldInput!]
-                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -2019,22 +2348,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -2051,45 +2366,47 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -2136,11 +2453,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   name: String
                 }
@@ -2150,13 +2462,15 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -2167,28 +2481,26 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -2205,769 +2517,25 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
-                \\"\\"\\"
-                Information about the number of nodes and relationships created and deleted during an update mutation
-                \\"\\"\\"
-                type UpdateInfo {
-                  nodesCreated: Int!
-                  nodesDeleted: Int!
-                  relationshipsCreated: Int!
-                  relationshipsDeleted: Int!
-                }
-
-                type UpdateMoviesMutationResponse {
-                  info: UpdateInfo!
-                  movies: [Movie!]!
-                }
-
-                type UpdatePeopleMutationResponse {
-                  info: UpdateInfo!
-                  people: [Person!]!
-                }"
-            `);
-        });
-
-        test("Should not generate any nested operations if only CONNECT_OR_CREATE is specified and the related type does not have a unique field", async () => {
-            const typeDefs = gql`
-                type Person @node {
-                    name: String
-                }
-
-                type Movie @node {
-                    id: ID
-                    actors: [Person!]!
-                        @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
-                }
-            `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-
-            expect(printedSchema).toMatchInlineSnapshot(`
-                "schema {
-                  query: Query
-                  mutation: Mutation
-                }
-
-                type Count {
-                  nodes: Int!
-                }
-
-                type CountConnection {
-                  edges: Int!
-                  nodes: Int!
-                }
-
-                \\"\\"\\"
-                Information about the number of nodes and relationships created during a create mutation
-                \\"\\"\\"
-                type CreateInfo {
-                  nodesCreated: Int!
-                  relationshipsCreated: Int!
-                }
-
-                type CreateMoviesMutationResponse {
-                  info: CreateInfo!
-                  movies: [Movie!]!
-                }
-
-                type CreatePeopleMutationResponse {
-                  info: CreateInfo!
-                  people: [Person!]!
-                }
-
-                \\"\\"\\"
-                Information about the number of nodes and relationships deleted during a delete mutation
-                \\"\\"\\"
-                type DeleteInfo {
-                  nodesDeleted: Int!
-                  relationshipsDeleted: Int!
-                }
-
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
-                }
-
-                type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
-                  id: ID
-                }
-
-                input MovieActorsAggregateInput {
-                  AND: [MovieActorsAggregateInput!]
-                  NOT: MovieActorsAggregateInput
-                  OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  count_EQ: Int
-                  count_GT: Int
-                  count_GTE: Int
-                  count_LT: Int
-                  count_LTE: Int
-                  node: MovieActorsNodeAggregationWhereInput
-                }
-
-                type MovieActorsConnection {
-                  aggregate: MoviePersonActorsAggregateSelection!
-                  edges: [MovieActorsRelationship!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                input MovieActorsConnectionSort {
-                  node: PersonSort
-                }
-
-                input MovieActorsConnectionWhere {
-                  AND: [MovieActorsConnectionWhere!]
-                  NOT: MovieActorsConnectionWhere
-                  OR: [MovieActorsConnectionWhere!]
-                  node: PersonWhere
-                }
-
-                input MovieActorsNodeAggregationWhereInput {
-                  AND: [MovieActorsNodeAggregationWhereInput!]
-                  NOT: MovieActorsNodeAggregationWhereInput
-                  OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
-                }
-
-                type MovieActorsRelationship {
-                  cursor: String!
-                  node: Person!
-                }
-
-                type MovieAggregate {
-                  count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                input MovieCreateInput {
-                  id: ID
-                }
-
-                type MovieEdge {
-                  cursor: String!
-                  node: Movie!
-                }
-
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
-                type MoviePersonActorsAggregateSelection {
-                  count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsNodeAggregateSelection {
-                  name: StringAggregateSelection!
-                }
-
-                \\"\\"\\"
-                Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-                \\"\\"\\"
-                input MovieSort {
-                  id: SortDirection
-                }
-
-                input MovieUpdateInput {
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
-                }
-
-                input MovieWhere {
-                  AND: [MovieWhere!]
-                  NOT: MovieWhere
-                  OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
-                  \\"\\"\\"
-                  Return Movies where all of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
-                  \\"\\"\\"
-                  Return Movies where none of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
-                  \\"\\"\\"
-                  Return Movies where one of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
-                  \\"\\"\\"
-                  Return Movies where some of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
-                }
-
-                type MoviesConnection {
-                  aggregate: MovieAggregate!
-                  edges: [MovieEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type Mutation {
-                  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-                  createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
-                  deleteMovies(where: MovieWhere): DeleteInfo!
-                  deletePeople(where: PersonWhere): DeleteInfo!
-                  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-                  updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
-                }
-
-                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-                type PageInfo {
-                  endCursor: String
-                  hasNextPage: Boolean!
-                  hasPreviousPage: Boolean!
-                  startCursor: String
-                }
-
-                type PeopleConnection {
-                  aggregate: PersonAggregate!
-                  edges: [PersonEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type Person {
-                  name: String
-                }
-
-                type PersonAggregate {
-                  count: Count!
-                  node: PersonAggregateNode!
-                }
-
-                type PersonAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
-                input PersonCreateInput {
-                  name: String
-                }
-
-                type PersonEdge {
-                  cursor: String!
-                  node: Person!
-                }
-
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
-                }
-
-                \\"\\"\\"
-                Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
-                \\"\\"\\"
-                input PersonSort {
-                  name: SortDirection
-                }
-
-                input PersonUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
-                }
-
-                input PersonWhere {
-                  AND: [PersonWhere!]
-                  NOT: PersonWhere
-                  OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
-                }
-
-                type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
-                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
-                }
-
-                \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-                enum SortDirection {
-                  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-                  ASC
-                  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-                  DESC
-                }
-
-                type StringAggregateSelection {
-                  longest: String
-                  shortest: String
-                }
-
-                \\"\\"\\"
-                Information about the number of nodes and relationships created and deleted during an update mutation
-                \\"\\"\\"
-                type UpdateInfo {
-                  nodesCreated: Int!
-                  nodesDeleted: Int!
-                  relationshipsCreated: Int!
-                  relationshipsDeleted: Int!
-                }
-
-                type UpdateMoviesMutationResponse {
-                  info: UpdateInfo!
-                  movies: [Movie!]!
-                }
-
-                type UpdatePeopleMutationResponse {
-                  info: UpdateInfo!
-                  people: [Person!]!
-                }"
-            `);
-        });
-
-        test("Single relationship to type with unique field with nested operation CONNECT_OR_CREATE specified", async () => {
-            const typeDefs = gql`
-                type Person @node {
-                    id: ID! @id @unique
-                    name: String
-                }
-
-                type Movie @node {
-                    id: ID
-                    actors: [Person!]!
-                        @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
-                }
-            `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-
-            expect(printedSchema).toMatchInlineSnapshot(`
-                "schema {
-                  query: Query
-                  mutation: Mutation
-                }
-
-                type Count {
-                  nodes: Int!
-                }
-
-                type CountConnection {
-                  edges: Int!
-                  nodes: Int!
-                }
-
-                \\"\\"\\"
-                Information about the number of nodes and relationships created during a create mutation
-                \\"\\"\\"
-                type CreateInfo {
-                  nodesCreated: Int!
-                  relationshipsCreated: Int!
-                }
-
-                type CreateMoviesMutationResponse {
-                  info: CreateInfo!
-                  movies: [Movie!]!
-                }
-
-                type CreatePeopleMutationResponse {
-                  info: CreateInfo!
-                  people: [Person!]!
-                }
-
-                \\"\\"\\"
-                Information about the number of nodes and relationships deleted during a delete mutation
-                \\"\\"\\"
-                type DeleteInfo {
-                  nodesDeleted: Int!
-                  relationshipsDeleted: Int!
-                }
-
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
-                }
-
-                type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
-                  id: ID
-                }
-
-                input MovieActorsAggregateInput {
-                  AND: [MovieActorsAggregateInput!]
-                  NOT: MovieActorsAggregateInput
-                  OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  count_EQ: Int
-                  count_GT: Int
-                  count_GTE: Int
-                  count_LT: Int
-                  count_LTE: Int
-                  node: MovieActorsNodeAggregationWhereInput
-                }
-
-                input MovieActorsConnectOrCreateFieldInput {
-                  onCreate: MovieActorsConnectOrCreateFieldInputOnCreate!
-                  where: PersonConnectOrCreateWhere!
-                }
-
-                input MovieActorsConnectOrCreateFieldInputOnCreate {
-                  node: PersonOnCreateInput!
-                }
-
-                type MovieActorsConnection {
-                  aggregate: MoviePersonActorsAggregateSelection!
-                  edges: [MovieActorsRelationship!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                input MovieActorsConnectionSort {
-                  node: PersonSort
-                }
-
-                input MovieActorsConnectionWhere {
-                  AND: [MovieActorsConnectionWhere!]
-                  NOT: MovieActorsConnectionWhere
-                  OR: [MovieActorsConnectionWhere!]
-                  node: PersonWhere
-                }
-
-                input MovieActorsFieldInput {
-                  connectOrCreate: [MovieActorsConnectOrCreateFieldInput!] @deprecated(reason: \\"The connectOrCreate operation is deprecated and will be removed\\")
-                }
-
-                input MovieActorsNodeAggregationWhereInput {
-                  AND: [MovieActorsNodeAggregationWhereInput!]
-                  NOT: MovieActorsNodeAggregationWhereInput
-                  OR: [MovieActorsNodeAggregationWhereInput!]
-                  id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
-                }
-
-                type MovieActorsRelationship {
-                  cursor: String!
-                  node: Person!
-                }
-
-                input MovieActorsUpdateFieldInput {
-                  connectOrCreate: [MovieActorsConnectOrCreateFieldInput!]
-                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
-                }
-
-                type MovieAggregate {
-                  count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                input MovieCreateInput {
-                  actors: MovieActorsFieldInput
-                  id: ID
-                }
-
-                type MovieEdge {
-                  cursor: String!
-                  node: Movie!
-                }
-
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
-                type MoviePersonActorsAggregateSelection {
-                  count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsNodeAggregateSelection {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  name: StringAggregateSelection!
-                }
-
-                \\"\\"\\"
-                Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-                \\"\\"\\"
-                input MovieSort {
-                  id: SortDirection
-                }
-
-                input MovieUpdateInput {
-                  actors: [MovieActorsUpdateFieldInput!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
-                }
-
-                input MovieWhere {
-                  AND: [MovieWhere!]
-                  NOT: MovieWhere
-                  OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
-                  \\"\\"\\"
-                  Return Movies where all of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
-                  \\"\\"\\"
-                  Return Movies where none of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
-                  \\"\\"\\"
-                  Return Movies where one of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
-                  \\"\\"\\"
-                  Return Movies where some of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
-                }
-
-                type MoviesConnection {
-                  aggregate: MovieAggregate!
-                  edges: [MovieEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type Mutation {
-                  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-                  createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
-                  deleteMovies(where: MovieWhere): DeleteInfo!
-                  deletePeople(where: PersonWhere): DeleteInfo!
-                  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-                  updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
-                }
-
-                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-                type PageInfo {
-                  endCursor: String
-                  hasNextPage: Boolean!
-                  hasPreviousPage: Boolean!
-                  startCursor: String
-                }
-
-                type PeopleConnection {
-                  aggregate: PersonAggregate!
-                  edges: [PersonEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type Person {
-                  id: ID!
-                  name: String
-                }
-
-                type PersonAggregate {
-                  count: Count!
-                  node: PersonAggregateNode!
-                }
-
-                type PersonAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  name: StringAggregateSelection!
-                }
-
-                type PersonAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  name: StringAggregateSelection!
-                }
-
-                input PersonConnectOrCreateWhere {
-                  node: PersonUniqueWhere!
-                }
-
-                input PersonCreateInput {
-                  name: String
-                }
-
-                type PersonEdge {
-                  cursor: String!
-                  node: Person!
-                }
-
-                input PersonOnCreateInput {
-                  name: String
-                }
-
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
-                }
-
-                \\"\\"\\"
-                Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
-                \\"\\"\\"
-                input PersonSort {
-                  id: SortDirection
-                  name: SortDirection
-                }
-
-                input PersonUniqueWhere {
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_EQ: ID
-                }
-
-                input PersonUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
-                }
-
-                input PersonWhere {
-                  AND: [PersonWhere!]
-                  NOT: PersonWhere
-                  OR: [PersonWhere!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID!]
-                  id_STARTS_WITH: ID
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
-                }
-
-                type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
-                  peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
-                }
-
-                \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-                enum SortDirection {
-                  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-                  ASC
-                  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-                  DESC
-                }
-
-                type StringAggregateSelection {
-                  longest: String
-                  shortest: String
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -3013,6 +2581,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -3048,26 +2621,53 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
-                  producers(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  producersAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonProducersAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"producersConnection\\\\\\" instead\\")
-                  producersConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
+                  producers(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  producersConnection(after: String, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
                 input MovieActorsAggregateInput {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -3077,10 +2677,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieActorsConnectFieldInput {
-                  \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties.
-                  \\"\\"\\"
-                  overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
                   where: PersonConnectWhere
                 }
 
@@ -3089,6 +2685,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -3123,21 +2748,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -3156,21 +2782,10 @@ describe("Relationship nested operations", () => {
                   delete: [MovieActorsDeleteFieldInput!]
                   disconnect: [MovieActorsDisconnectFieldInput!]
                   update: MovieActorsUpdateConnectionInput
-                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -3187,22 +2802,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -3215,11 +2816,6 @@ describe("Relationship nested operations", () => {
                   node: MoviePersonProducersNodeAggregateSelection
                 }
 
-                type MoviePersonProducersAggregationSelection {
-                  count: Int!
-                  node: MoviePersonProducersNodeAggregateSelection
-                }
-
                 type MoviePersonProducersNodeAggregateSelection {
                   name: StringAggregateSelection!
                 }
@@ -3228,7 +2824,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieProducersAggregateInput!]
                   NOT: MovieProducersAggregateInput
                   OR: [MovieProducersAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -3242,6 +2838,37 @@ describe("Relationship nested operations", () => {
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieProducersConnectionAggregateInput {
+                  AND: [MovieProducersConnectionAggregateInput!]
+                  NOT: MovieProducersConnectionAggregateInput
+                  OR: [MovieProducersConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieProducersNodeAggregationWhereInput
+                }
+
+                input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Filter Movies by aggregating results on related MovieProducersConnections
+                  \\"\\"\\"
+                  aggregate: MovieProducersConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  all: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  none: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  single: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  some: MovieProducersConnectionWhere
                 }
 
                 input MovieProducersConnectionSort {
@@ -3263,21 +2890,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieProducersNodeAggregationWhereInput!]
                   NOT: MovieProducersNodeAggregationWhereInput
                   OR: [MovieProducersNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieProducersRelationship {
@@ -3287,7 +2915,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersUpdateFieldInput {
                   disconnect: [MovieProducersDisconnectFieldInput!]
-                  where: MovieProducersConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 \\"\\"\\"
@@ -3299,8 +2926,8 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                   producers: [MovieProducersUpdateFieldInput!]
                 }
 
@@ -3308,62 +2935,66 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
-                  producersAggregate: MovieProducersAggregateInput
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+                  producers: PersonRelationshipFilters
+                  producersAggregate: MovieProducersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the producersConnection filter, please use { producersConnection: { aggregate: {...} } } instead\\")
+                  producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_ALL: MovieProducersConnectionWhere
+                  producersConnection_ALL: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_NONE: MovieProducersConnectionWhere
+                  producersConnection_NONE: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_SINGLE: MovieProducersConnectionWhere
+                  producersConnection_SINGLE: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_SOME: MovieProducersConnectionWhere
+                  producersConnection_SOME: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  producers_ALL: PersonWhere
+                  producers_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  producers_NONE: PersonWhere
+                  producers_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  producers_SINGLE: PersonWhere
+                  producers_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  producers_SOME: PersonWhere
+                  producers_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: {  some: ... }' instead.\\")
                 }
 
                 type MoviesConnection {
@@ -3410,11 +3041,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonConnectWhere {
                   node: PersonWhere!
                 }
@@ -3428,13 +3054,15 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -3445,28 +3073,26 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -3481,6 +3107,27 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -3526,6 +3173,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -3561,26 +3213,53 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
-                  producers(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  producersAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonProducersAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"producersConnection\\\\\\" instead\\")
-                  producersConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
+                  producers(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  producersConnection(after: String, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
                 input MovieActorsAggregateInput {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -3594,6 +3273,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -3619,21 +3327,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -3643,21 +3352,10 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   create: [MovieActorsCreateFieldInput!]
-                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -3670,22 +3368,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -3698,11 +3382,6 @@ describe("Relationship nested operations", () => {
                   node: MoviePersonProducersNodeAggregateSelection
                 }
 
-                type MoviePersonProducersAggregationSelection {
-                  count: Int!
-                  node: MoviePersonProducersNodeAggregateSelection
-                }
-
                 type MoviePersonProducersNodeAggregateSelection {
                   name: StringAggregateSelection!
                 }
@@ -3711,7 +3390,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieProducersAggregateInput!]
                   NOT: MovieProducersAggregateInput
                   OR: [MovieProducersAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -3725,6 +3404,37 @@ describe("Relationship nested operations", () => {
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieProducersConnectionAggregateInput {
+                  AND: [MovieProducersConnectionAggregateInput!]
+                  NOT: MovieProducersConnectionAggregateInput
+                  OR: [MovieProducersConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieProducersNodeAggregationWhereInput
+                }
+
+                input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Filter Movies by aggregating results on related MovieProducersConnections
+                  \\"\\"\\"
+                  aggregate: MovieProducersConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  all: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  none: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  single: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  some: MovieProducersConnectionWhere
                 }
 
                 input MovieProducersConnectionSort {
@@ -3746,21 +3456,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieProducersNodeAggregationWhereInput!]
                   NOT: MovieProducersNodeAggregationWhereInput
                   OR: [MovieProducersNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieProducersRelationship {
@@ -3770,7 +3481,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersUpdateFieldInput {
                   disconnect: [MovieProducersDisconnectFieldInput!]
-                  where: MovieProducersConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 \\"\\"\\"
@@ -3782,8 +3492,8 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                   producers: [MovieProducersUpdateFieldInput!]
                 }
 
@@ -3791,62 +3501,66 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
-                  producersAggregate: MovieProducersAggregateInput
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+                  producers: PersonRelationshipFilters
+                  producersAggregate: MovieProducersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the producersConnection filter, please use { producersConnection: { aggregate: {...} } } instead\\")
+                  producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_ALL: MovieProducersConnectionWhere
+                  producersConnection_ALL: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_NONE: MovieProducersConnectionWhere
+                  producersConnection_NONE: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_SINGLE: MovieProducersConnectionWhere
+                  producersConnection_SINGLE: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_SOME: MovieProducersConnectionWhere
+                  producersConnection_SOME: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  producers_ALL: PersonWhere
+                  producers_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  producers_NONE: PersonWhere
+                  producers_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  producers_SINGLE: PersonWhere
+                  producers_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  producers_SOME: PersonWhere
+                  producers_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: {  some: ... }' instead.\\")
                 }
 
                 type MoviesConnection {
@@ -3893,11 +3607,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   name: String
                 }
@@ -3907,13 +3616,15 @@ describe("Relationship nested operations", () => {
                   node: Person!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -3924,28 +3635,26 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
                 }
 
@@ -3960,6 +3669,27 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -4052,14 +3782,23 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -4067,6 +3806,25 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionWhere {
@@ -4095,16 +3853,6 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -4116,15 +3864,6 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                 \\"\\"\\"
@@ -4133,44 +3872,46 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieUpdateInput {
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -4215,11 +3956,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                 }
@@ -4227,15 +3963,6 @@ describe("Relationship nested operations", () => {
                 type PersonOneEdge {
                   cursor: String!
                   node: PersonOne!
-                }
-
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
                 }
 
                 \\"\\"\\"
@@ -4246,20 +3973,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -4267,6 +3994,17 @@ describe("Relationship nested operations", () => {
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 type PersonTwo {
@@ -4282,11 +4020,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   nameTwo: String
                 }
@@ -4294,15 +4027,6 @@ describe("Relationship nested operations", () => {
                 type PersonTwoEdge {
                   cursor: String!
                   node: PersonTwo!
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
                 }
 
                 \\"\\"\\"
@@ -4313,20 +4037,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  nameTwo_SET: String
+                  nameTwo: StringScalarMutations
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo: StringScalarFilters
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { endsWith: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -4342,22 +4066,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
-                }
-
-                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-                input QueryOptions {
-                  limit: Int
-                  offset: Int
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -4371,6 +4086,20 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -4461,14 +4190,23 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -4476,6 +4214,25 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionWhere {
@@ -4505,7 +4262,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonOneUpdateFieldInput {
                   create: [MovieActorsPersonOneCreateFieldInput!]
-                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieActorsPersonTwoConnectionWhere {
@@ -4525,7 +4281,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonTwoUpdateFieldInput {
                   create: [MovieActorsPersonTwoCreateFieldInput!]
-                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieActorsRelationship {
@@ -4540,16 +4295,6 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -4562,15 +4307,6 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                 \\"\\"\\"
@@ -4580,44 +4316,46 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: MovieActorsUpdateInput
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -4662,11 +4400,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                 }
@@ -4674,15 +4407,6 @@ describe("Relationship nested operations", () => {
                 type PersonOneEdge {
                   cursor: String!
                   node: PersonOne!
-                }
-
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
                 }
 
                 \\"\\"\\"
@@ -4693,20 +4417,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -4714,6 +4438,17 @@ describe("Relationship nested operations", () => {
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 type PersonTwo {
@@ -4729,11 +4464,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   nameTwo: String
                 }
@@ -4741,15 +4471,6 @@ describe("Relationship nested operations", () => {
                 type PersonTwoEdge {
                   cursor: String!
                   node: PersonTwo!
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
                 }
 
                 \\"\\"\\"
@@ -4760,20 +4481,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  nameTwo_SET: String
+                  nameTwo: StringScalarMutations
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo: StringScalarFilters
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { endsWith: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -4789,22 +4510,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
-                }
-
-                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-                input QueryOptions {
-                  limit: Int
-                  offset: Int
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -4818,6 +4530,20 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -4908,14 +4634,23 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -4923,6 +4658,25 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionWhere {
@@ -4952,7 +4706,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonOneUpdateFieldInput {
                   connect: [MovieActorsPersonOneConnectFieldInput!]
-                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieActorsPersonTwoConnectFieldInput {
@@ -4972,7 +4725,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonTwoUpdateFieldInput {
                   connect: [MovieActorsPersonTwoConnectFieldInput!]
-                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieActorsRelationship {
@@ -4987,16 +4739,6 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -5009,15 +4751,6 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                 \\"\\"\\"
@@ -5027,44 +4760,46 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: MovieActorsUpdateInput
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -5109,11 +4844,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneConnectWhere {
                   node: PersonOneWhere!
                 }
@@ -5127,15 +4857,6 @@ describe("Relationship nested operations", () => {
                   node: PersonOne!
                 }
 
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
                 \\"\\"\\"
@@ -5144,20 +4865,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -5165,6 +4886,17 @@ describe("Relationship nested operations", () => {
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 type PersonTwo {
@@ -5177,11 +4909,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwoAggregateNode {
-                  nameTwo: StringAggregateSelection!
-                }
-
-                type PersonTwoAggregateSelection {
-                  count: Int!
                   nameTwo: StringAggregateSelection!
                 }
 
@@ -5198,15 +4925,6 @@ describe("Relationship nested operations", () => {
                   node: PersonTwo!
                 }
 
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort PersonTwos by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonTwoSort object.
                 \\"\\"\\"
@@ -5215,20 +4933,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  nameTwo_SET: String
+                  nameTwo: StringScalarMutations
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo: StringScalarFilters
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { endsWith: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -5244,22 +4962,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
-                }
-
-                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-                input QueryOptions {
-                  limit: Int
-                  offset: Int
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -5273,6 +4982,20 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -5363,14 +5086,23 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -5378,6 +5110,25 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionWhere {
@@ -5399,7 +5150,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonOneUpdateFieldInput {
                   update: MovieActorsPersonOneUpdateConnectionInput
-                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieActorsPersonTwoConnectionWhere {
@@ -5416,7 +5166,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonTwoUpdateFieldInput {
                   update: MovieActorsPersonTwoUpdateConnectionInput
-                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieActorsRelationship {
@@ -5431,16 +5180,6 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -5452,15 +5191,6 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                 \\"\\"\\"
@@ -5470,44 +5200,46 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: MovieActorsUpdateInput
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -5552,11 +5284,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                 }
@@ -5564,15 +5291,6 @@ describe("Relationship nested operations", () => {
                 type PersonOneEdge {
                   cursor: String!
                   node: PersonOne!
-                }
-
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
                 }
 
                 \\"\\"\\"
@@ -5583,20 +5301,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -5604,6 +5322,17 @@ describe("Relationship nested operations", () => {
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 type PersonTwo {
@@ -5619,11 +5348,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   nameTwo: String
                 }
@@ -5631,15 +5355,6 @@ describe("Relationship nested operations", () => {
                 type PersonTwoEdge {
                   cursor: String!
                   node: PersonTwo!
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
                 }
 
                 \\"\\"\\"
@@ -5650,20 +5365,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  nameTwo_SET: String
+                  nameTwo: StringScalarMutations
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo: StringScalarFilters
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { endsWith: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -5679,22 +5394,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
-                }
-
-                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-                input QueryOptions {
-                  limit: Int
-                  offset: Int
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -5708,6 +5414,20 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -5798,14 +5518,23 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -5813,6 +5542,25 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionWhere {
@@ -5838,7 +5586,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonOneUpdateFieldInput {
                   delete: [MovieActorsPersonOneDeleteFieldInput!]
-                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieActorsPersonTwoConnectionWhere {
@@ -5854,7 +5601,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonTwoUpdateFieldInput {
                   delete: [MovieActorsPersonTwoDeleteFieldInput!]
-                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieActorsRelationship {
@@ -5869,16 +5615,6 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -5894,15 +5630,6 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                 \\"\\"\\"
@@ -5912,44 +5639,46 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: MovieActorsUpdateInput
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -5994,11 +5723,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                 }
@@ -6006,15 +5730,6 @@ describe("Relationship nested operations", () => {
                 type PersonOneEdge {
                   cursor: String!
                   node: PersonOne!
-                }
-
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
                 }
 
                 \\"\\"\\"
@@ -6025,20 +5740,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -6046,6 +5761,17 @@ describe("Relationship nested operations", () => {
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 type PersonTwo {
@@ -6061,11 +5787,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   nameTwo: String
                 }
@@ -6073,15 +5794,6 @@ describe("Relationship nested operations", () => {
                 type PersonTwoEdge {
                   cursor: String!
                   node: PersonTwo!
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
                 }
 
                 \\"\\"\\"
@@ -6092,20 +5804,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  nameTwo_SET: String
+                  nameTwo: StringScalarMutations
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo: StringScalarFilters
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { endsWith: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -6121,22 +5833,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
-                }
-
-                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-                input QueryOptions {
-                  limit: Int
-                  offset: Int
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -6150,6 +5853,20 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -6240,14 +5957,23 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -6255,6 +5981,25 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionWhere {
@@ -6275,7 +6020,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonOneUpdateFieldInput {
                   disconnect: [MovieActorsPersonOneDisconnectFieldInput!]
-                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieActorsPersonTwoConnectionWhere {
@@ -6291,7 +6035,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonTwoUpdateFieldInput {
                   disconnect: [MovieActorsPersonTwoDisconnectFieldInput!]
-                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieActorsRelationship {
@@ -6306,16 +6049,6 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -6325,15 +6058,6 @@ describe("Relationship nested operations", () => {
                 type MovieEdge {
                   cursor: String!
                   node: Movie!
-                }
-
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
                 }
 
                 \\"\\"\\"
@@ -6345,44 +6069,46 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: MovieActorsUpdateInput
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -6427,11 +6153,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                 }
@@ -6439,15 +6160,6 @@ describe("Relationship nested operations", () => {
                 type PersonOneEdge {
                   cursor: String!
                   node: PersonOne!
-                }
-
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
                 }
 
                 \\"\\"\\"
@@ -6458,20 +6170,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -6479,6 +6191,17 @@ describe("Relationship nested operations", () => {
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 type PersonTwo {
@@ -6494,11 +6217,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   nameTwo: String
                 }
@@ -6506,15 +6224,6 @@ describe("Relationship nested operations", () => {
                 type PersonTwoEdge {
                   cursor: String!
                   node: PersonTwo!
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
                 }
 
                 \\"\\"\\"
@@ -6525,20 +6234,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  nameTwo_SET: String
+                  nameTwo: StringScalarMutations
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo: StringScalarFilters
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { endsWith: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -6554,22 +6263,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
-                }
-
-                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-                input QueryOptions {
-                  limit: Int
-                  offset: Int
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -6585,920 +6285,18 @@ describe("Relationship nested operations", () => {
                   shortest: String
                 }
 
-                \\"\\"\\"
-                Information about the number of nodes and relationships created and deleted during an update mutation
-                \\"\\"\\"
-                type UpdateInfo {
-                  nodesCreated: Int!
-                  nodesDeleted: Int!
-                  relationshipsCreated: Int!
-                  relationshipsDeleted: Int!
-                }
-
-                type UpdateMoviesMutationResponse {
-                  info: UpdateInfo!
-                  movies: [Movie!]!
-                }
-
-                type UpdatePersonOnesMutationResponse {
-                  info: UpdateInfo!
-                  personOnes: [PersonOne!]!
-                }
-
-                type UpdatePersonTwosMutationResponse {
-                  info: UpdateInfo!
-                  personTwos: [PersonTwo!]!
-                }"
-            `);
-        });
-
-        test("Should not generate any nested operations if only CONNECT_OR_CREATE is specified and the related type does not have a unique field", async () => {
-            const typeDefs = gql`
-                type PersonOne @node {
-                    name: String
-                }
-
-                type PersonTwo @node {
-                    nameTwo: String
-                }
-
-                union Person = PersonOne | PersonTwo
-
-                type Movie @node {
-                    id: ID
-                    actors: [Person!]!
-                        @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
-                }
-            `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-
-            expect(printedSchema).toMatchInlineSnapshot(`
-                "schema {
-                  query: Query
-                  mutation: Mutation
-                }
-
-                type Count {
-                  nodes: Int!
-                }
-
-                \\"\\"\\"
-                Information about the number of nodes and relationships created during a create mutation
-                \\"\\"\\"
-                type CreateInfo {
-                  nodesCreated: Int!
-                  relationshipsCreated: Int!
-                }
-
-                type CreateMoviesMutationResponse {
-                  info: CreateInfo!
-                  movies: [Movie!]!
-                }
-
-                type CreatePersonOnesMutationResponse {
-                  info: CreateInfo!
-                  personOnes: [PersonOne!]!
-                }
-
-                type CreatePersonTwosMutationResponse {
-                  info: CreateInfo!
-                  personTwos: [PersonTwo!]!
-                }
-
-                \\"\\"\\"
-                Information about the number of nodes and relationships deleted during a delete mutation
-                \\"\\"\\"
-                type DeleteInfo {
-                  nodesDeleted: Int!
-                  relationshipsDeleted: Int!
-                }
-
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
-                }
-
-                type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
-                  id: ID
-                }
-
-                type MovieActorsConnection {
-                  edges: [MovieActorsRelationship!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                input MovieActorsConnectionWhere {
-                  PersonOne: MovieActorsPersonOneConnectionWhere
-                  PersonTwo: MovieActorsPersonTwoConnectionWhere
-                }
-
-                input MovieActorsPersonOneConnectionWhere {
-                  AND: [MovieActorsPersonOneConnectionWhere!]
-                  NOT: MovieActorsPersonOneConnectionWhere
-                  OR: [MovieActorsPersonOneConnectionWhere!]
-                  node: PersonOneWhere
-                }
-
-                input MovieActorsPersonTwoConnectionWhere {
-                  AND: [MovieActorsPersonTwoConnectionWhere!]
-                  NOT: MovieActorsPersonTwoConnectionWhere
-                  OR: [MovieActorsPersonTwoConnectionWhere!]
-                  node: PersonTwoWhere
-                }
-
-                type MovieActorsRelationship {
-                  cursor: String!
-                  node: Person!
-                }
-
-                type MovieAggregate {
-                  count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                input MovieCreateInput {
-                  id: ID
-                }
-
-                type MovieEdge {
-                  cursor: String!
-                  node: Movie!
-                }
-
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
-                \\"\\"\\"
-                Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-                \\"\\"\\"
-                input MovieSort {
-                  id: SortDirection
-                }
-
-                input MovieUpdateInput {
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
-                }
-
-                input MovieWhere {
-                  AND: [MovieWhere!]
-                  NOT: MovieWhere
-                  OR: [MovieWhere!]
-                  \\"\\"\\"
-                  Return Movies where all of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
-                  \\"\\"\\"
-                  Return Movies where none of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
-                  \\"\\"\\"
-                  Return Movies where one of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
-                  \\"\\"\\"
-                  Return Movies where some of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
-                }
-
-                type MoviesConnection {
-                  aggregate: MovieAggregate!
-                  edges: [MovieEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type Mutation {
-                  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-                  createPersonOnes(input: [PersonOneCreateInput!]!): CreatePersonOnesMutationResponse!
-                  createPersonTwos(input: [PersonTwoCreateInput!]!): CreatePersonTwosMutationResponse!
-                  deleteMovies(where: MovieWhere): DeleteInfo!
-                  deletePersonOnes(where: PersonOneWhere): DeleteInfo!
-                  deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-                  updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
-                  updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
-                }
-
-                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-                type PageInfo {
-                  endCursor: String
-                  hasNextPage: Boolean!
-                  hasPreviousPage: Boolean!
-                  startCursor: String
-                }
-
-                union Person = PersonOne | PersonTwo
-
-                type PersonOne {
-                  name: String
-                }
-
-                type PersonOneAggregate {
-                  count: Count!
-                  node: PersonOneAggregateNode!
-                }
-
-                type PersonOneAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
-                input PersonOneCreateInput {
-                  name: String
-                }
-
-                type PersonOneEdge {
-                  cursor: String!
-                  node: PersonOne!
-                }
-
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
-                }
-
-                \\"\\"\\"
-                Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
-                \\"\\"\\"
-                input PersonOneSort {
-                  name: SortDirection
-                }
-
-                input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
-                }
-
-                input PersonOneWhere {
-                  AND: [PersonOneWhere!]
-                  NOT: PersonOneWhere
-                  OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
-                }
-
-                type PersonOnesConnection {
-                  aggregate: PersonOneAggregate!
-                  edges: [PersonOneEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type PersonTwo {
-                  nameTwo: String
-                }
-
-                type PersonTwoAggregate {
-                  count: Count!
-                  node: PersonTwoAggregateNode!
-                }
-
-                type PersonTwoAggregateNode {
-                  nameTwo: StringAggregateSelection!
-                }
-
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
-                input PersonTwoCreateInput {
-                  nameTwo: String
-                }
-
-                type PersonTwoEdge {
-                  cursor: String!
-                  node: PersonTwo!
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
-                }
-
-                \\"\\"\\"
-                Fields to sort PersonTwos by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonTwoSort object.
-                \\"\\"\\"
-                input PersonTwoSort {
-                  nameTwo: SortDirection
-                }
-
-                input PersonTwoUpdateInput {
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  nameTwo_SET: String
-                }
-
-                input PersonTwoWhere {
-                  AND: [PersonTwoWhere!]
-                  NOT: PersonTwoWhere
-                  OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
-                }
-
-                type PersonTwosConnection {
-                  aggregate: PersonTwoAggregate!
-                  edges: [PersonTwoEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                input PersonWhere {
-                  PersonOne: PersonOneWhere
-                  PersonTwo: PersonTwoWhere
-                }
-
-                type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
-                }
-
-                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-                input QueryOptions {
-                  limit: Int
-                  offset: Int
-                }
-
-                \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-                enum SortDirection {
-                  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-                  ASC
-                  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-                  DESC
-                }
-
-                type StringAggregateSelection {
-                  longest: String
-                  shortest: String
-                }
-
-                \\"\\"\\"
-                Information about the number of nodes and relationships created and deleted during an update mutation
-                \\"\\"\\"
-                type UpdateInfo {
-                  nodesCreated: Int!
-                  nodesDeleted: Int!
-                  relationshipsCreated: Int!
-                  relationshipsDeleted: Int!
-                }
-
-                type UpdateMoviesMutationResponse {
-                  info: UpdateInfo!
-                  movies: [Movie!]!
-                }
-
-                type UpdatePersonOnesMutationResponse {
-                  info: UpdateInfo!
-                  personOnes: [PersonOne!]!
-                }
-
-                type UpdatePersonTwosMutationResponse {
-                  info: UpdateInfo!
-                  personTwos: [PersonTwo!]!
-                }"
-            `);
-        });
-
-        test("Single relationship to type with unique field with nested operation CONNECT_OR_CREATE specified", async () => {
-            const typeDefs = gql`
-                type PersonOne @node {
-                    id: ID! @id @unique
-                    name: String
-                }
-
-                type PersonTwo @node {
-                    id: ID! @id @unique
-                    nameTwo: String
-                }
-
-                union Person = PersonOne | PersonTwo
-
-                type Movie @node {
-                    id: ID
-                    actors: [Person!]!
-                        @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [CONNECT_OR_CREATE])
-                }
-            `;
-            const neoSchema = new Neo4jGraphQL({ typeDefs });
-            const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-
-            expect(printedSchema).toMatchInlineSnapshot(`
-                "schema {
-                  query: Query
-                  mutation: Mutation
-                }
-
-                type Count {
-                  nodes: Int!
-                }
-
-                \\"\\"\\"
-                Information about the number of nodes and relationships created during a create mutation
-                \\"\\"\\"
-                type CreateInfo {
-                  nodesCreated: Int!
-                  relationshipsCreated: Int!
-                }
-
-                type CreateMoviesMutationResponse {
-                  info: CreateInfo!
-                  movies: [Movie!]!
-                }
-
-                type CreatePersonOnesMutationResponse {
-                  info: CreateInfo!
-                  personOnes: [PersonOne!]!
-                }
-
-                type CreatePersonTwosMutationResponse {
-                  info: CreateInfo!
-                  personTwos: [PersonTwo!]!
-                }
-
-                \\"\\"\\"
-                Information about the number of nodes and relationships deleted during a delete mutation
-                \\"\\"\\"
-                type DeleteInfo {
-                  nodesDeleted: Int!
-                  relationshipsDeleted: Int!
-                }
-
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
-                }
-
-                type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
-                  id: ID
-                }
-
-                type MovieActorsConnection {
-                  edges: [MovieActorsRelationship!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                input MovieActorsConnectionWhere {
-                  PersonOne: MovieActorsPersonOneConnectionWhere
-                  PersonTwo: MovieActorsPersonTwoConnectionWhere
-                }
-
-                input MovieActorsCreateInput {
-                  PersonOne: MovieActorsPersonOneFieldInput
-                  PersonTwo: MovieActorsPersonTwoFieldInput
-                }
-
-                input MovieActorsPersonOneConnectOrCreateFieldInput {
-                  onCreate: MovieActorsPersonOneConnectOrCreateFieldInputOnCreate!
-                  where: PersonOneConnectOrCreateWhere!
-                }
-
-                input MovieActorsPersonOneConnectOrCreateFieldInputOnCreate {
-                  node: PersonOneOnCreateInput!
-                }
-
-                input MovieActorsPersonOneConnectionWhere {
-                  AND: [MovieActorsPersonOneConnectionWhere!]
-                  NOT: MovieActorsPersonOneConnectionWhere
-                  OR: [MovieActorsPersonOneConnectionWhere!]
-                  node: PersonOneWhere
-                }
-
-                input MovieActorsPersonOneFieldInput {
-                  connectOrCreate: [MovieActorsPersonOneConnectOrCreateFieldInput!] @deprecated(reason: \\"The connectOrCreate operation is deprecated and will be removed\\")
-                }
-
-                input MovieActorsPersonOneUpdateFieldInput {
-                  connectOrCreate: [MovieActorsPersonOneConnectOrCreateFieldInput!]
-                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
-                }
-
-                input MovieActorsPersonTwoConnectOrCreateFieldInput {
-                  onCreate: MovieActorsPersonTwoConnectOrCreateFieldInputOnCreate!
-                  where: PersonTwoConnectOrCreateWhere!
-                }
-
-                input MovieActorsPersonTwoConnectOrCreateFieldInputOnCreate {
-                  node: PersonTwoOnCreateInput!
-                }
-
-                input MovieActorsPersonTwoConnectionWhere {
-                  AND: [MovieActorsPersonTwoConnectionWhere!]
-                  NOT: MovieActorsPersonTwoConnectionWhere
-                  OR: [MovieActorsPersonTwoConnectionWhere!]
-                  node: PersonTwoWhere
-                }
-
-                input MovieActorsPersonTwoFieldInput {
-                  connectOrCreate: [MovieActorsPersonTwoConnectOrCreateFieldInput!] @deprecated(reason: \\"The connectOrCreate operation is deprecated and will be removed\\")
-                }
-
-                input MovieActorsPersonTwoUpdateFieldInput {
-                  connectOrCreate: [MovieActorsPersonTwoConnectOrCreateFieldInput!]
-                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
-                }
-
-                type MovieActorsRelationship {
-                  cursor: String!
-                  node: Person!
-                }
-
-                input MovieActorsUpdateInput {
-                  PersonOne: [MovieActorsPersonOneUpdateFieldInput!]
-                  PersonTwo: [MovieActorsPersonTwoUpdateFieldInput!]
-                }
-
-                type MovieAggregate {
-                  count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                input MovieCreateInput {
-                  actors: MovieActorsCreateInput
-                  id: ID
-                }
-
-                type MovieEdge {
-                  cursor: String!
-                  node: Movie!
-                }
-
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
-                \\"\\"\\"
-                Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-                \\"\\"\\"
-                input MovieSort {
-                  id: SortDirection
-                }
-
-                input MovieUpdateInput {
-                  actors: MovieActorsUpdateInput
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
-                }
-
-                input MovieWhere {
-                  AND: [MovieWhere!]
-                  NOT: MovieWhere
-                  OR: [MovieWhere!]
-                  \\"\\"\\"
-                  Return Movies where all of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
-                  \\"\\"\\"
-                  Return Movies where none of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
-                  \\"\\"\\"
-                  Return Movies where one of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
-                  \\"\\"\\"
-                  Return Movies where some of the related MovieActorsConnections match this filter
-                  \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
-                  \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
-                  \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
-                  \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
-                  \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
-                }
-
-                type MoviesConnection {
-                  aggregate: MovieAggregate!
-                  edges: [MovieEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type Mutation {
-                  createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-                  createPersonOnes(input: [PersonOneCreateInput!]!): CreatePersonOnesMutationResponse!
-                  createPersonTwos(input: [PersonTwoCreateInput!]!): CreatePersonTwosMutationResponse!
-                  deleteMovies(where: MovieWhere): DeleteInfo!
-                  deletePersonOnes(where: PersonOneWhere): DeleteInfo!
-                  deletePersonTwos(where: PersonTwoWhere): DeleteInfo!
-                  updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-                  updatePersonOnes(update: PersonOneUpdateInput, where: PersonOneWhere): UpdatePersonOnesMutationResponse!
-                  updatePersonTwos(update: PersonTwoUpdateInput, where: PersonTwoWhere): UpdatePersonTwosMutationResponse!
-                }
-
-                \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-                type PageInfo {
-                  endCursor: String
-                  hasNextPage: Boolean!
-                  hasPreviousPage: Boolean!
-                  startCursor: String
-                }
-
-                union Person = PersonOne | PersonTwo
-
-                type PersonOne {
-                  id: ID!
-                  name: String
-                }
-
-                type PersonOneAggregate {
-                  count: Count!
-                  node: PersonOneAggregateNode!
-                }
-
-                type PersonOneAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  name: StringAggregateSelection!
-                }
-
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  name: StringAggregateSelection!
-                }
-
-                input PersonOneConnectOrCreateWhere {
-                  node: PersonOneUniqueWhere!
-                }
-
-                input PersonOneCreateInput {
-                  name: String
-                }
-
-                type PersonOneEdge {
-                  cursor: String!
-                  node: PersonOne!
-                }
-
-                input PersonOneOnCreateInput {
-                  name: String
-                }
-
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
-                }
-
-                \\"\\"\\"
-                Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
-                \\"\\"\\"
-                input PersonOneSort {
-                  id: SortDirection
-                  name: SortDirection
-                }
-
-                input PersonOneUniqueWhere {
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_EQ: ID
-                }
-
-                input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
-                }
-
-                input PersonOneWhere {
-                  AND: [PersonOneWhere!]
-                  NOT: PersonOneWhere
-                  OR: [PersonOneWhere!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID!]
-                  id_STARTS_WITH: ID
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
-                }
-
-                type PersonOnesConnection {
-                  aggregate: PersonOneAggregate!
-                  edges: [PersonOneEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                type PersonTwo {
-                  id: ID!
-                  nameTwo: String
-                }
-
-                type PersonTwoAggregate {
-                  count: Count!
-                  node: PersonTwoAggregateNode!
-                }
-
-                type PersonTwoAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  nameTwo: StringAggregateSelection!
-                }
-
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                  nameTwo: StringAggregateSelection!
-                }
-
-                input PersonTwoConnectOrCreateWhere {
-                  node: PersonTwoUniqueWhere!
-                }
-
-                input PersonTwoCreateInput {
-                  nameTwo: String
-                }
-
-                type PersonTwoEdge {
-                  cursor: String!
-                  node: PersonTwo!
-                }
-
-                input PersonTwoOnCreateInput {
-                  nameTwo: String
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
-                }
-
-                \\"\\"\\"
-                Fields to sort PersonTwos by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonTwoSort object.
-                \\"\\"\\"
-                input PersonTwoSort {
-                  id: SortDirection
-                  nameTwo: SortDirection
-                }
-
-                input PersonTwoUniqueWhere {
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_EQ: ID
-                }
-
-                input PersonTwoUpdateInput {
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  nameTwo_SET: String
-                }
-
-                input PersonTwoWhere {
-                  AND: [PersonTwoWhere!]
-                  NOT: PersonTwoWhere
-                  OR: [PersonTwoWhere!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID!]
-                  id_STARTS_WITH: ID
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
-                }
-
-                type PersonTwosConnection {
-                  aggregate: PersonTwoAggregate!
-                  edges: [PersonTwoEdge!]!
-                  pageInfo: PageInfo!
-                  totalCount: Int!
-                }
-
-                input PersonWhere {
-                  PersonOne: PersonOneWhere
-                  PersonTwo: PersonTwoWhere
-                }
-
-                type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-                  moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
-                  personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
-                  personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
-                }
-
-                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-                input QueryOptions {
-                  limit: Int
-                  offset: Int
-                }
-
-                \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-                enum SortDirection {
-                  \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-                  ASC
-                  \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-                  DESC
-                }
-
-                type StringAggregateSelection {
-                  longest: String
-                  shortest: String
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -7590,23 +6388,51 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
-                  producers(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  producersConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieProducersConnectionWhere): MovieProducersConnection!
+                  producers(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  producersConnection(after: String, first: Int, where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
                 type MovieActorsConnection {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionWhere {
@@ -7663,7 +6489,6 @@ describe("Relationship nested operations", () => {
                   delete: [MovieActorsPersonOneDeleteFieldInput!]
                   disconnect: [MovieActorsPersonOneDisconnectFieldInput!]
                   update: MovieActorsPersonOneUpdateConnectionInput
-                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieActorsPersonTwoConnectFieldInput {
@@ -7705,7 +6530,6 @@ describe("Relationship nested operations", () => {
                   delete: [MovieActorsPersonTwoDeleteFieldInput!]
                   disconnect: [MovieActorsPersonTwoDisconnectFieldInput!]
                   update: MovieActorsPersonTwoUpdateConnectionInput
-                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieActorsRelationship {
@@ -7720,16 +6544,6 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -7746,19 +6560,29 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MovieProducersConnection {
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  all: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  none: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  single: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  some: MovieProducersConnectionWhere
                 }
 
                 input MovieProducersConnectionWhere {
@@ -7779,7 +6603,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersPersonOneUpdateFieldInput {
                   disconnect: [MovieProducersPersonOneDisconnectFieldInput!]
-                  where: MovieProducersPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieProducersPersonTwoConnectionWhere {
@@ -7795,7 +6618,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersPersonTwoUpdateFieldInput {
                   disconnect: [MovieProducersPersonTwoDisconnectFieldInput!]
-                  where: MovieProducersPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieProducersRelationship {
@@ -7817,8 +6639,8 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: MovieActorsUpdateInput
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                   producers: MovieProducersUpdateInput
                 }
 
@@ -7826,60 +6648,64 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+                  producers: PersonRelationshipFilters
+                  producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_ALL: MovieProducersConnectionWhere
+                  producersConnection_ALL: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_NONE: MovieProducersConnectionWhere
+                  producersConnection_NONE: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_SINGLE: MovieProducersConnectionWhere
+                  producersConnection_SINGLE: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_SOME: MovieProducersConnectionWhere
+                  producersConnection_SOME: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  producers_ALL: PersonWhere
+                  producers_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  producers_NONE: PersonWhere
+                  producers_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  producers_SINGLE: PersonWhere
+                  producers_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  producers_SOME: PersonWhere
+                  producers_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: {  some: ... }' instead.\\")
                 }
 
                 type MoviesConnection {
@@ -7924,11 +6750,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneConnectWhere {
                   node: PersonOneWhere!
                 }
@@ -7942,15 +6763,6 @@ describe("Relationship nested operations", () => {
                   node: PersonOne!
                 }
 
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
                 \\"\\"\\"
@@ -7959,20 +6771,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -7980,6 +6792,17 @@ describe("Relationship nested operations", () => {
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 type PersonTwo {
@@ -7992,11 +6815,6 @@ describe("Relationship nested operations", () => {
                 }
 
                 type PersonTwoAggregateNode {
-                  nameTwo: StringAggregateSelection!
-                }
-
-                type PersonTwoAggregateSelection {
-                  count: Int!
                   nameTwo: StringAggregateSelection!
                 }
 
@@ -8013,15 +6831,6 @@ describe("Relationship nested operations", () => {
                   node: PersonTwo!
                 }
 
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort PersonTwos by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonTwoSort object.
                 \\"\\"\\"
@@ -8030,20 +6839,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  nameTwo_SET: String
+                  nameTwo: StringScalarMutations
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo: StringScalarFilters
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { endsWith: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -8059,22 +6868,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
-                }
-
-                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-                input QueryOptions {
-                  limit: Int
-                  offset: Int
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -8088,6 +6888,20 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -8179,23 +6993,51 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
-                  producers(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  producersConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieProducersConnectionWhere): MovieProducersConnection!
+                  producers(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  producersConnection(after: String, first: Int, where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
                 type MovieActorsConnection {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionWhere {
@@ -8225,7 +7067,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonOneUpdateFieldInput {
                   create: [MovieActorsPersonOneCreateFieldInput!]
-                  where: MovieActorsPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieActorsPersonTwoConnectionWhere {
@@ -8245,7 +7086,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsPersonTwoUpdateFieldInput {
                   create: [MovieActorsPersonTwoCreateFieldInput!]
-                  where: MovieActorsPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieActorsRelationship {
@@ -8260,16 +7100,6 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -8282,19 +7112,29 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MovieProducersConnection {
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  all: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  none: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  single: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  some: MovieProducersConnectionWhere
                 }
 
                 input MovieProducersConnectionWhere {
@@ -8315,7 +7155,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersPersonOneUpdateFieldInput {
                   disconnect: [MovieProducersPersonOneDisconnectFieldInput!]
-                  where: MovieProducersPersonOneConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersPersonOneUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input MovieProducersPersonTwoConnectionWhere {
@@ -8331,7 +7170,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersPersonTwoUpdateFieldInput {
                   disconnect: [MovieProducersPersonTwoDisconnectFieldInput!]
-                  where: MovieProducersPersonTwoConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersPersonTwoUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieProducersRelationship {
@@ -8353,8 +7191,8 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: MovieActorsUpdateInput
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                   producers: MovieProducersUpdateInput
                 }
 
@@ -8362,60 +7200,64 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
+                  actors: PersonRelationshipFilters
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+                  producers: PersonRelationshipFilters
+                  producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_ALL: MovieProducersConnectionWhere
+                  producersConnection_ALL: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_NONE: MovieProducersConnectionWhere
+                  producersConnection_NONE: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_SINGLE: MovieProducersConnectionWhere
+                  producersConnection_SINGLE: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_SOME: MovieProducersConnectionWhere
+                  producersConnection_SOME: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  producers_ALL: PersonWhere
+                  producers_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  producers_NONE: PersonWhere
+                  producers_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  producers_SINGLE: PersonWhere
+                  producers_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  producers_SOME: PersonWhere
+                  producers_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: {  some: ... }' instead.\\")
                 }
 
                 type MoviesConnection {
@@ -8460,11 +7302,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                 }
@@ -8472,15 +7309,6 @@ describe("Relationship nested operations", () => {
                 type PersonOneEdge {
                   cursor: String!
                   node: PersonOne!
-                }
-
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
                 }
 
                 \\"\\"\\"
@@ -8491,20 +7319,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -8512,6 +7340,17 @@ describe("Relationship nested operations", () => {
                   edges: [PersonOneEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 type PersonTwo {
@@ -8527,11 +7366,6 @@ describe("Relationship nested operations", () => {
                   nameTwo: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  nameTwo: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   nameTwo: String
                 }
@@ -8539,15 +7373,6 @@ describe("Relationship nested operations", () => {
                 type PersonTwoEdge {
                   cursor: String!
                   node: PersonTwo!
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
                 }
 
                 \\"\\"\\"
@@ -8558,20 +7383,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  nameTwo_SET: String
+                  nameTwo: StringScalarMutations
+                  nameTwo_SET: String @deprecated(reason: \\"Please use the generic mutation 'nameTwo: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  nameTwo: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  nameTwo_CONTAINS: String
-                  nameTwo_ENDS_WITH: String
-                  nameTwo_EQ: String
-                  nameTwo_IN: [String]
-                  nameTwo_STARTS_WITH: String
+                  nameTwo: StringScalarFilters
+                  nameTwo_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { contains: ... }\\")
+                  nameTwo_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { endsWith: ... }\\")
+                  nameTwo_EQ: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { eq: ... }\\")
+                  nameTwo_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { in: ... }\\")
+                  nameTwo_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter nameTwo: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -8587,22 +7412,13 @@ describe("Relationship nested operations", () => {
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
-                }
-
-                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-                input QueryOptions {
-                  limit: Int
-                  offset: Int
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -8616,6 +7432,20 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -8681,6 +7511,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -8721,15 +7556,56 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  eq: [Int!]
+                  includes: Int
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -8737,7 +7613,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -8751,6 +7627,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -8768,21 +7673,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -8792,16 +7698,6 @@ describe("Relationship nested operations", () => {
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -8813,22 +7709,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -8844,45 +7726,47 @@ describe("Relationship nested operations", () => {
                 }
 
                 input MovieUpdateInput {
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -8932,11 +7816,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 type PersonEdge {
                   cursor: String!
                   node: Person!
@@ -8961,11 +7840,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                   someExtraProp: [Int!]!
@@ -8976,15 +7850,6 @@ describe("Relationship nested operations", () => {
                   node: PersonOne!
                 }
 
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
                 \\"\\"\\"
@@ -8993,27 +7858,27 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
+                  someExtraProp: ListIntMutations
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+                  someExtraProp: IntListFilters
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -9023,13 +7888,15 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -9052,11 +7919,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -9064,15 +7926,6 @@ describe("Relationship nested operations", () => {
                 type PersonTwoEdge {
                   cursor: String!
                   node: PersonTwo!
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
                 }
 
                 \\"\\"\\"
@@ -9083,20 +7936,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -9110,28 +7963,23 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                   typename: [PersonImplementation!]
-                  typename_IN: [PersonImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -9146,6 +7994,27 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -9204,6 +8073,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -9244,15 +8118,56 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  eq: [Int!]
+                  includes: Int
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -9260,7 +8175,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -9274,6 +8189,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -9299,21 +8243,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -9323,21 +8268,10 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   create: [MovieActorsCreateFieldInput!]
-                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -9350,22 +8284,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -9382,45 +8302,47 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -9470,11 +8392,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   PersonOne: PersonOneCreateInput
                   PersonTwo: PersonTwoCreateInput
@@ -9504,11 +8421,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                   someExtraProp: [Int!]!
@@ -9519,15 +8431,6 @@ describe("Relationship nested operations", () => {
                   node: PersonOne!
                 }
 
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
                 \\"\\"\\"
@@ -9536,27 +8439,27 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
+                  someExtraProp: ListIntMutations
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+                  someExtraProp: IntListFilters
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -9566,13 +8469,15 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -9595,11 +8500,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -9607,15 +8507,6 @@ describe("Relationship nested operations", () => {
                 type PersonTwoEdge {
                   cursor: String!
                   node: PersonTwo!
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
                 }
 
                 \\"\\"\\"
@@ -9626,20 +8517,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -9653,28 +8544,23 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                   typename: [PersonImplementation!]
-                  typename_IN: [PersonImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -9689,6 +8575,27 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -9747,6 +8654,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -9787,15 +8699,56 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  eq: [Int!]
+                  includes: Int
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -9803,7 +8756,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -9821,6 +8774,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -9842,21 +8824,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -9866,21 +8849,10 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   connect: [MovieActorsConnectFieldInput!]
-                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -9893,22 +8865,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -9925,45 +8883,47 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -10013,11 +8973,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonConnectWhere {
                   node: PersonWhere!
                 }
@@ -10046,11 +9001,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                   someExtraProp: [Int!]!
@@ -10061,15 +9011,6 @@ describe("Relationship nested operations", () => {
                   node: PersonOne!
                 }
 
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
                 \\"\\"\\"
@@ -10078,27 +9019,27 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
+                  someExtraProp: ListIntMutations
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+                  someExtraProp: IntListFilters
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -10108,13 +9049,15 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -10137,11 +9080,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -10149,15 +9087,6 @@ describe("Relationship nested operations", () => {
                 type PersonTwoEdge {
                   cursor: String!
                   node: PersonTwo!
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
                 }
 
                 \\"\\"\\"
@@ -10168,20 +9097,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -10195,28 +9124,23 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                   typename: [PersonImplementation!]
-                  typename_IN: [PersonImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -10231,6 +9155,27 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -10289,6 +9234,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -10329,15 +9279,56 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  eq: [Int!]
+                  includes: Int
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -10345,7 +9336,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -10359,6 +9350,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -10376,21 +9396,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -10405,21 +9426,10 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   update: MovieActorsUpdateConnectionInput
-                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -10431,22 +9441,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -10463,45 +9459,47 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -10551,11 +9549,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 type PersonEdge {
                   cursor: String!
                   node: Person!
@@ -10580,11 +9573,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                   someExtraProp: [Int!]!
@@ -10595,15 +9583,6 @@ describe("Relationship nested operations", () => {
                   node: PersonOne!
                 }
 
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
                 \\"\\"\\"
@@ -10612,27 +9591,27 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
+                  someExtraProp: ListIntMutations
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+                  someExtraProp: IntListFilters
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -10642,13 +9621,15 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -10671,11 +9652,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -10683,15 +9659,6 @@ describe("Relationship nested operations", () => {
                 type PersonTwoEdge {
                   cursor: String!
                   node: PersonTwo!
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
                 }
 
                 \\"\\"\\"
@@ -10702,20 +9669,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -10726,36 +9693,31 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                   typename: [PersonImplementation!]
-                  typename_IN: [PersonImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -10770,6 +9732,27 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -10828,6 +9811,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -10868,15 +9856,56 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  eq: [Int!]
+                  includes: Int
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -10884,7 +9913,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -10898,6 +9927,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -10919,21 +9977,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -10943,21 +10002,10 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   delete: [MovieActorsDeleteFieldInput!]
-                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -10973,22 +10021,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -11005,45 +10039,47 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -11093,11 +10129,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 type PersonEdge {
                   cursor: String!
                   node: Person!
@@ -11122,11 +10153,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                   someExtraProp: [Int!]!
@@ -11137,15 +10163,6 @@ describe("Relationship nested operations", () => {
                   node: PersonOne!
                 }
 
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
                 \\"\\"\\"
@@ -11154,27 +10171,27 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
+                  someExtraProp: ListIntMutations
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+                  someExtraProp: IntListFilters
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -11184,13 +10201,15 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -11213,11 +10232,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -11225,15 +10239,6 @@ describe("Relationship nested operations", () => {
                 type PersonTwoEdge {
                   cursor: String!
                   node: PersonTwo!
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
                 }
 
                 \\"\\"\\"
@@ -11244,20 +10249,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -11271,28 +10276,23 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                   typename: [PersonImplementation!]
-                  typename_IN: [PersonImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -11307,6 +10307,27 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -11365,6 +10386,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -11405,15 +10431,56 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  eq: [Int!]
+                  includes: Int
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
                 }
 
@@ -11421,7 +10488,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -11435,6 +10502,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -11456,21 +10552,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -11480,21 +10577,10 @@ describe("Relationship nested operations", () => {
 
                 input MovieActorsUpdateFieldInput {
                   disconnect: [MovieActorsDisconnectFieldInput!]
-                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -11506,22 +10592,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -11538,45 +10610,47 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -11626,11 +10700,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 type PersonEdge {
                   cursor: String!
                   node: Person!
@@ -11655,11 +10724,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                   someExtraProp: [Int!]!
@@ -11670,15 +10734,6 @@ describe("Relationship nested operations", () => {
                   node: PersonOne!
                 }
 
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
                 \\"\\"\\"
@@ -11687,27 +10742,27 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
+                  someExtraProp: ListIntMutations
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+                  someExtraProp: IntListFilters
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -11717,13 +10772,15 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -11746,11 +10803,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -11758,15 +10810,6 @@ describe("Relationship nested operations", () => {
                 type PersonTwoEdge {
                   cursor: String!
                   node: PersonTwo!
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
                 }
 
                 \\"\\"\\"
@@ -11777,20 +10820,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -11804,28 +10847,23 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                   typename: [PersonImplementation!]
-                  typename_IN: [PersonImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -11840,6 +10878,27 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -11899,6 +10958,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -11939,26 +11003,66 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  eq: [Int!]
+                  includes: Int
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
-                  producers(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  producersAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonProducersAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"producersConnection\\\\\\" instead\\")
-                  producersConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
+                  producers(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  producersConnection(after: String, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
                 input MovieActorsAggregateInput {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -11976,6 +11080,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -12010,21 +11143,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -12043,21 +11177,10 @@ describe("Relationship nested operations", () => {
                   delete: [MovieActorsDeleteFieldInput!]
                   disconnect: [MovieActorsDisconnectFieldInput!]
                   update: MovieActorsUpdateConnectionInput
-                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -12074,22 +11197,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -12102,11 +11211,6 @@ describe("Relationship nested operations", () => {
                   node: MoviePersonProducersNodeAggregateSelection
                 }
 
-                type MoviePersonProducersAggregationSelection {
-                  count: Int!
-                  node: MoviePersonProducersNodeAggregateSelection
-                }
-
                 type MoviePersonProducersNodeAggregateSelection {
                   name: StringAggregateSelection!
                 }
@@ -12115,7 +11219,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieProducersAggregateInput!]
                   NOT: MovieProducersAggregateInput
                   OR: [MovieProducersAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -12129,6 +11233,37 @@ describe("Relationship nested operations", () => {
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieProducersConnectionAggregateInput {
+                  AND: [MovieProducersConnectionAggregateInput!]
+                  NOT: MovieProducersConnectionAggregateInput
+                  OR: [MovieProducersConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieProducersNodeAggregationWhereInput
+                }
+
+                input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Filter Movies by aggregating results on related MovieProducersConnections
+                  \\"\\"\\"
+                  aggregate: MovieProducersConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  all: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  none: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  single: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  some: MovieProducersConnectionWhere
                 }
 
                 input MovieProducersConnectionSort {
@@ -12150,21 +11285,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieProducersNodeAggregationWhereInput!]
                   NOT: MovieProducersNodeAggregationWhereInput
                   OR: [MovieProducersNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieProducersRelationship {
@@ -12174,7 +11310,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersUpdateFieldInput {
                   disconnect: [MovieProducersDisconnectFieldInput!]
-                  where: MovieProducersConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 \\"\\"\\"
@@ -12186,8 +11321,8 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                   producers: [MovieProducersUpdateFieldInput!]
                 }
 
@@ -12195,62 +11330,66 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
-                  producersAggregate: MovieProducersAggregateInput
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+                  producers: PersonRelationshipFilters
+                  producersAggregate: MovieProducersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the producersConnection filter, please use { producersConnection: { aggregate: {...} } } instead\\")
+                  producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_ALL: MovieProducersConnectionWhere
+                  producersConnection_ALL: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_NONE: MovieProducersConnectionWhere
+                  producersConnection_NONE: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_SINGLE: MovieProducersConnectionWhere
+                  producersConnection_SINGLE: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_SOME: MovieProducersConnectionWhere
+                  producersConnection_SOME: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  producers_ALL: PersonWhere
+                  producers_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  producers_NONE: PersonWhere
+                  producers_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  producers_SINGLE: PersonWhere
+                  producers_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  producers_SOME: PersonWhere
+                  producers_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: {  some: ... }' instead.\\")
                 }
 
                 type MoviesConnection {
@@ -12300,11 +11439,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonConnectWhere {
                   node: PersonWhere!
                 }
@@ -12338,11 +11472,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                   someExtraProp: [Int!]!
@@ -12353,15 +11482,6 @@ describe("Relationship nested operations", () => {
                   node: PersonOne!
                 }
 
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
                 \\"\\"\\"
@@ -12370,27 +11490,27 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
+                  someExtraProp: ListIntMutations
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+                  someExtraProp: IntListFilters
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -12400,13 +11520,15 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -12429,11 +11551,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -12441,15 +11558,6 @@ describe("Relationship nested operations", () => {
                 type PersonTwoEdge {
                   cursor: String!
                   node: PersonTwo!
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
                 }
 
                 \\"\\"\\"
@@ -12460,20 +11568,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -12484,36 +11592,31 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonWhere {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                   typename: [PersonImplementation!]
-                  typename_IN: [PersonImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -12528,6 +11631,27 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"
@@ -12588,6 +11712,11 @@ describe("Relationship nested operations", () => {
                   mutation: Mutation
                 }
 
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
+                }
+
                 type Count {
                   nodes: Int!
                 }
@@ -12628,26 +11757,66 @@ describe("Relationship nested operations", () => {
                   relationshipsDeleted: Int!
                 }
 
-                type IDAggregateSelection {
-                  longest: ID
-                  shortest: ID
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"ID filters\\"\\"\\"
+                input IDScalarFilters {
+                  contains: ID
+                  endsWith: ID
+                  eq: ID
+                  in: [ID!]
+                  startsWith: ID
+                }
+
+                \\"\\"\\"ID mutations\\"\\"\\"
+                input IDScalarMutations {
+                  set: ID
+                }
+
+                \\"\\"\\"Int list filters\\"\\"\\"
+                input IntListFilters {
+                  eq: [Int!]
+                  includes: Int
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
+                \\"\\"\\"Mutations for a list for Int\\"\\"\\"
+                input ListIntMutations {
+                  pop: Int
+                  push: [Int!]
+                  set: [Int!]
                 }
 
                 type Movie {
-                  actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-                  actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+                  actors(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
                   id: ID
-                  producers(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  producersAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: PersonWhere): MoviePersonProducersAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"producersConnection\\\\\\" instead\\")
-                  producersConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
+                  producers(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+                  producersConnection(after: String, first: Int, sort: [MovieProducersConnectionSort!], where: MovieProducersConnectionWhere): MovieProducersConnection!
                 }
 
                 input MovieActorsAggregateInput {
                   AND: [MovieActorsAggregateInput!]
                   NOT: MovieActorsAggregateInput
                   OR: [MovieActorsAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -12661,6 +11830,35 @@ describe("Relationship nested operations", () => {
                   edges: [MovieActorsRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieActorsConnectionAggregateInput {
+                  AND: [MovieActorsConnectionAggregateInput!]
+                  NOT: MovieActorsConnectionAggregateInput
+                  OR: [MovieActorsConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieActorsNodeAggregationWhereInput
+                }
+
+                input MovieActorsConnectionFilters {
+                  \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+                  aggregate: MovieActorsConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  all: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  none: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  single: MovieActorsConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieActorsConnections match this filter
+                  \\"\\"\\"
+                  some: MovieActorsConnectionWhere
                 }
 
                 input MovieActorsConnectionSort {
@@ -12690,21 +11888,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieActorsNodeAggregationWhereInput!]
                   NOT: MovieActorsNodeAggregationWhereInput
                   OR: [MovieActorsNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieActorsRelationship {
@@ -12715,21 +11914,10 @@ describe("Relationship nested operations", () => {
                 input MovieActorsUpdateFieldInput {
                   create: [MovieActorsCreateFieldInput!]
                   delete: [MovieActorsDeleteFieldInput!]
-                  where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type MovieAggregate {
                   count: Count!
-                  node: MovieAggregateNode!
-                }
-
-                type MovieAggregateNode {
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
-                  id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
                 }
 
                 input MovieCreateInput {
@@ -12746,22 +11934,8 @@ describe("Relationship nested operations", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 type MoviePersonActorsAggregateSelection {
                   count: CountConnection!
-                  node: MoviePersonActorsNodeAggregateSelection
-                }
-
-                type MoviePersonActorsAggregationSelection {
-                  count: Int!
                   node: MoviePersonActorsNodeAggregateSelection
                 }
 
@@ -12774,11 +11948,6 @@ describe("Relationship nested operations", () => {
                   node: MoviePersonProducersNodeAggregateSelection
                 }
 
-                type MoviePersonProducersAggregationSelection {
-                  count: Int!
-                  node: MoviePersonProducersNodeAggregateSelection
-                }
-
                 type MoviePersonProducersNodeAggregateSelection {
                   name: StringAggregateSelection!
                 }
@@ -12787,7 +11956,7 @@ describe("Relationship nested operations", () => {
                   AND: [MovieProducersAggregateInput!]
                   NOT: MovieProducersAggregateInput
                   OR: [MovieProducersAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -12801,6 +11970,37 @@ describe("Relationship nested operations", () => {
                   edges: [MovieProducersRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input MovieProducersConnectionAggregateInput {
+                  AND: [MovieProducersConnectionAggregateInput!]
+                  NOT: MovieProducersConnectionAggregateInput
+                  OR: [MovieProducersConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: MovieProducersNodeAggregationWhereInput
+                }
+
+                input MovieProducersConnectionFilters {
+                  \\"\\"\\"
+                  Filter Movies by aggregating results on related MovieProducersConnections
+                  \\"\\"\\"
+                  aggregate: MovieProducersConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Movies where all of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  all: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where none of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  none: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where one of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  single: MovieProducersConnectionWhere
+                  \\"\\"\\"
+                  Return Movies where some of the related MovieProducersConnections match this filter
+                  \\"\\"\\"
+                  some: MovieProducersConnectionWhere
                 }
 
                 input MovieProducersConnectionSort {
@@ -12822,21 +12022,22 @@ describe("Relationship nested operations", () => {
                   AND: [MovieProducersNodeAggregationWhereInput!]
                   NOT: MovieProducersNodeAggregationWhereInput
                   OR: [MovieProducersNodeAggregationWhereInput!]
-                  name_AVERAGE_LENGTH_EQUAL: Float
-                  name_AVERAGE_LENGTH_GT: Float
-                  name_AVERAGE_LENGTH_GTE: Float
-                  name_AVERAGE_LENGTH_LT: Float
-                  name_AVERAGE_LENGTH_LTE: Float
-                  name_LONGEST_LENGTH_EQUAL: Int
-                  name_LONGEST_LENGTH_GT: Int
-                  name_LONGEST_LENGTH_GTE: Int
-                  name_LONGEST_LENGTH_LT: Int
-                  name_LONGEST_LENGTH_LTE: Int
-                  name_SHORTEST_LENGTH_EQUAL: Int
-                  name_SHORTEST_LENGTH_GT: Int
-                  name_SHORTEST_LENGTH_GTE: Int
-                  name_SHORTEST_LENGTH_LT: Int
-                  name_SHORTEST_LENGTH_LTE: Int
+                  name: StringScalarAggregationFilters
+                  name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+                  name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+                  name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+                  name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type MovieProducersRelationship {
@@ -12846,7 +12047,6 @@ describe("Relationship nested operations", () => {
 
                 input MovieProducersUpdateFieldInput {
                   disconnect: [MovieProducersDisconnectFieldInput!]
-                  where: MovieProducersConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieProducersUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 \\"\\"\\"
@@ -12858,8 +12058,8 @@ describe("Relationship nested operations", () => {
 
                 input MovieUpdateInput {
                   actors: [MovieActorsUpdateFieldInput!]
-                  id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  id_SET: ID
+                  id: IDScalarMutations
+                  id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
                   producers: [MovieProducersUpdateFieldInput!]
                 }
 
@@ -12867,62 +12067,66 @@ describe("Relationship nested operations", () => {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  actorsAggregate: MovieActorsAggregateInput
+                  actors: PersonRelationshipFilters
+                  actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+                  actorsConnection: MovieActorsConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_ALL: MovieActorsConnectionWhere
+                  actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_NONE: MovieActorsConnectionWhere
+                  actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SINGLE: MovieActorsConnectionWhere
+                  actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieActorsConnections match this filter
                   \\"\\"\\"
-                  actorsConnection_SOME: MovieActorsConnectionWhere
+                  actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  actors_ALL: PersonWhere
+                  actors_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  actors_NONE: PersonWhere
+                  actors_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  actors_SINGLE: PersonWhere
+                  actors_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  actors_SOME: PersonWhere
-                  id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  id_CONTAINS: ID
-                  id_ENDS_WITH: ID
-                  id_EQ: ID
-                  id_IN: [ID]
-                  id_STARTS_WITH: ID
-                  producersAggregate: MovieProducersAggregateInput
+                  actors_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+                  id: IDScalarFilters
+                  id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+                  id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+                  id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+                  id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+                  id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+                  producers: PersonRelationshipFilters
+                  producersAggregate: MovieProducersAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the producersConnection filter, please use { producersConnection: { aggregate: {...} } } instead\\")
+                  producersConnection: MovieProducersConnectionFilters
                   \\"\\"\\"
                   Return Movies where all of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_ALL: MovieProducersConnectionWhere
+                  producersConnection_ALL: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where none of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_NONE: MovieProducersConnectionWhere
+                  producersConnection_NONE: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where one of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_SINGLE: MovieProducersConnectionWhere
+                  producersConnection_SINGLE: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Movies where some of the related MovieProducersConnections match this filter
                   \\"\\"\\"
-                  producersConnection_SOME: MovieProducersConnectionWhere
+                  producersConnection_SOME: MovieProducersConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'producersConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Movies where all of the related People match this filter\\"\\"\\"
-                  producers_ALL: PersonWhere
+                  producers_ALL: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: { all: ... }' instead.\\")
                   \\"\\"\\"Return Movies where none of the related People match this filter\\"\\"\\"
-                  producers_NONE: PersonWhere
+                  producers_NONE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: { none: ... }' instead.\\")
                   \\"\\"\\"Return Movies where one of the related People match this filter\\"\\"\\"
-                  producers_SINGLE: PersonWhere
+                  producers_SINGLE: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Movies where some of the related People match this filter\\"\\"\\"
-                  producers_SOME: PersonWhere
+                  producers_SOME: PersonWhere @deprecated(reason: \\"Please use the relevant generic filter 'producers: {  some: ... }' instead.\\")
                 }
 
                 type MoviesConnection {
@@ -12972,11 +12176,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonCreateInput {
                   PersonOne: PersonOneCreateInput
                   PersonTwo: PersonTwoCreateInput
@@ -13006,11 +12205,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonOneAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonOneCreateInput {
                   name: String
                   someExtraProp: [Int!]!
@@ -13021,15 +12215,6 @@ describe("Relationship nested operations", () => {
                   node: PersonOne!
                 }
 
-                input PersonOneOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonOneSort objects to sort PersonOnes by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonOneSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort PersonOnes by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonOneSort object.
                 \\"\\"\\"
@@ -13038,27 +12223,27 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonOneUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  someExtraProp_POP: Int
-                  someExtraProp_PUSH: [Int!]
-                  someExtraProp_SET: [Int!]
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
+                  someExtraProp: ListIntMutations
+                  someExtraProp_POP: Int @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { pop: ... } }' instead.\\")
+                  someExtraProp_PUSH: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { push: ... } }' instead.\\")
+                  someExtraProp_SET: [Int!] @deprecated(reason: \\"Please use the generic mutation 'someExtraProp: { set: ... } }' instead.\\")
                 }
 
                 input PersonOneWhere {
                   AND: [PersonOneWhere!]
                   NOT: PersonOneWhere
                   OR: [PersonOneWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
-                  someExtraProp: [Int!] @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  someExtraProp_EQ: [Int!]
-                  someExtraProp_INCLUDES: Int
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+                  someExtraProp: IntListFilters
+                  someExtraProp_EQ: [Int!] @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { eq: ... }\\")
+                  someExtraProp_INCLUDES: Int @deprecated(reason: \\"Please use the relevant generic filter someExtraProp: { includes: ... }\\")
                 }
 
                 type PersonOnesConnection {
@@ -13068,13 +12253,15 @@ describe("Relationship nested operations", () => {
                   totalCount: Int!
                 }
 
-                input PersonOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonSort!]
+                input PersonRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related People match this filter\\"\\"\\"
+                  all: PersonWhere
+                  \\"\\"\\"Filter type where none of the related People match this filter\\"\\"\\"
+                  none: PersonWhere
+                  \\"\\"\\"Filter type where one of the related People match this filter\\"\\"\\"
+                  single: PersonWhere
+                  \\"\\"\\"Filter type where some of the related People match this filter\\"\\"\\"
+                  some: PersonWhere
                 }
 
                 \\"\\"\\"
@@ -13097,11 +12284,6 @@ describe("Relationship nested operations", () => {
                   name: StringAggregateSelection!
                 }
 
-                type PersonTwoAggregateSelection {
-                  count: Int!
-                  name: StringAggregateSelection!
-                }
-
                 input PersonTwoCreateInput {
                   name: String
                 }
@@ -13109,15 +12291,6 @@ describe("Relationship nested operations", () => {
                 type PersonTwoEdge {
                   cursor: String!
                   node: PersonTwo!
-                }
-
-                input PersonTwoOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more PersonTwoSort objects to sort PersonTwos by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [PersonTwoSort!]
                 }
 
                 \\"\\"\\"
@@ -13128,20 +12301,20 @@ describe("Relationship nested operations", () => {
                 }
 
                 input PersonTwoUpdateInput {
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input PersonTwoWhere {
                   AND: [PersonTwoWhere!]
                   NOT: PersonTwoWhere
                   OR: [PersonTwoWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type PersonTwosConnection {
@@ -13155,28 +12328,23 @@ describe("Relationship nested operations", () => {
                   AND: [PersonWhere!]
                   NOT: PersonWhere
                   OR: [PersonWhere!]
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String]
-                  name_STARTS_WITH: String
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                   typename: [PersonImplementation!]
-                  typename_IN: [PersonImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
                 }
 
                 type Query {
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-                  peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+                  people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
                   peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
-                  personOnes(limit: Int, offset: Int, options: PersonOneOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
-                  personOnesAggregate(where: PersonOneWhere): PersonOneAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personOnesConnection\\\\\\" instead\\")
+                  personOnes(limit: Int, offset: Int, sort: [PersonOneSort!], where: PersonOneWhere): [PersonOne!]!
                   personOnesConnection(after: String, first: Int, sort: [PersonOneSort!], where: PersonOneWhere): PersonOnesConnection!
-                  personTwos(limit: Int, offset: Int, options: PersonTwoOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
-                  personTwosAggregate(where: PersonTwoWhere): PersonTwoAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"personTwosConnection\\\\\\" instead\\")
+                  personTwos(limit: Int, offset: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): [PersonTwo!]!
                   personTwosConnection(after: String, first: Int, sort: [PersonTwoSort!], where: PersonTwoWhere): PersonTwosConnection!
                 }
 
@@ -13191,6 +12359,27 @@ describe("Relationship nested operations", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 \\"\\"\\"

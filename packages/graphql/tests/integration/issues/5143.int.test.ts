@@ -39,9 +39,9 @@ describe("https://github.com/neo4j/graphql/issues/5143", () => {
 
             type ${Video} @node {
                 id: ID! @id
-                publisher: ${User}! @relationship(type: "PUBLISHER", direction: IN)
+                publisher: [${User}!]! @relationship(type: "PUBLISHER", direction: IN)
             }
-            extend type ${Video} @authorization(filter: [{ where: { node: { publisher: { id_EQ: "$jwt.sub" } } } }])
+            extend type ${Video} @authorization(filter: [{ where: { node: { publisher_SOME: { id_EQ: "$jwt.sub" } } } }])
 
             type Query {
                 getAllVids: [${Video}]!

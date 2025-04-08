@@ -40,7 +40,7 @@ describe("Cypher LocalDateTime", () => {
     test("Simple Read", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { localDT_EQ: "2003-09-14T12:00:00" }) {
+                movies(where: { localDT: { eq: "2003-09-14T12:00:00" } }) {
                     localDT
                 }
             }
@@ -49,7 +49,8 @@ describe("Cypher LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.localDT = $param0
             RETURN this { .localDT } AS this"
         `);
@@ -72,7 +73,7 @@ describe("Cypher LocalDateTime", () => {
     test("GTE Read", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { localDT_GTE: "2010-08-23T13:45:33.250" }) {
+                movies(where: { localDT: { gte: "2010-08-23T13:45:33.250" } }) {
                     localDT
                 }
             }
@@ -81,7 +82,8 @@ describe("Cypher LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.localDT >= $param0
             RETURN this { .localDT } AS this"
         `);
@@ -115,7 +117,8 @@ describe("Cypher LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -160,7 +163,8 @@ describe("Cypher LocalDateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             SET this.localDT = $this_update_localDT_SET
             RETURN collect(DISTINCT this { .id, .localDT }) AS data"
         `);

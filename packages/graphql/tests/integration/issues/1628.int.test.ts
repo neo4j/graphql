@@ -30,7 +30,7 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
                 """
                 IRI
                 """
-                iri: ID! @unique @alias(property: "uri")
+                iri: ID! @alias(property: "uri")
                 title: [${titleType}!]! @relationship(type: "title", direction: OUT)
             }
 

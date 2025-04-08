@@ -29,14 +29,12 @@ describe("auth/roles", () => {
     let typeUser: UniqueType;
     let typeProduct: UniqueType;
     let typePost: UniqueType;
-    let typeComment: UniqueType;
     let typeHistory: UniqueType;
 
     beforeEach(async () => {
         typeUser = testHelper.createUniqueType("User");
         typeProduct = testHelper.createUniqueType("Product");
         typePost = testHelper.createUniqueType("Post");
-        typeComment = testHelper.createUniqueType("Comment");
         typeHistory = testHelper.createUniqueType("History");
 
         await testHelper.executeCypher(
@@ -53,7 +51,7 @@ describe("auth/roles", () => {
 
     describe("read", () => {
         test("should throw if missing role on type definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
@@ -61,19 +59,19 @@ describe("auth/roles", () => {
                 type ${typeProduct} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [READ],
-                    where: { jwt: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles: { includes: "admin" } } }
                 }]) @node {
                     id: ID
                     name: String
                 }
             `;
 
-            const query = `
-            {
-                ${typeProduct.plural} {
-                    id
+            const query = /* GraphQL */ `
+                {
+                    ${typeProduct.plural} {
+                        id
+                    }
                 }
-            }
             `;
 
             await testHelper.initNeo4jGraphQL({
@@ -93,7 +91,7 @@ describe("auth/roles", () => {
         });
 
         test("should throw if missing role on field definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
@@ -103,7 +101,7 @@ describe("auth/roles", () => {
                     password: String @authorization(validate: [{
                         when: [BEFORE],
                         operations: [READ],
-                        where: { jwt: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles: { includes: "admin" } } }
                     }])
                 }
             `;
@@ -133,7 +131,7 @@ describe("auth/roles", () => {
         });
 
         test("Read Node & Cypher Field", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
@@ -142,7 +140,7 @@ describe("auth/roles", () => {
                     url: String @authorization(validate: [{
                         when: [BEFORE],
                         operations: [READ],
-                        where: { jwt: { roles_INCLUDES: "super-admin" } }
+                        where: { jwt: { roles: { includes:  "super-admin" }} }
                     }])
                 }
                 type ${typeUser} @node {
@@ -155,7 +153,7 @@ describe("auth/roles", () => {
                     @authorization(validate: [{
                         when: [BEFORE],
                         operations: [READ, CREATE, UPDATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, DELETE],
-                        where: { jwt: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles: { includes: "admin" }} }
                     }])
 
                 extend type ${typeUser} {
@@ -164,12 +162,12 @@ describe("auth/roles", () => {
                         @authorization(validate: [{
                             when: [BEFORE],
                             operations: [READ],
-                            where: { jwt: { roles_INCLUDES: "super-admin" } }
+                            where: { jwt: { roles: { includes:  "super-admin" }} }
                         }])
                 }
             `;
 
-            const query = `
+            const query = /* GraphQL */ `
                 {
                     ${typeUser.plural} {
                         history {
@@ -214,21 +212,22 @@ describe("auth/roles", () => {
         // This tests reproduces the security issue related to authorization without match #195
         // eslint-disable-next-line jest/no-disabled-tests
         test.skip("should throw if missing role on type definition and no nodes are matched", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
 
-                type NotANode @authorization(validate: [{
-                    when: [BEFORE],
-                    operations: [READ],
-                    where: { jwt: { roles_INCLUDES: "admin" } }
-                }]) {
+                type NotANode
+                    @authorization(
+                        validate: [
+                            { when: [BEFORE], operations: [READ], where: { jwt: { roles: { includes: "admin" } } } }
+                        ]
+                    ) {
                     name: String
                 }
             `;
 
-            const query = `
+            const query = /* GraphQL */ `
                 {
                     notANodes {
                         name
@@ -255,7 +254,7 @@ describe("auth/roles", () => {
 
     describe("create", () => {
         test("should throw if missing role on type definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
@@ -263,14 +262,14 @@ describe("auth/roles", () => {
                 type ${typeUser} @authorization(validate: [{
                     when: [AFTER],
                     operations: [CREATE],
-                    where: { jwt: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles: { includes: "admin" } } }
                 }]) @node {
                     id: ID
                     name: String
                 }
             `;
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${typeUser.operations.create}(input: [{ id: "1" }]) {
                         ${typeUser.plural} {
@@ -297,7 +296,7 @@ describe("auth/roles", () => {
         });
 
         test("should throw if missing role on field definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
@@ -307,12 +306,12 @@ describe("auth/roles", () => {
                     password: String @authorization(validate: [{
                         when: [AFTER],
                         operations: [CREATE],
-                        where: { jwt: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles: { includes: "admin" } } }
                     }])
                 }
             `;
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${typeUser.operations.create}(input: [{ password: "1" }]) {
                         ${typeUser.plural} {
@@ -339,7 +338,7 @@ describe("auth/roles", () => {
         });
 
         test("should not throw if missing role on field definition if is not specified in the request", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
@@ -349,12 +348,12 @@ describe("auth/roles", () => {
                     password: String @authorization(validate: [{
                         when: [AFTER],
                         operations: [CREATE],
-                        where: { jwt: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles: { includes: "admin" } } }
                     }])
                 }
             `;
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${typeUser.operations.create}(input: [{ id: "1" }]) {
                         ${typeUser.plural} {
@@ -391,7 +390,7 @@ describe("auth/roles", () => {
                 type ${typeUser} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [UPDATE],
-                    where: { jwt: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles: { includes: "admin" } } }
                 }]) @node{
                     id: ID
                     name: String
@@ -435,7 +434,7 @@ describe("auth/roles", () => {
                     password: String @authorization(validate: [{
                         when: [BEFORE],
                         operations: [UPDATE],
-                        where: { jwt: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles: { includes: "admin" } } }
                     }])
                 }
             `;
@@ -490,13 +489,13 @@ describe("auth/roles", () => {
                     @authorization(validate: [{
                         when: [BEFORE],
                         operations: [CREATE_RELATIONSHIP],
-                        where: { jwt: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles: { includes: "admin" } } }
                     }])
 
                 extend type ${typePost} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [CREATE_RELATIONSHIP],
-                    where: { jwt: { roles_INCLUDES: "super-admin" } }
+                    where: { jwt: { roles: { includes: "super-admin" } } }
                 }])
             `;
 
@@ -510,7 +509,7 @@ describe("auth/roles", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${typeUser.operations.update}(update: { id_SET: "${userId}", posts: { connect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${typeUser.operations.update}(update: { id_SET: "${userId}", posts: { connect: { where: { node: { id: { eq: "${postId}"  } } } } }}) {
                         ${typeUser.plural} {
                             id
                         }
@@ -533,93 +532,6 @@ describe("auth/roles", () => {
                 `);
             // missing super-admin
             const token = createBearerToken(secret, { roles: ["admin"] });
-
-            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
-
-            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-        });
-
-        test("should throw if missing role on nested connect", async () => {
-            const typeDefs = `
-                type JWTPayload @jwt {
-                    roles: [String!]!
-                }
-
-                type ${typeComment} @node {
-                    id: String
-                    content: String
-                    post: ${typePost}! @relationship(type: "HAS_COMMENT", direction: IN)
-                }
-
-                type ${typePost} @node {
-                    id: String
-                    content: String
-                    creator: ${typeUser}! @relationship(type: "HAS_POST", direction: IN)
-                    comments: [${typeComment}!]! @relationship(type: "HAS_COMMENT", direction: OUT)
-                }
-
-                type ${typeUser} @node {
-                    id: ID
-                    name: String
-                    posts: [${typePost}!]! @relationship(type: "HAS_POST", direction: OUT)
-                }
-
-                extend type ${typeUser}
-                @authorization(validate: [{
-                    when: [BEFORE],
-                    operations: [CREATE_RELATIONSHIP],
-                    where: { jwt: { roles_INCLUDES: "admin" } }
-                }])
-            `;
-
-            const userId = generate({
-                charset: "alphabetic",
-            });
-
-            const commentId = generate({
-                charset: "alphabetic",
-            });
-
-            const postId = generate({
-                charset: "alphabetic",
-            });
-
-            const query = `
-                mutation {
-                    ${typeComment.operations.update}(
-                        where: { id_EQ: "${commentId}" }
-                        update: {
-                            post: {
-                                update: {
-                                    node: {
-                                        creator: { connect: { where: { node: { id_EQ: "${userId}" } } } }
-                                    }
-                                }
-                            }
-                        }
-                    ) {
-                        ${typeComment.plural} {
-                            content
-                        }
-                    }
-                }
-            `;
-
-            await testHelper.initNeo4jGraphQL({
-                typeDefs,
-                features: {
-                    authorization: {
-                        key: "secret",
-                    },
-                },
-            });
-
-            await testHelper.executeCypher(`
-                    CREATE (:${typeComment} {id: "${commentId}"})<-[:HAS_COMMENT]-(:${typePost} {id: "${postId}"})
-                    CREATE (:${typeUser} {id: "${userId}"})
-                `);
-
-            const token = createBearerToken(secret, { roles: [""] });
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
@@ -650,13 +562,13 @@ describe("auth/roles", () => {
                     @authorization(validate: [{
                         when: [BEFORE],
                         operations: [DELETE_RELATIONSHIP],
-                        where: { jwt: { roles_INCLUDES: "admin" } }
+                        where: { jwt: { roles: { includes: "admin" }} }
                     }])
 
                 extend type ${typePost} @authorization(validate: [{
                     when: [BEFORE],
                     operations: [DELETE_RELATIONSHIP],
-                    where: { jwt: { roles_INCLUDES: "super-admin" } }
+                    where: { jwt: { roles: { includes: "super-admin" } } }
                 }])
             `;
 
@@ -670,7 +582,7 @@ describe("auth/roles", () => {
 
             const query = /* GraphQL */ `
                 mutation {
-                    ${typeUser.operations.update}(update: { id_SET: "${userId}", posts: { disconnect: { where: { node: { id_EQ: "${postId}" } } } } }) {
+                    ${typeUser.operations.update}(update: { id_SET: "${userId}", posts: { disconnect: { where: { node: { id: { eq: "${postId}" } } } } } }) {
                         ${typeUser.plural} {
                             id
                         }
@@ -698,97 +610,11 @@ describe("auth/roles", () => {
 
             expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
         });
-
-        test("should throw if missing role on nested disconnect", async () => {
-            const typeDefs = `
-                type JWTPayload @jwt {
-                    roles: [String!]!
-                }
-
-                type ${typeComment} @node {
-                    id: String
-                    content: String
-                    post: ${typePost}! @relationship(type: "HAS_COMMENT", direction: IN)
-                }
-
-                type ${typePost} @node {
-                    id: String
-                    content: String
-                    creator: ${typeUser}! @relationship(type: "HAS_POST", direction: IN)
-                    comments: [${typeComment}!]! @relationship(type: "HAS_COMMENT", direction: OUT)
-                }
-
-                type ${typeUser} @node {
-                    id: ID
-                    name: String
-                    posts: [${typePost}!]! @relationship(type: "HAS_POST", direction: OUT)
-                }
-
-                extend type ${typeUser}
-                    @authorization(validate: [{
-                        when: [BEFORE],
-                        operations: [DELETE_RELATIONSHIP],
-                        where: { jwt: { roles_INCLUDES: "admin" } }
-                    }])
-            `;
-
-            const userId = generate({
-                charset: "alphabetic",
-            });
-
-            const commentId = generate({
-                charset: "alphabetic",
-            });
-
-            const postId = generate({
-                charset: "alphabetic",
-            });
-
-            const query = `
-                mutation {
-                    ${typeComment.operations.update}(
-                        where: { id_EQ: "${commentId}" }
-                        update: {
-                            post: {
-                                update: {
-                                    node: {
-                                        creator: { disconnect: { where: { node: { id_EQ: "${userId}" } } } }
-                                    }
-                                }
-                            }
-                        }
-                    ) {
-                        ${typeComment.plural} {
-                            content
-                        }
-                    }
-                }
-            `;
-
-            await testHelper.initNeo4jGraphQL({
-                typeDefs,
-                features: {
-                    authorization: {
-                        key: "secret",
-                    },
-                },
-            });
-
-            await testHelper.executeCypher(`
-                    CREATE (:${typeComment} {id: "${commentId}"})<-[:HAS_COMMENT]-(:${typePost} {id: "${postId}"})<-[:HAS_POST]-(:${typeUser} {id: "${userId}"})
-                `);
-
-            const token = createBearerToken(secret, { roles: [""] });
-
-            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
-
-            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-        });
     });
 
     describe("delete", () => {
         test("should throw if missing role on type definition", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
@@ -796,14 +622,14 @@ describe("auth/roles", () => {
                 type ${typeUser} @node @authorization(validate: [{
                     when: [BEFORE],
                     operations: [DELETE],
-                    where: { jwt: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles: { includes: "admin" } } }
                 }]) {
                     id: ID
                     name: String
                 }
             `;
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
                     ${typeUser.operations.delete} {
                         nodesDeleted
@@ -828,7 +654,7 @@ describe("auth/roles", () => {
         });
 
         test("should throw if missing role on type definition (with nested delete)", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
@@ -842,7 +668,7 @@ describe("auth/roles", () => {
                 type ${typePost} @node @authorization(validate: [{
                     when: [BEFORE],
                     operations: [DELETE],
-                    where: { jwt: { roles_INCLUDES: "admin" } }
+                    where: { jwt: { roles: { includes: "admin" } } }
                 }]) {
                     id: ID
                     name: String
@@ -857,9 +683,9 @@ describe("auth/roles", () => {
                 charset: "alphabetic",
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 mutation {
-                    ${typeUser.operations.delete}(where: {id_EQ: "${userId}"}, delete:{posts: {where:{node: { id_EQ: "${postId}"}}}}) {
+                    ${typeUser.operations.delete}(where: {id: { eq: "${userId}"}}, delete: { posts: { where:{ node: { id: { eq: "${postId}" }}}}}) {
                         nodesDeleted
                     }
                 }
@@ -889,7 +715,7 @@ describe("auth/roles", () => {
     // TODO: Move these checks into JavaScript! Fun!
     describe("custom-resolvers", () => {
         test("should throw if missing role on custom Query with @cypher", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
@@ -900,7 +726,7 @@ describe("auth/roles", () => {
                 }
 
                 type Query {
-                    ${typeUser.plural}: [${typeUser}] @cypher(statement: "MATCH (u:${typeUser}) RETURN u AS u", columnName: "u")  @authentication(jwt: {roles_INCLUDES: "admin"})
+                    ${typeUser.plural}: [${typeUser}] @cypher(statement: "MATCH (u:${typeUser}) RETURN u AS u", columnName: "u")  @authentication(jwt: {roles: { includes: "admin" }})
                 }
             `;
 
@@ -929,7 +755,7 @@ describe("auth/roles", () => {
         });
 
         test("should throw if missing role on custom Mutation with @cypher", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
@@ -940,7 +766,7 @@ describe("auth/roles", () => {
                 }
 
                 type Mutation {
-                    ${typeUser.operations.create}: ${typeUser} @cypher(statement: "CREATE (u:${typeUser}) RETURN u AS u", columnName: "u") @authentication(jwt: {roles_INCLUDES: "admin"})
+                    ${typeUser.operations.create}: ${typeUser} @cypher(statement: "CREATE (u:${typeUser}) RETURN u AS u", columnName: "u") @authentication(jwt: { roles: { includes: "admin" } })
                 }
             `;
 
@@ -969,7 +795,7 @@ describe("auth/roles", () => {
         });
 
         test("should throw if missing role on Field definition @cypher", async () => {
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]!
                 }
@@ -984,12 +810,12 @@ describe("auth/roles", () => {
                         @cypher(statement: "MATCH (this)-[:HAS_HISTORY]->(h:${typeHistory}) RETURN h AS h", columnName: "h")
                         @authorization(validate: [{
                             when: [BEFORE],
-                            where: { jwt: { roles_INCLUDES: "admin" } }
+                            where: { jwt: { roles: { includes: "admin" } } }
                         }])
                 }
             `;
 
-            const query = `
+            const query = /* GraphQL */ `
                 {
                     ${typeUser.plural} {
                         history {
@@ -1020,7 +846,7 @@ describe("auth/roles", () => {
         test("combines where with roles", async () => {
             const type = testHelper.createUniqueType("User");
 
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     id: String!
                     roles: [String!]!
@@ -1036,10 +862,10 @@ describe("auth/roles", () => {
                     @authorization(
                         filter: [
                             {
-                                where: { node: { id_EQ: "$jwt.id" }, jwt: { roles_INCLUDES: "user" } }
+                                where: { node: { id: { eq: "$jwt.id" } }, jwt: { roles: { includes: "user" } } }
                             }, 
                             {
-                                where: { jwt: { roles_INCLUDES: "admin" } }
+                                where: { jwt: { roles: { includes: "admin" } } }
                             }
                         ]
                     )
@@ -1053,7 +879,7 @@ describe("auth/roles", () => {
                 charset: "alphabetic",
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 query {
                     ${type.plural} {
                         id
@@ -1103,7 +929,7 @@ describe("auth/roles", () => {
         test("can read role from path containing dots", async () => {
             const type = testHelper.createUniqueType("User");
 
-            const typeDefs = `
+            const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {
                     roles: [String!]! @jwtClaim(path: "https://auth0\\\\.mysite\\\\.com/claims.https://auth0\\\\.mysite\\\\.com/claims/roles")
                 }
@@ -1119,7 +945,7 @@ describe("auth/roles", () => {
                         validate: [
                             {
                                 when: [BEFORE],
-                                where: { jwt: { roles_INCLUDES: "admin" } }
+                                where: { jwt: { roles: { includes: "admin" } } }
                             }
                         ]
                     )
@@ -1129,7 +955,7 @@ describe("auth/roles", () => {
                 charset: "alphabetic",
             });
 
-            const query = `
+            const query = /* GraphQL */ `
                 query {
                     ${type.plural} {
                         id

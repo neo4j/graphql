@@ -78,6 +78,25 @@ export class PropertyInputField extends InputField {
             const mapPoint = Cypher.point(comprehensionVar);
             return new Cypher.ListComprehension(comprehensionVar, variable).map(mapPoint);
         }
+
+        if (this.attribute.typeHelper.isDateTime()) {
+            if (!this.attribute.typeHelper.isList()) {
+                return Cypher.datetime(variable);
+            }
+            const comprehensionVar = new Cypher.Variable();
+            const mapDateTime = Cypher.datetime(comprehensionVar);
+            return new Cypher.ListComprehension(comprehensionVar, variable).map(mapDateTime);
+        }
+
+        if (this.attribute.typeHelper.isTime()) {
+            if (!this.attribute.typeHelper.isList()) {
+                return Cypher.time(variable);
+            }
+            const comprehensionVar = new Cypher.Variable();
+            const mapTime = Cypher.time(comprehensionVar);
+            return new Cypher.ListComprehension(comprehensionVar, variable).map(mapTime);
+        }
+
         return variable;
     }
 

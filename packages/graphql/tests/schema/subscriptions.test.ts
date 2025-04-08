@@ -50,7 +50,6 @@ describe("Subscriptions", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             type Actor {
@@ -66,11 +65,6 @@ describe("Subscriptions", () => {
               name: StringAggregateSelection!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
             input ActorConnectWhere {
               node: ActorWhere!
             }
@@ -79,34 +73,20 @@ describe("Subscriptions", () => {
               name: String!
             }
 
-            type ActorCreatedEvent {
-              createdActor: ActorEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            type ActorDeletedEvent {
-              deletedActor: ActorEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             type ActorEdge {
               cursor: String!
               node: Actor!
             }
 
-            type ActorEventPayload {
-              name: String!
-            }
-
-            input ActorOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [ActorSort!]
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             \\"\\"\\"
@@ -116,40 +96,21 @@ describe("Subscriptions", () => {
               name: SortDirection
             }
 
-            input ActorSubscriptionWhere {
-              AND: [ActorSubscriptionWhere!]
-              NOT: ActorSubscriptionWhere
-              OR: [ActorSubscriptionWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
-            }
-
             input ActorUpdateInput {
-              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              name_SET: String
-            }
-
-            type ActorUpdatedEvent {
-              event: EventType!
-              previousState: ActorEventPayload!
-              timestamp: Float!
-              updatedActor: ActorEventPayload!
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -157,6 +118,21 @@ describe("Subscriptions", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              eq: Boolean
+            }
+
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type Count {
@@ -194,14 +170,6 @@ describe("Subscriptions", () => {
               relationshipsDeleted: Int!
             }
 
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
-            }
-
             type FloatAggregateSelection {
               average: Float
               max: Float
@@ -209,9 +177,37 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type IntAggregateSelection {
@@ -221,11 +217,27 @@ describe("Subscriptions", () => {
               sum: Int
             }
 
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
+            }
+
             type Movie {
               actorCount: Int
-              actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-              actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               averageRating: Float
               id: ID
               isActive: Boolean
@@ -233,11 +245,6 @@ describe("Subscriptions", () => {
 
             type MovieActorActorsAggregateSelection {
               count: CountConnection!
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
               node: MovieActorActorsNodeAggregateSelection
             }
 
@@ -249,7 +256,7 @@ describe("Subscriptions", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -259,10 +266,6 @@ describe("Subscriptions", () => {
             }
 
             input MovieActorsConnectFieldInput {
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
               where: ActorConnectWhere
             }
 
@@ -271,6 +274,35 @@ describe("Subscriptions", () => {
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
             }
 
             input MovieActorsConnectionSort {
@@ -305,21 +337,22 @@ describe("Subscriptions", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type MovieActorsRelationship {
@@ -338,7 +371,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -349,14 +381,6 @@ describe("Subscriptions", () => {
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type MovieAggregateSelection {
-              actorCount: IntAggregateSelection!
-              averageRating: FloatAggregateSelection!
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input MovieCreateInput {
@@ -367,41 +391,13 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
-            type MovieCreatedEvent {
-              createdMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             input MovieDeleteInput {
               actors: [MovieActorsDeleteFieldInput!]
-            }
-
-            type MovieDeletedEvent {
-              deletedMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
             }
 
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            type MovieEventPayload {
-              actorCount: Int
-              averageRating: Float
-              id: ID
-              isActive: Boolean
-            }
-
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -414,110 +410,77 @@ describe("Subscriptions", () => {
               isActive: SortDirection
             }
 
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_IN: [Int]
-              actorCount_LT: Int
-              actorCount_LTE: Int
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float]
-              averageRating_LT: Float
-              averageRating_LTE: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
-            }
-
             input MovieUpdateInput {
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _SET field\\")
-              actorCount_DECREMENT: Int
-              actorCount_INCREMENT: Int
-              actorCount_SET: Int
+              actorCount: IntScalarMutations
+              actorCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { decrement: ... } }' instead.\\")
+              actorCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { increment: ... } }' instead.\\")
+              actorCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'actorCount: { set: ... } }' instead.\\")
               actors: [MovieActorsUpdateFieldInput!]
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _SET field\\")
-              averageRating_ADD: Float
-              averageRating_DIVIDE: Float
-              averageRating_MULTIPLY: Float
-              averageRating_SET: Float
-              averageRating_SUBTRACT: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _SET field\\")
-              isActive_SET: Boolean
-            }
-
-            type MovieUpdatedEvent {
-              event: EventType!
-              previousState: MovieEventPayload!
-              timestamp: Float!
-              updatedMovie: MovieEventPayload!
+              averageRating: FloatScalarMutations
+              averageRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { add: ... } }' instead.\\")
+              averageRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { divide: ... } }' instead.\\")
+              averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
+              averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
+              averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              isActive: BooleanScalarMutations
+              isActive_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'isActive: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_IN: [Int]
-              actorCount_LT: Int
-              actorCount_LTE: Int
-              actorsAggregate: MovieActorsAggregateInput
+              actorCount: IntScalarFilters
+              actorCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { eq: ... }\\")
+              actorCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gt: ... }\\")
+              actorCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gte: ... }\\")
+              actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
+              actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
+              actors: ActorRelationshipFilters
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: MovieActorsConnectionWhere
+              actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float]
-              averageRating_LT: Float
-              averageRating_LTE: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+              averageRating: FloatScalarFilters
+              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
+              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
+              averageRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
+              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              isActive: BooleanScalarFilters
+              isActive_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter isActive: { eq: ... }\\")
             }
 
             type MoviesConnection {
@@ -545,11 +508,9 @@ describe("Subscriptions", () => {
             }
 
             type Query {
-              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
+              actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -566,13 +527,25 @@ describe("Subscriptions", () => {
               shortest: String
             }
 
-            type Subscription {
-              actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-              actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-              actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
-              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -625,21 +598,15 @@ describe("Subscriptions", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             type Actor {
-              movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-              moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
             }
 
             type ActorAggregate {
               count: Count!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
             }
 
             input ActorConnectInput {
@@ -654,18 +621,8 @@ describe("Subscriptions", () => {
               movies: ActorMoviesFieldInput
             }
 
-            type ActorCreatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input ActorDeleteInput {
               movies: [ActorMoviesDeleteFieldInput!]
-            }
-
-            type ActorDeletedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             input ActorDisconnectInput {
@@ -682,22 +639,16 @@ describe("Subscriptions", () => {
               node: ActorMovieMoviesNodeAggregateSelection
             }
 
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
-              node: ActorMovieMoviesNodeAggregateSelection
-            }
-
             type ActorMovieMoviesNodeAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input ActorMoviesAggregateInput {
               AND: [ActorMoviesAggregateInput!]
               NOT: ActorMoviesAggregateInput
               OR: [ActorMoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -708,10 +659,6 @@ describe("Subscriptions", () => {
 
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
               where: MovieConnectWhere
             }
 
@@ -720,6 +667,35 @@ describe("Subscriptions", () => {
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
+            input ActorMoviesConnectionFilters {
+              \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+              aggregate: ActorMoviesConnectionAggregateInput
+              \\"\\"\\"
+              Return Actors where all of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              all: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              none: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              single: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              some: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesConnectionSort {
@@ -756,56 +732,48 @@ describe("Subscriptions", () => {
               AND: [ActorMoviesNodeAggregationWhereInput!]
               NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
-              actorCount_AVERAGE_EQUAL: Float
-              actorCount_AVERAGE_GT: Float
-              actorCount_AVERAGE_GTE: Float
-              actorCount_AVERAGE_LT: Float
-              actorCount_AVERAGE_LTE: Float
-              actorCount_MAX_EQUAL: Int
-              actorCount_MAX_GT: Int
-              actorCount_MAX_GTE: Int
-              actorCount_MAX_LT: Int
-              actorCount_MAX_LTE: Int
-              actorCount_MIN_EQUAL: Int
-              actorCount_MIN_GT: Int
-              actorCount_MIN_GTE: Int
-              actorCount_MIN_LT: Int
-              actorCount_MIN_LTE: Int
-              actorCount_SUM_EQUAL: Int
-              actorCount_SUM_GT: Int
-              actorCount_SUM_GTE: Int
-              actorCount_SUM_LT: Int
-              actorCount_SUM_LTE: Int
-              averageRating_AVERAGE_EQUAL: Float
-              averageRating_AVERAGE_GT: Float
-              averageRating_AVERAGE_GTE: Float
-              averageRating_AVERAGE_LT: Float
-              averageRating_AVERAGE_LTE: Float
-              averageRating_MAX_EQUAL: Float
-              averageRating_MAX_GT: Float
-              averageRating_MAX_GTE: Float
-              averageRating_MAX_LT: Float
-              averageRating_MAX_LTE: Float
-              averageRating_MIN_EQUAL: Float
-              averageRating_MIN_GT: Float
-              averageRating_MIN_GTE: Float
-              averageRating_MIN_LT: Float
-              averageRating_MIN_LTE: Float
-              averageRating_SUM_EQUAL: Float
-              averageRating_SUM_GT: Float
-              averageRating_SUM_GTE: Float
-              averageRating_SUM_LT: Float
-              averageRating_SUM_LTE: Float
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              actorCount: IntScalarAggregationFilters
+              actorCount_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { eq: ... } } }' instead.\\")
+              actorCount_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { gt: ... } } }' instead.\\")
+              actorCount_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { gte: ... } } }' instead.\\")
+              actorCount_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { lt: ... } } }' instead.\\")
+              actorCount_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { lte: ... } } }' instead.\\")
+              actorCount_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { eq: ... } } }' instead.\\")
+              actorCount_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { gt: ... } } }' instead.\\")
+              actorCount_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { gte: ... } } }' instead.\\")
+              actorCount_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { lt: ... } } }' instead.\\")
+              actorCount_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { lte: ... } } }' instead.\\")
+              actorCount_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { eq: ... } } }' instead.\\")
+              actorCount_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { gt: ... } } }' instead.\\")
+              actorCount_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { gte: ... } } }' instead.\\")
+              actorCount_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { lt: ... } } }' instead.\\")
+              actorCount_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { lte: ... } } }' instead.\\")
+              actorCount_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { eq: ... } } }' instead.\\")
+              actorCount_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { gt: ... } } }' instead.\\")
+              actorCount_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { gte: ... } } }' instead.\\")
+              actorCount_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { lt: ... } } }' instead.\\")
+              actorCount_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { lte: ... } } }' instead.\\")
+              averageRating: FloatScalarAggregationFilters
+              averageRating_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { eq: ... } } }' instead.\\")
+              averageRating_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { gt: ... } } }' instead.\\")
+              averageRating_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { gte: ... } } }' instead.\\")
+              averageRating_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { lt: ... } } }' instead.\\")
+              averageRating_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { lte: ... } } }' instead.\\")
+              averageRating_MAX_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { eq: ... } } }' instead.\\")
+              averageRating_MAX_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { gt: ... } } }' instead.\\")
+              averageRating_MAX_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { gte: ... } } }' instead.\\")
+              averageRating_MAX_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { lt: ... } } }' instead.\\")
+              averageRating_MAX_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { lte: ... } } }' instead.\\")
+              averageRating_MIN_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { eq: ... } } }' instead.\\")
+              averageRating_MIN_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { gt: ... } } }' instead.\\")
+              averageRating_MIN_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { gte: ... } } }' instead.\\")
+              averageRating_MIN_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { lt: ... } } }' instead.\\")
+              averageRating_MIN_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { lte: ... } } }' instead.\\")
+              averageRating_SUM_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { eq: ... } } }' instead.\\")
+              averageRating_SUM_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { gt: ... } } }' instead.\\")
+              averageRating_SUM_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { gte: ... } } }' instead.\\")
+              averageRating_SUM_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { lt: ... } } }' instead.\\")
+              averageRating_SUM_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { lte: ... } } }' instead.\\")
             }
 
             type ActorMoviesRelationship {
@@ -824,52 +792,54 @@ describe("Subscriptions", () => {
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
-            input ActorOptions {
-              limit: Int
-              offset: Int
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
             }
 
-            type ActorUpdatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              moviesAggregate: ActorMoviesAggregateInput
+              movies: MovieRelationshipFilters
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
+              moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: ActorMoviesConnectionWhere
+              moviesConnection_ALL: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: ActorMoviesConnectionWhere
+              moviesConnection_NONE: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: ActorMoviesConnectionWhere
+              moviesConnection_SINGLE: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: ActorMoviesConnectionWhere
+              moviesConnection_SOME: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
             }
 
             type ActorsConnection {
@@ -877,6 +847,21 @@ describe("Subscriptions", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              eq: Boolean
+            }
+
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type Count {
@@ -914,14 +899,6 @@ describe("Subscriptions", () => {
               relationshipsDeleted: Int!
             }
 
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
-            }
-
             type FloatAggregateSelection {
               average: Float
               max: Float
@@ -929,9 +906,45 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
+            }
+
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type IntAggregateSelection {
@@ -941,11 +954,35 @@ describe("Subscriptions", () => {
               sum: Int
             }
 
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
+            }
+
             type Movie {
               actorCount: Int
-              actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: ActorWhere): [Actor!]!
-              actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-              actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+              actors(limit: Int, offset: Int, where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
               averageRating: Float
               id: ID
               isActive: Boolean
@@ -955,15 +992,11 @@ describe("Subscriptions", () => {
               count: CountConnection!
             }
 
-            type MovieActorActorsAggregationSelection {
-              count: Int!
-            }
-
             input MovieActorsAggregateInput {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -973,10 +1006,6 @@ describe("Subscriptions", () => {
 
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
               where: ActorConnectWhere
             }
 
@@ -985,6 +1014,34 @@ describe("Subscriptions", () => {
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
             }
 
             input MovieActorsConnectionWhere {
@@ -1029,7 +1086,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -1040,14 +1096,6 @@ describe("Subscriptions", () => {
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type MovieAggregateSelection {
-              actorCount: IntAggregateSelection!
-              averageRating: FloatAggregateSelection!
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input MovieConnectInput {
@@ -1066,20 +1114,8 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
-            type MovieCreatedEvent {
-              createdMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             input MovieDeleteInput {
               actors: [MovieActorsDeleteFieldInput!]
-            }
-
-            type MovieDeletedEvent {
-              deletedMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
             }
 
             input MovieDisconnectInput {
@@ -1091,20 +1127,15 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            type MovieEventPayload {
-              actorCount: Int
-              averageRating: Float
-              id: ID
-              isActive: Boolean
-            }
-
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"
@@ -1117,110 +1148,77 @@ describe("Subscriptions", () => {
               isActive: SortDirection
             }
 
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_IN: [Int]
-              actorCount_LT: Int
-              actorCount_LTE: Int
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float]
-              averageRating_LT: Float
-              averageRating_LTE: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
-            }
-
             input MovieUpdateInput {
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _SET field\\")
-              actorCount_DECREMENT: Int
-              actorCount_INCREMENT: Int
-              actorCount_SET: Int
+              actorCount: IntScalarMutations
+              actorCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { decrement: ... } }' instead.\\")
+              actorCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { increment: ... } }' instead.\\")
+              actorCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'actorCount: { set: ... } }' instead.\\")
               actors: [MovieActorsUpdateFieldInput!]
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _SET field\\")
-              averageRating_ADD: Float
-              averageRating_DIVIDE: Float
-              averageRating_MULTIPLY: Float
-              averageRating_SET: Float
-              averageRating_SUBTRACT: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _SET field\\")
-              isActive_SET: Boolean
-            }
-
-            type MovieUpdatedEvent {
-              event: EventType!
-              previousState: MovieEventPayload!
-              timestamp: Float!
-              updatedMovie: MovieEventPayload!
+              averageRating: FloatScalarMutations
+              averageRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { add: ... } }' instead.\\")
+              averageRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { divide: ... } }' instead.\\")
+              averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
+              averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
+              averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              isActive: BooleanScalarMutations
+              isActive_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'isActive: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_IN: [Int]
-              actorCount_LT: Int
-              actorCount_LTE: Int
-              actorsAggregate: MovieActorsAggregateInput
+              actorCount: IntScalarFilters
+              actorCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { eq: ... }\\")
+              actorCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gt: ... }\\")
+              actorCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gte: ... }\\")
+              actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
+              actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
+              actors: ActorRelationshipFilters
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: MovieActorsConnectionWhere
+              actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float]
-              averageRating_LT: Float
-              averageRating_LTE: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+              averageRating: FloatScalarFilters
+              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
+              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
+              averageRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
+              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              isActive: BooleanScalarFilters
+              isActive_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter isActive: { eq: ... }\\")
             }
 
             type MoviesConnection {
@@ -1248,11 +1246,9 @@ describe("Subscriptions", () => {
             }
 
             type Query {
-              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
+              actors(limit: Int, offset: Int, where: ActorWhere): [Actor!]!
               actorsConnection(after: String, first: Int, where: ActorWhere): ActorsConnection!
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -1262,15 +1258,6 @@ describe("Subscriptions", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type Subscription {
-              actorCreated: ActorCreatedEvent!
-              actorDeleted: ActorDeletedEvent!
-              actorUpdated: ActorUpdatedEvent!
-              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
             }
 
             type UpdateActorsMutationResponse {
@@ -1328,14 +1315,39 @@ describe("Subscriptions", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             union Actor = Person | Star
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             input ActorWhere {
               Person: PersonWhere
               Star: StarWhere
+            }
+
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              eq: Boolean
+            }
+
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type Count {
@@ -1378,14 +1390,6 @@ describe("Subscriptions", () => {
               relationshipsDeleted: Int!
             }
 
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
-            }
-
             type FloatAggregateSelection {
               average: Float
               max: Float
@@ -1393,9 +1397,45 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
+            }
+
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type IntAggregateSelection {
@@ -1405,10 +1445,35 @@ describe("Subscriptions", () => {
               sum: Int
             }
 
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
+            }
+
             type Movie {
               actorCount: Int
-              actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: ActorWhere): [Actor!]!
-              actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+              actors(limit: Int, offset: Int, where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
               averageRating: Float
               id: ID
               isActive: Boolean
@@ -1423,6 +1488,25 @@ describe("Subscriptions", () => {
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
             }
 
             input MovieActorsConnectionWhere {
@@ -1487,7 +1571,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsPersonDeleteFieldInput!]
               disconnect: [MovieActorsPersonDisconnectFieldInput!]
               update: MovieActorsPersonUpdateConnectionInput
-              where: MovieActorsPersonConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieActorsRelationship {
@@ -1537,7 +1620,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsStarDeleteFieldInput!]
               disconnect: [MovieActorsStarDisconnectFieldInput!]
               update: MovieActorsStarUpdateConnectionInput
-              where: MovieActorsStarConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsStarUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieActorsUpdateInput {
@@ -1553,14 +1635,6 @@ describe("Subscriptions", () => {
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type MovieAggregateSelection {
-              actorCount: IntAggregateSelection!
-              averageRating: FloatAggregateSelection!
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input MovieConnectInput {
@@ -1579,20 +1653,8 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
-            type MovieCreatedEvent {
-              createdMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             input MovieDeleteInput {
               actors: MovieActorsDeleteInput
-            }
-
-            type MovieDeletedEvent {
-              deletedMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
             }
 
             input MovieDisconnectInput {
@@ -1604,20 +1666,15 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            type MovieEventPayload {
-              actorCount: Int
-              averageRating: Float
-              id: ID
-              isActive: Boolean
-            }
-
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"
@@ -1630,109 +1687,76 @@ describe("Subscriptions", () => {
               isActive: SortDirection
             }
 
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_IN: [Int]
-              actorCount_LT: Int
-              actorCount_LTE: Int
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float]
-              averageRating_LT: Float
-              averageRating_LTE: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
-            }
-
             input MovieUpdateInput {
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _SET field\\")
-              actorCount_DECREMENT: Int
-              actorCount_INCREMENT: Int
-              actorCount_SET: Int
+              actorCount: IntScalarMutations
+              actorCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { decrement: ... } }' instead.\\")
+              actorCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { increment: ... } }' instead.\\")
+              actorCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'actorCount: { set: ... } }' instead.\\")
               actors: MovieActorsUpdateInput
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _SET field\\")
-              averageRating_ADD: Float
-              averageRating_DIVIDE: Float
-              averageRating_MULTIPLY: Float
-              averageRating_SET: Float
-              averageRating_SUBTRACT: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _SET field\\")
-              isActive_SET: Boolean
-            }
-
-            type MovieUpdatedEvent {
-              event: EventType!
-              previousState: MovieEventPayload!
-              timestamp: Float!
-              updatedMovie: MovieEventPayload!
+              averageRating: FloatScalarMutations
+              averageRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { add: ... } }' instead.\\")
+              averageRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { divide: ... } }' instead.\\")
+              averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
+              averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
+              averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              isActive: BooleanScalarMutations
+              isActive_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'isActive: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_IN: [Int]
-              actorCount_LT: Int
-              actorCount_LTE: Int
+              actorCount: IntScalarFilters
+              actorCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { eq: ... }\\")
+              actorCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gt: ... }\\")
+              actorCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gte: ... }\\")
+              actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
+              actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
+              actors: ActorRelationshipFilters
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: MovieActorsConnectionWhere
+              actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float]
-              averageRating_LT: Float
-              averageRating_LTE: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+              averageRating: FloatScalarFilters
+              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
+              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
+              averageRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
+              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              isActive: BooleanScalarFilters
+              isActive_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter isActive: { eq: ... }\\")
             }
 
             type MoviesConnection {
@@ -1770,17 +1794,12 @@ describe("Subscriptions", () => {
             }
 
             type Person {
-              movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): PersonMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-              moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [PersonMoviesConnectionSort!], where: PersonMoviesConnectionWhere): PersonMoviesConnection!
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              moviesConnection(after: String, first: Int, sort: [PersonMoviesConnectionSort!], where: PersonMoviesConnectionWhere): PersonMoviesConnection!
             }
 
             type PersonAggregate {
               count: Count!
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
             }
 
             input PersonConnectInput {
@@ -1795,18 +1814,8 @@ describe("Subscriptions", () => {
               movies: PersonMoviesFieldInput
             }
 
-            type PersonCreatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input PersonDeleteInput {
               movies: [PersonMoviesDeleteFieldInput!]
-            }
-
-            type PersonDeletedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             input PersonDisconnectInput {
@@ -1823,22 +1832,16 @@ describe("Subscriptions", () => {
               node: PersonMovieMoviesNodeAggregateSelection
             }
 
-            type PersonMovieMoviesAggregationSelection {
-              count: Int!
-              node: PersonMovieMoviesNodeAggregateSelection
-            }
-
             type PersonMovieMoviesNodeAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input PersonMoviesAggregateInput {
               AND: [PersonMoviesAggregateInput!]
               NOT: PersonMoviesAggregateInput
               OR: [PersonMoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -1849,10 +1852,6 @@ describe("Subscriptions", () => {
 
             input PersonMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
               where: MovieConnectWhere
             }
 
@@ -1861,6 +1860,37 @@ describe("Subscriptions", () => {
               edges: [PersonMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input PersonMoviesConnectionAggregateInput {
+              AND: [PersonMoviesConnectionAggregateInput!]
+              NOT: PersonMoviesConnectionAggregateInput
+              OR: [PersonMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PersonMoviesNodeAggregationWhereInput
+            }
+
+            input PersonMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related PersonMoviesConnections
+              \\"\\"\\"
+              aggregate: PersonMoviesConnectionAggregateInput
+              \\"\\"\\"
+              Return People where all of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              all: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where none of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              none: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where one of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              single: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where some of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              some: PersonMoviesConnectionWhere
             }
 
             input PersonMoviesConnectionSort {
@@ -1897,56 +1927,48 @@ describe("Subscriptions", () => {
               AND: [PersonMoviesNodeAggregationWhereInput!]
               NOT: PersonMoviesNodeAggregationWhereInput
               OR: [PersonMoviesNodeAggregationWhereInput!]
-              actorCount_AVERAGE_EQUAL: Float
-              actorCount_AVERAGE_GT: Float
-              actorCount_AVERAGE_GTE: Float
-              actorCount_AVERAGE_LT: Float
-              actorCount_AVERAGE_LTE: Float
-              actorCount_MAX_EQUAL: Int
-              actorCount_MAX_GT: Int
-              actorCount_MAX_GTE: Int
-              actorCount_MAX_LT: Int
-              actorCount_MAX_LTE: Int
-              actorCount_MIN_EQUAL: Int
-              actorCount_MIN_GT: Int
-              actorCount_MIN_GTE: Int
-              actorCount_MIN_LT: Int
-              actorCount_MIN_LTE: Int
-              actorCount_SUM_EQUAL: Int
-              actorCount_SUM_GT: Int
-              actorCount_SUM_GTE: Int
-              actorCount_SUM_LT: Int
-              actorCount_SUM_LTE: Int
-              averageRating_AVERAGE_EQUAL: Float
-              averageRating_AVERAGE_GT: Float
-              averageRating_AVERAGE_GTE: Float
-              averageRating_AVERAGE_LT: Float
-              averageRating_AVERAGE_LTE: Float
-              averageRating_MAX_EQUAL: Float
-              averageRating_MAX_GT: Float
-              averageRating_MAX_GTE: Float
-              averageRating_MAX_LT: Float
-              averageRating_MAX_LTE: Float
-              averageRating_MIN_EQUAL: Float
-              averageRating_MIN_GT: Float
-              averageRating_MIN_GTE: Float
-              averageRating_MIN_LT: Float
-              averageRating_MIN_LTE: Float
-              averageRating_SUM_EQUAL: Float
-              averageRating_SUM_GT: Float
-              averageRating_SUM_GTE: Float
-              averageRating_SUM_LT: Float
-              averageRating_SUM_LTE: Float
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              actorCount: IntScalarAggregationFilters
+              actorCount_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { eq: ... } } }' instead.\\")
+              actorCount_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { gt: ... } } }' instead.\\")
+              actorCount_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { gte: ... } } }' instead.\\")
+              actorCount_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { lt: ... } } }' instead.\\")
+              actorCount_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { lte: ... } } }' instead.\\")
+              actorCount_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { eq: ... } } }' instead.\\")
+              actorCount_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { gt: ... } } }' instead.\\")
+              actorCount_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { gte: ... } } }' instead.\\")
+              actorCount_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { lt: ... } } }' instead.\\")
+              actorCount_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { lte: ... } } }' instead.\\")
+              actorCount_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { eq: ... } } }' instead.\\")
+              actorCount_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { gt: ... } } }' instead.\\")
+              actorCount_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { gte: ... } } }' instead.\\")
+              actorCount_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { lt: ... } } }' instead.\\")
+              actorCount_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { lte: ... } } }' instead.\\")
+              actorCount_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { eq: ... } } }' instead.\\")
+              actorCount_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { gt: ... } } }' instead.\\")
+              actorCount_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { gte: ... } } }' instead.\\")
+              actorCount_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { lt: ... } } }' instead.\\")
+              actorCount_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { lte: ... } } }' instead.\\")
+              averageRating: FloatScalarAggregationFilters
+              averageRating_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { eq: ... } } }' instead.\\")
+              averageRating_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { gt: ... } } }' instead.\\")
+              averageRating_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { gte: ... } } }' instead.\\")
+              averageRating_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { lt: ... } } }' instead.\\")
+              averageRating_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { lte: ... } } }' instead.\\")
+              averageRating_MAX_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { eq: ... } } }' instead.\\")
+              averageRating_MAX_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { gt: ... } } }' instead.\\")
+              averageRating_MAX_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { gte: ... } } }' instead.\\")
+              averageRating_MAX_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { lt: ... } } }' instead.\\")
+              averageRating_MAX_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { lte: ... } } }' instead.\\")
+              averageRating_MIN_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { eq: ... } } }' instead.\\")
+              averageRating_MIN_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { gt: ... } } }' instead.\\")
+              averageRating_MIN_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { gte: ... } } }' instead.\\")
+              averageRating_MIN_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { lt: ... } } }' instead.\\")
+              averageRating_MIN_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { lte: ... } } }' instead.\\")
+              averageRating_SUM_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { eq: ... } } }' instead.\\")
+              averageRating_SUM_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { gt: ... } } }' instead.\\")
+              averageRating_SUM_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { gte: ... } } }' instead.\\")
+              averageRating_SUM_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { lt: ... } } }' instead.\\")
+              averageRating_SUM_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { lte: ... } } }' instead.\\")
             }
 
             type PersonMoviesRelationship {
@@ -1965,71 +1987,53 @@ describe("Subscriptions", () => {
               delete: [PersonMoviesDeleteFieldInput!]
               disconnect: [PersonMoviesDisconnectFieldInput!]
               update: PersonMoviesUpdateConnectionInput
-              where: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PersonMoviesUpdateConnectionInput\\\\\\" instead\\")
-            }
-
-            input PersonOptions {
-              limit: Int
-              offset: Int
             }
 
             input PersonUpdateInput {
               movies: [PersonMoviesUpdateFieldInput!]
             }
 
-            type PersonUpdatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input PersonWhere {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              moviesAggregate: PersonMoviesAggregateInput
+              movies: MovieRelationshipFilters
+              moviesAggregate: PersonMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
+              moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: PersonMoviesConnectionWhere
+              moviesConnection_ALL: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where none of the related PersonMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: PersonMoviesConnectionWhere
+              moviesConnection_NONE: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where one of the related PersonMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: PersonMoviesConnectionWhere
+              moviesConnection_SINGLE: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where some of the related PersonMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: PersonMoviesConnectionWhere
+              moviesConnection_SOME: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
             }
 
             type Query {
-              actors(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: ActorWhere): [Actor!]!
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              actors(limit: Int, offset: Int, where: ActorWhere): [Actor!]!
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-              people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+              people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
               peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
-              stars(limit: Int, offset: Int, options: StarOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: StarWhere): [Star!]!
-              starsAggregate(where: StarWhere): StarAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"starsConnection\\\\\\" instead\\")
+              stars(limit: Int, offset: Int, where: StarWhere): [Star!]!
               starsConnection(after: String, first: Int, where: StarWhere): StarsConnection!
-            }
-
-            \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-            input QueryOptions {
-              limit: Int
-              offset: Int
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -2041,17 +2045,12 @@ describe("Subscriptions", () => {
             }
 
             type Star {
-              movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): StarMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-              moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [StarMoviesConnectionSort!], where: StarMoviesConnectionWhere): StarMoviesConnection!
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              moviesConnection(after: String, first: Int, sort: [StarMoviesConnectionSort!], where: StarMoviesConnectionWhere): StarMoviesConnection!
             }
 
             type StarAggregate {
               count: Count!
-            }
-
-            type StarAggregateSelection {
-              count: Int!
             }
 
             input StarConnectInput {
@@ -2066,18 +2065,8 @@ describe("Subscriptions", () => {
               movies: StarMoviesFieldInput
             }
 
-            type StarCreatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input StarDeleteInput {
               movies: [StarMoviesDeleteFieldInput!]
-            }
-
-            type StarDeletedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             input StarDisconnectInput {
@@ -2094,22 +2083,16 @@ describe("Subscriptions", () => {
               node: StarMovieMoviesNodeAggregateSelection
             }
 
-            type StarMovieMoviesAggregationSelection {
-              count: Int!
-              node: StarMovieMoviesNodeAggregateSelection
-            }
-
             type StarMovieMoviesNodeAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input StarMoviesAggregateInput {
               AND: [StarMoviesAggregateInput!]
               NOT: StarMoviesAggregateInput
               OR: [StarMoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -2120,10 +2103,6 @@ describe("Subscriptions", () => {
 
             input StarMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
               where: MovieConnectWhere
             }
 
@@ -2132,6 +2111,35 @@ describe("Subscriptions", () => {
               edges: [StarMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input StarMoviesConnectionAggregateInput {
+              AND: [StarMoviesConnectionAggregateInput!]
+              NOT: StarMoviesConnectionAggregateInput
+              OR: [StarMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: StarMoviesNodeAggregationWhereInput
+            }
+
+            input StarMoviesConnectionFilters {
+              \\"\\"\\"Filter Stars by aggregating results on related StarMoviesConnections\\"\\"\\"
+              aggregate: StarMoviesConnectionAggregateInput
+              \\"\\"\\"
+              Return Stars where all of the related StarMoviesConnections match this filter
+              \\"\\"\\"
+              all: StarMoviesConnectionWhere
+              \\"\\"\\"
+              Return Stars where none of the related StarMoviesConnections match this filter
+              \\"\\"\\"
+              none: StarMoviesConnectionWhere
+              \\"\\"\\"
+              Return Stars where one of the related StarMoviesConnections match this filter
+              \\"\\"\\"
+              single: StarMoviesConnectionWhere
+              \\"\\"\\"
+              Return Stars where some of the related StarMoviesConnections match this filter
+              \\"\\"\\"
+              some: StarMoviesConnectionWhere
             }
 
             input StarMoviesConnectionSort {
@@ -2168,56 +2176,48 @@ describe("Subscriptions", () => {
               AND: [StarMoviesNodeAggregationWhereInput!]
               NOT: StarMoviesNodeAggregationWhereInput
               OR: [StarMoviesNodeAggregationWhereInput!]
-              actorCount_AVERAGE_EQUAL: Float
-              actorCount_AVERAGE_GT: Float
-              actorCount_AVERAGE_GTE: Float
-              actorCount_AVERAGE_LT: Float
-              actorCount_AVERAGE_LTE: Float
-              actorCount_MAX_EQUAL: Int
-              actorCount_MAX_GT: Int
-              actorCount_MAX_GTE: Int
-              actorCount_MAX_LT: Int
-              actorCount_MAX_LTE: Int
-              actorCount_MIN_EQUAL: Int
-              actorCount_MIN_GT: Int
-              actorCount_MIN_GTE: Int
-              actorCount_MIN_LT: Int
-              actorCount_MIN_LTE: Int
-              actorCount_SUM_EQUAL: Int
-              actorCount_SUM_GT: Int
-              actorCount_SUM_GTE: Int
-              actorCount_SUM_LT: Int
-              actorCount_SUM_LTE: Int
-              averageRating_AVERAGE_EQUAL: Float
-              averageRating_AVERAGE_GT: Float
-              averageRating_AVERAGE_GTE: Float
-              averageRating_AVERAGE_LT: Float
-              averageRating_AVERAGE_LTE: Float
-              averageRating_MAX_EQUAL: Float
-              averageRating_MAX_GT: Float
-              averageRating_MAX_GTE: Float
-              averageRating_MAX_LT: Float
-              averageRating_MAX_LTE: Float
-              averageRating_MIN_EQUAL: Float
-              averageRating_MIN_GT: Float
-              averageRating_MIN_GTE: Float
-              averageRating_MIN_LT: Float
-              averageRating_MIN_LTE: Float
-              averageRating_SUM_EQUAL: Float
-              averageRating_SUM_GT: Float
-              averageRating_SUM_GTE: Float
-              averageRating_SUM_LT: Float
-              averageRating_SUM_LTE: Float
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              actorCount: IntScalarAggregationFilters
+              actorCount_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { eq: ... } } }' instead.\\")
+              actorCount_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { gt: ... } } }' instead.\\")
+              actorCount_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { gte: ... } } }' instead.\\")
+              actorCount_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { lt: ... } } }' instead.\\")
+              actorCount_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { lte: ... } } }' instead.\\")
+              actorCount_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { eq: ... } } }' instead.\\")
+              actorCount_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { gt: ... } } }' instead.\\")
+              actorCount_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { gte: ... } } }' instead.\\")
+              actorCount_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { lt: ... } } }' instead.\\")
+              actorCount_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { lte: ... } } }' instead.\\")
+              actorCount_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { eq: ... } } }' instead.\\")
+              actorCount_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { gt: ... } } }' instead.\\")
+              actorCount_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { gte: ... } } }' instead.\\")
+              actorCount_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { lt: ... } } }' instead.\\")
+              actorCount_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { lte: ... } } }' instead.\\")
+              actorCount_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { eq: ... } } }' instead.\\")
+              actorCount_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { gt: ... } } }' instead.\\")
+              actorCount_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { gte: ... } } }' instead.\\")
+              actorCount_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { lt: ... } } }' instead.\\")
+              actorCount_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { lte: ... } } }' instead.\\")
+              averageRating: FloatScalarAggregationFilters
+              averageRating_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { eq: ... } } }' instead.\\")
+              averageRating_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { gt: ... } } }' instead.\\")
+              averageRating_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { gte: ... } } }' instead.\\")
+              averageRating_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { lt: ... } } }' instead.\\")
+              averageRating_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { lte: ... } } }' instead.\\")
+              averageRating_MAX_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { eq: ... } } }' instead.\\")
+              averageRating_MAX_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { gt: ... } } }' instead.\\")
+              averageRating_MAX_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { gte: ... } } }' instead.\\")
+              averageRating_MAX_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { lt: ... } } }' instead.\\")
+              averageRating_MAX_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { lte: ... } } }' instead.\\")
+              averageRating_MIN_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { eq: ... } } }' instead.\\")
+              averageRating_MIN_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { gt: ... } } }' instead.\\")
+              averageRating_MIN_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { gte: ... } } }' instead.\\")
+              averageRating_MIN_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { lt: ... } } }' instead.\\")
+              averageRating_MIN_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { lte: ... } } }' instead.\\")
+              averageRating_SUM_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { eq: ... } } }' instead.\\")
+              averageRating_SUM_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { gt: ... } } }' instead.\\")
+              averageRating_SUM_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { gte: ... } } }' instead.\\")
+              averageRating_SUM_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { lt: ... } } }' instead.\\")
+              averageRating_SUM_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { lte: ... } } }' instead.\\")
             }
 
             type StarMoviesRelationship {
@@ -2236,52 +2236,43 @@ describe("Subscriptions", () => {
               delete: [StarMoviesDeleteFieldInput!]
               disconnect: [StarMoviesDisconnectFieldInput!]
               update: StarMoviesUpdateConnectionInput
-              where: StarMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"StarMoviesUpdateConnectionInput\\\\\\" instead\\")
-            }
-
-            input StarOptions {
-              limit: Int
-              offset: Int
             }
 
             input StarUpdateInput {
               movies: [StarMoviesUpdateFieldInput!]
             }
 
-            type StarUpdatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input StarWhere {
               AND: [StarWhere!]
               NOT: StarWhere
               OR: [StarWhere!]
-              moviesAggregate: StarMoviesAggregateInput
+              movies: MovieRelationshipFilters
+              moviesAggregate: StarMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
+              moviesConnection: StarMoviesConnectionFilters
               \\"\\"\\"
               Return Stars where all of the related StarMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: StarMoviesConnectionWhere
+              moviesConnection_ALL: StarMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Stars where none of the related StarMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: StarMoviesConnectionWhere
+              moviesConnection_NONE: StarMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Stars where one of the related StarMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: StarMoviesConnectionWhere
+              moviesConnection_SINGLE: StarMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Stars where some of the related StarMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: StarMoviesConnectionWhere
+              moviesConnection_SOME: StarMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Stars where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Stars where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Stars where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Stars where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
             }
 
             type StarsConnection {
@@ -2289,18 +2280,6 @@ describe("Subscriptions", () => {
               edges: [StarEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
-            }
-
-            type Subscription {
-              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
-              personCreated: PersonCreatedEvent!
-              personDeleted: PersonDeletedEvent!
-              personUpdated: PersonUpdatedEvent!
-              starCreated: StarCreatedEvent!
-              starDeleted: StarDeletedEvent!
-              starUpdated: StarUpdatedEvent!
             }
 
             \\"\\"\\"
@@ -2362,7 +2341,6 @@ describe("Subscriptions", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             \\"\\"\\"
@@ -2377,26 +2355,27 @@ describe("Subscriptions", () => {
               AND: [ActedInAggregationWhereInput!]
               NOT: ActedInAggregationWhereInput
               OR: [ActedInAggregationWhereInput!]
-              screenTime_AVERAGE_EQUAL: Float
-              screenTime_AVERAGE_GT: Float
-              screenTime_AVERAGE_GTE: Float
-              screenTime_AVERAGE_LT: Float
-              screenTime_AVERAGE_LTE: Float
-              screenTime_MAX_EQUAL: Int
-              screenTime_MAX_GT: Int
-              screenTime_MAX_GTE: Int
-              screenTime_MAX_LT: Int
-              screenTime_MAX_LTE: Int
-              screenTime_MIN_EQUAL: Int
-              screenTime_MIN_GT: Int
-              screenTime_MIN_GTE: Int
-              screenTime_MIN_LT: Int
-              screenTime_MIN_LTE: Int
-              screenTime_SUM_EQUAL: Int
-              screenTime_SUM_GT: Int
-              screenTime_SUM_GTE: Int
-              screenTime_SUM_LT: Int
-              screenTime_SUM_LTE: Int
+              screenTime: IntScalarAggregationFilters
+              screenTime_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { eq: ... } } }' instead.\\")
+              screenTime_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { gt: ... } } }' instead.\\")
+              screenTime_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { gte: ... } } }' instead.\\")
+              screenTime_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { lt: ... } } }' instead.\\")
+              screenTime_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { average: { lte: ... } } }' instead.\\")
+              screenTime_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { eq: ... } } }' instead.\\")
+              screenTime_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { gt: ... } } }' instead.\\")
+              screenTime_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { gte: ... } } }' instead.\\")
+              screenTime_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { lt: ... } } }' instead.\\")
+              screenTime_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { max: { lte: ... } } }' instead.\\")
+              screenTime_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { eq: ... } } }' instead.\\")
+              screenTime_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { gt: ... } } }' instead.\\")
+              screenTime_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { gte: ... } } }' instead.\\")
+              screenTime_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { lt: ... } } }' instead.\\")
+              screenTime_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { min: { lte: ... } } }' instead.\\")
+              screenTime_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { eq: ... } } }' instead.\\")
+              screenTime_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { gt: ... } } }' instead.\\")
+              screenTime_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { gte: ... } } }' instead.\\")
+              screenTime_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { lt: ... } } }' instead.\\")
+              screenTime_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'screenTime: { sum: { lte: ... } } }' instead.\\")
             }
 
             input ActedInCreateInput {
@@ -2408,37 +2387,32 @@ describe("Subscriptions", () => {
             }
 
             input ActedInUpdateInput {
-              screenTime: Int @deprecated(reason: \\"Please use the explicit _SET field\\")
-              screenTime_DECREMENT: Int
-              screenTime_INCREMENT: Int
-              screenTime_SET: Int
+              screenTime: IntScalarMutations
+              screenTime_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { decrement: ... } }' instead.\\")
+              screenTime_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'screenTime: { increment: ... } }' instead.\\")
+              screenTime_SET: Int @deprecated(reason: \\"Please use the generic mutation 'screenTime: { set: ... } }' instead.\\")
             }
 
             input ActedInWhere {
               AND: [ActedInWhere!]
               NOT: ActedInWhere
               OR: [ActedInWhere!]
-              screenTime: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              screenTime_EQ: Int
-              screenTime_GT: Int
-              screenTime_GTE: Int
-              screenTime_IN: [Int!]
-              screenTime_LT: Int
-              screenTime_LTE: Int
+              screenTime: IntScalarFilters
+              screenTime_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { eq: ... }\\")
+              screenTime_GT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gt: ... }\\")
+              screenTime_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { gte: ... }\\")
+              screenTime_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter screenTime: { in: ... }\\")
+              screenTime_LT: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lt: ... }\\")
+              screenTime_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter screenTime: { lte: ... }\\")
             }
 
             type Actor {
-              movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-              moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              moviesConnection(after: String, first: Int, sort: [ActorMoviesConnectionSort!], where: ActorMoviesConnectionWhere): ActorMoviesConnection!
             }
 
             type ActorAggregate {
               count: Count!
-            }
-
-            type ActorAggregateSelection {
-              count: Int!
             }
 
             input ActorConnectInput {
@@ -2453,18 +2427,8 @@ describe("Subscriptions", () => {
               movies: ActorMoviesFieldInput
             }
 
-            type ActorCreatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input ActorDeleteInput {
               movies: [ActorMoviesDeleteFieldInput!]
-            }
-
-            type ActorDeletedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             input ActorDisconnectInput {
@@ -2481,22 +2445,16 @@ describe("Subscriptions", () => {
               node: ActorMovieMoviesNodeAggregateSelection
             }
 
-            type ActorMovieMoviesAggregationSelection {
-              count: Int!
-              node: ActorMovieMoviesNodeAggregateSelection
-            }
-
             type ActorMovieMoviesNodeAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input ActorMoviesAggregateInput {
               AND: [ActorMoviesAggregateInput!]
               NOT: ActorMoviesAggregateInput
               OR: [ActorMoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -2507,10 +2465,6 @@ describe("Subscriptions", () => {
 
             input ActorMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
               where: MovieConnectWhere
             }
 
@@ -2519,6 +2473,35 @@ describe("Subscriptions", () => {
               edges: [ActorMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ActorMoviesConnectionAggregateInput {
+              AND: [ActorMoviesConnectionAggregateInput!]
+              NOT: ActorMoviesConnectionAggregateInput
+              OR: [ActorMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: ActorMoviesNodeAggregationWhereInput
+            }
+
+            input ActorMoviesConnectionFilters {
+              \\"\\"\\"Filter Actors by aggregating results on related ActorMoviesConnections\\"\\"\\"
+              aggregate: ActorMoviesConnectionAggregateInput
+              \\"\\"\\"
+              Return Actors where all of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              all: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              none: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              single: ActorMoviesConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorMoviesConnections match this filter
+              \\"\\"\\"
+              some: ActorMoviesConnectionWhere
             }
 
             input ActorMoviesConnectionSort {
@@ -2555,56 +2538,48 @@ describe("Subscriptions", () => {
               AND: [ActorMoviesNodeAggregationWhereInput!]
               NOT: ActorMoviesNodeAggregationWhereInput
               OR: [ActorMoviesNodeAggregationWhereInput!]
-              actorCount_AVERAGE_EQUAL: Float
-              actorCount_AVERAGE_GT: Float
-              actorCount_AVERAGE_GTE: Float
-              actorCount_AVERAGE_LT: Float
-              actorCount_AVERAGE_LTE: Float
-              actorCount_MAX_EQUAL: Int
-              actorCount_MAX_GT: Int
-              actorCount_MAX_GTE: Int
-              actorCount_MAX_LT: Int
-              actorCount_MAX_LTE: Int
-              actorCount_MIN_EQUAL: Int
-              actorCount_MIN_GT: Int
-              actorCount_MIN_GTE: Int
-              actorCount_MIN_LT: Int
-              actorCount_MIN_LTE: Int
-              actorCount_SUM_EQUAL: Int
-              actorCount_SUM_GT: Int
-              actorCount_SUM_GTE: Int
-              actorCount_SUM_LT: Int
-              actorCount_SUM_LTE: Int
-              averageRating_AVERAGE_EQUAL: Float
-              averageRating_AVERAGE_GT: Float
-              averageRating_AVERAGE_GTE: Float
-              averageRating_AVERAGE_LT: Float
-              averageRating_AVERAGE_LTE: Float
-              averageRating_MAX_EQUAL: Float
-              averageRating_MAX_GT: Float
-              averageRating_MAX_GTE: Float
-              averageRating_MAX_LT: Float
-              averageRating_MAX_LTE: Float
-              averageRating_MIN_EQUAL: Float
-              averageRating_MIN_GT: Float
-              averageRating_MIN_GTE: Float
-              averageRating_MIN_LT: Float
-              averageRating_MIN_LTE: Float
-              averageRating_SUM_EQUAL: Float
-              averageRating_SUM_GT: Float
-              averageRating_SUM_GTE: Float
-              averageRating_SUM_LT: Float
-              averageRating_SUM_LTE: Float
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              actorCount: IntScalarAggregationFilters
+              actorCount_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { eq: ... } } }' instead.\\")
+              actorCount_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { gt: ... } } }' instead.\\")
+              actorCount_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { gte: ... } } }' instead.\\")
+              actorCount_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { lt: ... } } }' instead.\\")
+              actorCount_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { lte: ... } } }' instead.\\")
+              actorCount_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { eq: ... } } }' instead.\\")
+              actorCount_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { gt: ... } } }' instead.\\")
+              actorCount_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { gte: ... } } }' instead.\\")
+              actorCount_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { lt: ... } } }' instead.\\")
+              actorCount_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { lte: ... } } }' instead.\\")
+              actorCount_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { eq: ... } } }' instead.\\")
+              actorCount_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { gt: ... } } }' instead.\\")
+              actorCount_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { gte: ... } } }' instead.\\")
+              actorCount_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { lt: ... } } }' instead.\\")
+              actorCount_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { lte: ... } } }' instead.\\")
+              actorCount_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { eq: ... } } }' instead.\\")
+              actorCount_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { gt: ... } } }' instead.\\")
+              actorCount_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { gte: ... } } }' instead.\\")
+              actorCount_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { lt: ... } } }' instead.\\")
+              actorCount_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { lte: ... } } }' instead.\\")
+              averageRating: FloatScalarAggregationFilters
+              averageRating_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { eq: ... } } }' instead.\\")
+              averageRating_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { gt: ... } } }' instead.\\")
+              averageRating_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { gte: ... } } }' instead.\\")
+              averageRating_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { lt: ... } } }' instead.\\")
+              averageRating_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { lte: ... } } }' instead.\\")
+              averageRating_MAX_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { eq: ... } } }' instead.\\")
+              averageRating_MAX_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { gt: ... } } }' instead.\\")
+              averageRating_MAX_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { gte: ... } } }' instead.\\")
+              averageRating_MAX_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { lt: ... } } }' instead.\\")
+              averageRating_MAX_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { lte: ... } } }' instead.\\")
+              averageRating_MIN_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { eq: ... } } }' instead.\\")
+              averageRating_MIN_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { gt: ... } } }' instead.\\")
+              averageRating_MIN_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { gte: ... } } }' instead.\\")
+              averageRating_MIN_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { lt: ... } } }' instead.\\")
+              averageRating_MIN_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { lte: ... } } }' instead.\\")
+              averageRating_SUM_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { eq: ... } } }' instead.\\")
+              averageRating_SUM_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { gt: ... } } }' instead.\\")
+              averageRating_SUM_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { gte: ... } } }' instead.\\")
+              averageRating_SUM_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { lt: ... } } }' instead.\\")
+              averageRating_SUM_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { lte: ... } } }' instead.\\")
             }
 
             type ActorMoviesRelationship {
@@ -2623,52 +2598,54 @@ describe("Subscriptions", () => {
               delete: [ActorMoviesDeleteFieldInput!]
               disconnect: [ActorMoviesDisconnectFieldInput!]
               update: ActorMoviesUpdateConnectionInput
-              where: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
-            input ActorOptions {
-              limit: Int
-              offset: Int
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             input ActorUpdateInput {
               movies: [ActorMoviesUpdateFieldInput!]
             }
 
-            type ActorUpdatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              moviesAggregate: ActorMoviesAggregateInput
+              movies: MovieRelationshipFilters
+              moviesAggregate: ActorMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
+              moviesConnection: ActorMoviesConnectionFilters
               \\"\\"\\"
               Return Actors where all of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: ActorMoviesConnectionWhere
+              moviesConnection_ALL: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where none of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: ActorMoviesConnectionWhere
+              moviesConnection_NONE: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where one of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: ActorMoviesConnectionWhere
+              moviesConnection_SINGLE: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Actors where some of the related ActorMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: ActorMoviesConnectionWhere
+              moviesConnection_SOME: ActorMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
             }
 
             type ActorsConnection {
@@ -2676,6 +2653,21 @@ describe("Subscriptions", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              eq: Boolean
+            }
+
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type Count {
@@ -2713,14 +2705,6 @@ describe("Subscriptions", () => {
               relationshipsDeleted: Int!
             }
 
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
-            }
-
             type FloatAggregateSelection {
               average: Float
               max: Float
@@ -2728,9 +2712,45 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
+            }
+
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type IntAggregateSelection {
@@ -2740,11 +2760,35 @@ describe("Subscriptions", () => {
               sum: Int
             }
 
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
+            }
+
             type Movie {
               actorCount: Int
-              actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: ActorWhere): [Actor!]!
-              actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-              actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              actors(limit: Int, offset: Int, where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               averageRating: Float
               id: ID
               isActive: Boolean
@@ -2752,11 +2796,6 @@ describe("Subscriptions", () => {
 
             type MovieActorActorsAggregateSelection {
               count: CountConnection!
-              edge: MovieActorActorsEdgeAggregateSelection
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
               edge: MovieActorActorsEdgeAggregateSelection
             }
 
@@ -2768,7 +2807,7 @@ describe("Subscriptions", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -2780,10 +2819,6 @@ describe("Subscriptions", () => {
             input MovieActorsConnectFieldInput {
               connect: [ActorConnectInput!]
               edge: ActedInCreateInput!
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
               where: ActorConnectWhere
             }
 
@@ -2792,6 +2827,35 @@ describe("Subscriptions", () => {
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
+            }
+
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
             }
 
             input MovieActorsConnectionSort {
@@ -2844,7 +2908,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -2855,14 +2918,6 @@ describe("Subscriptions", () => {
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type MovieAggregateSelection {
-              actorCount: IntAggregateSelection!
-              averageRating: FloatAggregateSelection!
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input MovieConnectInput {
@@ -2881,20 +2936,8 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
-            type MovieCreatedEvent {
-              createdMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             input MovieDeleteInput {
               actors: [MovieActorsDeleteFieldInput!]
-            }
-
-            type MovieDeletedEvent {
-              deletedMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
             }
 
             input MovieDisconnectInput {
@@ -2906,20 +2949,15 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            type MovieEventPayload {
-              actorCount: Int
-              averageRating: Float
-              id: ID
-              isActive: Boolean
-            }
-
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"
@@ -2932,110 +2970,77 @@ describe("Subscriptions", () => {
               isActive: SortDirection
             }
 
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_IN: [Int]
-              actorCount_LT: Int
-              actorCount_LTE: Int
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float]
-              averageRating_LT: Float
-              averageRating_LTE: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
-            }
-
             input MovieUpdateInput {
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _SET field\\")
-              actorCount_DECREMENT: Int
-              actorCount_INCREMENT: Int
-              actorCount_SET: Int
+              actorCount: IntScalarMutations
+              actorCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { decrement: ... } }' instead.\\")
+              actorCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { increment: ... } }' instead.\\")
+              actorCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'actorCount: { set: ... } }' instead.\\")
               actors: [MovieActorsUpdateFieldInput!]
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _SET field\\")
-              averageRating_ADD: Float
-              averageRating_DIVIDE: Float
-              averageRating_MULTIPLY: Float
-              averageRating_SET: Float
-              averageRating_SUBTRACT: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _SET field\\")
-              isActive_SET: Boolean
-            }
-
-            type MovieUpdatedEvent {
-              event: EventType!
-              previousState: MovieEventPayload!
-              timestamp: Float!
-              updatedMovie: MovieEventPayload!
+              averageRating: FloatScalarMutations
+              averageRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { add: ... } }' instead.\\")
+              averageRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { divide: ... } }' instead.\\")
+              averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
+              averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
+              averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              isActive: BooleanScalarMutations
+              isActive_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'isActive: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_IN: [Int]
-              actorCount_LT: Int
-              actorCount_LTE: Int
-              actorsAggregate: MovieActorsAggregateInput
+              actorCount: IntScalarFilters
+              actorCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { eq: ... }\\")
+              actorCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gt: ... }\\")
+              actorCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gte: ... }\\")
+              actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
+              actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
+              actors: ActorRelationshipFilters
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: MovieActorsConnectionWhere
+              actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float]
-              averageRating_LT: Float
-              averageRating_LTE: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+              averageRating: FloatScalarFilters
+              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
+              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
+              averageRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
+              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              isActive: BooleanScalarFilters
+              isActive_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter isActive: { eq: ... }\\")
             }
 
             type MoviesConnection {
@@ -3063,11 +3068,9 @@ describe("Subscriptions", () => {
             }
 
             type Query {
-              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
+              actors(limit: Int, offset: Int, where: ActorWhere): [Actor!]!
               actorsConnection(after: String, first: Int, where: ActorWhere): ActorsConnection!
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -3077,15 +3080,6 @@ describe("Subscriptions", () => {
               ASC
               \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
               DESC
-            }
-
-            type Subscription {
-              actorCreated: ActorCreatedEvent!
-              actorDeleted: ActorDeletedEvent!
-              actorUpdated: ActorUpdatedEvent!
-              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
             }
 
             type UpdateActorsMutationResponse {
@@ -3136,7 +3130,6 @@ describe("Subscriptions", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             type Actor {
@@ -3152,11 +3145,6 @@ describe("Subscriptions", () => {
               name: StringAggregateSelection!
             }
 
-            type ActorAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-            }
-
             input ActorConnectWhere {
               node: ActorWhere!
             }
@@ -3165,34 +3153,20 @@ describe("Subscriptions", () => {
               name: String!
             }
 
-            type ActorCreatedEvent {
-              createdActor: ActorEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            type ActorDeletedEvent {
-              deletedActor: ActorEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             type ActorEdge {
               cursor: String!
               node: Actor!
             }
 
-            type ActorEventPayload {
-              name: String!
-            }
-
-            input ActorOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [ActorSort!]
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
             }
 
             \\"\\"\\"
@@ -3202,40 +3176,21 @@ describe("Subscriptions", () => {
               name: SortDirection
             }
 
-            input ActorSubscriptionWhere {
-              AND: [ActorSubscriptionWhere!]
-              NOT: ActorSubscriptionWhere
-              OR: [ActorSubscriptionWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
-            }
-
             input ActorUpdateInput {
-              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              name_SET: String
-            }
-
-            type ActorUpdatedEvent {
-              event: EventType!
-              previousState: ActorEventPayload!
-              timestamp: Float!
-              updatedActor: ActorEventPayload!
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
             }
 
             input ActorWhere {
               AND: [ActorWhere!]
               NOT: ActorWhere
               OR: [ActorWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
             }
 
             type ActorsConnection {
@@ -3243,6 +3198,21 @@ describe("Subscriptions", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              eq: Boolean
+            }
+
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type Count {
@@ -3280,14 +3250,6 @@ describe("Subscriptions", () => {
               relationshipsDeleted: Int!
             }
 
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
-            }
-
             type FloatAggregateSelection {
               average: Float
               max: Float
@@ -3295,9 +3257,37 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type IntAggregateSelection {
@@ -3307,11 +3297,27 @@ describe("Subscriptions", () => {
               sum: Int
             }
 
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
+            }
+
             type Movie {
               actorCount: Int
-              actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ActorWhere): MovieActorActorsAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
-              actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
+              actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, first: Int, sort: [MovieActorsConnectionSort!], where: MovieActorsConnectionWhere): MovieActorsConnection!
               averageRating: Float
               id: ID
               isActive: Boolean
@@ -3319,11 +3325,6 @@ describe("Subscriptions", () => {
 
             type MovieActorActorsAggregateSelection {
               count: CountConnection!
-              node: MovieActorActorsNodeAggregateSelection
-            }
-
-            type MovieActorActorsAggregationSelection {
-              count: Int!
               node: MovieActorActorsNodeAggregateSelection
             }
 
@@ -3335,7 +3336,7 @@ describe("Subscriptions", () => {
               AND: [MovieActorsAggregateInput!]
               NOT: MovieActorsAggregateInput
               OR: [MovieActorsAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -3345,10 +3346,6 @@ describe("Subscriptions", () => {
             }
 
             input MovieActorsConnectFieldInput {
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
               where: ActorConnectWhere
             }
 
@@ -3357,6 +3354,35 @@ describe("Subscriptions", () => {
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input MovieActorsConnectionAggregateInput {
+              AND: [MovieActorsConnectionAggregateInput!]
+              NOT: MovieActorsConnectionAggregateInput
+              OR: [MovieActorsConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: MovieActorsNodeAggregationWhereInput
+            }
+
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"Filter Movies by aggregating results on related MovieActorsConnections\\"\\"\\"
+              aggregate: MovieActorsConnectionAggregateInput
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
             }
 
             input MovieActorsConnectionSort {
@@ -3391,21 +3417,22 @@ describe("Subscriptions", () => {
               AND: [MovieActorsNodeAggregationWhereInput!]
               NOT: MovieActorsNodeAggregationWhereInput
               OR: [MovieActorsNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
+              name: StringScalarAggregationFilters
+              name_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { eq: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { gte: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lt: ... } } }' instead.\\")
+              name_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'name: { averageLength: { lte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { eq: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { gte: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lt: ... } } }' instead.\\")
+              name_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { longestLength: { lte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { eq: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { gte: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lt: ... } } }' instead.\\")
+              name_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'name: { shortestLength: { lte: ... } } }' instead.\\")
             }
 
             type MovieActorsRelationship {
@@ -3424,7 +3451,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsDeleteFieldInput!]
               disconnect: [MovieActorsDisconnectFieldInput!]
               update: MovieActorsUpdateConnectionInput
-              where: MovieActorsConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieAggregate {
@@ -3435,14 +3461,6 @@ describe("Subscriptions", () => {
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type MovieAggregateSelection {
-              actorCount: IntAggregateSelection!
-              averageRating: FloatAggregateSelection!
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input MovieCreateInput {
@@ -3462,15 +3480,6 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -3482,74 +3491,76 @@ describe("Subscriptions", () => {
             }
 
             input MovieUpdateInput {
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _SET field\\")
-              actorCount_DECREMENT: Int
-              actorCount_INCREMENT: Int
-              actorCount_SET: Int
+              actorCount: IntScalarMutations
+              actorCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { decrement: ... } }' instead.\\")
+              actorCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { increment: ... } }' instead.\\")
+              actorCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'actorCount: { set: ... } }' instead.\\")
               actors: [MovieActorsUpdateFieldInput!]
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _SET field\\")
-              averageRating_ADD: Float
-              averageRating_DIVIDE: Float
-              averageRating_MULTIPLY: Float
-              averageRating_SET: Float
-              averageRating_SUBTRACT: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _SET field\\")
-              isActive_SET: Boolean
+              averageRating: FloatScalarMutations
+              averageRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { add: ... } }' instead.\\")
+              averageRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { divide: ... } }' instead.\\")
+              averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
+              averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
+              averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              isActive: BooleanScalarMutations
+              isActive_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'isActive: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_IN: [Int]
-              actorCount_LT: Int
-              actorCount_LTE: Int
-              actorsAggregate: MovieActorsAggregateInput
+              actorCount: IntScalarFilters
+              actorCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { eq: ... }\\")
+              actorCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gt: ... }\\")
+              actorCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gte: ... }\\")
+              actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
+              actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
+              actors: ActorRelationshipFilters
+              actorsAggregate: MovieActorsAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actorsConnection filter, please use { actorsConnection: { aggregate: {...} } } instead\\")
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: MovieActorsConnectionWhere
+              actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float]
-              averageRating_LT: Float
-              averageRating_LTE: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+              averageRating: FloatScalarFilters
+              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
+              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
+              averageRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
+              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              isActive: BooleanScalarFilters
+              isActive_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter isActive: { eq: ... }\\")
             }
 
             type MoviesConnection {
@@ -3577,11 +3588,9 @@ describe("Subscriptions", () => {
             }
 
             type Query {
-              actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-              actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
+              actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -3598,10 +3607,25 @@ describe("Subscriptions", () => {
               shortest: String
             }
 
-            type Subscription {
-              actorCreated(where: ActorSubscriptionWhere): ActorCreatedEvent!
-              actorDeleted(where: ActorSubscriptionWhere): ActorDeletedEvent!
-              actorUpdated(where: ActorSubscriptionWhere): ActorUpdatedEvent!
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateActorsMutationResponse {
@@ -3622,485 +3646,6 @@ describe("Subscriptions", () => {
             type UpdateMoviesMutationResponse {
               info: UpdateInfo!
               movies: [Movie!]!
-            }"
-        `);
-    });
-
-    test("Type with relationship to a subscriptions excluded type", async () => {
-        const typeDefs = gql`
-            type User @mutation(operations: []) @subscription(events: []) @node {
-                username: String!
-                name: String
-            }
-            type Agreement @node {
-                id: Int!
-                name: String
-                owner: User @relationship(type: "OWNED_BY", direction: OUT)
-            }
-        `;
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            features: {
-                subscriptions: new TestCDCEngine(),
-            },
-        });
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-
-        expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-              subscription: Subscription
-            }
-
-            type Agreement {
-              id: Int!
-              name: String
-              owner(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): User
-              ownerAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: UserWhere): AgreementUserOwnerAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"ownerConnection\\\\\\" instead\\")
-              ownerConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [AgreementOwnerConnectionSort!], where: AgreementOwnerConnectionWhere): AgreementOwnerConnection!
-            }
-
-            type AgreementAggregate {
-              count: Count!
-              node: AgreementAggregateNode!
-            }
-
-            type AgreementAggregateNode {
-              id: IntAggregateSelection!
-              name: StringAggregateSelection!
-            }
-
-            type AgreementAggregateSelection {
-              count: Int!
-              id: IntAggregateSelection!
-              name: StringAggregateSelection!
-            }
-
-            input AgreementCreateInput {
-              id: Int!
-              name: String
-              owner: AgreementOwnerFieldInput
-            }
-
-            type AgreementCreatedEvent {
-              createdAgreement: AgreementEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input AgreementDeleteInput {
-              owner: AgreementOwnerDeleteFieldInput
-            }
-
-            type AgreementDeletedEvent {
-              deletedAgreement: AgreementEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            type AgreementEdge {
-              cursor: String!
-              node: Agreement!
-            }
-
-            type AgreementEventPayload {
-              id: Int!
-              name: String
-            }
-
-            input AgreementOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more AgreementSort objects to sort Agreements by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [AgreementSort!]
-            }
-
-            input AgreementOwnerAggregateInput {
-              AND: [AgreementOwnerAggregateInput!]
-              NOT: AgreementOwnerAggregateInput
-              OR: [AgreementOwnerAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              count_EQ: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: AgreementOwnerNodeAggregationWhereInput
-            }
-
-            input AgreementOwnerConnectFieldInput {
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
-              where: UserConnectWhere
-            }
-
-            type AgreementOwnerConnection {
-              aggregate: AgreementUserOwnerAggregateSelection!
-              edges: [AgreementOwnerRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input AgreementOwnerConnectionSort {
-              node: UserSort
-            }
-
-            input AgreementOwnerConnectionWhere {
-              AND: [AgreementOwnerConnectionWhere!]
-              NOT: AgreementOwnerConnectionWhere
-              OR: [AgreementOwnerConnectionWhere!]
-              node: UserWhere
-            }
-
-            input AgreementOwnerCreateFieldInput {
-              node: UserCreateInput!
-            }
-
-            input AgreementOwnerDeleteFieldInput {
-              where: AgreementOwnerConnectionWhere
-            }
-
-            input AgreementOwnerDisconnectFieldInput {
-              where: AgreementOwnerConnectionWhere
-            }
-
-            input AgreementOwnerFieldInput {
-              connect: AgreementOwnerConnectFieldInput
-              create: AgreementOwnerCreateFieldInput
-            }
-
-            input AgreementOwnerNodeAggregationWhereInput {
-              AND: [AgreementOwnerNodeAggregationWhereInput!]
-              NOT: AgreementOwnerNodeAggregationWhereInput
-              OR: [AgreementOwnerNodeAggregationWhereInput!]
-              name_AVERAGE_LENGTH_EQUAL: Float
-              name_AVERAGE_LENGTH_GT: Float
-              name_AVERAGE_LENGTH_GTE: Float
-              name_AVERAGE_LENGTH_LT: Float
-              name_AVERAGE_LENGTH_LTE: Float
-              name_LONGEST_LENGTH_EQUAL: Int
-              name_LONGEST_LENGTH_GT: Int
-              name_LONGEST_LENGTH_GTE: Int
-              name_LONGEST_LENGTH_LT: Int
-              name_LONGEST_LENGTH_LTE: Int
-              name_SHORTEST_LENGTH_EQUAL: Int
-              name_SHORTEST_LENGTH_GT: Int
-              name_SHORTEST_LENGTH_GTE: Int
-              name_SHORTEST_LENGTH_LT: Int
-              name_SHORTEST_LENGTH_LTE: Int
-              username_AVERAGE_LENGTH_EQUAL: Float
-              username_AVERAGE_LENGTH_GT: Float
-              username_AVERAGE_LENGTH_GTE: Float
-              username_AVERAGE_LENGTH_LT: Float
-              username_AVERAGE_LENGTH_LTE: Float
-              username_LONGEST_LENGTH_EQUAL: Int
-              username_LONGEST_LENGTH_GT: Int
-              username_LONGEST_LENGTH_GTE: Int
-              username_LONGEST_LENGTH_LT: Int
-              username_LONGEST_LENGTH_LTE: Int
-              username_SHORTEST_LENGTH_EQUAL: Int
-              username_SHORTEST_LENGTH_GT: Int
-              username_SHORTEST_LENGTH_GTE: Int
-              username_SHORTEST_LENGTH_LT: Int
-              username_SHORTEST_LENGTH_LTE: Int
-            }
-
-            type AgreementOwnerRelationship {
-              cursor: String!
-              node: User!
-            }
-
-            input AgreementOwnerUpdateConnectionInput {
-              node: UserUpdateInput
-              where: AgreementOwnerConnectionWhere
-            }
-
-            input AgreementOwnerUpdateFieldInput {
-              connect: AgreementOwnerConnectFieldInput
-              create: AgreementOwnerCreateFieldInput
-              delete: AgreementOwnerDeleteFieldInput
-              disconnect: AgreementOwnerDisconnectFieldInput
-              update: AgreementOwnerUpdateConnectionInput
-              where: AgreementOwnerConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"AgreementOwnerUpdateConnectionInput\\\\\\" instead\\")
-            }
-
-            \\"\\"\\"
-            Fields to sort Agreements by. The order in which sorts are applied is not guaranteed when specifying many fields in one AgreementSort object.
-            \\"\\"\\"
-            input AgreementSort {
-              id: SortDirection
-              name: SortDirection
-            }
-
-            input AgreementSubscriptionWhere {
-              AND: [AgreementSubscriptionWhere!]
-              NOT: AgreementSubscriptionWhere
-              OR: [AgreementSubscriptionWhere!]
-              id: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_EQ: Int
-              id_GT: Int
-              id_GTE: Int
-              id_IN: [Int!]
-              id_LT: Int
-              id_LTE: Int
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
-            }
-
-            input AgreementUpdateInput {
-              id: Int @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_DECREMENT: Int
-              id_INCREMENT: Int
-              id_SET: Int
-              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              name_SET: String
-              owner: AgreementOwnerUpdateFieldInput
-            }
-
-            type AgreementUpdatedEvent {
-              event: EventType!
-              previousState: AgreementEventPayload!
-              timestamp: Float!
-              updatedAgreement: AgreementEventPayload!
-            }
-
-            type AgreementUserOwnerAggregateSelection {
-              count: CountConnection!
-              node: AgreementUserOwnerNodeAggregateSelection
-            }
-
-            type AgreementUserOwnerAggregationSelection {
-              count: Int!
-              node: AgreementUserOwnerNodeAggregateSelection
-            }
-
-            type AgreementUserOwnerNodeAggregateSelection {
-              name: StringAggregateSelection!
-              username: StringAggregateSelection!
-            }
-
-            input AgreementWhere {
-              AND: [AgreementWhere!]
-              NOT: AgreementWhere
-              OR: [AgreementWhere!]
-              id: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_EQ: Int
-              id_GT: Int
-              id_GTE: Int
-              id_IN: [Int!]
-              id_LT: Int
-              id_LTE: Int
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
-              owner: UserWhere
-              ownerAggregate: AgreementOwnerAggregateInput
-              ownerConnection: AgreementOwnerConnectionWhere
-            }
-
-            type AgreementsConnection {
-              aggregate: AgreementAggregate!
-              edges: [AgreementEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type Count {
-              nodes: Int!
-            }
-
-            type CountConnection {
-              edges: Int!
-              nodes: Int!
-            }
-
-            type CreateAgreementsMutationResponse {
-              agreements: [Agreement!]!
-              info: CreateInfo!
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created during a create mutation
-            \\"\\"\\"
-            type CreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships deleted during a delete mutation
-            \\"\\"\\"
-            type DeleteInfo {
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
-
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
-            }
-
-            type IntAggregateSelection {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
-            type Mutation {
-              createAgreements(input: [AgreementCreateInput!]!): CreateAgreementsMutationResponse!
-              deleteAgreements(delete: AgreementDeleteInput, where: AgreementWhere): DeleteInfo!
-              updateAgreements(update: AgreementUpdateInput, where: AgreementWhere): UpdateAgreementsMutationResponse!
-            }
-
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
-
-            type Query {
-              agreements(limit: Int, offset: Int, options: AgreementOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [AgreementSort!], where: AgreementWhere): [Agreement!]!
-              agreementsAggregate(where: AgreementWhere): AgreementAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"agreementsConnection\\\\\\" instead\\")
-              agreementsConnection(after: String, first: Int, sort: [AgreementSort!], where: AgreementWhere): AgreementsConnection!
-              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
-              usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
-            }
-
-            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
-
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
-            }
-
-            type Subscription {
-              agreementCreated(where: AgreementSubscriptionWhere): AgreementCreatedEvent!
-              agreementDeleted(where: AgreementSubscriptionWhere): AgreementDeletedEvent!
-              agreementUpdated(where: AgreementSubscriptionWhere): AgreementUpdatedEvent!
-            }
-
-            type UpdateAgreementsMutationResponse {
-              agreements: [Agreement!]!
-              info: UpdateInfo!
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created and deleted during an update mutation
-            \\"\\"\\"
-            type UpdateInfo {
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type User {
-              name: String
-              username: String!
-            }
-
-            type UserAggregate {
-              count: Count!
-              node: UserAggregateNode!
-            }
-
-            type UserAggregateNode {
-              name: StringAggregateSelection!
-              username: StringAggregateSelection!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-              username: StringAggregateSelection!
-            }
-
-            input UserConnectWhere {
-              node: UserWhere!
-            }
-
-            input UserCreateInput {
-              name: String
-              username: String!
-            }
-
-            type UserEdge {
-              cursor: String!
-              node: User!
-            }
-
-            input UserOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [UserSort!]
-            }
-
-            \\"\\"\\"
-            Fields to sort Users by. The order in which sorts are applied is not guaranteed when specifying many fields in one UserSort object.
-            \\"\\"\\"
-            input UserSort {
-              name: SortDirection
-              username: SortDirection
-            }
-
-            input UserUpdateInput {
-              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              name_SET: String
-              username: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              username_SET: String
-            }
-
-            input UserWhere {
-              AND: [UserWhere!]
-              NOT: UserWhere
-              OR: [UserWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String]
-              name_STARTS_WITH: String
-              username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              username_CONTAINS: String
-              username_ENDS_WITH: String
-              username_EQ: String
-              username_IN: [String!]
-              username_STARTS_WITH: String
-            }
-
-            type UsersConnection {
-              aggregate: UserAggregate!
-              edges: [UserEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }"
         `);
     });
@@ -4138,14 +3683,39 @@ describe("Subscriptions", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             union Actor = Person | Star
 
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
             input ActorWhere {
               Person: PersonWhere
               Star: StarWhere
+            }
+
+            \\"\\"\\"Boolean filters\\"\\"\\"
+            input BooleanScalarFilters {
+              eq: Boolean
+            }
+
+            \\"\\"\\"Boolean mutations\\"\\"\\"
+            input BooleanScalarMutations {
+              set: Boolean
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type Count {
@@ -4188,14 +3758,6 @@ describe("Subscriptions", () => {
               relationshipsDeleted: Int!
             }
 
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
-            }
-
             type FloatAggregateSelection {
               average: Float
               max: Float
@@ -4203,9 +3765,45 @@ describe("Subscriptions", () => {
               sum: Float
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"Filters for an aggregation of a float field\\"\\"\\"
+            input FloatScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: FloatScalarFilters
+              min: FloatScalarFilters
+              sum: FloatScalarFilters
+            }
+
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Float mutations\\"\\"\\"
+            input FloatScalarMutations {
+              add: Float
+              divide: Float
+              multiply: Float
+              set: Float
+              subtract: Float
+            }
+
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type IntAggregateSelection {
@@ -4215,10 +3813,35 @@ describe("Subscriptions", () => {
               sum: Int
             }
 
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
+            }
+
             type Movie {
               actorCount: Int
-              actors(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: ActorWhere): [Actor!]!
-              actorsConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
+              actors(limit: Int, offset: Int, where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, first: Int, where: MovieActorsConnectionWhere): MovieActorsConnection!
               averageRating: Float
               id: ID
               isActive: Boolean
@@ -4233,6 +3856,25 @@ describe("Subscriptions", () => {
               edges: [MovieActorsRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input MovieActorsConnectionFilters {
+              \\"\\"\\"
+              Return Movies where all of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              all: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              none: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              single: MovieActorsConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related MovieActorsConnections match this filter
+              \\"\\"\\"
+              some: MovieActorsConnectionWhere
             }
 
             input MovieActorsConnectionWhere {
@@ -4297,7 +3939,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsPersonDeleteFieldInput!]
               disconnect: [MovieActorsPersonDisconnectFieldInput!]
               update: MovieActorsPersonUpdateConnectionInput
-              where: MovieActorsPersonConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsPersonUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieActorsRelationship {
@@ -4347,7 +3988,6 @@ describe("Subscriptions", () => {
               delete: [MovieActorsStarDeleteFieldInput!]
               disconnect: [MovieActorsStarDisconnectFieldInput!]
               update: MovieActorsStarUpdateConnectionInput
-              where: MovieActorsStarConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieActorsStarUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input MovieActorsUpdateInput {
@@ -4363,14 +4003,6 @@ describe("Subscriptions", () => {
             type MovieAggregateNode {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type MovieAggregateSelection {
-              actorCount: IntAggregateSelection!
-              averageRating: FloatAggregateSelection!
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input MovieConnectInput {
@@ -4389,20 +4021,8 @@ describe("Subscriptions", () => {
               isActive: Boolean
             }
 
-            type MovieCreatedEvent {
-              createdMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             input MovieDeleteInput {
               actors: MovieActorsDeleteInput
-            }
-
-            type MovieDeletedEvent {
-              deletedMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
             }
 
             input MovieDisconnectInput {
@@ -4414,20 +4034,15 @@ describe("Subscriptions", () => {
               node: Movie!
             }
 
-            type MovieEventPayload {
-              actorCount: Int
-              averageRating: Float
-              id: ID
-              isActive: Boolean
-            }
-
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
+            input MovieRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+              all: MovieWhere
+              \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+              none: MovieWhere
+              \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+              single: MovieWhere
+              \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+              some: MovieWhere
             }
 
             \\"\\"\\"
@@ -4440,109 +4055,76 @@ describe("Subscriptions", () => {
               isActive: SortDirection
             }
 
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_IN: [Int]
-              actorCount_LT: Int
-              actorCount_LTE: Int
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float]
-              averageRating_LT: Float
-              averageRating_LTE: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
-            }
-
             input MovieUpdateInput {
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _SET field\\")
-              actorCount_DECREMENT: Int
-              actorCount_INCREMENT: Int
-              actorCount_SET: Int
+              actorCount: IntScalarMutations
+              actorCount_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { decrement: ... } }' instead.\\")
+              actorCount_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'actorCount: { increment: ... } }' instead.\\")
+              actorCount_SET: Int @deprecated(reason: \\"Please use the generic mutation 'actorCount: { set: ... } }' instead.\\")
               actors: MovieActorsUpdateInput
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _SET field\\")
-              averageRating_ADD: Float
-              averageRating_DIVIDE: Float
-              averageRating_MULTIPLY: Float
-              averageRating_SET: Float
-              averageRating_SUBTRACT: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _SET field\\")
-              isActive_SET: Boolean
-            }
-
-            type MovieUpdatedEvent {
-              event: EventType!
-              previousState: MovieEventPayload!
-              timestamp: Float!
-              updatedMovie: MovieEventPayload!
+              averageRating: FloatScalarMutations
+              averageRating_ADD: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { add: ... } }' instead.\\")
+              averageRating_DIVIDE: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { divide: ... } }' instead.\\")
+              averageRating_MULTIPLY: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { multiply: ... } }' instead.\\")
+              averageRating_SET: Float @deprecated(reason: \\"Please use the generic mutation 'averageRating: { set: ... } }' instead.\\")
+              averageRating_SUBTRACT: Float @deprecated(reason: \\"Please use the relevant generic mutation 'averageRating: { subtract: ... } }' instead.\\")
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              isActive: BooleanScalarMutations
+              isActive_SET: Boolean @deprecated(reason: \\"Please use the generic mutation 'isActive: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              actorCount: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              actorCount_EQ: Int
-              actorCount_GT: Int
-              actorCount_GTE: Int
-              actorCount_IN: [Int]
-              actorCount_LT: Int
-              actorCount_LTE: Int
+              actorCount: IntScalarFilters
+              actorCount_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { eq: ... }\\")
+              actorCount_GT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gt: ... }\\")
+              actorCount_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { gte: ... }\\")
+              actorCount_IN: [Int] @deprecated(reason: \\"Please use the relevant generic filter actorCount: { in: ... }\\")
+              actorCount_LT: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lt: ... }\\")
+              actorCount_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter actorCount: { lte: ... }\\")
+              actors: ActorRelationshipFilters
+              actorsConnection: MovieActorsConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_ALL: MovieActorsConnectionWhere
+              actorsConnection_ALL: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_NONE: MovieActorsConnectionWhere
+              actorsConnection_NONE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SINGLE: MovieActorsConnectionWhere
+              actorsConnection_SINGLE: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related MovieActorsConnections match this filter
               \\"\\"\\"
-              actorsConnection_SOME: MovieActorsConnectionWhere
+              actorsConnection_SOME: MovieActorsConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actorsConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Actors match this filter\\"\\"\\"
-              actors_ALL: ActorWhere
+              actors_ALL: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Actors match this filter\\"\\"\\"
-              actors_NONE: ActorWhere
+              actors_NONE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Actors match this filter\\"\\"\\"
-              actors_SINGLE: ActorWhere
+              actors_SINGLE: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Actors match this filter\\"\\"\\"
-              actors_SOME: ActorWhere
-              averageRating: Float @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              averageRating_EQ: Float
-              averageRating_GT: Float
-              averageRating_GTE: Float
-              averageRating_IN: [Float]
-              averageRating_LT: Float
-              averageRating_LTE: Float
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              isActive: Boolean @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              isActive_EQ: Boolean
+              actors_SOME: ActorWhere @deprecated(reason: \\"Please use the relevant generic filter 'actors: {  some: ... }' instead.\\")
+              averageRating: FloatScalarFilters
+              averageRating_EQ: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { eq: ... }\\")
+              averageRating_GT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gt: ... }\\")
+              averageRating_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { gte: ... }\\")
+              averageRating_IN: [Float] @deprecated(reason: \\"Please use the relevant generic filter averageRating: { in: ... }\\")
+              averageRating_LT: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lt: ... }\\")
+              averageRating_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter averageRating: { lte: ... }\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              isActive: BooleanScalarFilters
+              isActive_EQ: Boolean @deprecated(reason: \\"Please use the relevant generic filter isActive: { eq: ... }\\")
             }
 
             type MoviesConnection {
@@ -4580,17 +4162,12 @@ describe("Subscriptions", () => {
             }
 
             type Person {
-              movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): PersonMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-              moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [PersonMoviesConnectionSort!], where: PersonMoviesConnectionWhere): PersonMoviesConnection!
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              moviesConnection(after: String, first: Int, sort: [PersonMoviesConnectionSort!], where: PersonMoviesConnectionWhere): PersonMoviesConnection!
             }
 
             type PersonAggregate {
               count: Count!
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
             }
 
             input PersonConnectInput {
@@ -4605,18 +4182,8 @@ describe("Subscriptions", () => {
               movies: PersonMoviesFieldInput
             }
 
-            type PersonCreatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input PersonDeleteInput {
               movies: [PersonMoviesDeleteFieldInput!]
-            }
-
-            type PersonDeletedEvent {
-              event: EventType!
-              timestamp: Float!
             }
 
             input PersonDisconnectInput {
@@ -4633,22 +4200,16 @@ describe("Subscriptions", () => {
               node: PersonMovieMoviesNodeAggregateSelection
             }
 
-            type PersonMovieMoviesAggregationSelection {
-              count: Int!
-              node: PersonMovieMoviesNodeAggregateSelection
-            }
-
             type PersonMovieMoviesNodeAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input PersonMoviesAggregateInput {
               AND: [PersonMoviesAggregateInput!]
               NOT: PersonMoviesAggregateInput
               OR: [PersonMoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -4659,10 +4220,6 @@ describe("Subscriptions", () => {
 
             input PersonMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
               where: MovieConnectWhere
             }
 
@@ -4671,6 +4228,37 @@ describe("Subscriptions", () => {
               edges: [PersonMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input PersonMoviesConnectionAggregateInput {
+              AND: [PersonMoviesConnectionAggregateInput!]
+              NOT: PersonMoviesConnectionAggregateInput
+              OR: [PersonMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PersonMoviesNodeAggregationWhereInput
+            }
+
+            input PersonMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related PersonMoviesConnections
+              \\"\\"\\"
+              aggregate: PersonMoviesConnectionAggregateInput
+              \\"\\"\\"
+              Return People where all of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              all: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where none of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              none: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where one of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              single: PersonMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where some of the related PersonMoviesConnections match this filter
+              \\"\\"\\"
+              some: PersonMoviesConnectionWhere
             }
 
             input PersonMoviesConnectionSort {
@@ -4707,56 +4295,48 @@ describe("Subscriptions", () => {
               AND: [PersonMoviesNodeAggregationWhereInput!]
               NOT: PersonMoviesNodeAggregationWhereInput
               OR: [PersonMoviesNodeAggregationWhereInput!]
-              actorCount_AVERAGE_EQUAL: Float
-              actorCount_AVERAGE_GT: Float
-              actorCount_AVERAGE_GTE: Float
-              actorCount_AVERAGE_LT: Float
-              actorCount_AVERAGE_LTE: Float
-              actorCount_MAX_EQUAL: Int
-              actorCount_MAX_GT: Int
-              actorCount_MAX_GTE: Int
-              actorCount_MAX_LT: Int
-              actorCount_MAX_LTE: Int
-              actorCount_MIN_EQUAL: Int
-              actorCount_MIN_GT: Int
-              actorCount_MIN_GTE: Int
-              actorCount_MIN_LT: Int
-              actorCount_MIN_LTE: Int
-              actorCount_SUM_EQUAL: Int
-              actorCount_SUM_GT: Int
-              actorCount_SUM_GTE: Int
-              actorCount_SUM_LT: Int
-              actorCount_SUM_LTE: Int
-              averageRating_AVERAGE_EQUAL: Float
-              averageRating_AVERAGE_GT: Float
-              averageRating_AVERAGE_GTE: Float
-              averageRating_AVERAGE_LT: Float
-              averageRating_AVERAGE_LTE: Float
-              averageRating_MAX_EQUAL: Float
-              averageRating_MAX_GT: Float
-              averageRating_MAX_GTE: Float
-              averageRating_MAX_LT: Float
-              averageRating_MAX_LTE: Float
-              averageRating_MIN_EQUAL: Float
-              averageRating_MIN_GT: Float
-              averageRating_MIN_GTE: Float
-              averageRating_MIN_LT: Float
-              averageRating_MIN_LTE: Float
-              averageRating_SUM_EQUAL: Float
-              averageRating_SUM_GT: Float
-              averageRating_SUM_GTE: Float
-              averageRating_SUM_LT: Float
-              averageRating_SUM_LTE: Float
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              actorCount: IntScalarAggregationFilters
+              actorCount_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { eq: ... } } }' instead.\\")
+              actorCount_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { gt: ... } } }' instead.\\")
+              actorCount_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { gte: ... } } }' instead.\\")
+              actorCount_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { lt: ... } } }' instead.\\")
+              actorCount_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { lte: ... } } }' instead.\\")
+              actorCount_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { eq: ... } } }' instead.\\")
+              actorCount_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { gt: ... } } }' instead.\\")
+              actorCount_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { gte: ... } } }' instead.\\")
+              actorCount_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { lt: ... } } }' instead.\\")
+              actorCount_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { lte: ... } } }' instead.\\")
+              actorCount_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { eq: ... } } }' instead.\\")
+              actorCount_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { gt: ... } } }' instead.\\")
+              actorCount_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { gte: ... } } }' instead.\\")
+              actorCount_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { lt: ... } } }' instead.\\")
+              actorCount_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { lte: ... } } }' instead.\\")
+              actorCount_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { eq: ... } } }' instead.\\")
+              actorCount_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { gt: ... } } }' instead.\\")
+              actorCount_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { gte: ... } } }' instead.\\")
+              actorCount_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { lt: ... } } }' instead.\\")
+              actorCount_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { lte: ... } } }' instead.\\")
+              averageRating: FloatScalarAggregationFilters
+              averageRating_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { eq: ... } } }' instead.\\")
+              averageRating_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { gt: ... } } }' instead.\\")
+              averageRating_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { gte: ... } } }' instead.\\")
+              averageRating_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { lt: ... } } }' instead.\\")
+              averageRating_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { lte: ... } } }' instead.\\")
+              averageRating_MAX_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { eq: ... } } }' instead.\\")
+              averageRating_MAX_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { gt: ... } } }' instead.\\")
+              averageRating_MAX_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { gte: ... } } }' instead.\\")
+              averageRating_MAX_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { lt: ... } } }' instead.\\")
+              averageRating_MAX_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { lte: ... } } }' instead.\\")
+              averageRating_MIN_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { eq: ... } } }' instead.\\")
+              averageRating_MIN_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { gt: ... } } }' instead.\\")
+              averageRating_MIN_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { gte: ... } } }' instead.\\")
+              averageRating_MIN_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { lt: ... } } }' instead.\\")
+              averageRating_MIN_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { lte: ... } } }' instead.\\")
+              averageRating_SUM_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { eq: ... } } }' instead.\\")
+              averageRating_SUM_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { gt: ... } } }' instead.\\")
+              averageRating_SUM_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { gte: ... } } }' instead.\\")
+              averageRating_SUM_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { lt: ... } } }' instead.\\")
+              averageRating_SUM_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { lte: ... } } }' instead.\\")
             }
 
             type PersonMoviesRelationship {
@@ -4775,71 +4355,53 @@ describe("Subscriptions", () => {
               delete: [PersonMoviesDeleteFieldInput!]
               disconnect: [PersonMoviesDisconnectFieldInput!]
               update: PersonMoviesUpdateConnectionInput
-              where: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PersonMoviesUpdateConnectionInput\\\\\\" instead\\")
-            }
-
-            input PersonOptions {
-              limit: Int
-              offset: Int
             }
 
             input PersonUpdateInput {
               movies: [PersonMoviesUpdateFieldInput!]
             }
 
-            type PersonUpdatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
             input PersonWhere {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              moviesAggregate: PersonMoviesAggregateInput
+              movies: MovieRelationshipFilters
+              moviesAggregate: PersonMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
+              moviesConnection: PersonMoviesConnectionFilters
               \\"\\"\\"
               Return People where all of the related PersonMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: PersonMoviesConnectionWhere
+              moviesConnection_ALL: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where none of the related PersonMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: PersonMoviesConnectionWhere
+              moviesConnection_NONE: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where one of the related PersonMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: PersonMoviesConnectionWhere
+              moviesConnection_SINGLE: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return People where some of the related PersonMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: PersonMoviesConnectionWhere
+              moviesConnection_SOME: PersonMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return People where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return People where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return People where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return People where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
             }
 
             type Query {
-              actors(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: ActorWhere): [Actor!]!
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              actors(limit: Int, offset: Int, where: ActorWhere): [Actor!]!
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-              people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+              people(limit: Int, offset: Int, where: PersonWhere): [Person!]!
               peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
-              stars(limit: Int, offset: Int, options: StarOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: StarWhere): [Star!]!
-              starsAggregate(where: StarWhere): StarAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"starsConnection\\\\\\" instead\\")
+              stars(limit: Int, offset: Int, where: StarWhere): [Star!]!
               starsConnection(after: String, first: Int, where: StarWhere): StarsConnection!
-            }
-
-            \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-            input QueryOptions {
-              limit: Int
-              offset: Int
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -4851,17 +4413,12 @@ describe("Subscriptions", () => {
             }
 
             type Star {
-              movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): StarMovieMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-              moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [StarMoviesConnectionSort!], where: StarMoviesConnectionWhere): StarMoviesConnection!
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              moviesConnection(after: String, first: Int, sort: [StarMoviesConnectionSort!], where: StarMoviesConnectionWhere): StarMoviesConnection!
             }
 
             type StarAggregate {
               count: Count!
-            }
-
-            type StarAggregateSelection {
-              count: Int!
             }
 
             input StarConnectInput {
@@ -4894,22 +4451,16 @@ describe("Subscriptions", () => {
               node: StarMovieMoviesNodeAggregateSelection
             }
 
-            type StarMovieMoviesAggregationSelection {
-              count: Int!
-              node: StarMovieMoviesNodeAggregateSelection
-            }
-
             type StarMovieMoviesNodeAggregateSelection {
               actorCount: IntAggregateSelection!
               averageRating: FloatAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input StarMoviesAggregateInput {
               AND: [StarMoviesAggregateInput!]
               NOT: StarMoviesAggregateInput
               OR: [StarMoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
@@ -4920,10 +4471,6 @@ describe("Subscriptions", () => {
 
             input StarMoviesConnectFieldInput {
               connect: [MovieConnectInput!]
-              \\"\\"\\"
-              Whether or not to overwrite any matching relationship with the new properties.
-              \\"\\"\\"
-              overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
               where: MovieConnectWhere
             }
 
@@ -4932,6 +4479,35 @@ describe("Subscriptions", () => {
               edges: [StarMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input StarMoviesConnectionAggregateInput {
+              AND: [StarMoviesConnectionAggregateInput!]
+              NOT: StarMoviesConnectionAggregateInput
+              OR: [StarMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: StarMoviesNodeAggregationWhereInput
+            }
+
+            input StarMoviesConnectionFilters {
+              \\"\\"\\"Filter Stars by aggregating results on related StarMoviesConnections\\"\\"\\"
+              aggregate: StarMoviesConnectionAggregateInput
+              \\"\\"\\"
+              Return Stars where all of the related StarMoviesConnections match this filter
+              \\"\\"\\"
+              all: StarMoviesConnectionWhere
+              \\"\\"\\"
+              Return Stars where none of the related StarMoviesConnections match this filter
+              \\"\\"\\"
+              none: StarMoviesConnectionWhere
+              \\"\\"\\"
+              Return Stars where one of the related StarMoviesConnections match this filter
+              \\"\\"\\"
+              single: StarMoviesConnectionWhere
+              \\"\\"\\"
+              Return Stars where some of the related StarMoviesConnections match this filter
+              \\"\\"\\"
+              some: StarMoviesConnectionWhere
             }
 
             input StarMoviesConnectionSort {
@@ -4968,56 +4544,48 @@ describe("Subscriptions", () => {
               AND: [StarMoviesNodeAggregationWhereInput!]
               NOT: StarMoviesNodeAggregationWhereInput
               OR: [StarMoviesNodeAggregationWhereInput!]
-              actorCount_AVERAGE_EQUAL: Float
-              actorCount_AVERAGE_GT: Float
-              actorCount_AVERAGE_GTE: Float
-              actorCount_AVERAGE_LT: Float
-              actorCount_AVERAGE_LTE: Float
-              actorCount_MAX_EQUAL: Int
-              actorCount_MAX_GT: Int
-              actorCount_MAX_GTE: Int
-              actorCount_MAX_LT: Int
-              actorCount_MAX_LTE: Int
-              actorCount_MIN_EQUAL: Int
-              actorCount_MIN_GT: Int
-              actorCount_MIN_GTE: Int
-              actorCount_MIN_LT: Int
-              actorCount_MIN_LTE: Int
-              actorCount_SUM_EQUAL: Int
-              actorCount_SUM_GT: Int
-              actorCount_SUM_GTE: Int
-              actorCount_SUM_LT: Int
-              actorCount_SUM_LTE: Int
-              averageRating_AVERAGE_EQUAL: Float
-              averageRating_AVERAGE_GT: Float
-              averageRating_AVERAGE_GTE: Float
-              averageRating_AVERAGE_LT: Float
-              averageRating_AVERAGE_LTE: Float
-              averageRating_MAX_EQUAL: Float
-              averageRating_MAX_GT: Float
-              averageRating_MAX_GTE: Float
-              averageRating_MAX_LT: Float
-              averageRating_MAX_LTE: Float
-              averageRating_MIN_EQUAL: Float
-              averageRating_MIN_GT: Float
-              averageRating_MIN_GTE: Float
-              averageRating_MIN_LT: Float
-              averageRating_MIN_LTE: Float
-              averageRating_SUM_EQUAL: Float
-              averageRating_SUM_GT: Float
-              averageRating_SUM_GTE: Float
-              averageRating_SUM_LT: Float
-              averageRating_SUM_LTE: Float
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              actorCount: IntScalarAggregationFilters
+              actorCount_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { eq: ... } } }' instead.\\")
+              actorCount_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { gt: ... } } }' instead.\\")
+              actorCount_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { gte: ... } } }' instead.\\")
+              actorCount_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { lt: ... } } }' instead.\\")
+              actorCount_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { average: { lte: ... } } }' instead.\\")
+              actorCount_MAX_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { eq: ... } } }' instead.\\")
+              actorCount_MAX_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { gt: ... } } }' instead.\\")
+              actorCount_MAX_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { gte: ... } } }' instead.\\")
+              actorCount_MAX_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { lt: ... } } }' instead.\\")
+              actorCount_MAX_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { max: { lte: ... } } }' instead.\\")
+              actorCount_MIN_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { eq: ... } } }' instead.\\")
+              actorCount_MIN_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { gt: ... } } }' instead.\\")
+              actorCount_MIN_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { gte: ... } } }' instead.\\")
+              actorCount_MIN_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { lt: ... } } }' instead.\\")
+              actorCount_MIN_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { min: { lte: ... } } }' instead.\\")
+              actorCount_SUM_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { eq: ... } } }' instead.\\")
+              actorCount_SUM_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { gt: ... } } }' instead.\\")
+              actorCount_SUM_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { gte: ... } } }' instead.\\")
+              actorCount_SUM_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { lt: ... } } }' instead.\\")
+              actorCount_SUM_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'actorCount: { sum: { lte: ... } } }' instead.\\")
+              averageRating: FloatScalarAggregationFilters
+              averageRating_AVERAGE_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { eq: ... } } }' instead.\\")
+              averageRating_AVERAGE_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { gt: ... } } }' instead.\\")
+              averageRating_AVERAGE_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { gte: ... } } }' instead.\\")
+              averageRating_AVERAGE_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { lt: ... } } }' instead.\\")
+              averageRating_AVERAGE_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { average: { lte: ... } } }' instead.\\")
+              averageRating_MAX_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { eq: ... } } }' instead.\\")
+              averageRating_MAX_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { gt: ... } } }' instead.\\")
+              averageRating_MAX_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { gte: ... } } }' instead.\\")
+              averageRating_MAX_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { lt: ... } } }' instead.\\")
+              averageRating_MAX_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { max: { lte: ... } } }' instead.\\")
+              averageRating_MIN_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { eq: ... } } }' instead.\\")
+              averageRating_MIN_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { gt: ... } } }' instead.\\")
+              averageRating_MIN_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { gte: ... } } }' instead.\\")
+              averageRating_MIN_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { lt: ... } } }' instead.\\")
+              averageRating_MIN_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { min: { lte: ... } } }' instead.\\")
+              averageRating_SUM_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { eq: ... } } }' instead.\\")
+              averageRating_SUM_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { gt: ... } } }' instead.\\")
+              averageRating_SUM_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { gte: ... } } }' instead.\\")
+              averageRating_SUM_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { lt: ... } } }' instead.\\")
+              averageRating_SUM_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'averageRating: { sum: { lte: ... } } }' instead.\\")
             }
 
             type StarMoviesRelationship {
@@ -5036,12 +4604,6 @@ describe("Subscriptions", () => {
               delete: [StarMoviesDeleteFieldInput!]
               disconnect: [StarMoviesDisconnectFieldInput!]
               update: StarMoviesUpdateConnectionInput
-              where: StarMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"StarMoviesUpdateConnectionInput\\\\\\" instead\\")
-            }
-
-            input StarOptions {
-              limit: Int
-              offset: Int
             }
 
             input StarUpdateInput {
@@ -5052,31 +4614,33 @@ describe("Subscriptions", () => {
               AND: [StarWhere!]
               NOT: StarWhere
               OR: [StarWhere!]
-              moviesAggregate: StarMoviesAggregateInput
+              movies: MovieRelationshipFilters
+              moviesAggregate: StarMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
+              moviesConnection: StarMoviesConnectionFilters
               \\"\\"\\"
               Return Stars where all of the related StarMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_ALL: StarMoviesConnectionWhere
+              moviesConnection_ALL: StarMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Stars where none of the related StarMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_NONE: StarMoviesConnectionWhere
+              moviesConnection_NONE: StarMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Stars where one of the related StarMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SINGLE: StarMoviesConnectionWhere
+              moviesConnection_SINGLE: StarMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Stars where some of the related StarMoviesConnections match this filter
               \\"\\"\\"
-              moviesConnection_SOME: StarMoviesConnectionWhere
+              moviesConnection_SOME: StarMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Stars where all of the related Movies match this filter\\"\\"\\"
-              movies_ALL: MovieWhere
+              movies_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
               \\"\\"\\"Return Stars where none of the related Movies match this filter\\"\\"\\"
-              movies_NONE: MovieWhere
+              movies_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
               \\"\\"\\"Return Stars where one of the related Movies match this filter\\"\\"\\"
-              movies_SINGLE: MovieWhere
+              movies_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
               \\"\\"\\"Return Stars where some of the related Movies match this filter\\"\\"\\"
-              movies_SOME: MovieWhere
+              movies_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
             }
 
             type StarsConnection {
@@ -5084,15 +4648,6 @@ describe("Subscriptions", () => {
               edges: [StarEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
-            }
-
-            type Subscription {
-              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
-              personCreated: PersonCreatedEvent!
-              personDeleted: PersonDeletedEvent!
-              personUpdated: PersonUpdatedEvent!
             }
 
             \\"\\"\\"
@@ -5118,1007 +4673,6 @@ describe("Subscriptions", () => {
             type UpdateStarsMutationResponse {
               info: UpdateInfo!
               stars: [Star!]!
-            }"
-        `);
-    });
-
-    test("Type with relationship to a subscriptions excluded type + Interface type", async () => {
-        const typeDefs = gql`
-            type Movie implements Production @subscription(events: []) @node {
-                title: String!
-                id: ID @unique
-                director: Creature! @relationship(type: "DIRECTED", direction: IN)
-            }
-
-            type Series implements Production @node {
-                title: String!
-                episode: Int!
-                id: ID @unique
-                director: Creature! @relationship(type: "DIRECTED", direction: IN)
-            }
-
-            interface Production {
-                id: ID
-                director: Creature! @declareRelationship
-            }
-
-            type Person implements Creature @node {
-                movies: Production! @relationship(type: "DIRECTED", direction: OUT)
-            }
-
-            interface Creature {
-                movies: Production! @declareRelationship
-            }
-        `;
-
-        const neoSchema = new Neo4jGraphQL({
-            typeDefs,
-            features: {
-                subscriptions: new TestCDCEngine(),
-            },
-        });
-
-        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
-
-        expect(printedSchema).toMatchInlineSnapshot(`
-            "schema {
-              query: Query
-              mutation: Mutation
-              subscription: Subscription
-            }
-
-            type Count {
-              nodes: Int!
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created during a create mutation
-            \\"\\"\\"
-            type CreateInfo {
-              nodesCreated: Int!
-              relationshipsCreated: Int!
-            }
-
-            type CreateMoviesMutationResponse {
-              info: CreateInfo!
-              movies: [Movie!]!
-            }
-
-            type CreatePeopleMutationResponse {
-              info: CreateInfo!
-              people: [Person!]!
-            }
-
-            type CreateSeriesMutationResponse {
-              info: CreateInfo!
-              series: [Series!]!
-            }
-
-            interface Creature {
-              movies(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): Production!
-              moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
-            }
-
-            type CreatureAggregate {
-              count: Count!
-            }
-
-            type CreatureAggregateSelection {
-              count: Int!
-            }
-
-            input CreatureConnectInput {
-              movies: CreatureMoviesConnectFieldInput
-            }
-
-            input CreatureConnectWhere {
-              node: CreatureWhere!
-            }
-
-            input CreatureCreateInput {
-              Person: PersonCreateInput
-            }
-
-            input CreatureDeleteInput {
-              movies: CreatureMoviesDeleteFieldInput
-            }
-
-            input CreatureDisconnectInput {
-              movies: CreatureMoviesDisconnectFieldInput
-            }
-
-            type CreatureEdge {
-              cursor: String!
-              node: Creature!
-            }
-
-            enum CreatureImplementation {
-              Person
-            }
-
-            input CreatureMoviesAggregateInput {
-              AND: [CreatureMoviesAggregateInput!]
-              NOT: CreatureMoviesAggregateInput
-              OR: [CreatureMoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              count_EQ: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: CreatureMoviesNodeAggregationWhereInput
-            }
-
-            input CreatureMoviesConnectFieldInput {
-              connect: ProductionConnectInput
-              where: ProductionConnectWhere
-            }
-
-            type CreatureMoviesConnection {
-              edges: [CreatureMoviesRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input CreatureMoviesConnectionSort {
-              node: ProductionSort
-            }
-
-            input CreatureMoviesConnectionWhere {
-              AND: [CreatureMoviesConnectionWhere!]
-              NOT: CreatureMoviesConnectionWhere
-              OR: [CreatureMoviesConnectionWhere!]
-              node: ProductionWhere
-            }
-
-            input CreatureMoviesCreateFieldInput {
-              node: ProductionCreateInput!
-            }
-
-            input CreatureMoviesDeleteFieldInput {
-              delete: ProductionDeleteInput
-              where: CreatureMoviesConnectionWhere
-            }
-
-            input CreatureMoviesDisconnectFieldInput {
-              disconnect: ProductionDisconnectInput
-              where: CreatureMoviesConnectionWhere
-            }
-
-            input CreatureMoviesNodeAggregationWhereInput {
-              AND: [CreatureMoviesNodeAggregationWhereInput!]
-              NOT: CreatureMoviesNodeAggregationWhereInput
-              OR: [CreatureMoviesNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type CreatureMoviesRelationship {
-              cursor: String!
-              node: Production!
-            }
-
-            input CreatureMoviesUpdateConnectionInput {
-              node: ProductionUpdateInput
-              where: CreatureMoviesConnectionWhere
-            }
-
-            input CreatureMoviesUpdateFieldInput {
-              connect: CreatureMoviesConnectFieldInput
-              create: CreatureMoviesCreateFieldInput
-              delete: CreatureMoviesDeleteFieldInput
-              disconnect: CreatureMoviesDisconnectFieldInput
-              update: CreatureMoviesUpdateConnectionInput
-              where: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"CreatureMoviesUpdateConnectionInput\\\\\\" instead\\")
-            }
-
-            input CreatureOptions {
-              limit: Int
-              offset: Int
-            }
-
-            input CreatureUpdateInput {
-              movies: CreatureMoviesUpdateFieldInput
-            }
-
-            input CreatureWhere {
-              AND: [CreatureWhere!]
-              NOT: CreatureWhere
-              OR: [CreatureWhere!]
-              movies: ProductionWhere
-              moviesAggregate: CreatureMoviesAggregateInput
-              moviesConnection: CreatureMoviesConnectionWhere
-              typename: [CreatureImplementation!]
-              typename_IN: [CreatureImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
-            }
-
-            type CreaturesConnection {
-              aggregate: CreatureAggregate!
-              edges: [CreatureEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships deleted during a delete mutation
-            \\"\\"\\"
-            type DeleteInfo {
-              nodesDeleted: Int!
-              relationshipsDeleted: Int!
-            }
-
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
-            }
-
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
-            }
-
-            type IntAggregateSelection {
-              average: Float
-              max: Int
-              min: Int
-              sum: Int
-            }
-
-            type Movie implements Production {
-              director(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CreatureWhere): Creature!
-              directorAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: CreatureWhere): MovieCreatureDirectorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"directorConnection\\\\\\" instead\\")
-              directorConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
-              id: ID
-              title: String!
-            }
-
-            type MovieAggregate {
-              count: Count!
-              node: MovieAggregateNode!
-            }
-
-            type MovieAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              title: StringAggregateSelection!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              title: StringAggregateSelection!
-            }
-
-            input MovieCreateInput {
-              director: MovieDirectorFieldInput
-              id: ID
-              title: String!
-            }
-
-            type MovieCreatureDirectorAggregationSelection {
-              count: Int!
-            }
-
-            input MovieDeleteInput {
-              director: MovieDirectorDeleteFieldInput
-            }
-
-            input MovieDirectorAggregateInput {
-              AND: [MovieDirectorAggregateInput!]
-              NOT: MovieDirectorAggregateInput
-              OR: [MovieDirectorAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              count_EQ: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-            }
-
-            input MovieDirectorConnectFieldInput {
-              connect: CreatureConnectInput
-              where: CreatureConnectWhere
-            }
-
-            input MovieDirectorCreateFieldInput {
-              node: CreatureCreateInput!
-            }
-
-            input MovieDirectorDeleteFieldInput {
-              delete: CreatureDeleteInput
-              where: ProductionDirectorConnectionWhere
-            }
-
-            input MovieDirectorDisconnectFieldInput {
-              disconnect: CreatureDisconnectInput
-              where: ProductionDirectorConnectionWhere
-            }
-
-            input MovieDirectorFieldInput {
-              connect: MovieDirectorConnectFieldInput
-              create: MovieDirectorCreateFieldInput
-            }
-
-            input MovieDirectorUpdateConnectionInput {
-              node: CreatureUpdateInput
-              where: ProductionDirectorConnectionWhere
-            }
-
-            input MovieDirectorUpdateFieldInput {
-              connect: MovieDirectorConnectFieldInput
-              create: MovieDirectorCreateFieldInput
-              delete: MovieDirectorDeleteFieldInput
-              disconnect: MovieDirectorDisconnectFieldInput
-              update: MovieDirectorUpdateConnectionInput
-              where: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieDirectorUpdateConnectionInput\\\\\\" instead\\")
-            }
-
-            type MovieEdge {
-              cursor: String!
-              node: Movie!
-            }
-
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
-            }
-
-            \\"\\"\\"
-            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
-            \\"\\"\\"
-            input MovieSort {
-              id: SortDirection
-              title: SortDirection
-            }
-
-            input MovieUpdateInput {
-              director: MovieDirectorUpdateFieldInput
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              title_SET: String
-            }
-
-            input MovieWhere {
-              AND: [MovieWhere!]
-              NOT: MovieWhere
-              OR: [MovieWhere!]
-              director: CreatureWhere
-              directorAggregate: MovieDirectorAggregateInput
-              directorConnection: ProductionDirectorConnectionWhere
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
-            }
-
-            type MoviesConnection {
-              aggregate: MovieAggregate!
-              edges: [MovieEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type Mutation {
-              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
-              createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
-              createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
-              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-              deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
-              deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
-              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
-              updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
-              updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
-            }
-
-            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
-            type PageInfo {
-              endCursor: String
-              hasNextPage: Boolean!
-              hasPreviousPage: Boolean!
-              startCursor: String
-            }
-
-            type PeopleConnection {
-              aggregate: PersonAggregate!
-              edges: [PersonEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type Person implements Creature {
-              movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): Production!
-              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ProductionWhere): PersonProductionMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-              moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
-            }
-
-            type PersonAggregate {
-              count: Count!
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
-            }
-
-            input PersonCreateInput {
-              movies: PersonMoviesFieldInput
-            }
-
-            type PersonCreatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input PersonDeleteInput {
-              movies: PersonMoviesDeleteFieldInput
-            }
-
-            type PersonDeletedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
-            type PersonEdge {
-              cursor: String!
-              node: Person!
-            }
-
-            input PersonMoviesAggregateInput {
-              AND: [PersonMoviesAggregateInput!]
-              NOT: PersonMoviesAggregateInput
-              OR: [PersonMoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              count_EQ: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-              node: PersonMoviesNodeAggregationWhereInput
-            }
-
-            input PersonMoviesConnectFieldInput {
-              connect: ProductionConnectInput
-              where: ProductionConnectWhere
-            }
-
-            input PersonMoviesCreateFieldInput {
-              node: ProductionCreateInput!
-            }
-
-            input PersonMoviesDeleteFieldInput {
-              delete: ProductionDeleteInput
-              where: CreatureMoviesConnectionWhere
-            }
-
-            input PersonMoviesDisconnectFieldInput {
-              disconnect: ProductionDisconnectInput
-              where: CreatureMoviesConnectionWhere
-            }
-
-            input PersonMoviesFieldInput {
-              connect: PersonMoviesConnectFieldInput
-              create: PersonMoviesCreateFieldInput
-            }
-
-            input PersonMoviesNodeAggregationWhereInput {
-              AND: [PersonMoviesNodeAggregationWhereInput!]
-              NOT: PersonMoviesNodeAggregationWhereInput
-              OR: [PersonMoviesNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            input PersonMoviesUpdateConnectionInput {
-              node: ProductionUpdateInput
-              where: CreatureMoviesConnectionWhere
-            }
-
-            input PersonMoviesUpdateFieldInput {
-              connect: PersonMoviesConnectFieldInput
-              create: PersonMoviesCreateFieldInput
-              delete: PersonMoviesDeleteFieldInput
-              disconnect: PersonMoviesDisconnectFieldInput
-              update: PersonMoviesUpdateConnectionInput
-              where: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PersonMoviesUpdateConnectionInput\\\\\\" instead\\")
-            }
-
-            input PersonOptions {
-              limit: Int
-              offset: Int
-            }
-
-            type PersonProductionMoviesAggregationSelection {
-              count: Int!
-              node: PersonProductionMoviesNodeAggregateSelection
-            }
-
-            type PersonProductionMoviesNodeAggregateSelection {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            input PersonUpdateInput {
-              movies: PersonMoviesUpdateFieldInput
-            }
-
-            type PersonUpdatedEvent {
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input PersonWhere {
-              AND: [PersonWhere!]
-              NOT: PersonWhere
-              OR: [PersonWhere!]
-              movies: ProductionWhere
-              moviesAggregate: PersonMoviesAggregateInput
-              moviesConnection: CreatureMoviesConnectionWhere
-            }
-
-            interface Production {
-              director(limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CreatureWhere): Creature!
-              directorConnection(after: String, first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
-              id: ID
-            }
-
-            type ProductionAggregate {
-              count: Count!
-              node: ProductionAggregateNode!
-            }
-
-            type ProductionAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type ProductionAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            input ProductionConnectInput {
-              director: ProductionDirectorConnectFieldInput
-            }
-
-            input ProductionConnectWhere {
-              node: ProductionWhere!
-            }
-
-            input ProductionCreateInput {
-              Movie: MovieCreateInput
-              Series: SeriesCreateInput
-            }
-
-            input ProductionDeleteInput {
-              director: ProductionDirectorDeleteFieldInput
-            }
-
-            input ProductionDirectorAggregateInput {
-              AND: [ProductionDirectorAggregateInput!]
-              NOT: ProductionDirectorAggregateInput
-              OR: [ProductionDirectorAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              count_EQ: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-            }
-
-            input ProductionDirectorConnectFieldInput {
-              connect: CreatureConnectInput
-              where: CreatureConnectWhere
-            }
-
-            type ProductionDirectorConnection {
-              edges: [ProductionDirectorRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input ProductionDirectorConnectionWhere {
-              AND: [ProductionDirectorConnectionWhere!]
-              NOT: ProductionDirectorConnectionWhere
-              OR: [ProductionDirectorConnectionWhere!]
-              node: CreatureWhere
-            }
-
-            input ProductionDirectorCreateFieldInput {
-              node: CreatureCreateInput!
-            }
-
-            input ProductionDirectorDeleteFieldInput {
-              delete: CreatureDeleteInput
-              where: ProductionDirectorConnectionWhere
-            }
-
-            input ProductionDirectorDisconnectFieldInput {
-              disconnect: CreatureDisconnectInput
-              where: ProductionDirectorConnectionWhere
-            }
-
-            type ProductionDirectorRelationship {
-              cursor: String!
-              node: Creature!
-            }
-
-            input ProductionDirectorUpdateConnectionInput {
-              node: CreatureUpdateInput
-              where: ProductionDirectorConnectionWhere
-            }
-
-            input ProductionDirectorUpdateFieldInput {
-              connect: ProductionDirectorConnectFieldInput
-              create: ProductionDirectorCreateFieldInput
-              delete: ProductionDirectorDeleteFieldInput
-              disconnect: ProductionDirectorDisconnectFieldInput
-              update: ProductionDirectorUpdateConnectionInput
-              where: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ProductionDirectorUpdateConnectionInput\\\\\\" instead\\")
-            }
-
-            input ProductionDisconnectInput {
-              director: ProductionDirectorDisconnectFieldInput
-            }
-
-            type ProductionEdge {
-              cursor: String!
-              node: Production!
-            }
-
-            enum ProductionImplementation {
-              Movie
-              Series
-            }
-
-            input ProductionOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [ProductionSort!]
-            }
-
-            \\"\\"\\"
-            Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
-            \\"\\"\\"
-            input ProductionSort {
-              id: SortDirection
-            }
-
-            input ProductionUpdateInput {
-              director: ProductionDirectorUpdateFieldInput
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-            }
-
-            input ProductionWhere {
-              AND: [ProductionWhere!]
-              NOT: ProductionWhere
-              OR: [ProductionWhere!]
-              director: CreatureWhere
-              directorAggregate: ProductionDirectorAggregateInput
-              directorConnection: ProductionDirectorConnectionWhere
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              typename: [ProductionImplementation!]
-              typename_IN: [ProductionImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
-            }
-
-            type ProductionsConnection {
-              aggregate: ProductionAggregate!
-              edges: [ProductionEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            type Query {
-              creatures(limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CreatureWhere): [Creature!]!
-              creaturesAggregate(where: CreatureWhere): CreatureAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"creaturesConnection\\\\\\" instead\\")
-              creaturesConnection(after: String, first: Int, where: CreatureWhere): CreaturesConnection!
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-              people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
-              peopleConnection(after: String, first: Int, where: PersonWhere): PeopleConnection!
-              productions(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
-              productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
-              series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
-              seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
-            }
-
-            type Series implements Production {
-              director(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: CreatureWhere): Creature!
-              directorAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: CreatureWhere): SeriesCreatureDirectorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"directorConnection\\\\\\" instead\\")
-              directorConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
-              episode: Int!
-              id: ID
-              title: String!
-            }
-
-            type SeriesAggregate {
-              count: Count!
-              node: SeriesAggregateNode!
-            }
-
-            type SeriesAggregateNode {
-              episode: IntAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              title: StringAggregateSelection!
-            }
-
-            type SeriesAggregateSelection {
-              count: Int!
-              episode: IntAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              title: StringAggregateSelection!
-            }
-
-            type SeriesConnection {
-              aggregate: SeriesAggregate!
-              edges: [SeriesEdge!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input SeriesCreateInput {
-              director: SeriesDirectorFieldInput
-              episode: Int!
-              id: ID
-              title: String!
-            }
-
-            type SeriesCreatedEvent {
-              createdSeries: SeriesEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            type SeriesCreatureDirectorAggregationSelection {
-              count: Int!
-            }
-
-            input SeriesDeleteInput {
-              director: SeriesDirectorDeleteFieldInput
-            }
-
-            type SeriesDeletedEvent {
-              deletedSeries: SeriesEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            input SeriesDirectorAggregateInput {
-              AND: [SeriesDirectorAggregateInput!]
-              NOT: SeriesDirectorAggregateInput
-              OR: [SeriesDirectorAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              count_EQ: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
-            }
-
-            input SeriesDirectorConnectFieldInput {
-              connect: CreatureConnectInput
-              where: CreatureConnectWhere
-            }
-
-            input SeriesDirectorCreateFieldInput {
-              node: CreatureCreateInput!
-            }
-
-            input SeriesDirectorDeleteFieldInput {
-              delete: CreatureDeleteInput
-              where: ProductionDirectorConnectionWhere
-            }
-
-            input SeriesDirectorDisconnectFieldInput {
-              disconnect: CreatureDisconnectInput
-              where: ProductionDirectorConnectionWhere
-            }
-
-            input SeriesDirectorFieldInput {
-              connect: SeriesDirectorConnectFieldInput
-              create: SeriesDirectorCreateFieldInput
-            }
-
-            input SeriesDirectorUpdateConnectionInput {
-              node: CreatureUpdateInput
-              where: ProductionDirectorConnectionWhere
-            }
-
-            input SeriesDirectorUpdateFieldInput {
-              connect: SeriesDirectorConnectFieldInput
-              create: SeriesDirectorCreateFieldInput
-              delete: SeriesDirectorDeleteFieldInput
-              disconnect: SeriesDirectorDisconnectFieldInput
-              update: SeriesDirectorUpdateConnectionInput
-              where: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesDirectorUpdateConnectionInput\\\\\\" instead\\")
-            }
-
-            type SeriesEdge {
-              cursor: String!
-              node: Series!
-            }
-
-            type SeriesEventPayload {
-              episode: Int!
-              id: ID
-              title: String!
-            }
-
-            input SeriesOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [SeriesSort!]
-            }
-
-            \\"\\"\\"
-            Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
-            \\"\\"\\"
-            input SeriesSort {
-              episode: SortDirection
-              id: SortDirection
-              title: SortDirection
-            }
-
-            input SeriesSubscriptionWhere {
-              AND: [SeriesSubscriptionWhere!]
-              NOT: SeriesSubscriptionWhere
-              OR: [SeriesSubscriptionWhere!]
-              episode: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              episode_EQ: Int
-              episode_GT: Int
-              episode_GTE: Int
-              episode_IN: [Int!]
-              episode_LT: Int
-              episode_LTE: Int
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
-            }
-
-            input SeriesUpdateInput {
-              director: SeriesDirectorUpdateFieldInput
-              episode: Int @deprecated(reason: \\"Please use the explicit _SET field\\")
-              episode_DECREMENT: Int
-              episode_INCREMENT: Int
-              episode_SET: Int
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              title_SET: String
-            }
-
-            type SeriesUpdatedEvent {
-              event: EventType!
-              previousState: SeriesEventPayload!
-              timestamp: Float!
-              updatedSeries: SeriesEventPayload!
-            }
-
-            input SeriesWhere {
-              AND: [SeriesWhere!]
-              NOT: SeriesWhere
-              OR: [SeriesWhere!]
-              director: CreatureWhere
-              directorAggregate: SeriesDirectorAggregateInput
-              directorConnection: ProductionDirectorConnectionWhere
-              episode: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              episode_EQ: Int
-              episode_GT: Int
-              episode_GTE: Int
-              episode_IN: [Int!]
-              episode_LT: Int
-              episode_LTE: Int
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
-            }
-
-            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
-            enum SortDirection {
-              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
-              ASC
-              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
-              DESC
-            }
-
-            type StringAggregateSelection {
-              longest: String
-              shortest: String
-            }
-
-            type Subscription {
-              personCreated: PersonCreatedEvent!
-              personDeleted: PersonDeletedEvent!
-              personUpdated: PersonUpdatedEvent!
-              seriesCreated(where: SeriesSubscriptionWhere): SeriesCreatedEvent!
-              seriesDeleted(where: SeriesSubscriptionWhere): SeriesDeletedEvent!
-              seriesUpdated(where: SeriesSubscriptionWhere): SeriesUpdatedEvent!
-            }
-
-            \\"\\"\\"
-            Information about the number of nodes and relationships created and deleted during an update mutation
-            \\"\\"\\"
-            type UpdateInfo {
-              nodesCreated: Int!
-              nodesDeleted: Int!
-              relationshipsCreated: Int!
-              relationshipsDeleted: Int!
-            }
-
-            type UpdateMoviesMutationResponse {
-              info: UpdateInfo!
-              movies: [Movie!]!
-            }
-
-            type UpdatePeopleMutationResponse {
-              info: UpdateInfo!
-              people: [Person!]!
-            }
-
-            type UpdateSeriesMutationResponse {
-              info: UpdateInfo!
-              series: [Series!]!
             }"
         `);
     });

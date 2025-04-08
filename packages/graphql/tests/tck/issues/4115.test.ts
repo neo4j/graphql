@@ -29,14 +29,14 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type User @node {
-                id: ID! @unique
+                id: ID!
                 roles: [String!]!
             }
 
             type Family @node {
-                id: ID! @id @unique
+                id: ID! @id
                 members: [Person!]! @relationship(type: "MEMBER_OF", direction: IN)
-                creator: User! @relationship(type: "CREATOR_OF", direction: IN)
+                creator: [User!]! @relationship(type: "CREATOR_OF", direction: IN)
             }
 
             type Person
@@ -46,16 +46,22 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
                         {
                             where: {
                                 AND: [
-                                    { node: { creator: { id_EQ: "$jwt.uid" } } }
-                                    { node: { family: { creator: { roles_INCLUDES: "plan:paid" } } } }
+                                    { node: { creator: { some: { id: { eq: "$jwt.uid" } } } } }
+                                    {
+                                        node: {
+                                            family: {
+                                                some: { creator: { some: { roles: { includes: "plan:paid" } } } }
+                                            }
+                                        }
+                                    }
                                 ]
                             }
                         }
                     ]
                 ) {
-                id: ID! @id @unique
-                creator: User! @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])
-                family: Family! @relationship(type: "MEMBER_OF", direction: OUT)
+                id: ID! @id
+                creator: [User!]! @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])
+                family: [Family!]! @relationship(type: "MEMBER_OF", direction: OUT)
             }
 
             type JWT @jwt {
@@ -80,8 +86,12 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
             query Family {
                 families {
                     id
-                    membersAggregate {
-                        count
+                    membersConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -90,38 +100,40 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Family)
+            "CYPHER 5
+            MATCH (this:Family)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
-                OPTIONAL MATCH (this1)<-[:CREATOR_OF]-(this2:User)
-                WITH *, count(this2) AS var3
                 CALL {
-                    WITH this1
-                    MATCH (this1)-[:MEMBER_OF]->(this4:Family)
-                    OPTIONAL MATCH (this4)<-[:CREATOR_OF]-(this5:User)
-                    WITH *, count(this5) AS var6
-                    WITH *
-                    WHERE (var6 <> 0 AND ($param0 IS NOT NULL AND $param0 IN this5.roles))
-                    RETURN count(this4) = 1 AS var7
+                    WITH this
+                    MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
+                    WHERE ($isAuthenticated = true AND (EXISTS {
+                        MATCH (this1)<-[:CREATOR_OF]-(this2:User)
+                        WHERE ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid)
+                    } AND EXISTS {
+                        MATCH (this1)-[:MEMBER_OF]->(this3:Family)
+                        WHERE EXISTS {
+                            MATCH (this3)<-[:CREATOR_OF]-(this4:User)
+                            WHERE ($param2 IS NOT NULL AND $param2 IN this4.roles)
+                        }
+                    }))
+                    RETURN { nodes: count(DISTINCT this1) } AS var5
                 }
-                WITH *
-                WHERE ($isAuthenticated = true AND ((var3 <> 0 AND ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid)) AND var7 = true))
-                RETURN count(this1) AS var8
+                RETURN { aggregate: { count: var5 } } AS var6
             }
-            RETURN this { .id, membersAggregate: { count: var8 } } AS this"
+            RETURN this { .id, membersConnection: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"plan:paid\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"michel\\"
-                }
+                },
+                \\"param2\\": \\"plan:paid\\"
             }"
         `);
     });

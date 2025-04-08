@@ -18,7 +18,6 @@
  */
 
 import { CypherAnnotation } from "../../annotation/CypherAnnotation";
-import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
 import { Attribute } from "../Attribute";
 import {
     EnumType,
@@ -555,18 +554,6 @@ describe("Attribute", () => {
     });
 
     describe("annotation assertions", () => {
-        test("isUnique", () => {
-            const attribute = new AttributeAdapter(
-                new Attribute({
-                    name: "test",
-                    annotations: { unique: new UniqueAnnotation({ constraintName: "test" }) },
-                    type: new ScalarType(GraphQLBuiltInScalarType.ID, true),
-                    args: [],
-                })
-            );
-            expect(attribute.isUnique()).toBe(true);
-        });
-
         test("isCypher", () => {
             const attribute = new AttributeAdapter(
                 new Attribute({

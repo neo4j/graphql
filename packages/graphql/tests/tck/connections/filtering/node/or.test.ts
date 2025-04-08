@@ -52,7 +52,9 @@ describe("Cypher -> Connections -> Filtering -> Node -> OR", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { OR: [{ firstName_EQ: "Tom" }, { lastName_EQ: "Hanks" }] } }) {
+                    actorsConnection(
+                        where: { node: { OR: [{ firstName: { eq: "Tom" } }, { lastName: { eq: "Hanks" } }] } }
+                    ) {
                         edges {
                             properties {
                                 screenTime
@@ -70,7 +72,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> OR", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)

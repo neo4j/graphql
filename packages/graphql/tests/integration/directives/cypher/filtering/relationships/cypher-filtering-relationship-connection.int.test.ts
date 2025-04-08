@@ -82,8 +82,12 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
                 ${Movie.operations.connection}(
                     where: {
                         NOT: {
-                            actors_SOME: {
-                                name_EQ: "Jada Pinkett Smith"
+                            actors: {
+                                some: { 
+                                    name: {
+                                        eq: "Jada Pinkett Smith"
+                                    }
+                                }
                             }
                         }
                     }
@@ -159,8 +163,12 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             query {
                 ${Movie.operations.connection}(
                     where: {
-                        actors_ALL: {
-                            name_EQ: "Keanu Reeves"
+                        actors: {
+                            all: {
+                                name: {
+                                    eq: "Keanu Reeves"
+                                }
+                            }
                         } 
                     }
                 ) {
@@ -239,8 +247,12 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             query {
                 ${Movie.operations.connection}(
                     where: {
-                        actors_SINGLE: {
-                            name_EQ: "Carrie-Anne Moss"
+                        actors: {
+                            single: {
+                                name: {
+                                    eq: "Carrie-Anne Moss"
+                                }
+                            }
                         } 
                     }
                 ) {
@@ -317,8 +329,10 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             query {
                 ${Movie.operations.connection}(
                     where: {
-                        actors_SOME: {
-                            name_EQ: "Keanu Reeves"
+                        actors: {
+                            some: {
+                                name: { eq: "Keanu Reeves" }
+                            }
                         } 
                     }
                 ) {
@@ -400,8 +414,10 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             query {
                 ${Movie.operations.connection}(
                     where: {
-                        actors_SOME: {
-                            name_EQ: "Keanu Reeves"
+                        actors: {
+                            some: {
+                                name: { eq: "Keanu Reeves" }
+                            }
                         } 
                     }
                     sort: {
@@ -485,8 +501,10 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             query {
                 ${Movie.operations.connection}(
                     where: {
-                        actors_NONE: {
-                            name_EQ: "Keanu Reeves"
+                        actors: {
+                            none: {
+                                name: { eq: "Keanu Reeves" }
+                            }
                         } 
                     }
                 ) {
@@ -599,8 +617,8 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
                 ${Movie.operations.connection}(
                     where: { 
                         OR: [
-                            { actors_SOME: { name_EQ: "Jada Pinkett Smith" } },
-                            { genres_SOME: { name_EQ: "Romance" } }
+                            { actors: { some: { name: { eq: "Jada Pinkett Smith" } } }},
+                            { genres: { some: { name: { eq: "Romance" }}  } }
                         ]
                     }
                 )

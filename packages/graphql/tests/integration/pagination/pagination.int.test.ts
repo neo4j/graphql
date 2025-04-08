@@ -115,7 +115,6 @@ describe("Pagination", () => {
     beforeAll(async () => {
         await testHelper.initNeo4jGraphQL({
             typeDefs,
-            features: { excludeDeprecatedFields: { deprecatedOptionsArgument: true } },
         });
 
         await testHelper.executeCypher(

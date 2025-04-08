@@ -77,12 +77,6 @@ describe("@selectable", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              description: StringAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
             input MovieCreateInput {
               description: String
               title: String!
@@ -91,15 +85,6 @@ describe("@selectable", () => {
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -111,28 +96,28 @@ describe("@selectable", () => {
             }
 
             input MovieUpdateInput {
-              description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              description_SET: String
-              title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              title_SET: String
+              description: StringScalarMutations
+              description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              description_CONTAINS: String
-              description_ENDS_WITH: String
-              description_EQ: String
-              description_IN: [String]
-              description_STARTS_WITH: String
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              description: StringScalarFilters
+              description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+              description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+              description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+              description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+              description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -157,8 +142,7 @@ describe("@selectable", () => {
             }
 
             type Query {
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -173,6 +157,20 @@ describe("@selectable", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -246,11 +244,6 @@ describe("@selectable", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
             input MovieCreateInput {
               description: String
               title: String!
@@ -259,15 +252,6 @@ describe("@selectable", () => {
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -279,28 +263,28 @@ describe("@selectable", () => {
             }
 
             input MovieUpdateInput {
-              description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              description_SET: String
-              title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              title_SET: String
+              description: StringScalarMutations
+              description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              description_CONTAINS: String
-              description_ENDS_WITH: String
-              description_EQ: String
-              description_IN: [String]
-              description_STARTS_WITH: String
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              description: StringScalarFilters
+              description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+              description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+              description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+              description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+              description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -325,8 +309,7 @@ describe("@selectable", () => {
             }
 
             type Query {
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -341,6 +324,20 @@ describe("@selectable", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -413,11 +410,6 @@ describe("@selectable", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              title: StringAggregateSelection!
-            }
-
             input MovieCreateInput {
               description: String
               title: String!
@@ -426,15 +418,6 @@ describe("@selectable", () => {
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -446,28 +429,28 @@ describe("@selectable", () => {
             }
 
             input MovieUpdateInput {
-              description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              description_SET: String
-              title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              title_SET: String
+              description: StringScalarMutations
+              description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              description_CONTAINS: String
-              description_ENDS_WITH: String
-              description_EQ: String
-              description_IN: [String]
-              description_STARTS_WITH: String
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              description: StringScalarFilters
+              description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+              description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+              description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+              description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+              description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -492,8 +475,7 @@ describe("@selectable", () => {
             }
 
             type Query {
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -508,6 +490,20 @@ describe("@selectable", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -540,7 +536,6 @@ describe("@selectable", () => {
             "schema {
               query: Query
               mutation: Mutation
-              subscription: Subscription
             }
 
             type Count {
@@ -568,14 +563,6 @@ describe("@selectable", () => {
               relationshipsDeleted: Int!
             }
 
-            enum EventType {
-              CREATE
-              CREATE_RELATIONSHIP
-              DELETE
-              DELETE_RELATIONSHIP
-              UPDATE
-            }
-
             type Movie {
               title: String!
             }
@@ -590,45 +577,14 @@ describe("@selectable", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              description: StringAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
             input MovieCreateInput {
               description: String
               title: String!
             }
 
-            type MovieCreatedEvent {
-              createdMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
-            type MovieDeletedEvent {
-              deletedMovie: MovieEventPayload!
-              event: EventType!
-              timestamp: Float!
-            }
-
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            type MovieEventPayload {
-              title: String!
-            }
-
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -639,54 +595,29 @@ describe("@selectable", () => {
               title: SortDirection
             }
 
-            input MovieSubscriptionWhere {
-              AND: [MovieSubscriptionWhere!]
-              NOT: MovieSubscriptionWhere
-              OR: [MovieSubscriptionWhere!]
-              description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              description_CONTAINS: String
-              description_ENDS_WITH: String
-              description_EQ: String
-              description_IN: [String]
-              description_STARTS_WITH: String
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
-            }
-
             input MovieUpdateInput {
-              description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              description_SET: String
-              title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              title_SET: String
-            }
-
-            type MovieUpdatedEvent {
-              event: EventType!
-              previousState: MovieEventPayload!
-              timestamp: Float!
-              updatedMovie: MovieEventPayload!
+              description: StringScalarMutations
+              description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              description_CONTAINS: String
-              description_ENDS_WITH: String
-              description_EQ: String
-              description_IN: [String]
-              description_STARTS_WITH: String
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              description: StringScalarFilters
+              description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+              description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+              description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+              description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+              description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -711,8 +642,7 @@ describe("@selectable", () => {
             }
 
             type Query {
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -729,10 +659,18 @@ describe("@selectable", () => {
               shortest: String
             }
 
-            type Subscription {
-              movieCreated(where: MovieSubscriptionWhere): MovieCreatedEvent!
-              movieDeleted(where: MovieSubscriptionWhere): MovieDeletedEvent!
-              movieUpdated(where: MovieSubscriptionWhere): MovieUpdatedEvent!
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -776,8 +714,7 @@ describe("@selectable", () => {
                 }
 
                 type Actor {
-                  actedInAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
-                  actedInConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+                  actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
 
@@ -785,7 +722,7 @@ describe("@selectable", () => {
                   AND: [ActorActedInAggregateInput!]
                   NOT: ActorActedInAggregateInput
                   OR: [ActorActedInAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -795,15 +732,42 @@ describe("@selectable", () => {
                 }
 
                 input ActorActedInConnectFieldInput {
-                  \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties.
-                  \\"\\"\\"
-                  overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
                   where: MovieConnectWhere
                 }
 
                 type ActorActedInConnection {
                   aggregate: ActorMovieActedInAggregateSelection!
+                }
+
+                input ActorActedInConnectionAggregateInput {
+                  AND: [ActorActedInConnectionAggregateInput!]
+                  NOT: ActorActedInConnectionAggregateInput
+                  OR: [ActorActedInConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: ActorActedInNodeAggregationWhereInput
+                }
+
+                input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Actors where all of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  all: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where none of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  none: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where one of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  single: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where some of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  some: ActorActedInConnectionWhere
                 }
 
                 input ActorActedInConnectionSort {
@@ -838,36 +802,38 @@ describe("@selectable", () => {
                   AND: [ActorActedInNodeAggregationWhereInput!]
                   NOT: ActorActedInNodeAggregationWhereInput
                   OR: [ActorActedInNodeAggregationWhereInput!]
-                  description_AVERAGE_LENGTH_EQUAL: Float
-                  description_AVERAGE_LENGTH_GT: Float
-                  description_AVERAGE_LENGTH_GTE: Float
-                  description_AVERAGE_LENGTH_LT: Float
-                  description_AVERAGE_LENGTH_LTE: Float
-                  description_LONGEST_LENGTH_EQUAL: Int
-                  description_LONGEST_LENGTH_GT: Int
-                  description_LONGEST_LENGTH_GTE: Int
-                  description_LONGEST_LENGTH_LT: Int
-                  description_LONGEST_LENGTH_LTE: Int
-                  description_SHORTEST_LENGTH_EQUAL: Int
-                  description_SHORTEST_LENGTH_GT: Int
-                  description_SHORTEST_LENGTH_GTE: Int
-                  description_SHORTEST_LENGTH_LT: Int
-                  description_SHORTEST_LENGTH_LTE: Int
-                  title_AVERAGE_LENGTH_EQUAL: Float
-                  title_AVERAGE_LENGTH_GT: Float
-                  title_AVERAGE_LENGTH_GTE: Float
-                  title_AVERAGE_LENGTH_LT: Float
-                  title_AVERAGE_LENGTH_LTE: Float
-                  title_LONGEST_LENGTH_EQUAL: Int
-                  title_LONGEST_LENGTH_GT: Int
-                  title_LONGEST_LENGTH_GTE: Int
-                  title_LONGEST_LENGTH_LT: Int
-                  title_LONGEST_LENGTH_LTE: Int
-                  title_SHORTEST_LENGTH_EQUAL: Int
-                  title_SHORTEST_LENGTH_GT: Int
-                  title_SHORTEST_LENGTH_GTE: Int
-                  title_SHORTEST_LENGTH_LT: Int
-                  title_SHORTEST_LENGTH_LTE: Int
+                  description: StringScalarAggregationFilters
+                  description_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { eq: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { gt: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { gte: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { lt: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { lte: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { eq: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { gt: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { gte: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { lt: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { lte: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { eq: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { gt: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { gte: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { lt: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { lte: ... } } }' instead.\\")
+                  title: StringScalarAggregationFilters
+                  title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { eq: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gt: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gte: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lt: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lte: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { eq: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gt: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gte: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lt: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lte: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { eq: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gt: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gte: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lt: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 input ActorActedInUpdateConnectionInput {
@@ -881,7 +847,6 @@ describe("@selectable", () => {
                   delete: [ActorActedInDeleteFieldInput!]
                   disconnect: [ActorActedInDisconnectFieldInput!]
                   update: ActorActedInUpdateConnectionInput
-                  where: ActorActedInConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type ActorAggregate {
@@ -890,11 +855,6 @@ describe("@selectable", () => {
                 }
 
                 type ActorAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type ActorAggregateSelection {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -917,23 +877,9 @@ describe("@selectable", () => {
                   node: ActorMovieActedInNodeAggregateSelection
                 }
 
-                type ActorMovieActedInAggregationSelection {
-                  count: Int!
-                  node: ActorMovieActedInNodeAggregateSelection
-                }
-
                 type ActorMovieActedInNodeAggregateSelection {
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
-                }
-
-                input ActorOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [ActorSort!]
                 }
 
                 \\"\\"\\"
@@ -945,45 +891,47 @@ describe("@selectable", () => {
 
                 input ActorUpdateInput {
                   actedIn: [ActorActedInUpdateFieldInput!]
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedIn: MovieRelationshipFilters
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
+                  actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_ALL: ActorActedInConnectionWhere
+                  actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where none of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_NONE: ActorActedInConnectionWhere
+                  actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where one of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_SINGLE: ActorActedInConnectionWhere
+                  actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_SOME: ActorActedInConnectionWhere
+                  actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                  actedIn_ALL: MovieWhere
+                  actedIn_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
                   \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                  actedIn_NONE: MovieWhere
+                  actedIn_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
                   \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                  actedIn_SINGLE: MovieWhere
+                  actedIn_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                  actedIn_SOME: MovieWhere
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  actedIn_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -991,6 +939,11 @@ describe("@selectable", () => {
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
                 }
 
                 type Count {
@@ -1028,6 +981,26 @@ describe("@selectable", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
                 type Movie {
                   description: String
                   title: String!
@@ -1039,12 +1012,6 @@ describe("@selectable", () => {
                 }
 
                 type MovieAggregateNode {
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -1063,13 +1030,15 @@ describe("@selectable", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
+                input MovieRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                  all: MovieWhere
+                  \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                  none: MovieWhere
+                  \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                  single: MovieWhere
+                  \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                  some: MovieWhere
                 }
 
                 \\"\\"\\"
@@ -1081,28 +1050,28 @@ describe("@selectable", () => {
                 }
 
                 input MovieUpdateInput {
-                  description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  description_SET: String
-                  title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  title_SET: String
+                  description: StringScalarMutations
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+                  title: StringScalarMutations
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  description: StringScalarFilters
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+                  title: StringScalarFilters
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -1130,11 +1099,9 @@ describe("@selectable", () => {
                 }
 
                 type Query {
-                  actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
+                  actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -1149,6 +1116,27 @@ describe("@selectable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -1195,9 +1183,8 @@ describe("@selectable", () => {
                 }
 
                 type Actor {
-                  actedIn(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  actedInAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: MovieWhere): ActorMovieActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
-                  actedInConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+                  actedIn(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
+                  actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
 
@@ -1205,7 +1192,7 @@ describe("@selectable", () => {
                   AND: [ActorActedInAggregateInput!]
                   NOT: ActorActedInAggregateInput
                   OR: [ActorActedInAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -1215,10 +1202,6 @@ describe("@selectable", () => {
                 }
 
                 input ActorActedInConnectFieldInput {
-                  \\"\\"\\"
-                  Whether or not to overwrite any matching relationship with the new properties.
-                  \\"\\"\\"
-                  overwrite: Boolean! = true @deprecated(reason: \\"The overwrite argument is deprecated and will be removed\\")
                   where: MovieConnectWhere
                 }
 
@@ -1227,6 +1210,37 @@ describe("@selectable", () => {
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ActorActedInConnectionAggregateInput {
+                  AND: [ActorActedInConnectionAggregateInput!]
+                  NOT: ActorActedInConnectionAggregateInput
+                  OR: [ActorActedInConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: ActorActedInNodeAggregationWhereInput
+                }
+
+                input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Actors where all of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  all: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where none of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  none: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where one of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  single: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where some of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  some: ActorActedInConnectionWhere
                 }
 
                 input ActorActedInConnectionSort {
@@ -1261,36 +1275,38 @@ describe("@selectable", () => {
                   AND: [ActorActedInNodeAggregationWhereInput!]
                   NOT: ActorActedInNodeAggregationWhereInput
                   OR: [ActorActedInNodeAggregationWhereInput!]
-                  description_AVERAGE_LENGTH_EQUAL: Float
-                  description_AVERAGE_LENGTH_GT: Float
-                  description_AVERAGE_LENGTH_GTE: Float
-                  description_AVERAGE_LENGTH_LT: Float
-                  description_AVERAGE_LENGTH_LTE: Float
-                  description_LONGEST_LENGTH_EQUAL: Int
-                  description_LONGEST_LENGTH_GT: Int
-                  description_LONGEST_LENGTH_GTE: Int
-                  description_LONGEST_LENGTH_LT: Int
-                  description_LONGEST_LENGTH_LTE: Int
-                  description_SHORTEST_LENGTH_EQUAL: Int
-                  description_SHORTEST_LENGTH_GT: Int
-                  description_SHORTEST_LENGTH_GTE: Int
-                  description_SHORTEST_LENGTH_LT: Int
-                  description_SHORTEST_LENGTH_LTE: Int
-                  title_AVERAGE_LENGTH_EQUAL: Float
-                  title_AVERAGE_LENGTH_GT: Float
-                  title_AVERAGE_LENGTH_GTE: Float
-                  title_AVERAGE_LENGTH_LT: Float
-                  title_AVERAGE_LENGTH_LTE: Float
-                  title_LONGEST_LENGTH_EQUAL: Int
-                  title_LONGEST_LENGTH_GT: Int
-                  title_LONGEST_LENGTH_GTE: Int
-                  title_LONGEST_LENGTH_LT: Int
-                  title_LONGEST_LENGTH_LTE: Int
-                  title_SHORTEST_LENGTH_EQUAL: Int
-                  title_SHORTEST_LENGTH_GT: Int
-                  title_SHORTEST_LENGTH_GTE: Int
-                  title_SHORTEST_LENGTH_LT: Int
-                  title_SHORTEST_LENGTH_LTE: Int
+                  description: StringScalarAggregationFilters
+                  description_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { eq: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { gt: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { gte: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { lt: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { lte: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { eq: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { gt: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { gte: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { lt: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { lte: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { eq: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { gt: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { gte: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { lt: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { lte: ... } } }' instead.\\")
+                  title: StringScalarAggregationFilters
+                  title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { eq: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gt: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gte: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lt: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lte: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { eq: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gt: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gte: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lt: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lte: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { eq: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gt: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gte: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lt: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type ActorActedInRelationship {
@@ -1309,7 +1325,6 @@ describe("@selectable", () => {
                   delete: [ActorActedInDeleteFieldInput!]
                   disconnect: [ActorActedInDisconnectFieldInput!]
                   update: ActorActedInUpdateConnectionInput
-                  where: ActorActedInConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type ActorAggregate {
@@ -1318,11 +1333,6 @@ describe("@selectable", () => {
                 }
 
                 type ActorAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type ActorAggregateSelection {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -1345,23 +1355,9 @@ describe("@selectable", () => {
                   node: ActorMovieActedInNodeAggregateSelection
                 }
 
-                type ActorMovieActedInAggregationSelection {
-                  count: Int!
-                  node: ActorMovieActedInNodeAggregateSelection
-                }
-
                 type ActorMovieActedInNodeAggregateSelection {
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
-                }
-
-                input ActorOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [ActorSort!]
                 }
 
                 \\"\\"\\"
@@ -1373,45 +1369,47 @@ describe("@selectable", () => {
 
                 input ActorUpdateInput {
                   actedIn: [ActorActedInUpdateFieldInput!]
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedIn: MovieRelationshipFilters
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
+                  actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_ALL: ActorActedInConnectionWhere
+                  actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where none of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_NONE: ActorActedInConnectionWhere
+                  actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where one of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_SINGLE: ActorActedInConnectionWhere
+                  actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_SOME: ActorActedInConnectionWhere
+                  actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Actors where all of the related Movies match this filter\\"\\"\\"
-                  actedIn_ALL: MovieWhere
+                  actedIn_ALL: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
                   \\"\\"\\"Return Actors where none of the related Movies match this filter\\"\\"\\"
-                  actedIn_NONE: MovieWhere
+                  actedIn_NONE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
                   \\"\\"\\"Return Actors where one of the related Movies match this filter\\"\\"\\"
-                  actedIn_SINGLE: MovieWhere
+                  actedIn_SINGLE: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Actors where some of the related Movies match this filter\\"\\"\\"
-                  actedIn_SOME: MovieWhere
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  actedIn_SOME: MovieWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -1419,6 +1417,11 @@ describe("@selectable", () => {
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
                 }
 
                 type Count {
@@ -1456,6 +1459,26 @@ describe("@selectable", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
                 type Movie {
                   description: String
                   title: String!
@@ -1467,12 +1490,6 @@ describe("@selectable", () => {
                 }
 
                 type MovieAggregateNode {
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
-                type MovieAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -1491,13 +1508,15 @@ describe("@selectable", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
+                input MovieRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Movies match this filter\\"\\"\\"
+                  all: MovieWhere
+                  \\"\\"\\"Filter type where none of the related Movies match this filter\\"\\"\\"
+                  none: MovieWhere
+                  \\"\\"\\"Filter type where one of the related Movies match this filter\\"\\"\\"
+                  single: MovieWhere
+                  \\"\\"\\"Filter type where some of the related Movies match this filter\\"\\"\\"
+                  some: MovieWhere
                 }
 
                 \\"\\"\\"
@@ -1509,28 +1528,28 @@ describe("@selectable", () => {
                 }
 
                 input MovieUpdateInput {
-                  description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  description_SET: String
-                  title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  title_SET: String
+                  description: StringScalarMutations
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+                  title: StringScalarMutations
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  description: StringScalarFilters
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+                  title: StringScalarFilters
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -1558,11 +1577,9 @@ describe("@selectable", () => {
                 }
 
                 type Query {
-                  actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
+                  actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
                 }
 
@@ -1577,6 +1594,27 @@ describe("@selectable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -1636,6 +1674,25 @@ describe("@selectable", () => {
                   name: String!
                 }
 
+                input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Return Actors where all of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  all: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where none of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  none: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where one of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  single: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where some of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  some: ActorActedInConnectionWhere
+                }
+
                 input ActorActedInConnectionWhere {
                   Movie: ActorActedInMovieConnectionWhere
                   Series: ActorActedInSeriesConnectionWhere
@@ -1690,7 +1747,6 @@ describe("@selectable", () => {
                   delete: [ActorActedInMovieDeleteFieldInput!]
                   disconnect: [ActorActedInMovieDisconnectFieldInput!]
                   update: ActorActedInMovieUpdateConnectionInput
-                  where: ActorActedInMovieConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInMovieUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input ActorActedInSeriesConnectFieldInput {
@@ -1732,7 +1788,6 @@ describe("@selectable", () => {
                   delete: [ActorActedInSeriesDeleteFieldInput!]
                   disconnect: [ActorActedInSeriesDisconnectFieldInput!]
                   update: ActorActedInSeriesUpdateConnectionInput
-                  where: ActorActedInSeriesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInSeriesUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input ActorActedInUpdateInput {
@@ -1746,11 +1801,6 @@ describe("@selectable", () => {
                 }
 
                 type ActorAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type ActorAggregateSelection {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -1768,15 +1818,6 @@ describe("@selectable", () => {
                   node: Actor!
                 }
 
-                input ActorOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [ActorSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -1786,44 +1827,46 @@ describe("@selectable", () => {
 
                 input ActorUpdateInput {
                   actedIn: ActorActedInUpdateInput
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ProductionRelationshipFilters
+                  actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_ALL: ActorActedInConnectionWhere
+                  actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where none of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_NONE: ActorActedInConnectionWhere
+                  actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where one of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_SINGLE: ActorActedInConnectionWhere
+                  actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_SOME: ActorActedInConnectionWhere
+                  actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-                  actedIn_ALL: ProductionWhere
+                  actedIn_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
                   \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-                  actedIn_NONE: ProductionWhere
+                  actedIn_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
                   \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-                  actedIn_SINGLE: ProductionWhere
+                  actedIn_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-                  actedIn_SOME: ProductionWhere
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -1883,12 +1926,6 @@ describe("@selectable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieConnectWhere {
                   node: MovieWhere!
                 }
@@ -1903,15 +1940,6 @@ describe("@selectable", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                 \\"\\"\\"
@@ -1921,28 +1949,28 @@ describe("@selectable", () => {
                 }
 
                 input MovieUpdateInput {
-                  description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  description_SET: String
-                  title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  title_SET: String
+                  description: StringScalarMutations
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+                  title: StringScalarMutations
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  description: StringScalarFilters
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+                  title: StringScalarFilters
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -1974,28 +2002,30 @@ describe("@selectable", () => {
 
                 union Production = Movie | Series
 
+                input ProductionRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
+                }
+
                 input ProductionWhere {
                   Movie: MovieWhere
                   Series: SeriesWhere
                 }
 
                 type Query {
-                  actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
+                  actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  productions(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: ProductionWhere): [Production!]!
-                  series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
+                  productions(limit: Int, offset: Int, where: ProductionWhere): [Production!]!
+                  series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
-                }
-
-                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-                input QueryOptions {
-                  limit: Int
-                  offset: Int
                 }
 
                 type Series {
@@ -2009,12 +2039,6 @@ describe("@selectable", () => {
                 }
 
                 type SeriesAggregateNode {
-                  description: StringAggregateSelection!
-                  name: StringAggregateSelection!
-                }
-
-                type SeriesAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   name: StringAggregateSelection!
                 }
@@ -2040,15 +2064,6 @@ describe("@selectable", () => {
                   node: Series!
                 }
 
-                input SeriesOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [SeriesSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
                 \\"\\"\\"
@@ -2058,28 +2073,28 @@ describe("@selectable", () => {
                 }
 
                 input SeriesUpdateInput {
-                  description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  description_SET: String
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  description: StringScalarMutations
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input SeriesWhere {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
-                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  description: StringScalarFilters
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -2093,6 +2108,20 @@ describe("@selectable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -2151,8 +2180,8 @@ describe("@selectable", () => {
                 }
 
                 type Actor {
-                  actedIn(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: ProductionWhere): [Production!]!
-                  actedInConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, where: ActorActedInConnectionWhere): ActorActedInConnection!
+                  actedIn(limit: Int, offset: Int, where: ProductionWhere): [Production!]!
+                  actedInConnection(after: String, first: Int, where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
 
@@ -2160,6 +2189,25 @@ describe("@selectable", () => {
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Return Actors where all of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  all: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where none of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  none: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where one of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  single: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where some of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  some: ActorActedInConnectionWhere
                 }
 
                 input ActorActedInConnectionWhere {
@@ -2216,7 +2264,6 @@ describe("@selectable", () => {
                   delete: [ActorActedInMovieDeleteFieldInput!]
                   disconnect: [ActorActedInMovieDisconnectFieldInput!]
                   update: ActorActedInMovieUpdateConnectionInput
-                  where: ActorActedInMovieConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInMovieUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type ActorActedInRelationship {
@@ -2263,7 +2310,6 @@ describe("@selectable", () => {
                   delete: [ActorActedInSeriesDeleteFieldInput!]
                   disconnect: [ActorActedInSeriesDisconnectFieldInput!]
                   update: ActorActedInSeriesUpdateConnectionInput
-                  where: ActorActedInSeriesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInSeriesUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 input ActorActedInUpdateInput {
@@ -2277,11 +2323,6 @@ describe("@selectable", () => {
                 }
 
                 type ActorAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type ActorAggregateSelection {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -2299,15 +2340,6 @@ describe("@selectable", () => {
                   node: Actor!
                 }
 
-                input ActorOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [ActorSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
                 \\"\\"\\"
@@ -2317,44 +2349,46 @@ describe("@selectable", () => {
 
                 input ActorUpdateInput {
                   actedIn: ActorActedInUpdateInput
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
+                  actedIn: ProductionRelationshipFilters
+                  actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_ALL: ActorActedInConnectionWhere
+                  actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where none of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_NONE: ActorActedInConnectionWhere
+                  actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where one of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_SINGLE: ActorActedInConnectionWhere
+                  actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_SOME: ActorActedInConnectionWhere
+                  actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-                  actedIn_ALL: ProductionWhere
+                  actedIn_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
                   \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-                  actedIn_NONE: ProductionWhere
+                  actedIn_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
                   \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-                  actedIn_SINGLE: ProductionWhere
+                  actedIn_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-                  actedIn_SOME: ProductionWhere
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -2414,12 +2448,6 @@ describe("@selectable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieConnectWhere {
                   node: MovieWhere!
                 }
@@ -2434,15 +2462,6 @@ describe("@selectable", () => {
                   node: Movie!
                 }
 
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
                 \\"\\"\\"
@@ -2452,28 +2471,28 @@ describe("@selectable", () => {
                 }
 
                 input MovieUpdateInput {
-                  description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  description_SET: String
-                  title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  title_SET: String
+                  description: StringScalarMutations
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+                  title: StringScalarMutations
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  description: StringScalarFilters
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+                  title: StringScalarFilters
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -2505,28 +2524,30 @@ describe("@selectable", () => {
 
                 union Production = Movie | Series
 
+                input ProductionRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
+                }
+
                 input ProductionWhere {
                   Movie: MovieWhere
                   Series: SeriesWhere
                 }
 
                 type Query {
-                  actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
+                  actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  productions(limit: Int, offset: Int, options: QueryOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), where: ProductionWhere): [Production!]!
-                  series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
+                  productions(limit: Int, offset: Int, where: ProductionWhere): [Production!]!
+                  series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
-                }
-
-                \\"\\"\\"Input type for options that can be specified on a query operation.\\"\\"\\"
-                input QueryOptions {
-                  limit: Int
-                  offset: Int
                 }
 
                 type Series {
@@ -2540,12 +2561,6 @@ describe("@selectable", () => {
                 }
 
                 type SeriesAggregateNode {
-                  description: StringAggregateSelection!
-                  name: StringAggregateSelection!
-                }
-
-                type SeriesAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   name: StringAggregateSelection!
                 }
@@ -2571,15 +2586,6 @@ describe("@selectable", () => {
                   node: Series!
                 }
 
-                input SeriesOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [SeriesSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
                 \\"\\"\\"
@@ -2589,28 +2595,28 @@ describe("@selectable", () => {
                 }
 
                 input SeriesUpdateInput {
-                  description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  description_SET: String
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  description: StringScalarMutations
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input SeriesWhere {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
-                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  description: StringScalarFilters
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -2624,6 +2630,20 @@ describe("@selectable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -2688,8 +2708,7 @@ describe("@selectable", () => {
                 }
 
                 type Actor {
-                  actedInAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ProductionWhere): ActorProductionActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
-                  actedInConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+                  actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
 
@@ -2697,7 +2716,7 @@ describe("@selectable", () => {
                   AND: [ActorActedInAggregateInput!]
                   NOT: ActorActedInAggregateInput
                   OR: [ActorActedInAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -2712,6 +2731,37 @@ describe("@selectable", () => {
 
                 type ActorActedInConnection {
                   aggregate: ActorProductionActedInAggregateSelection!
+                }
+
+                input ActorActedInConnectionAggregateInput {
+                  AND: [ActorActedInConnectionAggregateInput!]
+                  NOT: ActorActedInConnectionAggregateInput
+                  OR: [ActorActedInConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: ActorActedInNodeAggregationWhereInput
+                }
+
+                input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Actors where all of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  all: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where none of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  none: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where one of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  single: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where some of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  some: ActorActedInConnectionWhere
                 }
 
                 input ActorActedInConnectionSort {
@@ -2746,36 +2796,38 @@ describe("@selectable", () => {
                   AND: [ActorActedInNodeAggregationWhereInput!]
                   NOT: ActorActedInNodeAggregationWhereInput
                   OR: [ActorActedInNodeAggregationWhereInput!]
-                  description_AVERAGE_LENGTH_EQUAL: Float
-                  description_AVERAGE_LENGTH_GT: Float
-                  description_AVERAGE_LENGTH_GTE: Float
-                  description_AVERAGE_LENGTH_LT: Float
-                  description_AVERAGE_LENGTH_LTE: Float
-                  description_LONGEST_LENGTH_EQUAL: Int
-                  description_LONGEST_LENGTH_GT: Int
-                  description_LONGEST_LENGTH_GTE: Int
-                  description_LONGEST_LENGTH_LT: Int
-                  description_LONGEST_LENGTH_LTE: Int
-                  description_SHORTEST_LENGTH_EQUAL: Int
-                  description_SHORTEST_LENGTH_GT: Int
-                  description_SHORTEST_LENGTH_GTE: Int
-                  description_SHORTEST_LENGTH_LT: Int
-                  description_SHORTEST_LENGTH_LTE: Int
-                  title_AVERAGE_LENGTH_EQUAL: Float
-                  title_AVERAGE_LENGTH_GT: Float
-                  title_AVERAGE_LENGTH_GTE: Float
-                  title_AVERAGE_LENGTH_LT: Float
-                  title_AVERAGE_LENGTH_LTE: Float
-                  title_LONGEST_LENGTH_EQUAL: Int
-                  title_LONGEST_LENGTH_GT: Int
-                  title_LONGEST_LENGTH_GTE: Int
-                  title_LONGEST_LENGTH_LT: Int
-                  title_LONGEST_LENGTH_LTE: Int
-                  title_SHORTEST_LENGTH_EQUAL: Int
-                  title_SHORTEST_LENGTH_GT: Int
-                  title_SHORTEST_LENGTH_GTE: Int
-                  title_SHORTEST_LENGTH_LT: Int
-                  title_SHORTEST_LENGTH_LTE: Int
+                  description: StringScalarAggregationFilters
+                  description_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { eq: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { gt: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { gte: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { lt: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { lte: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { eq: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { gt: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { gte: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { lt: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { lte: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { eq: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { gt: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { gte: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { lt: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { lte: ... } } }' instead.\\")
+                  title: StringScalarAggregationFilters
+                  title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { eq: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gt: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gte: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lt: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lte: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { eq: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gt: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gte: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lt: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lte: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { eq: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gt: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gte: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lt: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 input ActorActedInUpdateConnectionInput {
@@ -2789,7 +2841,6 @@ describe("@selectable", () => {
                   delete: [ActorActedInDeleteFieldInput!]
                   disconnect: [ActorActedInDisconnectFieldInput!]
                   update: ActorActedInUpdateConnectionInput
-                  where: ActorActedInConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type ActorAggregate {
@@ -2798,11 +2849,6 @@ describe("@selectable", () => {
                 }
 
                 type ActorAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type ActorAggregateSelection {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -2820,22 +2866,8 @@ describe("@selectable", () => {
                   node: Actor!
                 }
 
-                input ActorOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [ActorSort!]
-                }
-
                 type ActorProductionActedInAggregateSelection {
                   count: CountConnection!
-                  node: ActorProductionActedInNodeAggregateSelection
-                }
-
-                type ActorProductionActedInAggregationSelection {
-                  count: Int!
                   node: ActorProductionActedInNodeAggregateSelection
                 }
 
@@ -2853,45 +2885,47 @@ describe("@selectable", () => {
 
                 input ActorUpdateInput {
                   actedIn: [ActorActedInUpdateFieldInput!]
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedIn: ProductionRelationshipFilters
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
+                  actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_ALL: ActorActedInConnectionWhere
+                  actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where none of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_NONE: ActorActedInConnectionWhere
+                  actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where one of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_SINGLE: ActorActedInConnectionWhere
+                  actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_SOME: ActorActedInConnectionWhere
+                  actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-                  actedIn_ALL: ProductionWhere
+                  actedIn_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
                   \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-                  actedIn_NONE: ProductionWhere
+                  actedIn_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
                   \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-                  actedIn_SINGLE: ProductionWhere
+                  actedIn_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-                  actedIn_SOME: ProductionWhere
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -2899,6 +2933,11 @@ describe("@selectable", () => {
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
                 }
 
                 type Count {
@@ -2941,6 +2980,26 @@ describe("@selectable", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
                 type Movie implements Production {
                   description: String
                   title: String!
@@ -2956,12 +3015,6 @@ describe("@selectable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieCreateInput {
                   description: String
                   title: String!
@@ -2970,15 +3023,6 @@ describe("@selectable", () => {
                 type MovieEdge {
                   cursor: String!
                   node: Movie!
-                }
-
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
                 }
 
                 \\"\\"\\"
@@ -2990,28 +3034,28 @@ describe("@selectable", () => {
                 }
 
                 input MovieUpdateInput {
-                  description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  description_SET: String
-                  title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  title_SET: String
+                  description: StringScalarMutations
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+                  title: StringScalarMutations
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  description: StringScalarFilters
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+                  title: StringScalarFilters
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -3056,12 +3100,6 @@ describe("@selectable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type ProductionAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input ProductionConnectWhere {
                   node: ProductionWhere!
                 }
@@ -3081,13 +3119,15 @@ describe("@selectable", () => {
                   Series
                 }
 
-                input ProductionOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [ProductionSort!]
+                input ProductionRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
                 }
 
                 \\"\\"\\"
@@ -3099,30 +3139,29 @@ describe("@selectable", () => {
                 }
 
                 input ProductionUpdateInput {
-                  description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  description_SET: String
-                  title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  title_SET: String
+                  description: StringScalarMutations
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+                  title: StringScalarMutations
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input ProductionWhere {
                   AND: [ProductionWhere!]
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
-                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  description: StringScalarFilters
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+                  title: StringScalarFilters
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                   typename: [ProductionImplementation!]
-                  typename_IN: [ProductionImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
                 }
 
                 type ProductionsConnection {
@@ -3133,17 +3172,13 @@ describe("@selectable", () => {
                 }
 
                 type Query {
-                  actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
+                  actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  productions(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
+                  productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
                   productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
-                  series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
+                  series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
@@ -3158,12 +3193,6 @@ describe("@selectable", () => {
                 }
 
                 type SeriesAggregateNode {
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
-                type SeriesAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -3185,15 +3214,6 @@ describe("@selectable", () => {
                   node: Series!
                 }
 
-                input SeriesOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [SeriesSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
                 \\"\\"\\"
@@ -3203,28 +3223,28 @@ describe("@selectable", () => {
                 }
 
                 input SeriesUpdateInput {
-                  description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  description_SET: String
-                  title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  title_SET: String
+                  description: StringScalarMutations
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+                  title: StringScalarMutations
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input SeriesWhere {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
-                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  description: StringScalarFilters
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+                  title: StringScalarFilters
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -3238,6 +3258,27 @@ describe("@selectable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {
@@ -3299,9 +3340,8 @@ describe("@selectable", () => {
                 }
 
                 type Actor {
-                  actedIn(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  actedInAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ProductionWhere): ActorProductionActedInAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"actedInConnection\\\\\\" instead\\")
-                  actedInConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
+                  actedIn(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
+                  actedInConnection(after: String, first: Int, sort: [ActorActedInConnectionSort!], where: ActorActedInConnectionWhere): ActorActedInConnection!
                   name: String!
                 }
 
@@ -3309,7 +3349,7 @@ describe("@selectable", () => {
                   AND: [ActorActedInAggregateInput!]
                   NOT: ActorActedInAggregateInput
                   OR: [ActorActedInAggregateInput!]
-                  count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+                  count: IntScalarFilters
                   count_EQ: Int
                   count_GT: Int
                   count_GTE: Int
@@ -3327,6 +3367,37 @@ describe("@selectable", () => {
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ActorActedInConnectionAggregateInput {
+                  AND: [ActorActedInConnectionAggregateInput!]
+                  NOT: ActorActedInConnectionAggregateInput
+                  OR: [ActorActedInConnectionAggregateInput!]
+                  count: ConnectionAggregationCountFilterInput
+                  node: ActorActedInNodeAggregationWhereInput
+                }
+
+                input ActorActedInConnectionFilters {
+                  \\"\\"\\"
+                  Filter Actors by aggregating results on related ActorActedInConnections
+                  \\"\\"\\"
+                  aggregate: ActorActedInConnectionAggregateInput
+                  \\"\\"\\"
+                  Return Actors where all of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  all: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where none of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  none: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where one of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  single: ActorActedInConnectionWhere
+                  \\"\\"\\"
+                  Return Actors where some of the related ActorActedInConnections match this filter
+                  \\"\\"\\"
+                  some: ActorActedInConnectionWhere
                 }
 
                 input ActorActedInConnectionSort {
@@ -3361,36 +3432,38 @@ describe("@selectable", () => {
                   AND: [ActorActedInNodeAggregationWhereInput!]
                   NOT: ActorActedInNodeAggregationWhereInput
                   OR: [ActorActedInNodeAggregationWhereInput!]
-                  description_AVERAGE_LENGTH_EQUAL: Float
-                  description_AVERAGE_LENGTH_GT: Float
-                  description_AVERAGE_LENGTH_GTE: Float
-                  description_AVERAGE_LENGTH_LT: Float
-                  description_AVERAGE_LENGTH_LTE: Float
-                  description_LONGEST_LENGTH_EQUAL: Int
-                  description_LONGEST_LENGTH_GT: Int
-                  description_LONGEST_LENGTH_GTE: Int
-                  description_LONGEST_LENGTH_LT: Int
-                  description_LONGEST_LENGTH_LTE: Int
-                  description_SHORTEST_LENGTH_EQUAL: Int
-                  description_SHORTEST_LENGTH_GT: Int
-                  description_SHORTEST_LENGTH_GTE: Int
-                  description_SHORTEST_LENGTH_LT: Int
-                  description_SHORTEST_LENGTH_LTE: Int
-                  title_AVERAGE_LENGTH_EQUAL: Float
-                  title_AVERAGE_LENGTH_GT: Float
-                  title_AVERAGE_LENGTH_GTE: Float
-                  title_AVERAGE_LENGTH_LT: Float
-                  title_AVERAGE_LENGTH_LTE: Float
-                  title_LONGEST_LENGTH_EQUAL: Int
-                  title_LONGEST_LENGTH_GT: Int
-                  title_LONGEST_LENGTH_GTE: Int
-                  title_LONGEST_LENGTH_LT: Int
-                  title_LONGEST_LENGTH_LTE: Int
-                  title_SHORTEST_LENGTH_EQUAL: Int
-                  title_SHORTEST_LENGTH_GT: Int
-                  title_SHORTEST_LENGTH_GTE: Int
-                  title_SHORTEST_LENGTH_LT: Int
-                  title_SHORTEST_LENGTH_LTE: Int
+                  description: StringScalarAggregationFilters
+                  description_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { eq: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { gt: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { gte: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { lt: ... } } }' instead.\\")
+                  description_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'description: { averageLength: { lte: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { eq: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { gt: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { gte: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { lt: ... } } }' instead.\\")
+                  description_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { longestLength: { lte: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { eq: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { gt: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { gte: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { lt: ... } } }' instead.\\")
+                  description_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'description: { shortestLength: { lte: ... } } }' instead.\\")
+                  title: StringScalarAggregationFilters
+                  title_AVERAGE_LENGTH_EQUAL: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { eq: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_GT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gt: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_GTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { gte: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_LT: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lt: ... } } }' instead.\\")
+                  title_AVERAGE_LENGTH_LTE: Float @deprecated(reason: \\"Please use the relevant generic filter 'title: { averageLength: { lte: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { eq: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gt: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { gte: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lt: ... } } }' instead.\\")
+                  title_LONGEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { longestLength: { lte: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_EQUAL: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { eq: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_GT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gt: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { gte: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_LT: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lt: ... } } }' instead.\\")
+                  title_SHORTEST_LENGTH_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter 'title: { shortestLength: { lte: ... } } }' instead.\\")
                 }
 
                 type ActorActedInRelationship {
@@ -3409,7 +3482,6 @@ describe("@selectable", () => {
                   delete: [ActorActedInDeleteFieldInput!]
                   disconnect: [ActorActedInDisconnectFieldInput!]
                   update: ActorActedInUpdateConnectionInput
-                  where: ActorActedInConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ActorActedInUpdateConnectionInput\\\\\\" instead\\")
                 }
 
                 type ActorAggregate {
@@ -3418,11 +3490,6 @@ describe("@selectable", () => {
                 }
 
                 type ActorAggregateNode {
-                  name: StringAggregateSelection!
-                }
-
-                type ActorAggregateSelection {
-                  count: Int!
                   name: StringAggregateSelection!
                 }
 
@@ -3440,22 +3507,8 @@ describe("@selectable", () => {
                   node: Actor!
                 }
 
-                input ActorOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more ActorSort objects to sort Actors by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [ActorSort!]
-                }
-
                 type ActorProductionActedInAggregateSelection {
                   count: CountConnection!
-                  node: ActorProductionActedInNodeAggregateSelection
-                }
-
-                type ActorProductionActedInAggregationSelection {
-                  count: Int!
                   node: ActorProductionActedInNodeAggregateSelection
                 }
 
@@ -3473,45 +3526,47 @@ describe("@selectable", () => {
 
                 input ActorUpdateInput {
                   actedIn: [ActorActedInUpdateFieldInput!]
-                  name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  name_SET: String
+                  name: StringScalarMutations
+                  name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
                 }
 
                 input ActorWhere {
                   AND: [ActorWhere!]
                   NOT: ActorWhere
                   OR: [ActorWhere!]
-                  actedInAggregate: ActorActedInAggregateInput
+                  actedIn: ProductionRelationshipFilters
+                  actedInAggregate: ActorActedInAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the actedInConnection filter, please use { actedInConnection: { aggregate: {...} } } instead\\")
+                  actedInConnection: ActorActedInConnectionFilters
                   \\"\\"\\"
                   Return Actors where all of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_ALL: ActorActedInConnectionWhere
+                  actedInConnection_ALL: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { all: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where none of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_NONE: ActorActedInConnectionWhere
+                  actedInConnection_NONE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { none: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where one of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_SINGLE: ActorActedInConnectionWhere
+                  actedInConnection_SINGLE: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { single: { node: ... } } }' instead.\\")
                   \\"\\"\\"
                   Return Actors where some of the related ActorActedInConnections match this filter
                   \\"\\"\\"
-                  actedInConnection_SOME: ActorActedInConnectionWhere
+                  actedInConnection_SOME: ActorActedInConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedInConnection: { some: { node: ... } } }' instead.\\")
                   \\"\\"\\"Return Actors where all of the related Productions match this filter\\"\\"\\"
-                  actedIn_ALL: ProductionWhere
+                  actedIn_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { all: ... }' instead.\\")
                   \\"\\"\\"Return Actors where none of the related Productions match this filter\\"\\"\\"
-                  actedIn_NONE: ProductionWhere
+                  actedIn_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: { none: ... }' instead.\\")
                   \\"\\"\\"Return Actors where one of the related Productions match this filter\\"\\"\\"
-                  actedIn_SINGLE: ProductionWhere
+                  actedIn_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  single: ... }' instead.\\")
                   \\"\\"\\"Return Actors where some of the related Productions match this filter\\"\\"\\"
-                  actedIn_SOME: ProductionWhere
-                  name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  name_CONTAINS: String
-                  name_ENDS_WITH: String
-                  name_EQ: String
-                  name_IN: [String!]
-                  name_STARTS_WITH: String
+                  actedIn_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'actedIn: {  some: ... }' instead.\\")
+                  name: StringScalarFilters
+                  name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+                  name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+                  name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+                  name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+                  name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
                 }
 
                 type ActorsConnection {
@@ -3519,6 +3574,11 @@ describe("@selectable", () => {
                   edges: [ActorEdge!]!
                   pageInfo: PageInfo!
                   totalCount: Int!
+                }
+
+                input ConnectionAggregationCountFilterInput {
+                  edges: IntScalarFilters
+                  nodes: IntScalarFilters
                 }
 
                 type Count {
@@ -3561,6 +3621,26 @@ describe("@selectable", () => {
                   relationshipsDeleted: Int!
                 }
 
+                \\"\\"\\"Float filters\\"\\"\\"
+                input FloatScalarFilters {
+                  eq: Float
+                  gt: Float
+                  gte: Float
+                  in: [Float!]
+                  lt: Float
+                  lte: Float
+                }
+
+                \\"\\"\\"Int filters\\"\\"\\"
+                input IntScalarFilters {
+                  eq: Int
+                  gt: Int
+                  gte: Int
+                  in: [Int!]
+                  lt: Int
+                  lte: Int
+                }
+
                 type Movie implements Production {
                   description: String
                   title: String!
@@ -3576,12 +3656,6 @@ describe("@selectable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type MovieAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input MovieCreateInput {
                   description: String
                   title: String!
@@ -3590,15 +3664,6 @@ describe("@selectable", () => {
                 type MovieEdge {
                   cursor: String!
                   node: Movie!
-                }
-
-                input MovieOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [MovieSort!]
                 }
 
                 \\"\\"\\"
@@ -3610,28 +3675,28 @@ describe("@selectable", () => {
                 }
 
                 input MovieUpdateInput {
-                  description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  description_SET: String
-                  title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  title_SET: String
+                  description: StringScalarMutations
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+                  title: StringScalarMutations
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input MovieWhere {
                   AND: [MovieWhere!]
                   NOT: MovieWhere
                   OR: [MovieWhere!]
-                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  description: StringScalarFilters
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+                  title: StringScalarFilters
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                 }
 
                 type MoviesConnection {
@@ -3676,12 +3741,6 @@ describe("@selectable", () => {
                   title: StringAggregateSelection!
                 }
 
-                type ProductionAggregateSelection {
-                  count: Int!
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
                 input ProductionConnectWhere {
                   node: ProductionWhere!
                 }
@@ -3701,13 +3760,15 @@ describe("@selectable", () => {
                   Series
                 }
 
-                input ProductionOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [ProductionSort!]
+                input ProductionRelationshipFilters {
+                  \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+                  all: ProductionWhere
+                  \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+                  none: ProductionWhere
+                  \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+                  single: ProductionWhere
+                  \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+                  some: ProductionWhere
                 }
 
                 \\"\\"\\"
@@ -3719,30 +3780,29 @@ describe("@selectable", () => {
                 }
 
                 input ProductionUpdateInput {
-                  description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  description_SET: String
-                  title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  title_SET: String
+                  description: StringScalarMutations
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+                  title: StringScalarMutations
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input ProductionWhere {
                   AND: [ProductionWhere!]
                   NOT: ProductionWhere
                   OR: [ProductionWhere!]
-                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  description: StringScalarFilters
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+                  title: StringScalarFilters
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                   typename: [ProductionImplementation!]
-                  typename_IN: [ProductionImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
                 }
 
                 type ProductionsConnection {
@@ -3753,17 +3813,13 @@ describe("@selectable", () => {
                 }
 
                 type Query {
-                  actors(limit: Int, offset: Int, options: ActorOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ActorSort!], where: ActorWhere): [Actor!]!
-                  actorsAggregate(where: ActorWhere): ActorAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"actorsConnection\\\\\\" instead\\")
+                  actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
                   actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
-                  movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-                  moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+                  movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
                   moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-                  productions(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-                  productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
+                  productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
                   productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
-                  series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-                  seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
+                  series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
                   seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
                 }
 
@@ -3778,12 +3834,6 @@ describe("@selectable", () => {
                 }
 
                 type SeriesAggregateNode {
-                  description: StringAggregateSelection!
-                  title: StringAggregateSelection!
-                }
-
-                type SeriesAggregateSelection {
-                  count: Int!
                   description: StringAggregateSelection!
                   title: StringAggregateSelection!
                 }
@@ -3805,15 +3855,6 @@ describe("@selectable", () => {
                   node: Series!
                 }
 
-                input SeriesOptions {
-                  limit: Int
-                  offset: Int
-                  \\"\\"\\"
-                  Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
-                  \\"\\"\\"
-                  sort: [SeriesSort!]
-                }
-
                 \\"\\"\\"
                 Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
                 \\"\\"\\"
@@ -3823,28 +3864,28 @@ describe("@selectable", () => {
                 }
 
                 input SeriesUpdateInput {
-                  description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  description_SET: String
-                  title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-                  title_SET: String
+                  description: StringScalarMutations
+                  description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+                  title: StringScalarMutations
+                  title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
                 }
 
                 input SeriesWhere {
                   AND: [SeriesWhere!]
                   NOT: SeriesWhere
                   OR: [SeriesWhere!]
-                  description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  description_CONTAINS: String
-                  description_ENDS_WITH: String
-                  description_EQ: String
-                  description_IN: [String]
-                  description_STARTS_WITH: String
-                  title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-                  title_CONTAINS: String
-                  title_ENDS_WITH: String
-                  title_EQ: String
-                  title_IN: [String!]
-                  title_STARTS_WITH: String
+                  description: StringScalarFilters
+                  description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+                  description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+                  description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+                  description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+                  description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+                  title: StringScalarFilters
+                  title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+                  title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+                  title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+                  title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+                  title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
                 }
 
                 \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -3858,6 +3899,27 @@ describe("@selectable", () => {
                 type StringAggregateSelection {
                   longest: String
                   shortest: String
+                }
+
+                \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+                input StringScalarAggregationFilters {
+                  averageLength: FloatScalarFilters
+                  longestLength: IntScalarFilters
+                  shortestLength: IntScalarFilters
+                }
+
+                \\"\\"\\"String filters\\"\\"\\"
+                input StringScalarFilters {
+                  contains: String
+                  endsWith: String
+                  eq: String
+                  in: [String!]
+                  startsWith: String
+                }
+
+                \\"\\"\\"String mutations\\"\\"\\"
+                input StringScalarMutations {
+                  set: String
                 }
 
                 type UpdateActorsMutationResponse {

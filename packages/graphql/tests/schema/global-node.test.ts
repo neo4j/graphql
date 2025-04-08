@@ -64,9 +64,18 @@ describe("Node Interface Types", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie implements Node {
@@ -81,13 +90,6 @@ describe("Node Interface Types", () => {
             }
 
             type MovieAggregateNode {
-              imdb: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              title: StringAggregateSelection!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              imdb: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!
             }
 
@@ -101,15 +103,6 @@ describe("Node Interface Types", () => {
               node: Movie!
             }
 
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -119,10 +112,10 @@ describe("Node Interface Types", () => {
             }
 
             input MovieUpdateInput {
-              imdb: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              imdb_SET: ID
-              title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              title_SET: String
+              imdb: IDScalarMutations
+              imdb_SET: ID @deprecated(reason: \\"Please use the generic mutation 'imdb: { set: ... } }' instead.\\")
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
@@ -130,18 +123,18 @@ describe("Node Interface Types", () => {
               NOT: MovieWhere
               OR: [MovieWhere!]
               id: ID
-              imdb: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              imdb_CONTAINS: ID
-              imdb_ENDS_WITH: ID
-              imdb_EQ: ID
-              imdb_IN: [ID!]
-              imdb_STARTS_WITH: ID
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              imdb: IDScalarFilters
+              imdb_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter imdb: { contains: ... }\\")
+              imdb_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter imdb: { endsWith: ... }\\")
+              imdb_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter imdb: { eq: ... }\\")
+              imdb_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter imdb: { in: ... }\\")
+              imdb_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter imdb: { startsWith: ... }\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -172,8 +165,7 @@ describe("Node Interface Types", () => {
             }
 
             type Query {
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               \\"\\"\\"Fetches an object given its ID\\"\\"\\"
               node(
@@ -193,6 +185,20 @@ describe("Node Interface Types", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"

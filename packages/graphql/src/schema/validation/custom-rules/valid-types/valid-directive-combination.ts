@@ -205,12 +205,10 @@ export function SchemaOrTypeDirectives(context: SDLValidationContext): ASTVisito
     const schemaLevelConfiguration = new Map<string, boolean>([
         ["query", false],
         ["mutation", false],
-        ["subscription", false],
     ]);
     const typeLevelConfiguration = new Map<string, boolean>([
         ["query", false],
         ["mutation", false],
-        ["subscription", false],
     ]);
     return {
         enter(node: ASTNode) {

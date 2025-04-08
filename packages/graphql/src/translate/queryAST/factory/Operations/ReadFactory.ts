@@ -35,7 +35,6 @@ import { RelationshipSelection } from "../../ast/selection/RelationshipSelection
 import { getConcreteEntities } from "../../utils/get-concrete-entities";
 import { getConcreteWhere } from "../../utils/get-concrete-where";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
-import { raiseOnMixedPagination } from "../../utils/raise-on-mixed-pagination";
 import type { QueryASTFactory } from "../QueryASTFactory";
 
 export class ReadFactory {
@@ -76,7 +75,6 @@ export class ReadFactory {
             if (relationship) {
                 selection = new RelationshipSelection({
                     relationship,
-                    directed: Boolean(resolveTree.args?.directed ?? true),
                 });
             } else {
                 selection = new NodeSelection({
@@ -106,7 +104,6 @@ export class ReadFactory {
                 if (relationship) {
                     selection = new RelationshipSelection({
                         relationship,
-                        directed: Boolean(resolveTree.args?.directed ?? true),
                         targetOverride: concreteEntity,
                     });
                 } else {
@@ -158,17 +155,9 @@ export class ReadFactory {
         whereArgs: Record<string, any> | Filter[];
         partialOf?: InterfaceEntityAdapter | UnionEntityAdapter;
     }): T {
-        // SOFT_DEPRECATION: OPTIONS-ARGUMENT
-        const optionsArg: Record<string, any> = (resolveTree.args.options ?? {}) as Record<string, any>;
-        const sortArg = resolveTree.args.sort ?? optionsArg.sort;
-        const limitArg = resolveTree.args.limit ?? optionsArg.limit;
-        const offsetArg = resolveTree.args.offset ?? optionsArg.offset;
-        raiseOnMixedPagination({
-            optionsArg,
-            sort: resolveTree.args.sort,
-            limit: resolveTree.args.limit,
-            offset: resolveTree.args.offset,
-        });
+        const sortArg = resolveTree.args.sort;
+        const limitArg = resolveTree.args.limit;
+        const offsetArg = resolveTree.args.offset;
 
         const paginationArgs: Record<string, any> = { limit: limitArg, offset: offsetArg, sort: sortArg };
 
@@ -189,17 +178,10 @@ export class ReadFactory {
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ) {
-        // SOFT_DEPRECATION: OPTIONS-ARGUMENT
-        const optionsArg: Record<string, any> = (resolveTree.args.options ?? {}) as Record<string, any>;
-        const sortArg = resolveTree.args.sort ?? optionsArg.sort;
-        const limitArg = resolveTree.args.limit ?? optionsArg.limit;
-        const offsetArg = resolveTree.args.offset ?? optionsArg.offset;
-        raiseOnMixedPagination({
-            optionsArg,
-            sort: resolveTree.args.sort,
-            limit: resolveTree.args.limit,
-            offset: resolveTree.args.offset,
-        });
+        const sortArg = resolveTree.args.sort as Record<string, any>[];
+        const limitArg = resolveTree.args.limit as number;
+        const offsetArg = resolveTree.args.offset as number;
+
         const options = this.queryASTFactory.operationsFactory.getOptions({ entity, sortArg, limitArg, offsetArg });
         if (options) {
             const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(options, entity, context);

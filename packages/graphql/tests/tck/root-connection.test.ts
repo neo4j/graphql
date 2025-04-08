@@ -46,7 +46,7 @@ describe("Root Connection Query tests", () => {
     test("Simple selection, Movie by title", async () => {
         const query = /* GraphQL */ `
             {
-                moviesConnection(where: { title_EQ: "River Runs Through It, A" }) {
+                moviesConnection(where: { title: { eq: "River Runs Through It, A" } }) {
                     totalCount
                     edges {
                         node {
@@ -60,7 +60,8 @@ describe("Root Connection Query tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             WHERE this0.title = $param0
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -96,7 +97,8 @@ describe("Root Connection Query tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -134,7 +136,8 @@ describe("Root Connection Query tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             WHERE this0.title CONTAINS $param0
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -181,7 +184,8 @@ describe("Root Connection Query tests", () => {
         `;
         const result = await translateQuery(neoSchema, query);
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this0:Movie)
+            "CYPHER 5
+            MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {

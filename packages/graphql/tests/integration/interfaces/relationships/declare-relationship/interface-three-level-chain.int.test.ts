@@ -38,7 +38,7 @@ describe("interface implementing interface with declared relationships - three l
         const typeDefs = gql`
             type ${Episode} @node {
                 runtime: Int!
-                series: ${Series}! @relationship(type: "HAS_EPISODE", direction: IN)
+                series: [${Series}!]! @relationship(type: "HAS_EPISODE", direction: IN)
             }
 
             interface Thing {

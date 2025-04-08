@@ -42,24 +42,26 @@ describe("Cypher Aggregations Many while Alias fields", () => {
     test("Field Alias Aggregations", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    _count: count
-                    _id: id {
-                        _shortest: shortest
-                        _longest: longest
-                    }
-                    _title: title {
-                        _shortest: shortest
-                        _longest: longest
-                    }
-                    _imdbRating: imdbRating {
-                        _min: min
-                        _max: max
-                        _average: average
-                    }
-                    _createdAt: createdAt {
-                        _min: min
-                        _max: max
+                moviesConnection {
+                    _aggr: aggregate {
+                        _count: count {
+                            _nodes: nodes
+                        }
+                        _n: node {
+                            _title: title {
+                                _shortest: shortest
+                                _longest: longest
+                            }
+                            _imdbRating: imdbRating {
+                                _min: min
+                                _max: max
+                                _average: average
+                            }
+                            _createdAt: createdAt {
+                                _min: min
+                                _max: max
+                            }
+                        }
                     }
                 }
             }
@@ -68,33 +70,29 @@ describe("Cypher Aggregations Many while Alias fields", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
-                RETURN count(this) AS var0
+                RETURN { nodes: count(DISTINCT this) } AS var0
             }
             CALL {
                 MATCH (this:Movie)
-                WITH this
-                RETURN { _shortest: min(this.id), _longest: max(this.id) } AS var1
-            }
-            CALL {
-                MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
-                RETURN { _longest: head(list), _shortest: last(list) } AS var2
+                RETURN { _longest: head(list), _shortest: last(list) } AS var1
             }
             CALL {
                 MATCH (this:Movie)
-                WITH this
-                RETURN { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) } AS var3
+                WITH DISTINCT this
+                RETURN { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) } AS var2
             }
             CALL {
                 MATCH (this:Movie)
-                WITH this
-                RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var4
+                WITH DISTINCT this
+                RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var3
             }
-            RETURN { _count: var0, _id: var1, _title: var2, _imdbRating: var3, _createdAt: var4 }"
+            RETURN { aggregate: { _count: var0, node: { _title: var1, _imdbRating: var2, _createdAt: var3 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

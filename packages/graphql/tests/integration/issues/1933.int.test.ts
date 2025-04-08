@@ -32,7 +32,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
 
         const typeDefs = `
             type ${employeeType} @node {
-                employeeId: ID! @unique
+                employeeId: ID!
                 firstName: String! @settable(onCreate: false, onUpdate: false)
                 lastName: String @settable(onCreate: false, onUpdate: false)
                 projects: [${projectType}!]!
@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             }
         
             type ${projectType} @node {
-                projectId: ID! @unique
+                projectId: ID!
                 name: String! @settable(onCreate: false, onUpdate: false)
                 description: String
                 employees: [${employeeType}!]!
@@ -78,14 +78,18 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
                     employeeId
                     firstName
                     lastName
-                    projectsAggregate {
-                        count
-                        edge {
-                            allocation {
-                                max
-                                min
-                                average
-                                sum
+                    projectsConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                            edge {
+                                allocation {
+                                    max
+                                    min
+                                    average
+                                    sum
+                                }
                             }
                         }
                     }
@@ -106,14 +110,18 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
                     employeeId
                     firstName
                     lastName
-                    projectsAggregate {
-                        count
-                        edge {
-                            allocation {
-                                max
-                                min
-                                average
-                                sum
+                    projectsConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                            edge {
+                                allocation {
+                                    max
+                                    min
+                                    average
+                                    sum
+                                }
                             }
                         }
                     }
@@ -129,7 +137,12 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
                 employeeId: "3332",
                 firstName: "Emp2",
                 lastName: "EmpLast2",
-                projectsAggregate: { count: 2, edge: { allocation: { average: 25, max: 30, min: 20, sum: 50 } } },
+                projectsConnection: {
+                    aggregate: {
+                        count: { nodes: 2 },
+                        edge: { allocation: { average: 25, max: 30, min: 20, sum: 50 } },
+                    },
+                },
             },
         ]);
     });

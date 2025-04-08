@@ -18,14 +18,13 @@
  */
 import type { DirectiveNode } from "graphql";
 import { fulltextDirective } from "../../../graphql/directives";
-import type { FullTextField } from "../../annotation/FullTextAnnotation";
-import { FullTextAnnotation } from "../../annotation/FullTextAnnotation";
+import { FulltextAnnotation, type FulltextField } from "../../annotation/FulltextAnnotation";
 import { parseArguments } from "../parse-arguments";
 
-export function parseFullTextAnnotation(directive: DirectiveNode): FullTextAnnotation {
-    const { indexes } = parseArguments<{ indexes: FullTextField[] }>(fulltextDirective, directive);
+export function parseFulltextAnnotation(directive: DirectiveNode): FulltextAnnotation {
+    const { indexes } = parseArguments<{ indexes: FulltextField[] }>(fulltextDirective, directive);
 
-    return new FullTextAnnotation({
+    return new FulltextAnnotation({
         indexes,
     });
 }

@@ -18,33 +18,33 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { AggregationPropertyFilter } from "./AggregationPropertyFilter";
 import type { AggregationLogicalOperator } from "../../../factory/parsers/parse-where-field";
+import { AggregationPropertyFilter } from "./AggregationPropertyFilter";
 
 export class AggregationDurationFilter extends AggregationPropertyFilter {
     protected getOperation(expr: Cypher.Expr): Cypher.ComparisonOp {
         return this.createDurationOperation({
             operator: this.logicalOperator,
-            property: expr,
+            expr,
             param: new Cypher.Param(this.comparisonValue),
         });
     }
 
     private createDurationOperation({
         operator,
-        property,
+        expr,
         param,
     }: {
         operator: AggregationLogicalOperator;
-        property: Cypher.Expr;
+        expr: Cypher.Expr;
         param: Cypher.Expr;
     }) {
         const variable = Cypher.plus(Cypher.datetime(), param);
-        const propertyRef = Cypher.plus(Cypher.datetime(), property);
+        const propertyRef = Cypher.plus(Cypher.datetime(), expr);
 
         return this.createBaseOperation({
             operator,
-            property: propertyRef,
+            expr: propertyRef,
             param: variable,
         });
     }

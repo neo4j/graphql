@@ -18,7 +18,6 @@
  */
 
 import { SelectableAnnotation } from "../../annotation/SelectableAnnotation";
-import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
 import { Attribute } from "../../attribute/Attribute";
 import { GraphQLBuiltInScalarType, ScalarType } from "../../attribute/AttributeType";
 import { ConcreteEntity } from "../../entity/ConcreteEntity";
@@ -33,7 +32,7 @@ describe("RelationshipAdapter", () => {
     beforeAll(() => {
         const userId = new Attribute({
             name: "id",
-            annotations: { unique: new UniqueAnnotation({ constraintName: "User_id_unique" }) },
+            annotations: {},
             type: new ScalarType(GraphQLBuiltInScalarType.ID, true),
             args: [],
         });
@@ -47,7 +46,7 @@ describe("RelationshipAdapter", () => {
 
         const accountId = new Attribute({
             name: "id",
-            annotations: { unique: new UniqueAnnotation({ constraintName: "User_id_unique" }) },
+            annotations: {},
             type: new ScalarType(GraphQLBuiltInScalarType.ID, true),
             args: [],
         });
@@ -89,8 +88,8 @@ describe("RelationshipAdapter", () => {
             direction: "OUT",
             isList: Boolean(false),
             attributes: [accountAlias],
-            queryDirection: "DEFAULT_DIRECTED",
-            nestedOperations: ["CREATE", "UPDATE", "DELETE", "CONNECT", "DISCONNECT", "CONNECT_OR_CREATE"],
+            queryDirection: "DIRECTED",
+            nestedOperations: ["CREATE", "UPDATE", "DELETE", "CONNECT", "DISCONNECT"],
             aggregate: false,
             description: "",
             annotations: { selectable },

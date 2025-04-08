@@ -49,7 +49,8 @@ describe("Cypher pagination tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH *
             SKIP $param0
             RETURN this { .title } AS this"
@@ -77,7 +78,8 @@ describe("Cypher pagination tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH *
             LIMIT $param0
             RETURN this { .title } AS this"
@@ -105,7 +107,8 @@ describe("Cypher pagination tests", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH *
             SKIP $param0
             LIMIT $param1
@@ -140,7 +143,8 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH *
             SKIP $param0
             LIMIT $param1
@@ -164,7 +168,7 @@ describe("Cypher pagination tests", () => {
     test("Skip + Limit with other variables", async () => {
         const query = /* GraphQL */ `
             query ($offset: Int, $limit: Int, $title: String) {
-                movies(limit: $limit, offset: $offset, where: { title_EQ: $title }) {
+                movies(limit: $limit, offset: $offset, where: { title: { eq: $title } }) {
                     title
                 }
             }
@@ -175,7 +179,8 @@ describe("Cypher pagination tests", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             WITH *
             SKIP $param1

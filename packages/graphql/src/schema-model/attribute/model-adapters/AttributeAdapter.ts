@@ -94,23 +94,8 @@ export class AttributeAdapter {
         );
     }
 
-    isUnique(): boolean {
-        return !!this.annotations.unique || this.isGlobalIDAttribute() === true;
-    }
-
     isCypher(): boolean {
         return !!this.annotations.cypher;
-    }
-
-    isConstrainable(): boolean {
-        return (
-            this.typeHelper.isGraphQLBuiltInScalar() ||
-            this.typeHelper.isUserScalar() ||
-            this.typeHelper.isEnum() ||
-            this.typeHelper.isTemporal() ||
-            this.typeHelper.isSpatial() ||
-            this.typeHelper.isBigInt()
-        );
     }
 
     isObjectField(): boolean {
@@ -194,7 +179,7 @@ export class AttributeAdapter {
     isAggregableField(): boolean {
         return (
             !this.typeHelper.isList() &&
-            //uncomment me on 7.x   !this.typeHelper.isID() &&
+            !this.typeHelper.isID() &&
             (this.typeHelper.isScalar() || this.typeHelper.isEnum()) &&
             this.isAggregable()
         );
@@ -203,7 +188,7 @@ export class AttributeAdapter {
     isAggregationWhereField(): boolean {
         if (
             this.typeHelper.isList() ||
-            // uncomment me on 7.x this.typeHelper.isID() ||
+            this.typeHelper.isID() ||
             this.typeHelper.isBoolean() ||
             this.typeHelper.isDate()
         ) {
@@ -336,6 +321,7 @@ export class AttributeAdapter {
             this.isCypher() === false
         );
     }
+
     isAggregationFilterable(): boolean {
         return (
             this.annotations.filterable?.byAggregate !== false &&

@@ -78,7 +78,7 @@ export class CompositeAggregationPartial extends QueryASTNode {
 
         if (this.entity instanceof RelationshipAdapter) {
             const relVar = new Cypher.Relationship();
-            const relDirection = this.entity.getCypherDirection(this.directed);
+            const relDirection = this.entity.getCypherDirection();
             if (this.attachedTo === "relationship") {
                 target = relVar;
             }

@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import { GraphQLInt, type DirectiveNode } from "graphql";
+import { type DirectiveNode } from "graphql";
 import type { InputTypeComposer, InputTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
 import { DEPRECATED } from "../../constants";
 import { SortDirection } from "../../graphql/enums/SortDirection";
@@ -24,32 +24,6 @@ import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adap
 import type { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { graphqlDirectivesToCompose } from "../to-compose";
-
-export function withOptionsInputType({
-    entityAdapter,
-    userDefinedFieldDirectives,
-    composer,
-}: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
-    userDefinedFieldDirectives: Map<string, DirectiveNode[]>;
-    composer: SchemaComposer;
-}): InputTypeComposer {
-    const optionsInputType = makeOptionsInput({ entityAdapter, composer });
-    const sortInput = makeSortInput({ entityAdapter, userDefinedFieldDirectives, composer });
-    if (!sortInput) {
-        return optionsInputType;
-    }
-    // TODO: Concrete vs Abstract discrepancy
-    // is this intended? For ConcreteEntity is NonNull, for InterfaceEntity is nullable
-    const sortFieldType = sortInput.NonNull.List;
-    optionsInputType.addFields({
-        sort: {
-            description: `Specify one or more ${entityAdapter.operations.sortInputTypeName} objects to sort ${entityAdapter.upperFirstPlural} by. The sorts will be applied in the order in which they are arranged in the array.`,
-            type: sortFieldType,
-        },
-    });
-    return optionsInputType;
-}
 
 export function withSortInputType({
     relationshipAdapter,
@@ -129,18 +103,4 @@ export function makeSortInput({
         );
     }
     return sortInput;
-}
-
-function makeOptionsInput({
-    entityAdapter,
-    composer,
-}: {
-    entityAdapter: ConcreteEntityAdapter | InterfaceEntityAdapter;
-    composer: SchemaComposer;
-}): InputTypeComposer {
-    const optionsInput = composer.createInputTC({
-        name: entityAdapter.operations.optionsInputTypeName,
-        fields: { limit: GraphQLInt, offset: GraphQLInt },
-    });
-    return optionsInput;
 }

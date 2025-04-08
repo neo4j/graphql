@@ -43,8 +43,8 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
           }
 
           type ${Post} @node {
-            id: ID! @id @unique
-            subject: ${PostSubject}! @relationship(type: "POST_FOR", direction: OUT)
+            id: ID! @id
+            subject: [${PostSubject}!]! @relationship(type: "POST_FOR", direction: OUT)
           }
 
           type ${User} implements ${HasName} @node {
@@ -98,7 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/2630", () => {
             [Post.plural]: [
                 {
                     id: postId,
-                    subject: { name: userName },
+                    subject: [{ name: userName }],
                 },
             ],
         });

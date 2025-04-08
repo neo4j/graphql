@@ -44,8 +44,8 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             }
 
             type ${User.name} @node {
-                id: ID! @unique
-                email: String! @unique
+                id: ID!
+                email: String!
                 name: String
                 creator: [${Group.name}!]! @relationship(type: "CREATOR_OF", direction: OUT)
                 admin: [${Admin.name}!]! @relationship(type: "IS_USER", direction: IN)
@@ -55,10 +55,10 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             }
 
             type ${Group.name} @node {
-                id: ID! @id @unique
+                id: ID! @id
                 name: String
                 members: [${Person.name}!]! @relationship(type: "MEMBER_OF", direction: IN)
-                creator: ${User.name}!
+                creator: [${User.name}!]!
                     @relationship(type: "CREATOR_OF", direction: IN)
                     @settable(onCreate: true, onUpdate: true)
                 admins: [${Admin.name}!]! @relationship(type: "ADMIN_OF", direction: IN)
@@ -70,15 +70,15 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                     validate: [
                         {
                             operations: [CREATE]
-                            where: { node: { group: { creator: { roles_INCLUDES: "plan:paid" } } } }
+                            where: { node: { group_SOME: { creator_SOME: { roles_INCLUDES: "plan:paid" } } } }
                         }
                         {
                             operations: [DELETE]
                             where: {
                                 OR: [
-                                    { node: { creator: { id_EQ: "$jwt.uid" } } }
-                                    { node: { group: { admins_SOME: { user: { id_EQ: "$jwt.uid" } } } } }
-                                    { node: { group: { creator: { id_EQ: "$jwt.uid" } } } }
+                                    { node: { creator_SOME: { id_EQ: "$jwt.uid" } } }
+                                    { node: { group_SOME: { admins_SOME: { user_SOME: { id_EQ: "$jwt.uid" } } } } }
+                                    { node: { group_SOME: { creator_SOME: { id_EQ: "$jwt.uid" } } } }
                                 ]
                             }
                         }
@@ -86,25 +86,25 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                             operations: [READ, UPDATE]
                             where: {
                                 OR: [
-                                    { node: { creator: { id_EQ: "$jwt.uid" } } }
-                                    { node: { group: { admins_SOME: { user: { id_EQ: "$jwt.uid" } } } } }
-                                    { node: { group: { contributors_SOME: { user: { id_EQ: "$jwt.uid" } } } } }
-                                    { node: { group: { creator: { id_EQ: "$jwt.uid" } } } }
+                                    { node: { creator_SOME: { id_EQ: "$jwt.uid" } } }
+                                    { node: { group_SOME: { admins_SOME: { user_SOME: { id_EQ: "$jwt.uid" } } } } }
+                                    { node: { group_SOME: { contributors_SOME: { user_SOME: { id_EQ: "$jwt.uid" } } } } }
+                                    { node: { group_SOME: { creator_SOME: { id_EQ: "$jwt.uid" } } } }
                                 ]
                             }
                         }
                     ]
                 ) {
-                id: ID! @id @unique
+                id: ID! @id
                 name: String!
-                creator: ${User.name}!
+                creator: [${User.name}!]!
                     @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])
                     @settable(onCreate: true, onUpdate: true)
-                group: ${Group.name}! @relationship(type: "MEMBER_OF", direction: OUT)
+                group: [${Group.name}!]! @relationship(type: "MEMBER_OF", direction: OUT)
                 partners: [${Person.name}!]!
                     @relationship(
                         type: "PARTNER_OF"
-                        queryDirection: UNDIRECTED_ONLY
+                        queryDirection: UNDIRECTED
                         direction: OUT
                         properties: "PartnerOf"
                     )
@@ -124,32 +124,32 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 id: ID!
                 email: String!
                 name: String
-                creator: ${User.name}! @declareRelationship 
-                group: ${Group.name}! @declareRelationship 
+                creator: [${User.name}!]! @declareRelationship 
+                group: [${Group.name}!]! @declareRelationship 
                 status: InviteeStatus!
-                user: ${User.name} @declareRelationship 
+                user: [${User.name}!]! @declareRelationship 
                 role: InviteeRole!
             }
 
             type ${Admin.name} implements Invitee @node {
-                id: ID! @unique @id
-                group: ${Group.name}! @relationship(type: "ADMIN_OF", direction: OUT)
-                creator: ${User.name}! @relationship(type: "CREATOR_OF", direction: IN)
+                id: ID! @id
+                group: [${Group.name}!]! @relationship(type: "ADMIN_OF", direction: OUT)
+                creator: [${User.name}!]! @relationship(type: "CREATOR_OF", direction: IN)
                 email: String!
                 name: String
                 status: InviteeStatus! @default(value: INVITED)
-                user: ${User.name} @relationship(type: "IS_USER", direction: OUT)
+                user: [${User.name}!]! @relationship(type: "IS_USER", direction: OUT)
                 role: InviteeRole! @default(value: ADMIN)
             }
 
             type ${Contributor.name} implements Invitee @node {
-                id: ID! @unique @id
-                group: ${Group.name}! @relationship(type: "CONTRIBUTOR_TO", direction: OUT)
-                creator: ${User.name}! @relationship(type: "CREATOR_OF", direction: IN)
+                id: ID! @id
+                group: [${Group.name}!]! @relationship(type: "CONTRIBUTOR_TO", direction: OUT)
+                creator: [${User.name}!]! @relationship(type: "CREATOR_OF", direction: IN)
                 email: String!
                 name: String
                 status: InviteeStatus! @default(value: INVITED)
-                user: ${User.name} @relationship(type: "IS_USER", direction: OUT)
+                user: [${User.name}!]! @relationship(type: "IS_USER", direction: OUT)
                 role: InviteeRole! @default(value: CONTRIBUTOR)
             }
 

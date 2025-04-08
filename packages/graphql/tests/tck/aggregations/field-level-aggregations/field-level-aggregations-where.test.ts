@@ -50,8 +50,12 @@ describe("Field Level Aggregations Where", () => {
             query {
                 movies {
                     title
-                    actorsAggregate(where: { age_GT: 40 }) {
-                        count
+                    actorsConnection(where: { node: { age: { gt: 40 } } }) {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -60,14 +64,19 @@ describe("Field Level Aggregations Where", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                WHERE this1.age > $param0
-                RETURN count(this1) AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                    WHERE this1.age > $param0
+                    RETURN { nodes: count(DISTINCT this1) } AS var2
+                }
+                RETURN { aggregate: { count: var2 } } AS var3
             }
-            RETURN this { .title, actorsAggregate: { count: var2 } } AS this"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -85,11 +94,19 @@ describe("Field Level Aggregations Where", () => {
             query {
                 movies {
                     title
-                    actorsAggregate(where: { name_CONTAINS: "abc" }) {
-                        count
+                    actorsConnection(where: { node: { name_CONTAINS: "abc" } }) {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
-                    directorsAggregate(where: { name_CONTAINS: "abcdefg" }) {
-                        count
+                    directorsConnection(where: { node: { name_CONTAINS: "abcdefg" } }) {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -98,20 +115,29 @@ describe("Field Level Aggregations Where", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                WHERE this1.name CONTAINS $param0
-                RETURN count(this1) AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                    WHERE this1.name CONTAINS $param0
+                    RETURN { nodes: count(DISTINCT this1) } AS var2
+                }
+                RETURN { aggregate: { count: var2 } } AS var3
             }
             CALL {
                 WITH this
-                MATCH (this)<-[this3:DIRECTED]-(this4:Person)
-                WHERE this4.name CONTAINS $param1
-                RETURN count(this4) AS var5
+                CALL {
+                    WITH this
+                    MATCH (this)<-[this4:DIRECTED]-(this5:Person)
+                    WHERE this5.name CONTAINS $param1
+                    RETURN { nodes: count(DISTINCT this5) } AS var6
+                }
+                RETURN { aggregate: { count: var6 } } AS var7
             }
-            RETURN this { .title, actorsAggregate: { count: var2 }, directorsAggregate: { count: var5 } } AS this"
+            RETURN this { .title, actorsConnection: var3, directorsConnection: var7 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

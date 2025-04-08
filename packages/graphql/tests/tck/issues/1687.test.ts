@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/1687", () => {
     test("should be able to return all the genres related to the Matrix movie using connection fields", async () => {
         const query = /* GraphQL */ `
             query Genres {
-                genres(where: { moviesConnection_ALL: { node: { title_EQ: "Matrix" } } }) {
+                genres(where: { moviesConnection: { all: { node: { title: { eq: "Matrix" } } } } }) {
                     name
                 }
             }
@@ -61,7 +61,8 @@ describe("https://github.com/neo4j/graphql/issues/1687", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Genre)
+            "CYPHER 5
+            MATCH (this:Genre)
             WHERE (EXISTS {
                 MATCH (this)<-[this0:HAS_GENRE]-(this1)
                 WHERE (this1.title = $param0 AND this1:Movie)

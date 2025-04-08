@@ -34,6 +34,7 @@ export type TopLevelOperationFieldMatch =
     | "UPDATE"
     | "DELETE"
     | "CUSTOM_CYPHER"
+    | "FULLTEXT"
     | "VECTOR";
 
 export function parseTopLevelOperationField(
@@ -43,6 +44,9 @@ export function parseTopLevelOperationField(
 ): TopLevelOperationFieldMatch {
     if (!entityAdapter) {
         return "CUSTOM_CYPHER";
+    }
+    if (context.fulltext) {
+        return "FULLTEXT";
     }
     if (context.vector) {
         return "VECTOR";

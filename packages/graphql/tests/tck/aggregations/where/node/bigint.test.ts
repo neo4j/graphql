@@ -45,7 +45,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("AVERAGE_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_AVERAGE_EQUAL: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { average: { eq: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -54,7 +54,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -78,7 +79,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("AVERAGE_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_AVERAGE_GT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { average: { gt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -87,7 +88,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -111,7 +113,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("AVERAGE_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_AVERAGE_GTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { average: { gte: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -120,7 +122,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -144,7 +147,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("AVERAGE_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_AVERAGE_LT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { average: { lt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -153,7 +156,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -177,7 +181,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("AVERAGE_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_AVERAGE_LTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { average: { lte: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -186,7 +190,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -210,7 +215,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("SUM_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_SUM_EQUAL: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { sum: { eq: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -219,7 +224,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -243,7 +249,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("SUM_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_SUM_GT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { sum: { gt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -252,7 +258,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -276,7 +283,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("SUM_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_SUM_GTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { sum: { gte: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -285,7 +292,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -309,7 +317,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("SUM_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_SUM_LT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { sum: { lt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -318,7 +326,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -342,7 +351,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("SUM_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_SUM_LTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { sum: { lte: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -351,7 +360,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -375,7 +385,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("MIN_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_MIN_EQUAL: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { min: { eq: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -384,7 +394,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -408,7 +419,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("MIN_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_MIN_GT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { min: { gt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -417,7 +428,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -441,7 +453,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("MIN_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_MIN_GTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { min: { gte: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -450,7 +462,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -474,7 +487,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("MIN_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_MIN_LT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { min: { lt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -483,7 +496,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -507,7 +521,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("MIN_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_MIN_LTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { min: { lte: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -516,7 +530,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -540,7 +555,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("MAX_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_MAX_EQUAL: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { max: { eq: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -549,7 +564,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -573,7 +589,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("MAX_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_MAX_GT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { max: { gt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -582,7 +598,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -606,7 +623,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("MAX_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_MAX_GTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { max: { gte: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -615,7 +632,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -639,7 +657,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("MAX_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_MAX_LT: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { max: { lt: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -648,7 +666,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -672,7 +691,7 @@ describe("Cypher Aggregations where node with BigInt", () => {
     test("MAX_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someBigInt_MAX_LTE: "2147483648" } } }) {
+                posts(where: { likesAggregate: { node: { someBigInt: { max: { lte: "2147483648" } } } } }) {
                     content
                 }
             }
@@ -681,7 +700,8 @@ describe("Cypher Aggregations where node with BigInt", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)

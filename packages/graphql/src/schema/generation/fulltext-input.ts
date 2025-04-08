@@ -17,88 +17,15 @@
  * limitations under the License.
  */
 
-import { GraphQLFloat, GraphQLNonNull, GraphQLString } from "graphql";
-import type {
-    InputTypeComposer,
-    InputTypeComposerFieldConfigMapDefinition,
-    ObjectTypeComposer,
-    SchemaComposer,
-} from "graphql-compose";
+import { GraphQLFloat, GraphQLInt, GraphQLNonNull, GraphQLString } from "graphql";
+import type { InputTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import { SCORE_FIELD } from "../../constants";
 import { SortDirection } from "../../graphql/enums/SortDirection";
 import { FloatWhere } from "../../graphql/input-objects/FloatWhere";
+import { PageInfo } from "../../graphql/objects/PageInfo";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
-export function withFullTextInputType({
-    concreteEntityAdapter,
-    composer,
-}: {
-    concreteEntityAdapter: ConcreteEntityAdapter;
-    composer: SchemaComposer;
-}): InputTypeComposer | undefined {
-    const typeName = concreteEntityAdapter.operations.fullTextInputTypeName;
-    if (composer.has(typeName)) {
-        return composer.getITC(typeName);
-    }
-    const fields = makeFullTextInputFields({ concreteEntityAdapter, composer });
-    const fulltextInputType = composer.createInputTC({
-        name: typeName,
-        fields,
-    });
-    return fulltextInputType;
-}
-
-function makeFullTextInputFields({
-    concreteEntityAdapter,
-    composer,
-}: {
-    concreteEntityAdapter: ConcreteEntityAdapter;
-    composer: SchemaComposer;
-}): InputTypeComposerFieldConfigMapDefinition {
-    const fields: InputTypeComposerFieldConfigMapDefinition = {};
-    if (!concreteEntityAdapter.annotations.fulltext) {
-        throw new Error("Expected fulltext annotation");
-    }
-    for (const index of concreteEntityAdapter.annotations.fulltext.indexes) {
-        const indexName = index.indexName || index.name;
-        if (indexName === undefined) {
-            throw new Error("The name of the fulltext index should be defined using the indexName argument.");
-        }
-        const fieldInput = withFullTextIndexInputType({
-            concreteEntityAdapter,
-            indexName,
-            composer,
-        });
-        if (fieldInput) {
-            fields[indexName] = fieldInput;
-        }
-    }
-    return fields;
-}
-
-function withFullTextIndexInputType({
-    composer,
-    concreteEntityAdapter,
-    indexName,
-}: {
-    composer: SchemaComposer;
-    concreteEntityAdapter: ConcreteEntityAdapter;
-    indexName: string;
-}): InputTypeComposer {
-    const typeName = concreteEntityAdapter.operations.getFullTextIndexInputTypeName(indexName);
-    if (composer.has(typeName)) {
-        return composer.getITC(typeName);
-    }
-    const indexInput = composer.createInputTC({
-        name: typeName,
-        fields: {
-            phrase: new GraphQLNonNull(GraphQLString),
-        },
-    });
-    return indexInput;
-}
-
-export function withFullTextWhereInputType({
+export function withFulltextWhereInputType({
     composer,
     concreteEntityAdapter,
 }: {
@@ -111,16 +38,16 @@ export function withFullTextWhereInputType({
     }
     const whereInput = composer.createInputTC({
         name: typeName,
-        description: `The input for filtering a fulltext query on an index of ${concreteEntityAdapter.name}`,
+        description: `The input for filtering a full-text query on an index of ${concreteEntityAdapter.name}`,
         fields: {
             [SCORE_FIELD]: FloatWhere.name,
-            [concreteEntityAdapter.singular]: concreteEntityAdapter.operations.whereInputTypeName,
+            ["node"]: concreteEntityAdapter.operations.whereInputTypeName,
         },
     });
     return whereInput;
 }
 
-export function withFullTextSortInputType({
+export function withFulltextSortInputType({
     composer,
     concreteEntityAdapter,
 }: {
@@ -133,33 +60,44 @@ export function withFullTextSortInputType({
     }
     const whereInput = composer.createInputTC({
         name: typeName,
-        description: `The input for sorting a fulltext query on an index of ${concreteEntityAdapter.name}`,
+        description: `The input for sorting a Fulltext query on an index of ${concreteEntityAdapter.name}`,
         fields: {
             [SCORE_FIELD]: SortDirection.name,
-            [concreteEntityAdapter.singular]: concreteEntityAdapter.operations.sortInputTypeName,
+            node: concreteEntityAdapter.operations.sortInputTypeName,
         },
     });
     return whereInput;
 }
 
-export function withFullTextResultType({
+export function withFulltextResultTypeConnection({
     composer,
     concreteEntityAdapter,
 }: {
     composer: SchemaComposer;
     concreteEntityAdapter: ConcreteEntityAdapter;
 }): ObjectTypeComposer {
-    const typeName = concreteEntityAdapter.operations.fulltextTypeNames.result;
+    const typeName = concreteEntityAdapter.operations.fulltextTypeNames.connection;
     if (composer.has(typeName)) {
         return composer.getOTC(typeName);
     }
-    const whereInput = composer.createObjectTC({
-        name: typeName,
-        description: `The result of a fulltext search on an index of ${concreteEntityAdapter.name}`,
+
+    const edge = composer.createObjectTC({
+        name: concreteEntityAdapter.operations.fulltextTypeNames.edge,
         fields: {
+            cursor: new GraphQLNonNull(GraphQLString),
+            node: `${concreteEntityAdapter.name}!`,
             [SCORE_FIELD]: new GraphQLNonNull(GraphQLFloat),
-            [concreteEntityAdapter.singular]: `${concreteEntityAdapter.name}!`,
         },
     });
-    return whereInput;
+
+    const connection = composer.createObjectTC({
+        name: typeName,
+        fields: {
+            totalCount: new GraphQLNonNull(GraphQLInt),
+            pageInfo: new GraphQLNonNull(PageInfo),
+            edges: edge.NonNull.List.NonNull,
+        },
+    });
+
+    return connection;
 }

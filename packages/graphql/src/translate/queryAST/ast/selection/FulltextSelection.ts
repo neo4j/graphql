@@ -26,32 +26,31 @@ import { EntitySelection, type SelectionClause } from "./EntitySelection";
 
 export class FulltextSelection extends EntitySelection {
     private target: ConcreteEntityAdapter;
-    private fulltext: FulltextOptions;
+    private fulltextOptions: FulltextOptions;
 
     private scoreVariable: Cypher.Variable;
 
     constructor({
         target,
-        fulltext,
+        fulltextOptions,
         scoreVariable,
     }: {
         target: ConcreteEntityAdapter;
-        fulltext: FulltextOptions;
+        fulltextOptions: FulltextOptions;
         scoreVariable: Cypher.Variable;
     }) {
         super();
         this.target = target;
-        this.fulltext = fulltext;
+        this.fulltextOptions = fulltextOptions;
         this.scoreVariable = scoreVariable;
     }
-
     public apply(context: QueryASTContext): {
         nestedContext: QueryASTContext<Cypher.Node>;
         selection: SelectionClause;
     } {
         const node = new Cypher.Node();
-        const phraseParam = new Cypher.Param(this.fulltext.phrase);
-        const indexName = new Cypher.Literal(this.fulltext.index);
+        const phraseParam = new Cypher.Param(this.fulltextOptions.phrase);
+        const indexName = new Cypher.Literal(this.fulltextOptions.index.indexName);
 
         const fulltextClause: Cypher.Yield = Cypher.db.index.fulltext
             .queryNodes(indexName, phraseParam)

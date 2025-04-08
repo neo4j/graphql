@@ -72,7 +72,7 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
         const query = /* GraphQL */ `
             mutation UpdateMovies {
                 ${Movie.operations.update}(
-                    update: { actors: { ${LeadActor}: [{ delete: [{ where: { node: { name: "Actor1" } } }] }] } }
+                    update: { actors: { ${LeadActor}: [{ delete: [{ where: { node: { name_EQ: "Actor1" } } }] }] } }
                 ) {
                     ${Movie.plural} {
                         title
@@ -110,7 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
         const query = /* GraphQL */ `
             mutation UpdateMovies {
                 ${Movie.operations.update}(
-                    update: { actors: { ${LeadActor}: [{ delete: [{ where: { node: { name: "Actor1" } } }] }], ${Extra}: [{ delete: [{ where: { node: { name: "Actor2" } } }] }] } }
+                    update: { actors: { ${LeadActor}: [{ delete: [{ where: { node: { name_EQ: "Actor1" } } }] }], ${Extra}: [{ delete: [{ where: { node: { name_EQ: "Actor2" } } }] }] } }
                 ) {
                     ${Movie.plural} {
                         title

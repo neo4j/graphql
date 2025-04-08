@@ -52,7 +52,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { name_IN: ["Tom Hanks", "Robin Wright"] } }) {
+                    actorsConnection(where: { node: { name: { in: ["Tom Hanks", "Robin Wright"] } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -69,7 +69,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -102,7 +103,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { favouriteColours_INCLUDES: "Blue" } }) {
+                    actorsConnection(where: { node: { favouriteColours: { includes: "Blue" } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -120,7 +121,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Arrays", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)

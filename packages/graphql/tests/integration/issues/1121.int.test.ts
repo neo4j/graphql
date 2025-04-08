@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/1121", () => {
             }
 
             type ${Banana.name} implements Ingredient_Interface @node {
-                id: ID! @id @unique
+                id: ID! @id
                 name: String
                 sweetness: String
                 qty_ozs: Float
@@ -58,14 +58,14 @@ describe("https://github.com/neo4j/graphql/issues/1121", () => {
             union Ingredient_Union = ${Sugar.name} | ${Syrup.name}
 
             type ${Sugar.name} @node {
-                id: ID! @id @unique
+                id: ID! @id 
                 name: String
                 sweetness: String
                 qty_ozs: Float
             }
 
             type ${Syrup.name} @node {
-                id: ID! @id @unique
+                id: ID! @id 
                 name: String
                 sweetness: String
                 qty_ozs: Float

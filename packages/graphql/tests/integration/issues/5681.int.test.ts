@@ -51,9 +51,10 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
             }
 
             type ${User}
+                @node
                 @authorization(
                     validate: [
-                        { where: { node: { userId: "$jwt.sub" } } }
+                        { where: { node: { userId_EQ: "$jwt.sub" } } }
                         { where: { jwt: { roles_INCLUDES: "overlord" } } }
                     ]
                 )
@@ -61,7 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
                     operations: [UPDATE, DELETE, CREATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, SUBSCRIBE]
                     jwt: { roles_INCLUDES: "overlord" }
                 ) {
-                userId: String! @unique
+                userId: String!
                 adminAccess: [${Tenant}!]! @relationship(type: "ADMIN_IN", direction: OUT)
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
@@ -69,6 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
             }
 
             type ${Tenant}
+                @node
                 @authentication(
                     operations: [UPDATE, DELETE, CREATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, SUBSCRIBE]
                     jwt: { roles_INCLUDES: "overlord" }
@@ -83,24 +85,26 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
             }
 
             type ${Garage}
+                @node
                 @authentication(
                     operations: [UPDATE, DELETE, CREATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, SUBSCRIBE]
                     jwt: { roles_INCLUDES: "overlord" }
                 ) {
                 id: ID! @id
-                tenant: ${Tenant}! @relationship(type: "TENANT_HAS_GARAGE", direction: OUT)
+                tenant: [${Tenant}!]! @relationship(type: "TENANT_HAS_GARAGE", direction: OUT)
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
                 updatedBy: String @populatedBy(callback: "getUserIDFromContext", operations: [CREATE, UPDATE])
             }
 
             type ${VehicleCard}
+                @node
                 @authentication(
                     operations: [UPDATE, DELETE, CREATE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP, SUBSCRIBE]
                     jwt: { roles_INCLUDES: "overlord" }
                 ) {
                 id: ID! @id
-                tenant: ${Tenant}! @relationship(type: "VEHICLECARD_OWNER", direction: OUT) # <---  this line
+                tenant: [${Tenant}!]! @relationship(type: "VEHICLECARD_OWNER", direction: OUT) # <---  this line
                 garages: [${Garage}!]! @relationship(type: "VALID_GARAGES", direction: OUT)
                 createdAt: DateTime! @timestamp(operations: [CREATE])
                 updatedAt: DateTime! @timestamp(operations: [CREATE, UPDATE])
@@ -129,7 +133,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
     test("should not throw invalid argument error", async () => {
         const myUserId = "userId";
 
-        const ADD_TENANT = /*GraphQL*/ `
+        const ADD_TENANT = /* GraphQL */ `
             mutation addTenant($input: [${Tenant}CreateInput!]!) {
                 ${Tenant.operations.create}(input: $input) {
                     ${Tenant.plural} {
@@ -167,7 +171,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
             },
         });
 
-        const ADD_GARAGES = /*GraphQL*/ `
+        const ADD_GARAGES = /* GraphQL */ `
             mutation addGarages($input: [${Garage}CreateInput!]!) {
                 ${Garage.operations.create}(input: $input) {
                     ${Garage.plural} {
@@ -181,7 +185,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
                 connect: {
                     where: {
                         node: {
-                            id: tenantId,
+                            id_EQ: tenantId,
                         },
                     },
                 },
@@ -205,7 +209,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
             },
         });
 
-        const ADD_VEHICLE_CARD = /*GraphQL*/ `
+        const ADD_VEHICLE_CARD = /* GraphQL */ `
             mutation addVehicleCard($input: [${VehicleCard}CreateInput!]!) {
                 ${VehicleCard.operations.create}(input: $input) {
                     ${VehicleCard.plural} {
@@ -219,7 +223,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
                 connect: {
                     where: {
                         node: {
-                            id: tenantId,
+                            id_EQ: tenantId,
                         },
                     },
                 },
@@ -228,7 +232,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
                 connect: {
                     where: {
                         node: {
-                            id: garageId,
+                            id_EQ: garageId,
                         },
                     },
                 },

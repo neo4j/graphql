@@ -43,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
         const query = /* GraphQL */ `
             mutation MyMutation {
                 updateFoos(
-                    update: { geo_point: { longitude: 1, latitude: 1.5 }, point: { longitude: 2, latitude: 1.5 } }
+                    update: { geo_point_SET: { longitude: 1, latitude: 1.5 }, point_SET: { longitude: 2, latitude: 1.5 } }
                 ) {
                     foos {
                         point {
@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/1575", () => {
 
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toEqual([
-            new GraphQLError("Conflicting modification of [[point]], [[geo_point]] on type Foo"),
+            new GraphQLError("Conflicting modification of [[point_SET]], [[geo_point_SET]] on type Foo"),
         ]);
     });
 });

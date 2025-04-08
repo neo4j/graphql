@@ -96,19 +96,19 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
 
         const typeDefs = `
             type ${FirstLevel} @node {
-                id: ID! @id @unique
-                secondLevel: ${SecondLevel}! @relationship(type: "HAS_SECOND_LEVEL", direction: OUT)
+                id: ID! @id
+                secondLevel: [${SecondLevel}!]! @relationship(type: "HAS_SECOND_LEVEL", direction: OUT)
                 createdAt: DateTime! @timestamp(operations: [CREATE])
             }
 
             type ${SecondLevel} @node {
-                id: ID! @id @unique
+                id: ID! @id
                 thirdLevel: [${ThirdLevel}!]! @relationship(type: "HAS_THIRD_LEVEL", direction: OUT)
                 createdAt: DateTime! @timestamp(operations: [CREATE])
             }
 
             type ${ThirdLevel} @node {
-                id: ID! @id @unique
+                id: ID! @id
                 createdAt: DateTime! @timestamp(operations: [CREATE])
             }
         `;
@@ -125,7 +125,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
     test("should be able to filter by SOME nested within single relationship", async () => {
         const query = `
             query {
-                ${FirstLevel.plural}(where: { secondLevel: { thirdLevel_SOME: { id_EQ: "${thirdLevelInput3.id}" } } }) {
+                ${FirstLevel.plural}(where: { secondLevel_SINGLE: { thirdLevel_SOME: { id_EQ: "${thirdLevelInput3.id}" } } }) {
                     id
                     createdAt
                 }
@@ -142,7 +142,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
     test("should be able to filter by ALL nested within single relationship", async () => {
         const queryExpectingEmptyList = `
             query {
-                ${FirstLevel.plural}(where: { secondLevel: { thirdLevel_ALL: { id_EQ: "${thirdLevelInput3.id}" } } }) {
+                ${FirstLevel.plural}(where: { secondLevel_SINGLE: { thirdLevel_ALL: { id_EQ: "${thirdLevelInput3.id}" } } }) {
                     id
                     createdAt
                 }
@@ -151,7 +151,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
 
         const queryExpectingData = `
             query {
-                ${FirstLevel.plural}(where: { secondLevel: { thirdLevel_ALL: { id_EQ: "${thirdLevelInput1.id}" } } }) {
+                ${FirstLevel.plural}(where: { secondLevel_SINGLE: { thirdLevel_ALL: { id_EQ: "${thirdLevelInput1.id}" } } }) {
                     id
                     createdAt
                 }
@@ -178,7 +178,7 @@ describe("https://github.com/neo4j/graphql/issues/2871", () => {
 
         const query = `
             query {
-                ${FirstLevel.plural}(where: { secondLevel: { thirdLevel_NONE: { id_EQ: "25" } } }) {
+                ${FirstLevel.plural}(where: { secondLevel_SINGLE: { thirdLevel_NONE: { id_EQ: "25" } } }) {
                     id
                     createdAt
                 }

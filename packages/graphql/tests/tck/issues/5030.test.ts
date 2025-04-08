@@ -26,7 +26,9 @@ describe("https://github.com/neo4j/graphql/issues/5030", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) @node {
+            type Movie
+                @fulltext(indexes: [{ indexName: "MovieTitle", queryName: "moviesByTitle", fields: ["title"] }])
+                @node {
                 title: String
                 released: Int
             }
@@ -60,7 +62,8 @@ describe("https://github.com/neo4j/graphql/issues/5030", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (m:Movie) RETURN m as this
             }
             WITH this AS this0

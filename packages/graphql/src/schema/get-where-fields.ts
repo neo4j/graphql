@@ -18,79 +18,34 @@
  */
 
 import type { DirectiveNode } from "graphql";
-import type { Directive } from "graphql-compose";
+import type { Directive, InputTypeComposerFieldConfigMapDefinition, SchemaComposer } from "graphql-compose";
 import { DEPRECATED } from "../constants";
 import type { AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jFeaturesSettings } from "../types";
-import { DEPRECATE_IMPLICIT_EQUAL_FILTERS } from "./constants";
+import { fieldConfigsToFieldConfigMap, getRelationshipFilters } from "./generation/augment-where-input";
+import { getInputFilterFromAttributeType } from "./generation/get-input-filter-from-attribute-type";
 import { shouldAddDeprecatedFields } from "./generation/utils";
 import { graphqlDirectivesToCompose } from "./to-compose";
 
-function addCypherListFieldFilters({
-    field,
-    type,
-    result,
-    deprecatedDirectives,
-}: {
-    field: AttributeAdapter;
-    type: string;
-    result: Record<
-        string,
-        {
-            type: string;
-            directives: Directive[];
-        }
-    >;
-    deprecatedDirectives: Directive[];
-}) {
-    result[`${field.name}_ALL`] = {
-        type,
-        directives: deprecatedDirectives,
-    };
-
-    result[`${field.name}_NONE`] = {
-        type,
-        directives: deprecatedDirectives,
-    };
-
-    result[`${field.name}_SINGLE`] = {
-        type,
-        directives: deprecatedDirectives,
-    };
-
-    result[`${field.name}_SOME`] = {
-        type,
-        directives: deprecatedDirectives,
-    };
-}
-
 // TODO: refactoring needed!
 // isWhereField, isFilterable, ... extracted out into attributes category
+// even more now as Cypher filters and generic input object are added in the mix
 export function getWhereFieldsForAttributes({
     attributes,
     userDefinedFieldDirectives,
     features,
     ignoreCypherFieldFilters,
+    composer,
 }: {
     attributes: AttributeAdapter[];
     userDefinedFieldDirectives?: Map<string, DirectiveNode[]>;
     features: Neo4jFeaturesSettings | undefined;
     ignoreCypherFieldFilters: boolean;
-}): Record<
-    string,
-    {
-        type: string;
-        directives: Directive[];
-    }
-> {
-    const result: Record<
-        string,
-        {
-            type: string;
-            directives: Directive[];
-        }
-    > = {};
+    composer: SchemaComposer;
+}): InputTypeComposerFieldConfigMapDefinition {
+    const result: InputTypeComposerFieldConfigMapDefinition = {};
+
     // Add the where fields for each attribute
     for (const field of attributes) {
         const userDefinedDirectivesOnField = userDefinedFieldDirectives?.get(field.name);
@@ -113,35 +68,38 @@ export function getWhereFieldsForAttributes({
                 const targetEntityAdapter = new ConcreteEntityAdapter(field.annotations.cypher.targetEntity);
                 const type = targetEntityAdapter.operations.whereInputTypeName;
 
-                // Always add base where field filter (e.g. name)
-                result[field.name] = {
-                    type,
-                    directives: deprecatedDirectives,
-                };
-
                 // Add list where field filters (e.g. name_ALL, name_NONE, name_SINGLE, name_SOME)
                 if (field.typeHelper.isList()) {
-                    addCypherListFieldFilters({
+                    addCypherRelationshipLegacyFilters({
                         field,
                         type,
                         result,
                         deprecatedDirectives,
                     });
+
+                    addCypherRelationshipFilter({ field, type, result, deprecatedDirectives, composer });
+                } else {
+                    // Add base where field filter (e.g. name)
+                    result[field.name] = {
+                        type,
+                        directives: deprecatedDirectives,
+                    };
                 }
 
                 continue;
             }
         }
 
-        if (shouldAddDeprecatedFields(features, "implicitEqualFilters")) {
-            result[field.name] = {
-                type: field.getInputTypeNames().where.pretty,
-                directives: deprecatedDirectives.length ? deprecatedDirectives : [DEPRECATE_IMPLICIT_EQUAL_FILTERS],
-            };
+        result[field.name] = {
+            type: getInputFilterFromAttributeType(field, features),
+            directives: deprecatedDirectives,
+        };
+        if (!shouldAddDeprecatedFields(features, "attributeFilters")) {
+            continue;
         }
         result[`${field.name}_EQ`] = {
             type: field.getInputTypeNames().where.pretty,
-            directives: deprecatedDirectives,
+            directives: getAttributeDeprecationDirective(deprecatedDirectives, field, "EQ"),
         };
 
         // If the field is a boolean, skip it
@@ -155,7 +113,7 @@ export function getWhereFieldsForAttributes({
         if (field.typeHelper.isList()) {
             result[`${field.name}_INCLUDES`] = {
                 type: field.getInputTypeNames().where.type,
-                directives: deprecatedDirectives,
+                directives: getAttributeDeprecationDirective(deprecatedDirectives, field, "INCLUDES"),
             };
 
             continue;
@@ -164,15 +122,15 @@ export function getWhereFieldsForAttributes({
         // If the field is not an array, add the in and not in fields
         result[`${field.name}_IN`] = {
             type: field.getFilterableInputTypeName(),
-            directives: deprecatedDirectives,
+            directives: getAttributeDeprecationDirective(deprecatedDirectives, field, "IN"),
         };
 
         // If the field is a number or temporal, add the comparison operators
         if (field.isNumericalOrTemporal()) {
-            ["_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                result[`${field.name}${comparator}`] = {
+            ["LT", "LTE", "GT", "GTE"].forEach((comparator) => {
+                result[`${field.name}_${comparator}`] = {
                     type: field.getInputTypeNames().where.type,
-                    directives: deprecatedDirectives,
+                    directives: getAttributeDeprecationDirective(deprecatedDirectives, field, comparator),
                 };
             });
             continue;
@@ -180,10 +138,10 @@ export function getWhereFieldsForAttributes({
 
         // If the field is spatial, add the point comparison operators
         if (field.typeHelper.isSpatial()) {
-            ["_DISTANCE", "_LT", "_LTE", "_GT", "_GTE"].forEach((comparator) => {
-                result[`${field.name}${comparator}`] = {
+            ["DISTANCE", "LT", "LTE", "GT", "GTE"].forEach((comparator) => {
+                result[`${field.name}_${comparator}`] = {
                     type: `${field.getTypeName()}Distance`,
-                    directives: deprecatedDirectives,
+                    directives: getAttributeDeprecationDirective(deprecatedDirectives, field, comparator),
                 };
             });
             continue;
@@ -192,19 +150,19 @@ export function getWhereFieldsForAttributes({
         // If the field is a string, add the string comparison operators
         if (field.typeHelper.isString() || field.typeHelper.isID()) {
             const stringWhereOperators: Array<{ comparator: string; typeName: string }> = [
-                { comparator: "_CONTAINS", typeName: field.getInputTypeNames().where.type },
-                { comparator: "_STARTS_WITH", typeName: field.getInputTypeNames().where.type },
-                { comparator: "_ENDS_WITH", typeName: field.getInputTypeNames().where.type },
+                { comparator: "CONTAINS", typeName: field.getInputTypeNames().where.type },
+                { comparator: "STARTS_WITH", typeName: field.getInputTypeNames().where.type },
+                { comparator: "ENDS_WITH", typeName: field.getInputTypeNames().where.type },
             ];
 
             Object.entries(features?.filters?.[field.getInputTypeNames().where.type] || {}).forEach(
                 ([filter, enabled]) => {
                     if (enabled) {
                         if (filter === "MATCHES") {
-                            stringWhereOperators.push({ comparator: `_${filter}`, typeName: "String" });
+                            stringWhereOperators.push({ comparator: filter, typeName: "String" });
                         } else {
                             stringWhereOperators.push({
-                                comparator: `_${filter}`,
+                                comparator: filter,
                                 typeName: field.getInputTypeNames().where.type,
                             });
                         }
@@ -212,10 +170,125 @@ export function getWhereFieldsForAttributes({
                 }
             );
             stringWhereOperators.forEach(({ comparator, typeName }) => {
-                result[`${field.name}${comparator}`] = { type: typeName, directives: deprecatedDirectives };
+                result[`${field.name}_${comparator}`] = {
+                    type: typeName,
+                    directives: getAttributeDeprecationDirective(deprecatedDirectives, field, comparator),
+                };
             });
         }
     }
 
     return result;
+}
+
+function getAttributeDeprecationDirective(
+    deprecatedDirectives: Directive[],
+    field: AttributeAdapter,
+    comparator: string
+): Directive[] {
+    if (deprecatedDirectives.length) {
+        return deprecatedDirectives;
+    }
+    switch (comparator) {
+        case "DISTANCE":
+        case "LT":
+        case "LTE":
+        case "GT":
+        case "GTE":
+        case "CONTAINS":
+        case "MATCHES":
+        case "IN":
+        case "INCLUDES":
+        case "EQ": {
+            return [
+                {
+                    name: DEPRECATED,
+                    args: {
+                        reason: `Please use the relevant generic filter ${field.name}: { ${comparator.toLowerCase()}: ... }`,
+                    },
+                },
+            ];
+        }
+        case "STARTS_WITH": {
+            return [
+                {
+                    name: DEPRECATED,
+                    args: {
+                        reason: `Please use the relevant generic filter ${field.name}: { startsWith: ... }`,
+                    },
+                },
+            ];
+        }
+        case "ENDS_WITH": {
+            return [
+                {
+                    name: DEPRECATED,
+                    args: {
+                        reason: `Please use the relevant generic filter ${field.name}: { endsWith: ... }`,
+                    },
+                },
+            ];
+        }
+        default: {
+            throw new Error(`Unknown comparator: ${comparator}`);
+        }
+    }
+}
+
+function addCypherRelationshipFilter({
+    field,
+    type,
+    result,
+    deprecatedDirectives,
+    composer,
+}: {
+    field: AttributeAdapter;
+    type: string;
+    result: InputTypeComposerFieldConfigMapDefinition;
+    deprecatedDirectives: Directive[];
+    composer: SchemaComposer;
+}) {
+    const targetName = field.annotations.cypher?.targetEntity?.name;
+    if (!targetName) {
+        throw new Error("Target entity is not defined for the cypher field");
+    }
+
+    // Relationship filters
+    const relationshipFiltersFields = fieldConfigsToFieldConfigMap({
+        deprecatedDirectives: [],
+        fields: getRelationshipFilters({
+            relationshipInfo: { targetName, inputTypeName: type },
+        }),
+    });
+    // this mimic the adapter RelationshipOperation field "relationshipFiltersTypeName"
+    const relationshipType = `${targetName}RelationshipFilters`;
+
+    composer.getOrCreateITC(relationshipType, (itc) => {
+        itc.addFields(relationshipFiltersFields);
+    });
+
+    result[field.name] = {
+        type: relationshipType,
+        directives: deprecatedDirectives,
+    };
+}
+
+function addCypherRelationshipLegacyFilters({
+    field,
+    type,
+    result,
+    deprecatedDirectives,
+}: {
+    field: AttributeAdapter;
+    type: string;
+    result: InputTypeComposerFieldConfigMapDefinition;
+    deprecatedDirectives: Directive[];
+}) {
+    const quantifiers = ["ALL", "NONE", "SINGLE", "SOME"] as const;
+    for (const quantifier of quantifiers) {
+        result[`${field.name}_${quantifier}`] = {
+            type,
+            directives: deprecatedDirectives,
+        };
+    }
 }

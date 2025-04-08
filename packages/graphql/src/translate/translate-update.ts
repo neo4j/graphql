@@ -26,11 +26,9 @@ import type { GraphQLWhereArg, RelationField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { compileCypher } from "../utils/compile-cypher";
 import createConnectAndParams from "./create-connect-and-params";
-import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createCreateAndParams from "./create-create-and-params";
 import createDeleteAndParams from "./create-delete-and-params";
 import createDisconnectAndParams from "./create-disconnect-and-params";
-import { createRelationshipValidationString } from "./create-relationship-validation-string";
 import { createSetRelationshipProperties } from "./create-set-relationship-properties";
 import createUpdateAndParams from "./create-update-and-params";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
@@ -54,7 +52,6 @@ export default async function translateUpdate({
     const disconnectInput = resolveTree.args.disconnect;
     const createInput = resolveTree.args.create;
     const deleteInput = resolveTree.args.delete;
-    const connectOrCreateInput = resolveTree.args.connectOrCreate;
     const varName = "this";
     const callbackBucket: CallbackBucket = new CallbackBucket(context);
     const withVars = [varName];
@@ -65,7 +62,6 @@ export default async function translateUpdate({
     const disconnectStrs: string[] = [];
     const createStrs: string[] = [];
     let deleteStr = "";
-    const assumeReconnecting = Boolean(connectInput) && Boolean(disconnectInput);
     const matchNode = new Cypher.NamedNode(varName);
     const where = resolveTree.args.where as GraphQLWhereArg | undefined;
     const matchPattern = new Cypher.Pattern(matchNode, { labels: node.getLabels(context) });
@@ -175,7 +171,6 @@ export default async function translateUpdate({
             parentVar: varName,
             withVars,
             parameterPrefix: `${resolveTree.name}.args.update`,
-            includeRelationshipValidation: false,
         });
         [updateStr] = updateAndParams;
         cypherParams = {
@@ -240,7 +235,6 @@ export default async function translateUpdate({
                     withVars,
                     parentNode: node,
                     labelOverride: "",
-                    includeRelationshipValidation: !!assumeReconnecting,
                     source: "UPDATE",
                 });
                 connectStrs.push(connectAndParams[0]);
@@ -264,42 +258,6 @@ export default async function translateUpdate({
                     cypherParams = { ...cypherParams, ...connectAndParams[1] };
                 });
             }
-        });
-    }
-
-    if (connectOrCreateInput) {
-        Object.entries(connectOrCreateInput).forEach(([key, input]) => {
-            const relationField = node.relationFields.find((x) => key === x.fieldName) as RelationField;
-
-            const refNodes: Node[] = [];
-
-            if (relationField.union) {
-                Object.keys(input).forEach((unionTypeName) => {
-                    refNodes.push(context.nodes.find((x) => x.name === unionTypeName) as Node);
-                });
-            } else if (relationField.interface) {
-                relationField.interface?.implementations?.forEach((implementationName) => {
-                    refNodes.push(context.nodes.find((x) => x.name === implementationName) as Node);
-                });
-            } else {
-                refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
-            }
-
-            refNodes.forEach((refNode) => {
-                const { cypher, params } = createConnectOrCreateAndParams({
-                    input: input[refNode.name] || input, // Deals with different input from update -> connectOrCreate
-                    varName: `${varName}_connectOrCreate_${key}${relationField.union ? `_${refNode.name}` : ""}`,
-                    parentVar: varName,
-                    relationField,
-                    refNode,
-                    node,
-                    context,
-                    withVars,
-                    callbackBucket,
-                });
-                connectStrs.push(cypher);
-                cypherParams = { ...cypherParams, ...params };
-            });
         });
     }
 
@@ -391,7 +349,6 @@ export default async function translateUpdate({
                         input: create.node,
                         varName: nodeName,
                         withVars: [...withVars, nodeName],
-                        includeRelationshipValidation: false,
                     });
                     createStrs.push(nestedCreate);
                     cypherParams = { ...cypherParams, ...params };
@@ -450,8 +407,6 @@ export default async function translateUpdate({
         ? Cypher.utils.concat(...queryASTResult.clauses)
         : new Cypher.Return(new Cypher.Literal("Query cannot conclude with CALL"));
 
-    const relationshipValidationStr = createRelationshipValidationString({ node, context, varName });
-
     const updateQuery = new Cypher.Raw((env) => {
         const cypher = [
             matchAndWhereStr,
@@ -469,7 +424,6 @@ export default async function translateUpdate({
                 ? [`WITH *`]
                 : []), // When FOREACH is the last line of update 'Neo4jError: WITH is required between FOREACH and CALL'
 
-            ...(relationshipValidationStr ? [`WITH *`, relationshipValidationStr] : []),
             ...connectionStrs,
             ...interfaceStrs,
             compileCypher(projectionStatements, env),

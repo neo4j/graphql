@@ -73,7 +73,7 @@ describe("Federation 2 quickstart (https://www.apollographql.com/docs/federation
                 "A number from 1 - 5 with 1 being lowest and 5 being highest"
                 rating: Int
                 "The location the review is about"
-                location: ${Location} @relationship(type: "HAS_REVIEW", direction: IN)
+                location: [${Location}!]! @relationship(type: "HAS_REVIEW", direction: IN)
             }
         `;
 

@@ -18,6 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { FulltextField } from "../../../../schema-model/annotation/FulltextAnnotation";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
@@ -25,16 +26,16 @@ import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { ScoreField } from "../fields/ScoreField";
 import type { EntitySelection } from "../selection/EntitySelection";
-import { ReadOperation } from "./ReadOperation";
-import type { OperationTranspileResult } from "./operations";
+import { ScoreSort } from "../sort/ScoreSort";
+import { ConnectionReadOperation } from "./ConnectionReadOperation";
 
 export type FulltextOptions = {
-    index: string;
+    index: FulltextField;
     phrase: string;
     score: Cypher.Variable;
 };
 
-export class FulltextOperation extends ReadOperation {
+export class FulltextOperation extends ConnectionReadOperation {
     private scoreField: ScoreField | undefined;
 
     constructor({
@@ -57,37 +58,62 @@ export class FulltextOperation extends ReadOperation {
         this.scoreField = scoreField;
     }
 
-    public transpile(context: QueryASTContext<Cypher.Node | undefined>): OperationTranspileResult {
-        const { clauses, projectionExpr } = super.transpile(context);
-
-        const extraProjectionColumns: Array<[Cypher.Expr, Cypher.Variable]> = [];
-
-        if (this.scoreField) {
-            const scoreProjection = this.scoreField.getProjectionField();
-
-            extraProjectionColumns.push([scoreProjection.score, new Cypher.NamedVariable("score")]);
-        }
-
-        return {
-            clauses,
-            projectionExpr,
-            extraProjectionColumns,
-        };
-    }
-
     public getChildren(): QueryASTNode[] {
         return filterTruthy([...super.getChildren(), this.scoreField]);
     }
 
-    protected getReturnStatement(context: QueryASTContext, returnVariable: Cypher.Variable): Cypher.Return {
-        const returnClause = super.getReturnStatement(context, returnVariable);
+    protected createProjectionMapForEdge(context: QueryASTContext<Cypher.Node>): Cypher.Map {
+        const edgeProjectionMap = new Cypher.Map();
 
-        if (this.scoreField) {
-            const scoreProjection = this.scoreField.getProjectionField();
-
-            returnClause.addColumns([scoreProjection.score, "score"]);
+        edgeProjectionMap.set("node", this.createProjectionMapForNode(context));
+        if (this.scoreField && context.neo4jGraphQLContext.fulltext) {
+            edgeProjectionMap.set("score", context.neo4jGraphQLContext.fulltext.scoreVariable);
         }
+        return edgeProjectionMap;
+    }
 
-        return returnClause;
+    protected getUnwindClause(
+        context: QueryASTContext<Cypher.Node>,
+        edgeVar: Cypher.Variable,
+        edgesVar: Cypher.Variable
+    ): Cypher.With {
+        if ((this.scoreField || this.hasScoreSort()) && context.neo4jGraphQLContext.fulltext) {
+            // No relationship, so we directly unwind node and score
+            return new Cypher.Unwind([edgesVar, edgeVar]).with(
+                [edgeVar.property("node"), context.target],
+                [edgeVar.property("score"), context.neo4jGraphQLContext.fulltext.scoreVariable]
+            );
+        } else {
+            return super.getUnwindClause(context, edgeVar, edgesVar);
+        }
+    }
+
+    protected getWithCollectEdgesAndTotalCount(
+        nestedContext: QueryASTContext<Cypher.Node>,
+        edgesVar: Cypher.Variable,
+        totalCount: Cypher.Variable
+    ): Cypher.With {
+        if ((this.scoreField || this.hasScoreSort()) && nestedContext.neo4jGraphQLContext.fulltext) {
+            const nodeAndRelationshipMap = new Cypher.Map({
+                node: nestedContext.target,
+            });
+
+            if (nestedContext.relationship) {
+                nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
+            }
+
+            nodeAndRelationshipMap.set("score", nestedContext.neo4jGraphQLContext.fulltext.scoreVariable);
+
+            return new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar]).with(edgesVar, [
+                Cypher.size(edgesVar),
+                totalCount,
+            ]);
+        } else {
+            return super.getWithCollectEdgesAndTotalCount(nestedContext, edgesVar, totalCount);
+        }
+    }
+
+    private hasScoreSort(): boolean {
+        return this.sortFields.some(({ node }) => node.some((sort) => sort instanceof ScoreSort));
     }
 }

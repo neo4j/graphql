@@ -17,19 +17,18 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
-import { asArray } from "../../../../utils/utils";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import { ScoreField } from "../../ast/fields/ScoreField";
 import { ScoreFilter } from "../../ast/filters/property-filters/ScoreFilter";
 import type { FulltextOptions } from "../../ast/operations/FulltextOperation";
 import { FulltextOperation } from "../../ast/operations/FulltextOperation";
 import { FulltextSelection } from "../../ast/selection/FulltextSelection";
-import { raiseOnMixedPagination } from "../../utils/raise-on-mixed-pagination";
 import type { QueryASTFactory } from "../QueryASTFactory";
+import { findFieldsByNameInFieldsByTypeNameField } from "../parsers/find-fields-by-name-in-fields-by-type-name-field";
+import { getFieldsByTypeName } from "../parsers/get-fields-by-type-name";
 
 export class FulltextFactory {
     private queryASTFactory: QueryASTFactory;
@@ -37,127 +36,14 @@ export class FulltextFactory {
     constructor(queryASTFactory: QueryASTFactory) {
         this.queryASTFactory = queryASTFactory;
     }
-    /**
-     * @deprecated This method is deprecated an it will be removed when the deprecate fulltext operation will be removed.
-     * The is the factory method that parse the deprecated syntax as movies(fulltext: { phrase: "The Matrix" }) {...}
-     * To parse the new syntax movieFullText(phrase: "The Matrix") {...} use the method createFulltextOperation
-     *
-     **/
-    public createDeprecatedFulltextOperation(
-        entity: ConcreteEntityAdapter,
-        resolveTree: ResolveTree,
-        context: Neo4jGraphQLTranslationContext
-    ): FulltextOperation {
-        const resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
-
-        const fieldsByTypeName = resolveTree.fieldsByTypeName;
-        const fullTextOptions = this.getFulltextOptions(context);
-        let scoreField: ScoreField | undefined;
-        let scoreFilter: ScoreFilter | undefined;
-
-        checkEntityAuthentication({
-            entity: entity.entity,
-            targetOperations: ["READ"],
-            context,
-        });
-
-        const selection = new FulltextSelection({
-            target: entity,
-            fulltext: fullTextOptions,
-            scoreVariable: fullTextOptions.score,
-        });
-        const operation = new FulltextOperation({
-            target: entity,
-            scoreField,
-            selection,
-        });
-
-        if (scoreFilter) {
-            operation.addFilters(scoreFilter);
-        }
-
-        this.queryASTFactory.operationsFactory.hydrateOperation({
-            operation,
-            entity,
-            fieldsByTypeName: fieldsByTypeName,
-            context,
-            whereArgs: resolveTreeWhere,
-        });
-
-        // Override sort to support score
-        // SOFT_DEPRECATION: OPTIONS-ARGUMENT
-        const optionsArg: Record<string, any> = (resolveTree.args.options ?? {}) as Record<string, any>;
-        const sortArg = resolveTree.args.sort ?? optionsArg.sort;
-        const limitArg = resolveTree.args.limit ?? optionsArg.limit;
-        const offsetArg = resolveTree.args.offset ?? optionsArg.offset;
-        raiseOnMixedPagination({
-            optionsArg,
-            sort: resolveTree.args.sort,
-            limit: resolveTree.args.limit,
-            offset: resolveTree.args.offset,
-        });
-        const paginationOptions = this.queryASTFactory.operationsFactory.getOptions({
-            entity,
-            limitArg,
-            offsetArg,
-            sortArg,
-        });
-
-        if (paginationOptions) {
-            const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(
-                paginationOptions,
-                entity,
-                context,
-                fullTextOptions.score
-            );
-            operation.addSort(...sort);
-
-            const pagination = this.queryASTFactory.sortAndPaginationFactory.createPagination(paginationOptions);
-            if (pagination) {
-                operation.addPagination(pagination);
-            }
-        }
-
-        return operation;
-    }
 
     public createFulltextOperation(
         entity: ConcreteEntityAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): FulltextOperation {
-        const fullTextDeprecateOperationFields =
-            resolveTree.fieldsByTypeName[entity.operations.fulltextTypeNames.result];
-
-        if (!fullTextDeprecateOperationFields) {
-            throw new Error("Transpile error: operation not found");
-        }
-        const resolveTreeWhere: Record<string, any> = this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree);
-
-        const fullTextOptions = this.getFulltextOptions(context);
-        let scoreField: ScoreField | undefined;
-        let scoreFilter: ScoreFilter | undefined;
-
-        const scoreWhere = resolveTreeWhere.score;
-        const targetTypeWhere = resolveTreeWhere[entity.singular] ?? {};
-
-        const scoreRawField = fullTextDeprecateOperationFields.score;
-
-        const nestedResolveTree: Record<string, any> = fullTextDeprecateOperationFields[entity.singular] ?? {};
-
-        if (scoreRawField) {
-            scoreField = new ScoreField({
-                alias: scoreRawField.alias,
-                score: fullTextOptions.score,
-            });
-        }
-        if (scoreWhere) {
-            scoreFilter = new ScoreFilter({
-                scoreVariable: fullTextOptions.score,
-                min: scoreWhere.min,
-                max: scoreWhere.max,
-            });
-        }
+        const resolveTreeWhere: Record<string, any> =
+            this.queryASTFactory.operationsFactory.getWhereArgs(resolveTree) ?? {};
 
         checkEntityAuthentication({
             entity: entity.entity,
@@ -165,61 +51,71 @@ export class FulltextFactory {
             context,
         });
 
-        const selection = new FulltextSelection({
-            target: entity,
-            fulltext: fullTextOptions,
-            scoreVariable: fullTextOptions.score,
-        });
+        let scoreField: ScoreField | undefined;
+        const fulltextConnectionFields = resolveTree.fieldsByTypeName[entity.operations.fulltextTypeNames.connection];
+
+        if (!fulltextConnectionFields) {
+            throw new Error("Fulltext result field not found");
+        }
+
+        const filteredResolveTreeEdges = findFieldsByNameInFieldsByTypeNameField(fulltextConnectionFields, "edges");
+        const edgeFields = getFieldsByTypeName(filteredResolveTreeEdges, entity.operations.fulltextTypeNames.edge);
+        const scoreFields = findFieldsByNameInFieldsByTypeNameField(edgeFields, "score");
+
+        // We only care about the first score field
+        if (scoreFields.length > 0 && scoreFields[0] && context.fulltext) {
+            scoreField = new ScoreField({
+                alias: scoreFields[0].alias,
+                score: context.fulltext.scoreVariable,
+            });
+        }
+
         const operation = new FulltextOperation({
             target: entity,
             scoreField,
-            selection,
+            selection: this.getFulltextSelection(entity, context),
         });
 
-        if (scoreFilter) {
-            operation.addFilters(scoreFilter);
-        }
-        const fieldsByTypeName = nestedResolveTree.fieldsByTypeName ?? {};
-        this.queryASTFactory.operationsFactory.hydrateOperation({
-            operation,
-            entity,
-            fieldsByTypeName,
-            context,
-            whereArgs: targetTypeWhere,
-        });
-
-        // SOFT_DEPRECATION: OPTIONS-ARGUMENT
-        const optionsArg: Record<string, any> = (resolveTree.args.options ?? {}) as Record<string, any>;
-        // Override sort to support score and other fields as: { score: "DESC", movie: { title: DESC }}
-        const sortArg = asArray(resolveTree.args.sort ?? optionsArg.sort).map(
-            (field) => field[entity.singular] ?? field
+        const concreteEdgeFields = getFieldsByTypeName(
+            filteredResolveTreeEdges,
+            entity.operations.fulltextTypeNames.edge
         );
-        const limitArg = resolveTree.args.limit ?? optionsArg.limit;
-        const offsetArg = resolveTree.args.offset ?? optionsArg.offset;
 
-        const paginationOptions = this.queryASTFactory.operationsFactory.getOptions({
-            entity,
-            limitArg,
-            offsetArg,
-            sortArg,
+        this.addFulltextScoreFilter({
+            operation,
+            context,
+            whereArgs: resolveTreeWhere,
         });
 
-        if (paginationOptions) {
-            const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(
-                paginationOptions,
-                entity,
-                context,
-                fullTextOptions.score
-            );
-            operation.addSort(...sort);
-
-            const pagination = this.queryASTFactory.sortAndPaginationFactory.createPagination(paginationOptions);
-            if (pagination) {
-                operation.addPagination(pagination);
-            }
-        }
+        this.queryASTFactory.operationsFactory.hydrateConnectionOperation({
+            target: entity,
+            resolveTree: resolveTree,
+            context,
+            operation,
+            whereArgs: resolveTreeWhere,
+            resolveTreeEdgeFields: concreteEdgeFields,
+        });
 
         return operation;
+    }
+
+    private addFulltextScoreFilter({
+        operation,
+        whereArgs,
+        context,
+    }: {
+        operation: FulltextOperation;
+        whereArgs: Record<string, any>;
+        context: Neo4jGraphQLTranslationContext;
+    }): void {
+        if (whereArgs.score && context?.fulltext) {
+            const scoreFilter = new ScoreFilter({
+                scoreVariable: context.fulltext.scoreVariable,
+                min: whereArgs.score.min,
+                max: whereArgs.score.max,
+            });
+            operation.addFilters(scoreFilter);
+        }
     }
 
     public getFulltextSelection(
@@ -229,38 +125,25 @@ export class FulltextFactory {
         const fulltextOptions = this.getFulltextOptions(context);
         return new FulltextSelection({
             target: entity,
-            fulltext: fulltextOptions,
+            fulltextOptions,
             scoreVariable: fulltextOptions.score,
         });
     }
 
     private getFulltextOptions(context: Neo4jGraphQLTranslationContext): FulltextOptions {
-        if (context.fulltext) {
-            const indexName = context.fulltext.indexName ?? context.fulltext.name;
-            if (indexName === undefined) {
-                throw new Error("The name of the fulltext index should be defined using the indexName argument.");
-            }
-            const phrase = context.resolveTree.args.phrase;
-            if (!phrase || typeof phrase !== "string") {
-                throw new Error("Invalid phrase");
-            }
-
-            return {
-                index: indexName,
-                phrase,
-                score: context.fulltext.scoreVariable,
-            };
+        if (!context.fulltext) {
+            throw new Error("Fulltext context is missing");
         }
 
-        const entries = Object.entries(context.resolveTree.args.fulltext || {});
-        if (entries.length > 1) {
-            throw new Error("Can only call one search at any given time");
+        const phrase = context.resolveTree.args.phrase;
+        if (!phrase || typeof phrase !== "string") {
+            throw new Error("Invalid phrase");
         }
-        const [indexName, indexInput] = entries[0] as [string, { phrase: string }];
+
         return {
-            index: indexName,
-            phrase: indexInput.phrase,
-            score: new Cypher.Variable(),
+            index: context.fulltext.index,
+            phrase,
+            score: context.fulltext.scoreVariable,
         };
     }
 }

@@ -40,7 +40,7 @@ describe("Cypher Duration", () => {
     test("Simple Read", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { duration_EQ: "P1Y" }) {
+                movies(where: { duration: { eq: "P1Y" } }) {
                     duration
                 }
             }
@@ -49,7 +49,8 @@ describe("Cypher Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.duration = $param0
             RETURN this { .duration } AS this"
         `);
@@ -75,7 +76,7 @@ describe("Cypher Duration", () => {
     test("GTE Read", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { duration_GTE: "P3Y4M" }) {
+                movies(where: { duration: { gte: "P3Y4M" } }) {
                     duration
                 }
             }
@@ -84,7 +85,8 @@ describe("Cypher Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE (datetime() + this.duration) >= (datetime() + $param0)
             RETURN this { .duration } AS this"
         `);
@@ -121,7 +123,8 @@ describe("Cypher Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -169,7 +172,8 @@ describe("Cypher Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             SET this.duration = $this_update_duration_SET
             RETURN collect(DISTINCT this { .id, .duration }) AS data"
         `);

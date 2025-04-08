@@ -51,6 +51,23 @@ describe("Bigint", () => {
               sum: BigInt
             }
 
+            \\"\\"\\"BigInt filters\\"\\"\\"
+            input BigIntScalarFilters {
+              eq: BigInt
+              gt: BigInt
+              gte: BigInt
+              in: [BigInt!]
+              lt: BigInt
+              lte: BigInt
+            }
+
+            \\"\\"\\"BigInt mutations\\"\\"\\"
+            input BigIntScalarMutations {
+              add: BigInt
+              set: BigInt
+              subtract: BigInt
+            }
+
             type Count {
               nodes: Int!
             }
@@ -91,12 +108,6 @@ describe("Bigint", () => {
               size: BigIntAggregateSelection!
             }
 
-            type FileAggregateSelection {
-              count: Int!
-              name: StringAggregateSelection!
-              size: BigIntAggregateSelection!
-            }
-
             input FileCreateInput {
               name: String!
               size: BigInt!
@@ -105,15 +116,6 @@ describe("Bigint", () => {
             type FileEdge {
               cursor: String!
               node: File!
-            }
-
-            input FileOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more FileSort objects to sort Files by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [FileSort!]
             }
 
             \\"\\"\\"
@@ -125,31 +127,31 @@ describe("Bigint", () => {
             }
 
             input FileUpdateInput {
-              name: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              name_SET: String
-              size: BigInt @deprecated(reason: \\"Please use the explicit _SET field\\")
-              size_DECREMENT: BigInt
-              size_INCREMENT: BigInt
-              size_SET: BigInt
+              name: StringScalarMutations
+              name_SET: String @deprecated(reason: \\"Please use the generic mutation 'name: { set: ... } }' instead.\\")
+              size: BigIntScalarMutations
+              size_DECREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'size: { decrement: ... } }' instead.\\")
+              size_INCREMENT: BigInt @deprecated(reason: \\"Please use the relevant generic mutation 'size: { increment: ... } }' instead.\\")
+              size_SET: BigInt @deprecated(reason: \\"Please use the generic mutation 'size: { set: ... } }' instead.\\")
             }
 
             input FileWhere {
               AND: [FileWhere!]
               NOT: FileWhere
               OR: [FileWhere!]
-              name: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              name_CONTAINS: String
-              name_ENDS_WITH: String
-              name_EQ: String
-              name_IN: [String!]
-              name_STARTS_WITH: String
-              size: BigInt @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              size_EQ: BigInt
-              size_GT: BigInt
-              size_GTE: BigInt
-              size_IN: [BigInt!]
-              size_LT: BigInt
-              size_LTE: BigInt
+              name: StringScalarFilters
+              name_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter name: { contains: ... }\\")
+              name_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { endsWith: ... }\\")
+              name_EQ: String @deprecated(reason: \\"Please use the relevant generic filter name: { eq: ... }\\")
+              name_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter name: { in: ... }\\")
+              name_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter name: { startsWith: ... }\\")
+              size: BigIntScalarFilters
+              size_EQ: BigInt @deprecated(reason: \\"Please use the relevant generic filter size: { eq: ... }\\")
+              size_GT: BigInt @deprecated(reason: \\"Please use the relevant generic filter size: { gt: ... }\\")
+              size_GTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter size: { gte: ... }\\")
+              size_IN: [BigInt!] @deprecated(reason: \\"Please use the relevant generic filter size: { in: ... }\\")
+              size_LT: BigInt @deprecated(reason: \\"Please use the relevant generic filter size: { lt: ... }\\")
+              size_LTE: BigInt @deprecated(reason: \\"Please use the relevant generic filter size: { lte: ... }\\")
             }
 
             type FilesConnection {
@@ -174,8 +176,7 @@ describe("Bigint", () => {
             }
 
             type Query {
-              files(limit: Int, offset: Int, options: FileOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [FileSort!], where: FileWhere): [File!]!
-              filesAggregate(where: FileWhere): FileAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"filesConnection\\\\\\" instead\\")
+              files(limit: Int, offset: Int, sort: [FileSort!], where: FileWhere): [File!]!
               filesConnection(after: String, first: Int, sort: [FileSort!], where: FileWhere): FilesConnection!
             }
 
@@ -190,6 +191,20 @@ describe("Bigint", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             type UpdateFilesMutationResponse {

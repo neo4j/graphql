@@ -28,8 +28,8 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
         typeDefs = /* GraphQL */ `
             type Risk @node {
                 code: String!
-                ownedBy: Team @relationship(type: "OWNS_RISK", direction: IN)
-                mitigationState: [MitigationState]
+                ownedBy: [Team!]! @relationship(type: "OWNS_RISK", direction: IN)
+                mitigationState: [MitigationState!]
             }
 
             type Team @node {
@@ -54,11 +54,19 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
         const query = /* GraphQL */ `
             query getAggreationOnTeams {
                 stats: teams {
-                    accepted: ownsRisksAggregate(where: { mitigationState_INCLUDES: Accepted }) {
-                        count
+                    accepted: ownsRisksConnection(where: { node: { mitigationState: { includes: Accepted } } }) {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
-                    identified: ownsRisksAggregate(where: { mitigationState_INCLUDES: Identified }) {
-                        count
+                    identified: ownsRisksConnection(where: { node: { mitigationState: { includes: Identified } } }) {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -66,20 +74,29 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Team)
+            "CYPHER 5
+            MATCH (this:Team)
             CALL {
                 WITH this
-                MATCH (this)-[this0:OWNS_RISK]->(this1:Risk)
-                WHERE $param0 IN this1.mitigationState
-                RETURN count(this1) AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)-[this0:OWNS_RISK]->(this1:Risk)
+                    WHERE $param0 IN this1.mitigationState
+                    RETURN { nodes: count(DISTINCT this1) } AS var2
+                }
+                RETURN { aggregate: { count: var2 } } AS var3
             }
             CALL {
                 WITH this
-                MATCH (this)-[this3:OWNS_RISK]->(this4:Risk)
-                WHERE $param1 IN this4.mitigationState
-                RETURN count(this4) AS var5
+                CALL {
+                    WITH this
+                    MATCH (this)-[this4:OWNS_RISK]->(this5:Risk)
+                    WHERE $param1 IN this5.mitigationState
+                    RETURN { nodes: count(DISTINCT this5) } AS var6
+                }
+                RETURN { aggregate: { count: var6 } } AS var7
             }
-            RETURN this { accepted: { count: var2 }, identified: { count: var5 } } AS this"
+            RETURN this { accepted: var3, identified: var7 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -22,7 +22,7 @@ import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-t
 
 describe("cypher directive filtering", () => {
     test("With sorting on the return value", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 custom_field: String
@@ -36,7 +36,7 @@ describe("cypher directive filtering", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -44,7 +44,7 @@ describe("cypher directive filtering", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { custom_field_STARTS_WITH: "The Matrix" }, sort: [{ custom_field: DESC }]) {
+                movies(where: { custom_field: { startsWith: "The Matrix" } }, sort: [{ custom_field: DESC }]) {
                     title
                     actors {
                         name
@@ -60,7 +60,8 @@ describe("cypher directive filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -90,6 +91,7 @@ describe("cypher directive filtering", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this4:ACTED_IN]-(this5:Actor)
+                WITH DISTINCT this5
                 WITH this5 { .name } AS this5
                 RETURN collect(this5) AS var6
             }
@@ -104,7 +106,7 @@ describe("cypher directive filtering", () => {
     });
 
     test("With sorting on the return value of a different field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 custom_field: String
@@ -117,7 +119,7 @@ describe("cypher directive filtering", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
@@ -125,7 +127,7 @@ describe("cypher directive filtering", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { custom_field: "hello world!" }, sort: [{ title: DESC }]) {
+                movies(where: { custom_field: { eq: "hello world!" } }, sort: [{ title: DESC }]) {
                     title
                     actors {
                         name
@@ -141,7 +143,8 @@ describe("cypher directive filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -159,6 +162,7 @@ describe("cypher directive filtering", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
+                WITH DISTINCT this3
                 WITH this3 { .name } AS this3
                 RETURN collect(this3) AS var4
             }

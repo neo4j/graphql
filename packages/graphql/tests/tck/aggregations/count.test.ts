@@ -52,7 +52,8 @@ describe("Cypher Aggregations Count", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 RETURN { nodes: count(DISTINCT this) } AS var0
             }
@@ -65,8 +66,12 @@ describe("Cypher Aggregations Count", () => {
     test("Count with WHERE", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate(where: { title_EQ: "some-title" }) {
-                    count
+                moviesConnection(where: { title: { eq: "some-title" } }) {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                    }
                 }
             }
         `;
@@ -74,12 +79,13 @@ describe("Cypher Aggregations Count", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 WHERE this.title = $param0
-                RETURN count(this) AS var0
+                RETURN { nodes: count(DISTINCT this) } AS var0
             }
-            RETURN { count: var0 }"
+            RETURN { aggregate: { count: var0 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

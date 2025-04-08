@@ -70,7 +70,8 @@ describe("Cypher Alias", () => {
 
         // NOTE: Order of these subqueries have been reversed after refactor
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -86,6 +87,7 @@ describe("Cypher Alias", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
+                WITH DISTINCT this3
                 WITH this3 { aliasActorsName: this3.name } AS this3
                 RETURN collect(this3) AS var4
             }

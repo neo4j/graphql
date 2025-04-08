@@ -29,7 +29,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
             type Bulk @mutation(operations: []) @node(labels: ["Bulk", "$tenant"]) {
                 id: ID!
                 supplierMaterialNumber: String!
-                material: Material! @relationship(type: "MATERIAL_BULK", direction: OUT)
+                material: [Material!]! @relationship(type: "MATERIAL_BULK", direction: OUT)
             }
 
             type Material @mutation(operations: []) @node {
@@ -81,10 +81,12 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
         const result = await translateQuery(neoSchema, query, { contextValues: { cypherParams: { tenant: "BULK" } } });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Bulk:BULK)
+            "CYPHER 5
+            MATCH (this:Bulk:BULK)
             CALL {
                 WITH this
                 MATCH (this)-[this0:MATERIAL_BULK]->(this1:Material)
+                WITH DISTINCT this1
                 CALL {
                     WITH this1
                     MATCH (this1)-[this2:MATERIAL_SUPPLIER]->(this3:Supplier)
@@ -99,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                     RETURN { edges: var4, totalCount: totalCount } AS var5
                 }
                 WITH this1 { .id, suppliersConnection: var5 } AS this1
-                RETURN head(collect(this1)) AS var6
+                RETURN collect(this1) AS var6
             }
             RETURN this { .supplierMaterialNumber, material: var6 } AS this"
         `);

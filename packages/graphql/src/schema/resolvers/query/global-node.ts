@@ -60,7 +60,7 @@ export function globalNodeResolver({ entities }: { entities: ConcreteEntityAdapt
         const resolveTree = {
             name: entityAdapter.plural,
             alias: "node",
-            args: { where: { [field]: id } },
+            args: { where: { [`${field}_EQ`]: id } },
             fieldsByTypeName,
         };
 

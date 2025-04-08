@@ -26,6 +26,7 @@ import { checkAuthentication } from "./authorization/check-authentication";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
 import { buildClause } from "./utils/build-clause";
+import { getRelationshipDirection } from "./utils/get-relationship-direction";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
 interface Res {
@@ -68,8 +69,7 @@ function createDisconnectAndParams({
         checkAuthentication({ context, node: relatedNode, targetOperations: ["DELETE_RELATIONSHIP"] });
 
         const variableName = `${varName}${index}`;
-        const inStr = relationField.direction === "IN" ? "<-" : "-";
-        const outStr = relationField.direction === "OUT" ? "->" : "-";
+        const { inStr, outStr } = getRelationshipDirection(relationField);
         const relVarName = `${variableName}_rel`;
         const relTypeStr = `[${relVarName}:${relationField.type}]`;
         const subquery: string[] = [];

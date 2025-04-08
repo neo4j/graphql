@@ -33,17 +33,17 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
         Community = testHelper.createUniqueType("Community");
         const typeDefs = `
         type ${ContentPiece} @node(labels: ["${ContentPiece}", "UNIVERSAL"]) {
-            uid: String! @unique
+            uid: String!
             id: Int
         }
 
         type ${Project} @node(labels: ["${Project}", "UNIVERSAL"]) {
-            uid: String! @unique
+            uid: String!
             id: Int
         }
 
         type ${Community} @node(labels: ["${Community}", "UNIVERSAL"]) {
-            uid: String! @unique
+            uid: String!
             id: Int
             hasContentPieces: [${ContentPiece}!]!
                 @relationship(type: "COMMUNITY_CONTENTPIECE_HASCONTENTPIECES", direction: OUT)

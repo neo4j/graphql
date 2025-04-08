@@ -18,6 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import { coalesceValueIfNeeded } from "../../filters/utils/coalesce-if-needed";
 import { AttributeField } from "./AttributeField";
 
 export class DateTimeField extends AttributeField {
@@ -30,7 +31,7 @@ export class DateTimeField extends AttributeField {
     public getProjectionField(variable: Cypher.Variable): Record<string, Cypher.Expr> {
         const targetProperty = variable.property(this.attribute.databaseName);
         const fieldExpr = this.createDateTimeProjection(targetProperty);
-        return { [this.alias]: fieldExpr };
+        return { [this.alias]: coalesceValueIfNeeded(this.attribute, fieldExpr) };
     }
 
     private createDateTimeProjection(targetProperty: Cypher.Property): Cypher.Expr {

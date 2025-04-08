@@ -49,7 +49,9 @@ describe("Cypher Aggregations where edge with DateTime", () => {
     test("MIN_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDateTime_MIN_EQUAL: "2021-09-25T12:51:24.037Z" } } }) {
+                posts(
+                    where: { likesAggregate: { edge: { someDateTime: { min: { eq: "2021-09-25T12:51:24.037Z" } } } } }
+                ) {
                     content
                 }
             }
@@ -58,11 +60,12 @@ describe("Cypher Aggregations where edge with DateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this0.someDateTime) = $param0 AS var2
+                RETURN min(this0.someDateTime) = datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -71,16 +74,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -88,7 +82,9 @@ describe("Cypher Aggregations where edge with DateTime", () => {
     test("MIN_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDateTime_MIN_GT: "2021-09-25T12:51:24.037Z" } } }) {
+                posts(
+                    where: { likesAggregate: { edge: { someDateTime: { min: { gt: "2021-09-25T12:51:24.037Z" } } } } }
+                ) {
                     content
                 }
             }
@@ -97,11 +93,12 @@ describe("Cypher Aggregations where edge with DateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this0.someDateTime) > $param0 AS var2
+                RETURN min(this0.someDateTime) > datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -110,16 +107,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -127,7 +115,9 @@ describe("Cypher Aggregations where edge with DateTime", () => {
     test("MIN_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDateTime_MIN_GTE: "2021-09-25T12:51:24.037Z" } } }) {
+                posts(
+                    where: { likesAggregate: { edge: { someDateTime: { min: { gte: "2021-09-25T12:51:24.037Z" } } } } }
+                ) {
                     content
                 }
             }
@@ -136,11 +126,12 @@ describe("Cypher Aggregations where edge with DateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this0.someDateTime) >= $param0 AS var2
+                RETURN min(this0.someDateTime) >= datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -149,16 +140,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -166,7 +148,9 @@ describe("Cypher Aggregations where edge with DateTime", () => {
     test("MIN_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDateTime_MIN_LT: "2021-09-25T12:51:24.037Z" } } }) {
+                posts(
+                    where: { likesAggregate: { edge: { someDateTime: { min: { lt: "2021-09-25T12:51:24.037Z" } } } } }
+                ) {
                     content
                 }
             }
@@ -175,11 +159,12 @@ describe("Cypher Aggregations where edge with DateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this0.someDateTime) < $param0 AS var2
+                RETURN min(this0.someDateTime) < datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -188,16 +173,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -205,7 +181,9 @@ describe("Cypher Aggregations where edge with DateTime", () => {
     test("MIN_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDateTime_MIN_LTE: "2021-09-25T12:51:24.037Z" } } }) {
+                posts(
+                    where: { likesAggregate: { edge: { someDateTime: { min: { lte: "2021-09-25T12:51:24.037Z" } } } } }
+                ) {
                     content
                 }
             }
@@ -214,11 +192,12 @@ describe("Cypher Aggregations where edge with DateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this0.someDateTime) <= $param0 AS var2
+                RETURN min(this0.someDateTime) <= datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -227,16 +206,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -244,7 +214,9 @@ describe("Cypher Aggregations where edge with DateTime", () => {
     test("MAX_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDateTime_MAX_EQUAL: "2021-09-25T12:51:24.037Z" } } }) {
+                posts(
+                    where: { likesAggregate: { edge: { someDateTime: { max: { eq: "2021-09-25T12:51:24.037Z" } } } } }
+                ) {
                     content
                 }
             }
@@ -253,11 +225,12 @@ describe("Cypher Aggregations where edge with DateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this0.someDateTime) = $param0 AS var2
+                RETURN max(this0.someDateTime) = datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -266,16 +239,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -283,7 +247,9 @@ describe("Cypher Aggregations where edge with DateTime", () => {
     test("MAX_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDateTime_MAX_GT: "2021-09-25T12:51:24.037Z" } } }) {
+                posts(
+                    where: { likesAggregate: { edge: { someDateTime: { max: { gt: "2021-09-25T12:51:24.037Z" } } } } }
+                ) {
                     content
                 }
             }
@@ -292,11 +258,12 @@ describe("Cypher Aggregations where edge with DateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this0.someDateTime) > $param0 AS var2
+                RETURN max(this0.someDateTime) > datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -305,16 +272,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -322,7 +280,9 @@ describe("Cypher Aggregations where edge with DateTime", () => {
     test("MAX_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDateTime_MAX_GTE: "2021-09-25T12:51:24.037Z" } } }) {
+                posts(
+                    where: { likesAggregate: { edge: { someDateTime: { max: { gte: "2021-09-25T12:51:24.037Z" } } } } }
+                ) {
                     content
                 }
             }
@@ -331,11 +291,12 @@ describe("Cypher Aggregations where edge with DateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this0.someDateTime) >= $param0 AS var2
+                RETURN max(this0.someDateTime) >= datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -344,16 +305,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -361,7 +313,9 @@ describe("Cypher Aggregations where edge with DateTime", () => {
     test("MAX_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDateTime_MAX_LT: "2021-09-25T12:51:24.037Z" } } }) {
+                posts(
+                    where: { likesAggregate: { edge: { someDateTime: { max: { lt: "2021-09-25T12:51:24.037Z" } } } } }
+                ) {
                     content
                 }
             }
@@ -370,11 +324,12 @@ describe("Cypher Aggregations where edge with DateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this0.someDateTime) < $param0 AS var2
+                RETURN max(this0.someDateTime) < datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -383,16 +338,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });
@@ -400,7 +346,9 @@ describe("Cypher Aggregations where edge with DateTime", () => {
     test("MAX_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someDateTime_MAX_LTE: "2021-09-25T12:51:24.037Z" } } }) {
+                posts(
+                    where: { likesAggregate: { edge: { someDateTime: { max: { lte: "2021-09-25T12:51:24.037Z" } } } } }
+                ) {
                     content
                 }
             }
@@ -409,11 +357,12 @@ describe("Cypher Aggregations where edge with DateTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this0.someDateTime) <= $param0 AS var2
+                RETURN max(this0.someDateTime) <= datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -422,16 +371,7 @@ describe("Cypher Aggregations where edge with DateTime", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2021,
-                    \\"month\\": 9,
-                    \\"day\\": 25,
-                    \\"hour\\": 12,
-                    \\"minute\\": 51,
-                    \\"second\\": 24,
-                    \\"nanosecond\\": 37000000,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2021-09-25T12:51:24.037Z\\"
             }"
         `);
     });

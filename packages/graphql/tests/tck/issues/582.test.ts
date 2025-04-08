@@ -54,13 +54,17 @@ describe("#582", () => {
         const result = await translateQuery(neoSchema, query, {
             variableValues: {
                 where: {
-                    type_EQ: "Cat",
-                    childrenConnection_SOME: {
-                        node: {
-                            type_EQ: "Dog",
-                            parentsConnection_SOME: {
-                                node: {
-                                    type_EQ: "Bird",
+                    type: { eq: "Cat" },
+                    childrenConnection: {
+                        some: {
+                            node: {
+                                type: { eq: "Dog" },
+                                parentsConnection: {
+                                    some: {
+                                        node: {
+                                            type: { eq: "Bird" },
+                                        },
+                                    },
                                 },
                             },
                         },
@@ -70,7 +74,8 @@ describe("#582", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Entity)
+            "CYPHER 5
+            MATCH (this:Entity)
             WHERE (this.type = $param0 AND EXISTS {
                 MATCH (this)-[this0:EDGE]->(this1:Entity)
                 WHERE (this1.type = $param1 AND EXISTS {
@@ -102,16 +107,22 @@ describe("#582", () => {
         const result = await translateQuery(neoSchema, query, {
             variableValues: {
                 where: {
-                    type_EQ: "Cat",
-                    childrenConnection_SOME: {
-                        node: {
-                            type_EQ: "Dog",
-                            parentsConnection_SOME: {
-                                node: {
-                                    type_EQ: "Bird",
-                                    childrenConnection_SOME: {
+                    type: { eq: "Cat" },
+                    childrenConnection: {
+                        some: {
+                            node: {
+                                type: { eq: "Dog" },
+                                parentsConnection: {
+                                    some: {
                                         node: {
-                                            type_EQ: "Fish",
+                                            type: { eq: "Bird" },
+                                            childrenConnection: {
+                                                some: {
+                                                    node: {
+                                                        type: { eq: "Fish" },
+                                                    },
+                                                },
+                                            },
                                         },
                                     },
                                 },
@@ -123,7 +134,8 @@ describe("#582", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Entity)
+            "CYPHER 5
+            MATCH (this:Entity)
             WHERE (this.type = $param0 AND EXISTS {
                 MATCH (this)-[this0:EDGE]->(this1:Entity)
                 WHERE (this1.type = $param1 AND EXISTS {

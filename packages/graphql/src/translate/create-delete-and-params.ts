@@ -24,6 +24,7 @@ import { caseWhere } from "../utils/case-where";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
 import { buildClause } from "./utils/build-clause";
+import { getRelationshipDirection } from "./utils/get-relationship-direction";
 import createConnectionWhereAndParams from "./where/create-connection-where-and-params";
 
 interface Res {
@@ -78,8 +79,7 @@ function createDeleteAndParams({
                 refNodes.push(context.nodes.find((x) => x.name === relationField.typeMeta.name) as Node);
             }
 
-            const inStr = relationField.direction === "IN" ? "<-" : "-";
-            const outStr = relationField.direction === "OUT" ? "->" : "-";
+            const { inStr, outStr } = getRelationshipDirection(relationField);
 
             refNodes.forEach((refNode) => {
                 checkAuthentication({ context, node: refNode, targetOperations: ["DELETE"] });
@@ -136,7 +136,7 @@ function createDeleteAndParams({
                                     aggregationWhere = true;
                                 }
                             }
-                        } catch (err) {
+                        } catch (_err) {
                             innerStrs.push(" \n}");
                             return;
                         }

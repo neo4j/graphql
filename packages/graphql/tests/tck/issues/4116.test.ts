@@ -21,7 +21,7 @@ import { Neo4jGraphQL } from "../../../src";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
-describe("https://github.com/neo4j/graphql/issues/4115", () => {
+describe("https://github.com/neo4j/graphql/issues/4116", () => {
     const secret = "sssh!";
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
@@ -29,24 +29,30 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type User @node {
-                id: ID! @unique
+                id: ID!
                 roles: [String!]!
             }
 
             type Family @node {
-                id: ID! @id @unique
+                id: ID! @id
                 members: [Person!]! @relationship(type: "MEMBER_OF", direction: IN)
-                creator: User! @relationship(type: "CREATOR_OF", direction: IN)
+                creator: [User!]! @relationship(type: "CREATOR_OF", direction: IN)
             }
 
             type Person
                 @node
                 @authorization(
-                    filter: [{ where: { node: { family: { creator: { roles_INCLUDES: "plan:paid" } } } } }]
+                    filter: [
+                        {
+                            where: {
+                                node: { family: { some: { creator: { some: { roles: { includes: "plan:paid" } } } } } }
+                            }
+                        }
+                    ]
                 ) {
-                id: ID! @id @unique
-                creator: User! @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])
-                family: Family! @relationship(type: "MEMBER_OF", direction: OUT)
+                id: ID! @id
+                creator: [User!]! @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])
+                family: [Family!]! @relationship(type: "MEMBER_OF", direction: OUT)
             }
 
             type JWT @jwt {
@@ -71,8 +77,12 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
             query Family {
                 families {
                     id
-                    membersAggregate {
-                        count
+                    membersConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -81,30 +91,31 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Family)
+            "CYPHER 5
+            MATCH (this:Family)
             CALL {
                 WITH this
-                MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
                 CALL {
-                    WITH this1
-                    MATCH (this1)-[:MEMBER_OF]->(this2:Family)
-                    OPTIONAL MATCH (this2)<-[:CREATOR_OF]-(this3:User)
-                    WITH *, count(this3) AS var4
-                    WITH *
-                    WHERE (var4 <> 0 AND ($param0 IS NOT NULL AND $param0 IN this3.roles))
-                    RETURN count(this2) = 1 AS var5
+                    WITH this
+                    MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
+                    WHERE ($isAuthenticated = true AND EXISTS {
+                        MATCH (this1)-[:MEMBER_OF]->(this2:Family)
+                        WHERE EXISTS {
+                            MATCH (this2)<-[:CREATOR_OF]-(this3:User)
+                            WHERE ($param1 IS NOT NULL AND $param1 IN this3.roles)
+                        }
+                    })
+                    RETURN { nodes: count(DISTINCT this1) } AS var4
                 }
-                WITH *
-                WHERE ($isAuthenticated = true AND var5 = true)
-                RETURN count(this1) AS var6
+                RETURN { aggregate: { count: var4 } } AS var5
             }
-            RETURN this { .id, membersAggregate: { count: var6 } } AS this"
+            RETURN this { .id, membersConnection: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"plan:paid\\",
-                \\"isAuthenticated\\": true
+                \\"isAuthenticated\\": true,
+                \\"param1\\": \\"plan:paid\\"
             }"
         `);
     });

@@ -75,18 +75,19 @@ describe("Vector index match", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH collect({ node: this0, score: var1 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
-                    UNWIND edges AS edge
-                    WITH edge.node AS this0, edge.score AS var1
-                    RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
-                }
-                RETURN { edges: var2, totalCount: totalCount } AS this"
-            `);
+            "CYPHER 5
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
+            WHERE $param1 IN labels(this0)
+            WITH collect({ node: this0, score: var1 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0, edge.score AS var1
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
+            }
+            RETURN { edges: var2, totalCount: totalCount } AS this"
+        `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
@@ -228,7 +229,7 @@ describe("Vector index match", () => {
     test("simple match with single property and score and filter", async () => {
         const query = /* GraphQL */ `
                 query MovieVectorQuery($vector: [Float!]!) {
-                    ${queryName}(vector: $vector, where: { node: { released_GT: 2000 } }) {
+                    ${queryName}(vector: $vector, where: { node: { released: { gt: 2000  } } }) {
                         edges {
                             cursor
                             score
@@ -248,7 +249,8 @@ describe("Vector index match", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND this0.released > $param2)
             WITH collect({ node: this0, score: var1 }) AS edges
             WITH edges, size(edges) AS totalCount
@@ -423,7 +425,8 @@ describe("Vector index match", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
             WITH collect({ node: this0, score: var1 }) AS edges
             WITH edges, size(edges) AS totalCount

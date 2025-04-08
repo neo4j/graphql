@@ -34,11 +34,11 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
 
         const typeDefs = `
             type ${testSeries} @node {
-                id: ID! @unique
+                id: ID!
                 current: Boolean!
                 architecture: [${testMasterData}!]!
                     @relationship(type: "ARCHITECTURE", properties: "RelationProps", direction: OUT)
-                nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
+                nameDetails: [${testNameDetails}!]! @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
             }
     
             type ${testNameDetails} @mutation(operations: []) @query(read: false, aggregate: false) @node {
@@ -50,9 +50,9 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
             }
     
             type ${testMasterData} @node {
-                id: ID! @unique
+                id: ID!
                 current: Boolean!
-                nameDetails: ${testNameDetails} @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
+                nameDetails: [${testNameDetails}!]! @relationship(type: "HAS_NAME", properties: "RelationProps", direction: OUT)
             }
         `;
         await testHelper.initNeo4jGraphQL({
@@ -110,7 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
         const variableValues = {
             where: {
                 current_EQ: true,
-                nameDetailsConnection: {
+                nameDetailsConnection_SINGLE: {
                     edge: {
                         current_EQ: true,
                     },
@@ -123,7 +123,7 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                         current_EQ: true,
                     },
                     node: {
-                        nameDetailsConnection: {
+                        nameDetailsConnection_SINGLE: {
                             edge: {
                                 current_EQ: true,
                             },

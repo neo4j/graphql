@@ -42,39 +42,75 @@ export const typeDefs = gql`
 
     directive @custom on OBJECT
 
-    type Product @custom @key(fields: "id") @key(fields: "sku package") @key(fields: "sku variation { id }") {
+    type Product @node @custom @key(fields: "id") @key(fields: "sku package") @key(fields: "sku variation { id }") {
         id: ID!
         sku: String
         package: String
-        variation: ProductVariation @relationship(type: "HAS_VARIATION", direction: OUT)
-        dimensions: ProductDimension @relationship(type: "HAS_DIMENSIONS", direction: OUT)
-        createdBy: User @provides(fields: "totalProductsCreated") @relationship(type: "CREATED_BY", direction: OUT)
+        variation: ProductVariation
+            @cypher(
+                statement: """
+                MATCH (this)-[:HAS_VARIATION]->(res:ProductVariation)
+                RETURN res
+                """
+                columnName: "res"
+            )
+        dimensions: ProductDimension
+            @cypher(
+                statement: """
+                MATCH (this)-[:HAS_DIMENSIONS]->(res:ProductDimension)
+                RETURN res
+                """
+                columnName: "res"
+            )
+        createdBy: User
+            @provides(fields: "totalProductsCreated")
+            @cypher(
+                statement: """
+                MATCH (this)-[:CREATED_BY]->(res:User)
+                RETURN res
+                """
+                columnName: "res"
+            )
         notes: String @tag(name: "internal")
         research: [ProductResearch!]! @relationship(type: "HAS_RESEARCH", direction: OUT)
     }
 
-    type DeprecatedProduct @key(fields: "sku package") {
+    type DeprecatedProduct @node @key(fields: "sku package") {
         sku: String!
         package: String!
         reason: String
-        createdBy: User @relationship(type: "CREATED_BY", direction: OUT)
+        createdBy: User
+            @cypher(
+                statement: """
+                MATCH (this)-[:CREATED_BY]->(res:User)
+                RETURN res
+                """
+                columnName: "res"
+            )
     }
 
-    type ProductVariation {
+    type ProductVariation @node {
         id: ID!
     }
 
-    type ProductResearch @key(fields: "study { caseNumber }") {
-        study: CaseStudy! @relationship(type: "HAS_STUDY", direction: OUT)
+    type ProductResearch @key(fields: "study { caseNumber }") @node {
+        study: CaseStudy!
+            @cypher(
+                statement: """
+                MATCH (this)-[:HAS_STUDY]->(res:CaseStudy)
+                RETURN res
+                """
+                columnName: "res"
+            )
         outcome: String
     }
 
-    type CaseStudy {
+    type CaseStudy @node {
         caseNumber: ID!
         description: String
     }
 
-    type ProductDimension @shareable {
+    type ProductDimension @shareable @node {
         size: String
         weight: Float
         unit: String @inaccessible
@@ -93,7 +129,7 @@ export const typeDefs = gql`
 
     # Should be extend type as below
     # extend type User @key(fields: "email") {
-    type User @key(fields: "email") @extends {
+    type User @key(fields: "email") @node @extends {
         averageProductsCreatedPerYear: Int @requires(fields: "totalProductsCreated yearsOfEmployment")
         email: ID! @external
         name: String @override(from: "users")
@@ -101,7 +137,7 @@ export const typeDefs = gql`
         yearsOfEmployment: Int! @external
     }
 
-    type Inventory @interfaceObject @key(fields: "id") {
+    type Inventory @node @interfaceObject @key(fields: "id") {
         id: ID!
         deprecatedProducts: [DeprecatedProduct!]! @relationship(type: "HAS_DEPRECATED_PRODUCT", direction: OUT)
     }

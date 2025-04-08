@@ -75,10 +75,6 @@ export const LOGICAL_OPERATORS = ["AND", "OR", "NOT"] as const;
 export const AGGREGATION_COMPARISON_OPERATORS = ["EQUAL", "GT", "GTE", "LT", "LTE"] as const;
 
 export enum RelationshipQueryDirectionOption {
-    DEFAULT_DIRECTED = "DEFAULT_DIRECTED",
-    DEFAULT_UNDIRECTED = "DEFAULT_UNDIRECTED",
-    DIRECTED_ONLY = "DIRECTED_ONLY",
-    UNDIRECTED_ONLY = "UNDIRECTED_ONLY",
     DIRECTED = "DIRECTED",
     UNDIRECTED = "UNDIRECTED",
 }
@@ -89,7 +85,6 @@ export enum RelationshipNestedOperationsOption {
     DELETE = "DELETE",
     CONNECT = "CONNECT",
     DISCONNECT = "DISCONNECT",
-    CONNECT_OR_CREATE = "CONNECT_OR_CREATE",
 }
 
 export const META_CYPHER_VARIABLE = "meta";

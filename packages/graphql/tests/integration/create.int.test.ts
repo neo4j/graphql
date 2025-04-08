@@ -219,7 +219,7 @@ describe("create", () => {
                 id: ID!
                 description: String!
                 url: String!
-                color: ${Color}! @relationship(type: "OF_COLOR", direction: OUT)
+                color: [${Color}!]! @relationship(type: "OF_COLOR", direction: OUT)
             }
         `;
 

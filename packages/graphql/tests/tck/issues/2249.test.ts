@@ -38,8 +38,8 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
             type Person implements Reviewer @node {
                 name: String!
                 reputation: Int!
-                id: Int @unique
-                reviewerId: Int @unique
+                id: Int
+                reviewerId: Int
             }
 
             type Influencer implements Reviewer @node {
@@ -63,7 +63,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
         const query = /* GraphQL */ `
             mutation UpdateMovies {
                 updateMovies(
-                    where: { title_EQ: "John Wick" }
+                    where: { title: { eq: "John Wick" } }
                     update: {
                         reviewers: [
                             { create: [{ edge: { score: 10 }, node: { Person: { reputation: 100, name: "Ana" } } }] }
@@ -85,7 +85,8 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             WITH this
             CALL {

@@ -22,7 +22,7 @@ import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-t
 
 describe("cypher directive filtering - Auth", () => {
     test("With relationship filter (non-Cypher field)", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 custom_field: String
@@ -35,21 +35,16 @@ describe("cypher directive filtering - Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 movies(
-                    where: {
-                        custom_field: "hello world!"
-                        actors_SOME: {
-                            name: "Keanu Reeves"
-                        } 
-                    }
+                    where: { custom_field: { eq: "hello world!" }, actors: { some: { name: { eq: "Keanu Reeves" } } } }
                 ) {
                     custom_field
                     title
@@ -67,7 +62,8 @@ describe("cypher directive filtering - Auth", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -96,6 +92,7 @@ describe("cypher directive filtering - Auth", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this5:ACTED_IN]-(this6:Actor)
+                WITH DISTINCT this6
                 WITH this6 { .name } AS this6
                 RETURN collect(this6) AS var7
             }
@@ -111,7 +108,7 @@ describe("cypher directive filtering - Auth", () => {
     });
 
     test("In a nested filter", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 custom_field: String
@@ -124,17 +121,17 @@ describe("cypher directive filtering - Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
                 actors {
                     name
-                    movies(where: { custom_field: "hello world!"}) {
+                    movies(where: { custom_field: { eq: "hello world!" } }) {
                         title
                     }
                 }
@@ -148,10 +145,12 @@ describe("cypher directive filtering - Auth", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WITH DISTINCT this1
                 CALL {
                     WITH this1
                     CALL {
@@ -178,7 +177,7 @@ describe("cypher directive filtering - Auth", () => {
     });
 
     test("With a nested filter", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 custom_field: String
@@ -191,17 +190,17 @@ describe("cypher directive filtering - Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                movies(where: { custom_field: "hello world!" }) {
+                movies(where: { custom_field: { eq: "hello world!" } }) {
                     title
-                    actors(where: { name: "Keanu Reeves" }) {
+                    actors(where: { name: { eq: "Keanu Reeves" } }) {
                         name
                     }
                 }
@@ -215,7 +214,8 @@ describe("cypher directive filtering - Auth", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -232,6 +232,7 @@ describe("cypher directive filtering - Auth", () => {
                 WITH this
                 MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
                 WHERE this3.name = $param1
+                WITH DISTINCT this3
                 WITH this3 { .name } AS this3
                 RETURN collect(this3) AS var4
             }
@@ -247,7 +248,7 @@ describe("cypher directive filtering - Auth", () => {
     });
 
     test("With two cypher fields", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 custom_field: String
@@ -267,7 +268,7 @@ describe("cypher directive filtering - Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 another_custom_field: String
                     @cypher(
@@ -280,9 +281,9 @@ describe("cypher directive filtering - Auth", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                movies(where: { custom_field: "hello world!", another_custom_field_GT: 50 }) {
+                movies(where: { custom_field: { eq: "hello world!" }, another_custom_field: { gt: 50 } }) {
                     title
                     actors {
                         name
@@ -298,7 +299,8 @@ describe("cypher directive filtering - Auth", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -324,6 +326,7 @@ describe("cypher directive filtering - Auth", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this4:ACTED_IN]-(this5:Actor)
+                WITH DISTINCT this5
                 WITH this5 { .name } AS this5
                 RETURN collect(this5) AS var6
             }
@@ -342,7 +345,7 @@ describe("cypher directive filtering - Auth", () => {
     });
 
     test("With two cypher fields, one nested", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 custom_field: String
@@ -355,7 +358,7 @@ describe("cypher directive filtering - Auth", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 another_custom_field: String
                     @cypher(
@@ -368,11 +371,11 @@ describe("cypher directive filtering - Auth", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                movies(where: { custom_field: "hello world!" }) {
+                movies(where: { custom_field: { eq: "hello world!" } }) {
                     title
-                    actors(where: { another_custom_field: "goodbye!" name: "Keanu Reeves" }) {
+                    actors(where: { another_custom_field: { eq: "goodbye!" }, name: { eq: "Keanu Reeves" } }) {
                         name
                     }
                 }
@@ -386,7 +389,8 @@ describe("cypher directive filtering - Auth", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -402,6 +406,7 @@ describe("cypher directive filtering - Auth", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
+                WITH DISTINCT this3
                 CALL {
                     WITH this3
                     CALL {

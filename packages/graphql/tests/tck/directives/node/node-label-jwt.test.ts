@@ -60,7 +60,8 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Film)
+            "CYPHER 5
+            MATCH (this:Film)
             RETURN this { .title } AS this"
         `);
 
@@ -70,9 +71,9 @@ describe("Label in Node directive", () => {
     test("Select Movie with label Film from Actors with additionalLabels", async () => {
         const query = /* GraphQL */ `
             query {
-                actors(where: { age_GT: 10 }) {
+                actors(where: { age: { gt: 10 } }) {
                     name
-                    movies(where: { title_EQ: "terminator" }) {
+                    movies(where: { title: { eq: "terminator" } }) {
                         title
                     }
                 }
@@ -83,12 +84,14 @@ describe("Label in Node directive", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor:Person)
+            "CYPHER 5
+            MATCH (this:Actor:Person)
             WHERE this.age > $param0
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Film)
                 WHERE this1.title = $param1
+                WITH DISTINCT this1
                 WITH this1 { .title } AS this1
                 RETURN collect(this1) AS var2
             }
@@ -117,11 +120,12 @@ describe("Label in Node directive", () => {
             }
         `;
 
-        const token = createBearerToken("secret", { movielabel: "Film", personlabel: "Person"  });
+        const token = createBearerToken("secret", { movielabel: "Film", personlabel: "Person" });
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Film)

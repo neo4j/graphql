@@ -58,7 +58,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 RETURN this { .firstName } AS this"
             `);
 
@@ -79,7 +80,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 RETURN this { .firstName, .lastName } AS this"
             `);
 
@@ -99,7 +101,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 RETURN this { .firstName, .lastName } AS this"
             `);
 
@@ -118,7 +121,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 RETURN this { .firstName, .lastName } AS this"
             `);
 
@@ -161,7 +165,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 RETURN this { .firstName } AS this"
             `);
 
@@ -180,170 +185,9 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
+                "CYPHER 5
+                MATCH (this:User)
                 RETURN this {  } AS this"
-            `);
-
-            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-        });
-    });
-
-    describe("Require fields on nested types", () => {
-        beforeAll(() => {
-            typeDefs = /* GraphQL */ `
-                type City @node {
-                    name: String!
-                    population: Int
-                }
-
-                type Address @node {
-                    street: String!
-                    city: City! @relationship(type: "IN_CITY", direction: OUT)
-                }
-
-                type User @node {
-                    id: ID!
-                    firstName: String!
-                    lastName: String!
-                    address: Address @relationship(type: "LIVES_AT", direction: OUT)
-                    fullName: String
-                        @customResolver(requires: "firstName lastName address { city { name population } }")
-                }
-            `;
-
-            const resolvers = {
-                User: {
-                    fullName: () => "The user's full name",
-                },
-            };
-
-            neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                resolvers,
-            });
-        });
-
-        test("should not over fetch when all required fields are manually selected", async () => {
-            const query = /* GraphQL */ `
-                {
-                    users {
-                        firstName
-                        lastName
-                        fullName
-                        address {
-                            city {
-                                name
-                                population
-                            }
-                        }
-                    }
-                }
-            `;
-
-            const result = await translateQuery(neoSchema, query);
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
-                CALL {
-                    WITH this
-                    MATCH (this)-[this0:LIVES_AT]->(this1:Address)
-                    CALL {
-                        WITH this1
-                        MATCH (this1)-[this2:IN_CITY]->(this3:City)
-                        WITH this3 { .name, .population } AS this3
-                        RETURN head(collect(this3)) AS var4
-                    }
-                    WITH this1 { city: var4 } AS this1
-                    RETURN head(collect(this1)) AS var5
-                }
-                RETURN this { .firstName, .lastName, address: var5 } AS this"
-            `);
-
-            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-        });
-
-        test("should not fetch required fields if @customResolver field is not selected", async () => {
-            const query = /* GraphQL */ `
-                {
-                    users {
-                        firstName
-                    }
-                }
-            `;
-
-            const result = await translateQuery(neoSchema, query);
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
-                RETURN this { .firstName } AS this"
-            `);
-
-            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-        });
-
-        test("should not over fetch when some required fields are manually selected", async () => {
-            const query = /* GraphQL */ `
-                {
-                    users {
-                        lastName
-                        fullName
-                        address {
-                            city {
-                                population
-                            }
-                        }
-                    }
-                }
-            `;
-
-            const result = await translateQuery(neoSchema, query);
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
-                CALL {
-                    WITH this
-                    MATCH (this)-[this0:LIVES_AT]->(this1:Address)
-                    CALL {
-                        WITH this1
-                        MATCH (this1)-[this2:IN_CITY]->(this3:City)
-                        WITH this3 { .population, .name } AS this3
-                        RETURN head(collect(this3)) AS var4
-                    }
-                    WITH this1 { city: var4 } AS this1
-                    RETURN head(collect(this1)) AS var5
-                }
-                RETURN this { .lastName, .firstName, address: var5 } AS this"
-            `);
-
-            expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-        });
-
-        test("should not over fetch when no required fields are manually selected", async () => {
-            const query = /* GraphQL */ `
-                {
-                    users {
-                        fullName
-                    }
-                }
-            `;
-
-            const result = await translateQuery(neoSchema, query);
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:User)
-                CALL {
-                    WITH this
-                    MATCH (this)-[this0:LIVES_AT]->(this1:Address)
-                    CALL {
-                        WITH this1
-                        MATCH (this1)-[this2:IN_CITY]->(this3:City)
-                        WITH this3 { .name, .population } AS this3
-                        RETURN head(collect(this3)) AS var4
-                    }
-                    WITH this1 { city: var4 } AS this1
-                    RETURN head(collect(this1)) AS var5
-                }
-                RETURN this { .firstName, .lastName, address: var5 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -366,12 +210,12 @@ describe("@customResolver directive", () => {
 
                 type Book @node {
                     title: String!
-                    author: Author! @relationship(type: "WROTE", direction: IN)
+                    author: [Author!]! @relationship(type: "WROTE", direction: IN)
                 }
 
                 type Journal @node {
                     subject: String!
-                    author: Author! @relationship(type: "WROTE", direction: IN)
+                    author: [Author!]! @relationship(type: "WROTE", direction: IN)
                 }
             `;
 
@@ -408,7 +252,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
@@ -443,7 +288,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 RETURN this { .name } AS this"
             `);
 
@@ -467,7 +313,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
@@ -502,7 +349,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
@@ -589,7 +437,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
@@ -624,7 +473,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 RETURN this { .name } AS this"
             `);
 
@@ -648,7 +498,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {
@@ -683,7 +534,8 @@ describe("@customResolver directive", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Author)
+                "CYPHER 5
+                MATCH (this:Author)
                 CALL {
                     WITH this
                     CALL {

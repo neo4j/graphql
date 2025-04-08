@@ -40,7 +40,7 @@ describe("https://github.com/neo4j/graphql/issues/3215", () => {
         test("should ignore undefined parameters on NOT fields", async () => {
             const query = /* GraphQL */ `
                 query MyQuery($name: String) {
-                    actors(where: { age_GT: 25, NOT: { name_EQ: $name } }) {
+                    actors(where: { age: { gt: 25 }, NOT: { name: { eq: $name } } }) {
                         name
                         age
                     }
@@ -50,7 +50,8 @@ describe("https://github.com/neo4j/graphql/issues/3215", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Actor)
+                "CYPHER 5
+                MATCH (this:Actor)
                 WHERE this.age > $param0
                 RETURN this { .name, .age } AS this"
             `);
@@ -68,7 +69,7 @@ describe("https://github.com/neo4j/graphql/issues/3215", () => {
         test("should ignore undefined parameters on boolean NOT", async () => {
             const query = /* GraphQL */ `
                 query MyQuery($name: String) {
-                    actors(where: { age_GT: 25, NOT: { name: $name } }) {
+                    actors(where: { age: { gt: 25 }, NOT: { name: { eq: $name } } }) {
                         name
                         age
                     }
@@ -78,7 +79,8 @@ describe("https://github.com/neo4j/graphql/issues/3215", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Actor)
+                "CYPHER 5
+                MATCH (this:Actor)
                 WHERE this.age > $param0
                 RETURN this { .name, .age } AS this"
             `);

@@ -225,7 +225,7 @@ describe("Float", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { id_EQ: "${id}" }){
+                ${Movie.plural}(where: { id: { eq: "${id}" } }){
                     fakeFloat
                 }
             }

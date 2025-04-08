@@ -28,7 +28,6 @@ export const UNSUPPORTED_REASON_SUBSCRIPTION = "Unwind create optimization does 
 export const UNSUPPORTED_REASON_ABSTRACT_TYPES = "Abstract types are not yet supported";
 export const UNSUPPORTED_REASON_POPULATED_BY = "Annotation: populatedBy is not yet supported";
 export const UNSUPPORTED_REASON_CONNECT = "Operation: connect is not yet supported";
-export const UNSUPPORTED_REASON_CONNECT_OR_CREATE = "Operation: connectOrCreate is not yet supported";
 
 type UnwindCreateSupported = {
     isSupported: boolean;
@@ -118,11 +117,5 @@ function checkOperation(args: Record<string, any>): UnwindCreateSupported {
         };
     }
 
-    if (args.connectOrCreate) {
-        return {
-            isSupported: false,
-            reason: UNSUPPORTED_REASON_CONNECT_OR_CREATE,
-        };
-    }
     return SUPPORTED;
 }

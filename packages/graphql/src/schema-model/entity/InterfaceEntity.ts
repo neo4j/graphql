@@ -17,6 +17,8 @@
  * limitations under the License.
  */
 
+import { plural, singular } from "pluralize";
+import { Memoize } from "typescript-memoize";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { Annotations } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
@@ -86,5 +88,14 @@ export class InterfaceEntity implements CompositeEntity {
 
     public findAttribute(name: string): Attribute | undefined {
         return this.attributes.get(name);
+    }
+
+    // Duplicate in EntityAdapters
+    @Memoize()
+    public get plural(): string {
+        if (this.annotations.plural) {
+            return singular(this.annotations.plural.value);
+        }
+        return plural(this.name);
     }
 }

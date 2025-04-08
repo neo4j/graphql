@@ -45,7 +45,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("AVERAGE_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_AVERAGE_EQUAL: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { average: { eq: 10 } } } } } }) {
                     content
                 }
             }
@@ -54,10 +54,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN avg(this1.someInt) = $param0 AS var2
             }
             WITH *
@@ -75,7 +77,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("AVERAGE_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_AVERAGE_GT: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { average: { gt: 10 } } } } } }) {
                     content
                 }
             }
@@ -84,10 +86,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN avg(this1.someInt) > $param0 AS var2
             }
             WITH *
@@ -105,7 +109,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("AVERAGE_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_AVERAGE_GTE: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { average: { gte: 10 } } } } } }) {
                     content
                 }
             }
@@ -114,10 +118,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN avg(this1.someInt) >= $param0 AS var2
             }
             WITH *
@@ -135,7 +141,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("AVERAGE_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_AVERAGE_LT: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { average: { lt: 10 } } } } } }) {
                     content
                 }
             }
@@ -144,10 +150,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN avg(this1.someInt) < $param0 AS var2
             }
             WITH *
@@ -165,7 +173,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("AVERAGE_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_AVERAGE_LTE: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { average: { lte: 10 } } } } } }) {
                     content
                 }
             }
@@ -174,10 +182,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN avg(this1.someInt) <= $param0 AS var2
             }
             WITH *
@@ -195,7 +205,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("SUM_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_SUM_EQUAL: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { sum: { eq: 10 } } } } } }) {
                     content
                 }
             }
@@ -204,10 +214,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN sum(this1.someInt) = $param0 AS var2
             }
             WITH *
@@ -228,7 +240,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("SUM_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_SUM_GT: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { sum: { gt: 10 } } } } } }) {
                     content
                 }
             }
@@ -237,10 +249,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN sum(this1.someInt) > $param0 AS var2
             }
             WITH *
@@ -261,7 +275,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("SUM_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_SUM_GTE: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { sum: { gte: 10 } } } } } }) {
                     content
                 }
             }
@@ -270,10 +284,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN sum(this1.someInt) >= $param0 AS var2
             }
             WITH *
@@ -294,7 +310,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("SUM_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_SUM_LT: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { sum: { lt: 10 } } } } } }) {
                     content
                 }
             }
@@ -303,10 +319,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN sum(this1.someInt) < $param0 AS var2
             }
             WITH *
@@ -327,7 +345,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("SUM_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_SUM_LTE: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { sum: { lte: 10 } } } } } }) {
                     content
                 }
             }
@@ -336,10 +354,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN sum(this1.someInt) <= $param0 AS var2
             }
             WITH *
@@ -360,7 +380,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("MIN_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_MIN_EQUAL: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { min: { eq: 10 } } } } } }) {
                     content
                 }
             }
@@ -369,10 +389,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN min(this1.someInt) = $param0 AS var2
             }
             WITH *
@@ -393,7 +415,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("MIN_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_MIN_GT: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { min: { gt: 10 } } } } } }) {
                     content
                 }
             }
@@ -402,10 +424,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN min(this1.someInt) > $param0 AS var2
             }
             WITH *
@@ -426,7 +450,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("MIN_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_MIN_GTE: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { min: { gte: 10 } } } } } }) {
                     content
                 }
             }
@@ -435,10 +459,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN min(this1.someInt) >= $param0 AS var2
             }
             WITH *
@@ -459,7 +485,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("MIN_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_MIN_LT: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { min: { lt: 10 } } } } } }) {
                     content
                 }
             }
@@ -468,10 +494,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN min(this1.someInt) < $param0 AS var2
             }
             WITH *
@@ -492,7 +520,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("MIN_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_MIN_LTE: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { min: { lte: 10 } } } } } }) {
                     content
                 }
             }
@@ -501,10 +529,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN min(this1.someInt) <= $param0 AS var2
             }
             WITH *
@@ -525,7 +555,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("MAX_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_MAX_EQUAL: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { max: { eq: 10 } } } } } }) {
                     content
                 }
             }
@@ -534,10 +564,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN max(this1.someInt) = $param0 AS var2
             }
             WITH *
@@ -558,7 +590,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("MAX_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_MAX_GT: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { max: { gt: 10 } } } } } }) {
                     content
                 }
             }
@@ -567,10 +599,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN max(this1.someInt) > $param0 AS var2
             }
             WITH *
@@ -591,7 +625,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("MAX_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_MAX_GTE: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { max: { gte: 10 } } } } } }) {
                     content
                 }
             }
@@ -600,10 +634,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN max(this1.someInt) >= $param0 AS var2
             }
             WITH *
@@ -624,7 +660,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("MAX_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_MAX_LT: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { max: { lt: 10 } } } } } }) {
                     content
                 }
             }
@@ -633,10 +669,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN max(this1.someInt) < $param0 AS var2
             }
             WITH *
@@ -657,7 +695,7 @@ describe("Cypher Aggregations where node with Int", () => {
     test("MAX_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someInt_MAX_LTE: 10 } } }) {
+                posts(where: { likesConnection: { aggregate: { node: { someInt: { max: { lte: 10 } } } } } }) {
                     content
                 }
             }
@@ -666,10 +704,12 @@ describe("Cypher Aggregations where node with Int", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
+                WITH DISTINCT this1
                 RETURN max(this1.someInt) <= $param0 AS var2
             }
             WITH *

@@ -25,12 +25,12 @@ describe("Global nodes", () => {
     test("it should fetch the correct node and fields", async () => {
         const typeDefs = /* GraphQL */ `
             type Actor @node {
-                name: ID! @id @unique @relayId
+                name: ID! @id @relayId
                 movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Movie @node {
-                title: ID! @id @unique @relayId
+                title: ID! @id @relayId
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
@@ -57,7 +57,8 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             RETURN this { .title } AS this"
         `);
@@ -65,12 +66,12 @@ describe("Global nodes", () => {
     test("it should project the correct node and fields when id is the idField", async () => {
         const typeDefs = /* GraphQL */ `
             type Actor @node {
-                dbId: ID! @id @unique @relayId @alias(property: "id")
+                dbId: ID! @id @relayId @alias(property: "id")
                 name: String!
                 movies: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
             type Movie @node {
-                title: ID! @id @unique @relayId
+                title: ID! @id @relayId
                 actors: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
@@ -94,7 +95,8 @@ describe("Global nodes", () => {
             variableValues: { id: toGlobalId({ typeName: "Actor", field: "dbId", id: "123455" }) },
         });
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.id = $param0
             RETURN this { .name, dbId: this.id } AS this"
         `);
@@ -108,12 +110,12 @@ describe("Global nodes", () => {
     test("it should project the correct selectionSet when id is used as a where argument", async () => {
         const typeDefs = /* GraphQL */ `
             type Actor @node {
-                dbId: ID! @id @unique @relayId @alias(property: "id")
+                dbId: ID! @id @relayId @alias(property: "id")
                 name: String!
                 movies: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT)
             }
             type Movie @node {
-                title: ID! @id @unique @relayId
+                title: ID! @id @relayId
                 actors: [Movie!]! @relationship(type: "ACTED_IN", direction: IN)
             }
         `;
@@ -138,7 +140,8 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.id = $param0
             RETURN this { .name } AS this"
         `);
@@ -180,7 +183,8 @@ describe("Global nodes", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.dbId = $param0
             RETURN this { .dbId, .name } AS this"
         `);

@@ -63,7 +63,7 @@ describe("Federation 2 Authorization", () => {
                 type ${Review} @node {
                     score: Int!
                     description: String!
-                    author: ${User}! @relationship(type: "AUTHORED", direction: IN)
+                    author: [${User}!]! @relationship(type: "AUTHORED", direction: IN)
                 }
             `;
 
@@ -125,7 +125,9 @@ describe("Federation 2 Authorization", () => {
 
             expect(response.status).toBe(200);
             expect(response.body.data).toEqual({
-                [Review.plural]: [{ description: "review", score: 5, author: { id: "1", name: null, password: null } }],
+                [Review.plural]: [
+                    { description: "review", score: 5, author: [{ id: "1", name: null, password: null }] },
+                ],
             });
             expect(response.body.errors[0].message).toBe("Forbidden");
         });
@@ -155,7 +157,7 @@ describe("Federation 2 Authorization", () => {
             expect(response.status).toBe(200);
             expect(response.body.data).toEqual({
                 [Review.plural]: [
-                    { description: "review", score: 5, author: { id: "1", name: "user", password: "password" } },
+                    { description: "review", score: 5, author: [{ id: "1", name: "user", password: "password" }] },
                 ],
             });
             expect(response.body.errors).toBeUndefined();
@@ -198,7 +200,7 @@ describe("Federation 2 Authorization", () => {
                 type ${Review} @node {
                     score: Int!
                     description: String!
-                    author: ${User}! @relationship(type: "AUTHORED", direction: IN)
+                    author: [${User}!]! @relationship(type: "AUTHORED", direction: IN)
                 }
             `;
 
@@ -260,7 +262,7 @@ describe("Federation 2 Authorization", () => {
             expect(response.status).toBe(200);
             expect(response.body).toEqual({
                 data: {
-                    [Review.plural]: [{ description: "review", score: 5, author: { id: "1", name: "user" } }],
+                    [Review.plural]: [{ description: "review", score: 5, author: [{ id: "1", name: "user" }] }],
                 },
             });
         });
@@ -289,7 +291,9 @@ describe("Federation 2 Authorization", () => {
 
             expect(response.status).toBe(200);
             expect(response.body.data).toEqual({
-                [Review.plural]: [{ description: "review", score: 5, author: { id: "1", name: null, password: null } }],
+                [Review.plural]: [
+                    { description: "review", score: 5, author: [{ id: "1", name: null, password: null }] },
+                ],
             });
             expect(response.body.errors[0].message).toBe("Forbidden");
         });
@@ -319,7 +323,7 @@ describe("Federation 2 Authorization", () => {
             expect(response.status).toBe(200);
             expect(response.body.data).toEqual({
                 [Review.plural]: [
-                    { description: "review", score: 5, author: { id: "1", name: "user", password: "password" } },
+                    { description: "review", score: 5, author: [{ id: "1", name: "user", password: "password" }] },
                 ],
             });
             expect(response.body.errors).toBeUndefined();

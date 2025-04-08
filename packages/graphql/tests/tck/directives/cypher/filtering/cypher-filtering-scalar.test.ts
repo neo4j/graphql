@@ -20,9 +20,9 @@
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
-describe("cypher directive filtering - Auth", () => {
+describe("cypher directive filtering", () => {
     test("Int cypher field AND String title field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 special_count: Int
@@ -36,9 +36,9 @@ describe("cypher directive filtering - Auth", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                movies(where: { special_count_GTE: 1, title: "CustomType One" }) {
+                movies(where: { special_count: { gte: 1 }, title: { eq: "CustomType One" } }) {
                     special_count
                 }
             }
@@ -51,7 +51,8 @@ describe("cypher directive filtering - Auth", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -91,7 +92,7 @@ describe("cypher directive filtering - Auth", () => {
     });
 
     test("unmatched Int cypher field AND String title field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 special_count: Int
@@ -105,9 +106,9 @@ describe("cypher directive filtering - Auth", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                movies(where: { special_count_GTE: 1, title: "CustomType Unknown" }) {
+                movies(where: { special_count: { gte: 1 }, title: { eq: "CustomType Unknown" } }) {
                     special_count
                 }
             }
@@ -120,7 +121,8 @@ describe("cypher directive filtering - Auth", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -160,7 +162,7 @@ describe("cypher directive filtering - Auth", () => {
     });
 
     test("Int cypher field, selecting String title field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 special_count: Int
@@ -174,9 +176,9 @@ describe("cypher directive filtering - Auth", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                movies(where: { special_count_GTE: 1 }) {
+                movies(where: { special_count: { gte: 1 } }) {
                     title
                 }
             }
@@ -189,7 +191,8 @@ describe("cypher directive filtering - Auth", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {

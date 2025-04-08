@@ -26,8 +26,6 @@ import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/Uni
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
-import { DEPRECATE_ID_AGGREGATION } from "../constants";
-import { shouldAddDeprecatedFields } from "../generation/utils";
 import { numericalResolver } from "../resolvers/field/numerical";
 import { AggregationTypesMapper } from "./aggregation-types-mapper";
 
@@ -106,7 +104,7 @@ export class FieldAggregationComposer {
 
     private getAggregationFields(
         entity: RelationshipAdapter | ConcreteEntityAdapter | InterfaceEntityAdapter,
-        features: Neo4jFeaturesSettings | undefined
+        _features: Neo4jFeaturesSettings | undefined
     ): ObjectTypeComposerFieldConfigMapDefinition<any, any> {
         return entity.aggregableFields.reduce((res, field) => {
             const objectTypeComposer = this.aggregationTypesMapper.getAggregationType(field.getTypeName());
@@ -114,15 +112,11 @@ export class FieldAggregationComposer {
             if (!objectTypeComposer) {
                 return res;
             }
-            // TODO: REMOVE ID FIELD ON 7.x
+
             if (field.typeHelper.isID()) {
-                if (shouldAddDeprecatedFields(features, "idAggregations")) {
-                    res[field.name] = { type: objectTypeComposer.NonNull, directives: [DEPRECATE_ID_AGGREGATION] };
-                }
                 return res;
-            } else {
-                res[field.name] = objectTypeComposer.NonNull;
             }
+            res[field.name] = objectTypeComposer.NonNull;
 
             return res;
         }, {});

@@ -22,14 +22,13 @@ import { TestHelper } from "../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/2250", () => {
     const testHelper = new TestHelper({ cdc: true });
-    let cdcEnabled: boolean;
 
     let Movie: UniqueType;
     let Person: UniqueType;
     let Actor: UniqueType;
 
     beforeAll(async () => {
-        cdcEnabled = await testHelper.assertCDCEnabled();
+        await testHelper.assertCDCEnabled();
     });
 
     beforeEach(async () => {
@@ -37,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/2250", () => {
         Person = testHelper.createUniqueType("Person");
         Actor = testHelper.createUniqueType("Actor");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -78,10 +77,6 @@ describe("https://github.com/neo4j/graphql/issues/2250", () => {
     });
 
     test("nested update with create while using subscriptions should generate valid Cypher", async () => {
-        if (!cdcEnabled) {
-            console.log("CDC NOT AVAILABLE - SKIPPING");
-            return;
-        }
         const mutation = /* GraphQL */ `
             mutation {
                 ${Movie.operations.update}(
@@ -89,8 +84,8 @@ describe("https://github.com/neo4j/graphql/issues/2250", () => {
                         directors: {
                             ${Actor}: [
                                 {
-                                    where: { node: { name_EQ: "Keanu Reeves" } }
                                     update: {
+                                        where: { node: { name_EQ: "Keanu Reeves" } }
                                         edge: { year_SET: 2020 }
                                         node: {
                                             name_SET: "KEANU Reeves"

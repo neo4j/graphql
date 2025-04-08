@@ -49,7 +49,7 @@ describe("Subscriptions metadata on update", () => {
     test("Simple update with subscriptions", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateMovies(where: { id_EQ: "1" }, update: { id_SET: "2" }) {
+                updateMovies(where: { id: { eq: "1" } }, update: { id_SET: "2" }) {
                     movies {
                         id
                     }
@@ -60,7 +60,8 @@ describe("Subscriptions metadata on update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             SET this.id = $this_update_id_SET
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -79,10 +80,12 @@ describe("Subscriptions metadata on update", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { id_EQ: "1" }
+                    where: { id: { eq: "1" } }
                     update: {
                         id_SET: "2"
-                        actors: [{ where: { node: { name_EQ: "arthur" } }, update: { node: { name_SET: "ford" } } }]
+                        actors: [
+                            { update: { where: { node: { name: { eq: "arthur" } } }, node: { name_SET: "ford" } } }
+                        ]
                     }
                 ) {
                     movies {
@@ -95,7 +98,8 @@ describe("Subscriptions metadata on update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             SET this.id = $this_update_id_SET
             WITH this
@@ -121,14 +125,16 @@ describe("Subscriptions metadata on update", () => {
                             \\"id_SET\\": \\"2\\",
                             \\"actors\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"name_EQ\\": \\"arthur\\"
-                                        }
-                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"name_SET\\": \\"ford\\"
+                                        },
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"name\\": {
+                                                    \\"eq\\": \\"arthur\\"
+                                                }
+                                            }
                                         }
                                     }
                                 }

@@ -70,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
             type ${typeBook.name} @node {
                 id: ID!
                 name: String!
-                author: ${typeAuthor.name}! @relationship(type: "WROTE", direction: IN)
+                author: [${typeAuthor.name}!]! @relationship(type: "WROTE", direction: IN)
             }
         `;
 

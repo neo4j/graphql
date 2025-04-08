@@ -54,7 +54,7 @@ describe("interface relationships", () => {
 
             type ${typeActor} @node {
                 name: String!
-                currentlyActingIn: Production @relationship(type: "CURRENTLY_ACTING_IN", direction: OUT)
+                currentlyActingIn: [Production!]! @relationship(type: "CURRENTLY_ACTING_IN", direction: OUT)
                 actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
         `;
@@ -285,10 +285,12 @@ describe("interface relationships", () => {
         expect(gqlResult.data).toEqual({
             [typeActor.plural]: [
                 {
-                    currentlyActingIn: {
-                        title: newMovieTitle,
-                        runtime: newMovieRuntime,
-                    },
+                    currentlyActingIn: [
+                        {
+                            title: newMovieTitle,
+                            runtime: newMovieRuntime,
+                        },
+                    ],
                     name: actorName,
                 },
             ],

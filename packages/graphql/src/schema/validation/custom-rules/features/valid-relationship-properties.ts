@@ -91,22 +91,5 @@ function assertRelationshipProperties(traversedDef: ObjectOrInterfaceWithExtensi
                 throw new DocumentValidationError(`Invalid @relationshipProperties field: ${message}`, errorPath);
             }
         });
-
-        if (field.directives) {
-            const forbiddenDirectives = [
-                "authorization",
-                "authentication",
-                "subscriptionsAuthorization",
-                "relationship",
-                "cypher",
-            ];
-            const foundForbiddenDirective = field.directives.find((d) => forbiddenDirectives.includes(d.name.value));
-            if (foundForbiddenDirective) {
-                throw new DocumentValidationError(
-                    `Invalid @relationshipProperties field: Cannot use the @${foundForbiddenDirective.name.value} directive on relationship properties.`,
-                    errorPath
-                );
-            }
-        }
     });
 }

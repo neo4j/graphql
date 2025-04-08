@@ -52,7 +52,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { actor: { name_EQ: "Keanu Reeves" } }) {
+                movies(where: { actor: { name: { eq: "Keanu Reeves" } } }) {
                     title
                 }
             }
@@ -65,7 +65,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -120,7 +121,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { released: 2003, actor: { name_EQ: "Keanu Reeves", age_GT: 30 } }) {
+                movies(where: { released: { eq: 2003 }, actor: { name: { eq: "Keanu Reeves" }, age: { gt: 30 } } }) {
                     title
                 }
             }
@@ -133,7 +134,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -198,7 +200,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { actor: { name_EQ: "Keanu Reeves" } }) {
+                movies(where: { actor: { name: { eq: "Keanu Reeves" } } }) {
                     title
                     actor {
                         name
@@ -210,7 +212,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -245,7 +248,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
             }"
         `);
     });
-
+    // TODO: {actor: null} was not migrated to {actors: {eq: null}}. Check if this is correct
     test("1 to 1 relationship with null filter", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
@@ -280,7 +283,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { released_EQ: 2003, actor: null }) {
+                movies(where: { released: { eq: 2003 }, actor: null }) {
                     title
                 }
             }
@@ -289,7 +292,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -315,7 +319,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
             }"
         `);
     });
-
+    // TODO: {actor: null} was not migrated to {actors: {eq: null}}. Check if this is correct
     test("1 to 1 relationship with NOT null filter", async () => {
         const typeDefs = /* GraphQL */ `
             type Movie @node {
@@ -350,7 +354,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { AND: [{ released_IN: [2003], NOT: { actor: null } }] }) {
+                movies(where: { AND: [{ released: { in: [2003] }, NOT: { actor: null } }] }) {
                     title
                 }
             }
@@ -359,7 +363,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -392,7 +397,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(filter: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }]) {
+                @authorization(filter: [{ where: { node: { directed_by: { name: { eq: "$jwt.custom_value" } } } } }]) {
                 title: String
                 released: Int
                 directed_by: Person!
@@ -431,7 +436,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title_EQ: "The Matrix" } }) {
+                people(where: { directed: { title: { eq: "The Matrix" } } }) {
                     directed {
                         title
                         directed_by {
@@ -445,7 +450,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -515,7 +521,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(filter: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }]) {
+                @authorization(filter: [{ where: { node: { directed_by: { name: { eq: "$jwt.custom_value" } } } } }]) {
                 title: String
                 released: Int
                 directed_by: Person!
@@ -554,7 +560,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title_EQ: "The Matrix" } }) {
+                people(where: { directed: { title: { eq: "The Matrix" } } }) {
                     directed {
                         title
                         directed_by {
@@ -568,7 +574,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -640,7 +647,9 @@ describe("cypher directive filtering - One To One Relationship", () => {
                 title: String
                 released: Int
                 directed_by: Person!
-                    @authorization(filter: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }])
+                    @authorization(
+                        filter: [{ where: { node: { directed_by: { name: { eq: "$jwt.custom_value" } } } } }]
+                    )
                     @cypher(
                         statement: """
                         MATCH (this)<-[:DIRECTED]-(director:Person)
@@ -676,7 +685,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title_EQ: "The Matrix" } }) {
+                people(where: { directed: { title: { eq: "The Matrix" } } }) {
                     directed {
                         title
                         directed_by {
@@ -690,7 +699,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -762,7 +772,9 @@ describe("cypher directive filtering - One To One Relationship", () => {
                 title: String
                 released: Int
                 directed_by: Person!
-                    @authorization(filter: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }])
+                    @authorization(
+                        filter: [{ where: { node: { directed_by: { name: { eq: "$jwt.custom_value" } } } } }]
+                    )
                     @cypher(
                         statement: """
                         MATCH (this)<-[:DIRECTED]-(director:Person)
@@ -798,7 +810,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title_EQ: "The Matrix" } }) {
+                people(where: { directed: { title: { eq: "The Matrix" } } }) {
                     directed {
                         title
                         directed_by {
@@ -812,7 +824,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -882,7 +895,9 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(validate: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }]) {
+                @authorization(
+                    validate: [{ where: { node: { directed_by: { name: { eq: "$jwt.custom_value" } } } } }]
+                ) {
                 title: String
                 released: Int
                 directed_by: Person!
@@ -921,7 +936,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title: "The Matrix" } }) {
+                people(where: { directed: { title: { eq: "The Matrix" } } }) {
                     directed {
                         title
                         directed_by {
@@ -935,7 +950,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -1005,7 +1021,9 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const typeDefs = /* GraphQL */ `
             type Movie
                 @node
-                @authorization(validate: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }]) {
+                @authorization(
+                    validate: [{ where: { node: { directed_by: { name: { eq: "$jwt.custom_value" } } } } }]
+                ) {
                 title: String
                 released: Int
                 directed_by: Person!
@@ -1044,7 +1062,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title_EQ: "The Matrix" } }) {
+                people(where: { directed: { title: { eq: "The Matrix" } } }) {
                     directed {
                         title
                         directed_by {
@@ -1058,7 +1076,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -1130,7 +1149,9 @@ describe("cypher directive filtering - One To One Relationship", () => {
                 title: String
                 released: Int
                 directed_by: Person!
-                    @authorization(validate: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }])
+                    @authorization(
+                        validate: [{ where: { node: { directed_by: { name: { eq: "$jwt.custom_value" } } } } }]
+                    )
                     @cypher(
                         statement: """
                         MATCH (this)<-[:DIRECTED]-(director:Person)
@@ -1166,7 +1187,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title_EQ: "The Matrix" } }) {
+                people(where: { directed: { title: { eq: "The Matrix" } } }) {
                     directed {
                         title
                         directed_by {
@@ -1180,7 +1201,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -1252,7 +1274,9 @@ describe("cypher directive filtering - One To One Relationship", () => {
                 title: String
                 released: Int
                 directed_by: Person!
-                    @authorization(validate: [{ where: { node: { directed_by: { name_EQ: "$jwt.custom_value" } } } }])
+                    @authorization(
+                        validate: [{ where: { node: { directed_by: { name: { eq: "$jwt.custom_value" } } } } }]
+                    )
                     @cypher(
                         statement: """
                         MATCH (this)<-[:DIRECTED]-(director:Person)
@@ -1288,7 +1312,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title_EQ: "The Matrix" } }) {
+                people(where: { directed: { title: { eq: "The Matrix" } } }) {
                     directed {
                         title
                         directed_by {
@@ -1302,7 +1326,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -1404,7 +1429,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                people(where: { directed: { title_EQ: "The Matrix" } }) {
+                people(where: { directed: { title: { eq: "The Matrix" } } }) {
                     directed {
                         title
                         directed_by {
@@ -1427,7 +1452,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Person)
+            "CYPHER 5
+            MATCH (this:Person)
             CALL {
                 WITH this
                 CALL {
@@ -1453,9 +1479,11 @@ describe("cypher directive filtering - One To One Relationship", () => {
                 CALL {
                     WITH this2
                     MATCH (this2)<-[this3:ACTED_IN]-(this4:Person)
+                    WITH DISTINCT this4
                     CALL {
                         WITH this4
                         MATCH (this4)-[this5:ACTED_IN]->(this6:Movie)
+                        WITH DISTINCT this6
                         CALL {
                             WITH this6
                             CALL {
@@ -1535,7 +1563,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
 
         const query = /* GraphQL */ `
             query {
-                movies(where: { directed_by: { name_EQ: "Lilly Wachowski" }, title_ENDS_WITH: "Matrix" }) {
+                movies(where: { directed_by: { name: { eq: "Lilly Wachowski" } }, title: { endsWith: "Matrix" } }) {
                     actorsConnection {
                         totalCount
                         edges {
@@ -1551,7 +1579,8 @@ describe("cypher directive filtering - One To One Relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {

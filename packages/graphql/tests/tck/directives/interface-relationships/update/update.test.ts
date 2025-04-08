@@ -64,8 +64,10 @@ describe("Interface Relationships - Update update", () => {
                 updateActors(
                     update: {
                         actedIn: {
-                            where: { node: { title_EQ: "Old Title" } }
-                            update: { node: { title_SET: "New Title" } }
+                            update: {
+                                where: { node: { title: { eq: "Old Title" } } }
+                                node: { title_SET: "New Title" }
+                            }
                         }
                     }
                 ) {
@@ -79,7 +81,8 @@ describe("Interface Relationships - Update update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WITH this
             CALL {
             	 WITH this
@@ -117,14 +120,16 @@ describe("Interface Relationships - Update update", () => {
                         \\"update\\": {
                             \\"actedIn\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title_EQ\\": \\"Old Title\\"
-                                        }
-                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"title_SET\\": \\"New Title\\"
+                                        },
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"title\\": {
+                                                    \\"eq\\": \\"Old Title\\"
+                                                }
+                                            }
                                         }
                                     }
                                 }
@@ -143,8 +148,10 @@ describe("Interface Relationships - Update update", () => {
                 updateActors(
                     update: {
                         actedIn: {
-                            where: { node: { title_EQ: "Old Title" } }
-                            update: { node: { actors: { update: { node: { name_SET: "New Actor Name" } } } } }
+                            update: {
+                                where: { node: { title: { eq: "Old Title" } } }
+                                node: { actors: { update: { node: { name_SET: "New Actor Name" } } } }
+                            }
                         }
                     }
                 ) {
@@ -158,7 +165,8 @@ describe("Interface Relationships - Update update", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WITH this
             CALL {
             	 WITH this
@@ -208,11 +216,6 @@ describe("Interface Relationships - Update update", () => {
                         \\"update\\": {
                             \\"actedIn\\": [
                                 {
-                                    \\"where\\": {
-                                        \\"node\\": {
-                                            \\"title_EQ\\": \\"Old Title\\"
-                                        }
-                                    },
                                     \\"update\\": {
                                         \\"node\\": {
                                             \\"actors\\": [
@@ -224,6 +227,13 @@ describe("Interface Relationships - Update update", () => {
                                                     }
                                                 }
                                             ]
+                                        },
+                                        \\"where\\": {
+                                            \\"node\\": {
+                                                \\"title\\": {
+                                                    \\"eq\\": \\"Old Title\\"
+                                                }
+                                            }
                                         }
                                     }
                                 }

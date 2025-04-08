@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     test("should find movies aggregate within double nested relationships", async () => {
         const query = /* GraphQL */ `
             {
-                actors(where: { movies_SOME: { actors_ALL: { moviesAggregate: { count_GT: 1 } } } }) {
+                actors(where: { movies: { some: { actors: { all: { moviesAggregate: { count: { gt: 1 } } } } } } }) {
                     name
                 }
             }
@@ -58,7 +58,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this0:Movie)
@@ -114,9 +115,11 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        movies_SOME: {
-                            actors_ALL: { moviesAggregate: { count_GT: 1 } }
-                            actorsAggregate: { count_EQ: 1 }
+                        movies: {
+                            some: {
+                                actors: { all: { moviesAggregate: { count: { gt: 1 } } } }
+                                actorsAggregate: { count: { eq: 1 } }
+                            }
                         }
                     }
                 ) {
@@ -128,7 +131,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this0:Movie)
@@ -191,7 +195,13 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
     test("should find movies aggregate within triple nested relationships", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { actors_SOME: { movies_SOME: { actors_ALL: { moviesAggregate: { count_GT: 2 } } } } }) {
+                movies(
+                    where: {
+                        actors: {
+                            some: { movies: { some: { actors: { all: { moviesAggregate: { count: { gt: 2 } } } } } } }
+                        }
+                    }
+                ) {
                     released
                 }
             }
@@ -200,7 +210,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[:ACTED_IN]-(this0:Actor)
@@ -263,14 +274,18 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 movies(
                     where: {
-                        actors_SINGLE: {
-                            movies_SOME: {
-                                actors_ALL: { moviesAggregate: { count_GT: 1 } }
-                                actorsAggregate: { node: { name_AVERAGE_LENGTH_LT: 10 } }
+                        actors: {
+                            single: {
+                                movies: {
+                                    some: {
+                                        actors: { all: { moviesAggregate: { count: { gt: 1 } } } }
+                                        actorsAggregate: { node: { name: { averageLength: { lt: 10 } } } }
+                                    }
+                                }
+                                moviesAggregate: { node: { released: { average: { eq: 25 } } } }
                             }
-                            moviesAggregate: { node: { released_AVERAGE_EQUAL: 25 } }
                         }
-                        actorsAggregate: { node: { name_AVERAGE_LENGTH_GTE: 3 } }
+                        actorsAggregate: { node: { name: { averageLength: { gte: 3 } } } }
                     }
                 ) {
                     released
@@ -281,7 +296,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[:ACTED_IN]-(this0:Actor)
@@ -362,8 +378,10 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        moviesConnection_SOME: {
-                            node: { actorsConnection_ALL: { node: { moviesAggregate: { count_GT: 1 } } } }
+                        moviesConnection: {
+                            some: {
+                                node: { actorsConnection: { all: { node: { moviesAggregate: { count: { gt: 1 } } } } } }
+                            }
                         }
                     }
                 ) {
@@ -375,7 +393,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
@@ -431,9 +450,11 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        movies_SOME: {
-                            actorsConnection_ALL: { node: { moviesAggregate: { count_GT: 1 } } }
-                            actorsAggregate: { count_EQ: 1 }
+                        movies: {
+                            some: {
+                                actorsConnection: { all: { node: { moviesAggregate: { count: { gt: 1 } } } } }
+                                actorsAggregate: { count: { eq: 1 } }
+                            }
                         }
                     }
                 ) {
@@ -445,7 +466,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this0:Movie)
@@ -510,10 +532,18 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 movies(
                     where: {
-                        actorsConnection_SOME: {
-                            node: {
-                                moviesConnection_SOME: {
-                                    node: { actorsConnection_ALL: { node: { moviesAggregate: { count_GT: 2 } } } }
+                        actorsConnection: {
+                            some: {
+                                node: {
+                                    moviesConnection: {
+                                        some: {
+                                            node: {
+                                                actorsConnection: {
+                                                    all: { node: { moviesAggregate: { count: { gt: 2 } } } }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -527,7 +557,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -590,18 +621,24 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 movies(
                     where: {
-                        actorsConnection_SOME: {
-                            node: {
-                                moviesConnection_SOME: {
-                                    node: {
-                                        actorsConnection_ALL: { node: { moviesAggregate: { count_GT: 1 } } }
-                                        actorsAggregate: { node: { name_AVERAGE_LENGTH_LT: 10 } }
+                        actorsConnection: {
+                            some: {
+                                node: {
+                                    moviesConnection: {
+                                        some: {
+                                            node: {
+                                                actorsConnection: {
+                                                    all: { node: { moviesAggregate: { count: { gt: 1 } } } }
+                                                }
+                                                actorsAggregate: { node: { name: { averageLength: { lt: 10 } } } }
+                                            }
+                                        }
                                     }
+                                    moviesAggregate: { node: { released: { average: { eq: 25 } } } }
                                 }
-                                moviesAggregate: { node: { released_AVERAGE_EQUAL: 25 } }
                             }
                         }
-                        actorsAggregate: { node: { name_AVERAGE_LENGTH_GTE: 3 } }
+                        actorsAggregate: { node: { name: { averageLength: { gte: 3 } } } }
                     }
                 ) {
                     released
@@ -612,7 +649,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -692,7 +730,11 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const query = /* GraphQL */ `
             {
                 actors(
-                    where: { movies_SOME: { actorsConnection_ALL: { node: { moviesAggregate: { count_GT: 1 } } } } }
+                    where: {
+                        movies: {
+                            some: { actorsConnection: { all: { node: { moviesAggregate: { count: { gt: 1 } } } } } }
+                        }
+                    }
                 ) {
                     name
                 }
@@ -702,7 +744,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this0:Movie)
@@ -757,7 +800,11 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const query = /* GraphQL */ `
             {
                 actors(
-                    where: { moviesConnection_SOME: { node: { actors_ALL: { moviesAggregate: { count_GT: 1 } } } } }
+                    where: {
+                        moviesConnection: {
+                            some: { node: { actors: { all: { moviesAggregate: { count: { gt: 1 } } } } } }
+                        }
+                    }
                 ) {
                     name
                 }
@@ -767,7 +814,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
@@ -823,9 +871,17 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 movies(
                     where: {
-                        actorsConnection_SOME: {
-                            node: {
-                                movies_SINGLE: { actorsConnection_NONE: { node: { moviesAggregate: { count_GT: 2 } } } }
+                        actorsConnection: {
+                            some: {
+                                node: {
+                                    movies: {
+                                        single: {
+                                            actorsConnection: {
+                                                none: { node: { moviesAggregate: { count: { gt: 2 } } } }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -838,7 +894,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -885,9 +942,13 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        movies_SINGLE: {
-                            actors_NONE: { moviesAggregate: { edge: { screenTime_AVERAGE_LTE: 1000 } } }
-                            actorsAggregate: { edge: { screenTime_AVERAGE_LTE: 1000 } }
+                        movies: {
+                            single: {
+                                actors: {
+                                    none: { moviesAggregate: { edge: { screenTime: { average: { lte: 1000 } } } } }
+                                }
+                                actorsAggregate: { edge: { screenTime: { average: { lte: 1000 } } } }
+                            }
                         }
                     }
                 ) {
@@ -899,7 +960,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this0:Movie)
@@ -942,14 +1004,18 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        moviesConnection_SINGLE: {
-                            node: {
-                                actorsConnection_NONE: {
-                                    node: { moviesAggregate: { count_GT: 1 } }
-                                    edge: { roles_INCLUDES: "a role" }
+                        moviesConnection: {
+                            single: {
+                                node: {
+                                    actorsConnection: {
+                                        none: {
+                                            node: { moviesAggregate: { count: { gt: 1 } } }
+                                            edge: { roles: { includes: "a role" } }
+                                        }
+                                    }
                                 }
+                                edge: { roles: { includes: "another role" } }
                             }
-                            edge: { roles_INCLUDES: "another role" }
                         }
                     }
                 ) {
@@ -961,7 +1027,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
@@ -1003,11 +1070,15 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        moviesConnection_SINGLE: {
-                            node: {
-                                actorsConnection_SOME: {
-                                    node: { name_EQ: "actor name", moviesAggregate: { count_GT: 1 } }
-                                    edge: { roles_INCLUDES: "actor role" }
+                        moviesConnection: {
+                            single: {
+                                node: {
+                                    actorsConnection: {
+                                        some: {
+                                            node: { name: { eq: "actor name" }, moviesAggregate: { count: { gt: 1 } } }
+                                            edge: { roles: { includes: "actor role" } }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1021,7 +1092,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
@@ -1062,7 +1134,11 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const query = /* GraphQL */ `
             {
                 actors(
-                    where: { movies_ALL: { actors_SOME: { name_EQ: "a name", moviesAggregate: { count_GT: 1 } } } }
+                    where: {
+                        movies: {
+                            all: { actors: { some: { name: { eq: "a name" }, moviesAggregate: { count: { gt: 1 } } } } }
+                        }
+                    }
                 ) {
                     name
                 }
@@ -1072,7 +1148,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this0:Movie)
@@ -1137,8 +1214,14 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        movies_ALL: {
-                            actors_SOME: { OR: [{ name_EQ: "some name" }, { moviesAggregate: { count_GT: 1 } }] }
+                        movies: {
+                            all: {
+                                actors: {
+                                    some: {
+                                        OR: [{ name: { eq: "some name" } }, { moviesAggregate: { count: { gt: 1 } } }]
+                                    }
+                                }
+                            }
                         }
                     }
                 ) {
@@ -1150,7 +1233,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this0:Movie)
@@ -1215,8 +1299,14 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             {
                 actors(
                     where: {
-                        movies_ALL: {
-                            actors_SOME: { AND: [{ name_EQ: "some name" }, { moviesAggregate: { count_GT: 1 } }] }
+                        movies: {
+                            all: {
+                                actors: {
+                                    some: {
+                                        AND: [{ name: { eq: "some name" } }, { moviesAggregate: { count: { gt: 1 } } }]
+                                    }
+                                }
+                            }
                         }
                     }
                 ) {
@@ -1228,7 +1318,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[:ACTED_IN]->(this0:Movie)
@@ -1293,14 +1384,18 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             mutation {
                 updateActors(
                     where: {
-                        moviesConnection_SINGLE: {
-                            node: {
-                                actorsConnection_NONE: {
-                                    node: { moviesAggregate: { count_GT: 1 } }
-                                    edge: { roles_INCLUDES: "some role" }
+                        moviesConnection: {
+                            single: {
+                                node: {
+                                    actorsConnection: {
+                                        none: {
+                                            node: { moviesAggregate: { count: { gt: 1 } } }
+                                            edge: { roles: { includes: "some role" } }
+                                        }
+                                    }
                                 }
+                                edge: { roles: { includes: "another role" } }
                             }
-                            edge: { roles_INCLUDES: "another role" }
                         }
                     }
                     update: { name_SET: "Exciting new name!" }
@@ -1315,7 +1410,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
@@ -1360,11 +1456,15 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             mutation {
                 deleteActors(
                     where: {
-                        moviesConnection_SINGLE: {
-                            node: {
-                                actorsConnection_SOME: {
-                                    node: { name_EQ: "a name", moviesAggregate: { count_GT: 1 } }
-                                    edge: { roles_INCLUDES: "some-role" }
+                        moviesConnection: {
+                            single: {
+                                node: {
+                                    actorsConnection: {
+                                        some: {
+                                            node: { name: { eq: "a name" }, moviesAggregate: { count: { gt: 1 } } }
+                                            edge: { roles: { includes: "some-role" } }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -1378,7 +1478,8 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)

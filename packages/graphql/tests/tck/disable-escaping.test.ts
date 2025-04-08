@@ -26,7 +26,7 @@ describe("Disable escaping", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Actor {
+            type Actor @node {
                 name: String!
             }
 
@@ -59,10 +59,12 @@ describe("Disable escaping", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:\`Movie:Film\`)
+            "CYPHER 5
+            MATCH (this:\`Movie:Film\`)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN|PATICIPATED]-(this1:Actor)
+                WITH DISTINCT this1
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var2
             }
@@ -94,10 +96,12 @@ describe("Disable escaping", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie:Film)
+            "CYPHER 5
+            MATCH (this:Movie:Film)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:\`ACTED_IN|PATICIPATED\`]-(this1:Actor)
+                WITH DISTINCT this1
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var2
             }

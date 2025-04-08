@@ -45,7 +45,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     test("AVERAGE_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someDuration_AVERAGE_EQUAL: "P1Y" } } }) {
+                posts(where: { likesAggregate: { node: { someDuration: { average: { eq: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -54,7 +54,8 @@ describe("Cypher Aggregations where node with Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -86,7 +87,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     test("AVERAGE_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someDuration_AVERAGE_GT: "P1Y" } } }) {
+                posts(where: { likesAggregate: { node: { someDuration: { average: { gt: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -95,7 +96,8 @@ describe("Cypher Aggregations where node with Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -127,7 +129,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     test("AVERAGE_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someDuration_AVERAGE_GTE: "P1Y" } } }) {
+                posts(where: { likesAggregate: { node: { someDuration: { average: { gte: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -136,7 +138,8 @@ describe("Cypher Aggregations where node with Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -168,7 +171,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     test("AVERAGE_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someDuration_AVERAGE_LT: "P1Y" } } }) {
+                posts(where: { likesAggregate: { node: { someDuration: { average: { lt: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -177,7 +180,8 @@ describe("Cypher Aggregations where node with Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -209,7 +213,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     test("AVERAGE_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someDuration_AVERAGE_LTE: "P1Y" } } }) {
+                posts(where: { likesAggregate: { node: { someDuration: { average: { lte: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -218,7 +222,8 @@ describe("Cypher Aggregations where node with Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -250,7 +255,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     test("MIN_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someDuration_MIN_EQUAL: "P1Y" } } }) {
+                posts(where: { likesAggregate: { node: { someDuration: { min: { eq: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -259,7 +264,8 @@ describe("Cypher Aggregations where node with Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -291,7 +297,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     test("MIN_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someDuration_MIN_GT: "P1Y" } } }) {
+                posts(where: { likesAggregate: { node: { someDuration: { min: { gt: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -300,7 +306,8 @@ describe("Cypher Aggregations where node with Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -332,7 +339,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     test("MIN_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someDuration_MIN_GTE: "P1Y" } } }) {
+                posts(where: { likesAggregate: { node: { someDuration: { min: { gte: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -341,7 +348,8 @@ describe("Cypher Aggregations where node with Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -373,7 +381,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     test("MIN_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someDuration_MIN_LT: "P1Y" } } }) {
+                posts(where: { likesAggregate: { node: { someDuration: { min: { lt: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -382,7 +390,8 @@ describe("Cypher Aggregations where node with Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -414,7 +423,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     test("MIN_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someDuration_MIN_LTE: "P1Y" } } }) {
+                posts(where: { likesAggregate: { node: { someDuration: { min: { lte: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -423,7 +432,8 @@ describe("Cypher Aggregations where node with Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -455,7 +465,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     test("MAX_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someDuration_MAX_EQUAL: "P1Y" } } }) {
+                posts(where: { likesAggregate: { node: { someDuration: { max: { eq: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -464,7 +474,8 @@ describe("Cypher Aggregations where node with Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -496,7 +507,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     test("MAX_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someDuration_MAX_GT: "P1Y" } } }) {
+                posts(where: { likesAggregate: { node: { someDuration: { max: { gt: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -505,7 +516,8 @@ describe("Cypher Aggregations where node with Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -537,7 +549,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     test("MAX_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someDuration_MAX_GTE: "P1Y" } } }) {
+                posts(where: { likesAggregate: { node: { someDuration: { max: { gte: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -546,7 +558,8 @@ describe("Cypher Aggregations where node with Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -578,7 +591,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     test("MAX_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someDuration_MAX_LT: "P1Y" } } }) {
+                posts(where: { likesAggregate: { node: { someDuration: { max: { lt: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -587,7 +600,8 @@ describe("Cypher Aggregations where node with Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -619,7 +633,7 @@ describe("Cypher Aggregations where node with Duration", () => {
     test("MAX_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { someDuration_MAX_LTE: "P1Y" } } }) {
+                posts(where: { likesAggregate: { node: { someDuration: { max: { lte: "P1Y" } } } } }) {
                     content
                 }
             }
@@ -628,7 +642,8 @@ describe("Cypher Aggregations where node with Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)

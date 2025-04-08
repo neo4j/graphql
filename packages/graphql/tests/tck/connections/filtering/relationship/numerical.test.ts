@@ -51,7 +51,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { screenTime_LT: 60 } }) {
+                    actorsConnection(where: { edge: { screenTime: { lt: 60 } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -68,7 +68,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -101,7 +102,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { screenTime_LTE: 60 } }) {
+                    actorsConnection(where: { edge: { screenTime: { lte: 60 } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -118,7 +119,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -151,7 +153,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { screenTime_GT: 60 } }) {
+                    actorsConnection(where: { edge: { screenTime: { gt: 60 } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -168,7 +170,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -201,7 +204,7 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { screenTime_GTE: 60 } }) {
+                    actorsConnection(where: { edge: { screenTime: { gte: 60 } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -218,7 +221,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Numerical", () =
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)

@@ -27,7 +27,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type Employee @node {
-                employeeId: ID! @unique
+                employeeId: ID!
                 firstName: String! @settable(onCreate: false, onUpdate: false)
                 lastName: String @settable(onCreate: false, onUpdate: false)
                 projects: [Project!]!
@@ -39,7 +39,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             }
 
             type Project @node {
-                projectId: ID! @unique
+                projectId: ID!
                 name: String! @settable(onCreate: false, onUpdate: false)
                 description: String
                 employees: [Employee!]!
@@ -55,18 +55,22 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
     test("should compare for SUM_LTE allocation in return statement rather than the WITH clause", async () => {
         const query = /* GraphQL */ `
             {
-                employees(where: { projectsAggregate: { edge: { allocation_SUM_LTE: 25 } } }) {
+                employees(where: { projectsAggregate: { edge: { allocation: { sum: { lte: 25 } } } } }) {
                     employeeId
                     firstName
                     lastName
-                    projectsAggregate {
-                        count
-                        edge {
-                            allocation {
-                                max
-                                min
-                                average
-                                sum
+                    projectsConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                            edge {
+                                allocation {
+                                    max
+                                    min
+                                    average
+                                    sum
+                                }
                             }
                         }
                     }
@@ -77,7 +81,8 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Employee)
+            "CYPHER 5
+            MATCH (this:Employee)
             CALL {
                 WITH this
                 MATCH (this)-[this0:PARTICIPATES]->(this1:Project)
@@ -87,16 +92,20 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             WHERE var2 = true
             CALL {
                 WITH this
-                MATCH (this)-[this3:PARTICIPATES]->(this4:Project)
-                RETURN count(this4) AS var5
+                CALL {
+                    WITH this
+                    MATCH (this)-[this3:PARTICIPATES]->(this4:Project)
+                    RETURN { nodes: count(DISTINCT this4) } AS var5
+                }
+                CALL {
+                    WITH this
+                    MATCH (this)-[this6:PARTICIPATES]->(this7:Project)
+                    WITH DISTINCT this6
+                    RETURN { min: min(this6.allocation), max: max(this6.allocation), average: avg(this6.allocation), sum: sum(this6.allocation) } AS var8
+                }
+                RETURN { aggregate: { count: var5, edge: { allocation: var8 } } } AS var9
             }
-            CALL {
-                WITH this
-                MATCH (this)-[this6:PARTICIPATES]->(this7:Project)
-                WITH this6
-                RETURN { min: min(this6.allocation), max: max(this6.allocation), average: avg(this6.allocation), sum: sum(this6.allocation) } AS var8
-            }
-            RETURN this { .employeeId, .firstName, .lastName, projectsAggregate: { count: var5, edge: { allocation: var8 } } } AS this"
+            RETURN this { .employeeId, .firstName, .lastName, projectsConnection: var9 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

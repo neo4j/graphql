@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
         const typeDefs = gql`
             type ${Episode} @node {
                 runtime: Int!
-                series: ${Series}! @relationship(type: "HAS_EPISODE", direction: IN)
+                series: [${Series}!]! @relationship(type: "HAS_EPISODE", direction: IN)
             }
 
             interface Production {
@@ -147,7 +147,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
                 actedIn: {
                   connect: {
                     edge: { screenTime: 10 }
-                    where: { node: { title_EQ: "${movieTitle}", typename_IN: [${Movie.name}] } }
+                    where: { node: { title_EQ: "${movieTitle}", typename: [${Movie.name}] } }
                   }
                 }
               }
@@ -198,7 +198,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
                     connect: {
                         actedIn: {
                             edge: { screenTime: 25 }
-                            where: { node: { title_EQ: "${sameTitle}", typename_IN: [${Movie.name}]} }
+                            where: { node: { title_EQ: "${sameTitle}", typename: [${Movie.name}]} }
                         }
                     }
                   }
@@ -261,8 +261,8 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
                   connect: {
                     edge: { screenTime: 10 }
                     where: { node: { OR: [
-                        { title_EQ: "${movieTitle}", typename_IN: [${Movie.name}]},
-                        { AND: [ {typename_IN: [${Series.name}]}, { NOT: { title_EQ: "${sameTitle}"} }] }
+                        { title_EQ: "${movieTitle}", typename: [${Movie.name}]},
+                        { AND: [ {typename: [${Series.name}]}, { NOT: { title_EQ: "${sameTitle}"} }] }
                     ] } }
                   }
                 }

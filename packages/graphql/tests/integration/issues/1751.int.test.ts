@@ -37,7 +37,7 @@ describe("https://github.com/neo4j/graphql/issues/1735", () => {
         }
 
         type ${adminType} @node {
-            adminId: ID! @id @unique
+            adminId: ID! @id
             organizations: [${organizationType}!]! @relationship(type: "HAS_ADMINISTRATOR", direction: IN)
         }
   `;

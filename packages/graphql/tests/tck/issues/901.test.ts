@@ -27,10 +27,11 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type Series @node {
-                id: ID! @id @unique
+                id: ID! @id
                 name: String!
-                brand: Series @relationship(type: "HAS_BRAND", direction: OUT, properties: "Properties")
-                manufacturer: Series @relationship(type: "HAS_MANUFACTURER", direction: OUT, properties: "Properties")
+                brand: [Series!]! @relationship(type: "HAS_BRAND", direction: OUT, properties: "Properties")
+                manufacturer: [Series!]!
+                    @relationship(type: "HAS_MANUFACTURER", direction: OUT, properties: "Properties")
             }
 
             type Properties @relationshipProperties {
@@ -64,21 +65,25 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
                     OR: [
                         {
                             manufacturerConnection: {
-                                edge: {
-                                    current_EQ: true,
-                                },
-                                node: {
-                                    name_EQ: "abc",
+                                some: {
+                                    edge: {
+                                        current: { eq: true },
+                                    },
+                                    node: {
+                                        name: { eq: "abc" },
+                                    },
                                 },
                             },
                         },
                         {
                             brandConnection: {
-                                edge: {
-                                    current_EQ: true,
-                                },
-                                node: {
-                                    name_EQ: "smart",
+                                some: {
+                                    edge: {
+                                        current: { eq: true },
+                                    },
+                                    node: {
+                                        name: { eq: "smart" },
+                                    },
                                 },
                             },
                         },
@@ -88,19 +93,28 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Series)
-            WHERE (single(this0 IN [(this)-[this1:HAS_MANUFACTURER]->(this0:Series) WHERE (this0.name = $param0 AND this1.current = $param1) | 1] WHERE true) OR single(this2 IN [(this)-[this3:HAS_BRAND]->(this2:Series) WHERE (this2.name = $param2 AND this3.current = $param3) | 1] WHERE true))
+            "CYPHER 5
+            MATCH (this:Series)
+            WHERE (EXISTS {
+                MATCH (this)-[this0:HAS_MANUFACTURER]->(this1:Series)
+                WHERE (this1.name = $param0 AND this0.current = $param1)
+            } OR EXISTS {
+                MATCH (this)-[this2:HAS_BRAND]->(this3:Series)
+                WHERE (this3.name = $param2 AND this2.current = $param3)
+            })
             CALL {
                 WITH this
                 MATCH (this)-[this4:HAS_BRAND]->(this5:Series)
+                WITH DISTINCT this5
                 WITH this5 { .name } AS this5
-                RETURN head(collect(this5)) AS var6
+                RETURN collect(this5) AS var6
             }
             CALL {
                 WITH this
                 MATCH (this)-[this7:HAS_MANUFACTURER]->(this8:Series)
+                WITH DISTINCT this8
                 WITH this8 { .name } AS this8
-                RETURN head(collect(this8)) AS var9
+                RETURN collect(this8) AS var9
             }
             RETURN this { .name, brand: var6, manufacturer: var9 } AS this"
         `);

@@ -42,7 +42,8 @@ describe("Auth projections for interface relationship fields", () => {
                 episodes: String!
             }
 
-            extend type Series @authorization(validate: [{ when: BEFORE, where: { node: { episodes_EQ: "$jwt.sub" } } }])
+            extend type Series
+                @authorization(validate: [{ when: BEFORE, where: { node: { episodes: { eq: "$jwt.sub" } } } }])
 
             type ActedIn @relationshipProperties {
                 screenTime: Int!
@@ -87,7 +88,8 @@ describe("Auth projections for interface relationship fields", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {

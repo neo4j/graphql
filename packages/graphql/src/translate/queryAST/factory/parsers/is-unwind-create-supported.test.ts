@@ -23,7 +23,6 @@ import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/mode
 import {
     UNSUPPORTED_REASON_ABSTRACT_TYPES,
     UNSUPPORTED_REASON_CONNECT,
-    UNSUPPORTED_REASON_CONNECT_OR_CREATE,
     UNSUPPORTED_REASON_POPULATED_BY,
     isUnwindCreateSupported,
 } from "./is-unwind-create-supported";
@@ -87,26 +86,6 @@ describe("isUnwindCreateSupported", () => {
         const { isSupported, reason } = isUnwindCreateSupported(MovieAdapter as ConcreteEntityAdapter, input, context);
         expect(isSupported).toBeFalsy();
         expect(reason).toBe(UNSUPPORTED_REASON_CONNECT);
-    });
-
-    test("valid typeDefs, not supported input (connectOrCreate)", () => {
-        const schemaModel = new SchemaModelBuilder(simpleTypeDefs).instance();
-        const context = new ContextBuilder().instance();
-        const MovieAdapter = schemaModel.getConcreteEntityAdapter("Movie");
-        const input = [
-            { title: "The Matrix", actors: { create: [{ node: { name: "actor 1" } }] } },
-            {
-                title: "The Matrix 2",
-                actors: {
-                    connectOrCreate: [
-                        { where: { node: { id: "actor-2-id" } }, onCreate: { node: { name: "actor 2" } } },
-                    ],
-                },
-            },
-        ];
-        const { isSupported, reason } = isUnwindCreateSupported(MovieAdapter as ConcreteEntityAdapter, input, context);
-        expect(isSupported).toBeFalsy();
-        expect(reason).toBe(UNSUPPORTED_REASON_CONNECT_OR_CREATE);
     });
 
     test("valid typeDefs, not supported nested input (connect)", () => {

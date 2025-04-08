@@ -31,7 +31,7 @@ describe("Cypher Fragment", () => {
             }
 
             type User implements Entity @node {
-                id: ID! @id @unique
+                id: ID! @id
                 username: String!
                 owns: [OwnableType!]! @relationship(type: "OWNS", direction: OUT)
             }
@@ -40,17 +40,17 @@ describe("Cypher Fragment", () => {
 
             interface Ownable {
                 id: ID!
-                owner: User
+                owner: [User!]!
             }
 
             type Tile implements Ownable @node {
-                id: ID! @id @unique
-                owner: User! @relationship(type: "OWNS", direction: IN)
+                id: ID! @id
+                owner: [User!]! @relationship(type: "OWNS", direction: IN)
             }
 
             type Character implements Ownable @node {
-                id: ID! @id @unique
-                owner: User! @relationship(type: "OWNS", direction: IN)
+                id: ID! @id
+                owner: [User!]! @relationship(type: "OWNS", direction: IN)
             }
         `;
 
@@ -76,7 +76,8 @@ describe("Cypher Fragment", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             RETURN this { .id, .username } AS this"
         `);
 
@@ -101,7 +102,8 @@ describe("Cypher Fragment", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             CALL {
                 WITH this
                 CALL {
@@ -141,7 +143,8 @@ describe("Cypher Fragment", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             RETURN this { .username, .id } AS this"
         `);
 
@@ -186,7 +189,7 @@ describe("Cypher Fragment", () => {
 
         const query = /* GraphQL */ `
             query {
-                actors(where: { name_EQ: "Keanu" }) {
+                actors(where: { name: { eq: "Keanu" } }) {
                     name
                     actedIn {
                         ...FragmentA
@@ -209,7 +212,8 @@ describe("Cypher Fragment", () => {
         const result = await translateQuery(testNeoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WHERE this.name = $param0
             CALL {
                 WITH this

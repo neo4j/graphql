@@ -26,7 +26,9 @@ describe("Cypher -> fulltext -> Score", () => {
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) @node {
+            type Movie
+                @fulltext(indexes: [{ indexName: "MovieTitle", queryName: "moviesByTitle", fields: ["title"] }])
+                @node {
                 title: String
                 released: Int
             }
@@ -40,11 +42,13 @@ describe("Cypher -> fulltext -> Score", () => {
     test("simple match with single property and score", async () => {
         const query = /* GraphQL */ `
             query {
-                moviesFulltextMovieTitle(phrase: "a different name") {
-                    score
-                    movie {
-                        title
-                        released
+                moviesByTitle(phrase: "a different name") {
+                    edges {
+                        score
+                        node {
+                            title
+                            released
+                        }
                     }
                 }
             }
@@ -53,9 +57,18 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
-            RETURN this0 { .title, .released } AS movie, var1 AS score"
+            WITH collect({ node: this0, score: var1 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0, edge.score AS var1
+                RETURN collect({ node: { title: this0.title, released: this0.released, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
+            }
+            RETURN { edges: var2, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -69,11 +82,13 @@ describe("Cypher -> fulltext -> Score", () => {
     test("simple match with single property and score and filter", async () => {
         const query = /* GraphQL */ `
             query {
-                moviesFulltextMovieTitle(phrase: "a different name", where: { movie: { released_GT: 2000 } }) {
-                    score
-                    movie {
-                        title
-                        released
+                moviesByTitle(phrase: "a different name", where: { node: { released: { gt: 2000 } } }) {
+                    edges {
+                        score
+                        node {
+                            title
+                            released
+                        }
                     }
                 }
             }
@@ -82,9 +97,18 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND this0.released > $param2)
-            RETURN this0 { .title, .released } AS movie, var1 AS score"
+            WITH collect({ node: this0, score: var1 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0, edge.score AS var1
+                RETURN collect({ node: { title: this0.title, released: this0.released, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
+            }
+            RETURN { edges: var2, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -102,10 +126,12 @@ describe("Cypher -> fulltext -> Score", () => {
     test("with score filtering", async () => {
         const query = /* GraphQL */ `
             query {
-                moviesFulltextMovieTitle(phrase: "a different name", where: { score: { min: 0.5 } }) {
-                    score
-                    movie {
-                        title
+                moviesByTitle(phrase: "a different name", where: { score: { min: 0.5 } }) {
+                    edges {
+                        score
+                        node {
+                            title
+                        }
                     }
                 }
             }
@@ -114,9 +140,18 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND var1 >= $param2)
-            RETURN this0 { .title } AS movie, var1 AS score"
+            WITH collect({ node: this0, score: var1 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0, edge.score AS var1
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
+            }
+            RETURN { edges: var2, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -131,10 +166,12 @@ describe("Cypher -> fulltext -> Score", () => {
     test("with sorting", async () => {
         const query = /* GraphQL */ `
             query {
-                moviesFulltextMovieTitle(phrase: "a different name", sort: { movie: { title: DESC } }) {
-                    score
-                    movie {
-                        title
+                moviesByTitle(phrase: "a different name", sort: { node: { title: DESC } }) {
+                    edges {
+                        score
+                        node {
+                            title
+                        }
                     }
                 }
             }
@@ -143,11 +180,20 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
-            WITH *
-            ORDER BY this0.title DESC
-            RETURN this0 { .title } AS movie, var1 AS score"
+            WITH collect({ node: this0, score: var1 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0, edge.score AS var1
+                WITH *
+                ORDER BY this0.title DESC
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
+            }
+            RETURN { edges: var2, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -161,10 +207,12 @@ describe("Cypher -> fulltext -> Score", () => {
     test("with score sorting", async () => {
         const query = /* GraphQL */ `
             query {
-                moviesFulltextMovieTitle(phrase: "a different name", sort: { score: ASC }) {
-                    score
-                    movie {
-                        title
+                moviesByTitle(phrase: "a different name", sort: { score: ASC }) {
+                    edges {
+                        score
+                        node {
+                            title
+                        }
                     }
                 }
             }
@@ -173,11 +221,20 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
-            WITH *
-            ORDER BY var1 ASC
-            RETURN this0 { .title } AS movie, var1 AS score"
+            WITH collect({ node: this0, score: var1 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0, edge.score AS var1
+                WITH *
+                ORDER BY var1 ASC
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
+            }
+            RETURN { edges: var2, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -191,13 +248,12 @@ describe("Cypher -> fulltext -> Score", () => {
     test("with score and normal sorting", async () => {
         const query = /* GraphQL */ `
             query {
-                moviesFulltextMovieTitle(
-                    phrase: "a different name"
-                    sort: [{ score: ASC }, { movie: { title: DESC } }]
-                ) {
-                    score
-                    movie {
-                        title
+                moviesByTitle(phrase: "a different name", sort: [{ score: ASC }, { node: { title: DESC } }]) {
+                    edges {
+                        score
+                        node {
+                            title
+                        }
                     }
                 }
             }
@@ -206,11 +262,20 @@ describe("Cypher -> fulltext -> Score", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
-            WITH *
-            ORDER BY var1 ASC, this0.title DESC
-            RETURN this0 { .title } AS movie, var1 AS score"
+            WITH collect({ node: this0, score: var1 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0, edge.score AS var1
+                WITH *
+                ORDER BY var1 ASC, this0.title DESC
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
+            }
+            RETURN { edges: var2, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -51,7 +51,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Equality", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { name_EQ: "Tom Hanks" } }) {
+                    actorsConnection(where: { node: { name: { eq: "Tom Hanks" } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -68,7 +68,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Equality", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -98,7 +99,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> Equality", () => {
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { NOT: { name_EQ: "Tom Hanks" } } }) {
+                    actorsConnection(where: { node: { NOT: { name: { eq: "Tom Hanks" } } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -115,7 +116,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> Equality", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)

@@ -23,7 +23,7 @@ import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("Field Level Aggregations Auth", () => {
     const testCases = [
-        { name: "count", selection: "count" },
+        { name: "count", selection: "count { nodes }" },
         { name: "string", selection: `node {name {longest, shortest}}` },
         { name: "number", selection: `node {year {max, min, average}}` },
         { name: "default", selection: `node { createdAt {max, min}}` },
@@ -88,8 +88,12 @@ describe("Field Level Aggregations Auth", () => {
         test("accepts authenticated requests to movie -> actorAggregate", async () => {
             const query = `query {
                 ${typeMovie.plural} {
-                    actorsAggregate {
-                        count
+                    actorsConnection {
+                        aggregate {
+                            count {
+                                nodes
+                                }
+                            }
                         }
                     }
                 }`;
@@ -101,8 +105,10 @@ describe("Field Level Aggregations Auth", () => {
         test("accepts authenticated requests to actor -> movieAggregate", async () => {
             const query = `query {
                 ${typeActor.plural} {
-                    moviesAggregate {
-                        ${selection}
+                    moviesConnection {
+                        aggregate {
+                            ${selection}
+                            }
                         }
                     }
                 }`;
@@ -114,8 +120,10 @@ describe("Field Level Aggregations Auth", () => {
         test("accepts unauthenticated requests to movie -> actorAggregate (only movie aggregations require authentication)", async () => {
             const query = `query {
                 ${typeMovie.plural} {
-                    actorsAggregate {
-                        ${selection}
+                    actorsConnection {
+                        aggregate {
+                            ${selection}
+                            }
                         }
                     }
                 }`;
@@ -127,8 +135,10 @@ describe("Field Level Aggregations Auth", () => {
         test("rejects unauthenticated requests to actor -> movieAggregate", async () => {
             const query = `query {
                 ${typeActor.plural} {
-                    moviesAggregate {
-                        ${selection}
+                    moviesConnection {
+                        aggregate {
+                            ${selection}
+                            }
                         }
                     }
                 }`;
@@ -194,8 +204,10 @@ describe("Field Level Aggregations Auth", () => {
         test("authenticated query", async () => {
             const query = `query {
                     ${typeActor.plural} {
-                        moviesAggregate {
-                            ${selection}
+                        moviesConnection {
+                            aggregate {
+                                ${selection}
+                                }
                             }
                         }
                     }`;
@@ -208,8 +220,10 @@ describe("Field Level Aggregations Auth", () => {
         test("unauthenticated query", async () => {
             const query = `query {
                     ${typeActor.plural} {
-                        moviesAggregate {
-                            ${selection}
+                        moviesConnection {
+                            aggregate {
+                                ${selection}
+                                }
                             }
                         }
                     }`;
@@ -221,8 +235,10 @@ describe("Field Level Aggregations Auth", () => {
         test("authenticated query with wrong credentials", async () => {
             const query = `query {
                     ${typeActor.plural} {
-                        moviesAggregate {
-                            ${selection}
+                        moviesConnection {
+                            aggregate {
+                                ${selection}
+                                }
                             }
                         }
                     }`;

@@ -50,7 +50,7 @@ describe("Relationship Properties Cypher", () => {
     test("Projecting node and relationship properties with no arguments", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title_EQ: "Forrest Gump" }) {
+                movies(where: { title: { eq: "Forrest Gump" } }) {
                     title
                     actorsConnection {
                         edges {
@@ -69,7 +69,8 @@ describe("Relationship Properties Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this
@@ -97,9 +98,9 @@ describe("Relationship Properties Cypher", () => {
     test("Projecting node and relationship properties with where argument", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title_EQ: "Forrest Gump" }) {
+                movies(where: { title: { eq: "Forrest Gump" } }) {
                     title
-                    actorsConnection(where: { node: { name_EQ: "Tom Hanks" } }) {
+                    actorsConnection(where: { node: { name: { eq: "Tom Hanks" } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -116,7 +117,8 @@ describe("Relationship Properties Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this
@@ -146,7 +148,7 @@ describe("Relationship Properties Cypher", () => {
     test("Projecting node and relationship properties with sort argument", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title_EQ: "Forrest Gump" }) {
+                movies(where: { title: { eq: "Forrest Gump" } }) {
                     title
                     actorsConnection(sort: { edge: { screenTime: DESC } }) {
                         edges {
@@ -165,7 +167,8 @@ describe("Relationship Properties Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this
@@ -213,7 +216,8 @@ describe("Relationship Properties Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -255,7 +259,8 @@ describe("Relationship Properties Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -280,7 +285,7 @@ describe("Relationship Properties Cypher", () => {
     test("Projecting twice nested node and relationship properties with no arguments", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title_EQ: "Forrest Gump" }) {
+                movies(where: { title: { eq: "Forrest Gump" } }) {
                     title
                     actorsConnection {
                         edges {
@@ -309,7 +314,8 @@ describe("Relationship Properties Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this
@@ -350,7 +356,7 @@ describe("Relationship Properties Cypher", () => {
     test("Projecting thrice nested node and relationship properties with no arguments", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { title_EQ: "Forrest Gump" }) {
+                movies(where: { title: { eq: "Forrest Gump" } }) {
                     title
                     actorsConnection {
                         edges {
@@ -389,7 +395,8 @@ describe("Relationship Properties Cypher", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this

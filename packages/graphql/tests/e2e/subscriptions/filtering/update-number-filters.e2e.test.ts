@@ -38,10 +38,10 @@ describe("Update Subscriptions", () => {
     beforeEach(async () => {
         typeMovie = testHelper.createUniqueType("Movie");
         const typeDefs = `
-         type ${typeMovie} @node {
+         type ${typeMovie} @node @subscription {
             id: ID
             title: String
-            similarTitles: [String]
+            similarTitles: [String!]
             releasedIn: Int
             averageRating: Float
             fileSize: BigInt
@@ -894,8 +894,8 @@ describe("Update Subscriptions", () => {
                 query: `
                         mutation {
                             ${typeMovie.operations.update}(where: { ${fieldName}_EQ: ${makeTypedFieldValue(
-                    oldValue
-                )} }, update: { ${fieldName}: ${makeTypedFieldValue(newValue)} }) {
+                                oldValue
+                            )} }, update: { ${fieldName}_SET: ${makeTypedFieldValue(newValue)} }) {
                                 ${typeMovie.plural} {
                                     title
                                     releasedIn

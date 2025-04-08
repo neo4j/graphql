@@ -39,9 +39,13 @@ describe("Cypher Aggregations Float", () => {
     test("Min", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    actorCount {
-                        min
+                moviesConnection {
+                    aggregate {
+                        node {
+                            actorCount {
+                                min
+                            }
+                        }
                     }
                 }
             }
@@ -50,12 +54,13 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.actorCount) } AS var0
             }
-            RETURN { actorCount: var0 }"
+            RETURN { aggregate: { node: { actorCount: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -64,9 +69,13 @@ describe("Cypher Aggregations Float", () => {
     test("Max", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    actorCount {
-                        max
+                moviesConnection {
+                    aggregate {
+                        node {
+                            actorCount {
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -75,12 +84,13 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { max: max(this.actorCount) } AS var0
             }
-            RETURN { actorCount: var0 }"
+            RETURN { aggregate: { node: { actorCount: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -89,9 +99,13 @@ describe("Cypher Aggregations Float", () => {
     test("Average", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    actorCount {
-                        average
+                moviesConnection {
+                    aggregate {
+                        node {
+                            actorCount {
+                                average
+                            }
+                        }
                     }
                 }
             }
@@ -100,12 +114,13 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { average: avg(this.actorCount) } AS var0
             }
-            RETURN { actorCount: var0 }"
+            RETURN { aggregate: { node: { actorCount: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -114,9 +129,13 @@ describe("Cypher Aggregations Float", () => {
     test("Sum", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    actorCount {
-                        sum
+                moviesConnection {
+                    aggregate {
+                        node {
+                            actorCount {
+                                sum
+                            }
+                        }
                     }
                 }
             }
@@ -125,12 +144,13 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { sum: sum(this.actorCount) } AS var0
             }
-            RETURN { actorCount: var0 }"
+            RETURN { aggregate: { node: { actorCount: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -139,12 +159,16 @@ describe("Cypher Aggregations Float", () => {
     test("Min, Max, Sum and Average", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    actorCount {
-                        min
-                        max
-                        average
-                        sum
+                moviesConnection {
+                    aggregate {
+                        node {
+                            actorCount {
+                                min
+                                max
+                                average
+                                sum
+                            }
+                        }
                     }
                 }
             }
@@ -153,12 +177,13 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } AS var0
             }
-            RETURN { actorCount: var0 }"
+            RETURN { aggregate: { node: { actorCount: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -167,13 +192,19 @@ describe("Cypher Aggregations Float", () => {
     test("Min, Max, Sum and Average with count", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    count
-                    actorCount {
-                        min
-                        max
-                        average
-                        sum
+                moviesConnection {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                        node {
+                            actorCount {
+                                min
+                                max
+                                average
+                                sum
+                            }
+                        }
                     }
                 }
             }
@@ -182,16 +213,17 @@ describe("Cypher Aggregations Float", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
-                RETURN count(this) AS var0
+                RETURN { nodes: count(DISTINCT this) } AS var0
             }
             CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } AS var1
             }
-            RETURN { count: var0, actorCount: var1 }"
+            RETURN { aggregate: { count: var0, node: { actorCount: var1 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

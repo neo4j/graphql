@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { generate } from "randomstring";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
@@ -32,11 +31,11 @@ describe("aggregations-where-count", () => {
 
         const typeDefs = /* GraphQL */ `
             type ${User} @node {
-                testString: String!
+                name: String!
             }
 
             type ${Post} @node {
-              testString: String!
+              title: String!
               likes: [${User}!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
@@ -48,449 +47,273 @@ describe("aggregations-where-count", () => {
     });
 
     test("should return posts where the count of likes equal one", async () => {
-        const testString = generate({
-            charset: "alphabetic",
-            readable: true,
-        });
+        const post1Title = "Post 1";
+        const post2Title = "Post 2";
+        const post3Title = "Post 3";
+        const post4Title = "Post 4";
+        const name1 = "User 1";
+        const name2 = "User 2";
+        const name3 = "User 3";
 
         await testHelper.executeCypher(
             `
-                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
-                    CREATE (:${Post} {testString: "${testString}"})
-                `
+                CREATE (u1:${User} {name: "${name1}"})
+                CREATE (u2:${User} {name: "${name2}"})
+                CREATE (u3:${User} {name: "${name3}"})
+                CREATE (:${Post} {title: "${post1Title}"})<-[:LIKES]-(u1)
+                CREATE (p:${Post} {title: "${post2Title}"})<-[:LIKES]-(u1)
+                CREATE (p)<-[:LIKES]-(u2)
+                CREATE (:${Post} {title: "${post3Title}"})
+                CREATE (:${Post} {title: "${post4Title}"})<-[:LIKES]-(u3)
+            `
         );
 
         const query = /* GraphQL */ `
-                {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { count_EQ: 1 } }) {
-                        testString
-                        likes {
-                            testString
-                        }
+            {
+                ${Post.plural}(where: { likesConnection: { aggregate: { count: { nodes: { eq: 1 } } } } }) {
+                    title
+                    likes {
+                        name
                     }
                 }
-            `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
-
-        expect(gqlResult.errors).toBeUndefined();
-
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString }],
-            },
-        ]);
-    });
-
-    test("should return posts where the count of likes LT one", async () => {
-        const testString = generate({
-            charset: "alphabetic",
-            readable: true,
-        });
-
-        await testHelper.executeCypher(
-            `
-                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
-                    CREATE (:${Post} {testString: "${testString}"})
-                `
-        );
-
-        const query = `
-                {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { count_LT: 1 } }) {
-                        testString
-                        likes {
-                            testString
-                        }
-                    }
-                }
-            `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
-
-        expect(gqlResult.errors).toBeUndefined();
-
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [],
-            },
-        ]);
-    });
-
-    test("should return posts where the count of likes LTE one", async () => {
-        const testString = generate({
-            charset: "alphabetic",
-            readable: true,
-        });
-
-        await testHelper.executeCypher(
-            `
-                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
-                    CREATE (:${Post} {testString: "${testString}"})
-                `
-        );
-
-        const query = `
-                {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { count_LTE: 1 } }) {
-                        testString
-                        likes {
-                            testString
-                        }
-                    }
-                }
-            `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
-
-        expect(gqlResult.errors).toBeUndefined();
-
-        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
-            {
-                testString,
-                likes: [{ testString }],
-            },
-            {
-                testString,
-                likes: [],
-            },
-        ]);
-    });
-
-    test("should return posts where the count of likes GT one, regardless of number of likes over 1", async () => {
-        const testString = generate({
-            charset: "alphabetic",
-            readable: true,
-        });
-
-        await testHelper.executeCypher(
-            `
-                    CREATE (p:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
-                    CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}"})
-                    CREATE (:${Post} {testString: "${testString}"})
-                `
-        );
-
-        const query = `
-                {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { count_GT: 1 } }) {
-                        testString
-                        likes {
-                            testString
-                        }
-                    }
-                }
-            `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
-
-        expect(gqlResult.errors).toBeUndefined();
-
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: expect.toIncludeSameMembers([{ testString }, { testString }]),
-            },
-        ]);
-    });
-
-    test("should return posts where the count of likes GT one", async () => {
-        const testString = generate({
-            charset: "alphabetic",
-            readable: true,
-        });
-
-        await testHelper.executeCypher(
-            `
-                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
-                    CREATE (:${Post} {testString: "${testString}"})
-                `
-        );
-
-        const query = `
-                {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { count_GTE: 1 } }) {
-                        testString
-                        likes {
-                            testString
-                        }
-                    }
-                }
-            `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
-
-        expect(gqlResult.errors).toBeUndefined();
-
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
-            {
-                testString,
-                likes: [{ testString }],
-            },
-        ]);
-    });
-});
-
-describe("aggregations-where-count  interface relationships of concrete types", () => {
-    let testHelper: TestHelper;
-    let User: UniqueType;
-    let Post: UniqueType;
-    let Person: UniqueType;
-
-    beforeEach(async () => {
-        testHelper = new TestHelper();
-        User = testHelper.createUniqueType("User");
-        Post = testHelper.createUniqueType("Post");
-        Person = testHelper.createUniqueType("Person");
-
-        const typeDefs = /* GraphQL */ `
-        interface Human {
-            testString: String!
-        }
-
-        type ${User} implements Human @node {
-            testString: String!
-        }
-
-        type ${Person} implements Human @node {
-            testString: String!
-        }
-
-            type ${Post} @node {
-              testString: String!
-              likes: [Human!]! @relationship(type: "LIKES", direction: IN)
             }
         `;
-        await testHelper.initNeo4jGraphQL({ typeDefs });
-    });
-
-    afterEach(async () => {
-        await testHelper.close();
-    });
-
-    test("should return posts where the count of likes equal one", async () => {
-        const testString = generate({
-            charset: "alphabetic",
-            readable: true,
-        });
-
-        await testHelper.executeCypher(
-            `
-                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
-                    CREATE (:${Post} {testString: "${testString}"})
-                `
-        );
-
-        const query = `
-                {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { count_EQ: 1 } }) {
-                        testString
-                        likes {
-                            testString
-                        }
-                    }
-                }
-            `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
-
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
+        expect((gqlResult.data as any)[Post.plural]).toHaveLength(2);
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
-                testString,
-                likes: [{ testString }],
+                title: post1Title,
+                likes: [{ name: name1 }],
+            },
+            {
+                title: post4Title,
+                likes: [{ name: name3 }],
             },
         ]);
     });
 
     test("should return posts where the count of likes LT one", async () => {
-        const testString = generate({
-            charset: "alphabetic",
-            readable: true,
-        });
+        const post1Title = "Post 1";
+        const post2Title = "Post 2";
+        const post3Title = "Post 3";
+        const post4Title = "Post 4";
+        const name1 = "User 1";
+        const name2 = "User 2";
 
         await testHelper.executeCypher(
             `
-                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
-                    CREATE (:${Post} {testString: "${testString}"})
-                `
+                CREATE (u1:${User} {name: "${name1}"})
+                CREATE (u2:${User} {name: "${name2}"})
+                CREATE (:${Post} {title: "${post1Title}"})
+                CREATE (:${Post} {title: "${post2Title}"})<-[:LIKES]-(u1)
+                CREATE (:${Post} {title: "${post3Title}"})
+                CREATE (p:${Post} {title: "${post4Title}"})<-[:LIKES]-(u1)
+                CREATE (p)<-[:LIKES]-(u2)
+            `
         );
 
-        const query = `
-                {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { count_LT: 1 } }) {
-                        testString
-                        likes {
-                            testString
-                        }
+        const query = /* GraphQL */ `
+            {
+                ${Post.plural}(where: { likesConnection: { aggregate: { count: { nodes: { lt: 1 } } } } }) {
+                    title
+                    likes {
+                        name
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
-
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
+        expect((gqlResult.data as any)[Post.plural]).toHaveLength(2);
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
-                testString,
+                title: post1Title,
+                likes: [],
+            },
+            {
+                title: post3Title,
                 likes: [],
             },
         ]);
     });
 
     test("should return posts where the count of likes LTE one", async () => {
-        const testString = generate({
-            charset: "alphabetic",
-            readable: true,
-        });
+        const post1Title = "Post 1";
+        const post2Title = "Post 2";
+        const post3Title = "Post 3";
+        const post4Title = "Post 4";
+        const name1 = "User 1";
+        const name2 = "User 2";
 
         await testHelper.executeCypher(
             `
-                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
-                    CREATE (:${Post} {testString: "${testString}"})
-                `
+                CREATE (u1:${User} {name: "${name1}"})
+                CREATE (u2:${User} {name: "${name2}"})
+                CREATE (:${Post} {title: "${post1Title}"})
+                CREATE (:${Post} {title: "${post2Title}"})<-[:LIKES]-(u1)
+                CREATE (p:${Post} {title: "${post3Title}"})<-[:LIKES]-(u1)
+                CREATE (p)<-[:LIKES]-(u2)
+                CREATE (:${Post} {title: "${post4Title}"})<-[:LIKES]-(u2)
+            `
         );
 
-        const query = `
-                {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { count_LTE: 1 } }) {
-                        testString
-                        likes {
-                            testString
-                        }
+        const query = /* GraphQL */ `
+            {
+                ${Post.plural}(where: {
+                    likesConnection: { 
+                        aggregate: { 
+                            count: { nodes: { lte: 1 } } 
+                        } 
+                    } 
+                }) {
+                    title
+                    likes {
+                        name
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
-
         expect(gqlResult.errors).toBeUndefined();
 
+        expect((gqlResult.data as any)[Post.plural]).toHaveLength(3);
         expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
-                testString,
-                likes: [{ testString }],
+                title: post1Title,
+                likes: [],
             },
             {
-                testString,
-                likes: [],
+                title: post2Title,
+                likes: [{ name: name1 }],
+            },
+            {
+                title: post4Title,
+                likes: [{ name: name2 }],
             },
         ]);
     });
 
     test("should return posts where the count of likes GT one, regardless of number of likes over 1", async () => {
-        const testString = generate({
-            charset: "alphabetic",
-            readable: true,
-        });
+        const post1Title = "Post 1";
+        const post2Title = "Post 2";
+        const post3Title = "Post 3";
+        const post4Title = "Post 4";
+        const name1 = "User 1";
+        const name2 = "User 2";
+        const name3 = "User 3";
 
         await testHelper.executeCypher(
             `
-                    CREATE (p:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
-                    CREATE (p)<-[:LIKES]-(:${User} {testString: "${testString}"})
-                    CREATE (:${Post} {testString: "${testString}"})
-                `
+                CREATE (u1:${User} {name: "${name1}"})
+                CREATE (u2:${User} {name: "${name2}"})
+                CREATE (u3:${User} {name: "${name3}"})
+                CREATE (p1:${Post} {title: "${post1Title}"})<-[:LIKES]-(u1)
+                CREATE (p1)<-[:LIKES]-(u2)
+                CREATE (p2:${Post} {title: "${post2Title}"})<-[:LIKES]-(u1)
+                CREATE (p2)<-[:LIKES]-(u2)
+                CREATE (p2)<-[:LIKES]-(u3)
+                CREATE (:${Post} {title: "${post3Title}"})<-[:LIKES]-(u1)
+                CREATE (:${Post} {title: "${post4Title}"})
+            `
         );
 
-        const query = `
-                {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { count_GT: 1 } }) {
-                        testString
-                        likes {
-                            testString
-                        }
+        const query = /* GraphQL */ `
+            {
+                ${Post.plural}(where: {
+                    likesConnection: { 
+                        aggregate: { 
+                            count: { nodes: { gt: 1 } } 
+                        } 
+                    } 
+                }) {
+                    title
+                    likes {
+                        name
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
-
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
+        expect((gqlResult.data as any)[Post.plural]).toHaveLength(2);
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
-                testString,
-                likes: expect.toIncludeSameMembers([{ testString }, { testString }]),
+                title: post1Title,
+                likes: expect.toIncludeSameMembers([{ name: name1 }, { name: name2 }]),
+            },
+            {
+                title: post2Title,
+                likes: expect.toIncludeSameMembers([{ name: name1 }, { name: name2 }, { name: name3 }]),
             },
         ]);
     });
 
     test("should return posts where the count of likes GT one", async () => {
-        const testString = generate({
-            charset: "alphabetic",
-            readable: true,
-        });
+        const post1Title = "Post 1";
+        const post2Title = "Post 2";
+        const post3Title = "Post 3";
+        const post4Title = "Post 4";
+        const name1 = "User 1";
+        const name2 = "User 2";
+        const name3 = "User 3";
 
         await testHelper.executeCypher(
             `
-                    CREATE (:${Post} {testString: "${testString}"})<-[:LIKES]-(:${User} {testString: "${testString}"})
-                    CREATE (:${Post} {testString: "${testString}"})
-                `
+                CREATE (u1:${User} {name: "${name1}"})
+                CREATE (u2:${User} {name: "${name2}"})
+                CREATE (u3:${User} {name: "${name3}"})
+                CREATE (:${Post} {title: "${post1Title}"})
+                CREATE (:${Post} {title: "${post2Title}"})<-[:LIKES]-(u1)
+                CREATE (p1:${Post} {title: "${post3Title}"})<-[:LIKES]-(u1)
+                CREATE (p1)<-[:LIKES]-(u2)
+                CREATE (p2:${Post} {title: "${post4Title}"})<-[:LIKES]-(u1)
+                CREATE (p2)<-[:LIKES]-(u2)
+                CREATE (p2)<-[:LIKES]-(u3)
+            `
         );
 
-        const query = `
-                {
-                    ${Post.plural}(where: { testString_EQ: "${testString}", likesAggregate: { count_GTE: 1 } }) {
-                        testString
-                        likes {
-                            testString
-                        }
+        const query = /* GraphQL */ `
+            {
+                ${Post.plural}(where: {
+                    likesConnection: { 
+                        aggregate: { 
+                            count: { nodes: { gt: 1 } } 
+                        } 
+                    } 
+                }) {
+                    title
+                    likes {
+                        name
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
 
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
-
         expect(gqlResult.errors).toBeUndefined();
 
-        expect((gqlResult.data as any)[Post.plural]).toEqual([
+        expect((gqlResult.data as any)[Post.plural]).toHaveLength(2);
+        expect((gqlResult.data as any)[Post.plural]).toIncludeSameMembers([
             {
-                testString,
-                likes: [{ testString }],
+                title: post3Title,
+                likes: expect.toIncludeSameMembers([{ name: name1 }, { name: name2 }]),
+            },
+            {
+                title: post4Title,
+                likes: expect.toIncludeSameMembers([{ name: name1 }, { name: name2 }, { name: name3 }]),
             },
         ]);
     });

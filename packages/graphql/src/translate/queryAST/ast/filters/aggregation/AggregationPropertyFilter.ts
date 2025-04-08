@@ -22,19 +22,15 @@ import type { AttributeAdapter } from "../../../../../schema-model/attribute/mod
 import { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { AggregationLogicalOperator, AggregationOperator } from "../../../factory/parsers/parse-where-field";
-import { hasTarget } from "../../../utils/context-has-target";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
-import { Filter } from "../Filter";
+import { AggregationFilter } from "./AggregationFilter";
 
-export class AggregationPropertyFilter extends Filter {
+export class AggregationPropertyFilter extends AggregationFilter {
     protected attribute: AttributeAdapter;
-    protected relationship: RelationshipAdapter | undefined;
     protected comparisonValue: unknown;
-
     protected logicalOperator: AggregationLogicalOperator;
     protected aggregationOperator: AggregationOperator | undefined;
-    protected attachedTo: "node" | "relationship";
 
     constructor({
         attribute,
@@ -42,22 +38,22 @@ export class AggregationPropertyFilter extends Filter {
         logicalOperator,
         comparisonValue,
         aggregationOperator,
-        attachedTo,
+        attachedTo = "node",
+        isDeprecated,
     }: {
         attribute: AttributeAdapter;
-        relationship?: RelationshipAdapter;
+        relationship: RelationshipAdapter;
         logicalOperator: AggregationLogicalOperator;
         comparisonValue: unknown;
         aggregationOperator: AggregationOperator | undefined;
         attachedTo?: "node" | "relationship";
+        isDeprecated?: boolean;
     }) {
-        super();
+        super(relationship, isDeprecated, attachedTo);
         this.attribute = attribute;
-        this.relationship = relationship;
         this.comparisonValue = comparisonValue;
         this.logicalOperator = logicalOperator;
         this.aggregationOperator = aggregationOperator;
-        this.attachedTo = attachedTo ?? "node";
     }
 
     public getChildren(): QueryASTNode[] {
@@ -72,7 +68,7 @@ export class AggregationPropertyFilter extends Filter {
         return this.getPropertyRef(queryASTContext);
     }
 
-    public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+    protected getSubqueryReturnVariable(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         const comparisonVar = new Cypher.Variable();
         const property = this.getPropertyRefOrAliasesCase(queryASTContext);
 
@@ -83,8 +79,8 @@ export class AggregationPropertyFilter extends Filter {
                 propertyExpr = Cypher.size(property);
             }
 
-            const aggrOperation = this.getAggregateOperation(propertyExpr, this.aggregationOperator);
-            return this.getOperation(aggrOperation);
+            const aggregateOperation = this.getAggregateOperation(propertyExpr, this.aggregationOperator);
+            return this.getOperation(aggregateOperation);
         } else {
             let listExpr: Cypher.Expr;
 
@@ -102,7 +98,7 @@ export class AggregationPropertyFilter extends Filter {
     protected getOperation(expr: Cypher.Expr): Cypher.ComparisonOp {
         return this.createBaseOperation({
             operator: this.logicalOperator,
-            property: expr,
+            expr,
             param: new Cypher.Param(this.comparisonValue),
         });
     }
@@ -124,7 +120,9 @@ export class AggregationPropertyFilter extends Filter {
         queryASTContext: QueryASTContext,
         concreteLabelsToAttributeAlias: [string[], string][]
     ): Cypher.Case {
-        if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
+        if (!queryASTContext.hasTarget()) {
+            throw new Error("No parent node found!");
+        }
         const aliasesCase = new Cypher.Case();
         for (const [labels, databaseName] of concreteLabelsToAttributeAlias) {
             aliasesCase
@@ -137,13 +135,14 @@ export class AggregationPropertyFilter extends Filter {
 
     private getPropertyRef(queryASTContext: QueryASTContext): Cypher.Property {
         if (this.attachedTo === "node") {
-            if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
+            if (!queryASTContext.hasTarget()) {
+                throw new Error("No parent node found!");
+            }
             return queryASTContext.target.property(this.attribute.databaseName);
         } else if (this.attachedTo === "relationship" && queryASTContext.relationship) {
             return queryASTContext.relationship.property(this.attribute.databaseName);
-        } else {
-            throw new Error("Transpilation error, relationship on filter not available");
         }
+        throw new Error("Transpilation error, relationship on filter not available");
     }
 
     private getAggregateOperation(
@@ -163,32 +162,6 @@ export class AggregationPropertyFilter extends Filter {
                 return Cypher.sum(property);
             default:
                 throw new Error(`Invalid operator ${aggregationOperator}`);
-        }
-    }
-
-    /** Returns the default operation for a given filter */
-    protected createBaseOperation({
-        operator,
-        property,
-        param,
-    }: {
-        operator: AggregationLogicalOperator;
-        property: Cypher.Expr;
-        param: Cypher.Expr;
-    }): Cypher.ComparisonOp {
-        switch (operator) {
-            case "LT":
-                return Cypher.lt(property, param);
-            case "LTE":
-                return Cypher.lte(property, param);
-            case "GT":
-                return Cypher.gt(property, param);
-            case "GTE":
-                return Cypher.gte(property, param);
-            case "EQUAL":
-                return Cypher.eq(property, param);
-            default:
-                throw new Error(`Invalid operator ${operator}`);
         }
     }
 }

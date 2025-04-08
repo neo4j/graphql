@@ -20,119 +20,6 @@
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
-describe("https://github.com/neo4j/graphql/issues/5887", () => {
-    let Base: UniqueType;
-    let A: UniqueType;
-    let B: UniqueType;
-    let Test: UniqueType;
-
-    const testHelper = new TestHelper();
-
-    beforeEach(async () => {
-        Base = testHelper.createUniqueType("Base");
-        A = testHelper.createUniqueType("A");
-        B = testHelper.createUniqueType("B");
-        Test = testHelper.createUniqueType("Test");
-
-        const typeDefs = /* GraphQL */ `
-            interface ${Base} {
-                id: ID!
-            }
-
-            type ${A} implements ${Base} @node {
-                id: ID!
-            }
-
-            type ${B} implements ${Base} @node {
-                id: ID!
-            }
-
-            type ${Test} {
-                base: ${Base}! @relationship(type: "HAS", direction: OUT)
-            }
-        `;
-
-        await testHelper.initNeo4jGraphQL({
-            typeDefs,
-        });
-
-        await testHelper.executeCypher(`
-            CREATE (:${Test})-[:HAS]->(:${A} {id: "1"})
-            CREATE (:${Test})-[:HAS]->(:${B} {id: "2"})
-        `);
-    });
-
-    afterEach(async () => {
-        await testHelper.close();
-    });
-
-    test("should return relationship when first interface matches", async () => {
-        const query = /* GraphQL */ `
-            query {
-                ${Test.plural}(where: { base: { id: "1" } }) {
-                    base {
-                        id
-                    }
-                }
-            }
-        `;
-
-        const result = await testHelper.executeGraphQL(query);
-        expect(result.errors).toBeUndefined();
-        expect(result.data).toEqual({
-            [Test.plural]: [
-                {
-                    base: {
-                        id: "1",
-                    },
-                },
-            ],
-        });
-    });
-
-    test("should return relationship when second interface matches", async () => {
-        const query = /* GraphQL */ `
-            query {
-                ${Test.plural}(where: { base: { id: "2" } }) {
-                    base {
-                        id
-                    }
-                }
-            }
-        `;
-
-        const result = await testHelper.executeGraphQL(query);
-        expect(result.errors).toBeUndefined();
-        expect(result.data).toEqual({
-            [Test.plural]: [
-                {
-                    base: {
-                        id: "2",
-                    },
-                },
-            ],
-        });
-    });
-
-    test("should not return relationship when no interface match", async () => {
-        const query = /* GraphQL */ `
-            query {
-                ${Test.plural}(where: { base: { id: "x" } }) {
-                    base {
-                        id
-                    }
-                }
-            }
-        `;
-
-        const result = await testHelper.executeGraphQL(query);
-        expect(result.errors).toBeUndefined();
-        expect(result.data).toEqual({
-            [Test.plural]: [],
-        });
-    });
-});
-
 describe("https://github.com/neo4j/graphql/issues/5887 list relationship", () => {
     let House: UniqueType;
     let Animal: UniqueType;
@@ -148,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/5887 list relationship", () =>
         Dog = testHelper.createUniqueType("Dog");
 
         const typeDefs = /* GraphQL */ `
-            type ${House} {
+            type ${House} @node {
                 address: String!
                 animals: [${Animal}!]! @relationship(type: "LIVES_IN", direction: IN)
             }

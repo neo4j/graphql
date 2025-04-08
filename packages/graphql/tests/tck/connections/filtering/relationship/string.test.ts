@@ -76,7 +76,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -101,12 +102,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         `);
     });
 
-    test("STARTS_WITH", async () => {
+    test("startsWith", async () => {
         const query = /* GraphQL */ `
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { role_STARTS_WITH: "Forrest" } }) {
+                    actorsConnection(where: { edge: { role: { startsWith: "Forrest" } } }) {
                         edges {
                             properties {
                                 role
@@ -123,7 +124,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -148,14 +150,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         `);
     });
 
-   
-
-    test("ENDS_WITH", async () => {
+    test("endsWith", async () => {
         const query = /* GraphQL */ `
             query {
                 movies {
                     title
-                    actorsConnection(where: { edge: { role_ENDS_WITH: "Gump" } }) {
+                    actorsConnection(where: { edge: { role: { endsWith: "Gump" } } }) {
                         edges {
                             properties {
                                 role
@@ -172,7 +172,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -219,7 +220,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)

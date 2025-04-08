@@ -34,7 +34,7 @@ describe("cypher directive filtering - List Auth", () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node @authorization(filter: [{ where: { node: { custom_field_INCLUDES: "$jwt.custom_value" } } }]) {
                 title: String
-                custom_field: [String]
+                custom_field: [String!]
                     @cypher(
                         statement: """
                         MATCH (this)
@@ -187,7 +187,7 @@ describe("cypher directive filtering - List Auth", () => {
                         """
                         columnName: "list"
                     )
-                    @authorization(filter: [{ where: { node: { custom_field: "$jwt.custom_value" } } }])
+                    @authorization(filter: [{ where: { node: { custom_field_EQ: "$jwt.custom_value" } } }])
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 

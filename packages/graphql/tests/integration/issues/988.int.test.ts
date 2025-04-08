@@ -67,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
 
     test("should query nested connection", async () => {
         const query = /* GraphQL */ `
-            query getSeriesWithRelationFilters($where: ${seriesType.name}Where = { current: true }) {
+            query getSeriesWithRelationFilters($where: ${seriesType.name}Where = { current_EQ: true }) {
                 ${seriesType.plural}(where: $where) {
                     name
                     current

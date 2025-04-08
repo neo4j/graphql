@@ -149,7 +149,7 @@ describe("sort", () => {
                             query ($movieIds: [ID!]!, $direction: SortDirection!) {
                                 ${movieType.plural}(
                                     where: { id_IN: $movieIds },
-                                    options: { sort: [{ title: $direction }] }
+                                    sort: [{ title: $direction }]
                                 ) {
                                     id
                                     title
@@ -186,7 +186,7 @@ describe("sort", () => {
                             query ($movieIds: [ID!]!, $direction: SortDirection!) {
                                 ${movieType.plural}(
                                     where: { id_IN: $movieIds },
-                                    options: { sort: [{ title: $direction }] }
+                                    sort: [{ title: $direction }]
                                 ) {
                                     id
                                     aliased: title
@@ -223,7 +223,7 @@ describe("sort", () => {
                         query ($movieIds: [ID!]!, $direction: SortDirection!) {
                             ${movieType.plural}(
                                 where: { id_IN: $movieIds },
-                                options: { sort: [{ title: $direction }] }
+                                sort: [{ title: $direction }]
                             ) {
                                 id
                             }
@@ -266,7 +266,7 @@ describe("sort", () => {
                             query ($movieIds: [ID!]!, $direction: SortDirection!) {
                                 ${movieType.plural}(
                                     where: { id_IN: $movieIds },
-                                    options: { sort: [{ numberOfActors: $direction }] }
+                                    sort: [{ numberOfActors: $direction }]
                                 ) {
                                     id
                                     numberOfActors
@@ -310,7 +310,7 @@ describe("sort", () => {
                             query ($movieIds: [ID!]!, $direction: SortDirection!) {
                                 ${movieType.plural}(
                                     where: { id_IN: $movieIds },
-                                    options: { sort: [{ numberOfActors: $direction }] }
+                                    sort: [{ numberOfActors: $direction }]
                                 ) {
                                     id
                                     aliased: numberOfActors
@@ -355,7 +355,7 @@ describe("sort", () => {
                         query ($movieIds: [ID!]!, $direction: SortDirection!) {
                             ${movieType.plural}(
                                 where: { id_IN: $movieIds },
-                                options: { sort: [{ numberOfActors: $direction }] }
+                                sort: [{ numberOfActors: $direction }]
                             ) {
                                 id
                             }
@@ -395,7 +395,7 @@ describe("sort", () => {
                         query ($movieIds: [ID!]!, $direction: SortDirection!) {
                             ${movieType.plural}(
                                 where: { id_IN: $movieIds },
-                                options: { sort: [{ numberOfActors: $direction, id: $direction }] }
+                                sort: [{ numberOfActors: $direction, id: $direction }]
                             ) {
                                 id
                             }
@@ -437,7 +437,7 @@ describe("sort", () => {
                                 query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
                                     ${movieType.plural}(where: { id_EQ: $movieId }) {
                                         id
-                                        actors(where: { id_IN: $actorIds }, options: { sort: [{ name: $direction }] }) {
+                                        actors(where: { id_IN: $actorIds }, sort: [{ name: $direction }]) {
                                             id
                                             name
                                         }
@@ -481,7 +481,7 @@ describe("sort", () => {
                                 query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
                                     ${movieType.plural}(where: { id_EQ: $movieId }) {
                                         id
-                                        actors(where: { id_IN: $actorIds }, options: { sort: [{ name: $direction }] }) {
+                                        actors(where: { id_IN: $actorIds }, sort: [{ name: $direction }]) {
                                             id
                                             aliased: name
                                         }
@@ -525,7 +525,7 @@ describe("sort", () => {
                                 query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
                                     ${movieType.plural}(where: { id_EQ: $movieId }) {
                                         id
-                                        actors(where: { id_IN: $actorIds }, options: { sort: [{ name: $direction }] }) {
+                                        actors(where: { id_IN: $actorIds }, sort: [{ name: $direction }]) {
                                             id
                                         }
                                     }
@@ -571,7 +571,7 @@ describe("sort", () => {
                     query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
                         ${movieType.plural}(where: { id_EQ: $movieId }) {
                             id
-                            actors(where: { id_IN: $actorIds }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                            actors(where: { id_IN: $actorIds }, sort: [{ totalScreenTime: $direction }]) {
                                 id
                                 totalScreenTime
                             }
@@ -619,7 +619,7 @@ describe("sort", () => {
                     query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
                         ${movieType.plural}(where: { id_EQ: $movieId }) {
                             id
-                            actors(where: { id_IN: $actorIds }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                            actors(where: { id_IN: $actorIds }, sort: [{ totalScreenTime: $direction }]) {
                                 id
                                 aliased: totalScreenTime
                             }
@@ -666,7 +666,7 @@ describe("sort", () => {
                     query($movieId: ID!, $actorIds: [ID!]!, $direction: SortDirection!) {
                         ${movieType.plural}(where: { id_EQ: $movieId }) {
                             id
-                            actors(where: { id_IN: $actorIds }, options: { sort: [{ totalScreenTime: $direction }] }) {
+                            actors(where: { id_IN: $actorIds }, sort: [{ totalScreenTime: $direction }]) {
                                 id
                             }
                         }
@@ -712,7 +712,7 @@ describe("sort", () => {
             const query = `
                 query {
                     ${movieType.plural} {
-                        actors(options: { limit: 1, offset: 1, sort: { name: ASC } }) {
+                        actors(limit: 1, offset: 1, sort: { name: ASC }) {
                             name
                         }
                     }
@@ -739,7 +739,7 @@ describe("sort", () => {
                         query ($actorId: ID!, $direction: SortDirection!) {
                             ${actorType.plural}(where: { id_EQ: $actorId }) {
                                 id
-                                actedIn(options: { sort: [{ title: $direction }] }) {
+                                actedIn(sort: [{ title: $direction }]) {
                                     id
                                     title
                                 }
@@ -785,7 +785,7 @@ describe("sort", () => {
                     query ($actorId: ID!, $direction: SortDirection!) {
                         ${actorType.plural}(where: { id_EQ: $actorId }) {
                             id
-                            actedIn(options: { sort: [{ title: $direction }] }) {
+                            actedIn(sort: [{ title: $direction }]) {
                                 id
                                 aliased: title
                             }
@@ -831,7 +831,7 @@ describe("sort", () => {
                     query ($actorId: ID!, $direction: SortDirection!) {
                         ${actorType.plural}(where: { id_EQ: $actorId }) {
                             id
-                            actedIn(options: { sort: [{ title: $direction }] }) {
+                            actedIn(sort: [{ title: $direction }]) {
                                 id
                             }
                         }

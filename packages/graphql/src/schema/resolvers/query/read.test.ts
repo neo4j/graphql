@@ -35,22 +35,11 @@ describe("Read resolver", () => {
         });
         const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
-        const result = findResolver({ entityAdapter: concreteEntityAdapter, composer: new SchemaComposer() });
+        const result = findResolver({ entityAdapter: concreteEntityAdapter, composer: new SchemaComposer(), isLimitRequired: undefined });
         expect(result.type).toBe(`[Movie!]!`);
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
             where: `MovieWhere`,
-            options: {
-                directives: [
-                    {
-                        args: {
-                            reason: "Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.",
-                        },
-                        name: "deprecated",
-                    },
-                ],
-                type: "MovieOptions",
-            },
         });
     });
 });

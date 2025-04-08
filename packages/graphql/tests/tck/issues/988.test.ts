@@ -56,7 +56,7 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
 
     test("where with multiple filters and params", async () => {
         const query = /* GraphQL */ `
-            query getSeriesWithRelationFilters($where: SeriesWhere = { current: true }) {
+            query getSeriesWithRelationFilters($where: SeriesWhere = { current: { eq: true } }) {
                 series(where: $where) {
                     name
                     current
@@ -87,27 +87,31 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         const result = await translateQuery(neoSchema, query, {
             variableValues: {
                 where: {
-                    current_EQ: true,
+                    current: { eq: true },
                     AND: [
                         {
                             OR: [
                                 {
-                                    manufacturerConnection_SOME: {
-                                        edge: {
-                                            current_EQ: true,
-                                        },
-                                        node: {
-                                            name_EQ: "C",
+                                    manufacturerConnection: {
+                                        some: {
+                                            edge: {
+                                                current: { eq: true },
+                                            },
+                                            node: {
+                                                name: { eq: "C" },
+                                            },
                                         },
                                     },
                                 },
                                 {
-                                    manufacturerConnection_SOME: {
-                                        edge: {
-                                            current_EQ: false,
-                                        },
-                                        node: {
-                                            name_EQ: "AM",
+                                    manufacturerConnection: {
+                                        some: {
+                                            edge: {
+                                                current: { eq: false },
+                                            },
+                                            node: {
+                                                name: { eq: "AM" },
+                                            },
                                         },
                                     },
                                 },
@@ -116,12 +120,14 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
                         {
                             OR: [
                                 {
-                                    brandConnection_SOME: {
-                                        edge: {
-                                            current_EQ: true,
-                                        },
-                                        node: {
-                                            name_EQ: "smart",
+                                    brandConnection: {
+                                        some: {
+                                            edge: {
+                                                current: { eq: true },
+                                            },
+                                            node: {
+                                                name: { eq: "smart" },
+                                            },
                                         },
                                     },
                                 },
@@ -133,7 +139,8 @@ describe("https://github.com/neo4j/graphql/issues/988", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Series)
+            "CYPHER 5
+            MATCH (this:Series)
             WHERE (this.current = $param0 AND ((EXISTS {
                 MATCH (this)-[this0:MANUFACTURER]->(this1:Manufacturer)
                 WHERE (this1.name = $param1 AND this0.current = $param2)

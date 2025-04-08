@@ -23,61 +23,48 @@ import type { InterfaceEntityAdapter } from "../schema-model/entity/model-adapte
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 
-export const DEPRECATE_IMPLICIT_EQUAL_FILTERS = {
-    name: DEPRECATED,
-    args: {
-        reason: "Please use the explicit _EQ version",
-    },
-};
+// TODO: Add constant deprecations here
 
-export const DEPRECATE_OPTIONS_ARGUMENT = {
-    name: DEPRECATED,
-    args: {
-        reason: "Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.",
-    },
-};
+export function DEPRECATE_SET_MUTATION(name: string) {
+    return {
+        name: DEPRECATED,
+        args: {
+            reason: `Please use the generic mutation '${name}: { set: ... } }' instead.`,
+        },
+    };
+}
 
-export const DEPRECATE_DIRECTED_ARGUMENT = {
-    name: DEPRECATED,
-    args: {
-        reason: "The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server",
-    },
-};
+export function DEPRECATE_ARRAY_MUTATIONS(name: string, operation: "push" | "pop") {
+    return {
+        name: DEPRECATED,
+        args: {
+            reason: `Please use the generic mutation '${name}: { ${operation}: ... } }' instead.`,
+        },
+    };
+}
 
-export const DEPRECATE_IMPLICIT_SET = {
-    name: DEPRECATED,
-    args: {
-        reason: "Please use the explicit _SET field",
-    },
-};
+export function DEPRECATE_MATH_MUTATIONS(name: string, operation: string) {
+    return {
+        name: DEPRECATED,
+        args: {
+            reason: `Please use the relevant generic mutation '${name}: { ${operation}: ... } }' instead.`,
+        },
+    };
+}
 
-export const DEPRECATE_CONNECT_OR_CREATE = {
-    name: DEPRECATED,
-    args: {
-        reason: "The connectOrCreate operation is deprecated and will be removed",
-    },
-};
+export function DEPRECATE_AGGREGATION_FILTERS(name: string, aggregationOperation: string, operator: string) {
+    let newOperator = operator.toLowerCase();
+    if (newOperator === "equal") {
+        newOperator = "eq";
+    }
 
-export const DEPRECATE_OVERWRITE = {
-    name: DEPRECATED,
-    args: {
-        reason: "The overwrite argument is deprecated and will be removed",
-    },
-};
-
-export const DEPRECATE_ID_AGGREGATION = {
-    name: DEPRECATED,
-    args: {
-        reason: "aggregation of ID fields are deprecated and will be removed",
-    },
-};
-
-export const DEPRECATE_TYPENAME_IN = {
-    name: DEPRECATED,
-    args: {
-        reason: "The typename_IN filter is deprecated, please use the typename filter instead",
-    },
-};
+    return {
+        name: DEPRECATED,
+        args: {
+            reason: `Please use the relevant generic filter '${name}: { ${aggregationOperation}: { ${newOperator}: ... } } }' instead.`,
+        },
+    };
+}
 
 export function DEPRECATE_AGGREGATION(entity: ConcreteEntityAdapter | InterfaceEntityAdapter) {
     return {

@@ -377,7 +377,7 @@ describe("getRelationshipMeta", () => {
                         {
                             // @ts-ignore
                             name: { value: "queryDirection" },
-                            value: { kind: Kind.ENUM, value: "DEFAULT_UNDIRECTED" },
+                            value: { kind: Kind.ENUM, value: "UNDIRECTED" },
                         },
                     ],
                 },
@@ -389,7 +389,7 @@ describe("getRelationshipMeta", () => {
         expect(result).toMatchObject({
             type: "ACTED_IN",
             direction: "IN",
-            queryDirection: "DEFAULT_UNDIRECTED",
+            queryDirection: "UNDIRECTED",
         });
     });
 
@@ -592,7 +592,7 @@ describe("getRelationshipMeta", () => {
                         {
                             // @ts-ignore
                             name: { value: "queryDirection" },
-                            value: { kind: Kind.ENUM, value: "DEFAULT_UNDIRECTED" },
+                            value: { kind: Kind.ENUM, value: "UNDIRECTED" },
                         },
                         {
                             // @ts-ignore
@@ -622,7 +622,7 @@ describe("getRelationshipMeta", () => {
             type: "ACTED_IN",
             direction: "IN",
             properties: "ActedIn",
-            queryDirection: "DEFAULT_UNDIRECTED",
+            queryDirection: "UNDIRECTED",
             nestedOperations: ["CONNECT", "CREATE"],
         });
     });

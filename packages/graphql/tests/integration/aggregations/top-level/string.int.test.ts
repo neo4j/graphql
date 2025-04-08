@@ -42,7 +42,7 @@ describe("aggregations-top_level-string", () => {
     });
 
     test("should return the shortest of node properties", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${typeMovie} @node {
                 testId: ID
                 title: String
@@ -62,31 +62,28 @@ describe("aggregations-top_level-string", () => {
                     CREATE (:${typeMovie} {testId: $id, title: "${titles[1]}"})
                     CREATE (:${typeMovie} {testId: $id, title: "${titles[2]}"})
                     CREATE (:${typeMovie} {testId: $id, title: "${titles[3]}"})
+                    CREATE (:${typeMovie} {testId: "different-id", title: "${titles[4]}"})
                 `,
             {
                 id,
             }
         );
 
-        const query = `
-                {
-                    ${typeMovie.operations.connection}(where: {testId_EQ: "${id}"}) {
+        const query = /* GraphQL */ `
+            {
+                ${typeMovie.operations.connection}(where: { testId: { eq: "${id}" } }) {
                     aggregate {
                         node {    
-                    title {
-                            shortest
-                        }
+                            title {
+                                shortest
                             }
                         }
-                       }
+                    }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -104,7 +101,7 @@ describe("aggregations-top_level-string", () => {
     });
 
     test("should return the longest of node properties", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${typeMovie} @node {
                 testId: ID
                 title: String
@@ -124,31 +121,28 @@ describe("aggregations-top_level-string", () => {
                 CREATE (:${typeMovie} {testId: $id, title: "${titles[1]}"})
                 CREATE (:${typeMovie} {testId: $id, title: "${titles[2]}"})
                 CREATE (:${typeMovie} {testId: $id, title: "${titles[3]}"})
+                CREATE (:${typeMovie} {testId: "different-id", title: "${titles[4]}"})
             `,
             {
                 id,
             }
         );
 
-        const query = `
-                {
-                    ${typeMovie.operations.connection}(where: {testId_EQ: "${id}"}) {
+        const query = /* GraphQL */ `
+            {
+                ${typeMovie.operations.connection}(where: { testId: { eq: "${id}" } }) {
                     aggregate {
                         node {    
-                    title {
-                            longest
-                        }
+                            title {
+                                longest
                             }
                         }
-                       }
+                    }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
 
         expect(gqlResult.errors).toBeUndefined();
 
@@ -166,7 +160,7 @@ describe("aggregations-top_level-string", () => {
     });
 
     test("should return the shortest and longest of node properties", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${typeMovie} @node {
                 testId: ID
                 title: String
@@ -186,32 +180,29 @@ describe("aggregations-top_level-string", () => {
                     CREATE (:${typeMovie} {testId: $id, title: "${titles[1]}"})
                     CREATE (:${typeMovie} {testId: $id, title: "${titles[2]}"})
                     CREATE (:${typeMovie} {testId: $id, title: "${titles[3]}"})
+                    CREATE (:${typeMovie} {testId: "different-id", title: "${titles[4]}"})
                 `,
             {
                 id,
             }
         );
 
-        const query = `
-                {
-                    ${typeMovie.operations.connection}(where: {testId_EQ: "${id}"}) {
+        const query = /* GraphQL */ `
+            {
+                ${typeMovie.operations.connection}(where: { testId: { eq: "${id}" } }) {
                     aggregate {
                         node {    
-                    title {
-                            shortest
-                            longest
+                            title {
+                                shortest
+                                longest
                             }
-                            }
-                       }
+                        }
                     }
                 }
-            `;
+            }
+        `;
 
         const gqlResult = await testHelper.executeGraphQL(query);
-
-        if (gqlResult.errors) {
-            console.log(JSON.stringify(gqlResult.errors, null, 2));
-        }
 
         expect(gqlResult.errors).toBeUndefined();
 

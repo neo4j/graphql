@@ -33,16 +33,14 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
 
             type Series implements Product @node {
                 productTitle: String!
-                releatsTo: [Product!]!
-                    @relationship(type: "RELATES_TO", direction: OUT, queryDirection: DEFAULT_UNDIRECTED)
+                releatsTo: [Product!]! @relationship(type: "RELATES_TO", direction: OUT, queryDirection: UNDIRECTED)
 
                 seasons: [Season!]!
             }
 
             type Season implements Product @node {
                 productTitle: String!
-                releatsTo: [Product!]!
-                    @relationship(type: "RELATES_TO", direction: OUT, queryDirection: DEFAULT_UNDIRECTED)
+                releatsTo: [Product!]! @relationship(type: "RELATES_TO", direction: OUT, queryDirection: UNDIRECTED)
 
                 seasonNumber: Int
                 episodes: [ProgrammeItem!]!
@@ -50,8 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
 
             type ProgrammeItem implements Product @node {
                 productTitle: String!
-                releatsTo: [Product!]!
-                    @relationship(type: "RELATES_TO", direction: OUT, queryDirection: DEFAULT_UNDIRECTED)
+                releatsTo: [Product!]! @relationship(type: "RELATES_TO", direction: OUT, queryDirection: UNDIRECTED)
 
                 episodeNumber: Int
             }
@@ -79,7 +76,8 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:ProgrammeItem)
+            "CYPHER 5
+            MATCH (this:ProgrammeItem)
             CALL {
                 WITH this
                 CALL {
@@ -135,7 +133,8 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:ProgrammeItem)
+            "CYPHER 5
+            MATCH (this:ProgrammeItem)
             CALL {
                 WITH this
                 CALL {

@@ -101,7 +101,8 @@ describe("Subscriptions metadata on create", () => {
         );
         // TODO: make a test with rel type as union/ interface
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -205,7 +206,8 @@ describe("Subscriptions metadata on create", () => {
         );
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -325,7 +327,8 @@ describe("Subscriptions metadata on create", () => {
         );
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -480,7 +483,8 @@ describe("Subscriptions metadata on create", () => {
         );
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
             WITH *
@@ -619,7 +623,8 @@ describe("Subscriptions metadata on create", () => {
         );
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
             WITH *
@@ -654,6 +659,7 @@ describe("Subscriptions metadata on create", () => {
                         CALL {
                             WITH create_this4
                             MATCH (create_this4)-[create_this5:ACTED_IN]->(create_this6:Movie)
+                            WITH DISTINCT create_this6
                             WITH create_this6 { .title } AS create_this6
                             RETURN collect(create_this6) AS create_var7
                         }
@@ -704,7 +710,8 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -740,7 +747,8 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -782,7 +790,8 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -803,6 +812,7 @@ describe("Subscriptions metadata on create", () => {
             CALL {
                 WITH create_this1
                 MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
+                WITH DISTINCT create_this7
                 WITH create_this7 { .name } AS create_this7
                 RETURN collect(create_this7) AS create_var8
             }
@@ -853,7 +863,8 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -884,6 +895,7 @@ describe("Subscriptions metadata on create", () => {
             CALL {
                 WITH create_this1
                 MATCH (create_this1)<-[create_this10:ACTED_IN]-(create_this11:Actor)
+                WITH DISTINCT create_this11
                 WITH create_this11 { .name } AS create_this11
                 RETURN collect(create_this11) AS create_var12
             }
@@ -960,7 +972,8 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -1001,12 +1014,15 @@ describe("Subscriptions metadata on create", () => {
             CALL {
                 WITH create_this1
                 MATCH (create_this1)<-[create_this14:ACTED_IN]-(create_this15:Actor)
+                WITH DISTINCT create_this15
                 CALL {
                     WITH create_this15
                     MATCH (create_this15)-[create_this16:ACTED_IN]->(create_this17:Movie)
+                    WITH DISTINCT create_this17
                     CALL {
                         WITH create_this17
                         MATCH (create_this17)<-[create_this18:ACTED_IN]-(create_this19:Actor)
+                        WITH DISTINCT create_this19
                         WITH create_this19 { .name } AS create_this19
                         RETURN collect(create_this19) AS create_var20
                     }
@@ -1082,7 +1098,8 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -1177,7 +1194,8 @@ describe("Subscriptions metadata on create", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)

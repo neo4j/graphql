@@ -27,14 +27,14 @@ describe("Connection with interfaces", () => {
         const typeDefs = gql`
             type Movie implements Production @subscription(events: []) @node {
                 title: String!
-                id: ID @unique
+                id: ID
                 director: [Creature!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Series implements Production @node {
                 title: String!
                 episode: Int!
-                id: ID @unique
+                id: ID
                 director: [Creature!]! @relationship(type: "DIRECTED", direction: IN)
             }
 
@@ -45,12 +45,12 @@ describe("Connection with interfaces", () => {
 
             type Person implements Creature @node {
                 id: ID
-                movies: Production! @relationship(type: "DIRECTED", direction: OUT)
+                movies: [Production!]! @relationship(type: "DIRECTED", direction: OUT)
             }
 
             interface Creature {
                 id: ID
-                movies: Production! @declareRelationship
+                movies: [Production!]! @declareRelationship
             }
         `;
         const neoSchema = new Neo4jGraphQL({ typeDefs });
@@ -60,6 +60,11 @@ describe("Connection with interfaces", () => {
             "schema {
               query: Query
               mutation: Mutation
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
             }
 
             type Count {
@@ -91,26 +96,16 @@ describe("Connection with interfaces", () => {
 
             interface Creature {
               id: ID
-              movies(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): Production!
+              movies(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
 
             type CreatureAggregate {
               count: Count!
-              node: CreatureAggregateNode!
-            }
-
-            type CreatureAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type CreatureAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input CreatureConnectInput {
-              movies: CreatureMoviesConnectFieldInput
+              movies: [CreatureMoviesConnectFieldInput!]
             }
 
             input CreatureConnectWhere {
@@ -122,11 +117,11 @@ describe("Connection with interfaces", () => {
             }
 
             input CreatureDeleteInput {
-              movies: CreatureMoviesDeleteFieldInput
+              movies: [CreatureMoviesDeleteFieldInput!]
             }
 
             input CreatureDisconnectInput {
-              movies: CreatureMoviesDisconnectFieldInput
+              movies: [CreatureMoviesDisconnectFieldInput!]
             }
 
             type CreatureEdge {
@@ -142,13 +137,12 @@ describe("Connection with interfaces", () => {
               AND: [CreatureMoviesAggregateInput!]
               NOT: CreatureMoviesAggregateInput
               OR: [CreatureMoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: CreatureMoviesNodeAggregationWhereInput
             }
 
             input CreatureMoviesConnectFieldInput {
@@ -160,6 +154,36 @@ describe("Connection with interfaces", () => {
               edges: [CreatureMoviesRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input CreatureMoviesConnectionAggregateInput {
+              AND: [CreatureMoviesConnectionAggregateInput!]
+              NOT: CreatureMoviesConnectionAggregateInput
+              OR: [CreatureMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
+            input CreatureMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter Creatures by aggregating results on related CreatureMoviesConnections
+              \\"\\"\\"
+              aggregate: CreatureMoviesConnectionAggregateInput
+              \\"\\"\\"
+              Return Creatures where all of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              all: CreatureMoviesConnectionWhere
+              \\"\\"\\"
+              Return Creatures where none of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              none: CreatureMoviesConnectionWhere
+              \\"\\"\\"
+              Return Creatures where one of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              single: CreatureMoviesConnectionWhere
+              \\"\\"\\"
+              Return Creatures where some of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              some: CreatureMoviesConnectionWhere
             }
 
             input CreatureMoviesConnectionSort {
@@ -187,22 +211,6 @@ describe("Connection with interfaces", () => {
               where: CreatureMoviesConnectionWhere
             }
 
-            input CreatureMoviesNodeAggregationWhereInput {
-              AND: [CreatureMoviesNodeAggregationWhereInput!]
-              NOT: CreatureMoviesNodeAggregationWhereInput
-              OR: [CreatureMoviesNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
             type CreatureMoviesRelationship {
               cursor: String!
               node: Production!
@@ -214,21 +222,22 @@ describe("Connection with interfaces", () => {
             }
 
             input CreatureMoviesUpdateFieldInput {
-              connect: CreatureMoviesConnectFieldInput
-              create: CreatureMoviesCreateFieldInput
-              delete: CreatureMoviesDeleteFieldInput
-              disconnect: CreatureMoviesDisconnectFieldInput
+              connect: [CreatureMoviesConnectFieldInput!]
+              create: [CreatureMoviesCreateFieldInput!]
+              delete: [CreatureMoviesDeleteFieldInput!]
+              disconnect: [CreatureMoviesDisconnectFieldInput!]
               update: CreatureMoviesUpdateConnectionInput
-              where: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"CreatureMoviesUpdateConnectionInput\\\\\\" instead\\")
             }
 
-            input CreatureOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more CreatureSort objects to sort Creatures by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [CreatureSort!]
+            input CreatureRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Creatures match this filter\\"\\"\\"
+              all: CreatureWhere
+              \\"\\"\\"Filter type where none of the related Creatures match this filter\\"\\"\\"
+              none: CreatureWhere
+              \\"\\"\\"Filter type where one of the related Creatures match this filter\\"\\"\\"
+              single: CreatureWhere
+              \\"\\"\\"Filter type where some of the related Creatures match this filter\\"\\"\\"
+              some: CreatureWhere
             }
 
             \\"\\"\\"
@@ -239,26 +248,57 @@ describe("Connection with interfaces", () => {
             }
 
             input CreatureUpdateInput {
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              movies: CreatureMoviesUpdateFieldInput
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              movies: [CreatureMoviesUpdateFieldInput!]
             }
 
             input CreatureWhere {
               AND: [CreatureWhere!]
               NOT: CreatureWhere
               OR: [CreatureWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              movies: ProductionWhere
-              moviesAggregate: CreatureMoviesAggregateInput
-              moviesConnection: CreatureMoviesConnectionWhere
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              movies: ProductionRelationshipFilters
+              moviesAggregate: CreatureMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
+              moviesConnection: CreatureMoviesConnectionFilters
+              \\"\\"\\"
+              Return Creatures where all of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_ALL: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return Creatures where none of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_NONE: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return Creatures where one of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_SINGLE: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return Creatures where some of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_SOME: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return Creatures where all of the related Productions match this filter
+              \\"\\"\\"
+              movies_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
+              \\"\\"\\"
+              Return Creatures where none of the related Productions match this filter
+              \\"\\"\\"
+              movies_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
+              \\"\\"\\"
+              Return Creatures where one of the related Productions match this filter
+              \\"\\"\\"
+              movies_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
+              \\"\\"\\"
+              Return Creatures where some of the related Productions match this filter
+              \\"\\"\\"
+              movies_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
               typename: [CreatureImplementation!]
-              typename_IN: [CreatureImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
             }
 
             type CreaturesConnection {
@@ -276,9 +316,18 @@ describe("Connection with interfaces", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type IntAggregateSelection {
@@ -288,10 +337,26 @@ describe("Connection with interfaces", () => {
               sum: Int
             }
 
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
+            }
+
             type Movie implements Production {
-              director(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
-              directorAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: CreatureWhere): MovieCreatureDirectorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"directorConnection\\\\\\" instead\\")
-              directorConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ProductionDirectorConnectionSort!], where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              director(limit: Int, offset: Int, sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
+              directorConnection(after: String, first: Int, sort: [ProductionDirectorConnectionSort!], where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
               title: String!
             }
@@ -302,13 +367,6 @@ describe("Connection with interfaces", () => {
             }
 
             type MovieAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              title: StringAggregateSelection!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!
             }
 
@@ -316,15 +374,6 @@ describe("Connection with interfaces", () => {
               director: MovieDirectorFieldInput
               id: ID
               title: String!
-            }
-
-            type MovieCreatureDirectorAggregationSelection {
-              count: Int!
-              node: MovieCreatureDirectorNodeAggregateSelection
-            }
-
-            type MovieCreatureDirectorNodeAggregateSelection {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input MovieDeleteInput {
@@ -335,18 +384,47 @@ describe("Connection with interfaces", () => {
               AND: [MovieDirectorAggregateInput!]
               NOT: MovieDirectorAggregateInput
               OR: [MovieDirectorAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: MovieDirectorNodeAggregationWhereInput
             }
 
             input MovieDirectorConnectFieldInput {
               connect: CreatureConnectInput
               where: CreatureConnectWhere
+            }
+
+            input MovieDirectorConnectionAggregateInput {
+              AND: [MovieDirectorConnectionAggregateInput!]
+              NOT: MovieDirectorConnectionAggregateInput
+              OR: [MovieDirectorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
+            input MovieDirectorConnectionFilters {
+              \\"\\"\\"
+              Filter Movies by aggregating results on related ProductionDirectorConnections
+              \\"\\"\\"
+              aggregate: MovieDirectorConnectionAggregateInput
+              \\"\\"\\"
+              Return Movies where all of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              all: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              none: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              single: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              some: ProductionDirectorConnectionWhere
             }
 
             input MovieDirectorCreateFieldInput {
@@ -368,22 +446,6 @@ describe("Connection with interfaces", () => {
               create: [MovieDirectorCreateFieldInput!]
             }
 
-            input MovieDirectorNodeAggregationWhereInput {
-              AND: [MovieDirectorNodeAggregationWhereInput!]
-              NOT: MovieDirectorNodeAggregationWhereInput
-              OR: [MovieDirectorNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
             input MovieDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
               where: ProductionDirectorConnectionWhere
@@ -395,21 +457,11 @@ describe("Connection with interfaces", () => {
               delete: [MovieDirectorDeleteFieldInput!]
               disconnect: [MovieDirectorDisconnectFieldInput!]
               update: MovieDirectorUpdateConnectionInput
-              where: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"MovieDirectorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type MovieEdge {
               cursor: String!
               node: Movie!
-            }
-
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
             }
 
             \\"\\"\\"
@@ -422,53 +474,55 @@ describe("Connection with interfaces", () => {
 
             input MovieUpdateInput {
               director: [MovieDirectorUpdateFieldInput!]
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              title_SET: String
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              directorAggregate: MovieDirectorAggregateInput
+              director: CreatureRelationshipFilters
+              directorAggregate: MovieDirectorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the directorConnection filter, please use { directorConnection: { aggregate: {...} } } instead\\")
+              directorConnection: MovieDirectorConnectionFilters
               \\"\\"\\"
               Return Movies where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_ALL: ProductionDirectorConnectionWhere
+              directorConnection_ALL: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where none of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_NONE: ProductionDirectorConnectionWhere
+              directorConnection_NONE: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where one of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_SINGLE: ProductionDirectorConnectionWhere
+              directorConnection_SINGLE: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Movies where some of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_SOME: ProductionDirectorConnectionWhere
+              directorConnection_SOME: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Movies where all of the related Creatures match this filter\\"\\"\\"
-              director_ALL: CreatureWhere
+              director_ALL: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: { all: ... }' instead.\\")
               \\"\\"\\"Return Movies where none of the related Creatures match this filter\\"\\"\\"
-              director_NONE: CreatureWhere
+              director_NONE: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: { none: ... }' instead.\\")
               \\"\\"\\"Return Movies where one of the related Creatures match this filter\\"\\"\\"
-              director_SINGLE: CreatureWhere
+              director_SINGLE: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: {  single: ... }' instead.\\")
               \\"\\"\\"Return Movies where some of the related Creatures match this filter\\"\\"\\"
-              director_SOME: CreatureWhere
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              director_SOME: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: {  some: ... }' instead.\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -507,23 +561,12 @@ describe("Connection with interfaces", () => {
 
             type Person implements Creature {
               id: ID
-              movies(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): Production!
-              moviesAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: ProductionWhere): PersonProductionMoviesAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
-              moviesConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
+              movies(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
+              moviesConnection(after: String, first: Int, sort: [CreatureMoviesConnectionSort!], where: CreatureMoviesConnectionWhere): CreatureMoviesConnection!
             }
 
             type PersonAggregate {
               count: Count!
-              node: PersonAggregateNode!
-            }
-
-            type PersonAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type PersonAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input PersonCreateInput {
@@ -532,7 +575,7 @@ describe("Connection with interfaces", () => {
             }
 
             input PersonDeleteInput {
-              movies: PersonMoviesDeleteFieldInput
+              movies: [PersonMoviesDeleteFieldInput!]
             }
 
             type PersonEdge {
@@ -544,18 +587,47 @@ describe("Connection with interfaces", () => {
               AND: [PersonMoviesAggregateInput!]
               NOT: PersonMoviesAggregateInput
               OR: [PersonMoviesAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: PersonMoviesNodeAggregationWhereInput
             }
 
             input PersonMoviesConnectFieldInput {
               connect: ProductionConnectInput
               where: ProductionConnectWhere
+            }
+
+            input PersonMoviesConnectionAggregateInput {
+              AND: [PersonMoviesConnectionAggregateInput!]
+              NOT: PersonMoviesConnectionAggregateInput
+              OR: [PersonMoviesConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
+            input PersonMoviesConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related CreatureMoviesConnections
+              \\"\\"\\"
+              aggregate: PersonMoviesConnectionAggregateInput
+              \\"\\"\\"
+              Return People where all of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              all: CreatureMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where none of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              none: CreatureMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where one of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              single: CreatureMoviesConnectionWhere
+              \\"\\"\\"
+              Return People where some of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              some: CreatureMoviesConnectionWhere
             }
 
             input PersonMoviesCreateFieldInput {
@@ -573,24 +645,8 @@ describe("Connection with interfaces", () => {
             }
 
             input PersonMoviesFieldInput {
-              connect: PersonMoviesConnectFieldInput
-              create: PersonMoviesCreateFieldInput
-            }
-
-            input PersonMoviesNodeAggregationWhereInput {
-              AND: [PersonMoviesNodeAggregationWhereInput!]
-              NOT: PersonMoviesNodeAggregationWhereInput
-              OR: [PersonMoviesNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
+              connect: [PersonMoviesConnectFieldInput!]
+              create: [PersonMoviesCreateFieldInput!]
             }
 
             input PersonMoviesUpdateConnectionInput {
@@ -599,30 +655,11 @@ describe("Connection with interfaces", () => {
             }
 
             input PersonMoviesUpdateFieldInput {
-              connect: PersonMoviesConnectFieldInput
-              create: PersonMoviesCreateFieldInput
-              delete: PersonMoviesDeleteFieldInput
-              disconnect: PersonMoviesDisconnectFieldInput
+              connect: [PersonMoviesConnectFieldInput!]
+              create: [PersonMoviesCreateFieldInput!]
+              delete: [PersonMoviesDeleteFieldInput!]
+              disconnect: [PersonMoviesDisconnectFieldInput!]
               update: PersonMoviesUpdateConnectionInput
-              where: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"PersonMoviesUpdateConnectionInput\\\\\\" instead\\")
-            }
-
-            input PersonOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more PersonSort objects to sort People by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [PersonSort!]
-            }
-
-            type PersonProductionMoviesAggregationSelection {
-              count: Int!
-              node: PersonProductionMoviesNodeAggregateSelection
-            }
-
-            type PersonProductionMoviesNodeAggregateSelection {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             \\"\\"\\"
@@ -633,44 +670,58 @@ describe("Connection with interfaces", () => {
             }
 
             input PersonUpdateInput {
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              movies: PersonMoviesUpdateFieldInput
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              movies: [PersonMoviesUpdateFieldInput!]
             }
 
             input PersonWhere {
               AND: [PersonWhere!]
               NOT: PersonWhere
               OR: [PersonWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              movies: ProductionWhere
-              moviesAggregate: PersonMoviesAggregateInput
-              moviesConnection: CreatureMoviesConnectionWhere
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              movies: ProductionRelationshipFilters
+              moviesAggregate: PersonMoviesAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the moviesConnection filter, please use { moviesConnection: { aggregate: {...} } } instead\\")
+              moviesConnection: PersonMoviesConnectionFilters
+              \\"\\"\\"
+              Return People where all of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_ALL: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { all: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return People where none of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_NONE: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { none: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return People where one of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_SINGLE: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { single: { node: ... } } }' instead.\\")
+              \\"\\"\\"
+              Return People where some of the related CreatureMoviesConnections match this filter
+              \\"\\"\\"
+              moviesConnection_SOME: CreatureMoviesConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'moviesConnection: { some: { node: ... } } }' instead.\\")
+              \\"\\"\\"Return People where all of the related Productions match this filter\\"\\"\\"
+              movies_ALL: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { all: ... }' instead.\\")
+              \\"\\"\\"Return People where none of the related Productions match this filter\\"\\"\\"
+              movies_NONE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: { none: ... }' instead.\\")
+              \\"\\"\\"Return People where one of the related Productions match this filter\\"\\"\\"
+              movies_SINGLE: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  single: ... }' instead.\\")
+              \\"\\"\\"Return People where some of the related Productions match this filter\\"\\"\\"
+              movies_SOME: ProductionWhere @deprecated(reason: \\"Please use the relevant generic filter 'movies: {  some: ... }' instead.\\")
             }
 
             interface Production {
-              director(limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
+              director(limit: Int, offset: Int, sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
               directorConnection(after: String, first: Int, sort: [ProductionDirectorConnectionSort!], where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               id: ID
             }
 
             type ProductionAggregate {
               count: Count!
-              node: ProductionAggregateNode!
-            }
-
-            type ProductionAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
-            type ProductionAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
             }
 
             input ProductionConnectInput {
@@ -694,13 +745,12 @@ describe("Connection with interfaces", () => {
               AND: [ProductionDirectorAggregateInput!]
               NOT: ProductionDirectorAggregateInput
               OR: [ProductionDirectorAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: ProductionDirectorNodeAggregationWhereInput
             }
 
             input ProductionDirectorConnectFieldInput {
@@ -712,6 +762,36 @@ describe("Connection with interfaces", () => {
               edges: [ProductionDirectorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
+            }
+
+            input ProductionDirectorConnectionAggregateInput {
+              AND: [ProductionDirectorConnectionAggregateInput!]
+              NOT: ProductionDirectorConnectionAggregateInput
+              OR: [ProductionDirectorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
+            input ProductionDirectorConnectionFilters {
+              \\"\\"\\"
+              Filter Productions by aggregating results on related ProductionDirectorConnections
+              \\"\\"\\"
+              aggregate: ProductionDirectorConnectionAggregateInput
+              \\"\\"\\"
+              Return Productions where all of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              all: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Productions where none of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              none: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Productions where one of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              single: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Productions where some of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              some: ProductionDirectorConnectionWhere
             }
 
             input ProductionDirectorConnectionSort {
@@ -739,22 +819,6 @@ describe("Connection with interfaces", () => {
               where: ProductionDirectorConnectionWhere
             }
 
-            input ProductionDirectorNodeAggregationWhereInput {
-              AND: [ProductionDirectorNodeAggregationWhereInput!]
-              NOT: ProductionDirectorNodeAggregationWhereInput
-              OR: [ProductionDirectorNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
             type ProductionDirectorRelationship {
               cursor: String!
               node: Creature!
@@ -771,7 +835,6 @@ describe("Connection with interfaces", () => {
               delete: [ProductionDirectorDeleteFieldInput!]
               disconnect: [ProductionDirectorDisconnectFieldInput!]
               update: ProductionDirectorUpdateConnectionInput
-              where: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"ProductionDirectorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             input ProductionDisconnectInput {
@@ -788,13 +851,15 @@ describe("Connection with interfaces", () => {
               Series
             }
 
-            input ProductionOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more ProductionSort objects to sort Productions by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [ProductionSort!]
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
             }
 
             \\"\\"\\"
@@ -806,55 +871,56 @@ describe("Connection with interfaces", () => {
 
             input ProductionUpdateInput {
               director: [ProductionDirectorUpdateFieldInput!]
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
             }
 
             input ProductionWhere {
               AND: [ProductionWhere!]
               NOT: ProductionWhere
               OR: [ProductionWhere!]
-              directorAggregate: ProductionDirectorAggregateInput
+              director: CreatureRelationshipFilters
+              directorAggregate: ProductionDirectorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the directorConnection filter, please use { directorConnection: { aggregate: {...} } } instead\\")
+              directorConnection: ProductionDirectorConnectionFilters
               \\"\\"\\"
               Return Productions where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_ALL: ProductionDirectorConnectionWhere
+              directorConnection_ALL: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where none of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_NONE: ProductionDirectorConnectionWhere
+              directorConnection_NONE: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where one of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_SINGLE: ProductionDirectorConnectionWhere
+              directorConnection_SINGLE: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where some of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_SOME: ProductionDirectorConnectionWhere
+              directorConnection_SOME: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Productions where all of the related Creatures match this filter
               \\"\\"\\"
-              director_ALL: CreatureWhere
+              director_ALL: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: { all: ... }' instead.\\")
               \\"\\"\\"
               Return Productions where none of the related Creatures match this filter
               \\"\\"\\"
-              director_NONE: CreatureWhere
+              director_NONE: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: { none: ... }' instead.\\")
               \\"\\"\\"
               Return Productions where one of the related Creatures match this filter
               \\"\\"\\"
-              director_SINGLE: CreatureWhere
+              director_SINGLE: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: {  single: ... }' instead.\\")
               \\"\\"\\"
               Return Productions where some of the related Creatures match this filter
               \\"\\"\\"
-              director_SOME: CreatureWhere
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
+              director_SOME: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: {  some: ... }' instead.\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
               typename: [ProductionImplementation!]
-              typename_IN: [ProductionImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
             }
 
             type ProductionsConnection {
@@ -865,27 +931,21 @@ describe("Connection with interfaces", () => {
             }
 
             type Query {
-              creatures(limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
-              creaturesAggregate(where: CreatureWhere): CreatureAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"creaturesConnection\\\\\\" instead\\")
+              creatures(limit: Int, offset: Int, sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
               creaturesConnection(after: String, first: Int, sort: [CreatureSort!], where: CreatureWhere): CreaturesConnection!
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-              people(limit: Int, offset: Int, options: PersonOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [PersonSort!], where: PersonWhere): [Person!]!
-              peopleAggregate(where: PersonWhere): PersonAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"peopleConnection\\\\\\" instead\\")
+              people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
-              productions(limit: Int, offset: Int, options: ProductionOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [ProductionSort!], where: ProductionWhere): [Production!]!
-              productionsAggregate(where: ProductionWhere): ProductionAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"productionsConnection\\\\\\" instead\\")
+              productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
-              series(limit: Int, offset: Int, options: SeriesOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [SeriesSort!], where: SeriesWhere): [Series!]!
-              seriesAggregate(where: SeriesWhere): SeriesAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"seriesConnection\\\\\\" instead\\")
+              series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
             type Series implements Production {
-              director(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), limit: Int, offset: Int, options: CreatureOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
-              directorAggregate(directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), where: CreatureWhere): SeriesCreatureDirectorAggregationSelection @deprecated(reason: \\"Please use field \\\\\\"aggregate\\\\\\" inside \\\\\\"directorConnection\\\\\\" instead\\")
-              directorConnection(after: String, directed: Boolean = true @deprecated(reason: \\"The directed argument is deprecated, and the direction of the field will be configured in the GraphQL server\\"), first: Int, sort: [ProductionDirectorConnectionSort!], where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
+              director(limit: Int, offset: Int, sort: [CreatureSort!], where: CreatureWhere): [Creature!]!
+              directorConnection(after: String, first: Int, sort: [ProductionDirectorConnectionSort!], where: ProductionDirectorConnectionWhere): ProductionDirectorConnection!
               episode: Int!
               id: ID
               title: String!
@@ -898,14 +958,6 @@ describe("Connection with interfaces", () => {
 
             type SeriesAggregateNode {
               episode: IntAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              title: StringAggregateSelection!
-            }
-
-            type SeriesAggregateSelection {
-              count: Int!
-              episode: IntAggregateSelection!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               title: StringAggregateSelection!
             }
 
@@ -923,15 +975,6 @@ describe("Connection with interfaces", () => {
               title: String!
             }
 
-            type SeriesCreatureDirectorAggregationSelection {
-              count: Int!
-              node: SeriesCreatureDirectorNodeAggregateSelection
-            }
-
-            type SeriesCreatureDirectorNodeAggregateSelection {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
             input SeriesDeleteInput {
               director: [SeriesDirectorDeleteFieldInput!]
             }
@@ -940,18 +983,47 @@ describe("Connection with interfaces", () => {
               AND: [SeriesDirectorAggregateInput!]
               NOT: SeriesDirectorAggregateInput
               OR: [SeriesDirectorAggregateInput!]
-              count: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
+              count: IntScalarFilters
               count_EQ: Int
               count_GT: Int
               count_GTE: Int
               count_LT: Int
               count_LTE: Int
-              node: SeriesDirectorNodeAggregationWhereInput
             }
 
             input SeriesDirectorConnectFieldInput {
               connect: CreatureConnectInput
               where: CreatureConnectWhere
+            }
+
+            input SeriesDirectorConnectionAggregateInput {
+              AND: [SeriesDirectorConnectionAggregateInput!]
+              NOT: SeriesDirectorConnectionAggregateInput
+              OR: [SeriesDirectorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+            }
+
+            input SeriesDirectorConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related ProductionDirectorConnections
+              \\"\\"\\"
+              aggregate: SeriesDirectorConnectionAggregateInput
+              \\"\\"\\"
+              Return Series where all of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              all: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              none: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Series where one of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              single: ProductionDirectorConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related ProductionDirectorConnections match this filter
+              \\"\\"\\"
+              some: ProductionDirectorConnectionWhere
             }
 
             input SeriesDirectorCreateFieldInput {
@@ -973,22 +1045,6 @@ describe("Connection with interfaces", () => {
               create: [SeriesDirectorCreateFieldInput!]
             }
 
-            input SeriesDirectorNodeAggregationWhereInput {
-              AND: [SeriesDirectorNodeAggregationWhereInput!]
-              NOT: SeriesDirectorNodeAggregationWhereInput
-              OR: [SeriesDirectorNodeAggregationWhereInput!]
-              id_MAX_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MAX_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_EQUAL: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_GTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LT: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              id_MIN_LTE: ID @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-            }
-
             input SeriesDirectorUpdateConnectionInput {
               node: CreatureUpdateInput
               where: ProductionDirectorConnectionWhere
@@ -1000,21 +1056,11 @@ describe("Connection with interfaces", () => {
               delete: [SeriesDirectorDeleteFieldInput!]
               disconnect: [SeriesDirectorDisconnectFieldInput!]
               update: SeriesDirectorUpdateConnectionInput
-              where: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use field \\\\\\"where\\\\\\" inside \\\\\\"SeriesDirectorUpdateConnectionInput\\\\\\" instead\\")
             }
 
             type SeriesEdge {
               cursor: String!
               node: Series!
-            }
-
-            input SeriesOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more SeriesSort objects to sort Series by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [SeriesSort!]
             }
 
             \\"\\"\\"
@@ -1028,64 +1074,66 @@ describe("Connection with interfaces", () => {
 
             input SeriesUpdateInput {
               director: [SeriesDirectorUpdateFieldInput!]
-              episode: Int @deprecated(reason: \\"Please use the explicit _SET field\\")
-              episode_DECREMENT: Int
-              episode_INCREMENT: Int
-              episode_SET: Int
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              title_SET: String
+              episode: IntScalarMutations
+              episode_DECREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episode: { decrement: ... } }' instead.\\")
+              episode_INCREMENT: Int @deprecated(reason: \\"Please use the relevant generic mutation 'episode: { increment: ... } }' instead.\\")
+              episode_SET: Int @deprecated(reason: \\"Please use the generic mutation 'episode: { set: ... } }' instead.\\")
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input SeriesWhere {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              directorAggregate: SeriesDirectorAggregateInput
+              director: CreatureRelationshipFilters
+              directorAggregate: SeriesDirectorAggregateInput @deprecated(reason: \\"Aggregate filters are moved inside the directorConnection filter, please use { directorConnection: { aggregate: {...} } } instead\\")
+              directorConnection: SeriesDirectorConnectionFilters
               \\"\\"\\"
               Return Series where all of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_ALL: ProductionDirectorConnectionWhere
+              directorConnection_ALL: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { all: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where none of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_NONE: ProductionDirectorConnectionWhere
+              directorConnection_NONE: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { none: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where one of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_SINGLE: ProductionDirectorConnectionWhere
+              directorConnection_SINGLE: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { single: { node: ... } } }' instead.\\")
               \\"\\"\\"
               Return Series where some of the related ProductionDirectorConnections match this filter
               \\"\\"\\"
-              directorConnection_SOME: ProductionDirectorConnectionWhere
+              directorConnection_SOME: ProductionDirectorConnectionWhere @deprecated(reason: \\"Please use the relevant generic filter 'directorConnection: { some: { node: ... } } }' instead.\\")
               \\"\\"\\"Return Series where all of the related Creatures match this filter\\"\\"\\"
-              director_ALL: CreatureWhere
+              director_ALL: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: { all: ... }' instead.\\")
               \\"\\"\\"Return Series where none of the related Creatures match this filter\\"\\"\\"
-              director_NONE: CreatureWhere
+              director_NONE: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: { none: ... }' instead.\\")
               \\"\\"\\"Return Series where one of the related Creatures match this filter\\"\\"\\"
-              director_SINGLE: CreatureWhere
+              director_SINGLE: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: {  single: ... }' instead.\\")
               \\"\\"\\"Return Series where some of the related Creatures match this filter\\"\\"\\"
-              director_SOME: CreatureWhere
-              episode: Int @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              episode_EQ: Int
-              episode_GT: Int
-              episode_GTE: Int
-              episode_IN: [Int!]
-              episode_LT: Int
-              episode_LTE: Int
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String!]
-              title_STARTS_WITH: String
+              director_SOME: CreatureWhere @deprecated(reason: \\"Please use the relevant generic filter 'director: {  some: ... }' instead.\\")
+              episode: IntScalarFilters
+              episode_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter episode: { eq: ... }\\")
+              episode_GT: Int @deprecated(reason: \\"Please use the relevant generic filter episode: { gt: ... }\\")
+              episode_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter episode: { gte: ... }\\")
+              episode_IN: [Int!] @deprecated(reason: \\"Please use the relevant generic filter episode: { in: ... }\\")
+              episode_LT: Int @deprecated(reason: \\"Please use the relevant generic filter episode: { lt: ... }\\")
+              episode_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter episode: { lte: ... }\\")
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -1099,6 +1147,20 @@ describe("Connection with interfaces", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"

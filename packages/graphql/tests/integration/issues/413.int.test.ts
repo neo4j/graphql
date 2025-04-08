@@ -43,7 +43,7 @@ describe("https://github.com/neo4j/graphql/issues/413", () => {
             }
 
             type ${JobPlan} @node {
-                id: ID! @id @unique
+                id: ID! @id
                 tenantID: ID!
                 name: String!
             }
@@ -71,8 +71,12 @@ describe("https://github.com/neo4j/graphql/issues/413", () => {
 
         const query = `
             query {
-                ${JobPlan.operations.aggregate}(where: {tenantID_EQ: "${tenantID}"}) {
-                  count
+                ${JobPlan.operations.connection}(where: {tenantID_EQ: "${tenantID}"}) {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                    }
                 }
             }
         `;
@@ -94,8 +98,14 @@ describe("https://github.com/neo4j/graphql/issues/413", () => {
 
         expect(result.errors).toBeFalsy();
 
-        expect(result.data as any).toEqual({
-            [JobPlan.operations.aggregate]: { count: 3 },
+        expect(result.data).toEqual({
+            [JobPlan.operations.connection]: {
+                aggregate: {
+                    count: {
+                        nodes: 3,
+                    },
+                },
+            },
         });
     });
 });

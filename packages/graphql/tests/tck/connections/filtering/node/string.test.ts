@@ -75,7 +75,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -100,12 +101,12 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
         `);
     });
 
-    test("STARTS_WITH", async () => {
+    test("startsWith", async () => {
         const query = /* GraphQL */ `
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { name_STARTS_WITH: "Tom" } }) {
+                    actorsConnection(where: { node: { name: { startsWith: "Tom" } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -122,7 +123,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -147,12 +149,12 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
         `);
     });
 
-    test("ENDS_WITH", async () => {
+    test("endsWith", async () => {
         const query = /* GraphQL */ `
             query {
                 movies {
                     title
-                    actorsConnection(where: { node: { name_ENDS_WITH: "Hanks" } }) {
+                    actorsConnection(where: { node: { name: { endsWith: "Hanks" } } }) {
                         edges {
                             properties {
                                 screenTime
@@ -169,7 +171,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
@@ -216,7 +219,8 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)

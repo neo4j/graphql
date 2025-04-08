@@ -27,14 +27,14 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
             type Organization @node {
-                organizationId: ID! @id @unique
+                organizationId: ID! @id
                 title: String
                 createdAt: DateTime!
                 admins: [Admin!]! @relationship(type: "HAS_ADMINISTRATOR", direction: OUT)
             }
 
             type Admin @node {
-                adminId: ID! @id @unique
+                adminId: ID! @id
                 createdAt: DateTime!
                 isSuperAdmin: Boolean
                 organizations: [Organization!]! @relationship(type: "HAS_ADMINISTRATOR", direction: IN)
@@ -58,7 +58,7 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
 
         const variableValues = {
             where: {
-                title_EQ: "Google",
+                title: { eq: "Google" },
             },
             delete: {
                 admins: [
@@ -66,7 +66,7 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
                         where: {
                             node: {
                                 organizationsAggregate: {
-                                    count_EQ: 1,
+                                    count: { eq: 1 },
                                 },
                             },
                         },
@@ -78,7 +78,8 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
         const result = await translateQuery(neoSchema, query, { variableValues });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Organization)
+            "CYPHER 5
+            MATCH (this:Organization)
             WHERE this.title = $param0
             WITH *
             CALL {

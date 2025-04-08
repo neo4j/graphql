@@ -85,7 +85,8 @@ describe("phrase input - genAI plugin", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "WITH genai.vector.encode($param0, \\"OpenAI\\", { token: \\"my-token\\", model: \\"my-model\\", dimensions: 256 }) AS var0
+            "CYPHER 5
+            WITH genai.vector.encode($param0, \\"OpenAI\\", { token: \\"my-token\\", model: \\"my-model\\", dimensions: 256 }) AS var0
             CALL db.index.vector.queryNodes(\\"movie_index\\", 4, var0) YIELD node AS this1, score AS var2
             WHERE $param1 IN labels(this1)
             WITH collect({ node: this1, score: var2 }) AS edges

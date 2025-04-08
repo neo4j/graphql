@@ -22,25 +22,30 @@ import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-t
 
 describe("cypher directive filtering - Aggregation", () => {
     test("String aggregation", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 released: Int
-                custom_field: String @cypher(
-                    statement: """
-                    MATCH (this)
-                    RETURN this.custom_field as s
-                    """
-                    columnName: "s"
-                )
+                custom_field: String
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field as s
+                        """
+                        columnName: "s"
+                    )
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                moviesAggregate(where: { custom_field_STARTS_WITH: "he" }) {
-                    title {
-                        shortest
+                moviesConnection(where: { custom_field: { startsWith: "he" } }) {
+                    aggregate {
+                        node {
+                            title {
+                                shortest
+                            }
+                        }
                     }
                 }
             }
@@ -53,7 +58,8 @@ describe("cypher directive filtering - Aggregation", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 CALL {
                     WITH this
@@ -68,12 +74,12 @@ describe("cypher directive filtering - Aggregation", () => {
                 }
                 WITH *
                 WHERE var1 STARTS WITH $param0
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
                 RETURN { shortest: last(list) } AS var2
             }
-            RETURN { title: var2 }"
+            RETURN { aggregate: { node: { title: var2 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -84,25 +90,30 @@ describe("cypher directive filtering - Aggregation", () => {
     });
 
     test("Int aggregation", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 released: Int
-                custom_field: Int @cypher(
-                    statement: """
-                    MATCH (this)
-                    RETURN this.custom_field as s
-                    """
-                    columnName: "s"
-                )
+                custom_field: Int
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field as s
+                        """
+                        columnName: "s"
+                    )
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                moviesAggregate(where: { custom_field_GT: 0 }) {
-                    released {
-                        min
+                moviesConnection(where: { custom_field: { gt: 0 } }) {
+                    aggregate {
+                        node {
+                            released {
+                                min
+                            }
+                        }
                     }
                 }
             }
@@ -115,7 +126,8 @@ describe("cypher directive filtering - Aggregation", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 CALL {
                     WITH this
@@ -130,10 +142,10 @@ describe("cypher directive filtering - Aggregation", () => {
                 }
                 WITH *
                 WHERE var1 > $param0
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.released) } AS var2
             }
-            RETURN { released: var2 }"
+            RETURN { aggregate: { node: { released: var2 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -147,25 +159,30 @@ describe("cypher directive filtering - Aggregation", () => {
     });
 
     test("String list aggregation", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 released: Int
-                custom_field: [String] @cypher(
-                    statement: """
-                    MATCH (this)
-                    RETURN this.custom_field as s
-                    """
-                    columnName: "s"
-                )
+                custom_field: [String]
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field as s
+                        """
+                        columnName: "s"
+                    )
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                moviesAggregate(where: { custom_field_INCLUDES: "test" }) {
-                    title {
-                        longest
+                moviesConnection(where: { custom_field: { includes: "test" } }) {
+                    aggregate {
+                        node {
+                            title {
+                                longest
+                            }
+                        }
                     }
                 }
             }
@@ -178,7 +195,8 @@ describe("cypher directive filtering - Aggregation", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 CALL {
                     WITH this
@@ -194,12 +212,12 @@ describe("cypher directive filtering - Aggregation", () => {
                 }
                 WITH *
                 WHERE $param0 IN var2
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
                 RETURN { longest: head(list) } AS var3
             }
-            RETURN { title: var3 }"
+            RETURN { aggregate: { node: { title: var3 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -210,25 +228,30 @@ describe("cypher directive filtering - Aggregation", () => {
     });
 
     test("Int list aggregation", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 released: Int
-                custom_field: [Int] @cypher(
-                    statement: """
-                    MATCH (this)
-                    RETURN this.custom_field as s
-                    """
-                    columnName: "s"
-                )
+                custom_field: [Int]
+                    @cypher(
+                        statement: """
+                        MATCH (this)
+                        RETURN this.custom_field as s
+                        """
+                        columnName: "s"
+                    )
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                moviesAggregate(where: { custom_field_INCLUDES: 2 }) {
-                    title {
-                        longest
+                moviesConnection(where: { custom_field: { includes: 2 } }) {
+                    aggregate {
+                        node {
+                            title {
+                                longest
+                            }
+                        }
                     }
                 }
             }
@@ -241,7 +264,8 @@ describe("cypher directive filtering - Aggregation", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
                 CALL {
                     WITH this
@@ -257,12 +281,12 @@ describe("cypher directive filtering - Aggregation", () => {
                 }
                 WITH *
                 WHERE $param0 IN var2
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
                 RETURN { longest: head(list) } AS var3
             }
-            RETURN { title: var3 }"
+            RETURN { aggregate: { node: { title: var3 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

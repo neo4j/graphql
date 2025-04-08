@@ -49,23 +49,23 @@ describe("Cypher Aggregations Many while Alias fields", () => {
     test("Custom Label Aggregations", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    _id: id {
-                        _shortest: shortest
-                        _longest: longest
-                    }
-                    _title: title {
-                        _shortest: shortest
-                        _longest: longest
-                    }
-                    _imdbRating: imdbRating {
-                        _min: min
-                        _max: max
-                        _average: average
-                    }
-                    _createdAt: createdAt {
-                        _min: min
-                        _max: max
+                moviesConnection {
+                    aggregate {
+                        node {
+                            _title: title {
+                                _shortest: shortest
+                                _longest: longest
+                            }
+                            _imdbRating: imdbRating {
+                                _min: min
+                                _max: max
+                                _average: average
+                            }
+                            _createdAt: createdAt {
+                                _min: min
+                                _max: max
+                            }
+                        }
                     }
                 }
             }
@@ -74,29 +74,25 @@ describe("Cypher Aggregations Many while Alias fields", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-                MATCH (this:Film)
-                WITH this
-                RETURN { _shortest: min(this.id), _longest: max(this.id) } AS var0
-            }
+            "CYPHER 5
             CALL {
                 MATCH (this:Film)
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.title) DESC
                 WITH collect(this.title) AS list
-                RETURN { _longest: head(list), _shortest: last(list) } AS var1
+                RETURN { _longest: head(list), _shortest: last(list) } AS var0
             }
             CALL {
                 MATCH (this:Film)
-                WITH this
-                RETURN { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) } AS var2
+                WITH DISTINCT this
+                RETURN { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) } AS var1
             }
             CALL {
                 MATCH (this:Film)
-                WITH this
-                RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var3
+                WITH DISTINCT this
+                RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
             }
-            RETURN { _id: var0, _title: var1, _imdbRating: var2, _createdAt: var3 }"
+            RETURN { aggregate: { node: { _title: var0, _imdbRating: var1, _createdAt: var2 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -105,23 +101,23 @@ describe("Cypher Aggregations Many while Alias fields", () => {
     test("Additional Labels Aggregations", async () => {
         const query = /* GraphQL */ `
             {
-                actorsAggregate {
-                    _id: id {
-                        _shortest: shortest
-                        _longest: longest
-                    }
-                    _name: name {
-                        _shortest: shortest
-                        _longest: longest
-                    }
-                    _imdbRating: imdbRating {
-                        _min: min
-                        _max: max
-                        _average: average
-                    }
-                    _createdAt: createdAt {
-                        _min: min
-                        _max: max
+                actorsConnection {
+                    aggregate {
+                        node {
+                            _name: name {
+                                _shortest: shortest
+                                _longest: longest
+                            }
+                            _imdbRating: imdbRating {
+                                _min: min
+                                _max: max
+                                _average: average
+                            }
+                            _createdAt: createdAt {
+                                _min: min
+                                _max: max
+                            }
+                        }
                     }
                 }
             }
@@ -130,29 +126,25 @@ describe("Cypher Aggregations Many while Alias fields", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-                MATCH (this:Actor:Person:Alien)
-                WITH this
-                RETURN { _shortest: min(this.id), _longest: max(this.id) } AS var0
-            }
+            "CYPHER 5
             CALL {
                 MATCH (this:Actor:Person:Alien)
-                WITH this
+                WITH DISTINCT this
                 ORDER BY size(this.name) DESC
                 WITH collect(this.name) AS list
-                RETURN { _longest: head(list), _shortest: last(list) } AS var1
+                RETURN { _longest: head(list), _shortest: last(list) } AS var0
             }
             CALL {
                 MATCH (this:Actor:Person:Alien)
-                WITH this
-                RETURN { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) } AS var2
+                WITH DISTINCT this
+                RETURN { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) } AS var1
             }
             CALL {
                 MATCH (this:Actor:Person:Alien)
-                WITH this
-                RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var3
+                WITH DISTINCT this
+                RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
             }
-            RETURN { _id: var0, _name: var1, _imdbRating: var2, _createdAt: var3 }"
+            RETURN { aggregate: { node: { _name: var0, _imdbRating: var1, _createdAt: var2 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

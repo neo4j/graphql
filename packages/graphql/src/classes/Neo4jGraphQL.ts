@@ -23,13 +23,13 @@ import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import Debug from "debug";
-import type { DocumentNode, GraphQLSchema } from "graphql";
+import { type DocumentNode, type GraphQLSchema } from "graphql";
 import type { Driver, SessionConfig } from "neo4j-driver";
 import { DEBUG_ALL } from "../constants";
 import { makeAugmentedSchema } from "../schema";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { generateModel } from "../schema-model/generate-model";
-import { getDefinitionNodes } from "../schema/get-definition-nodes";
+import { getDefinitionCollection } from "../schema-model/parser/definition-collection";
 import { makeDocumentToAugment } from "../schema/make-document-to-augment";
 import type { WrapResolverArguments } from "../schema/resolvers/composition/wrap-query-and-mutation";
 import { wrapQueryAndMutation } from "../schema/resolvers/composition/wrap-query-and-mutation";
@@ -39,6 +39,7 @@ import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
 import type { ContextFeatures, Neo4jFeaturesSettings, Neo4jGraphQLSubscriptionsEngine } from "../types";
 import { asArray } from "../utils/utils";
+import { ComplexityEstimatorHelper } from "./ComplexityEstimatorHelper";
 import type { ExecutorConstructorParam, Neo4jGraphQLSessionConfig } from "./Executor";
 import { Executor } from "./Executor";
 import type { Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
@@ -75,6 +76,7 @@ class Neo4jGraphQL {
     private jwtFieldsMap?: Map<string, string>;
 
     private schemaModel?: Neo4jGraphQLSchemaModel;
+    private complexityEstimatorHelper: ComplexityEstimatorHelper;
 
     private executableSchema?: Promise<GraphQLSchema>;
     private subgraphSchema?: Promise<GraphQLSchema>;
@@ -108,6 +110,8 @@ class Neo4jGraphQL {
 
             this.authorization = new Neo4jGraphQLAuthorization(authorizationSettings);
         }
+
+        this.complexityEstimatorHelper = new ComplexityEstimatorHelper(!!this.features.complexityEstimators);
     }
 
     public async getSchema(): Promise<GraphQLSchema> {
@@ -127,7 +131,7 @@ class Neo4jGraphQL {
     public async getSubgraphSchema(): Promise<GraphQLSchema> {
         if (!this.subgraphSchema) {
             this.subgraphSchema = this.generateSubgraphSchema();
-            await this.subgraphSchema;
+
             await this.subscriptionMechanismSetup();
         }
 
@@ -365,12 +369,17 @@ class Neo4jGraphQL {
                     interfaceTypes: interfaces,
                     unionTypes: unions,
                     objectTypes: objects,
-                } = getDefinitionNodes(initialDocument);
+                } = getDefinitionCollection(initialDocument);
 
                 validateDocument({
                     document: initialDocument,
                     features: this.features,
-                    additionalDefinitions: { enums, interfaces, unions, objects },
+                    additionalDefinitions: {
+                        enums: [...enums.values()],
+                        interfaces: [...interfaces.values()],
+                        unions: [...unions.values()],
+                        objects: [...objects.values()],
+                    },
                     userCustomResolvers: this.resolvers,
                 });
             }
@@ -388,10 +397,16 @@ class Neo4jGraphQL {
                 features: this.features,
                 userCustomResolvers: this.resolvers,
                 schemaModel: this.schemaModel,
+                complexityEstimatorHelper: this.complexityEstimatorHelper,
             });
 
             if (this.validate) {
-                validateUserDefinition({ userDocument: document, augmentedDocument: typeDefs, jwt: jwt?.type });
+                validateUserDefinition({
+                    userDocument: document,
+                    augmentedDocument: typeDefs,
+                    jwt: jwt?.type,
+                    features: this.features,
+                });
             }
 
             this._nodes = nodes;
@@ -401,6 +416,7 @@ class Neo4jGraphQL {
                 typeDefs,
                 resolvers,
             });
+            this.complexityEstimatorHelper.hydrateSchemaFromSDLWithASTNodeExtensions(schema);
 
             resolve(this.composeSchema(schema));
         });
@@ -421,7 +437,7 @@ class Neo4jGraphQL {
                 interfaceTypes: interfaces,
                 unionTypes: unions,
                 objectTypes: objects,
-            } = getDefinitionNodes(initialDocument);
+            } = getDefinitionCollection(initialDocument);
 
             validateDocument({
                 document: initialDocument,
@@ -429,10 +445,10 @@ class Neo4jGraphQL {
                 additionalDefinitions: {
                     additionalDirectives: directives,
                     additionalTypes: types,
-                    enums,
-                    interfaces,
-                    unions,
-                    objects,
+                    enums: [...enums.values()],
+                    interfaces: [...interfaces.values()],
+                    unions: [...unions.values()],
+                    objects: [...objects.values()],
                 },
                 userCustomResolvers: this.resolvers,
             });
@@ -452,6 +468,7 @@ class Neo4jGraphQL {
             userCustomResolvers: this.resolvers,
             subgraph,
             schemaModel: this.schemaModel,
+            complexityEstimatorHelper: this.complexityEstimatorHelper,
         });
 
         if (this.validate) {
@@ -461,6 +478,7 @@ class Neo4jGraphQL {
                 additionalDirectives: directives,
                 additionalTypes: types,
                 jwt: jwt?.type,
+                features: this.features,
             });
         }
 
@@ -485,7 +503,8 @@ class Neo4jGraphQL {
 
         const setup = async () => {
             const subscriptionsEngine = this.features?.subscriptionsEngine;
-            if (subscriptionsEngine) {
+            const schema = await this.executableSchema;
+            if (subscriptionsEngine && schema?.getSubscriptionType()) {
                 subscriptionsEngine.events.setMaxListeners(0); // Removes warning regarding leak. >10 listeners are expected
                 if (subscriptionsEngine.init) {
                     if (!this.schemaModel) throw new Error("SchemaModel not available on subscription mechanism");

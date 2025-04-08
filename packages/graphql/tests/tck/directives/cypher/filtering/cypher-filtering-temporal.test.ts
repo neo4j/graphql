@@ -22,7 +22,7 @@ import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-t
 
 describe("cypher directive filtering - Auth", () => {
     test("DateTime cypher field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 special_time: DateTime
@@ -35,13 +35,9 @@ describe("cypher directive filtering - Auth", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                movies(
-                    where: {
-                        special_time_GT: "2024-09-02T00:00:00Z"
-                    }
-                ) {
+                movies(where: { special_time: { gt: "2024-09-02T00:00:00Z" } }) {
                     special_time
                     title
                 }
@@ -55,7 +51,8 @@ describe("cypher directive filtering - Auth", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -67,7 +64,7 @@ describe("cypher directive filtering - Auth", () => {
                 RETURN this0 AS var1
             }
             WITH *
-            WHERE var1 > $param0
+            WHERE var1 > datetime($param0)
             CALL {
                 WITH this
                 CALL {
@@ -83,22 +80,13 @@ describe("cypher directive filtering - Auth", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"year\\": 2024,
-                    \\"month\\": 9,
-                    \\"day\\": 2,
-                    \\"hour\\": 0,
-                    \\"minute\\": 0,
-                    \\"second\\": 0,
-                    \\"nanosecond\\": 0,
-                    \\"timeZoneOffsetSeconds\\": 0
-                }
+                \\"param0\\": \\"2024-09-02T00:00:00Z\\"
             }"
         `);
     });
 
     test("Duration cypher field", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 special_duration: Duration
@@ -110,13 +98,9 @@ describe("cypher directive filtering - Auth", () => {
                     )
             }
         `;
-        const query = `
+        const query = /* GraphQL */ `
             query {
-                movies(
-                    where: {
-                        special_duration: "P14DT16H12M"
-                    }
-                ) {
+                movies(where: { special_duration: { eq: "P14DT16H12M" } }) {
                     title
                 }
             }
@@ -129,7 +113,8 @@ describe("cypher directive filtering - Auth", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {

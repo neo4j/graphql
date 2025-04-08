@@ -38,7 +38,7 @@ describe("interface implementing interface with declared relationships", () => {
         const typeDefs = gql`
             type ${Episode} @node {
                 runtime: Int!
-                series: ${Series}! @relationship(type: "HAS_EPISODE", direction: IN)
+                series: [${Series}!]! @relationship(type: "HAS_EPISODE", direction: IN)
             }
 
             interface Show {
@@ -938,80 +938,5 @@ describe("interface implementing interface with declared relationships", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
 
         expect(gqlResult.errors?.[0]?.message).toInclude(`Cannot query field "actorsConnection" on type "Production"`);
-    });
-
-    /* eslint-disable-next-line jest/no-disabled-tests */
-    test.skip("WHERE?", async () => {
-        const actorName = "actor1";
-        const actorName2 = "actor2";
-
-        const movieTitle = "movie1";
-        const movieTitle2 = "movie2";
-        const movieRuntime = 83562;
-        const movieScreenTime = 62906;
-
-        const seriesTitle = "series1";
-        const seriesEpisodes = 90176;
-        const seriesScreenTime = 44779;
-
-        // const query = `
-        //     query Actors {
-        //         ${Actor.plural}(where: { actedIn: { title: "${movieTitle}" } }) {
-        //             name
-        //             actedIn {
-        //                 title
-        //             }
-        //         }
-        //     }
-        // `;
-        const queryC = `
-            query Actors {
-                ${Actor.plural}(where: { actedInConnection: { node: { title: "${movieTitle}" } } }) {
-                    name
-                    actedIn {
-                        title
-                    }
-                }
-            }
-        `;
-
-        await testHelper.executeCypher(
-            `
-                CREATE (a:${Actor} { name: $actorName })
-                CREATE (a2:${Actor} { name: $actorName2 })
-                CREATE (m:${Movie} { title: $movieTitle, runtime:$movieRuntime })
-                CREATE (m2:${Movie} { title: $movieTitle2, runtime:$movieRuntime })
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
-                CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
-                CREATE (a2)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
-                CREATE (a)-[:ACTED_IN { screenTime: $seriesScreenTime }]->(:${Series} { title: $seriesTitle, episodeCount: $seriesEpisodes })
-            `,
-            {
-                actorName,
-                actorName2,
-                movieTitle,
-                movieTitle2,
-                movieRuntime,
-                movieScreenTime,
-                seriesTitle,
-                seriesEpisodes,
-                seriesScreenTime,
-            }
-        );
-
-        const gqlResult = await testHelper.executeGraphQL(queryC);
-
-        expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult.data?.[Actor.plural]).toIncludeSameMembers([
-            {
-                name: actorName,
-                actedIn: expect.toIncludeSameMembers([
-                    {
-                        title: movieTitle,
-                    },
-                ]),
-            },
-        ]);
     });
 });

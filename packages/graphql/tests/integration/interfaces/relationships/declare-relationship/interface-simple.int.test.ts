@@ -38,7 +38,7 @@ describe("interface with declared relationships", () => {
         const typeDefs = gql`
             type ${Episode} @node {
                 runtime: Int!
-                series: ${Series}! @relationship(type: "HAS_EPISODE", direction: IN)
+                series: [${Series}!]! @relationship(type: "HAS_EPISODE", direction: IN)
             }
 
             interface Production {
@@ -853,12 +853,12 @@ describe("interface with declared relationships", () => {
                                                 node: {
                                                     name: actorName2,
                                                     actedInConnection: {
-                                                        edges: [
+                                                        edges: expect.toIncludeSameMembers([
                                                             {
                                                                 node: { title: movieTitle2, runtime: movieRuntime },
                                                                 properties: { screenTime: 0 },
                                                             },
-                                                        ],
+                                                        ]),
                                                     },
                                                 },
                                                 properties: { screenTime: 0 },
@@ -896,7 +896,7 @@ describe("interface with declared relationships", () => {
                                 node: {
                                     title: movieTitle,
                                     actorsConnection: {
-                                        edges: [
+                                        edges: expect.toIncludeSameMembers([
                                             {
                                                 node: {
                                                     name: actorName,
@@ -922,7 +922,7 @@ describe("interface with declared relationships", () => {
                                                 },
                                                 properties: { screenTime: 0 },
                                             },
-                                        ],
+                                        ]),
                                     },
                                 },
                             },
@@ -930,7 +930,7 @@ describe("interface with declared relationships", () => {
                                 node: {
                                     title: seriesTitle,
                                     actorsConnection: {
-                                        edges: [
+                                        edges: expect.toIncludeSameMembers([
                                             {
                                                 node: {
                                                     name: actorName,
@@ -956,7 +956,7 @@ describe("interface with declared relationships", () => {
                                                 },
                                                 properties: { episodeNr },
                                             },
-                                        ],
+                                        ]),
                                     },
                                 },
                             },
@@ -966,7 +966,7 @@ describe("interface with declared relationships", () => {
                 {
                     name: actorName2,
                     actedInConnection: {
-                        edges: [
+                        edges: expect.toIncludeSameMembers([
                             {
                                 node: {
                                     title: movieTitle2,
@@ -976,12 +976,12 @@ describe("interface with declared relationships", () => {
                                                 node: {
                                                     name: actorName2,
                                                     actedInConnection: {
-                                                        edges: [
+                                                        edges: expect.toIncludeSameMembers([
                                                             {
                                                                 node: { title: movieTitle2, runtime: movieRuntime },
                                                                 properties: { screenTime: 0 },
                                                             },
-                                                        ],
+                                                        ]),
                                                     },
                                                 },
                                                 properties: { screenTime: 0 },
@@ -1015,7 +1015,7 @@ describe("interface with declared relationships", () => {
                                     },
                                 },
                             },
-                        ],
+                        ]),
                     },
                 },
             ]
@@ -1041,8 +1041,8 @@ describe("interface with declared relationships", () => {
             mutation {
                 ${Actor.operations.update}(update: { 
                     actedIn: [{ 
-                        where: { OR: [{ node: { title_EQ: "${movieTitle}" } }] }, 
                         update: { 
+                            where: { OR: [{ node: { title_EQ: "${movieTitle}" } }] }, 
                             node: { 
                                 actors: [{ 
                                     create: { 
@@ -1146,12 +1146,12 @@ describe("interface with declared relationships", () => {
                                                 node: {
                                                     name: actorName2,
                                                     actedInConnection: {
-                                                        edges: [
+                                                        edges: expect.toIncludeSameMembers([
                                                             {
                                                                 node: { title: movieTitle2, runtime: movieRuntime },
                                                                 properties: { screenTime: movieScreenTime },
                                                             },
-                                                        ],
+                                                        ]),
                                                     },
                                                 },
                                                 properties: { screenTime: movieScreenTime },
@@ -1189,12 +1189,12 @@ describe("interface with declared relationships", () => {
                                 node: {
                                     title: movieTitle,
                                     actorsConnection: {
-                                        edges: [
+                                        edges: expect.toIncludeSameMembers([
                                             {
                                                 node: {
                                                     name: "custom actor",
                                                     actedInConnection: {
-                                                        edges: [
+                                                        edges: expect.toIncludeSameMembers([
                                                             {
                                                                 node: {
                                                                     title: movieTitle,
@@ -1204,7 +1204,7 @@ describe("interface with declared relationships", () => {
                                                                     screenTime: 101,
                                                                 },
                                                             },
-                                                        ],
+                                                        ]),
                                                     },
                                                 },
                                                 properties: { screenTime: 101 },
@@ -1234,7 +1234,7 @@ describe("interface with declared relationships", () => {
                                                 },
                                                 properties: { screenTime: movieScreenTime },
                                             },
-                                        ],
+                                        ]),
                                     },
                                 },
                             },
@@ -1242,7 +1242,7 @@ describe("interface with declared relationships", () => {
                                 node: {
                                     title: seriesTitle,
                                     actorsConnection: {
-                                        edges: [
+                                        edges: expect.toIncludeSameMembers([
                                             {
                                                 node: {
                                                     name: actorName,
@@ -1268,7 +1268,7 @@ describe("interface with declared relationships", () => {
                                                 },
                                                 properties: { episodeNr },
                                             },
-                                        ],
+                                        ]),
                                     },
                                 },
                             },
@@ -1278,7 +1278,7 @@ describe("interface with declared relationships", () => {
                 {
                     name: actorName2,
                     actedInConnection: {
-                        edges: [
+                        edges: expect.toIncludeSameMembers([
                             {
                                 node: {
                                     title: movieTitle2,
@@ -1288,12 +1288,12 @@ describe("interface with declared relationships", () => {
                                                 node: {
                                                     name: actorName2,
                                                     actedInConnection: {
-                                                        edges: [
+                                                        edges: expect.toIncludeSameMembers([
                                                             {
                                                                 node: { title: movieTitle2, runtime: movieRuntime },
                                                                 properties: { screenTime: movieScreenTime },
                                                             },
-                                                        ],
+                                                        ]),
                                                     },
                                                 },
                                                 properties: { screenTime: movieScreenTime },
@@ -1327,14 +1327,13 @@ describe("interface with declared relationships", () => {
                                     },
                                 },
                             },
-                        ],
+                        ]),
                     },
                 },
             ]
         );
     });
 
-    // update -> connect -> edge
     test("update interface relationship, connect edge", async () => {
         const actorName = "actor1";
         const actorName2 = "actor2";
@@ -1352,21 +1351,26 @@ describe("interface with declared relationships", () => {
 
         const query = /* GraphQL */ `
             mutation {
-                ${Actor.operations.update}(update: { 
-                    actedIn: [{ # ActorActedInUpdateFieldInput
-                        where: { node: { title_EQ: "${movieTitle}" } } # ActorActedInConnectionWhere
-                        update: { # ActorActedInUpdateConnectionInput
-                            node: { # ProductionUpdateInput
-                                actors: [{  # ProductionActorsUpdateFieldInput                          
-                                    connect: {  # ProductionActorsConnectFieldInput
-                                        where: { node: { name_EQ: "${actorName3}" } }, 
-                                        edge: { ActedIn: { screenTime: 111 }, StarredIn: { episodeNr: 111 } }, 
-                                    } 
-                                }] 
+                ${Actor.operations.update}(
+                    where: {
+                        name: { eq: "${actorName}" }
+                    }
+                    update: { 
+                        actedIn: [{ # ActorActedInUpdateFieldInput
+                            update: { # ActorActedInUpdateConnectionInput
+                                where: { node: { title_EQ: "${movieTitle}" } } # ActorActedInConnectionWhere
+                                node: { # ProductionUpdateInput
+                                    actors: [{  # ProductionActorsUpdateFieldInput                          
+                                        connect: {  # ProductionActorsConnectFieldInput
+                                            where: { node: { name_EQ: "${actorName3}" } }, 
+                                            edge: { ActedIn: { screenTime: 111 }, StarredIn: { episodeNr: 111 } }, 
+                                        } 
+                                    }] 
+                                } 
                             } 
-                        } 
-                    }] 
-                }) {
+                        }] 
+                    }
+                ) {
                     ${Actor.plural} {
                         name
                         actedInConnection {
@@ -1451,6 +1455,54 @@ describe("interface with declared relationships", () => {
                         edges: expect.toIncludeSameMembers([
                             {
                                 node: {
+                                    title: movieTitle,
+                                    actorsConnection: {
+                                        edges: expect.toIncludeSameMembers([
+                                            {
+                                                node: {
+                                                    name: actorName3,
+                                                    actedInConnection: {
+                                                        edges: expect.toIncludeSameMembers([
+                                                            {
+                                                                node: { title: movieTitle, runtime: movieRuntime },
+                                                                properties: { screenTime: 111 },
+                                                            },
+                                                        ]),
+                                                    },
+                                                },
+                                                properties: { screenTime: 111 },
+                                            },
+                                            {
+                                                node: {
+                                                    name: actorName,
+                                                    actedInConnection: {
+                                                        edges: expect.toIncludeSameMembers([
+                                                            {
+                                                                node: { title: movieTitle2, runtime: movieRuntime },
+                                                                properties: { screenTime: movieScreenTime },
+                                                            },
+                                                            {
+                                                                node: { title: movieTitle, runtime: movieRuntime },
+                                                                properties: { screenTime: movieScreenTime },
+                                                            },
+                                                            {
+                                                                node: {
+                                                                    title: seriesTitle,
+                                                                    episodeCount: seriesEpisodes,
+                                                                },
+                                                                properties: { screenTime: movieScreenTime },
+                                                            },
+                                                        ]),
+                                                    },
+                                                },
+                                                properties: { screenTime: movieScreenTime },
+                                            },
+                                        ]),
+                                    },
+                                },
+                            },
+                            {
+                                node: {
                                     title: movieTitle2,
                                     actorsConnection: {
                                         edges: expect.toIncludeSameMembers([
@@ -1458,12 +1510,12 @@ describe("interface with declared relationships", () => {
                                                 node: {
                                                     name: actorName2,
                                                     actedInConnection: {
-                                                        edges: [
+                                                        edges: expect.toIncludeSameMembers([
                                                             {
                                                                 node: { title: movieTitle2, runtime: movieRuntime },
                                                                 properties: { screenTime: movieScreenTime },
                                                             },
-                                                        ],
+                                                        ]),
                                                     },
                                                 },
                                                 properties: { screenTime: movieScreenTime },
@@ -1499,57 +1551,9 @@ describe("interface with declared relationships", () => {
                             },
                             {
                                 node: {
-                                    title: movieTitle,
-                                    actorsConnection: {
-                                        edges: [
-                                            {
-                                                node: {
-                                                    name: actorName3,
-                                                    actedInConnection: {
-                                                        edges: [
-                                                            {
-                                                                node: { title: movieTitle, runtime: movieRuntime },
-                                                                properties: { screenTime: 111 },
-                                                            },
-                                                        ],
-                                                    },
-                                                },
-                                                properties: { screenTime: 111 },
-                                            },
-                                            {
-                                                node: {
-                                                    name: actorName,
-                                                    actedInConnection: {
-                                                        edges: expect.toIncludeSameMembers([
-                                                            {
-                                                                node: { title: movieTitle2, runtime: movieRuntime },
-                                                                properties: { screenTime: movieScreenTime },
-                                                            },
-                                                            {
-                                                                node: { title: movieTitle, runtime: movieRuntime },
-                                                                properties: { screenTime: movieScreenTime },
-                                                            },
-                                                            {
-                                                                node: {
-                                                                    title: seriesTitle,
-                                                                    episodeCount: seriesEpisodes,
-                                                                },
-                                                                properties: { screenTime: movieScreenTime },
-                                                            },
-                                                        ]),
-                                                    },
-                                                },
-                                                properties: { screenTime: movieScreenTime },
-                                            },
-                                        ],
-                                    },
-                                },
-                            },
-                            {
-                                node: {
                                     title: seriesTitle,
                                     actorsConnection: {
-                                        edges: [
+                                        edges: expect.toIncludeSameMembers([
                                             {
                                                 node: {
                                                     name: actorName,
@@ -1575,117 +1579,7 @@ describe("interface with declared relationships", () => {
                                                 },
                                                 properties: { episodeNr },
                                             },
-                                        ],
-                                    },
-                                },
-                            },
-                        ]),
-                    },
-                },
-                {
-                    name: actorName2,
-                    actedInConnection: {
-                        edges: [
-                            {
-                                node: {
-                                    title: movieTitle2,
-                                    actorsConnection: {
-                                        edges: expect.toIncludeSameMembers([
-                                            {
-                                                node: {
-                                                    name: actorName2,
-                                                    actedInConnection: {
-                                                        edges: [
-                                                            {
-                                                                node: { title: movieTitle2, runtime: movieRuntime },
-                                                                properties: { screenTime: movieScreenTime },
-                                                            },
-                                                        ],
-                                                    },
-                                                },
-                                                properties: { screenTime: movieScreenTime },
-                                            },
-                                            {
-                                                node: {
-                                                    name: actorName,
-                                                    actedInConnection: {
-                                                        edges: expect.toIncludeSameMembers([
-                                                            {
-                                                                node: { title: movieTitle2, runtime: movieRuntime },
-                                                                properties: { screenTime: movieScreenTime },
-                                                            },
-                                                            {
-                                                                node: { title: movieTitle, runtime: movieRuntime },
-                                                                properties: { screenTime: movieScreenTime },
-                                                            },
-                                                            {
-                                                                node: {
-                                                                    title: seriesTitle,
-                                                                    episodeCount: seriesEpisodes,
-                                                                },
-                                                                properties: { screenTime: movieScreenTime },
-                                                            },
-                                                        ]),
-                                                    },
-                                                },
-                                                properties: { screenTime: movieScreenTime },
-                                            },
                                         ]),
-                                    },
-                                },
-                            },
-                        ],
-                    },
-                },
-                {
-                    name: actorName3,
-                    actedInConnection: {
-                        edges: expect.toIncludeSameMembers([
-                            {
-                                node: {
-                                    title: movieTitle,
-                                    actorsConnection: {
-                                        edges: [
-                                            {
-                                                node: {
-                                                    name: actorName3,
-                                                    actedInConnection: {
-                                                        edges: [
-                                                            {
-                                                                node: { title: movieTitle, runtime: movieRuntime },
-                                                                properties: { screenTime: 111 },
-                                                            },
-                                                        ],
-                                                    },
-                                                },
-                                                properties: { screenTime: 111 },
-                                            },
-                                            {
-                                                node: {
-                                                    name: actorName,
-                                                    actedInConnection: {
-                                                        edges: expect.toIncludeSameMembers([
-                                                            {
-                                                                node: { title: movieTitle2, runtime: movieRuntime },
-                                                                properties: { screenTime: movieScreenTime },
-                                                            },
-                                                            {
-                                                                node: { title: movieTitle, runtime: movieRuntime },
-                                                                properties: { screenTime: movieScreenTime },
-                                                            },
-                                                            {
-                                                                node: {
-                                                                    title: seriesTitle,
-                                                                    episodeCount: seriesEpisodes,
-                                                                },
-                                                                properties: { screenTime: movieScreenTime },
-                                                            },
-                                                        ]),
-                                                    },
-                                                },
-                                                properties: { screenTime: movieScreenTime },
-                                            },
-                                        ],
                                     },
                                 },
                             },
@@ -1712,9 +1606,8 @@ describe("interface with declared relationships", () => {
                             edge: { screenTime: 112 }
                             where: { node: { title_EQ: "${movieTitle}" } } 
                             connect: { 
-                                actors: [{  
+                                actors: [{
                                     edge: { ActedIn: { screenTime: 111 }, StarredIn: { episodeNr: 111 } }, 
-                                    
                                 }] 
                             } 
                         }] 
@@ -1786,7 +1679,7 @@ describe("interface with declared relationships", () => {
                 {
                     name: actorName2,
                     actedInConnection: {
-                        edges: [
+                        edges: expect.toIncludeSameMembers([
                             {
                                 node: {
                                     title: movieTitle,
@@ -1794,37 +1687,59 @@ describe("interface with declared relationships", () => {
                                         edges: expect.toIncludeSameMembers([
                                             {
                                                 node: {
-                                                    name: actorName2,
+                                                    name: actorName,
                                                     actedInConnection: {
-                                                        edges: [
+                                                        edges: expect.toIncludeSameMembers([
                                                             {
                                                                 node: { title: movieTitle, runtime: movieRuntime },
                                                                 properties: { screenTime: 111 },
                                                             },
-                                                        ],
+                                                        ]),
                                                     },
                                                 },
                                                 properties: { screenTime: 111 },
                                             },
                                             {
                                                 node: {
-                                                    name: actorName,
+                                                    name: actorName2,
                                                     actedInConnection: {
-                                                        edges: [
+                                                        edges: expect.toIncludeSameMembers([
                                                             {
                                                                 node: { title: movieTitle, runtime: movieRuntime },
                                                                 properties: { screenTime: 111 },
                                                             },
-                                                        ],
+                                                            {
+                                                                node: { title: movieTitle, runtime: movieRuntime },
+                                                                properties: { screenTime: 112 },
+                                                            },
+                                                        ]),
                                                     },
                                                 },
                                                 properties: { screenTime: 111 },
+                                            },
+                                            {
+                                                node: {
+                                                    name: actorName2,
+                                                    actedInConnection: {
+                                                        edges: expect.toIncludeSameMembers([
+                                                            {
+                                                                node: { title: movieTitle, runtime: movieRuntime },
+                                                                properties: { screenTime: 111 },
+                                                            },
+                                                            {
+                                                                node: { title: movieTitle, runtime: movieRuntime },
+                                                                properties: { screenTime: 112 },
+                                                            },
+                                                        ]),
+                                                    },
+                                                },
+                                                properties: { screenTime: 112 },
                                             },
                                         ]),
                                     },
                                 },
                             },
-                        ],
+                        ]),
                     },
                 },
             ]
@@ -1853,7 +1768,7 @@ describe("interface with declared relationships", () => {
                 actedIn: {
                   connect: {
                     edge: { screenTime: 10 }
-                    where: { node: { title_EQ: "${movieTitle}", typename_IN: [${Movie.name}] } }
+                    where: { node: { title_EQ: "${movieTitle}", typename: [${Movie.name}] } }
                   }
                 }
               }

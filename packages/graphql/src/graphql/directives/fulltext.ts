@@ -26,11 +26,6 @@ import {
     GraphQLString,
 } from "graphql";
 
-const deprecationReason =
-    "The name argument has been deprecated and will be removed in future versions " +
-    "Please use indexName instead. More information about the changes to @fulltext can be found at " +
-    "https://neo4j.com/docs/graphql-manual/current/guides/v4-migration/#_fulltext_changes.";
-
 export const fulltextDirective = new GraphQLDirective({
     name: "fulltext",
     description:
@@ -40,20 +35,16 @@ export const fulltextDirective = new GraphQLDirective({
             type: new GraphQLNonNull(
                 new GraphQLList(
                     new GraphQLInputObjectType({
-                        name: "FullTextInput",
+                        name: "FulltextInput",
                         fields: {
-                            name: {
-                                deprecationReason,
-                                type: GraphQLString,
-                            },
                             fields: {
                                 type: new GraphQLNonNull(new GraphQLList(GraphQLString)),
                             },
                             queryName: {
-                                type: GraphQLString,
+                                type: new GraphQLNonNull(GraphQLString),
                             },
                             indexName: {
-                                type: GraphQLString,
+                                type: new GraphQLNonNull(GraphQLString),
                             },
                         },
                     })

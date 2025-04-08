@@ -40,7 +40,7 @@ describe("Cypher Points", () => {
     test("Simple Point query", async () => {
         const query = /* GraphQL */ `
             {
-                pointContainers(where: { point_EQ: { longitude: 1.0, latitude: 2.0 } }) {
+                pointContainers(where: { point: { eq: { longitude: 1.0, latitude: 2.0 } } }) {
                     point {
                         longitude
                         latitude
@@ -53,7 +53,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE this.point = point($param0)
             RETURN this { .point } AS this"
         `);
@@ -71,7 +72,7 @@ describe("Cypher Points", () => {
     test("Simple Point NOT query", async () => {
         const query = /* GraphQL */ `
             {
-                pointContainers(where: { NOT: { point_EQ: { longitude: 1.0, latitude: 2.0 } } }) {
+                pointContainers(where: { NOT: { point: { eq: { longitude: 1.0, latitude: 2.0 } } } }) {
                     point {
                         longitude
                         latitude
@@ -83,7 +84,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE NOT (this.point = point($param0))
             RETURN this { .point } AS this"
         `);
@@ -101,7 +103,7 @@ describe("Cypher Points", () => {
     test("Simple Point IN query", async () => {
         const query = /* GraphQL */ `
             {
-                pointContainers(where: { point_IN: [{ longitude: 1.0, latitude: 2.0 }] }) {
+                pointContainers(where: { point: { in: [{ longitude: 1.0, latitude: 2.0 }] } }) {
                     point {
                         longitude
                         latitude
@@ -114,7 +116,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE this.point IN [var0 IN $param0 | point(var0)]
             RETURN this { .point } AS this"
         `);
@@ -135,140 +138,8 @@ describe("Cypher Points", () => {
         test("Simple Point LT query", async () => {
             const query = /* GraphQL */ `
                 {
-                    pointContainers(where: { point_LT: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
-                        point {
-                            longitude
-                            latitude
-                        }
-                    }
-                }
-            `;
-
-            const result = await translateQuery(neoSchema, query);
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:PointContainer)
-                WHERE point.distance(this.point, point($param0.point)) < $param0.distance
-                RETURN this { .point } AS this"
-            `);
-
-            expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                "{
-                    \\"param0\\": {
-                        \\"point\\": {
-                            \\"longitude\\": 1.1,
-                            \\"latitude\\": 2.2
-                        },
-                        \\"distance\\": 3.3
-                    }
-                }"
-            `);
-        });
-
-        test("Simple Point LTE query", async () => {
-            const query = /* GraphQL */ `
-                {
-                    pointContainers(where: { point_LTE: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
-                        point {
-                            longitude
-                            latitude
-                        }
-                    }
-                }
-            `;
-
-            const result = await translateQuery(neoSchema, query);
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:PointContainer)
-                WHERE point.distance(this.point, point($param0.point)) <= $param0.distance
-                RETURN this { .point } AS this"
-            `);
-
-            expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                "{
-                    \\"param0\\": {
-                        \\"point\\": {
-                            \\"longitude\\": 1.1,
-                            \\"latitude\\": 2.2
-                        },
-                        \\"distance\\": 3.3
-                    }
-                }"
-            `);
-        });
-
-        test("Simple Point GT query", async () => {
-            const query = /* GraphQL */ `
-                {
-                    pointContainers(where: { point_GT: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
-                        point {
-                            longitude
-                            latitude
-                        }
-                    }
-                }
-            `;
-
-            const result = await translateQuery(neoSchema, query);
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:PointContainer)
-                WHERE point.distance(this.point, point($param0.point)) > $param0.distance
-                RETURN this { .point } AS this"
-            `);
-
-            expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                "{
-                    \\"param0\\": {
-                        \\"point\\": {
-                            \\"longitude\\": 1.1,
-                            \\"latitude\\": 2.2
-                        },
-                        \\"distance\\": 3.3
-                    }
-                }"
-            `);
-        });
-
-        test("Simple Point GTE query", async () => {
-            const query = /* GraphQL */ `
-                {
-                    pointContainers(where: { point_GTE: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }) {
-                        point {
-                            longitude
-                            latitude
-                        }
-                    }
-                }
-            `;
-
-            const result = await translateQuery(neoSchema, query);
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:PointContainer)
-                WHERE point.distance(this.point, point($param0.point)) >= $param0.distance
-                RETURN this { .point } AS this"
-            `);
-
-            expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                "{
-                    \\"param0\\": {
-                        \\"point\\": {
-                            \\"longitude\\": 1.1,
-                            \\"latitude\\": 2.2
-                        },
-                        \\"distance\\": 3.3
-                    }
-                }"
-            `);
-        });
-
-        test("Simple Point DISTANCE query", async () => {
-            const query = /* GraphQL */ `
-                {
                     pointContainers(
-                        where: { point_DISTANCE: { point: { longitude: 1.1, latitude: 2.2 }, distance: 3.3 } }
+                        where: { point: { distance: { from: { longitude: 1.1, latitude: 2.2 }, lt: 3.3 } } }
                     ) {
                         point {
                             longitude
@@ -281,7 +152,152 @@ describe("Cypher Points", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:PointContainer)
+                "CYPHER 5
+                MATCH (this:PointContainer)
+                WHERE point.distance(this.point, point($param0.point)) < $param0.distance
+                RETURN this { .point } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"param0\\": {
+                        \\"distance\\": 3.3,
+                        \\"point\\": {
+                            \\"longitude\\": 1.1,
+                            \\"latitude\\": 2.2
+                        }
+                    }
+                }"
+            `);
+        });
+
+        test("Simple Point LTE query", async () => {
+            const query = /* GraphQL */ `
+                {
+                    pointContainers(
+                        where: { point: { distance: { from: { longitude: 1.1, latitude: 2.2 }, lte: 3.3 } } }
+                    ) {
+                        point {
+                            longitude
+                            latitude
+                        }
+                    }
+                }
+            `;
+
+            const result = await translateQuery(neoSchema, query);
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "CYPHER 5
+                MATCH (this:PointContainer)
+                WHERE point.distance(this.point, point($param0.point)) <= $param0.distance
+                RETURN this { .point } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"param0\\": {
+                        \\"distance\\": 3.3,
+                        \\"point\\": {
+                            \\"longitude\\": 1.1,
+                            \\"latitude\\": 2.2
+                        }
+                    }
+                }"
+            `);
+        });
+
+        test("Simple Point GT query", async () => {
+            const query = /* GraphQL */ `
+                {
+                    pointContainers(
+                        where: { point: { distance: { from: { longitude: 1.1, latitude: 2.2 }, gt: 3.3 } } }
+                    ) {
+                        point {
+                            longitude
+                            latitude
+                        }
+                    }
+                }
+            `;
+
+            const result = await translateQuery(neoSchema, query);
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "CYPHER 5
+                MATCH (this:PointContainer)
+                WHERE point.distance(this.point, point($param0.point)) > $param0.distance
+                RETURN this { .point } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"param0\\": {
+                        \\"distance\\": 3.3,
+                        \\"point\\": {
+                            \\"longitude\\": 1.1,
+                            \\"latitude\\": 2.2
+                        }
+                    }
+                }"
+            `);
+        });
+
+        test("Simple Point GTE query", async () => {
+            const query = /* GraphQL */ `
+                {
+                    pointContainers(
+                        where: { point: { distance: { from: { longitude: 1.1, latitude: 2.2 }, gte: 3.3 } } }
+                    ) {
+                        point {
+                            longitude
+                            latitude
+                        }
+                    }
+                }
+            `;
+
+            const result = await translateQuery(neoSchema, query);
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "CYPHER 5
+                MATCH (this:PointContainer)
+                WHERE point.distance(this.point, point($param0.point)) >= $param0.distance
+                RETURN this { .point } AS this"
+            `);
+
+            expect(formatParams(result.params)).toMatchInlineSnapshot(`
+                "{
+                    \\"param0\\": {
+                        \\"distance\\": 3.3,
+                        \\"point\\": {
+                            \\"longitude\\": 1.1,
+                            \\"latitude\\": 2.2
+                        }
+                    }
+                }"
+            `);
+        });
+
+        test("Simple Point DISTANCE query", async () => {
+            const query = /* GraphQL */ `
+                {
+                    pointContainers(
+                        where: { point: { distance: { from: { longitude: 1.1, latitude: 2.2 }, eq: 3.3 } } }
+                    ) {
+                        point {
+                            longitude
+                            latitude
+                        }
+                    }
+                }
+            `;
+
+            const result = await translateQuery(neoSchema, query);
+
+            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+                "CYPHER 5
+                MATCH (this:PointContainer)
                 WHERE point.distance(this.point, point($param0.point)) = $param0.distance
                 RETURN this { .point } AS this"
             `);
@@ -289,11 +305,11 @@ describe("Cypher Points", () => {
             expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{
                     \\"param0\\": {
+                        \\"distance\\": 3.3,
                         \\"point\\": {
                             \\"longitude\\": 1.1,
                             \\"latitude\\": 2.2
-                        },
-                        \\"distance\\": 3.3
+                        }
                     }
                 }"
             `);
@@ -318,7 +334,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:PointContainer)
@@ -347,7 +364,7 @@ describe("Cypher Points", () => {
         const query = /* GraphQL */ `
             mutation {
                 updatePointContainers(
-                    where: { id_EQ: "id" }
+                    where: { id: { eq: "id" } }
                     update: { point_SET: { longitude: 1.0, latitude: 2.0 } }
                 ) {
                     pointContainers {
@@ -364,7 +381,8 @@ describe("Cypher Points", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:PointContainer)
+            "CYPHER 5
+            MATCH (this:PointContainer)
             WHERE this.id = $param0
             SET this.point = point($this_update_point_SET)
             RETURN collect(DISTINCT this { .point }) AS data"

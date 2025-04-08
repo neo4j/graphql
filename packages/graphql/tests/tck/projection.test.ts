@@ -49,7 +49,7 @@ describe("Cypher Projection", () => {
                 id: ID!
                 description: String!
                 url: String!
-                color: Color! @relationship(type: "OF_COLOR", direction: OUT)
+                color: [Color!]! @relationship(type: "OF_COLOR", direction: OUT)
                 location: Point
             }
         `;
@@ -65,7 +65,7 @@ describe("Cypher Projection", () => {
                 createProducts(input: [{ id: "1" }, { id: "2" }]) {
                     products {
                         id
-                        photos(where: { url_EQ: "url.com" }) {
+                        photos(where: { url: { eq: "url.com" } }) {
                             url
                             location {
                                 latitude
@@ -73,10 +73,10 @@ describe("Cypher Projection", () => {
                                 height
                             }
                         }
-                        colors(where: { id_EQ: 123 }) {
+                        colors(where: { id: { eq: 123 } }) {
                             id
                         }
-                        sizes(where: { name_EQ: "small" }) {
+                        sizes(where: { name: { eq: "small" } }) {
                             name
                         }
                     }
@@ -87,7 +87,8 @@ describe("Cypher Projection", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Product)
@@ -99,6 +100,7 @@ describe("Cypher Projection", () => {
                 WITH create_this1
                 MATCH (create_this1)-[create_this2:HAS_PHOTO]->(create_this3:Photo)
                 WHERE create_this3.url = $create_param1
+                WITH DISTINCT create_this3
                 WITH create_this3 { .url, .location } AS create_this3
                 RETURN collect(create_this3) AS create_var4
             }
@@ -106,6 +108,7 @@ describe("Cypher Projection", () => {
                 WITH create_this1
                 MATCH (create_this1)-[create_this5:HAS_COLOR]->(create_this6:Color)
                 WHERE create_this6.id = $create_param2
+                WITH DISTINCT create_this6
                 WITH create_this6 { .id } AS create_this6
                 RETURN collect(create_this6) AS create_var7
             }
@@ -113,6 +116,7 @@ describe("Cypher Projection", () => {
                 WITH create_this1
                 MATCH (create_this1)-[create_this8:HAS_SIZE]->(create_this9:Size)
                 WHERE create_this9.name = $create_param3
+                WITH DISTINCT create_this9
                 WITH create_this9 { .name } AS create_this9
                 RETURN collect(create_this9) AS create_var10
             }

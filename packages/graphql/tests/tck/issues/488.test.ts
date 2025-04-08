@@ -34,17 +34,17 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
             union Keyword = Emoji | Hashtag | Text
 
             type Emoji @node {
-                id: ID! @id @unique
+                id: ID! @id
                 type: String!
             }
 
             type Hashtag @node {
-                id: ID! @id @unique
+                id: ID! @id
                 type: String!
             }
 
             type Text @node {
-                id: ID! @id @unique
+                id: ID! @id
                 type: String!
             }
         `;
@@ -57,7 +57,7 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
     test("Should replicate issue and return correct cypher", async () => {
         const query = /* GraphQL */ `
             query {
-                journalists(where: { keywordsConnection_SOME: { Emoji: { node: { type_EQ: "Smile" } } } }) {
+                journalists(where: { keywordsConnection: { some: { Emoji: { node: { type: { eq: "Smile" } } } } } }) {
                     name
                     keywords {
                         ... on Emoji {
@@ -72,7 +72,8 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Journalist)
+            "CYPHER 5
+            MATCH (this:Journalist)
             WHERE EXISTS {
                 MATCH (this)-[this0:HAS_KEYWORD]->(this1:Emoji)
                 WHERE this1.type = $param0
@@ -111,7 +112,7 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
     test("Should replicate issue and return correct cypher (using NONE)", async () => {
         const query = /* GraphQL */ `
             query {
-                journalists(where: { keywordsConnection_NONE: { Emoji: { node: { type_EQ: "Smile" } } } }) {
+                journalists(where: { keywordsConnection: { none: { Emoji: { node: { type: { eq: "Smile" } } } } } }) {
                     name
                     keywords {
                         ... on Emoji {
@@ -126,7 +127,8 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Journalist)
+            "CYPHER 5
+            MATCH (this:Journalist)
             WHERE NOT (EXISTS {
                 MATCH (this)-[this0:HAS_KEYWORD]->(this1:Emoji)
                 WHERE this1.type = $param0

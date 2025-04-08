@@ -18,9 +18,9 @@
  */
 
 import type { ArgumentNode, DirectiveNode, GraphQLError } from "graphql";
-import { VALIDATION_ERROR_CODES } from "./validation-error-codes";
 import { lowerFirst } from "../../../utils/lower-first";
 import { createGraphQLError } from "../custom-rules/utils/document-validation-error";
+import { VALIDATION_ERROR_CODES } from "./validation-error-codes";
 
 export function mapError(error: GraphQLError): GraphQLError {
     const { nodes, message } = error;
@@ -34,6 +34,7 @@ export function mapError(error: GraphQLError): GraphQLError {
     }
     return createGraphQLError({
         nodes,
+        path: error.path,
         errorMsg: replacedMessage,
     });
 }

@@ -50,7 +50,14 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             test("filter + explicit AND", async () => {
                 const query = /* GraphQL */ `
                     {
-                        posts(where: { likesAggregate: { count_GT: 10, AND: [{ count_GT: 25 }, { count_LT: 33 }] } }) {
+                        posts(
+                            where: {
+                                likesAggregate: {
+                                    count: { gt: 10 }
+                                    AND: [{ count: { gt: 25 } }, { count: { lt: 33 } }]
+                                }
+                            }
+                        ) {
                             content
                         }
                     }
@@ -59,16 +66,27 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                                    "MATCH (this:Post)
-                                    CALL {
-                                        WITH this
-                                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                                        RETURN (count(this1) > $param0 AND (count(this1) > $param1 AND count(this1) < $param2)) AS var2
-                                    }
-                                    WITH *
-                                    WHERE var2 = true
-                                    RETURN this { .content } AS this"
-                            `);
+                    "CYPHER 5
+                    MATCH (this:Post)
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this0:LIKES]-(this1:User)
+                        RETURN count(this1) > $param0 AS var2
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this3:LIKES]-(this4:User)
+                        RETURN count(this4) > $param1 AS var5
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this6:LIKES]-(this7:User)
+                        RETURN count(this7) < $param2 AS var8
+                    }
+                    WITH *
+                    WHERE (var2 = true AND (var5 = true AND var8 = true))
+                    RETURN this { .content } AS this"
+                `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                                     "{
@@ -91,7 +109,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             test("filter + implicit AND", async () => {
                 const query = /* GraphQL */ `
                     {
-                        posts(where: { likesAggregate: { count_GT: 10, AND: [{ count_GT: 25, count_LT: 33 }] } }) {
+                        posts(where: { likesAggregate: { count: { gt: 10 }, AND: [{ count: { gt: 25, lt: 33 } }] } }) {
                             content
                         }
                     }
@@ -100,39 +118,57 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                                    "MATCH (this:Post)
-                                    CALL {
-                                        WITH this
-                                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                                        RETURN (count(this1) > $param0 AND (count(this1) < $param1 AND count(this1) > $param2)) AS var2
-                                    }
-                                    WITH *
-                                    WHERE var2 = true
-                                    RETURN this { .content } AS this"
-                            `);
+                    "CYPHER 5
+                    MATCH (this:Post)
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this0:LIKES]-(this1:User)
+                        RETURN count(this1) > $param0 AS var2
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this3:LIKES]-(this4:User)
+                        RETURN count(this4) > $param1 AS var5
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this6:LIKES]-(this7:User)
+                        RETURN count(this7) < $param2 AS var8
+                    }
+                    WITH *
+                    WHERE (var2 = true AND (var5 = true AND var8 = true))
+                    RETURN this { .content } AS this"
+                `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                                    "{
-                                        \\"param0\\": {
-                                            \\"low\\": 10,
-                                            \\"high\\": 0
-                                        },
-                                        \\"param1\\": {
-                                            \\"low\\": 33,
-                                            \\"high\\": 0
-                                        },
-                                        \\"param2\\": {
-                                            \\"low\\": 25,
-                                            \\"high\\": 0
-                                        }
-                                    }"
-                            `);
+                    "{
+                        \\"param0\\": {
+                            \\"low\\": 10,
+                            \\"high\\": 0
+                        },
+                        \\"param1\\": {
+                            \\"low\\": 25,
+                            \\"high\\": 0
+                        },
+                        \\"param2\\": {
+                            \\"low\\": 33,
+                            \\"high\\": 0
+                        }
+                    }"
+                `);
             });
 
             test("filter + explicit OR", async () => {
                 const query = /* GraphQL */ `
                     {
-                        posts(where: { likesAggregate: { count_GT: 10, OR: [{ count_GT: 25 }, { count_LT: 33 }] } }) {
+                        posts(
+                            where: {
+                                likesAggregate: {
+                                    count: { gt: 10 }
+                                    OR: [{ count: { gt: 25 } }, { count: { lt: 33 } }]
+                                }
+                            }
+                        ) {
                             content
                         }
                     }
@@ -141,16 +177,27 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                                    "MATCH (this:Post)
-                                    CALL {
-                                        WITH this
-                                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                                        RETURN (count(this1) > $param0 AND (count(this1) > $param1 OR count(this1) < $param2)) AS var2
-                                    }
-                                    WITH *
-                                    WHERE var2 = true
-                                    RETURN this { .content } AS this"
-                            `);
+                    "CYPHER 5
+                    MATCH (this:Post)
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this0:LIKES]-(this1:User)
+                        RETURN count(this1) > $param0 AS var2
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this3:LIKES]-(this4:User)
+                        RETURN count(this4) > $param1 AS var5
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this6:LIKES]-(this7:User)
+                        RETURN count(this7) < $param2 AS var8
+                    }
+                    WITH *
+                    WHERE (var2 = true AND (var5 = true OR var8 = true))
+                    RETURN this { .content } AS this"
+                `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                                     "{
@@ -176,8 +223,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                         posts(
                             where: {
                                 likesAggregate: {
-                                    count_GT: 10
-                                    OR: [{ count_GT: 25, count_LTE: 99 }, { count_LT: 33 }]
+                                    count: { gt: 10 }
+                                    OR: [{ count: { gt: 25, lte: 99 } }, { count: { lt: 33 } }]
                                 }
                             }
                         ) {
@@ -189,37 +236,53 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                                    "MATCH (this:Post)
-                                    CALL {
-                                        WITH this
-                                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                                        RETURN (count(this1) > $param0 AND ((count(this1) <= $param1 AND count(this1) > $param2) OR count(this1) < $param3)) AS var2
-                                    }
-                                    WITH *
-                                    WHERE var2 = true
-                                    RETURN this { .content } AS this"
-                            `);
+                    "CYPHER 5
+                    MATCH (this:Post)
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this0:LIKES]-(this1:User)
+                        RETURN count(this1) > $param0 AS var2
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this3:LIKES]-(this4:User)
+                        RETURN count(this4) > $param1 AS var5
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this6:LIKES]-(this7:User)
+                        RETURN count(this7) <= $param2 AS var8
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this9:LIKES]-(this10:User)
+                        RETURN count(this10) < $param3 AS var11
+                    }
+                    WITH *
+                    WHERE (var2 = true AND ((var5 = true AND var8 = true) OR var11 = true))
+                    RETURN this { .content } AS this"
+                `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
-                                    "{
-                                        \\"param0\\": {
-                                            \\"low\\": 10,
-                                            \\"high\\": 0
-                                        },
-                                        \\"param1\\": {
-                                            \\"low\\": 99,
-                                            \\"high\\": 0
-                                        },
-                                        \\"param2\\": {
-                                            \\"low\\": 25,
-                                            \\"high\\": 0
-                                        },
-                                        \\"param3\\": {
-                                            \\"low\\": 33,
-                                            \\"high\\": 0
-                                        }
-                                    }"
-                            `);
+                    "{
+                        \\"param0\\": {
+                            \\"low\\": 10,
+                            \\"high\\": 0
+                        },
+                        \\"param1\\": {
+                            \\"low\\": 25,
+                            \\"high\\": 0
+                        },
+                        \\"param2\\": {
+                            \\"low\\": 99,
+                            \\"high\\": 0
+                        },
+                        \\"param3\\": {
+                            \\"low\\": 33,
+                            \\"high\\": 0
+                        }
+                    }"
+                `);
             });
 
             test("filter + explicit OR which contains an explicit AND", async () => {
@@ -228,8 +291,11 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                         posts(
                             where: {
                                 likesAggregate: {
-                                    count_GT: 10
-                                    OR: [{ AND: [{ count_GT: 25 }, { count_LTE: 99 }] }, { count_LT: 33 }]
+                                    count: { gt: 10 }
+                                    OR: [
+                                        { AND: [{ count: { gt: 25 } }, { count: { lte: 99 } }] }
+                                        { count: { lt: 33 } }
+                                    ]
                                 }
                             }
                         ) {
@@ -241,16 +307,32 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                                    "MATCH (this:Post)
-                                    CALL {
-                                        WITH this
-                                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                                        RETURN (count(this1) > $param0 AND ((count(this1) > $param1 AND count(this1) <= $param2) OR count(this1) < $param3)) AS var2
-                                    }
-                                    WITH *
-                                    WHERE var2 = true
-                                    RETURN this { .content } AS this"
-                            `);
+                    "CYPHER 5
+                    MATCH (this:Post)
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this0:LIKES]-(this1:User)
+                        RETURN count(this1) > $param0 AS var2
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this3:LIKES]-(this4:User)
+                        RETURN count(this4) > $param1 AS var5
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this6:LIKES]-(this7:User)
+                        RETURN count(this7) <= $param2 AS var8
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this9:LIKES]-(this10:User)
+                        RETURN count(this10) < $param3 AS var11
+                    }
+                    WITH *
+                    WHERE (var2 = true AND ((var5 = true AND var8 = true) OR var11 = true))
+                    RETURN this { .content } AS this"
+                `);
 
                 expect(formatParams(result.params)).toMatchInlineSnapshot(`
                                     "{
@@ -282,8 +364,13 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                         posts(
                             where: {
                                 likesAggregate: {
-                                    count_GT: 10
-                                    node: { AND: [{ name_SHORTEST_LENGTH_GT: 25 }, { name_SHORTEST_LENGTH_LT: 80 }] }
+                                    count: { gt: 10 }
+                                    node: {
+                                        AND: [
+                                            { name: { shortestLength: { gt: 25 } } }
+                                            { name: { shortestLength: { lt: 80 } } }
+                                        ]
+                                    }
                                 }
                             }
                         ) {
@@ -295,14 +382,25 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Post)
+                    "CYPHER 5
+                    MATCH (this:Post)
                     CALL {
                         WITH this
                         MATCH (this)<-[this0:LIKES]-(this1:User)
-                        RETURN (count(this1) > $param0 AND (min(size(this1.name)) > $param1 AND min(size(this1.name)) < $param2)) AS var2
+                        RETURN count(this1) > $param0 AS var2
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this3:LIKES]-(this4:User)
+                        RETURN min(size(this4.name)) > $param1 AS var5
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this6:LIKES]-(this7:User)
+                        RETURN min(size(this7.name)) < $param2 AS var8
                     }
                     WITH *
-                    WHERE var2 = true
+                    WHERE (var2 = true AND (var5 = true AND var8 = true))
                     RETURN this { .content } AS this"
                 `);
 
@@ -330,8 +428,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                         posts(
                             where: {
                                 likesAggregate: {
-                                    count_GT: 10
-                                    node: { AND: [{ name_SHORTEST_LENGTH_GT: 25, name_SHORTEST_LENGTH_LT: 80 }] }
+                                    count: { gt: 10 }
+                                    node: { AND: [{ name: { shortestLength: { gt: 25, lt: 80 } } }] }
                                 }
                             }
                         ) {
@@ -343,14 +441,25 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Post)
+                    "CYPHER 5
+                    MATCH (this:Post)
                     CALL {
                         WITH this
                         MATCH (this)<-[this0:LIKES]-(this1:User)
-                        RETURN (count(this1) > $param0 AND (min(size(this1.name)) > $param1 AND min(size(this1.name)) < $param2)) AS var2
+                        RETURN count(this1) > $param0 AS var2
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this3:LIKES]-(this4:User)
+                        RETURN min(size(this4.name)) > $param1 AS var5
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this6:LIKES]-(this7:User)
+                        RETURN min(size(this7.name)) < $param2 AS var8
                     }
                     WITH *
-                    WHERE var2 = true
+                    WHERE (var2 = true AND (var5 = true AND var8 = true))
                     RETURN this { .content } AS this"
                 `);
 
@@ -378,8 +487,13 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                         posts(
                             where: {
                                 likesAggregate: {
-                                    count_GT: 10
-                                    node: { OR: [{ name_SHORTEST_LENGTH_GT: 25 }, { name_SHORTEST_LENGTH_LT: 80 }] }
+                                    count: { gt: 10 }
+                                    node: {
+                                        OR: [
+                                            { name: { shortestLength: { gt: 25 } } }
+                                            { name: { shortestLength: { lt: 80 } } }
+                                        ]
+                                    }
                                 }
                             }
                         ) {
@@ -391,14 +505,25 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Post)
+                    "CYPHER 5
+                    MATCH (this:Post)
                     CALL {
                         WITH this
                         MATCH (this)<-[this0:LIKES]-(this1:User)
-                        RETURN (count(this1) > $param0 AND (min(size(this1.name)) > $param1 OR min(size(this1.name)) < $param2)) AS var2
+                        RETURN count(this1) > $param0 AS var2
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this3:LIKES]-(this4:User)
+                        RETURN min(size(this4.name)) > $param1 AS var5
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this6:LIKES]-(this7:User)
+                        RETURN min(size(this7.name)) < $param2 AS var8
                     }
                     WITH *
-                    WHERE var2 = true
+                    WHERE (var2 = true AND (var5 = true OR var8 = true))
                     RETURN this { .content } AS this"
                 `);
 
@@ -426,11 +551,11 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                         posts(
                             where: {
                                 likesAggregate: {
-                                    count_GT: 10
+                                    count: { gt: 10 }
                                     node: {
                                         OR: [
-                                            { name_SHORTEST_LENGTH_GT: 25, name_SHORTEST_LENGTH_LT: 40 }
-                                            { name_SHORTEST_LENGTH_GTE: 1233 }
+                                            { name: { shortestLength: { gt: 25, lt: 40 } } }
+                                            { name: { shortestLength: { gte: 1233 } } }
                                         ]
                                     }
                                 }
@@ -444,14 +569,30 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Post)
+                    "CYPHER 5
+                    MATCH (this:Post)
                     CALL {
                         WITH this
                         MATCH (this)<-[this0:LIKES]-(this1:User)
-                        RETURN (count(this1) > $param0 AND ((min(size(this1.name)) > $param1 AND min(size(this1.name)) < $param2) OR min(size(this1.name)) >= $param3)) AS var2
+                        RETURN count(this1) > $param0 AS var2
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this3:LIKES]-(this4:User)
+                        RETURN min(size(this4.name)) > $param1 AS var5
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this6:LIKES]-(this7:User)
+                        RETURN min(size(this7.name)) < $param2 AS var8
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this9:LIKES]-(this10:User)
+                        RETURN min(size(this10.name)) >= $param3 AS var11
                     }
                     WITH *
-                    WHERE var2 = true
+                    WHERE (var2 = true AND ((var5 = true AND var8 = true) OR var11 = true))
                     RETURN this { .content } AS this"
                 `);
 
@@ -483,15 +624,15 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                         posts(
                             where: {
                                 likesAggregate: {
-                                    count_GT: 10
+                                    count: { gt: 10 }
                                     OR: [
                                         {
-                                            edge: { someProp_LONGEST_LENGTH_GT: 4, someProp_SHORTEST_LENGTH_LT: 10 }
-                                            node: { name_AVERAGE_LENGTH_GT: 3782 }
+                                            edge: { someProp: { shortestLength: { lt: 10 }, longestLength: { gt: 4 } } }
+                                            node: { name: { averageLength: { gt: 3782 } } }
                                         }
-                                        { node: { name_SHORTEST_LENGTH_GT: 25 } }
+                                        { node: { name: { shortestLength: { gt: 25 } } } }
                                     ]
-                                    edge: { someProp_LONGEST_LENGTH_LT: 12, someProp_SHORTEST_LENGTH_GT: 20 }
+                                    edge: { someProp: { longestLength: { lt: 12 }, shortestLength: { gt: 20 } } }
                                 }
                             }
                         ) {
@@ -503,14 +644,45 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 const result = await translateQuery(neoSchema, query);
 
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                    "MATCH (this:Post)
+                    "CYPHER 5
+                    MATCH (this:Post)
                     CALL {
                         WITH this
                         MATCH (this)<-[this0:LIKES]-(this1:User)
-                        RETURN (count(this1) > $param0 AND ((avg(size(this1.name)) > $param1 AND (max(size(this0.someProp)) > $param2 AND min(size(this0.someProp)) < $param3)) OR min(size(this1.name)) > $param4) AND (min(size(this0.someProp)) > $param5 AND max(size(this0.someProp)) < $param6)) AS var2
+                        RETURN count(this1) > $param0 AS var2
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this3:LIKES]-(this4:User)
+                        RETURN avg(size(this4.name)) > $param1 AS var5
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this6:LIKES]-(this7:User)
+                        RETURN min(size(this6.someProp)) < $param2 AS var8
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this9:LIKES]-(this10:User)
+                        RETURN max(size(this9.someProp)) > $param3 AS var11
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this12:LIKES]-(this13:User)
+                        RETURN min(size(this13.name)) > $param4 AS var14
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this15:LIKES]-(this16:User)
+                        RETURN min(size(this15.someProp)) > $param5 AS var17
+                    }
+                    CALL {
+                        WITH this
+                        MATCH (this)<-[this18:LIKES]-(this19:User)
+                        RETURN max(size(this18.someProp)) < $param6 AS var20
                     }
                     WITH *
-                    WHERE var2 = true
+                    WHERE (var2 = true AND ((var5 = true AND (var8 = true AND var11 = true)) OR var14 = true) AND (var17 = true AND var20 = true))
                     RETURN this { .content } AS this"
                 `);
 
@@ -522,11 +694,11 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                         },
                         \\"param1\\": 3782,
                         \\"param2\\": {
-                            \\"low\\": 4,
+                            \\"low\\": 10,
                             \\"high\\": 0
                         },
                         \\"param3\\": {
-                            \\"low\\": 10,
+                            \\"low\\": 4,
                             \\"high\\": 0
                         },
                         \\"param4\\": {
@@ -551,7 +723,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
         test("implicit AND", async () => {
             const query = /* GraphQL */ `
                 {
-                    posts(where: { content_EQ: "stuff", alternateContent_EQ: "stuff2" }) {
+                    posts(where: { content: { eq: "stuff" }, alternateContent: { eq: "stuff2" } }) {
                         content
                     }
                 }
@@ -560,7 +732,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Post)
+                "CYPHER 5
+                MATCH (this:Post)
                 WHERE (this.content = $param0 AND this.alternateContent = $param1)
                 RETURN this { .content } AS this"
             `);
@@ -578,7 +751,10 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 {
                     posts(
                         where: {
-                            OR: [{ content_EQ: "stuff", alternateContent_EQ: "stuff2" }, { content_EQ: "stuff3" }]
+                            OR: [
+                                { content: { eq: "stuff" }, alternateContent: { eq: "stuff2" } }
+                                { content: { eq: "stuff3" } }
+                            ]
                         }
                     ) {
                         content
@@ -589,7 +765,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Post)
+                "CYPHER 5
+                MATCH (this:Post)
                 WHERE ((this.content = $param0 AND this.alternateContent = $param1) OR this.content = $param2)
                 RETURN this { .content } AS this"
             `);
@@ -606,7 +783,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
         test("explicit NOT with an implicit AND", async () => {
             const query = /* GraphQL */ `
                 {
-                    posts(where: { NOT: { content_EQ: "stuff", alternateContent_EQ: "stuff2" } }) {
+                    posts(where: { NOT: { content: { eq: "stuff" }, alternateContent: { eq: "stuff2" } } }) {
                         content
                     }
                 }
@@ -615,7 +792,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Post)
+                "CYPHER 5
+                MATCH (this:Post)
                 WHERE NOT (this.content = $param0 AND this.alternateContent = $param1)
                 RETURN this { .content } AS this"
             `);
@@ -633,7 +811,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
         test("implicit AND  inside relationship filter", async () => {
             const query = /* GraphQL */ `
                 {
-                    posts(where: { likes_SOME: { name_EQ: "stuff", otherName_EQ: "stuff2" } }) {
+                    posts(where: { likes: { some: { name: { eq: "stuff" }, otherName: { eq: "stuff2" } } } }) {
                         content
                     }
                 }
@@ -642,7 +820,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Post)
+                "CYPHER 5
+                MATCH (this:Post)
                 WHERE EXISTS {
                     MATCH (this)<-[:LIKES]-(this0:User)
                     WHERE (this0.name = $param0 AND this0.otherName = $param1)
@@ -661,7 +840,7 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
         test("implicit AND outside relationship filters", async () => {
             const query = /* GraphQL */ `
                 {
-                    posts(where: { likes_SOME: { name_EQ: "stuff" }, likes_ALL: { otherName_EQ: "stuff2" } }) {
+                    posts(where: { likes: { some: { name: { eq: "stuff" } }, all: { otherName: { eq: "stuff2" } } } }) {
                         content
                     }
                 }
@@ -670,7 +849,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Post)
+                "CYPHER 5
+                MATCH (this:Post)
                 WHERE ((EXISTS {
                     MATCH (this)<-[:LIKES]-(this0:User)
                     WHERE this0.otherName = $param0
@@ -698,9 +878,9 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                     posts(
                         where: {
                             OR: [
-                                { likes_SOME: { name_EQ: "stuff" } }
-                                { likes_ALL: { otherName_EQ: "stuff2" } }
-                                { likes_SOME: { otherName_EQ: "stuff3" } }
+                                { likes: { some: { name: { eq: "stuff" } } } }
+                                { likes: { all: { otherName: { eq: "stuff2" } } } }
+                                { likes: { some: { otherName: { eq: "stuff3" } } } }
                             ]
                         }
                     ) {
@@ -712,7 +892,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Post)
+                "CYPHER 5
+                MATCH (this:Post)
                 WHERE (EXISTS {
                     MATCH (this)<-[:LIKES]-(this0:User)
                     WHERE this0.name = $param0

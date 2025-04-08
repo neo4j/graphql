@@ -31,18 +31,18 @@ describe("aggregations-top_level-basic", () => {
 
         const typeDefs = `
             type ${randomType.name} @node {
-                id: ID
+                str: String
             }
         `;
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (:${randomType.name} {id: "asd"})
-            CREATE (:${randomType.name} {id: "asd3"})
+            CREATE (:${randomType.name} {str: "asd"})
+            CREATE (:${randomType.name} {str: "asd3"})
         `);
 
-        const query = `
+        const query = /* GraphQL */ `
                 {
                     ${randomType.operations.connection} {
                         aggregate {
@@ -50,7 +50,7 @@ describe("aggregations-top_level-basic", () => {
                                 nodes
                             }
                             node {
-                                id {
+                                str {
                                     longest 
                                 }
                             }
@@ -70,7 +70,7 @@ describe("aggregations-top_level-basic", () => {
                         nodes: 2,
                     },
                     node: {
-                        id: {
+                        str: {
                             longest: "asd3",
                         },
                     },

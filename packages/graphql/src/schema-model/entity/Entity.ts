@@ -17,11 +17,15 @@
  * limitations under the License.
  */
 
+import type { Annotations } from "../annotation/Annotation";
 import type { CompositeEntity } from "./CompositeEntity";
 import type { ConcreteEntity } from "./ConcreteEntity";
 
 export interface Entity {
     readonly name: string;
+    readonly annotations: Partial<Annotations>;
+
+    get plural(): string;
 
     isConcreteEntity(): this is ConcreteEntity;
     isCompositeEntity(): this is CompositeEntity;

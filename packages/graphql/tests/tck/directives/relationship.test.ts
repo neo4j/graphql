@@ -41,41 +41,12 @@ describe("Cypher relationship", () => {
                 id: ID
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-                topActor: Actor! @relationship(type: "TOP_ACTOR", direction: OUT)
             }
         `;
 
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
-    });
-
-    test("Simple relation", async () => {
-        const query = /* GraphQL */ `
-            {
-                movies {
-                    title
-                    topActor {
-                        name
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            CALL {
-                WITH this
-                MATCH (this)-[this0:TOP_ACTOR]->(this1:Actor)
-                WITH this1 { .name } AS this1
-                RETURN head(collect(this1)) AS var2
-            }
-            RETURN this { .title, topActor: var2 } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
     test("Many relation", async () => {
@@ -93,10 +64,12 @@ describe("Cypher relationship", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH DISTINCT this1
                 WITH this1 { .name } AS this1
                 RETURN collect(this1) AS var2
             }
@@ -104,88 +77,5 @@ describe("Cypher relationship", () => {
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-    });
-
-    test("Nested relation", async () => {
-        const query = /* GraphQL */ `
-            {
-                movies {
-                    title
-                    topActor {
-                        name
-                        movies {
-                            title
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            CALL {
-                WITH this
-                MATCH (this)-[this0:TOP_ACTOR]->(this1:Actor)
-                CALL {
-                    WITH this1
-                    MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
-                    WITH this3 { .title } AS this3
-                    RETURN collect(this3) AS var4
-                }
-                WITH this1 { .name, movies: var4 } AS this1
-                RETURN head(collect(this1)) AS var5
-            }
-            RETURN this { .title, topActor: var5 } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-    });
-
-    test("Nested relation with params", async () => {
-        const query = /* GraphQL */ `
-            {
-                movies(where: { title_EQ: "some title" }) {
-                    title
-                    topActor(where: { name_EQ: "top actor" }) {
-                        name
-                        movies(where: { title_EQ: "top actor movie" }) {
-                            title
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
-            WHERE this.title = $param0
-            CALL {
-                WITH this
-                MATCH (this)-[this0:TOP_ACTOR]->(this1:Actor)
-                WHERE this1.name = $param1
-                CALL {
-                    WITH this1
-                    MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
-                    WHERE this3.title = $param2
-                    WITH this3 { .title } AS this3
-                    RETURN collect(this3) AS var4
-                }
-                WITH this1 { .name, movies: var4 } AS this1
-                RETURN head(collect(this1)) AS var5
-            }
-            RETURN this { .title, topActor: var5 } AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"some title\\",
-                \\"param1\\": \\"top actor\\",
-                \\"param2\\": \\"top actor movie\\"
-            }"
-        `);
     });
 });

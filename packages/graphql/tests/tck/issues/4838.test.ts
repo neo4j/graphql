@@ -55,7 +55,8 @@ describe("https://github.com/neo4j/graphql/issues/4838", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Test)
@@ -99,7 +100,8 @@ describe("https://github.com/neo4j/graphql/issues/4838", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:ParentTest)
@@ -116,6 +118,7 @@ describe("https://github.com/neo4j/graphql/issues/4838", () => {
             CALL {
                 WITH create_this1
                 MATCH (create_this1)-[create_this6:REL]->(create_this7:Test)
+                WITH DISTINCT create_this7
                 CALL {
                     WITH create_this7
                     CALL {

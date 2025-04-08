@@ -49,7 +49,7 @@ describe("Subscriptions metadata on delete", () => {
     test("Simple delete", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteMovies(where: { id_EQ: "1" }) {
+                deleteMovies(where: { id: { eq: "1" } }) {
                     nodesDeleted
                 }
             }
@@ -58,7 +58,8 @@ describe("Subscriptions metadata on delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             DETACH DELETE this"
         `);
@@ -73,7 +74,10 @@ describe("Subscriptions metadata on delete", () => {
     test("Nested delete", async () => {
         const query = /* GraphQL */ `
             mutation {
-                deleteMovies(where: { id_EQ: "1" }, delete: { actors: { where: { node: { name_EQ: "1" } } } }) {
+                deleteMovies(
+                    where: { id: { eq: "1" } }
+                    delete: { actors: { where: { node: { name: { eq: "1" } } } } }
+                ) {
                     nodesDeleted
                 }
             }
@@ -82,7 +86,8 @@ describe("Subscriptions metadata on delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {
@@ -111,14 +116,14 @@ describe("Subscriptions metadata on delete", () => {
         const query = /* GraphQL */ `
             mutation {
                 deleteMovies(
-                    where: { id_EQ: 123 }
+                    where: { id: { eq: 123 } }
                     delete: {
                         actors: {
-                            where: { node: { name_EQ: "Actor to delete" } }
+                            where: { node: { name: { eq: "Actor to delete" } } }
                             delete: {
                                 movies: {
-                                    where: { node: { id_EQ: 321 } }
-                                    delete: { actors: { where: { node: { name_EQ: "Another actor to delete" } } } }
+                                    where: { node: { id: { eq: 321 } } }
+                                    delete: { actors: { where: { node: { name: { eq: "Another actor to delete" } } } } }
                                 }
                             }
                         }
@@ -132,7 +137,8 @@ describe("Subscriptions metadata on delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
             CALL {

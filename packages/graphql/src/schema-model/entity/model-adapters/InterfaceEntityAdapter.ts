@@ -17,13 +17,13 @@
  * limitations under the License.
  */
 
+import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
 import { upperFirst } from "../../../utils/upper-first";
 import type { Annotations } from "../../annotation/Annotation";
 import type { Attribute } from "../../attribute/Attribute";
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
 import { RelationshipDeclarationAdapter } from "../../relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { RelationshipDeclaration } from "../../relationship/RelationshipDeclaration";
-import { getFromMap } from "../../utils/get-from-map";
 import { plural, singular } from "../../utils/string-manipulation";
 import type { ConcreteEntity } from "../ConcreteEntity";
 import type { InterfaceEntity } from "../InterfaceEntity";
@@ -36,7 +36,6 @@ export class InterfaceEntityAdapter {
     public readonly attributes: Map<string, AttributeAdapter> = new Map();
     public readonly relationshipDeclarations: Map<string, RelationshipDeclarationAdapter> = new Map();
     public readonly annotations: Partial<Annotations>;
-    private uniqueFieldsKeys: string[] = [];
 
     private _singular: string | undefined;
     private _plural: string | undefined;
@@ -98,12 +97,20 @@ export class InterfaceEntityAdapter {
         return concreteLabelsToAttributeAlias;
     }
 
-    public get isReadable(): boolean {
-        return this.annotations.query === undefined || this.annotations.query.read === true;
+    public isReadable(schemaModel: Neo4jGraphQLSchemaModel): boolean {
+        if (this.annotations.query) {
+            return this.annotations.query.read;
+        }
+
+        return schemaModel.annotations.query === undefined || schemaModel.annotations.query.read === true;
     }
 
-    public get isAggregable(): boolean {
-        return this.annotations.query === undefined || this.annotations.query.aggregate === true;
+    public isAggregable(schemaModel: Neo4jGraphQLSchemaModel): boolean {
+        if (this.annotations.query) {
+            return this.annotations.query.aggregate;
+        }
+
+        return schemaModel.annotations.query === undefined || schemaModel.annotations.query.aggregate === true;
     }
 
     /**
@@ -111,10 +118,6 @@ export class InterfaceEntityAdapter {
      * = a grouping of attributes
      * used to generate different types for the Entity that contains these Attributes
      */
-
-    public get uniqueFields(): AttributeAdapter[] {
-        return this.uniqueFieldsKeys.map((key) => getFromMap(this.attributes, key));
-    }
 
     public get sortableFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isSortableField());
@@ -167,9 +170,6 @@ export class InterfaceEntityAdapter {
         for (const [attributeName, attribute] of attributes.entries()) {
             const attributeAdapter = new AttributeAdapter(attribute);
             this.attributes.set(attributeName, attributeAdapter);
-            if (attributeAdapter.isConstrainable() && attributeAdapter.isUnique()) {
-                this.uniqueFieldsKeys.push(attribute.name);
-            }
         }
     }
 

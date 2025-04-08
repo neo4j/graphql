@@ -48,7 +48,7 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
 
             type ${Photo} @node {
                 id: ID!
-                color: ${Color} @relationship(type: "OF_COLOR", direction: OUT)
+                color: [${Color}!]! @relationship(type: "OF_COLOR", direction: OUT)
             }
         `;
 
@@ -190,15 +190,15 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             [Photo.plural]: expect.toIncludeSameMembers([
                 {
                     id: "123",
-                    color: null,
+                    color: [],
                 },
                 {
                     id: "321",
-                    color: null,
+                    color: [],
                 },
                 {
                     id: "33211",
-                    color: null,
+                    color: [],
                 },
             ]),
         });

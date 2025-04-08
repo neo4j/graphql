@@ -45,7 +45,7 @@ describe("Cypher Aggregations where node with String", () => {
     test("SHORTEST_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_SHORTEST_LENGTH_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { shortestLength: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -54,7 +54,8 @@ describe("Cypher Aggregations where node with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -78,7 +79,7 @@ describe("Cypher Aggregations where node with String", () => {
     test("SHORTEST_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_SHORTEST_LENGTH_GT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { shortestLength: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -87,7 +88,8 @@ describe("Cypher Aggregations where node with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -111,7 +113,7 @@ describe("Cypher Aggregations where node with String", () => {
     test("SHORTEST_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_SHORTEST_LENGTH_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { shortestLength: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -120,7 +122,8 @@ describe("Cypher Aggregations where node with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -144,7 +147,7 @@ describe("Cypher Aggregations where node with String", () => {
     test("SHORTEST_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_SHORTEST_LENGTH_LT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { shortestLength: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -153,7 +156,8 @@ describe("Cypher Aggregations where node with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -177,7 +181,7 @@ describe("Cypher Aggregations where node with String", () => {
     test("SHORTEST_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_SHORTEST_LENGTH_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { shortestLength: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -186,7 +190,8 @@ describe("Cypher Aggregations where node with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -210,7 +215,7 @@ describe("Cypher Aggregations where node with String", () => {
     test("LONGEST_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_LONGEST_LENGTH_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { longestLength: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -219,7 +224,8 @@ describe("Cypher Aggregations where node with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -243,7 +249,7 @@ describe("Cypher Aggregations where node with String", () => {
     test("LONGEST_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_LONGEST_LENGTH_GT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { longestLength: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -252,7 +258,8 @@ describe("Cypher Aggregations where node with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -276,7 +283,7 @@ describe("Cypher Aggregations where node with String", () => {
     test("LONGEST_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_LONGEST_LENGTH_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { longestLength: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -285,7 +292,8 @@ describe("Cypher Aggregations where node with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -309,7 +317,7 @@ describe("Cypher Aggregations where node with String", () => {
     test("LONGEST_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_LONGEST_LENGTH_LT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { longestLength: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -318,7 +326,8 @@ describe("Cypher Aggregations where node with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -342,7 +351,7 @@ describe("Cypher Aggregations where node with String", () => {
     test("LONGEST_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_LONGEST_LENGTH_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { longestLength: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -351,7 +360,8 @@ describe("Cypher Aggregations where node with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -375,7 +385,7 @@ describe("Cypher Aggregations where node with String", () => {
     test("AVERAGE_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_AVERAGE_LENGTH_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { averageLength: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -384,7 +394,8 @@ describe("Cypher Aggregations where node with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -405,7 +416,7 @@ describe("Cypher Aggregations where node with String", () => {
     test("AVERAGE_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_AVERAGE_LENGTH_GT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { averageLength: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -414,7 +425,8 @@ describe("Cypher Aggregations where node with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -435,7 +447,7 @@ describe("Cypher Aggregations where node with String", () => {
     test("AVERAGE_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_AVERAGE_LENGTH_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { averageLength: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -444,7 +456,8 @@ describe("Cypher Aggregations where node with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -465,7 +478,7 @@ describe("Cypher Aggregations where node with String", () => {
     test("AVERAGE_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_AVERAGE_LENGTH_LT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { averageLength: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -474,7 +487,8 @@ describe("Cypher Aggregations where node with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -495,7 +509,7 @@ describe("Cypher Aggregations where node with String", () => {
     test("AVERAGE_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_AVERAGE_LENGTH_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { averageLength: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -504,7 +518,8 @@ describe("Cypher Aggregations where node with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -558,7 +573,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
     test("SHORTEST_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_SHORTEST_LENGTH_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { shortestLength: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -567,7 +582,8 @@ describe("Cypher Aggregations where node with String interface relationships of 
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
@@ -592,7 +608,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
     test("SHORTEST_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_SHORTEST_LENGTH_GT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { shortestLength: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -601,7 +617,8 @@ describe("Cypher Aggregations where node with String interface relationships of 
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
@@ -626,7 +643,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
     test("SHORTEST_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_SHORTEST_LENGTH_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { shortestLength: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -635,7 +652,8 @@ describe("Cypher Aggregations where node with String interface relationships of 
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
@@ -660,7 +678,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
     test("SHORTEST_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_SHORTEST_LENGTH_LT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { shortestLength: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -669,7 +687,8 @@ describe("Cypher Aggregations where node with String interface relationships of 
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
@@ -694,7 +713,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
     test("SHORTEST_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_SHORTEST_LENGTH_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { shortestLength: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -703,7 +722,8 @@ describe("Cypher Aggregations where node with String interface relationships of 
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
@@ -728,7 +748,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
     test("LONGEST_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_LONGEST_LENGTH_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { longestLength: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -737,7 +757,8 @@ describe("Cypher Aggregations where node with String interface relationships of 
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
@@ -762,7 +783,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
     test("LONGEST_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_LONGEST_LENGTH_GT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { longestLength: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -771,7 +792,8 @@ describe("Cypher Aggregations where node with String interface relationships of 
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
@@ -796,7 +818,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
     test("LONGEST_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_LONGEST_LENGTH_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { longestLength: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -805,7 +827,8 @@ describe("Cypher Aggregations where node with String interface relationships of 
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
@@ -830,7 +853,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
     test("LONGEST_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_LONGEST_LENGTH_LT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { longestLength: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -839,7 +862,8 @@ describe("Cypher Aggregations where node with String interface relationships of 
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
@@ -864,7 +888,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
     test("LONGEST_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_LONGEST_LENGTH_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { longestLength: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -873,7 +897,8 @@ describe("Cypher Aggregations where node with String interface relationships of 
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
@@ -898,7 +923,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
     test("AVERAGE_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_AVERAGE_LENGTH_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { averageLength: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -907,7 +932,8 @@ describe("Cypher Aggregations where node with String interface relationships of 
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
@@ -929,7 +955,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
     test("AVERAGE_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_AVERAGE_LENGTH_GT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { averageLength: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -938,7 +964,8 @@ describe("Cypher Aggregations where node with String interface relationships of 
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
@@ -960,7 +987,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
     test("AVERAGE_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_AVERAGE_LENGTH_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { averageLength: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -969,7 +996,8 @@ describe("Cypher Aggregations where node with String interface relationships of 
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
@@ -991,7 +1019,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
     test("AVERAGE_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_AVERAGE_LENGTH_LT: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { averageLength: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -1000,7 +1028,8 @@ describe("Cypher Aggregations where node with String interface relationships of 
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)
@@ -1022,7 +1051,7 @@ describe("Cypher Aggregations where node with String interface relationships of 
     test("AVERAGE_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { node: { name_AVERAGE_LENGTH_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { node: { name: { averageLength: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -1031,7 +1060,8 @@ describe("Cypher Aggregations where node with String interface relationships of 
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1)

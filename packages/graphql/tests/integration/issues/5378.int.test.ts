@@ -55,8 +55,8 @@ describe("https://github.com/neo4j/graphql/issues/5378", () => {
         const typeDefs = /* GraphQL */ `
             type ${Space}
                 @node
-                @fulltext(indexes: [{ indexName: "fulltext_index_space_name_number", fields: ["Name", "Number"] }]) {
-                Id: ID! @id @unique
+                @fulltext(indexes: [{ indexName: "fulltext_index_space_name_number", queryName: "spacesByNameAndNumber", fields: ["Name", "Number"] }]) {
+                Id: ID! @id
                 Number: String
                 Name: String!
             }
@@ -96,11 +96,7 @@ describe("https://github.com/neo4j/graphql/issues/5378", () => {
 
         const query = /* GraphQL */ `
             query SpacesSearchConnection {
-                ${Space.operations.connection}(fulltext: {
-                    fulltext_index_space_name_number: {
-                        phrase: "Bedroom"
-                    }
-                }) {
+                spacesByNameAndNumber(phrase: "Bedroom") {
                     totalCount
                     edges {
                         node {
@@ -108,13 +104,6 @@ describe("https://github.com/neo4j/graphql/issues/5378", () => {
                             Number
                         }
                     }
-                }
-                ${Space.operations.aggregate}(fulltext: {
-                    fulltext_index_space_name_number: {
-                        phrase: "Bedroom"
-                    }
-                }) {
-                    count
                 }
             }
         `;
@@ -128,7 +117,7 @@ describe("https://github.com/neo4j/graphql/issues/5378", () => {
         const gqlResult = await testHelper.executeGraphQL(query);
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult.data).toEqual({
-            [Space.operations.connection]: {
+            spacesByNameAndNumber: {
                 totalCount: 2,
                 edges: expect.toIncludeSameMembers([
                     {
@@ -144,9 +133,6 @@ describe("https://github.com/neo4j/graphql/issues/5378", () => {
                         },
                     },
                 ]),
-            },
-            [Space.operations.aggregate]: {
-                count: 2,
             },
         });
     });

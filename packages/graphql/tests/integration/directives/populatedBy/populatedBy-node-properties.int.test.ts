@@ -1747,7 +1747,7 @@ describe("@populatedBy directive - Node properties", () => {
                     [testMovie.plural]: [
                         {
                             id: movieId,
-                            callback: `${date.toISOString().split("T")[1]?.split("Z")[0]}000000Z`,
+                            callback: `${date.toISOString().split("T")[1]?.split("Z")[0]}Z`,
                         },
                     ],
                 },
@@ -1804,7 +1804,7 @@ describe("@populatedBy directive - Node properties", () => {
                     [testMovie.plural]: [
                         {
                             id: movieId,
-                            callback: `${date.toISOString().split("T")[1]?.split("Z")[0]}000000Z`,
+                            callback: `${date.toISOString().split("T")[1]?.split("Z")[0]}Z`,
                         },
                     ],
                 },

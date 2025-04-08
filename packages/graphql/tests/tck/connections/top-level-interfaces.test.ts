@@ -62,7 +62,7 @@ describe("Top level interface connections", () => {
     test("Top level connection", async () => {
         const query = /* GraphQL */ `
             query {
-                showsConnection(where: { title_EQ: "The Matrix" }) {
+                showsConnection(where: { title: { eq: "The Matrix" } }) {
                     edges {
                         node {
                             title
@@ -78,7 +78,8 @@ describe("Top level interface connections", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 CALL {
                     MATCH (this0:Movie)
                     WHERE this0.title = $param0
@@ -107,7 +108,7 @@ describe("Top level interface connections", () => {
     test("Top level connection with limit", async () => {
         const query = /* GraphQL */ `
             query {
-                showsConnection(where: { title_EQ: "The Matrix" }, first: 2) {
+                showsConnection(where: { title: { eq: "The Matrix" } }, first: 2) {
                     edges {
                         node {
                             title
@@ -123,7 +124,8 @@ describe("Top level interface connections", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 CALL {
                     MATCH (this0:Movie)
                     WHERE this0.title = $param0

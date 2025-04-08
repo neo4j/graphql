@@ -17,16 +17,16 @@
  * limitations under the License.
  */
 
+import { stripIgnoredCharacters } from "graphql";
 import { gql } from "graphql-tag";
 import { GatewayServer } from "../setup/gateway-server";
+import { Neo4j } from "../setup/neo4j";
 import type { Server } from "../setup/server";
 import { TestSubgraph } from "../setup/subgraph";
 import { SubgraphServer } from "../setup/subgraph-server";
-import { Neo4j } from "../setup/neo4j";
 import { schema as inventory } from "./subgraphs/inventory";
 import { schema as users } from "./subgraphs/users";
 import { graphqlRequest } from "./utils/client";
-import { stripIgnoredCharacters } from "graphql";
 
 describe("Tests copied from https://github.com/apollographql/apollo-federation-subgraph-compatibility", () => {
     let inventoryServer: Server;
@@ -62,11 +62,31 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
                 id: ID!
                 sku: String
                 package: String
-                variation: ProductVariation @relationship(type: "HAS_VARIATION", direction: OUT)
-                dimensions: ProductDimension @relationship(type: "HAS_DIMENSIONS", direction: OUT)
+                variation: ProductVariation
+                    @cypher(
+                        statement: """
+                        MATCH (this)-[:HAS_VARIATION]->(res:ProductVariation)
+                        RETURN res
+                        """
+                        columnName: "res"
+                    )
+                dimensions: ProductDimension
+                    @cypher(
+                        statement: """
+                        MATCH (this)-[:HAS_DIMENSIONS]->(res:ProductDimension)
+                        RETURN res
+                        """
+                        columnName: "res"
+                    )
                 createdBy: User
                     @provides(fields: "totalProductsCreated")
-                    @relationship(type: "CREATED_BY", direction: OUT)
+                    @cypher(
+                        statement: """
+                        MATCH (this)-[:CREATED_BY]->(res:User)
+                        RETURN res
+                        """
+                        columnName: "res"
+                    )
                 notes: String @tag(name: "internal")
                 research: [ProductResearch!]! @relationship(type: "HAS_RESEARCH", direction: OUT)
             }
@@ -75,7 +95,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
                 sku: String!
                 package: String!
                 reason: String
-                createdBy: User @relationship(type: "CREATED_BY", direction: OUT)
+                createdBy: [User!]! @relationship(type: "CREATED_BY", direction: OUT)
             }
 
             type ProductVariation @node {
@@ -83,7 +103,14 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
             }
 
             type ProductResearch @key(fields: "study { caseNumber }") @node {
-                study: CaseStudy! @relationship(type: "HAS_STUDY", direction: OUT)
+                study: CaseStudy!
+                    @cypher(
+                        statement: """
+                        MATCH (this)-[:HAS_STUDY]->(res:CaseStudy)
+                        RETURN res
+                        """
+                        columnName: "res"
+                    )
                 outcome: String
             }
 

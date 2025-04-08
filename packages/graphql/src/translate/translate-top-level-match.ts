@@ -19,7 +19,6 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
-import { SCORE_FIELD } from "../constants";
 import type { AuthorizationOperation } from "../schema-model/annotation/AuthorizationAnnotation";
 import type { GraphQLWhereArg } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
@@ -76,29 +75,8 @@ function createMatchClause({
     operation: AuthorizationOperation;
     where: GraphQLWhereArg | undefined;
 }): CreateMatchClauseReturn {
-    const { resolveTree } = context;
-    const fulltextInput = (resolveTree.args.fulltext || {}) as Record<string, { phrase: string }>;
-    let matchClause: Cypher.Match | Cypher.Yield = new Cypher.Match(matchPattern);
-    let whereOperators: Cypher.Predicate[] = [];
-
-    // TODO: removed deprecated fulltext translation
-    const entries = Object.entries(fulltextInput);
-    if (entries.length) {
-        if (entries.length > 1) {
-            throw new Error("Can only call one search at any given time");
-        }
-        const [indexName, indexInput] = entries[0] as [string, { phrase: string }];
-        const phraseParam = new Cypher.Param(indexInput.phrase);
-
-        matchClause = Cypher.db.index.fulltext.queryNodes(indexName, phraseParam).yield(["node", matchNode]);
-
-        whereOperators = node.getLabels(context).map((label) => {
-            return Cypher.in(new Cypher.Param(label), Cypher.labels(matchNode));
-        });
-    } else if (context.fulltext) {
-        ({ matchClause, whereOperators } = createFulltextMatchClause(matchNode, where, node, context));
-        where = where?.[node.singular];
-    }
+    const matchClause: Cypher.Match | Cypher.Yield = new Cypher.Match(matchPattern);
+    const whereOperators: Cypher.Predicate[] = [];
 
     let whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined;
 
@@ -165,53 +143,5 @@ function createMatchClause({
         matchClause,
         preComputedWhereFieldSubqueries,
         whereClause,
-    };
-}
-
-function createFulltextMatchClause(
-    matchNode: Cypher.Node,
-    whereInput: GraphQLWhereArg | undefined,
-    node: Node,
-    context: Neo4jGraphQLTranslationContext
-): {
-    matchClause: Cypher.Yield;
-    whereOperators: Cypher.Predicate[];
-} {
-    if (!context.fulltext) {
-        throw new Error("Full-text context not defined");
-    }
-
-    // TODO: remove indexName assignment and undefined check once the name argument has been removed.
-    const indexName = context.fulltext.indexName || context.fulltext.name;
-    if (indexName === undefined) {
-        throw new Error("The name of the fulltext index should be defined using the indexName argument.");
-    }
-    const phraseParam = new Cypher.Param(context.resolveTree.args.phrase);
-    const scoreVar = context.fulltext.scoreVariable;
-
-    const matchClause = Cypher.db.index.fulltext
-        .queryNodes(indexName, phraseParam)
-        .yield(["node", matchNode], ["score", scoreVar]);
-
-    const expectedLabels = node.getLabels(context);
-    const labelsChecks = matchNode.hasLabels(...expectedLabels);
-    const whereOperators: Cypher.Predicate[] = [];
-
-    if (whereInput?.[SCORE_FIELD]) {
-        if (whereInput[SCORE_FIELD].min || whereInput[SCORE_FIELD].min === 0) {
-            const scoreMinOp = Cypher.gte(scoreVar, new Cypher.Param(whereInput[SCORE_FIELD].min));
-            if (scoreMinOp) whereOperators.push(scoreMinOp);
-        }
-        if (whereInput[SCORE_FIELD].max || whereInput[SCORE_FIELD].max === 0) {
-            const scoreMaxOp = Cypher.lte(scoreVar, new Cypher.Param(whereInput[SCORE_FIELD].max));
-            if (scoreMaxOp) whereOperators.push(scoreMaxOp);
-        }
-    }
-
-    if (labelsChecks) whereOperators.push(labelsChecks);
-
-    return {
-        matchClause,
-        whereOperators,
     };
 }

@@ -46,10 +46,10 @@ describe("Cypher Aggregations where edge with String", () => {
         });
     });
 
-    test("SHORTEST_LENGTH_EQUAL", async () => {
+    test("shortestLength_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_SHORTEST_LENGTH_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString: { shortestLength: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -58,7 +58,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -79,10 +80,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("SHORTEST_LENGTH_GT", async () => {
+    test("shortestLength_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_SHORTEST_LENGTH_GT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString: { shortestLength: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -91,7 +92,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -112,10 +114,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("SHORTEST_LENGTH_GTE", async () => {
+    test("shortestLength_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_SHORTEST_LENGTH_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString: { shortestLength: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -124,7 +126,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -145,10 +148,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("SHORTEST_LENGTH_LT", async () => {
+    test("shortestLength_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_SHORTEST_LENGTH_LT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString: { shortestLength: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -157,7 +160,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -178,10 +182,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("SHORTEST_LENGTH_LTE", async () => {
+    test("shortestLength_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_SHORTEST_LENGTH_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString: { shortestLength: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -190,7 +194,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -211,10 +216,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("LONGEST_LENGTH_EQUAL", async () => {
+    test("longestLength_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_LONGEST_LENGTH_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString: { longestLength: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -223,7 +228,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -244,10 +250,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("LONGEST_LENGTH_GT", async () => {
+    test("longestLength_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_LONGEST_LENGTH_GT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString: { longestLength: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -256,7 +262,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -277,10 +284,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("LONGEST_LENGTH_GTE", async () => {
+    test("longestLength_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_LONGEST_LENGTH_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString: { longestLength: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -289,7 +296,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -310,10 +318,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("LONGEST_LENGTH_LT", async () => {
+    test("longestLength_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_LONGEST_LENGTH_LT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString: { longestLength: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -322,7 +330,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -343,10 +352,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("LONGEST_LENGTH_LTE", async () => {
+    test("longestLength_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_LONGEST_LENGTH_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString: { longestLength: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -355,7 +364,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -376,10 +386,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("AVERAGE_LENGTH_EQUAL", async () => {
+    test("averageLength_EQUAL", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_AVERAGE_LENGTH_EQUAL: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString: { averageLength: { eq: 10 } } } } }) {
                     content
                 }
             }
@@ -388,7 +398,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -406,10 +417,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("AVERAGE_LENGTH_GT", async () => {
+    test("averageLength_GT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_AVERAGE_LENGTH_GT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString: { averageLength: { gt: 10 } } } } }) {
                     content
                 }
             }
@@ -418,7 +429,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -436,10 +448,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("AVERAGE_LENGTH_GTE", async () => {
+    test("averageLength_GTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_AVERAGE_LENGTH_GTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString: { averageLength: { gte: 10 } } } } }) {
                     content
                 }
             }
@@ -448,7 +460,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -466,10 +479,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("AVERAGE_LENGTH_LT", async () => {
+    test("averageLength_LT", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_AVERAGE_LENGTH_LT: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString: { averageLength: { lt: 10 } } } } }) {
                     content
                 }
             }
@@ -478,7 +491,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)
@@ -496,10 +510,10 @@ describe("Cypher Aggregations where edge with String", () => {
         `);
     });
 
-    test("AVERAGE_LENGTH_LTE", async () => {
+    test("averageLength_LTE", async () => {
         const query = /* GraphQL */ `
             {
-                posts(where: { likesAggregate: { edge: { someString_AVERAGE_LENGTH_LTE: 10 } } }) {
+                posts(where: { likesAggregate: { edge: { someString: { averageLength: { lte: 10 } } } } }) {
                     content
                 }
             }
@@ -508,7 +522,8 @@ describe("Cypher Aggregations where edge with String", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Post)
+            "CYPHER 5
+            MATCH (this:Post)
             CALL {
                 WITH this
                 MATCH (this)<-[this0:LIKES]-(this1:User)

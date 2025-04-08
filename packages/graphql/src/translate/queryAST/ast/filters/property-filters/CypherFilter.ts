@@ -26,8 +26,10 @@ import type { CustomCypherSelection } from "../../selection/CustomCypherSelectio
 import type { FilterOperator } from "../Filter";
 import { Filter } from "../Filter";
 import { coalesceValueIfNeeded } from "../utils/coalesce-if-needed";
+import { createDateTimeOperation } from "../utils/create-date-time-operation";
 import { createDurationOperation } from "../utils/create-duration-operation";
 import { createPointOperation } from "../utils/create-point-operation";
+import { createTimeOperation } from "../utils/create-time-operation";
 
 /** A property which comparison has already been parsed into a Param */
 export class CypherFilter extends Filter {
@@ -120,6 +122,24 @@ export class CypherFilter extends Filter {
 
         if (this.attribute.typeHelper.isSpatial()) {
             return createPointOperation({
+                operator,
+                property: coalesceProperty,
+                param: this.comparisonValue,
+                attribute: this.attribute,
+            });
+        }
+
+        if (this.attribute.typeHelper.isDateTime()) {
+            return createDateTimeOperation({
+                operator,
+                property: coalesceProperty,
+                param: this.comparisonValue,
+                attribute: this.attribute,
+            });
+        }
+
+        if (this.attribute.typeHelper.isTime()) {
+            return createTimeOperation({
                 operator,
                 property: coalesceProperty,
                 param: this.comparisonValue,

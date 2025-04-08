@@ -28,17 +28,17 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             }
 
             type Person implements Entity @node {
-                id: String! @unique
+                id: String!
                 name: String!
             }
 
             type Place implements Entity @node {
-                id: String! @unique
+                id: String!
                 location: Point!
             }
 
             type Interaction @node {
-                id: ID! @id @unique
+                id: ID! @id
                 kind: String!
                 subjects: [Entity!]! @relationship(type: "ACTED_IN", direction: IN)
                 objects: [Entity!]! @relationship(type: "ACTED_IN", direction: OUT)
@@ -66,7 +66,8 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
         const result = await translateQuery(neoSchema, query, {});
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Interaction)
+            "CYPHER 5
+            MATCH (this:Interaction)
             CALL {
                 WITH this
                 CALL {

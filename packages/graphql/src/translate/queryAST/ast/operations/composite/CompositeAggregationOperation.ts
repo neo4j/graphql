@@ -47,8 +47,6 @@ export class CompositeAggregationOperation extends Operation {
     private nodeMap = new Cypher.Map();
     private edgeMap = new Cypher.Map();
 
-    public isInConnectionField = false; // Used for compatibility with deprecated aggregations, this will always be true in 7.x
-
     constructor({
         compositeEntity,
         children,
@@ -92,18 +90,8 @@ export class CompositeAggregationOperation extends Operation {
             });
             const result = this.transpileAggregationOperation(newContext, false);
 
-            let subqueriesAggr: Cypher.Clause[];
-            if (!this.isInConnectionField) {
-                // NOTE: This is for compatibility with deprecated aggregations
-                subqueriesAggr = result.clauses.map((clause) => {
-                    return new Cypher.Call(clause);
-                });
-            } else {
-                subqueriesAggr = result.clauses;
-            }
-
             return {
-                clauses: subqueriesAggr,
+                clauses: result.clauses,
                 projectionExpr: result.projectionExpr,
             };
         }

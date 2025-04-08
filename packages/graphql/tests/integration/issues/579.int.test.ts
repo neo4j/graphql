@@ -33,7 +33,7 @@ describe("https://github.com/neo4j/graphql/pull/579", () => {
         typeDefs = `
         type ${Product} @node {
            id: ID
-           color: ${Color}! @relationship(type: "OF_COLOR", direction: OUT, properties: "OfColorProperties")
+           color: [${Color}!]! @relationship(type: "OF_COLOR", direction: OUT, properties: "OfColorProperties")
          }
 
          type OfColorProperties @relationshipProperties {

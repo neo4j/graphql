@@ -70,7 +70,8 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -129,7 +130,8 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -173,7 +175,7 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
                 createMovies(input: [{ title: "Forrest Gump" }, { title: "Toy Story" }]) {
                     movies {
                         title
-                        actorsConnection(where: { node: { name_EQ: "Tom Hanks" } }) {
+                        actorsConnection(where: { node: { name: { eq: "Tom Hanks" } } }) {
                             edges {
                                 properties {
                                     screenTime
@@ -191,7 +193,8 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)

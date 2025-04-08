@@ -39,14 +39,14 @@ describe("Create Subscription with optional filters valid for all types", () => 
     beforeEach(async () => {
         typeMovie = testHelper.createUniqueType("Movie");
         const typeDefs = `
-         type ${typeMovie} @node {
+         type ${typeMovie} @node @subscription {
             id: ID
             title: String
             releasedIn: Int
             averageRating: Float
             fileSize: BigInt
             isFavorite: Boolean
-            similarTitles: [String]
+            similarTitles: [String!]
          }
          `;
 

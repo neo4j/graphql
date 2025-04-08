@@ -20,8 +20,8 @@
 import type { DirectiveNode, InterfaceTypeDefinitionNode, ObjectTypeDefinitionNode } from "graphql";
 import { PROPAGATED_DIRECTIVES } from "../../constants";
 import { LIBRARY_DIRECTIVES } from "../../schema-model/library-directives";
+import type { DefinitionCollection } from "../../schema-model/parser/definition-collection";
 import { isInArray } from "../../utils/is-in-array";
-import type { DefinitionNodes } from "../get-definition-nodes";
 
 function getUserDefinedMergedFieldDirectivesForDefinition(
     definitionNode: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode
@@ -42,14 +42,14 @@ function getUserDefinedMergedFieldDirectivesForDefinition(
     return userDefinedFieldDirectives;
 }
 
-export function getUserDefinedDirectives(definitionNodes: DefinitionNodes) {
+export function getUserDefinedDirectives(definitionCollection: DefinitionCollection) {
     const userDefinedFieldDirectivesForNode = new Map<string, Map<string, DirectiveNode[]>>();
     const userDefinedDirectivesForNode = new Map<string, DirectiveNode[]>();
     const propagatedDirectivesForNode = new Map<string, DirectiveNode[]>();
     const userDefinedDirectivesForInterface = new Map<string, DirectiveNode[]>();
     const userDefinedDirectivesForUnion = new Map<string, DirectiveNode[]>();
 
-    for (const definitionNode of definitionNodes.objectTypes) {
+    for (const definitionNode of definitionCollection.objectTypes.values()) {
         const userDefinedObjectDirectives =
             definitionNode.directives?.filter((directive) => !isInArray(LIBRARY_DIRECTIVES, directive.name.value)) ||
             [];
@@ -62,7 +62,7 @@ export function getUserDefinedDirectives(definitionNodes: DefinitionNodes) {
         userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
     }
 
-    for (const definitionNode of definitionNodes.interfaceTypes) {
+    for (const definitionNode of definitionCollection.interfaceTypes.values()) {
         const userDefinedInterfaceDirectives =
             definitionNode.directives?.filter((directive) => !isInArray(LIBRARY_DIRECTIVES, directive.name.value)) ||
             [];
@@ -75,7 +75,7 @@ export function getUserDefinedDirectives(definitionNodes: DefinitionNodes) {
         userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
     }
 
-    for (const definitionNode of definitionNodes.unionTypes) {
+    for (const definitionNode of definitionCollection.unionTypes.values()) {
         const userDefinedUnionDirectives =
             definitionNode.directives?.filter((directive) => !isInArray(LIBRARY_DIRECTIVES, directive.name.value)) ||
             [];
@@ -86,7 +86,7 @@ export function getUserDefinedDirectives(definitionNodes: DefinitionNodes) {
         propagatedDirectivesForNode.set(definitionNode.name.value, propagatedDirectives);
     }
 
-    for (const definitionNode of definitionNodes.operations) {
+    for (const definitionNode of definitionCollection.operations) {
         const userDefinedFieldDirectives = getUserDefinedMergedFieldDirectivesForDefinition(definitionNode);
         userDefinedFieldDirectivesForNode.set(definitionNode.name.value, userDefinedFieldDirectives);
     }

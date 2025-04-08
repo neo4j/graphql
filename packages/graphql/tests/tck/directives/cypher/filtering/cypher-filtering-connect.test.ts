@@ -22,13 +22,13 @@ import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-t
 
 describe("cypher directive filtering", () => {
     test("Connect filter", async () => {
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            type Actor {
+            type Actor @node {
                 name: String
                 custom_field: String
                     @cypher(
@@ -41,7 +41,7 @@ describe("cypher directive filtering", () => {
             }
         `;
 
-        const query = `
+        const query = /* GraphQL */ `
             mutation {
                 createMovies(
                     input: [
@@ -51,20 +51,11 @@ describe("cypher directive filtering", () => {
                                 connect: [
                                     {
                                         where: {
-                                            node: {
-                                                name: "Keanu Reeves",
-                                                custom_field: "hello world!"
-                                            }
+                                            node: { name: { eq: "Keanu Reeves" }, custom_field: { eq: "hello world!" } }
                                         }
                                     }
                                 ]
-                                create: [
-                                    {
-                                        node: {
-                                            name: "Jada Pinkett Smith"
-                                        }
-                                    }
-                                ]
+                                create: [{ node: { name: "Jada Pinkett Smith" } }]
                             }
                         }
                     ]
@@ -86,7 +77,8 @@ describe("cypher directive filtering", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
             WITH *
@@ -119,7 +111,7 @@ describe("cypher directive filtering", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
-            			MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
+            			CREATE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
             		}
             	}
             WITH this0, this0_actors_connect0_node
@@ -132,6 +124,7 @@ describe("cypher directive filtering", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
+                    WITH DISTINCT create_this1
                     WITH create_this1 { .name } AS create_this1
                     RETURN collect(create_this1) AS create_var2
                 }

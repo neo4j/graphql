@@ -38,8 +38,12 @@ describe("QueryDirection in relationships aggregations", () => {
         const query = /* GraphQL */ `
             query Users {
                 users {
-                    friendsAggregate {
-                        count
+                    friendsConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -48,13 +52,18 @@ describe("QueryDirection in relationships aggregations", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             CALL {
                 WITH this
-                MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
-                RETURN count(this1) AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
+                    RETURN { nodes: count(DISTINCT this1) } AS var2
+                }
+                RETURN { aggregate: { count: var2 } } AS var3
             }
-            RETURN this { friendsAggregate: { count: var2 } } AS this"
+            RETURN this { friendsConnection: var3 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
@@ -73,8 +82,12 @@ describe("QueryDirection in relationships aggregations", () => {
         const query = /* GraphQL */ `
             query Users {
                 users {
-                    friendsAggregate {
-                        count
+                    friendsConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -83,13 +96,18 @@ describe("QueryDirection in relationships aggregations", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:User)
+            "CYPHER 5
+            MATCH (this:User)
             CALL {
                 WITH this
-                MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
-                RETURN count(this1) AS var2
+                CALL {
+                    WITH this
+                    MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
+                    RETURN { nodes: count(DISTINCT this1) } AS var2
+                }
+                RETURN { aggregate: { count: var2 } } AS var3
             }
-            RETURN this { friendsAggregate: { count: var2 } } AS this"
+            RETURN this { friendsConnection: var3 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });

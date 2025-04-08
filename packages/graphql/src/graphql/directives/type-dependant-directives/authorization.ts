@@ -18,15 +18,15 @@
  */
 
 import { astFromDirective, astFromInputObjectType } from "@graphql-tools/utils";
-import type { TypeDefinitionNode, DirectiveDefinitionNode } from "graphql";
+import type { DirectiveDefinitionNode, TypeDefinitionNode } from "graphql";
 import {
-    GraphQLString,
-    GraphQLSchema,
+    DirectiveLocation,
+    GraphQLBoolean,
     GraphQLDirective,
     GraphQLInputObjectType,
     GraphQLList,
-    GraphQLBoolean,
-    DirectiveLocation,
+    GraphQLSchema,
+    GraphQLString,
 } from "graphql";
 import {
     AUTHORIZATION_FILTER_OPERATION,

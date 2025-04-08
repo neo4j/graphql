@@ -37,14 +37,14 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
         const typeDefs = /* GraphQL */ `
             type ${Company} @node
                 @authorization(
-                    filter: [{ operations: [READ], where: { node: { inBetween: { company: { id_EQ: "example" } } } } }]
+                    filter: [{ operations: [READ], where: { node: { inBetween_SOME: { company_SOME: { id_EQ: "example" } } } } }]
                 ) {
                 id: ID @id
-                inBetween: ${InBetween} @relationship(type: "CONNECT_TO", direction: OUT)
+                inBetween: [${InBetween}!]! @relationship(type: "CONNECT_TO", direction: OUT)
             }
             type ${InBetween} @node {
                 id: ID @id
-                company: ${Company}! @relationship(type: "CONNECT_TO", direction: IN)
+                company: [${Company}!]! @relationship(type: "CONNECT_TO", direction: IN)
             }
         `;
 
@@ -97,11 +97,15 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
         expect((result.data as any)[Company.plural]).toEqual([
             {
                 id: "example",
-                inBetween: {
-                    company: {
-                        id: "example",
+                inBetween: [
+                    {
+                        company: [
+                            {
+                                id: "example",
+                            },
+                        ],
                     },
-                },
+                ],
             },
         ]);
     });

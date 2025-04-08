@@ -39,9 +39,13 @@ describe("Cypher Aggregations Duration", () => {
     test("Min", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    screenTime {
-                        min
+                moviesConnection {
+                    aggregate {
+                        node {
+                            screenTime {
+                                min
+                            }
+                        }
                     }
                 }
             }
@@ -50,12 +54,13 @@ describe("Cypher Aggregations Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.screenTime) } AS var0
             }
-            RETURN { screenTime: var0 }"
+            RETURN { aggregate: { node: { screenTime: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -64,9 +69,13 @@ describe("Cypher Aggregations Duration", () => {
     test("Max", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    screenTime {
-                        max
+                moviesConnection {
+                    aggregate {
+                        node {
+                            screenTime {
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -75,12 +84,13 @@ describe("Cypher Aggregations Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { max: max(this.screenTime) } AS var0
             }
-            RETURN { screenTime: var0 }"
+            RETURN { aggregate: { node: { screenTime: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -89,10 +99,14 @@ describe("Cypher Aggregations Duration", () => {
     test("Min and Max", async () => {
         const query = /* GraphQL */ `
             {
-                moviesAggregate {
-                    screenTime {
-                        min
-                        max
+                moviesConnection {
+                    aggregate {
+                        node {
+                            screenTime {
+                                min
+                                max
+                            }
+                        }
                     }
                 }
             }
@@ -101,12 +115,13 @@ describe("Cypher Aggregations Duration", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (this:Movie)
-                WITH this
+                WITH DISTINCT this
                 RETURN { min: min(this.screenTime), max: max(this.screenTime) } AS var0
             }
-            RETURN { screenTime: var0 }"
+            RETURN { aggregate: { node: { screenTime: var0 } } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

@@ -41,23 +41,23 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
             }
 
             type ${User} @authorization(filter: [{ where: { node: { id_EQ: "$jwt.uid" } } }]) @node {
-                id: ID! @unique
+                id: ID!
                 email: String!
                 name: String
             }
 
-            type ${Group} @authorization(validate: [{ where: { node: { creator: { id_EQ: "$jwt.uid" } } } }]) @node {
-                id: ID! @id @unique
+            type ${Group} @authorization(validate: [{ where: { node: { creator_SINGLE: { id_EQ: "$jwt.uid" } } } }]) @node {
+                id: ID! @id
                 name: String
                 members: [${Person}!]! @relationship(type: "MEMBER_OF", direction: IN)
-                creator: ${User}! @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])
+                creator: [${User}!]! @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])
             }
 
-            type ${Person} @authorization(validate: [{ where: { node: { creator: { id_EQ: "$jwt.uid" }}}}]) @node {
-                id: ID! @id @unique
+            type ${Person} @authorization(validate: [{ where: { node: { creator_SINGLE: { id_EQ: "$jwt.uid" }}}}]) @node {
+                id: ID! @id
                 name: String!
-                creator: ${User}! @relationship(type: "CREATOR_OF", direction: IN)
-                group: ${Group}! @relationship(type: "MEMBER_OF", direction: OUT)
+                creator: [${User}!]! @relationship(type: "CREATOR_OF", direction: IN)
+                group: [${Group}!]! @relationship(type: "MEMBER_OF", direction: OUT)
             }
 
             extend schema @authentication
@@ -146,7 +146,6 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
                                                         id_EQ: "user1_id",
                                                     },
                                                 },
-                                                overwrite: true,
                                             },
                                         },
                                     },

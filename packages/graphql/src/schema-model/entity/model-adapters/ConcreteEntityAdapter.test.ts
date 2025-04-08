@@ -18,7 +18,6 @@
  */
 
 import { CypherAnnotation } from "../../annotation/CypherAnnotation";
-import { UniqueAnnotation } from "../../annotation/UniqueAnnotation";
 import { Attribute } from "../../attribute/Attribute";
 import { GraphQLBuiltInScalarType, ScalarType } from "../../attribute/AttributeType";
 import { AttributeAdapter } from "../../attribute/model-adapters/AttributeAdapter";
@@ -34,7 +33,7 @@ describe("ConcreteEntityAdapter", () => {
     beforeAll(() => {
         const idAttribute = new Attribute({
             name: "id",
-            annotations: { unique: new UniqueAnnotation({ constraintName: "User_id_unique" }) },
+            annotations: {},
             type: new ScalarType(GraphQLBuiltInScalarType.ID, true),
             args: [],
         });
@@ -93,11 +92,6 @@ describe("ConcreteEntityAdapter", () => {
     test("should return the correct labels", () => {
         expect(userAdapter.getLabels()).toStrictEqual(["User"]);
         expect(userAdapter.getMainLabel()).toBe("User");
-    });
-
-    test("should return the correct unique fields", () => {
-        expect(userAdapter.uniqueFields).toHaveLength(1);
-        expect(userAdapter.uniqueFields).toStrictEqual([userId]);
     });
 
     test("should return the correct singular name", () => {

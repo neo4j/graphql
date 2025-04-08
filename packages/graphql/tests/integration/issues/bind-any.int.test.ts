@@ -21,7 +21,7 @@ import { GraphQLError } from "graphql";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
-describe("https://github.com/neo4j/graphql/issues/2474", () => {
+describe("bind-any", () => {
     const testHelper = new TestHelper();
 
     let User: UniqueType;
@@ -55,10 +55,10 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
                 users: [${User}!]! @relationship(type: "IS_MEMBER_OF", direction: IN)
             }
 
-            type ${Group} @authorization(validate: [{ operations: [CREATE], when: [AFTER], where: { node: { organization: { users_SOME: { id_EQ: "$jwt.sub" } } } } }]) @node {
+            type ${Group} @authorization(validate: [{ operations: [CREATE], when: [AFTER], where: { node: { organization_SINGLE: { users_SOME: { id_EQ: "$jwt.sub" } } } } }]) @node {
                 id: String!
                 name: String
-                organization: ${Organization}! @relationship(type: "HAS_GROUP", direction: IN)
+                organization: [${Organization}!]! @relationship(type: "HAS_GROUP", direction: IN)
             }
         `;
 
@@ -114,10 +114,10 @@ describe("https://github.com/neo4j/graphql/issues/2474", () => {
                 users: [${User}!]! @relationship(type: "IS_MEMBER_OF", direction: IN)
             }
 
-            type ${Group} @authorization(validate: [{ operations: [CREATE], when: [AFTER], where: { node: { organization: { users_ALL: { id_EQ: "$jwt.sub" } } } } }]) @node {
+            type ${Group} @authorization(validate: [{ operations: [CREATE], when: [AFTER], where: { node: { organization_SINGLE: { users_ALL: { id_EQ: "$jwt.sub" } } } } }]) @node {
                 id: String!
                 name: String
-                organization: ${Organization}! @relationship(type: "HAS_GROUP", direction: IN)
+                organization: [${Organization}!]! @relationship(type: "HAS_GROUP", direction: IN)
             }
         `;
 

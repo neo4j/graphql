@@ -78,8 +78,6 @@ export type MutableField =
     | TemporalField
     | CypherField;
 
-type ConstrainableField = PrimitiveField | CustomScalarField | CustomEnumField | TemporalField;
-
 export type RootTypeFieldNames = {
     create: string;
     read: string;
@@ -122,7 +120,6 @@ class Node extends GraphElement {
     public interfaces: NamedTypeNode[];
     public objectFields: ObjectField[];
     public nodeDirective?: NodeDirective;
-    public fulltextDirective?: FullText;
     public limit?: LimitDirective;
     public singular: string;
     public plural: string;
@@ -142,7 +139,6 @@ class Node extends GraphElement {
         this.interfaces = input.interfaces;
         this.objectFields = input.objectFields;
         this.nodeDirective = input.nodeDirective;
-        this.fulltextDirective = input.fulltextDirective;
         this.limit = input.limitDirective;
         this.isGlobalNode = input.isGlobalNode;
         this._idField = input.globalIdField;
@@ -166,18 +162,19 @@ class Node extends GraphElement {
         ];
     }
 
-    public get constrainableFields(): ConstrainableField[] {
+    /** Fields you can apply auth allow and bind to */
+    // Maybe we can remove this as they may not be used anymore in the new auth system
+    public get authableFields(): MutableField[] {
         return [
             ...this.primitiveFields,
             ...this.scalarFields,
             ...this.enumFields,
+            ...this.unionFields,
+            ...this.objectFields,
             ...this.temporalFields,
             ...this.pointFields,
+            ...this.cypherFields,
         ];
-    }
-
-    public get uniqueFields(): ConstrainableField[] {
-        return this.constrainableFields.filter((field) => field.unique);
     }
 
     private get pascalCaseSingular(): string {

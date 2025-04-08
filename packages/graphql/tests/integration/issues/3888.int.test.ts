@@ -38,10 +38,10 @@ describe("https://github.com/neo4j/graphql/issues/3888", () => {
                 id: ID!
             }
 
-            type ${Post} @authorization(filter: [{ where: { node: { author: { id_EQ: "$jwt.sub" } } } }]) @node {
+            type ${Post} @authorization(filter: [{ where: { node: { author_SOME: { id_EQ: "$jwt.sub" } } } }]) @node {
                 title: String!
                 content: String!
-                author: ${User}! @relationship(type: "AUTHORED", direction: IN)
+                author: [${User}!]! @relationship(type: "AUTHORED", direction: IN)
             }
         `;
 
@@ -101,9 +101,11 @@ describe("https://github.com/neo4j/graphql/issues/3888", () => {
                 [Post.plural]: [
                     {
                         title: "Test1",
-                        author: {
-                            id: "michel",
-                        },
+                        author: [
+                            {
+                                id: "michel",
+                            },
+                        ],
                     },
                 ],
             },

@@ -28,7 +28,11 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 @node
                 @authorization(
                     validate: [
-                        { when: [BEFORE], operations: [CREATE_RELATIONSHIP], where: { node: { id_EQ: "$jwt.sub" } } }
+                        {
+                            when: [BEFORE]
+                            operations: [CREATE_RELATIONSHIP]
+                            where: { node: { id: { eq: "$jwt.sub" } } }
+                        }
                     ]
                 ) {
                 id: ID!
@@ -47,7 +51,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         const query = /* GraphQL */ `
             mutation {
-                updateSources(update: { targets: { connect: { where: { node: { id_EQ: 1 } } } } }) {
+                updateSources(update: { targets: { connect: { where: { node: { id: { eq: 1 } } } } } }) {
                     sources {
                         id
                     }
@@ -61,7 +65,8 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Source)
+            "CYPHER 5
+            MATCH (this:Source)
             WITH *
             CALL {
             	WITH this
@@ -74,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_targets0_connect0_node
-            			MERGE (this)-[:HAS_TARGET]->(this_targets0_connect0_node)
+            			CREATE (this)-[:HAS_TARGET]->(this_targets0_connect0_node)
             		}
             	}
             WITH this, this_targets0_connect0_node
@@ -102,7 +107,11 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                 @node
                 @authorization(
                     validate: [
-                        { when: [BEFORE], operations: [DELETE_RELATIONSHIP], where: { node: { id_EQ: "$jwt.sub" } } }
+                        {
+                            when: [BEFORE]
+                            operations: [DELETE_RELATIONSHIP]
+                            where: { node: { id: { eq: "$jwt.sub" } } }
+                        }
                     ]
                 ) {
                 id: ID!
@@ -121,7 +130,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
 
         const query = /* GraphQL */ `
             mutation {
-                updateSources(update: { targets: { disconnect: { where: { node: { id_EQ: 1 } } } } }) {
+                updateSources(update: { targets: { disconnect: { where: { node: { id: { eq: 1 } } } } } }) {
                     sources {
                         id
                     }
@@ -135,7 +144,8 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Source)
+            "CYPHER 5
+            MATCH (this:Source)
             WITH this
             CALL {
             WITH this
@@ -169,7 +179,9 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"id_EQ\\": \\"1\\"
+                                                    \\"id\\": {
+                                                        \\"eq\\": \\"1\\"
+                                                    }
                                                 }
                                             }
                                         }

@@ -17,11 +17,13 @@
  * limitations under the License.
  */
 
+import { Memoize } from "typescript-memoize";
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import { setsAreEqual } from "../../utils/sets-are-equal";
 import type { Annotations } from "../annotation/Annotation";
 import type { Attribute } from "../attribute/Attribute";
 import type { Relationship } from "../relationship/Relationship";
+import { plural, singular } from "../utils/string-manipulation";
 import type { CompositeEntity } from "./CompositeEntity";
 import type { Entity } from "./Entity";
 
@@ -106,5 +108,14 @@ export class ConcreteEntity implements Entity {
 
     public findRelationship(name: string): Relationship | undefined {
         return this.relationships.get(name);
+    }
+
+    // Duplicate in EntityAdapters
+    @Memoize()
+    public get plural(): string {
+        if (this.annotations.plural) {
+            return singular(this.annotations.plural.value);
+        }
+        return plural(this.name);
     }
 }

@@ -61,7 +61,7 @@ describe("Interface Relationships - Update delete", () => {
     test("Update delete an interface relationship", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateActors(update: { actedIn: { delete: { where: { node: { title_STARTS_WITH: "The " } } } } }) {
+                updateActors(update: { actedIn: { delete: { where: { node: { title: { startsWith: "The " } } } } } }) {
                     actors {
                         name
                     }
@@ -72,7 +72,8 @@ describe("Interface Relationships - Update delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WITH this
             CALL {
             	 WITH this
@@ -145,7 +146,9 @@ describe("Interface Relationships - Update delete", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"title_STARTS_WITH\\": \\"The \\"
+                                                    \\"title\\": {
+                                                        \\"startsWith\\": \\"The \\"
+                                                    }
                                                 }
                                             }
                                         }
@@ -167,8 +170,8 @@ describe("Interface Relationships - Update delete", () => {
                     update: {
                         actedIn: {
                             delete: {
-                                where: { node: { title_STARTS_WITH: "The " } }
-                                delete: { actors: { where: { node: { name_EQ: "Actor" } } } }
+                                where: { node: { title: { startsWith: "The " } } }
+                                delete: { actors: { where: { node: { name: { eq: "Actor" } } } } }
                             }
                         }
                     }
@@ -183,7 +186,8 @@ describe("Interface Relationships - Update delete", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WITH this
             CALL {
             	 WITH this
@@ -305,7 +309,9 @@ describe("Interface Relationships - Update delete", () => {
                                         {
                                             \\"where\\": {
                                                 \\"node\\": {
-                                                    \\"title_STARTS_WITH\\": \\"The \\"
+                                                    \\"title\\": {
+                                                        \\"startsWith\\": \\"The \\"
+                                                    }
                                                 }
                                             },
                                             \\"delete\\": {
@@ -313,7 +319,9 @@ describe("Interface Relationships - Update delete", () => {
                                                     {
                                                         \\"where\\": {
                                                             \\"node\\": {
-                                                                \\"name_EQ\\": \\"Actor\\"
+                                                                \\"name\\": {
+                                                                    \\"eq\\": \\"Actor\\"
+                                                                }
                                                             }
                                                         }
                                                     }

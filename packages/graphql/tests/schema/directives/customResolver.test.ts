@@ -79,9 +79,18 @@ describe("@customResolver directive", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Mutation {
@@ -99,11 +108,9 @@ describe("@customResolver directive", () => {
             }
 
             type Query {
-              userInterfaces(limit: Int, offset: Int, options: UserInterfaceOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserInterfaceSort!], where: UserInterfaceWhere): [UserInterface!]!
-              userInterfacesAggregate(where: UserInterfaceWhere): UserInterfaceAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"userInterfacesConnection\\\\\\" instead\\")
+              userInterfaces(limit: Int, offset: Int, sort: [UserInterfaceSort!], where: UserInterfaceWhere): [UserInterface!]!
               userInterfacesConnection(after: String, first: Int, sort: [UserInterfaceSort!], where: UserInterfaceWhere): UserInterfacesConnection!
-              users(limit: Int, offset: Int, options: UserOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [UserSort!], where: UserWhere): [User!]!
-              usersAggregate(where: UserWhere): UserAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"usersConnection\\\\\\" instead\\")
+              users(limit: Int, offset: Int, sort: [UserSort!], where: UserWhere): [User!]!
               usersConnection(after: String, first: Int, sort: [UserSort!], where: UserWhere): UsersConnection!
             }
 
@@ -118,6 +125,20 @@ describe("@customResolver directive", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"
@@ -149,14 +170,6 @@ describe("@customResolver directive", () => {
             }
 
             type UserAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              password: StringAggregateSelection!
-              username: StringAggregateSelection!
-            }
-
-            type UserAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               password: StringAggregateSelection!
               username: StringAggregateSelection!
             }
@@ -185,11 +198,6 @@ describe("@customResolver directive", () => {
               customResolver: StringAggregateSelection!
             }
 
-            type UserInterfaceAggregateSelection {
-              count: Int!
-              customResolver: StringAggregateSelection!
-            }
-
             type UserInterfaceEdge {
               cursor: String!
               node: UserInterface!
@@ -197,15 +205,6 @@ describe("@customResolver directive", () => {
 
             enum UserInterfaceImplementation {
               User
-            }
-
-            input UserInterfaceOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more UserInterfaceSort objects to sort UserInterfaces by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [UserInterfaceSort!]
             }
 
             \\"\\"\\"
@@ -219,14 +218,13 @@ describe("@customResolver directive", () => {
               AND: [UserInterfaceWhere!]
               NOT: UserInterfaceWhere
               OR: [UserInterfaceWhere!]
-              customResolver: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              customResolver_CONTAINS: String
-              customResolver_ENDS_WITH: String
-              customResolver_EQ: String
-              customResolver_IN: [String]
-              customResolver_STARTS_WITH: String
+              customResolver: StringScalarFilters
+              customResolver_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter customResolver: { contains: ... }\\")
+              customResolver_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter customResolver: { endsWith: ... }\\")
+              customResolver_EQ: String @deprecated(reason: \\"Please use the relevant generic filter customResolver: { eq: ... }\\")
+              customResolver_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter customResolver: { in: ... }\\")
+              customResolver_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter customResolver: { startsWith: ... }\\")
               typename: [UserInterfaceImplementation!]
-              typename_IN: [UserInterfaceImplementation!] @deprecated(reason: \\"The typename_IN filter is deprecated, please use the typename filter instead\\")
             }
 
             type UserInterfacesConnection {
@@ -234,15 +232,6 @@ describe("@customResolver directive", () => {
               edges: [UserInterfaceEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
-            }
-
-            input UserOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more UserSort objects to sort Users by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [UserSort!]
             }
 
             \\"\\"\\"
@@ -255,36 +244,36 @@ describe("@customResolver directive", () => {
             }
 
             input UserUpdateInput {
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              password: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              password_SET: String
-              username: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              username_SET: String
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              password: StringScalarMutations
+              password_SET: String @deprecated(reason: \\"Please use the generic mutation 'password: { set: ... } }' instead.\\")
+              username: StringScalarMutations
+              username_SET: String @deprecated(reason: \\"Please use the generic mutation 'username: { set: ... } }' instead.\\")
             }
 
             input UserWhere {
               AND: [UserWhere!]
               NOT: UserWhere
               OR: [UserWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID!]
-              id_STARTS_WITH: ID
-              password: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              password_CONTAINS: String
-              password_ENDS_WITH: String
-              password_EQ: String
-              password_IN: [String!]
-              password_STARTS_WITH: String
-              username: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              username_CONTAINS: String
-              username_ENDS_WITH: String
-              username_EQ: String
-              username_IN: [String!]
-              username_STARTS_WITH: String
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID!] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              password: StringScalarFilters
+              password_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter password: { contains: ... }\\")
+              password_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { endsWith: ... }\\")
+              password_EQ: String @deprecated(reason: \\"Please use the relevant generic filter password: { eq: ... }\\")
+              password_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter password: { in: ... }\\")
+              password_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter password: { startsWith: ... }\\")
+              username: StringScalarFilters
+              username_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter username: { contains: ... }\\")
+              username_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { endsWith: ... }\\")
+              username_EQ: String @deprecated(reason: \\"Please use the relevant generic filter username: { eq: ... }\\")
+              username_IN: [String!] @deprecated(reason: \\"Please use the relevant generic filter username: { in: ... }\\")
+              username_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter username: { startsWith: ... }\\")
             }
 
             type UsersConnection {

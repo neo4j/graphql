@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
                         {
                             when: [BEFORE]
                             operations: [READ]
-                            where: { node: { actedInConnection_SOME: { node: { title_IN: ["Matrix"] } } } }
+                            where: { node: { actedInConnection: { some: { node: { title: { in: ["Matrix"] } } } } } }
                         }
                     ]
                 ) {
@@ -58,7 +58,8 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)-[this1:ACTED_IN]->(this0:Movie) WHERE ($param1 IS NOT NULL AND this0.title IN $param1) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .name } AS this"
@@ -89,9 +90,14 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
                             operations: [READ]
                             where: {
                                 node: {
-                                    actedInConnection_SOME: {
-                                        node: {
-                                            OR: [{ title_IN: ["Matrix"] }, { title_IN: ["Forrest Gump", "Top Gun"] }]
+                                    actedInConnection: {
+                                        some: {
+                                            node: {
+                                                OR: [
+                                                    { title: { in: ["Matrix"] } }
+                                                    { title: { in: ["Forrest Gump", "Top Gun"] } }
+                                                ]
+                                            }
                                         }
                                     }
                                 }
@@ -118,7 +124,8 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)-[this1:ACTED_IN]->(this0:Movie) WHERE (($param1 IS NOT NULL AND this0.title IN $param1) OR ($param2 IS NOT NULL AND this0.title IN $param2)) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .name } AS this"

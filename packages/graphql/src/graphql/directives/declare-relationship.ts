@@ -27,7 +27,6 @@ export const defaultNestedOperations = [
     RelationshipNestedOperationsOption.DELETE,
     RelationshipNestedOperationsOption.CONNECT,
     RelationshipNestedOperationsOption.DISCONNECT,
-    RelationshipNestedOperationsOption.CONNECT_OR_CREATE,
 ];
 
 export const declareRelationshipDirective = new GraphQLDirective({

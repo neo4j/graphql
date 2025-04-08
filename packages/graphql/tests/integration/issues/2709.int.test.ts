@@ -196,7 +196,7 @@ describe("https://github.com/neo4j/graphql/issues/2709 - extended", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
                 runtime: Int!
                 distribution: [DistributionHouse!]! @relationship(type: "DISTRIBUTED_BY", direction: IN)
-                publisher: ${Publisher}! @relationship(type: "DISTRIBUTED_BY", direction: IN)
+                publisher: [${Publisher}!]! @relationship(type: "DISTRIBUTED_BY", direction: IN)
             }
 
             type ${Series} implements Production @node {

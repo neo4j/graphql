@@ -54,7 +54,7 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
     test("should not find genresConnection_ALL where NONE true", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { genresConnection_ALL: { node: { moviesAggregate: { count_EQ: 0 } } } }) {
+                movies(where: { genresConnection: { all: { node: { moviesAggregate: { count: { eq: 0 } } } } } }) {
                     title
                 }
             }
@@ -63,7 +63,8 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
@@ -111,7 +112,11 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
         const query = /* GraphQL */ `
             {
                 movies(
-                    where: { genresConnection_ALL: { node: { moviesAggregate: { count_EQ: 0 }, name_EQ: "Thriller" } } }
+                    where: {
+                        genresConnection: {
+                            all: { node: { moviesAggregate: { count: { eq: 0 } }, name: { eq: "Thriller" } } }
+                        }
+                    }
                 ) {
                     title
                 }
@@ -121,7 +126,8 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
@@ -170,7 +176,7 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
     test("should not find genresConnection_ALL by genre title", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { genresConnection_ALL: { node: { name_EQ: "Thriller" } } }) {
+                movies(where: { genresConnection: { all: { node: { name: { eq: "Thriller" } } } } }) {
                     title
                 }
             }
@@ -179,7 +185,8 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE (EXISTS {
                 MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
                 WHERE this1.name = $param0

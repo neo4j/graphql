@@ -44,19 +44,19 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
     
                 interface BusinessObject {
                     id: ID!
-                    nameDetails: ${NameDetails}
+                    nameDetails: [${NameDetails}!]!
                 }
     
                 type ${ApplicationVariant} implements BusinessObject @node
                     @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                     @mutation(operations: []) {
                     markets: [${Market}!]! @relationship(type: "HAS_MARKETS", direction: OUT)
-                    id: ID! @unique
+                    id: ID!
                     relatedId: ID
                     @cypher(statement: "MATCH (this)<-[:HAS_BASE]-(n:${BaseObject}) RETURN n.id as res", columnName: "res")
-                    baseObject: ${BaseObject}! @relationship(type: "HAS_BASE", direction: IN)
+                    baseObject: [${BaseObject}!]! @relationship(type: "HAS_BASE", direction: IN)
                     current: Boolean!
-                    nameDetails: ${NameDetails} @relationship(type: "HAS_NAME", direction: OUT)
+                    nameDetails: [${NameDetails}!]! @relationship(type: "HAS_NAME", direction: OUT)
                 }
     
                 type ${NameDetails} @node
@@ -69,14 +69,14 @@ describe("https://github.com/neo4j/graphql/issues/1760", () => {
                 type ${Market} implements BusinessObject @node
                     @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                     @mutation(operations: []) {
-                    id: ID! @unique
-                    nameDetails: ${NameDetails} @relationship(type: "HAS_NAME", direction: OUT)
+                    id: ID!
+                    nameDetails: [${NameDetails}!]! @relationship(type: "HAS_NAME", direction: OUT)
                 }
     
                 type ${BaseObject} @node
                     @authorization(validate: [{ when: [BEFORE], where: { jwt: { roles_INCLUDES: "ALL" } } }])
                     @mutation(operations: []) {
-                    id: ID! @id @unique
+                    id: ID! @id
                 }
             `;
 

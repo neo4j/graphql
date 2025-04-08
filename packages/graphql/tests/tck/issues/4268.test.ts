@@ -34,7 +34,10 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
                 @node
                 @authorization(
                     validate: [
-                        { when: [BEFORE], where: { jwt: { OR: [{ roles_EQ: "admin" }, { roles_EQ: "super-admin" }] } } }
+                        {
+                            when: [BEFORE]
+                            where: { jwt: { OR: [{ roles: { eq: "admin" } }, { roles: { eq: "super-admin" } }] } }
+                        }
                     ]
                 ) {
                 title: String
@@ -55,7 +58,8 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $jwt.roles = $param2) OR ($jwt.roles IS NOT NULL AND $jwt.roles = $param3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } AS this"
@@ -94,8 +98,8 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
                             where: {
                                 jwt: {
                                     OR: [
-                                        { OR: [{ roles: "admin" }, { roles: "super-admin" }] }
-                                        { OR: [{ roles: "user" }, { roles: "super-user" }] }
+                                        { OR: [{ roles: { eq: "admin" } }, { roles: { eq: "super-admin" } }] }
+                                        { OR: [{ roles: { eq: "user" } }, { roles: { eq: "super-user" } }] }
                                     ]
                                 }
                             }
@@ -125,7 +129,8 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((($jwt.roles IS NOT NULL AND $jwt.roles = $param2) OR ($jwt.roles IS NOT NULL AND $jwt.roles = $param3)) OR (($jwt.roles IS NOT NULL AND $jwt.roles = $param4) OR ($jwt.roles IS NOT NULL AND $jwt.roles = $param5)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } AS this"
@@ -161,7 +166,10 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
                 @node
                 @authorization(
                     validate: [
-                        { when: [BEFORE], where: { jwt: { AND: [{ roles_EQ: "admin" }, { roles_EQ: "super-admin" }] } } }
+                        {
+                            when: [BEFORE]
+                            where: { jwt: { AND: [{ roles: { eq: "admin" } }, { roles: { eq: "super-admin" } }] } }
+                        }
                     ]
                 ) {
                 title: String
@@ -187,7 +195,8 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $jwt.roles = $param2) AND ($jwt.roles IS NOT NULL AND $jwt.roles = $param3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } AS this"
@@ -226,8 +235,8 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
                             where: {
                                 jwt: {
                                     AND: [
-                                        { AND: [{ roles_EQ: "admin" }, { roles_EQ: "super-admin" }] }
-                                        { AND: [{ roles_EQ: "user" }, { roles_EQ: "super-user" }] }
+                                        { AND: [{ roles: { eq: "admin" } }, { roles: { eq: "super-admin" } }] }
+                                        { AND: [{ roles: { eq: "user" } }, { roles: { eq: "super-user" } }] }
                                     ]
                                 }
                             }
@@ -257,7 +266,8 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((($jwt.roles IS NOT NULL AND $jwt.roles = $param2) AND ($jwt.roles IS NOT NULL AND $jwt.roles = $param3)) AND (($jwt.roles IS NOT NULL AND $jwt.roles = $param4) AND ($jwt.roles IS NOT NULL AND $jwt.roles = $param5)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } AS this"
@@ -290,7 +300,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             }
 
             type Movie
-                @authorization(validate: [{ when: [BEFORE], where: { jwt: { NOT: { roles_EQ: "admin" } } } }])
+                @authorization(validate: [{ when: [BEFORE], where: { jwt: { NOT: { roles: { eq: "admin" } } } } }])
                 @node {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
@@ -315,7 +325,8 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND NOT ($jwt.roles IS NOT NULL AND $jwt.roles = $param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } AS this"
@@ -346,7 +357,9 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
 
             type Movie
                 @node
-                @authorization(validate: [{ when: [BEFORE], where: { jwt: { NOT: { NOT: { roles_EQ: "admin" } } } } }]) {
+                @authorization(
+                    validate: [{ when: [BEFORE], where: { jwt: { NOT: { NOT: { roles: { eq: "admin" } } } } } }]
+                ) {
                 title: String
                 director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
             }
@@ -370,7 +383,8 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND NOT (NOT ($jwt.roles IS NOT NULL AND $jwt.roles = $param2))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } AS this"

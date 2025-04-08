@@ -40,7 +40,7 @@ describe("Cypher Date", () => {
     test("Simple Read", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { date_EQ: "1970-01-01" }) {
+                movies(where: { date: { eq: "1970-01-01" } }) {
                     date
                 }
             }
@@ -49,7 +49,8 @@ describe("Cypher Date", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.date = $param0
             RETURN this { .date } AS this"
         `);
@@ -68,7 +69,7 @@ describe("Cypher Date", () => {
     test("GTE Read", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { date_GTE: "1980-04-08" }) {
+                movies(where: { date: { gte: "1980-04-08" } }) {
                     date
                 }
             }
@@ -77,7 +78,8 @@ describe("Cypher Date", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.date >= $param0
             RETURN this { .date } AS this"
         `);
@@ -107,7 +109,8 @@ describe("Cypher Date", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -148,7 +151,8 @@ describe("Cypher Date", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             SET this.date = $this_update_date_SET
             RETURN collect(DISTINCT this { .id, .date }) AS data"
         `);

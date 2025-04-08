@@ -45,17 +45,17 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
             union Keyword = ${testEmoji.name} | ${testHashtag.name} | ${testText.name}
 
             type ${testEmoji.name} @node {
-                id: ID! @id @unique
+                id: ID! @id
                 type: String!
             }
 
             type ${testHashtag.name} @node {
-                id: ID! @id @unique
+                id: ID! @id
                 type: String!
             }
 
             type ${testText.name} @node {
-                id: ID! @id @unique
+                id: ID! @id
                 type: String!
             }
         `;

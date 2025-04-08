@@ -47,7 +47,7 @@ describe("https://github.com/neo4j/graphql/issues/4112", () => {
             }
 
             type ${Category} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) @node {
-                name: String! @unique
+                name: String!
             }
         `;
 
@@ -93,7 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/4112", () => {
             }
 
             type ${Category} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) @node {
-                name: String! @unique
+                name: String!
             }
         `;
 
@@ -139,7 +139,7 @@ describe("https://github.com/neo4j/graphql/issues/4112", () => {
             }
 
             type ${Category} @authentication(operations: [READ], jwt: { roles_INCLUDES: "admin" }) @node {
-                name: String! @unique
+                name: String!
             }
         `;
 

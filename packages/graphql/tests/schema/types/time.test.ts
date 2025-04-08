@@ -18,8 +18,8 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
-import { lexicographicSortSchema } from "graphql/utilities";
 import { gql } from "graphql-tag";
+import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("Time", () => {
@@ -64,9 +64,18 @@ describe("Time", () => {
               relationshipsDeleted: Int!
             }
 
-            type IDAggregateSelection {
-              longest: ID
-              shortest: ID
+            \\"\\"\\"ID filters\\"\\"\\"
+            input IDScalarFilters {
+              contains: ID
+              endsWith: ID
+              eq: ID
+              in: [ID!]
+              startsWith: ID
+            }
+
+            \\"\\"\\"ID mutations\\"\\"\\"
+            input IDScalarMutations {
+              set: ID
             }
 
             type Movie {
@@ -80,13 +89,6 @@ describe("Time", () => {
             }
 
             type MovieAggregateNode {
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
-              time: TimeAggregateSelection!
-            }
-
-            type MovieAggregateSelection {
-              count: Int!
-              id: IDAggregateSelection! @deprecated(reason: \\"aggregation of ID fields are deprecated and will be removed\\")
               time: TimeAggregateSelection!
             }
 
@@ -100,15 +102,6 @@ describe("Time", () => {
               node: Movie!
             }
 
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
-            }
-
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -118,29 +111,29 @@ describe("Time", () => {
             }
 
             input MovieUpdateInput {
-              id: ID @deprecated(reason: \\"Please use the explicit _SET field\\")
-              id_SET: ID
-              time: Time @deprecated(reason: \\"Please use the explicit _SET field\\")
-              time_SET: Time
+              id: IDScalarMutations
+              id_SET: ID @deprecated(reason: \\"Please use the generic mutation 'id: { set: ... } }' instead.\\")
+              time: TimeScalarMutations
+              time_SET: Time @deprecated(reason: \\"Please use the generic mutation 'time: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              id: ID @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              id_CONTAINS: ID
-              id_ENDS_WITH: ID
-              id_EQ: ID
-              id_IN: [ID]
-              id_STARTS_WITH: ID
-              time: Time @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              time_EQ: Time
-              time_GT: Time
-              time_GTE: Time
-              time_IN: [Time]
-              time_LT: Time
-              time_LTE: Time
+              id: IDScalarFilters
+              id_CONTAINS: ID @deprecated(reason: \\"Please use the relevant generic filter id: { contains: ... }\\")
+              id_ENDS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { endsWith: ... }\\")
+              id_EQ: ID @deprecated(reason: \\"Please use the relevant generic filter id: { eq: ... }\\")
+              id_IN: [ID] @deprecated(reason: \\"Please use the relevant generic filter id: { in: ... }\\")
+              id_STARTS_WITH: ID @deprecated(reason: \\"Please use the relevant generic filter id: { startsWith: ... }\\")
+              time: TimeScalarFilters
+              time_EQ: Time @deprecated(reason: \\"Please use the relevant generic filter time: { eq: ... }\\")
+              time_GT: Time @deprecated(reason: \\"Please use the relevant generic filter time: { gt: ... }\\")
+              time_GTE: Time @deprecated(reason: \\"Please use the relevant generic filter time: { gte: ... }\\")
+              time_IN: [Time] @deprecated(reason: \\"Please use the relevant generic filter time: { in: ... }\\")
+              time_LT: Time @deprecated(reason: \\"Please use the relevant generic filter time: { lt: ... }\\")
+              time_LTE: Time @deprecated(reason: \\"Please use the relevant generic filter time: { lte: ... }\\")
             }
 
             type MoviesConnection {
@@ -165,8 +158,7 @@ describe("Time", () => {
             }
 
             type Query {
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
@@ -184,6 +176,21 @@ describe("Time", () => {
             type TimeAggregateSelection {
               max: Time
               min: Time
+            }
+
+            \\"\\"\\"Time filters\\"\\"\\"
+            input TimeScalarFilters {
+              eq: Time
+              gt: Time
+              gte: Time
+              in: [Time!]
+              lt: Time
+              lte: Time
+            }
+
+            \\"\\"\\"Time mutations\\"\\"\\"
+            input TimeScalarMutations {
+              set: Time
             }
 
             \\"\\"\\"

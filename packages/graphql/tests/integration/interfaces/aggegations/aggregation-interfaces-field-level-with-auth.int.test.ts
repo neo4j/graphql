@@ -109,8 +109,12 @@ describe("Interface Field Level Aggregations with authorization", () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        count
+                    actedInConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -120,19 +124,24 @@ describe("Interface Field Level Aggregations with authorization", () => {
         const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult as any).data[Actor.plural][0][`actedInAggregate`]).toEqual({
-            count: 4,
-        });
 
         expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
             {
-                actedInAggregate: {
-                    count: 4,
+                actedInConnection: {
+                    aggregate: {
+                        count: {
+                            nodes: 4,
+                        },
+                    },
                 },
             },
             {
-                actedInAggregate: {
-                    count: 4,
+                actedInConnection: {
+                    aggregate: {
+                        count: {
+                            nodes: 4,
+                        },
+                    },
                 },
             },
         ]);
@@ -142,8 +151,12 @@ describe("Interface Field Level Aggregations with authorization", () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        count
+                    actedInConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -161,10 +174,12 @@ describe("Interface Field Level Aggregations with authorization", () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        node {
-                            cost {
-                                min
+                    actedInConnection {
+                        aggregate {
+                            node {
+                                cost {
+                                    min
+                                }
                             }
                         }
                     }
@@ -179,19 +194,23 @@ describe("Interface Field Level Aggregations with authorization", () => {
 
         expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
             {
-                actedInAggregate: {
-                    node: {
-                        cost: {
-                            min: 10000000,
+                actedInConnection: {
+                    aggregate: {
+                        node: {
+                            cost: {
+                                min: 10000000,
+                            },
                         },
                     },
                 },
             },
             {
-                actedInAggregate: {
-                    node: {
-                        cost: {
-                            min: 12000000,
+                actedInConnection: {
+                    aggregate: {
+                        node: {
+                            cost: {
+                                min: 12000000,
+                            },
                         },
                     },
                 },
@@ -203,10 +222,12 @@ describe("Interface Field Level Aggregations with authorization", () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        node {
-                            cost {
-                                min
+                    actedInConnection {
+                        aggregate {
+                            node {
+                                cost {
+                                    min
+                                }
                             }
                         }
                     }
@@ -226,10 +247,12 @@ describe("Interface Field Level Aggregations with authorization", () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        node {
-                            cost {
-                                max
+                    actedInConnection {
+                        aggregate {
+                            node {
+                                cost {
+                                    max
+                                }
                             }
                         }
                     }
@@ -244,19 +267,23 @@ describe("Interface Field Level Aggregations with authorization", () => {
 
         expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
             {
-                actedInAggregate: {
-                    node: {
-                        cost: {
-                            max: 20000000,
+                actedInConnection: {
+                    aggregate: {
+                        node: {
+                            cost: {
+                                max: 20000000,
+                            },
                         },
                     },
                 },
             },
             {
-                actedInAggregate: {
-                    node: {
-                        cost: {
-                            max: 20000000,
+                actedInConnection: {
+                    aggregate: {
+                        node: {
+                            cost: {
+                                max: 20000000,
+                            },
                         },
                     },
                 },
@@ -268,10 +295,12 @@ describe("Interface Field Level Aggregations with authorization", () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        node {
-                            cost {
-                                max
+                    actedInConnection {
+                        aggregate {
+                            node {
+                                cost {
+                                    max
+                                }
                             }
                         }
                     }
@@ -291,10 +320,12 @@ describe("Interface Field Level Aggregations with authorization", () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        node {
-                            cost {
-                                sum
+                    actedInConnection {
+                        aggregate {
+                            node {
+                                cost {
+                                    sum
+                                }
                             }
                         }
                     }
@@ -309,19 +340,23 @@ describe("Interface Field Level Aggregations with authorization", () => {
 
         expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
             {
-                actedInAggregate: {
-                    node: {
-                        cost: {
-                            sum: 52000000,
+                actedInConnection: {
+                    aggregate: {
+                        node: {
+                            cost: {
+                                sum: 52000000,
+                            },
                         },
                     },
                 },
             },
             {
-                actedInAggregate: {
-                    node: {
-                        cost: {
-                            sum: 72000000,
+                actedInConnection: {
+                    aggregate: {
+                        node: {
+                            cost: {
+                                sum: 72000000,
+                            },
                         },
                     },
                 },
@@ -333,10 +368,12 @@ describe("Interface Field Level Aggregations with authorization", () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        node {
-                            cost {
-                                sum
+                    actedInConnection {
+                        aggregate {
+                            node {
+                                cost {
+                                    sum
+                                }
                             }
                         }
                     }
@@ -356,14 +393,18 @@ describe("Interface Field Level Aggregations with authorization", () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        count
-                        node {
-                            cost {
-                                min
-                                max
-                                average
-                                sum
+                    actedInConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                            node {
+                                cost {
+                                    min
+                                    max
+                                    average
+                                    sum
+                                }
                             }
                         }
                     }
@@ -378,27 +419,31 @@ describe("Interface Field Level Aggregations with authorization", () => {
 
         expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
             {
-                actedInAggregate: {
-                    count: 4,
-                    node: {
-                        cost: {
-                            average: 13000000,
-                            max: 20000000,
-                            min: 10000000,
-                            sum: 52000000,
+                actedInConnection: {
+                    aggregate: {
+                        count: { nodes: 4 },
+                        node: {
+                            cost: {
+                                average: 13000000,
+                                max: 20000000,
+                                min: 10000000,
+                                sum: 52000000,
+                            },
                         },
                     },
                 },
             },
             {
-                actedInAggregate: {
-                    count: 4,
-                    node: {
-                        cost: {
-                            average: 18000000,
-                            max: 20000000,
-                            min: 12000000,
-                            sum: 72000000,
+                actedInConnection: {
+                    aggregate: {
+                        count: { nodes: 4 },
+                        node: {
+                            cost: {
+                                average: 18000000,
+                                max: 20000000,
+                                min: 12000000,
+                                sum: 72000000,
+                            },
                         },
                     },
                 },
@@ -410,14 +455,18 @@ describe("Interface Field Level Aggregations with authorization", () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        count
-                        node {
-                            cost {
-                                min
-                                max
-                                average
-                                sum
+                    actedInConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                            node {
+                                cost {
+                                    min
+                                    max
+                                    average
+                                    sum
+                                }
                             }
                         }
                     }
@@ -438,8 +487,12 @@ describe("Interface Field Level Aggregations with authorization", () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        count
+                    actedInConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -452,13 +505,21 @@ describe("Interface Field Level Aggregations with authorization", () => {
 
         expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
             {
-                actedInAggregate: {
-                    count: 4,
+                actedInConnection: {
+                    aggregate: {
+                        count: {
+                            nodes: 4,
+                        },
+                    },
                 },
             },
             {
-                actedInAggregate: {
-                    count: 4,
+                actedInConnection: {
+                    aggregate: {
+                        count: {
+                            nodes: 4,
+                        },
+                    },
                 },
             },
         ]);
@@ -468,8 +529,12 @@ describe("Interface Field Level Aggregations with authorization", () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        count
+                    actedInConnection {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                        }
                     }
                 }
             }
@@ -487,10 +552,12 @@ describe("Interface Field Level Aggregations with authorization", () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        edge {
-                            screenTime {
-                                sum
+                    actedInConnection {
+                        aggregate {
+                            edge {
+                                screenTime {
+                                    sum
+                                }
                             }
                         }
                     }
@@ -505,19 +572,23 @@ describe("Interface Field Level Aggregations with authorization", () => {
 
         expect((gqlResult as any).data[Actor.plural]).toIncludeSameMembers([
             {
-                actedInAggregate: {
-                    edge: {
-                        screenTime: {
-                            sum: 224,
+                actedInConnection: {
+                    aggregate: {
+                        edge: {
+                            screenTime: {
+                                sum: 224,
+                            },
                         },
                     },
                 },
             },
             {
-                actedInAggregate: {
-                    edge: {
-                        screenTime: {
-                            sum: 1784,
+                actedInConnection: {
+                    aggregate: {
+                        edge: {
+                            screenTime: {
+                                sum: 1784,
+                            },
                         },
                     },
                 },
@@ -529,10 +600,12 @@ describe("Interface Field Level Aggregations with authorization", () => {
         const query = /* GraphQL */ `
             {
                 ${Actor.plural} {
-                    actedInAggregate {
-                        edge {
-                            screenTime {
-                                sum
+                    actedInConnection {
+                        aggregate {
+                            edge {
+                                screenTime {
+                                    sum
+                                }
                             }
                         }
                     }

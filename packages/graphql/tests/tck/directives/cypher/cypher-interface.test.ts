@@ -96,7 +96,6 @@ describe("Cypher directive on interface", () => {
                 id: ID
                 title: String
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-                topActor: Actor @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type Query {
@@ -140,7 +139,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                 RETURN n
@@ -185,7 +185,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                 RETURN n
@@ -218,110 +219,13 @@ describe("Cypher directive on interface", () => {
         `);
     });
 
-    test("top-level interface with nested projection", async () => {
-        const query = /* GraphQL */ `
-            query {
-                moviesOrTVShows(title: "The Matrix") {
-                    title
-                    ... on Movie {
-                        actors {
-                            name
-                        }
-                        topActor {
-                            name
-                        }
-                    }
-                    ... on TVShow {
-                        actors {
-                            name
-                        }
-                        topActor {
-                            name
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-                MATCH (n)
-                WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
-                RETURN n
-            }
-            WITH n AS this0
-            CALL {
-                WITH this0
-                CALL {
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:TVShow
-                    CALL {
-                        WITH this0
-                        CALL {
-                            WITH this0
-                            WITH this0 AS this
-                            MATCH (a:Actor)
-                            RETURN a
-                        }
-                        WITH a AS this1
-                        WITH this1 { .name } AS this1
-                        RETURN collect(this1) AS var2
-                    }
-                    CALL {
-                        WITH this0
-                        CALL {
-                            WITH this0
-                            WITH this0 AS this
-                            MATCH (a:Actor)
-                            RETURN a
-                        }
-                        WITH a AS this3
-                        WITH this3 { .name } AS this3
-                        RETURN head(collect(this3)) AS var4
-                    }
-                    WITH this0 { .title, actors: var2, topActor: var4, __resolveType: \\"TVShow\\", __id: id(this0) } AS this0
-                    RETURN this0 AS var5
-                    UNION
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:Movie
-                    CALL {
-                        WITH this0
-                        MATCH (this0)<-[this6:ACTED_IN]-(this7:Actor)
-                        WITH this7 { .name } AS this7
-                        RETURN collect(this7) AS var8
-                    }
-                    CALL {
-                        WITH this0
-                        MATCH (this0)<-[this9:ACTED_IN]-(this10:Actor)
-                        WITH this10 { .name } AS this10
-                        RETURN head(collect(this10)) AS var11
-                    }
-                    WITH this0 { .title, actors: var8, topActor: var11, __resolveType: \\"Movie\\", __id: id(this0) } AS this0
-                    RETURN this0 AS var5
-                }
-                RETURN var5
-            }
-            RETURN var5 AS this0"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"The Matrix\\"
-            }"
-        `);
-    });
-
     test("top-level interface with nested relationship parameters", async () => {
         const query = /* GraphQL */ `
             query {
                 moviesOrTVShows(title: "The Matrix") {
                     title
                     ... on Movie {
-                        actors(where: { name_EQ: "Keanu Reeves" }) {
+                        actors(where: { name: { eq: "Keanu Reeves" } }) {
                             name
                         }
                     }
@@ -340,7 +244,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                 RETURN n
@@ -386,6 +291,7 @@ describe("Cypher directive on interface", () => {
                         WITH this0
                         MATCH (this0)<-[this6:ACTED_IN]-(this7:Actor)
                         WHERE this7.name = $param2
+                        WITH DISTINCT this7
                         WITH this7 { .name } AS this7
                         RETURN collect(this7) AS var8
                     }
@@ -418,7 +324,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                 RETURN n
@@ -464,7 +371,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                 RETURN n
@@ -498,111 +406,13 @@ describe("Cypher directive on interface", () => {
         `);
     });
 
-    test("top-level single interface with nested projection", async () => {
-        const query = /* GraphQL */ `
-            query {
-                movieOrTVShow(title: "The Matrix") {
-                    title
-                    ... on Movie {
-                        actors {
-                            name
-                        }
-                        topActor {
-                            name
-                        }
-                    }
-                    ... on TVShow {
-                        actors {
-                            name
-                        }
-                        topActor {
-                            name
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
-                MATCH (n)
-                WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
-                RETURN n
-                LIMIT 1
-            }
-            WITH n AS this0
-            CALL {
-                WITH this0
-                CALL {
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:TVShow
-                    CALL {
-                        WITH this0
-                        CALL {
-                            WITH this0
-                            WITH this0 AS this
-                            MATCH (a:Actor)
-                            RETURN a
-                        }
-                        WITH a AS this1
-                        WITH this1 { .name } AS this1
-                        RETURN collect(this1) AS var2
-                    }
-                    CALL {
-                        WITH this0
-                        CALL {
-                            WITH this0
-                            WITH this0 AS this
-                            MATCH (a:Actor)
-                            RETURN a
-                        }
-                        WITH a AS this3
-                        WITH this3 { .name } AS this3
-                        RETURN head(collect(this3)) AS var4
-                    }
-                    WITH this0 { .title, actors: var2, topActor: var4, __resolveType: \\"TVShow\\", __id: id(this0) } AS this0
-                    RETURN this0 AS var5
-                    UNION
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:Movie
-                    CALL {
-                        WITH this0
-                        MATCH (this0)<-[this6:ACTED_IN]-(this7:Actor)
-                        WITH this7 { .name } AS this7
-                        RETURN collect(this7) AS var8
-                    }
-                    CALL {
-                        WITH this0
-                        MATCH (this0)<-[this9:ACTED_IN]-(this10:Actor)
-                        WITH this10 { .name } AS this10
-                        RETURN head(collect(this10)) AS var11
-                    }
-                    WITH this0 { .title, actors: var8, topActor: var11, __resolveType: \\"Movie\\", __id: id(this0) } AS this0
-                    RETURN this0 AS var5
-                }
-                RETURN var5
-            }
-            RETURN var5 AS this0"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`
-            "{
-                \\"param0\\": \\"The Matrix\\"
-            }"
-        `);
-    });
-
     test("top-level single interface with nested relationship parameters", async () => {
         const query = /* GraphQL */ `
             query {
                 moviesOrTVShows(title: "The Matrix") {
                     title
                     ... on Movie {
-                        actors(where: { name_EQ: "Keanu Reeves" }) {
+                        actors(where: { name: { eq: "Keanu Reeves" } }) {
                             name
                         }
                     }
@@ -621,7 +431,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
                 MATCH (n)
                 WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
                 RETURN n
@@ -667,6 +478,7 @@ describe("Cypher directive on interface", () => {
                         WITH this0
                         MATCH (this0)<-[this6:ACTED_IN]-(this7:Actor)
                         WHERE this7.name = $param2
+                        WITH DISTINCT this7
                         WITH this7 { .name } AS this7
                         RETURN collect(this7) AS var8
                     }
@@ -694,7 +506,7 @@ describe("Cypher directive on interface", () => {
                     moviesOrTVShows(title: "The Matrix") {
                         title
                         ... on Movie {
-                            actors(where: { name_EQ: "Keanu Reeves" }) {
+                            actors(where: { name: { eq: "Keanu Reeves" } }) {
                                 name
                             }
                         }
@@ -714,7 +526,8 @@ describe("Cypher directive on interface", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Actor)
+            "CYPHER 5
+            MATCH (this:Actor)
             CALL {
                 WITH this
                 CALL {
@@ -765,6 +578,7 @@ describe("Cypher directive on interface", () => {
                             WITH this0
                             MATCH (this0)<-[this6:ACTED_IN]-(this7:Actor)
                             WHERE this7.name = $param2
+                            WITH DISTINCT this7
                             WITH this7 { .name } AS this7
                             RETURN collect(this7) AS var8
                         }

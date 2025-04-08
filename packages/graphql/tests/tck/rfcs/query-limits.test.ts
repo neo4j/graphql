@@ -63,7 +63,8 @@ describe("tck/rfcs/query-limits", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WITH *
                 LIMIT $param0
                 RETURN this { .id } AS this"
@@ -91,7 +92,8 @@ describe("tck/rfcs/query-limits", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Show)
+                "CYPHER 5
+                MATCH (this:Show)
                 WITH *
                 LIMIT $param0
                 RETURN this { .id } AS this"
@@ -119,7 +121,8 @@ describe("tck/rfcs/query-limits", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Show)
+                "CYPHER 5
+                MATCH (this:Show)
                 WITH *
                 LIMIT $param0
                 RETURN this { .id } AS this"
@@ -152,12 +155,14 @@ describe("tck/rfcs/query-limits", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WITH *
                 LIMIT $param0
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                    WITH DISTINCT this1
                     WITH this1 { .id } AS this1
                     LIMIT $param1
                     RETURN collect(this1) AS var2
@@ -198,7 +203,8 @@ describe("tck/rfcs/query-limits", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WITH *
                 LIMIT $param0
                 CALL {
@@ -252,7 +258,8 @@ describe("tck/rfcs/query-limits", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WITH *
                 LIMIT $param0
                 CALL {
@@ -306,7 +313,8 @@ describe("tck/rfcs/query-limits", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Festival)
+                "CYPHER 5
+                MATCH (this:Festival)
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:PART_OF]-(this1:Show)
@@ -350,12 +358,14 @@ describe("tck/rfcs/query-limits", () => {
             const result = await translateQuery(neoSchema, query);
 
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "MATCH (this:Movie)
+                "CYPHER 5
+                MATCH (this:Movie)
                 WITH *
                 LIMIT $param0
                 CALL {
                     WITH this
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                    WITH DISTINCT this1
                     WITH this1 { .id } AS this1
                     LIMIT $param1
                     RETURN collect(this1) AS var2

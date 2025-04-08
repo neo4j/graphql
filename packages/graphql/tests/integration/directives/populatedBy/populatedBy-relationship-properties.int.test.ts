@@ -928,7 +928,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                                 genres: {
                                     update: {
                                         edge: {
-                                            id: "${relId}"
+                                            id_SET: "${relId}"
                                         }
                                     }
                                 }
@@ -2439,7 +2439,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             description: "@populatedBy - Time",
             type: "Time",
             callback: () => Promise.resolve(`${date.toISOString().split("T")[1]}`),
-            expectedValue: `${date.toISOString().split("T")[1]?.split("Z")[0]}000000Z`,
+            expectedValue: `${date.toISOString().split("T")[1]?.split("Z")[0]}Z`,
         },
         {
             description: "@populatedBy - LocalDateTime",

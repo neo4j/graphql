@@ -37,7 +37,7 @@ describe("Cypher Union", () => {
                         {
                             when: [BEFORE]
                             operations: [READ]
-                            where: { node: { name_EQ: "$jwt.jwtAllowedNamesExample" } }
+                            where: { node: { name: { eq: "$jwt.jwtAllowedNamesExample" } } }
                         }
                     ]
                 ) {
@@ -76,7 +76,8 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -125,7 +126,8 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             CALL {
                 WITH this
                 CALL {
@@ -160,9 +162,9 @@ describe("Cypher Union", () => {
     test("Read Unions with filter and limit", async () => {
         const query = /* GraphQL */ `
             {
-                movies(where: { title_EQ: "some title" }) {
+                movies(where: { title: { eq: "some title" } }) {
                     search(
-                        where: { Movie: { title_EQ: "The Matrix" }, Genre: { name_EQ: "Horror" } }
+                        where: { Movie: { title: { eq: "The Matrix" } }, Genre: { name: { eq: "Horror" } } }
                         offset: 1
                         limit: 10
                     ) {
@@ -181,7 +183,8 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             CALL {
                 WITH this
@@ -245,7 +248,8 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
             WITH *
@@ -285,7 +289,8 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WITH this
             CREATE (this_search_Genre0_create0_node:Genre)
             SET this_search_Genre0_create0_node.name = $this_search_Genre0_create0_node_name
@@ -308,7 +313,7 @@ describe("Cypher Union", () => {
                     input: [
                         {
                             title: "some movie"
-                            search: { Genre: { connect: [{ where: { node: { name_EQ: "some genre" } } }] } }
+                            search: { Genre: { connect: [{ where: { node: { name: { eq: "some genre" } } } }] } }
                         }
                     ]
                 ) {
@@ -323,7 +328,8 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CALL {
+            "CYPHER 5
+            CALL {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
             WITH *
@@ -338,7 +344,7 @@ describe("Cypher Union", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_search_Genre_connect0_node
-            			MERGE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
+            			CREATE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
             		}
             	}
             WITH this0, this0_search_Genre_connect0_node
@@ -366,12 +372,14 @@ describe("Cypher Union", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title_EQ: "some movie" }
+                    where: { title: { eq: "some movie" } }
                     update: {
                         search: {
                             Genre: {
-                                where: { node: { name_EQ: "some genre" } }
-                                update: { node: { name_SET: "some new genre" } }
+                                update: {
+                                    where: { node: { name: { eq: "some genre" } } }
+                                    node: { name_SET: "some new genre" }
+                                }
                             }
                         }
                     }
@@ -387,7 +395,8 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             WITH this
             CALL {
@@ -411,14 +420,16 @@ describe("Cypher Union", () => {
                             \\"search\\": {
                                 \\"Genre\\": [
                                     {
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"name_EQ\\": \\"some genre\\"
-                                            }
-                                        },
                                         \\"update\\": {
                                             \\"node\\": {
                                                 \\"name_SET\\": \\"some new genre\\"
+                                            },
+                                            \\"where\\": {
+                                                \\"node\\": {
+                                                    \\"name\\": {
+                                                        \\"eq\\": \\"some genre\\"
+                                                    }
+                                                }
                                             }
                                         }
                                     }
@@ -436,8 +447,8 @@ describe("Cypher Union", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title_EQ: "some movie" }
-                    update: { search: { Genre: { disconnect: [{ where: { node: { name_EQ: "some genre" } } }] } } }
+                    where: { title: { eq: "some movie" } }
+                    update: { search: { Genre: { disconnect: [{ where: { node: { name: { eq: "some genre" } } } }] } } }
                 ) {
                     movies {
                         title
@@ -450,7 +461,8 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             WITH this
             CALL {
@@ -482,7 +494,9 @@ describe("Cypher Union", () => {
                                             {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"name_EQ\\": \\"some genre\\"
+                                                        \\"name\\": {
+                                                            \\"eq\\": \\"some genre\\"
+                                                        }
                                                     }
                                                 }
                                             }
@@ -502,8 +516,8 @@ describe("Cypher Union", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title_EQ: "some movie" }
-                    update: { search: { Genre: { connect: { where: { node: { name_EQ: "some genre" } } } } } }
+                    where: { title: { eq: "some movie" } }
+                    update: { search: { Genre: { connect: { where: { node: { name: { eq: "some genre" } } } } } } }
                 ) {
                     movies {
                         title
@@ -516,7 +530,8 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             WITH *
             CALL {
@@ -530,7 +545,7 @@ describe("Cypher Union", () => {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_search_Genre0_connect0_node
-            			MERGE (this)-[:SEARCH]->(this_search_Genre0_connect0_node)
+            			CREATE (this)-[:SEARCH]->(this_search_Genre0_connect0_node)
             		}
             	}
             WITH this, this_search_Genre0_connect0_node
@@ -552,8 +567,8 @@ describe("Cypher Union", () => {
         const query = /* GraphQL */ `
             mutation {
                 updateMovies(
-                    where: { title_EQ: "some movie" }
-                    update: { search: { Genre: { delete: { where: { node: { name_EQ: "some genre" } } } } } }
+                    where: { title: { eq: "some movie" } }
+                    update: { search: { Genre: { delete: { where: { node: { name: { eq: "some genre" } } } } } } }
                 ) {
                     movies {
                         title
@@ -566,7 +581,8 @@ describe("Cypher Union", () => {
         const result = await translateQuery(neoSchema, query, { token });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.title = $param0
             WITH *
             CALL {
@@ -597,7 +613,9 @@ describe("Cypher Union", () => {
                                             {
                                                 \\"where\\": {
                                                     \\"node\\": {
-                                                        \\"name_EQ\\": \\"some genre\\"
+                                                        \\"name\\": {
+                                                            \\"eq\\": \\"some genre\\"
+                                                        }
                                                     }
                                                 }
                                             }

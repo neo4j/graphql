@@ -37,52 +37,65 @@ describe("Cypher -> fulltext -> Auth", () => {
         }
     });
 
-    describe("4.4", () => {
-        test("simple match with auth where", async () => {
-            const typeDefs = /* GraphQL */ `
-                type Movie
-                    @node
-                    @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                    @authorization(filter: [{ where: { node: { director_SOME: { id_EQ: "$jwt.sub" } } } }]) {
-                    title: String
-                    director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
-                }
+    test("simple match with auth where", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie
+                @node
+                @fulltext(indexes: [{ indexName: "MovieTitle", queryName: "moviesByTitle", fields: ["title"] }])
+                @authorization(filter: [{ where: { node: { director: { some: { id: { eq: "$jwt.sub" } } } } } }]) {
+                title: String
+                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
+            }
 
-                type Person @node {
-                    id: ID
-                }
-            `;
+            type Person @node {
+                id: ID
+            }
+        `;
 
-            const secret = "shh-its-a-secret";
+        const secret = "shh-its-a-secret";
 
-            const sub = "my-sub";
+        const sub = "my-sub";
 
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: { authorization: { key: secret } },
-            });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { authorization: { key: secret } },
+        });
 
-            const query = /* GraphQL */ `
-                query {
-                    movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                        title
+        const query = /* GraphQL */ `
+            query {
+                moviesByTitle(phrase: "something AND something") {
+                    edges {
+                        node {
+                            title
+                        }
                     }
                 }
-            `;
+            }
+        `;
 
-            const token = createBearerToken(secret, { sub });
+        const token = createBearerToken(secret, { sub });
 
-            const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "4.4" });
+        const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
 
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH *
-                WHERE ($isAuthenticated = true AND size([(this0)<-[:DIRECTED]-(this2:Person) WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1]) > 0)
-                RETURN this0 { .title } AS this"
-            `);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            WHERE ($param1 IN labels(this0) AND ($isAuthenticated = true AND EXISTS {
+                MATCH (this0)<-[:DIRECTED]-(this2:Person)
+                WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+            }))
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var3
+            }
+            RETURN { edges: var3, totalCount: totalCount } AS this"
+        `);
 
-            expect(result.params).toMatchInlineSnapshot(`
+        expect(result.params).toMatchInlineSnapshot(`
                 Object {
                   "isAuthenticated": true,
                   "jwt": Object {
@@ -93,431 +106,69 @@ describe("Cypher -> fulltext -> Auth", () => {
                   "param1": "Movie",
                 }
             `);
-        });
-
-        test("simple match with auth allow", async () => {
-            const typeDefs = /* GraphQL */ `
-                type Movie
-                    @node
-                    @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                    @authorization(
-                        validate: [{ when: [BEFORE], where: { node: { director_SOME: { id_EQ: "$jwt.sub" } } } }]
-                    ) {
-                    title: String
-                    director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
-                }
-
-                type Person @node {
-                    id: ID
-                }
-            `;
-
-            const secret = "shh-its-a-secret";
-
-            const sub = "my-sub";
-
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: { authorization: { key: secret } },
-            });
-
-            const query = /* GraphQL */ `
-                query {
-                    movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                        title
-                    }
-                }
-            `;
-
-            const token = createBearerToken(secret, { sub });
-
-            const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "4.4" });
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[:DIRECTED]-(this2:Person) WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN this0 { .title } AS this"
-            `);
-
-            expect(result.params).toMatchInlineSnapshot(`
-                Object {
-                  "isAuthenticated": true,
-                  "jwt": Object {
-                    "roles": Array [],
-                    "sub": "my-sub",
-                  },
-                  "param0": "something AND something",
-                  "param1": "Movie",
-                }
-            `);
-        });
-
-        test("simple match with auth allow ALL", async () => {
-            const typeDefs = /* GraphQL */ `
-                type Movie
-                    @node
-                    @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                    @authorization(
-                        validate: [{ when: [BEFORE], where: { node: { director_ALL: { id_EQ: "$jwt.sub" } } } }]
-                    ) {
-                    title: String
-                    director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
-                }
-
-                type Person @node {
-                    id: ID
-                }
-            `;
-
-            const secret = "shh-its-a-secret";
-
-            const sub = "my-sub";
-
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: { authorization: { key: secret } },
-            });
-
-            const query = /* GraphQL */ `
-                query {
-                    movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                        title
-                    }
-                }
-            `;
-
-            const token = createBearerToken(secret, { sub });
-
-            const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "4.4" });
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[:DIRECTED]-(this2:Person) WHERE NOT ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1]) = 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN this0 { .title } AS this"
-            `);
-
-            expect(result.params).toMatchInlineSnapshot(`
-                Object {
-                  "isAuthenticated": true,
-                  "jwt": Object {
-                    "roles": Array [],
-                    "sub": "my-sub",
-                  },
-                  "param0": "something AND something",
-                  "param1": "Movie",
-                }
-            `);
-        });
-
-        test("simple match with auth allow on connection node", async () => {
-            const typeDefs = /* GraphQL */ `
-                type Movie
-                    @node
-                    @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                    @authorization(
-                        validate: [
-                            {
-                                when: [BEFORE]
-                                where: { node: { directorConnection_SOME: { node: { id_EQ: "$jwt.sub" } } } }
-                            }
-                        ]
-                    ) {
-                    title: String
-                    director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
-                }
-
-                type Person @node {
-                    id: ID
-                }
-            `;
-
-            const secret = "shh-its-a-secret";
-
-            const sub = "my-sub";
-
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: { authorization: { key: secret } },
-            });
-
-            const query = /* GraphQL */ `
-                query {
-                    movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                        title
-                    }
-                }
-            `;
-
-            const token = createBearerToken(secret, { sub });
-
-            const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "4.4" });
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[this3:DIRECTED]-(this2:Person) WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN this0 { .title } AS this"
-            `);
-
-            expect(result.params).toMatchInlineSnapshot(`
-                Object {
-                  "isAuthenticated": true,
-                  "jwt": Object {
-                    "roles": Array [],
-                    "sub": "my-sub",
-                  },
-                  "param0": "something AND something",
-                  "param1": "Movie",
-                }
-            `);
-        });
-
-        test("simple match with auth allow on connection node ALL", async () => {
-            const typeDefs = /* GraphQL */ `
-                type Movie
-                    @node
-                    @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                    @authorization(
-                        validate: [
-                            {
-                                when: [BEFORE]
-                                where: { node: { directorConnection_ALL: { node: { id_EQ: "$jwt.sub" } } } }
-                            }
-                        ]
-                    ) {
-                    title: String
-                    director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
-                }
-
-                type Person @node {
-                    id: ID
-                }
-            `;
-
-            const secret = "shh-its-a-secret";
-
-            const sub = "my-sub";
-
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: { authorization: { key: secret } },
-            });
-
-            const query = /* GraphQL */ `
-                query {
-                    movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                        title
-                    }
-                }
-            `;
-
-            const token = createBearerToken(secret, { sub });
-
-            const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "4.4" });
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[this3:DIRECTED]-(this2:Person) WHERE NOT ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1]) = 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN this0 { .title } AS this"
-            `);
-
-            expect(result.params).toMatchInlineSnapshot(`
-                Object {
-                  "isAuthenticated": true,
-                  "jwt": Object {
-                    "roles": Array [],
-                    "sub": "my-sub",
-                  },
-                  "param0": "something AND something",
-                  "param1": "Movie",
-                }
-            `);
-        });
-
-        test("simple match with auth allow on connection edge", async () => {
-            const typeDefs = /* GraphQL */ `
-                type Movie
-                    @node
-                    @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                    @authorization(
-                        validate: [
-                            {
-                                when: [BEFORE]
-                                where: { node: { directorConnection_SOME: { edge: { year_EQ: 2020 } } } }
-                            }
-                        ]
-                    ) {
-                    title: String
-                    director: [Person!]! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
-                }
-
-                type Person @node {
-                    id: ID
-                }
-
-                type Directed @relationshipProperties {
-                    year: Int
-                }
-            `;
-
-            const secret = "shh-its-a-secret";
-
-            const sub = "my-sub";
-
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: { authorization: { key: secret } },
-            });
-
-            const query = /* GraphQL */ `
-                query {
-                    movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                        title
-                    }
-                }
-            `;
-
-            const token = createBearerToken(secret, { sub });
-
-            const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "4.4" });
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[this2:DIRECTED]-(this3:Person) WHERE ($param3 IS NOT NULL AND this2.year = $param3) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN this0 { .title } AS this"
-            `);
-
-            expect(result.params).toMatchInlineSnapshot(`
-                Object {
-                  "isAuthenticated": true,
-                  "param0": "something AND something",
-                  "param1": "Movie",
-                  "param3": 2020,
-                }
-            `);
-        });
-
-        test("simple match with auth allow on connection edge ALL", async () => {
-            const typeDefs = /* GraphQL */ `
-                type Movie
-                    @node
-                    @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                    @authorization(
-                        validate: [
-                            { when: [BEFORE], where: { node: { directorConnection_ALL: { edge: { year_EQ: 2020 } } } } }
-                        ]
-                    ) {
-                    title: String
-                    director: [Person!]! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
-                }
-
-                type Person @node {
-                    id: ID
-                }
-
-                type Directed @relationshipProperties {
-                    year: Int
-                }
-            `;
-
-            const secret = "shh-its-a-secret";
-
-            const sub = "my-sub";
-
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: { authorization: { key: secret } },
-            });
-
-            const query = /* GraphQL */ `
-                query {
-                    movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                        title
-                    }
-                }
-            `;
-
-            const token = createBearerToken(secret, { sub });
-
-            const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "4.4" });
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[this2:DIRECTED]-(this3:Person) WHERE NOT ($param3 IS NOT NULL AND this2.year = $param3) | 1]) = 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN this0 { .title } AS this"
-            `);
-
-            expect(result.params).toMatchInlineSnapshot(`
-                Object {
-                  "isAuthenticated": true,
-                  "param0": "something AND something",
-                  "param1": "Movie",
-                  "param3": 2020,
-                }
-            `);
-        });
     });
 
-    describe("5", () => {
-        test("simple match with auth where", async () => {
-            const typeDefs = /* GraphQL */ `
-                type Movie
-                    @node
-                    @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                    @authorization(filter: [{ where: { node: { director_SOME: { id_EQ: "$jwt.sub" } } } }]) {
-                    title: String
-                    director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
-                }
+    test("simple match with auth allow", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie
+                @node
+                @fulltext(indexes: [{ indexName: "MovieTitle", queryName: "moviesByTitle", fields: ["title"] }])
+                @authorization(
+                    validate: [{ when: [BEFORE], where: { node: { director: { some: { id: { eq: "$jwt.sub" } } } } } }]
+                ) {
+                title: String
+                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
+            }
 
-                type Person @node {
-                    id: ID
-                }
-            `;
+            type Person @node {
+                id: ID
+            }
+        `;
 
-            const secret = "shh-its-a-secret";
+        const secret = "shh-its-a-secret";
 
-            const sub = "my-sub";
+        const sub = "my-sub";
 
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: { authorization: { key: secret } },
-            });
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { authorization: { key: secret } },
+        });
 
-            const query = /* GraphQL */ `
-                query {
-                    movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                        title
+        const query = /* GraphQL */ `
+            query {
+                moviesByTitle(phrase: "something AND something") {
+                    edges {
+                        node {
+                            title
+                        }
                     }
                 }
-            `;
+            }
+        `;
 
-            const token = createBearerToken(secret, { sub });
+        const token = createBearerToken(secret, { sub });
 
-            const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
+        const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
 
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH *
-                WHERE ($isAuthenticated = true AND EXISTS {
-                    MATCH (this0)<-[:DIRECTED]-(this2:Person)
-                    WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
-                })
-                RETURN this0 { .title } AS this"
-            `);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this0)<-[:DIRECTED]-(this2:Person)
+                WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var3
+            }
+            RETURN { edges: var3, totalCount: totalCount } AS this"
+        `);
 
-            expect(result.params).toMatchInlineSnapshot(`
+        expect(result.params).toMatchInlineSnapshot(`
                 Object {
                   "isAuthenticated": true,
                   "jwt": Object {
@@ -528,58 +179,72 @@ describe("Cypher -> fulltext -> Auth", () => {
                   "param1": "Movie",
                 }
             `);
+    });
+
+    test("simple match with auth allow ALL", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie
+                @node
+                @fulltext(indexes: [{ indexName: "MovieTitle", queryName: "moviesByTitle", fields: ["title"] }])
+                @authorization(
+                    validate: [{ when: [BEFORE], where: { node: { director: { all: { id: { eq: "$jwt.sub" } } } } } }]
+                ) {
+                title: String
+                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
+            }
+
+            type Person @node {
+                id: ID
+            }
+        `;
+
+        const secret = "shh-its-a-secret";
+
+        const sub = "my-sub";
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { authorization: { key: secret } },
         });
 
-        test("simple match with auth allow", async () => {
-            const typeDefs = /* GraphQL */ `
-                type Movie
-                    @node
-                    @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                    @authorization(
-                        validate: [{ when: [BEFORE], where: { node: { director_SOME: { id_EQ: "$jwt.sub" } } } }]
-                    ) {
-                    title: String
-                    director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
-                }
-
-                type Person @node {
-                    id: ID
-                }
-            `;
-
-            const secret = "shh-its-a-secret";
-
-            const sub = "my-sub";
-
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: { authorization: { key: secret } },
-            });
-
-            const query = /* GraphQL */ `
-                query {
-                    movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                        title
+        const query = /* GraphQL */ `
+            query {
+                moviesByTitle(phrase: "something AND something") {
+                    edges {
+                        node {
+                            title
+                        }
                     }
                 }
-            `;
+            }
+        `;
 
-            const token = createBearerToken(secret, { sub });
+        const token = createBearerToken(secret, { sub });
 
-            const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
+        const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
 
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this0)<-[:DIRECTED]-(this2:Person)
-                    WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN this0 { .title } AS this"
-            `);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
+                MATCH (this0)<-[:DIRECTED]-(this2:Person)
+                WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+            } AND NOT (EXISTS {
+                MATCH (this0)<-[:DIRECTED]-(this2:Person)
+                WHERE NOT ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+            }))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var3
+            }
+            RETURN { edges: var3, totalCount: totalCount } AS this"
+        `);
 
-            expect(result.params).toMatchInlineSnapshot(`
+        expect(result.params).toMatchInlineSnapshot(`
                 Object {
                   "isAuthenticated": true,
                   "jwt": Object {
@@ -590,61 +255,74 @@ describe("Cypher -> fulltext -> Auth", () => {
                   "param1": "Movie",
                 }
             `);
+    });
+
+    test("simple match with auth allow on connection node", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie
+                @node
+                @fulltext(indexes: [{ indexName: "MovieTitle", queryName: "moviesByTitle", fields: ["title"] }])
+                @authorization(
+                    validate: [
+                        {
+                            when: [BEFORE]
+                            where: { node: { directorConnection: { some: { node: { id: { eq: "$jwt.sub" } } } } } }
+                        }
+                    ]
+                ) {
+                title: String
+                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
+            }
+
+            type Person @node {
+                id: ID
+            }
+        `;
+
+        const secret = "shh-its-a-secret";
+
+        const sub = "my-sub";
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { authorization: { key: secret } },
         });
 
-        test("simple match with auth allow ALL", async () => {
-            const typeDefs = /* GraphQL */ `
-                type Movie
-                    @node
-                    @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                    @authorization(
-                        validate: [{ when: [BEFORE], where: { node: { director_ALL: { id_EQ: "$jwt.sub" } } } }]
-                    ) {
-                    title: String
-                    director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
-                }
-
-                type Person @node {
-                    id: ID
-                }
-            `;
-
-            const secret = "shh-its-a-secret";
-
-            const sub = "my-sub";
-
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: { authorization: { key: secret } },
-            });
-
-            const query = /* GraphQL */ `
-                query {
-                    movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                        title
+        const query = /* GraphQL */ `
+            query {
+                moviesByTitle(phrase: "something AND something") {
+                    edges {
+                        node {
+                            title
+                        }
                     }
                 }
-            `;
+            }
+        `;
 
-            const token = createBearerToken(secret, { sub });
+        const token = createBearerToken(secret, { sub });
 
-            const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
+        const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
 
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
-                    MATCH (this0)<-[:DIRECTED]-(this2:Person)
-                    WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
-                } AND NOT (EXISTS {
-                    MATCH (this0)<-[:DIRECTED]-(this2:Person)
-                    WHERE NOT ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
-                }))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN this0 { .title } AS this"
-            `);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
+                WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
+            }
+            RETURN { edges: var4, totalCount: totalCount } AS this"
+        `);
 
-            expect(result.params).toMatchInlineSnapshot(`
+        expect(result.params).toMatchInlineSnapshot(`
                 Object {
                   "isAuthenticated": true,
                   "jwt": Object {
@@ -655,63 +333,77 @@ describe("Cypher -> fulltext -> Auth", () => {
                   "param1": "Movie",
                 }
             `);
+    });
+
+    test("simple match with auth allow on connection node ALL", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie
+                @node
+                @fulltext(indexes: [{ indexName: "MovieTitle", queryName: "moviesByTitle", fields: ["title"] }])
+                @authorization(
+                    validate: [
+                        {
+                            when: [BEFORE]
+                            where: { node: { directorConnection: { all: { node: { id: { eq: "$jwt.sub" } } } } } }
+                        }
+                    ]
+                ) {
+                title: String
+                director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
+            }
+
+            type Person @node {
+                id: ID
+            }
+        `;
+
+        const secret = "shh-its-a-secret";
+
+        const sub = "my-sub";
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { authorization: { key: secret } },
         });
 
-        test("simple match with auth allow on connection node", async () => {
-            const typeDefs = /* GraphQL */ `
-                type Movie
-                    @node
-                    @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                    @authorization(
-                        validate: [
-                            {
-                                when: [BEFORE]
-                                where: { node: { directorConnection_SOME: { node: { id_EQ: "$jwt.sub" } } } }
-                            }
-                        ]
-                    ) {
-                    title: String
-                    director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
-                }
-
-                type Person @node {
-                    id: ID
-                }
-            `;
-
-            const secret = "shh-its-a-secret";
-
-            const sub = "my-sub";
-
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: { authorization: { key: secret } },
-            });
-
-            const query = /* GraphQL */ `
-                query {
-                    movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                        title
+        const query = /* GraphQL */ `
+            query {
+                moviesByTitle(phrase: "something AND something") {
+                    edges {
+                        node {
+                            title
+                        }
                     }
                 }
-            `;
+            }
+        `;
 
-            const token = createBearerToken(secret, { sub });
+        const token = createBearerToken(secret, { sub });
 
-            const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
+        const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
 
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
-                    WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN this0 { .title } AS this"
-            `);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
+                MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
+                WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
+            } AND NOT (EXISTS {
+                MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
+                WHERE NOT ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
+            }))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
+            }
+            RETURN { edges: var4, totalCount: totalCount } AS this"
+        `);
 
-            expect(result.params).toMatchInlineSnapshot(`
+        expect(result.params).toMatchInlineSnapshot(`
                 Object {
                   "isAuthenticated": true,
                   "jwt": Object {
@@ -722,137 +414,78 @@ describe("Cypher -> fulltext -> Auth", () => {
                   "param1": "Movie",
                 }
             `);
+    });
+
+    test("simple match with auth allow on connection edge", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie
+                @node
+                @fulltext(indexes: [{ indexName: "MovieTitle", queryName: "moviesByTitle", fields: ["title"] }])
+                @authorization(
+                    validate: [
+                        {
+                            when: [BEFORE]
+                            where: { node: { directorConnection: { some: { edge: { year: { eq: 2020 } } } } } }
+                        }
+                    ]
+                ) {
+                title: String
+                director: [Person!]! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+            }
+
+            type Person @node {
+                id: ID
+            }
+
+            type Directed @relationshipProperties {
+                year: Int
+            }
+        `;
+
+        const secret = "shh-its-a-secret";
+
+        const sub = "my-sub";
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { authorization: { key: secret } },
         });
 
-        test("simple match with auth allow on connection node ALL", async () => {
-            const typeDefs = /* GraphQL */ `
-                type Movie
-                    @node
-                    @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                    @authorization(
-                        validate: [
-                            {
-                                when: [BEFORE]
-                                where: { node: { directorConnection_ALL: { node: { id_EQ: "$jwt.sub" } } } }
-                            }
-                        ]
-                    ) {
-                    title: String
-                    director: [Person!]! @relationship(type: "DIRECTED", direction: IN)
-                }
-
-                type Person @node {
-                    id: ID
-                }
-            `;
-
-            const secret = "shh-its-a-secret";
-
-            const sub = "my-sub";
-
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: { authorization: { key: secret } },
-            });
-
-            const query = /* GraphQL */ `
-                query {
-                    movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                        title
+        const query = /* GraphQL */ `
+            query {
+                moviesByTitle(phrase: "something AND something") {
+                    edges {
+                        node {
+                            title
+                        }
                     }
                 }
-            `;
+            }
+        `;
 
-            const token = createBearerToken(secret, { sub });
+        const token = createBearerToken(secret, { sub });
 
-            const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
+        const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
 
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
-                    MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
-                    WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
-                } AND NOT (EXISTS {
-                    MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
-                    WHERE NOT ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
-                }))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN this0 { .title } AS this"
-            `);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
+                WHERE ($param3 IS NOT NULL AND this2.year = $param3)
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
+            }
+            RETURN { edges: var4, totalCount: totalCount } AS this"
+        `);
 
-            expect(result.params).toMatchInlineSnapshot(`
-                Object {
-                  "isAuthenticated": true,
-                  "jwt": Object {
-                    "roles": Array [],
-                    "sub": "my-sub",
-                  },
-                  "param0": "something AND something",
-                  "param1": "Movie",
-                }
-            `);
-        });
-
-        test("simple match with auth allow on connection edge", async () => {
-            const typeDefs = /* GraphQL */ `
-                type Movie
-                    @node
-                    @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                    @authorization(
-                        validate: [
-                            {
-                                when: [BEFORE]
-                                where: { node: { directorConnection_SOME: { edge: { year_EQ: 2020 } } } }
-                            }
-                        ]
-                    ) {
-                    title: String
-                    director: [Person!]! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
-                }
-
-                type Person @node {
-                    id: ID
-                }
-
-                type Directed @relationshipProperties {
-                    year: Int
-                }
-            `;
-
-            const secret = "shh-its-a-secret";
-
-            const sub = "my-sub";
-
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: { authorization: { key: secret } },
-            });
-
-            const query = /* GraphQL */ `
-                query {
-                    movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                        title
-                    }
-                }
-            `;
-
-            const token = createBearerToken(secret, { sub });
-
-            const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
-
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
-                    WHERE ($param3 IS NOT NULL AND this2.year = $param3)
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN this0 { .title } AS this"
-            `);
-
-            expect(result.params).toMatchInlineSnapshot(`
+        expect(result.params).toMatchInlineSnapshot(`
                 Object {
                   "isAuthenticated": true,
                   "param0": "something AND something",
@@ -860,67 +493,81 @@ describe("Cypher -> fulltext -> Auth", () => {
                   "param3": 2020,
                 }
             `);
+    });
+
+    test("simple match with auth allow on connection edge ALL", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie
+                @node
+                @fulltext(indexes: [{ indexName: "MovieTitle", queryName: "moviesByTitle", fields: ["title"] }])
+                @authorization(
+                    validate: [
+                        {
+                            when: [BEFORE]
+                            where: { node: { directorConnection: { all: { edge: { year: { eq: 2020 } } } } } }
+                        }
+                    ]
+                ) {
+                title: String
+                director: [Person!]! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+            }
+
+            type Person @node {
+                id: ID
+            }
+
+            type Directed @relationshipProperties {
+                year: Int
+            }
+        `;
+
+        const secret = "shh-its-a-secret";
+
+        const sub = "my-sub";
+
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: { authorization: { key: secret } },
         });
 
-        test("simple match with auth allow on connection edge ALL", async () => {
-            const typeDefs = /* GraphQL */ `
-                type Movie
-                    @node
-                    @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }])
-                    @authorization(
-                        validate: [
-                            { when: [BEFORE], where: { node: { directorConnection_ALL: { edge: { year_EQ: 2020 } } } } }
-                        ]
-                    ) {
-                    title: String
-                    director: [Person!]! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
-                }
-
-                type Person @node {
-                    id: ID
-                }
-
-                type Directed @relationshipProperties {
-                    year: Int
-                }
-            `;
-
-            const secret = "shh-its-a-secret";
-
-            const sub = "my-sub";
-
-            const neoSchema = new Neo4jGraphQL({
-                typeDefs,
-                features: { authorization: { key: secret } },
-            });
-
-            const query = /* GraphQL */ `
-                query {
-                    movies(fulltext: { MovieTitle: { phrase: "something AND something" } }) {
-                        title
+        const query = /* GraphQL */ `
+            query {
+                moviesByTitle(phrase: "something AND something") {
+                    edges {
+                        node {
+                            title
+                        }
                     }
                 }
-            `;
+            }
+        `;
 
-            const token = createBearerToken(secret, { sub });
+        const token = createBearerToken(secret, { sub });
 
-            const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
+        const result = await translateQuery(neoSchema, query, { token, neo4jVersion: "5" });
 
-            expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-                "CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-                WHERE $param1 IN labels(this0)
-                WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
-                    MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
-                    WHERE ($param3 IS NOT NULL AND this2.year = $param3)
-                } AND NOT (EXISTS {
-                    MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
-                    WHERE NOT ($param3 IS NOT NULL AND this2.year = $param3)
-                }))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN this0 { .title } AS this"
-            `);
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
+                MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
+                WHERE ($param3 IS NOT NULL AND this2.year = $param3)
+            } AND NOT (EXISTS {
+                MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
+                WHERE NOT ($param3 IS NOT NULL AND this2.year = $param3)
+            }))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
+            }
+            RETURN { edges: var4, totalCount: totalCount } AS this"
+        `);
 
-            expect(result.params).toMatchInlineSnapshot(`
+        expect(result.params).toMatchInlineSnapshot(`
                 Object {
                   "isAuthenticated": true,
                   "param0": "something AND something",
@@ -928,6 +575,5 @@ describe("Cypher -> fulltext -> Auth", () => {
                   "param3": 2020,
                 }
             `);
-        });
     });
 });

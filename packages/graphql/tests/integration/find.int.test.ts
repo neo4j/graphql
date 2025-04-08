@@ -462,7 +462,7 @@ describe("find", () => {
                 id: ID!
                 title: String!
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: OUT)
-                mainActor: ${Actor}! @relationship(type: "MAIN_ACTOR", direction: OUT)
+                mainActor: [${Actor}!]! @relationship(type: "MAIN_ACTOR", direction: OUT)
             }
         `;
 

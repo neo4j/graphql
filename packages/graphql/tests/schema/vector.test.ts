@@ -97,12 +97,6 @@ describe("@vector schema", () => {
               title: StringAggregateSelection!
             }
 
-            type MovieAggregateSelection {
-              count: Int!
-              description: StringAggregateSelection!
-              title: StringAggregateSelection!
-            }
-
             input MovieCreateInput {
               description: String
               title: String
@@ -113,13 +107,22 @@ describe("@vector schema", () => {
               node: Movie!
             }
 
-            input MovieOptions {
-              limit: Int
-              offset: Int
-              \\"\\"\\"
-              Specify one or more MovieSort objects to sort Movies by. The sorts will be applied in the order in which they are arranged in the array.
-              \\"\\"\\"
-              sort: [MovieSort!]
+            type MovieIndexEdge {
+              cursor: String!
+              node: Movie!
+              score: Float!
+            }
+
+            \\"\\"\\"The input for sorting a Vector query on an index of Movie\\"\\"\\"
+            input MovieIndexSort {
+              node: MovieSort
+              score: SortDirection
+            }
+
+            \\"\\"\\"The input for filtering a Vector query on an index of Movie\\"\\"\\"
+            input MovieIndexWhere {
+              node: MovieWhere
+              score: FloatWhere
             }
 
             \\"\\"\\"
@@ -131,46 +134,28 @@ describe("@vector schema", () => {
             }
 
             input MovieUpdateInput {
-              description: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              description_SET: String
-              title: String @deprecated(reason: \\"Please use the explicit _SET field\\")
-              title_SET: String
-            }
-
-            type MovieVectorEdge {
-              cursor: String!
-              node: Movie!
-              score: Float!
-            }
-
-            \\"\\"\\"The input for sorting a Vector query on an index of Movie\\"\\"\\"
-            input MovieVectorSort {
-              node: MovieSort
-              score: SortDirection
-            }
-
-            \\"\\"\\"The input for filtering a Vector query on an index of Movie\\"\\"\\"
-            input MovieVectorWhere {
-              node: MovieWhere
-              score: FloatWhere
+              description: StringScalarMutations
+              description_SET: String @deprecated(reason: \\"Please use the generic mutation 'description: { set: ... } }' instead.\\")
+              title: StringScalarMutations
+              title_SET: String @deprecated(reason: \\"Please use the generic mutation 'title: { set: ... } }' instead.\\")
             }
 
             input MovieWhere {
               AND: [MovieWhere!]
               NOT: MovieWhere
               OR: [MovieWhere!]
-              description: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              description_CONTAINS: String
-              description_ENDS_WITH: String
-              description_EQ: String
-              description_IN: [String]
-              description_STARTS_WITH: String
-              title: String @deprecated(reason: \\"Please use the explicit _EQ version\\")
-              title_CONTAINS: String
-              title_ENDS_WITH: String
-              title_EQ: String
-              title_IN: [String]
-              title_STARTS_WITH: String
+              description: StringScalarFilters
+              description_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter description: { contains: ... }\\")
+              description_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { endsWith: ... }\\")
+              description_EQ: String @deprecated(reason: \\"Please use the relevant generic filter description: { eq: ... }\\")
+              description_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter description: { in: ... }\\")
+              description_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter description: { startsWith: ... }\\")
+              title: StringScalarFilters
+              title_CONTAINS: String @deprecated(reason: \\"Please use the relevant generic filter title: { contains: ... }\\")
+              title_ENDS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { endsWith: ... }\\")
+              title_EQ: String @deprecated(reason: \\"Please use the relevant generic filter title: { eq: ... }\\")
+              title_IN: [String] @deprecated(reason: \\"Please use the relevant generic filter title: { in: ... }\\")
+              title_STARTS_WITH: String @deprecated(reason: \\"Please use the relevant generic filter title: { startsWith: ... }\\")
             }
 
             type MoviesConnection {
@@ -180,8 +165,8 @@ describe("@vector schema", () => {
               totalCount: Int!
             }
 
-            type MoviesVectorConnection {
-              edges: [MovieVectorEdge!]!
+            type MoviesIndexConnection {
+              edges: [MovieIndexEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
@@ -201,11 +186,10 @@ describe("@vector schema", () => {
             }
 
             type Query {
-              descriptionQuery(after: String, first: Int, sort: [MovieVectorSort!], vector: [Float!], where: MovieVectorWhere): MoviesVectorConnection!
-              movies(limit: Int, offset: Int, options: MovieOptions @deprecated(reason: \\"Query options argument is deprecated, please use pagination arguments like limit, offset and sort instead.\\"), sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesAggregate(where: MovieWhere): MovieAggregateSelection! @deprecated(reason: \\"Please use the explicit field \\\\\\"aggregate\\\\\\" inside \\\\\\"moviesConnection\\\\\\" instead\\")
+              descriptionQuery(after: String, first: Int, sort: [MovieIndexSort!], vector: [Float!], where: MovieIndexWhere): MoviesIndexConnection!
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
-              titleQuery(after: String, first: Int, sort: [MovieVectorSort!], vector: [Float!], where: MovieVectorWhere): MoviesVectorConnection!
+              titleQuery(after: String, first: Int, sort: [MovieIndexSort!], vector: [Float!], where: MovieIndexWhere): MoviesIndexConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -219,6 +203,20 @@ describe("@vector schema", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
             }
 
             \\"\\"\\"

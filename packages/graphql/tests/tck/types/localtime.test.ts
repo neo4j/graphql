@@ -40,7 +40,7 @@ describe("Cypher LocalTime", () => {
     test("Simple Read", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { time_EQ: "12:00:00" }) {
+                movies(where: { time: { eq: "12:00:00" } }) {
                     time
                 }
             }
@@ -49,7 +49,8 @@ describe("Cypher LocalTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.time = $param0
             RETURN this { .time } AS this"
         `);
@@ -69,7 +70,7 @@ describe("Cypher LocalTime", () => {
     test("GTE Read", async () => {
         const query = /* GraphQL */ `
             query {
-                movies(where: { time_GTE: "13:45:33.250" }) {
+                movies(where: { time: { gte: "13:45:33.250" } }) {
                     time
                 }
             }
@@ -78,7 +79,8 @@ describe("Cypher LocalTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             WHERE this.time >= $param0
             RETURN this { .time } AS this"
         `);
@@ -109,7 +111,8 @@ describe("Cypher LocalTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Movie)
@@ -151,7 +154,8 @@ describe("Cypher LocalTime", () => {
         const result = await translateQuery(neoSchema, query);
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Movie)
+            "CYPHER 5
+            MATCH (this:Movie)
             SET this.time = $this_update_time_SET
             RETURN collect(DISTINCT this { .id, .time }) AS data"
         `);

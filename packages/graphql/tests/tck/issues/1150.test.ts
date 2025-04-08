@@ -31,19 +31,19 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             }
 
             type Battery @node {
-                id: ID! @unique
+                id: ID!
                 current: Boolean!
             }
 
-            extend type Battery @authorization(validate: [{ where: { jwt: { roles_INCLUDES: "admin" } } }])
+            extend type Battery @authorization(validate: [{ where: { jwt: { roles: { includes: "admin" } } } }])
 
             type CombustionEngine @node {
-                id: ID! @unique
+                id: ID!
                 current: Boolean!
             }
 
             type Drive @node {
-                id: ID! @unique
+                id: ID!
                 current: Boolean!
                 driveCompositions: [DriveComposition!]!
                     @relationship(type: "CONSISTS_OF", properties: "RelationProps", direction: OUT)
@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
             union DriveComponent = Battery | CombustionEngine
 
             type DriveComposition @node {
-                id: ID! @unique
+                id: ID!
                 current: Boolean!
                 driveComponent: [DriveComponent!]!
                     @relationship(type: "HAS", properties: "RelationProps", direction: OUT)
@@ -70,15 +70,15 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
 
         const query = /* GraphQL */ `
             query getDrivesWithFilteredUnionType {
-                drives(where: { current_EQ: true }) {
+                drives(where: { current: { eq: true } }) {
                     current
-                    driveCompositionsConnection(where: { edge: { current_EQ: true } }) {
+                    driveCompositionsConnection(where: { edge: { current: { eq: true } } }) {
                         edges {
                             node {
                                 driveComponentConnection(
                                     where: {
-                                        Battery: { edge: { current_EQ: true } }
-                                        CombustionEngine: { edge: { current_EQ: true } }
+                                        Battery: { edge: { current: { eq: true } } }
+                                        CombustionEngine: { edge: { current: { eq: true } } }
                                     }
                                 ) {
                                     edges {
@@ -108,7 +108,8 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "MATCH (this:Drive)
+            "CYPHER 5
+            MATCH (this:Drive)
             WHERE this.current = $param0
             CALL {
                 WITH this

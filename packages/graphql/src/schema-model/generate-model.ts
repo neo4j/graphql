@@ -25,14 +25,10 @@ import type {
     UnionTypeDefinitionNode,
 } from "graphql";
 import { Neo4jGraphQLSchemaValidationError } from "../classes";
-import {
-    declareRelationshipDirective,
-    nodeDirective,
-    privateDirective,
-    relationshipDirective,
-} from "../graphql/directives";
+import { declareRelationshipDirective, nodeDirective, relationshipDirective } from "../graphql/directives";
 import getFieldTypeMeta from "../schema/get-field-type-meta";
 import { getInnerTypeName } from "../schema/validation/custom-rules/utils/utils";
+import { validateSchemaModel } from "../schema/validation/validate-schema-model";
 import { isInArray } from "../utils/is-in-array";
 import { filterTruthy } from "../utils/utils";
 import type { Operations } from "./Neo4jGraphQLSchemaModel";
@@ -73,9 +69,6 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     );
 
     const concreteEntitiesMap = concreteEntities.reduce((acc, entity) => {
-        if (acc.has(entity.name)) {
-            throw new Neo4jGraphQLSchemaValidationError(`Duplicate node ${entity.name}`);
-        }
         acc.set(entity.name, entity);
         return acc;
     }, new Map<string, ConcreteEntity>());
@@ -112,6 +105,9 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         operations,
         annotations,
     });
+
+    validateSchemaModel(schema);
+
     definitionCollection.nodes.forEach((def) => hydrateRelationships(def, schema, definitionCollection));
 
     hydrateCypherAnnotations(schema, concreteEntities);
@@ -210,11 +206,6 @@ function generateInterfaceEntity(
     );
 
     const fields = (definition.fields || []).map((fieldDefinition) => {
-        const isPrivateAttribute = findDirective(fieldDefinition.directives, privateDirective.name);
-
-        if (isPrivateAttribute) {
-            return;
-        }
         const isRelationshipAttribute = findDirective(fieldDefinition.directives, declareRelationshipDirective.name);
         if (isRelationshipAttribute) {
             return;
@@ -237,21 +228,12 @@ function generateCompositeEntity(
     entityImplementingTypeNames: string[],
     concreteEntities: Map<string, ConcreteEntity>
 ): { name: string; concreteEntities: ConcreteEntity[] } {
-    const compositeFields = entityImplementingTypeNames.map((type) => {
-        const concreteEntity = concreteEntities.get(type);
-        if (!concreteEntity) {
-            throw new Neo4jGraphQLSchemaValidationError(`Could not find concrete entity with name ${type}`);
-        }
-        return concreteEntity;
-    });
-    /*
-   // This is commented out because is currently possible to have leaf interfaces as demonstrated in the test
-   // packages/graphql/tests/integration/aggregations/where/node/string.int.test.ts
-   if (!compositeFields.length) {
-        throw new Neo4jGraphQLSchemaValidationError(
-            `Composite entity ${entityDefinitionName} has no concrete entities`
-        );
-    } */
+    const compositeFields = filterTruthy(
+        entityImplementingTypeNames.map((type) => {
+            return concreteEntities.get(type);
+        })
+    );
+
     return {
         name: entityDefinitionName,
         concreteEntities: compositeFields,
@@ -450,11 +432,6 @@ function generateRelationshipField(
         propertiesTypeName = properties;
 
         const fields = (propertyInterface.fields || []).map((fieldDefinition) => {
-            const isPrivateAttribute = findDirective(fieldDefinition.directives, privateDirective.name);
-
-            if (isPrivateAttribute) {
-                return;
-            }
             return parseAttribute(fieldDefinition, definitionCollection, propertyInterface.fields);
         });
 
@@ -535,13 +512,6 @@ function generateConcreteEntity(
     definitionCollection: DefinitionCollection
 ): ConcreteEntity {
     const fields = (definition.fields || []).map((fieldDefinition) => {
-        // If the attribute is the private directive then
-        const isPrivateAttribute = findDirective(fieldDefinition.directives, privateDirective.name);
-
-        if (isPrivateAttribute) {
-            return;
-        }
-
         const isRelationshipAttribute = findDirective(fieldDefinition.directives, relationshipDirective.name);
         if (isRelationshipAttribute) {
             return;
@@ -550,7 +520,7 @@ function generateConcreteEntity(
     });
 
     // schema configuration directives are propagated onto concrete entities
-    const schemaDirectives = definitionCollection.schemaExtension?.directives?.filter((x) =>
+    const schemaDirectives = definitionCollection.schemaExtensions?.directives?.filter((x) =>
         isInArray(SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES, x.name.value)
     );
     const annotations = parseAnnotations((definition.directives || []).concat(schemaDirectives || []));

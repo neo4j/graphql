@@ -38,7 +38,7 @@ describe("Subscriptions metadata on create", () => {
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
-            extend type Actor @authorization(validate: [{ when: [AFTER], where: { node: { id_EQ: "$jwt.sub" } } }])
+            extend type Actor @authorization(validate: [{ when: [AFTER], where: { node: { id: { eq: "$jwt.sub" } } } }])
         `;
 
         neoSchema = new Neo4jGraphQL({
@@ -68,7 +68,8 @@ describe("Subscriptions metadata on create", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "UNWIND $create_param0 AS create_var0
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
             CALL {
                 WITH create_var0
                 CREATE (create_this1:Actor)

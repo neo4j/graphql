@@ -29,7 +29,7 @@ describe("https://github.com/neo4j/graphql/issues/5030", () => {
         Movie = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
-            type ${Movie} @fulltext(indexes: [{ name: "MovieTitle", fields: ["title"] }]) @node {
+            type ${Movie} @fulltext(indexes: [{ indexName: "MovieTitle", queryName: "moviesByTitle", fields: ["title"] }]) @node {
                 title: String
                 released: Int
             }
