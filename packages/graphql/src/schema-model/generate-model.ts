@@ -135,14 +135,9 @@ function getCypherTarget(schema: Neo4jGraphQLSchemaModel, attributeType: Attribu
     if (attributeType instanceof ObjectType) {
         const foundConcreteEntity = schema.getConcreteEntity(attributeType.name);
         if (!foundConcreteEntity) {
-            throw new Neo4jGraphQLSchemaValidationError(
-                `@cypher field must target type annotated with the @node directive${attributeType.name}, `
-            );
+            return undefined;
         }
         return schema.getConcreteEntity(attributeType.name);
-    }
-    if (attributeType instanceof InterfaceEntity || attributeType instanceof UnionEntity) {
-        throw new Error("@cypher field target cannot be an interface or an union");
     }
 }
 
