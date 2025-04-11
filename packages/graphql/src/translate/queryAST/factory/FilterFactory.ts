@@ -237,12 +237,14 @@ export class FilterFactory {
         comparisonValue,
         operator,
         attachedTo,
+        caseInsensitive,
     }: {
         attribute: AttributeAdapter;
         relationship?: RelationshipAdapter;
         comparisonValue: GraphQLWhereArg;
         operator: FilterOperator | undefined;
         attachedTo?: "node" | "relationship";
+        caseInsensitive?: boolean;
     }): Filter | Filter[] {
         if (attribute.annotations.cypher) {
             return this.createCypherFilter({
@@ -294,6 +296,7 @@ export class FilterFactory {
             comparisonValue,
             operator,
             attachedTo,
+            caseInsensitive,
         });
     }
 
@@ -560,10 +563,11 @@ export class FilterFactory {
         entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
         fieldName: string,
         value: Record<string, any>,
-        relationship?: RelationshipAdapter
+        relationship?: RelationshipAdapter,
+        caseInsensitive?: boolean
     ): Filter | Filter[] {
         const genericFilters = Object.entries(value).flatMap((filterInput) => {
-            return this.parseGenericFilter(entity, fieldName, filterInput, relationship);
+            return this.parseGenericFilter(entity, fieldName, filterInput, relationship, caseInsensitive);
         });
         return this.wrapMultipleFiltersInLogical(genericFilters);
     }
@@ -572,12 +576,13 @@ export class FilterFactory {
         entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
         fieldName: string,
         filterInput: [string, any],
-        relationship?: RelationshipAdapter
+        relationship?: RelationshipAdapter,
+        caseInsensitive?: boolean
     ): Filter | Filter[] {
         const [rawOperator, value] = filterInput;
         if (isLogicalOperator(rawOperator)) {
             const nestedFilters = asArray(value).flatMap((nestedWhere) => {
-                return this.parseGenericFilter(entity, fieldName, nestedWhere, relationship);
+                return this.parseGenericFilter(entity, fieldName, nestedWhere, relationship, caseInsensitive);
             });
             return new LogicalFilter({
                 operation: rawOperator,
@@ -591,6 +596,9 @@ export class FilterFactory {
             return this.parseGenericFilters(entity, fieldName, desugaredInput, relationship);
         }
 
+        if (rawOperator === "caseInsensitive") {
+            return this.parseGenericFilters(entity, fieldName, value, relationship, true);
+        }
         const operator = this.parseGenericOperator(rawOperator);
 
         const attribute = entity.findAttribute(fieldName);
@@ -611,6 +619,7 @@ export class FilterFactory {
             operator,
             attachedTo,
             relationship,
+            caseInsensitive,
         });
         return this.wrapMultipleFiltersInLogical(asArray(filters));
     }

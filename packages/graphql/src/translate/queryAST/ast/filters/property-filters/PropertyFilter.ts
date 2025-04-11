@@ -34,6 +34,7 @@ export class PropertyFilter extends Filter {
     protected comparisonValue: unknown;
     protected operator: FilterOperator;
     protected attachedTo: "node" | "relationship";
+    protected caseInsensitive: boolean;
 
     constructor({
         attribute,
@@ -41,12 +42,14 @@ export class PropertyFilter extends Filter {
         comparisonValue,
         operator,
         attachedTo = "node",
+        caseInsensitive = false,
     }: {
         attribute: AttributeAdapter;
         relationship?: RelationshipAdapter;
         comparisonValue: unknown;
         operator: FilterOperator;
         attachedTo?: "node" | "relationship";
+        caseInsensitive?: boolean;
     }) {
         super();
         this.attribute = attribute;
@@ -54,6 +57,7 @@ export class PropertyFilter extends Filter {
         this.comparisonValue = comparisonValue;
         this.operator = operator;
         this.attachedTo = attachedTo;
+        this.caseInsensitive = caseInsensitive;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -61,7 +65,8 @@ export class PropertyFilter extends Filter {
     }
 
     public print(): string {
-        return `${super.print()} [${this.attribute.name}] <${this.operator}>`;
+        const caseInsensitiveStr = this.caseInsensitive ? "CASE INSENSITIVE " : "";
+        return `${super.print()} [${this.attribute.name}] <${caseInsensitiveStr}${this.operator}>`;
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate {
@@ -148,6 +153,14 @@ export class PropertyFilter extends Filter {
     }): Cypher.ComparisonOp {
         const coalesceProperty = coalesceValueIfNeeded(this.attribute, property);
 
-        return createComparisonOperation({ operator, property: coalesceProperty, param });
+        if (this.caseInsensitive) {
+            return createComparisonOperation({
+                operator,
+                property: Cypher.toLower(coalesceProperty),
+                param: Cypher.toLower(param),
+            });
+        } else {
+            return createComparisonOperation({ operator, property: coalesceProperty, param });
+        }
     }
 }
