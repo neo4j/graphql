@@ -269,8 +269,7 @@ describe("cypher directive targeting non node types", () => {
     });
 
     // Interfaces without `@node` are not supported yet because there is no way to access "__resolveTree", as the information of the concrete type returned by the cypher field is not available
-    // eslint-disable-next-line jest/no-disabled-tests
-    test.skip("interface field", async () => {
+    test("interface field", async () => {
         const Movie = testHelper.createUniqueType("Movie");
         const Link = testHelper.createUniqueType("Link");
 
@@ -298,35 +297,13 @@ describe("cypher directive targeting non node types", () => {
             }
         `;
 
-        await testHelper.initNeo4jGraphQL({ typeDefs });
+        const schema = await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        await testHelper.executeCypher(`
-            CREATE (:${Movie} { id: "matrix", title: "The Matrix"})
-            CREATE (:${Link} {movieId: "matrix", url: "the-matrix.org", name: "Main Website"})
-        `);
-
-        const query = /* GraphQL */ `
-                {
-                    ${Movie.plural} {
-                        title
-                        link {
-                            url
-                            name
-                        }
-                    }
-                }
-            `;
-
-        const gqlResult = await testHelper.executeGraphQL(query);
-        expect(gqlResult.errors).toBeUndefined();
-        expect(gqlResult.data).toEqual({
-            [Movie.plural]: [
-                {
-                    title: "The Matrix",
-                    link: { name: "Main Website", url: "the-matrix.org" },
-                },
-            ],
-        });
+        await expect(() => {
+            return schema.getSchema();
+        }).rejects.toThrow(
+            `@cypher field link must target interface (Link) implemented by types annotated with the @node directive`
+        );
     });
 
     test("query", async () => {
