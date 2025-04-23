@@ -130,7 +130,7 @@ class Neo4jGraphQL {
 
     public async getSubgraphSchema(): Promise<GraphQLSchema> {
         if (!this.subgraphSchema) {
-            this.subgraphSchema = this.generateSubgraphSchema().catch((err) => {
+            this.subgraphSchema = this.generateSubgraphSchema().catch((err: Error) => {
                 console.error("Error", err);
                 return Promise.reject(err);
             });
