@@ -36,7 +36,7 @@ import { Neo4jGraphQLSchemaModel } from "./Neo4jGraphQLSchemaModel";
 import { Operation } from "./Operation";
 import type { Attribute } from "./attribute/Attribute";
 import type { AttributeType } from "./attribute/AttributeType";
-import { ListType, ObjectType } from "./attribute/AttributeType";
+import { InterfaceType, ListType, ObjectType } from "./attribute/AttributeType";
 import type { CompositeEntity } from "./entity/CompositeEntity";
 import { ConcreteEntity } from "./entity/ConcreteEntity";
 import type { Entity } from "./entity/Entity";
@@ -128,21 +128,29 @@ function addCompositeEntitiesToConcreteEntity(compositeEntities: CompositeEntity
     });
 }
 
-function getCypherTarget(schema: Neo4jGraphQLSchemaModel, attributeType: AttributeType): ConcreteEntity | undefined {
+function getCypherTarget(
+    schema: Neo4jGraphQLSchemaModel,
+    attributeType: AttributeType,
+    attributeName: string
+): ConcreteEntity | undefined {
     if (attributeType instanceof ListType) {
-        return getCypherTarget(schema, attributeType.ofType);
+        return getCypherTarget(schema, attributeType.ofType, attributeName);
     }
     if (attributeType instanceof ObjectType) {
         const foundConcreteEntity = schema.getConcreteEntity(attributeType.name);
         if (!foundConcreteEntity) {
-            throw new Neo4jGraphQLSchemaValidationError(
-                `@cypher field must target type annotated with the @node directive${attributeType.name}, `
-            );
+            return undefined;
         }
         return schema.getConcreteEntity(attributeType.name);
     }
-    if (attributeType instanceof InterfaceEntity || attributeType instanceof UnionEntity) {
-        throw new Error("@cypher field target cannot be an interface or an union");
+
+    if (attributeType instanceof InterfaceType) {
+        const compositeEntity = schema.compositeEntities.find((e) => e.name === attributeType.name);
+        if (!compositeEntity || compositeEntity.concreteEntities.length === 0) {
+            throw new Neo4jGraphQLSchemaValidationError(
+                `@cypher field ${attributeName} must target interface (${attributeType.name}) implemented by types annotated with the @node directive`
+            );
+        }
     }
 }
 
@@ -151,7 +159,7 @@ function hydrateCypherAnnotations(schema: Neo4jGraphQLSchemaModel, concreteEntit
     for (const concreteEntity of concreteEntities) {
         for (const attributeField of concreteEntity.attributes.values()) {
             if (attributeField.annotations.cypher) {
-                const target = getCypherTarget(schema, attributeField.type);
+                const target = getCypherTarget(schema, attributeField.type, attributeField.name);
                 attributeField.annotations.cypher.targetEntity = target;
             }
         }
