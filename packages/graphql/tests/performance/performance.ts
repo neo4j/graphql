@@ -122,8 +122,9 @@ async function queryPerformance() {
     }
 }
 
-// eslint-disable-next-line @typescript-eslint/no-floating-promises
-main();
+main().catch((err) => {
+    throw err;
+});
 
 async function runTests(cypher: boolean) {
     const gqltests = await collectTests(path.join(__dirname, "graphql"));
