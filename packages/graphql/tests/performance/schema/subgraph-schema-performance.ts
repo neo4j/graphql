@@ -30,8 +30,8 @@ const basicTypeDefs = `
         createdAt: DateTime! @timestamp
     }
 
-    type Article @key(fields: "id") @node {
-        id: ID! @id @unique
+    type Article @authorization(filter: [{ where: { node: { id: { eq: "$jwt.sub" } } } }]) @node {
+        id: ID! @id  @authorization(filter: [{ where: { node: { id: { eq: "$jwt.sub" } } } }])
         blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock")
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
@@ -45,7 +45,7 @@ const basicTypeDefs = `
     }
 
     type TextBlock implements Block @node {
-        id: ID @id @unique
+        id: ID @id
         text: String
     }
 
@@ -54,7 +54,7 @@ const basicTypeDefs = `
     }
 
     type ImageBlock implements Block @node {
-        id: ID @id @unique
+        id: ID @id
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
 
