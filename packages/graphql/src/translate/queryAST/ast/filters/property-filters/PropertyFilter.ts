@@ -154,6 +154,13 @@ export class PropertyFilter extends Filter {
         const coalesceProperty = coalesceValueIfNeeded(this.attribute, property);
 
         if (this.caseInsensitive) {
+            // Need to map all the items in the list to make case insensitive checks for lists
+            if (operator === "IN") {
+                const x = new Cypher.Variable();
+                const lowercaseList = new Cypher.ListComprehension(x, param).map(Cypher.toLower(x));
+                return Cypher.in(Cypher.toLower(coalesceProperty), lowercaseList);
+            }
+
             return createComparisonOperation({
                 operator,
                 property: Cypher.toLower(coalesceProperty),

@@ -67,6 +67,8 @@ describe("Filtering case insensitive string", () => {
                 filters: {
                     String: {
                         CASE_INSENSITIVE: true,
+                        GTE: true,
+                        MATCHES: true,
                     },
                 },
             },
@@ -77,19 +79,18 @@ describe("Filtering case insensitive string", () => {
         await testHelper.close();
     });
 
-    it("case insensitive eq", async () => {
+    test("case insensitive gte", async () => {
         const query = /* GraphQL */ `
-            query {
-                ${Movie.plural}(where: { title: { caseInsensitive: { eq: "the matrix" } } }) {
-                    title
-                }
+        query {
+            ${Movie.plural}(where: { title: { caseInsensitive: { gte: "The Matrix" } } }) {
+                title
             }
-        `;
+        }
+    `;
 
         const result = await testHelper.executeGraphQL(query);
 
         expect(result.errors).toBeUndefined();
-
         expect(result.data).toEqual({
             [Movie.plural]: expect.toIncludeSameMembers([
                 {
@@ -102,8 +103,109 @@ describe("Filtering case insensitive string", () => {
         });
     });
 
-    it("case insensitive eq on related type filter", async () => {
+    test("case insensitive in", async () => {
         const query = /* GraphQL */ `
+        query {
+            ${Movie.plural}(where: { title: { caseInsensitive: { in: ["the matrix", "THE LION KING"] } } }) {
+                title
+            }
+        }
+    `;
+
+        const result = await testHelper.executeGraphQL(query);
+
+        expect(result.errors).toBeUndefined();
+        expect(result.data).toEqual({
+            [Movie.plural]: expect.toIncludeSameMembers([
+                {
+                    title: "The Matrix",
+                },
+                {
+                    title: "THE MATRIX",
+                },
+                {
+                    title: "The Lion King",
+                },
+            ]),
+        });
+    });
+
+    test("case insensitive contains", async () => {
+        const query = /* GraphQL */ `
+        query {
+            ${Movie.plural}(where: { title: { caseInsensitive: { contains: "Matrix" } } }) {
+                title
+            }
+        }
+    `;
+
+        const result = await testHelper.executeGraphQL(query);
+
+        expect(result.errors).toBeUndefined();
+        expect(result.data).toEqual({
+            [Movie.plural]: expect.toIncludeSameMembers([
+                {
+                    title: "The Matrix",
+                },
+                {
+                    title: "THE MATRIX",
+                },
+            ]),
+        });
+    });
+
+    test("case insensitive endsWith", async () => {
+        const query = /* GraphQL */ `
+        query {
+            ${Movie.plural}(where: { title: { caseInsensitive: { endsWith: "RIX" } } }) {
+                title
+            }
+        }
+    `;
+
+        const result = await testHelper.executeGraphQL(query);
+
+        expect(result.errors).toBeUndefined();
+        expect(result.data).toEqual({
+            [Movie.plural]: expect.toIncludeSameMembers([
+                {
+                    title: "The Matrix",
+                },
+                {
+                    title: "THE MATRIX",
+                },
+            ]),
+        });
+    });
+
+    describe("eq", () => {
+        test("case insensitive eq", async () => {
+            const query = /* GraphQL */ `
+            query {
+                ${Movie.plural}(where: { title: { caseInsensitive: { eq: "the matrix" } } }) {
+                    title
+                }
+            }
+        `;
+
+            const result = await testHelper.executeGraphQL(query);
+
+            expect(result.errors).toBeUndefined();
+
+            expect(result.data).toEqual({
+                [Movie.plural]: expect.toIncludeSameMembers([
+                    {
+                        title: "The Matrix",
+                    },
+                    {
+                        title: "THE MATRIX",
+                    },
+                ]),
+            });
+        });
+
+        test("case insensitive eq on related type filter", async () => {
+            const query = /* GraphQL */ `
             query {
                 ${Person.plural}(where: { movies: { none: { title: { caseInsensitive: { eq: "the matrix" } } } } }) {
                     name
@@ -111,21 +213,21 @@ describe("Filtering case insensitive string", () => {
             }
         `;
 
-        const result = await testHelper.executeGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
-        expect(result.errors).toBeUndefined();
+            expect(result.errors).toBeUndefined();
 
-        expect(result.data).toEqual({
-            [Person.plural]: [
-                {
-                    name: "Arthur Dent",
-                },
-            ],
+            expect(result.data).toEqual({
+                [Person.plural]: [
+                    {
+                        name: "Arthur Dent",
+                    },
+                ],
+            });
         });
-    });
 
-    it("case insensitive eq in connection", async () => {
-        const query = /* GraphQL */ `
+        test("case insensitive eq in connection", async () => {
+            const query = /* GraphQL */ `
             query {
                 ${Movie.operations.connection}(where: { title: { caseInsensitive: { eq: "the matrix" } } }) {
                     edges {
@@ -137,30 +239,30 @@ describe("Filtering case insensitive string", () => {
             }
         `;
 
-        const result = await testHelper.executeGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
-        expect(result.errors).toBeUndefined();
+            expect(result.errors).toBeUndefined();
 
-        expect(result.data).toEqual({
-            [Movie.operations.connection]: {
-                edges: expect.toIncludeSameMembers([
-                    {
-                        node: {
-                            title: "The Matrix",
+            expect(result.data).toEqual({
+                [Movie.operations.connection]: {
+                    edges: expect.toIncludeSameMembers([
+                        {
+                            node: {
+                                title: "The Matrix",
+                            },
                         },
-                    },
-                    {
-                        node: {
-                            title: "THE MATRIX",
+                        {
+                            node: {
+                                title: "THE MATRIX",
+                            },
                         },
-                    },
-                ]),
-            },
+                    ]),
+                },
+            });
         });
-    });
 
-    it("case insensitive eq on related node filter in connection", async () => {
-        const query = /* GraphQL */ `
+        test("case insensitive eq on related node filter in connection", async () => {
+            const query = /* GraphQL */ `
             query {
                 ${Person.operations.connection}(where: { moviesConnection: { none: { node: { title: { caseInsensitive: { eq: "the matrix" } } } } } }) {
                     edges {
@@ -172,25 +274,25 @@ describe("Filtering case insensitive string", () => {
             }
         `;
 
-        const result = await testHelper.executeGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
-        expect(result.errors).toBeUndefined();
+            expect(result.errors).toBeUndefined();
 
-        expect(result.data).toEqual({
-            [Person.operations.connection]: {
-                edges: [
-                    {
-                        node: {
-                            name: "Arthur Dent",
+            expect(result.data).toEqual({
+                [Person.operations.connection]: {
+                    edges: [
+                        {
+                            node: {
+                                name: "Arthur Dent",
+                            },
                         },
-                    },
-                ],
-            },
+                    ],
+                },
+            });
         });
-    });
 
-    it("case insensitive eq on related edge filter in connection", async () => {
-        const query = /* GraphQL */ `
+        test("case insensitive eq on related edge filter in connection", async () => {
+            const query = /* GraphQL */ `
             query {
                 ${Person.operations.connection}(where: { moviesConnection: { none: { edge: { character: { caseInsensitive: { eq: "NEO" } } } } } }) {
                     edges {
@@ -202,20 +304,21 @@ describe("Filtering case insensitive string", () => {
             }
         `;
 
-        const result = await testHelper.executeGraphQL(query);
+            const result = await testHelper.executeGraphQL(query);
 
-        expect(result.errors).toBeUndefined();
+            expect(result.errors).toBeUndefined();
 
-        expect(result.data).toEqual({
-            [Person.operations.connection]: {
-                edges: [
-                    {
-                        node: {
-                            name: "Arthur Dent",
+            expect(result.data).toEqual({
+                [Person.operations.connection]: {
+                    edges: [
+                        {
+                            node: {
+                                name: "Arthur Dent",
+                            },
                         },
-                    },
-                ],
-            },
+                    ],
+                },
+            });
         });
     });
 });
