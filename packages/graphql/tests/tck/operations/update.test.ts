@@ -574,7 +574,7 @@ describe("Cypher Update", () => {
             CREATE (this_movies0_create0_node:Movie)
             SET this_movies0_create0_node.id = $this_movies0_create0_node_id
             SET this_movies0_create0_node.title = $this_movies0_create0_node_title
-            MERGE (this)-[:ACTED_IN]->(this_movies0_create0_node)
+            MERGE (this)-[this_movies0_create0_relationship:ACTED_IN]->(this_movies0_create0_node)
             WITH *
             CALL {
                 WITH this
@@ -624,7 +624,7 @@ describe("Cypher Update", () => {
             CREATE (this_movies0_create0_node:Movie)
             SET this_movies0_create0_node.id = $this_movies0_create0_node_id
             SET this_movies0_create0_node.title = $this_movies0_create0_node_title
-            MERGE (this)-[:ACTED_IN]->(this_movies0_create0_node)
+            MERGE (this)-[this_movies0_create0_relationship:ACTED_IN]->(this_movies0_create0_node)
             WITH *
             CALL {
                 WITH this
@@ -681,11 +681,11 @@ describe("Cypher Update", () => {
             CREATE (this_movies0_create0_node:Movie)
             SET this_movies0_create0_node.id = $this_movies0_create0_node_id
             SET this_movies0_create0_node.title = $this_movies0_create0_node_title
-            MERGE (this)-[:ACTED_IN]->(this_movies0_create0_node)
+            MERGE (this)-[this_movies0_create0_relationship:ACTED_IN]->(this_movies0_create0_node)
             CREATE (this_movies0_create1_node:Movie)
             SET this_movies0_create1_node.id = $this_movies0_create1_node_id
             SET this_movies0_create1_node.title = $this_movies0_create1_node_title
-            MERGE (this)-[:ACTED_IN]->(this_movies0_create1_node)
+            MERGE (this)-[this_movies0_create1_relationship:ACTED_IN]->(this_movies0_create1_node)
             WITH *
             CALL {
                 WITH this

@@ -433,32 +433,33 @@ export default function createUpdateAndParams({
                             });
                             subquery.push(nestedCreate);
                             res.params = { ...res.params, ...params };
-                            const relationVarName = create.edge ? propertiesName : "";
+
+                            const entity = context.schemaModel.getConcreteEntityAdapter(node.name);
+                            const relationshipAdapter = entity
+                                ? entity.findRelationship(relationField.fieldName)
+                                : undefined;
+
+                            const setA = createSetRelationshipProperties({
+                                properties: create.edge ?? {},
+                                varName: propertiesName,
+                                withVars,
+                                relationship,
+                                relationshipAdapter,
+                                callbackBucket,
+                                operation: "CREATE",
+                                parameterPrefix: `${parameterPrefix}.${key}${
+                                    relationField.union ? `.${refNode.name}` : ""
+                                }[${index}].create[${i}].edge`,
+                                parameterNotation: ".",
+                            });
+
+                            const relationVarName = setA ? propertiesName : "";
                             subquery.push(
                                 `MERGE (${parentVar})${inStr}[${relationVarName}:${relationField.type}]${outStr}(${nodeName})`
                             );
 
-                            if (create.edge) {
-                                const entity = context.schemaModel.getConcreteEntityAdapter(node.name);
-                                const relationshipAdapter = entity
-                                    ? entity.findRelationship(relationField.fieldName)
-                                    : undefined;
-                                const setA = createSetRelationshipProperties({
-                                    properties: create.edge,
-                                    varName: propertiesName,
-                                    withVars,
-                                    relationship,
-                                    relationshipAdapter,
-                                    callbackBucket,
-                                    operation: "CREATE",
-                                    parameterPrefix: `${parameterPrefix}.${key}${
-                                        relationField.union ? `.${refNode.name}` : ""
-                                    }[${index}].create[${i}].edge`,
-                                    parameterNotation: ".",
-                                });
-                                if (setA) {
-                                    subquery.push(setA[0]);
-                                }
+                            if (setA) {
+                                subquery.push(setA[0]);
                             }
 
                             subquery.push(
