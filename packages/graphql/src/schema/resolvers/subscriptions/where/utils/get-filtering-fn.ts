@@ -19,7 +19,7 @@
 
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 
-type ComparatorFn<T> = (received: T, filtered: T, fieldMeta?: AttributeAdapter | undefined) => boolean;
+type ComparatorFn<T> = (received: T, filtered: T, fieldMeta?: AttributeAdapter) => boolean;
 
 const legacyOperatorCheckMap = {
     EQ: (received: string, filtered: string) => received == filtered,

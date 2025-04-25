@@ -59,10 +59,20 @@ export function filterByProperties<T>({
                 return false;
             }
             const fieldMeta = attributes.get(fieldName);
-            const checkFilterPasses = getFilteringFn(operator, operatorMapOverrides);
+            if (operator) {
+                // Deprecated operators
+                const checkFilterPasses = getFilteringFn(operator, operatorMapOverrides);
 
-            if (!checkFilterPasses(receivedValue, v, fieldMeta)) {
-                return false;
+                if (!checkFilterPasses(receivedValue, v, fieldMeta)) {
+                    return false;
+                }
+            } else {
+                for (const [op, value] of Object.entries(v as Record<string, any>)) {
+                    const checkFilterPasses = getFilteringFn(op, operatorMapOverrides);
+                    if (!checkFilterPasses(receivedValue, value, fieldMeta)) {
+                        return false;
+                    }
+                }
             }
         }
     }
@@ -86,7 +96,7 @@ function shouldParseAsInt(attributeAdapter: AttributeAdapter | undefined, value:
     return false;
 }
 
-const operatorMapOverrides = {
+let operatorMapOverrides: Record<string, (received: any, filtered: any, fieldMeta?: any) => boolean> = {
     INCLUDES: (received: [string | number], filtered: string | number, fieldMeta: AttributeAdapter | undefined) => {
         if (shouldParseAsInt(fieldMeta, filtered)) {
             const filteredAsNeo4jInteger = int(filtered);
@@ -115,4 +125,10 @@ const operatorMapOverrides = {
         }
         return !filtered.some((v) => v === received);
     },
+};
+
+operatorMapOverrides = {
+    ...operatorMapOverrides,
+    includes: operatorMapOverrides.INCLUDES!,
+    in: operatorMapOverrides.IN!,
 };

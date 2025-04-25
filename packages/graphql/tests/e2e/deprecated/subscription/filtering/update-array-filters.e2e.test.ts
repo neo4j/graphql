@@ -19,11 +19,11 @@
 
 import type { Response } from "supertest";
 import supertest from "supertest";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
-import type { TestGraphQLServer } from "../../setup/apollo-server";
-import { ApolloTestServer } from "../../setup/apollo-server";
-import { WebSocketTestClient } from "../../setup/ws-client";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
+import type { TestGraphQLServer } from "../../../setup/apollo-server";
+import { ApolloTestServer } from "../../../setup/apollo-server";
+import { WebSocketTestClient } from "../../../setup/ws-client";
 
 describe("Create Subscription with optional filters valid for all types", () => {
     const testHelper = new TestHelper({ cdc: true });
@@ -78,16 +78,16 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await testHelper.close();
     });
 
-    test("$name - subscription with includes on String", async () => {
+    test("$name - subscription with INCLUDES on String", async () => {
         await wsClient.subscribe(`
-                subscription {
-                    ${typeMovie.operations.subscribe.updated}(where: { similarTitles: { includes: "movie" } }) {
-                        ${typeMovie.operations.subscribe.payload.updated} {
-                            similarTitles
-                        }
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { similarTitles_INCLUDES: "movie" }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        similarTitles
                     }
                 }
-            `);
+            }
+        `);
 
         await createMovie({ similarTitles: ["dummy", "movie"] });
         await createMovie({ similarTitles: ["mock"] });
@@ -106,17 +106,16 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-
-    test("subscription with includes on ID as String", async () => {
+    test("subscription with INCLUDES on ID as String", async () => {
         await wsClient.subscribe(`
-                subscription {
-                    ${typeMovie.operations.subscribe.updated}(where: { similarIds: { includes: "1" } }) {
-                        ${typeMovie.operations.subscribe.payload.updated} {
-                            similarIds
-                        }
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { similarIds_INCLUDES: "1" }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        similarIds
                     }
                 }
-            `);
+            }
+        `);
 
         await createMovie({ similarIds: ["1", "12"] });
         await createMovie({ similarIds: ["11"] });
@@ -135,17 +134,16 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-
-    test("subscription with includes on ID as number", async () => {
+    test("subscription with INCLUDES on ID as number", async () => {
         await wsClient.subscribe(`
-                subscription {
-                    ${typeMovie.operations.subscribe.updated}(where: { similarIds: { includes: 42 } }) {
-                        ${typeMovie.operations.subscribe.payload.updated} {
-                            similarIds
-                        }
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { similarIds_INCLUDES: 42 }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        similarIds
                     }
                 }
-            `);
+            }
+        `);
 
         await createMovie({ similarIds: [42] });
         await createMovie({ similarIds: [4, 2] });
@@ -164,17 +162,16 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-
-    test("subscription with includes on Int", async () => {
+    test("subscription with INCLUDES on Int", async () => {
         await wsClient.subscribe(`
-                subscription {
-                    ${typeMovie.operations.subscribe.updated}(where: { allDates: { includes: 2019 } }) {
-                        ${typeMovie.operations.subscribe.payload.updated} {
-                            allDates
-                        }
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { allDates_INCLUDES: 2019 }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        allDates
                     }
                 }
-            `);
+            }
+        `);
 
         await createMovie({ allDates: [2020, 2019] });
         await createMovie({ allDates: [2019] });
@@ -198,17 +195,16 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-
-    test("subscription with includes on Float", async () => {
+    test("subscription with INCLUDES on Float", async () => {
         await wsClient.subscribe(`
-                subscription {
-                    ${typeMovie.operations.subscribe.updated}(where: { allRatings: { includes: 5.4 } }) {
-                        ${typeMovie.operations.subscribe.payload.updated} {
-                            allRatings
-                        }
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { allRatings_INCLUDES: 5.4 }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        allRatings
                     }
                 }
-            `);
+            }
+        `);
 
         await createMovie({ allRatings: [6, 5.4] });
         await createMovie({ allRatings: [5.0] });
@@ -227,17 +223,16 @@ describe("Create Subscription with optional filters valid for all types", () => 
             },
         ]);
     });
-
-    test("subscription with includes on BigInt", async () => {
+    test("subscription with INCLUDES on BigInt", async () => {
         await wsClient.subscribe(`
-                subscription {
-                    ${typeMovie.operations.subscribe.updated}(where: { allSizes: { includes: "9223372036854775608" } }) {
-                        ${typeMovie.operations.subscribe.payload.updated} {
-                            allSizes
-                        }
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { allSizes_INCLUDES: "9223372036854775608" }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        allSizes
                     }
                 }
-            `);
+            }
+        `);
 
         await createMovie({
             allSizes: ["9223372036854775608", "922372036854775608"],
@@ -259,18 +254,18 @@ describe("Create Subscription with optional filters valid for all types", () => 
         ]);
     });
 
-    test("subscription with includes on String should error", async () => {
+    test("subscription with INCLUDES on String should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
-                subscription {
-                    ${typeMovie.operations.subscribe.updated}(where: { similarTitles: { includes: ["movie"] } }) {
-                        ${typeMovie.operations.subscribe.payload.updated} {
-                            similarTitles
-                        }
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { similarTitles_INCLUDES: ["movie"] }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        similarTitles
                     }
                 }
-            `,
+            }
+        `,
             onReturnError
         );
 
@@ -283,19 +278,18 @@ describe("Create Subscription with optional filters valid for all types", () => 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with includes on Boolean should error", async () => {
+    test("subscription with INCLUDES on Boolean should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
-                subscription {
-                    ${typeMovie.operations.subscribe.updated}(where: { isFavorite: { includes: true } }) {
-                        ${typeMovie.operations.subscribe.payload.updated} {
-                            isFavorite
-                        }
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { isFavorite_INCLUDES: true }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        isFavorite
                     }
                 }
-            `,
+            }
+        `,
             onReturnError
         );
 

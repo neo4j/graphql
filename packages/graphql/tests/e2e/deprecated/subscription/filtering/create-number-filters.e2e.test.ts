@@ -19,13 +19,13 @@
 
 import type { Response } from "supertest";
 import supertest from "supertest";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
-import type { TestGraphQLServer } from "../../setup/apollo-server";
-import { ApolloTestServer } from "../../setup/apollo-server";
-import { WebSocketTestClient } from "../../setup/ws-client";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
+import type { TestGraphQLServer } from "../../../setup/apollo-server";
+import { ApolloTestServer } from "../../../setup/apollo-server";
+import { WebSocketTestClient } from "../../../setup/ws-client";
 
-describe("Delete Subscription", () => {
+describe("Create Subscription with filters valid of number types (Int, Float, BigInt)", () => {
     const testHelper = new TestHelper({ cdc: true });
     let server: TestGraphQLServer;
     let wsClient: WebSocketTestClient;
@@ -38,7 +38,7 @@ describe("Delete Subscription", () => {
     beforeEach(async () => {
         typeMovie = testHelper.createUniqueType("Movie");
         const typeDefs = `
-        type ${typeMovie} @node @subscription {
+         type ${typeMovie} @node @subscription {
             id: ID
             title: String
             similarTitles: [String!]
@@ -46,8 +46,8 @@ describe("Delete Subscription", () => {
             averageRating: Float
             fileSize: BigInt
             isFavorite: Boolean
-        }
-        `;
+         }
+         `;
 
         const neoSchema = await testHelper.initNeo4jGraphQL({
             typeDefs,
@@ -74,11 +74,11 @@ describe("Delete Subscription", () => {
         await testHelper.close();
     });
 
-    test("subscription with where filter using lt for Int 1 result", async () => {
+    test("subscription with where filter _LT for Int 1 result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn: {lt: 2000} }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { releasedIn_LT: 2000 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         releasedIn
                     }
                 }
@@ -88,25 +88,22 @@ describe("Delete Subscription", () => {
         await createMovie({ releasedIn: 2000 });
         await createMovie({ releasedIn: 1999 });
 
-        await deleteMovie("releasedIn", 2000);
-        await deleteMovie("releasedIn", 1999);
-
         await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { releasedIn: 1999 },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { releasedIn: 1999 },
                 },
             },
         ]);
     });
-    test("subscription with where filter using lte for Int multiple result", async () => {
+    test("subscription with where filter _LTE for Int multiple result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn: { lte: 2000 } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { releasedIn_LTE: 2000 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         releasedIn
                     }
                 }
@@ -117,31 +114,27 @@ describe("Delete Subscription", () => {
         await createMovie({ releasedIn: 1999 });
         await createMovie({ releasedIn: 2999 });
 
-        await deleteMovie("releasedIn", 2000);
-        await deleteMovie("releasedIn", 1999);
-        await deleteMovie("releasedIn", 2999);
-
         await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { releasedIn: 2000 },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { releasedIn: 2000 },
                 },
             },
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { releasedIn: 1999 },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { releasedIn: 1999 },
                 },
             },
         ]);
     });
-    test("subscription with where filter using gt for Int 1 result", async () => {
+    test("subscription with where filter _GT for Int 1 result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn: { gt: 2000 } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { releasedIn_GT: 2000 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         releasedIn
                     }
                 }
@@ -151,26 +144,22 @@ describe("Delete Subscription", () => {
         await createMovie({ releasedIn: 2020 });
         await createMovie({ releasedIn: 2000 });
 
-        await deleteMovie("releasedIn", 2020);
-        await deleteMovie("releasedIn", 2000);
-
         await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { releasedIn: 2020 },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { releasedIn: 2020 },
                 },
             },
         ]);
     });
-
-    test("subscription with where filter using gte for Int multiple result", async () => {
+    test("subscription with where filter _GTE for Int multiple result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn: { gte: 2000 } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { releasedIn_GTE: 2000 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         releasedIn
                     }
                 }
@@ -181,32 +170,28 @@ describe("Delete Subscription", () => {
         await createMovie({ releasedIn: 2000 });
         await createMovie({ releasedIn: 2030 });
 
-        await deleteMovie("releasedIn", 1920);
-        await deleteMovie("releasedIn", 2000);
-        await deleteMovie("releasedIn", 2030);
-
         await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { releasedIn: 2000 },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { releasedIn: 2000 },
                 },
             },
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { releasedIn: 2030 },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { releasedIn: 2030 },
                 },
             },
         ]);
     });
 
-    test("subscription with where filter using lt for Float 1 result", async () => {
+    test("subscription with where filter _LT for Float 1 result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { averageRating: { lt: 8 } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { averageRating_LT: 8 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         averageRating
                     }
                 }
@@ -216,26 +201,22 @@ describe("Delete Subscription", () => {
         await createMovie({ averageRating: 8.0 });
         await createMovie({ averageRating: 5 });
 
-        await deleteMovie("averageRating", 8);
-        await deleteMovie("averageRating", 5);
-
         await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { averageRating: 5 },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 5 },
                 },
             },
         ]);
     });
-
-    test("subscription with where filter using lte for Float multiple result", async () => {
+    test("subscription with where filter _LTE for Float multiple result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { averageRating: { lte: 7 } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { averageRating_LTE: 7 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         averageRating
                     }
                 }
@@ -246,32 +227,27 @@ describe("Delete Subscription", () => {
         await createMovie({ averageRating: 7.0 });
         await createMovie({ averageRating: 7.1 });
 
-        await deleteMovie("averageRating", 6.7);
-        await deleteMovie("averageRating", 7);
-        await deleteMovie("averageRating", 7.1);
-
         await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { averageRating: 6.7 },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 6.7 },
                 },
             },
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { averageRating: 7 },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 7 },
                 },
             },
         ]);
     });
-
-    test("subscription with where filter using gt for Float 1 result", async () => {
+    test("subscription with where filter _GT for Float 1 result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { averageRating: { gt: 7.9 } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { averageRating_GT: 7.9 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         averageRating
                     }
                 }
@@ -281,26 +257,22 @@ describe("Delete Subscription", () => {
         await createMovie({ averageRating: 8 });
         await createMovie({ averageRating: 7.9 });
 
-        await deleteMovie("averageRating", 8);
-        await deleteMovie("averageRating", 2.9);
-
         await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { averageRating: 8 },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 8 },
                 },
             },
         ]);
     });
-
-    test("subscription with where filter using gte for Float multiple results", async () => {
+    test("subscription with where filter _GTE for Float multiple results", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { averageRating: { gte: 5 } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { averageRating_GTE: 5 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         averageRating
                     }
                 }
@@ -311,32 +283,27 @@ describe("Delete Subscription", () => {
         await createMovie({ averageRating: 5.3 });
         await createMovie({ averageRating: 6.2 });
 
-        await deleteMovie("averageRating", 4.1);
-        await deleteMovie("averageRating", 5.3);
-        await deleteMovie("averageRating", 6.2);
-
         await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { averageRating: 5.3 },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 5.3 },
                 },
             },
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { averageRating: 6.2 },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 6.2 },
                 },
             },
         ]);
     });
-
-    test("subscription with where filter using gte for Float multiple results no decimals", async () => {
+    test("subscription with where filter _GTE for Float multiple results no decimals", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { averageRating: { gte: 4.2 } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { averageRating_GTE: 4.2 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         averageRating
                     }
                 }
@@ -347,28 +314,24 @@ describe("Delete Subscription", () => {
         await createMovie({ averageRating: 5 });
         await createMovie({ averageRating: 6.2 });
 
-        await deleteMovie("averageRating", 4.1);
-        await deleteMovie("averageRating", 5);
-        await deleteMovie("averageRating", 6.2);
-
         await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { averageRating: 5 },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 5 },
                 },
             },
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { averageRating: 6.2 },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { averageRating: 6.2 },
                 },
             },
         ]);
     });
 
-    test("subscription with where filter using lt for BigInt 1 result", async () => {
+    test("subscription with where filter _LT for BigInt 1 result", async () => {
         const bigInts = {
             s: "9223372036854775608",
             m: "9223372036854775708",
@@ -376,8 +339,8 @@ describe("Delete Subscription", () => {
         };
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { fileSize: { lt: ${bigInts.m} } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { fileSize_LT: ${bigInts.m} }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         fileSize
                     }
                 }
@@ -387,22 +350,18 @@ describe("Delete Subscription", () => {
         await createMovie({ fileSize: bigInts.m });
         await createMovie({ fileSize: bigInts.s });
 
-        await deleteMovie("fileSize", bigInts.m);
-        await deleteMovie("fileSize", bigInts.s);
-
         await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { fileSize: bigInts.s },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { fileSize: bigInts.s },
                 },
             },
         ]);
     });
-
-    test("subscription with where filter using lte for BigInt multiple result", async () => {
+    test("subscription with where filter _LTE for BigInt multiple result", async () => {
         const bigInts = {
             s: "9223372036854775608",
             m: "9223372036854775708",
@@ -410,8 +369,8 @@ describe("Delete Subscription", () => {
         };
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { fileSize: { lte: ${bigInts.m} } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { fileSize_LTE: ${bigInts.m} }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         fileSize
                     }
                 }
@@ -422,36 +381,31 @@ describe("Delete Subscription", () => {
         await createMovie({ fileSize: bigInts.m });
         await createMovie({ fileSize: bigInts.l });
 
-        await deleteMovie("fileSize", bigInts.s);
-        await deleteMovie("fileSize", bigInts.m);
-        await deleteMovie("fileSize", bigInts.l);
-
         await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { fileSize: bigInts.s },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { fileSize: bigInts.s },
                 },
             },
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { fileSize: bigInts.m },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { fileSize: bigInts.m },
                 },
             },
         ]);
     });
-
-    test("subscription with where filter using gt for BigInt 1 result", async () => {
+    test("subscription with where filter _GT for BigInt 1 result", async () => {
         const bigInts = {
             m: "9223372036854775708",
             l: "9223372036854775710",
         };
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { fileSize: { gt: ${bigInts.m} } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { fileSize_GT: ${bigInts.m} }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         fileSize
                     }
                 }
@@ -461,22 +415,18 @@ describe("Delete Subscription", () => {
         await createMovie({ fileSize: bigInts.l });
         await createMovie({ fileSize: bigInts.m });
 
-        await deleteMovie("fileSize", bigInts.l);
-        await deleteMovie("fileSize", bigInts.m);
-
         await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { fileSize: bigInts.l },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { fileSize: bigInts.l },
                 },
             },
         ]);
     });
-
-    test("subscription with where filter using gte for BigInt multiple result", async () => {
+    test("subscription with where filter _GTE for BigInt multiple result", async () => {
         const bigInts = {
             s: "9223372036854775608",
             m: "9223372036854775708",
@@ -484,8 +434,8 @@ describe("Delete Subscription", () => {
         };
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { fileSize: { gte: ${bigInts.m} } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { fileSize_GTE: ${bigInts.m} }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         fileSize
                     }
                 }
@@ -496,209 +446,178 @@ describe("Delete Subscription", () => {
         await createMovie({ fileSize: bigInts.m });
         await createMovie({ fileSize: bigInts.l });
 
-        await deleteMovie("fileSize", bigInts.s);
-        await deleteMovie("fileSize", bigInts.m);
-        await deleteMovie("fileSize", bigInts.l);
-
         await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { fileSize: bigInts.m },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { fileSize: bigInts.m },
                 },
             },
             {
-                [typeMovie.operations.subscribe.deleted]: {
-                    [typeMovie.operations.subscribe.payload.deleted]: { fileSize: bigInts.l },
+                [typeMovie.operations.subscribe.created]: {
+                    [typeMovie.operations.subscribe.payload.created]: { fileSize: bigInts.l },
                 },
             },
         ]);
     });
 
-    test("subscription with where filter using lt for String should error", async () => {
+    test("subscription with where filter _LT for String should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { title: { lt: "test" } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { title_LT: "test" }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
                 }
             }
-            `,
+        `,
             onReturnError
         );
 
         await createMovie({ title: "movie1" });
         await createMovie({ title: "movie2" });
 
-        await deleteMovie("title", "movie1");
-        await deleteMovie("title", "movie2");
-
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with where filter using lte for String should error", async () => {
+    test("subscription with where filter _LTE for String should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { title: { lte: "test" } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { title_LTE: "test" }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
                 }
             }
-            `,
+        `,
             onReturnError
         );
 
         await createMovie({ title: "movie1" });
         await createMovie({ title: "movie2" });
 
-        await deleteMovie("title", "movie1");
-        await deleteMovie("title", "movie2");
-
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with where filter using gt for String should error", async () => {
+    test("subscription with where filter _GT for String should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { title: { gt: "abc" } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { title_GT: "abc" }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
                 }
             }
-            `,
+        `,
             onReturnError
         );
 
         await createMovie({ title: "movie1" });
         await createMovie({ title: "movie2" });
 
-        await deleteMovie("title", "movie1");
-        await deleteMovie("title", "movie2");
-
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with where filter using gte for String should error", async () => {
+    test("subscription with where filter _GTE for String should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { title: { gte: "abc" } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { title_GTE: "abc" }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         title
                     }
                 }
             }
-            `,
+        `,
             onReturnError
         );
 
         await createMovie({ title: "movie1" });
         await createMovie({ title: "movie2" });
 
-        await deleteMovie("title", "movie1");
-        await deleteMovie("title", "movie2");
-
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with where filter using lt for ID as Int should error", async () => {
+    test("subscription with where filter _LT for ID as Int should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { id: { lt: 50 } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { id_LT: 50 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         id
                     }
                 }
             }
-            `,
+        `,
             onReturnError
         );
 
         await createMovie({ id: 42 });
         await createMovie({ id: 24 });
 
-        await deleteMovie("id", 42);
-        await deleteMovie("id", 24);
-
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with where filter using lte for ID as Int should error", async () => {
+    test("subscription with where filter _LTE for ID as Int should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { id: { lte: 50 } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { id_LTE: 50 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         id
                     }
                 }
             }
-            `,
+        `,
             onReturnError
         );
 
         await createMovie({ id: 40 });
         await createMovie({ id: 20 });
 
-        await deleteMovie("id", 40);
-        await deleteMovie("id", 20);
-
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with where filter using gt for ID as Int should error", async () => {
+    test("subscription with where filter _GT for ID as Int should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { id: { gt: 2 } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { id_GT: 2 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         id
                     }
                 }
             }
-            `,
+        `,
             onReturnError
         );
 
         await createMovie({ id: 5 });
         await createMovie({ id: 3 });
 
-        await deleteMovie("id", 5);
-        await deleteMovie("id", 3);
-
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with where filter using gte for ID as Int should error", async () => {
+    test("subscription with where filter _GTE for ID as Int should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { id: { gte: 1 } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
+                ${typeMovie.operations.subscribe.created}(where: { id_GTE: 1 }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
                         id
                     }
                 }
@@ -710,71 +629,18 @@ describe("Delete Subscription", () => {
         await createMovie({ id: 4 });
         await createMovie({ id: 2 });
 
-        await deleteMovie("id", 4);
-        await deleteMovie("id", 2);
-
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with where filter using lt for Boolean should error", async () => {
+    test("subscription with where filter _LT for Boolean should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite: { lt: true } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        isFavorite
-                    }
-                }
-            }
-            `,
-            onReturnError
-        );
-
-        await createMovie({ isFavorite: false });
-        await createMovie({ isFavorite: false });
-
-        await deleteMovie("title", "movie1");
-        await deleteMovie("title", "movie2");
-
-        expect(onReturnError).toHaveBeenCalled();
-        expect(wsClient.events).toEqual([]);
-    });
-
-    test("subscription with where filter using lte for Boolean should error", async () => {
-        const onReturnError = jest.fn();
-        await wsClient.subscribe(
-            `
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite: { lte: false } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        isFavorite
-                    }
-                }
-            }
-            `,
-            onReturnError
-        );
-
-        await createMovie({ title: "movie1", isFavorite: false });
-        await createMovie({ title: "movie2", isFavorite: false });
-
-        await deleteMovie("title", "movie1");
-        await deleteMovie("title", "movie2");
-
-        expect(onReturnError).toHaveBeenCalled();
-        expect(wsClient.events).toEqual([]);
-    });
-
-    test("subscription with where filter using gt for Boolean should error", async () => {
-        const onReturnError = jest.fn();
-        await wsClient.subscribe(
-            `
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite: { gt: false } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        isFavorite
+                ${typeMovie.operations.subscribe.created}(where: { isFavorite_LT: true }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
                     }
                 }
             }
@@ -782,24 +648,20 @@ describe("Delete Subscription", () => {
             onReturnError
         );
 
-        await createMovie({ title: "movie1", isFavorite: false });
-        await createMovie({ title: "movie2", isFavorite: false });
-
-        await deleteMovie("title", "movie1");
-        await deleteMovie("title", "movie2");
+        await createMovie({});
+        await createMovie({});
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with where filter using gte for Boolean should error", async () => {
+    test("subscription with where filter _LTE for Boolean should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite: { gte: false } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        isFavorite
+                ${typeMovie.operations.subscribe.created}(where: { isFavorite_LTE: false }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
                     }
                 }
             }
@@ -807,22 +669,61 @@ describe("Delete Subscription", () => {
             onReturnError
         );
 
-        await createMovie({ title: "movie1", isFavorite: false });
-        await createMovie({ title: "movie2", isFavorite: false });
+        await createMovie({});
+        await createMovie({});
 
-        await deleteMovie("title", "movie1");
-        await deleteMovie("title", "movie2");
+        expect(onReturnError).toHaveBeenCalled();
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GT for Boolean should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { isFavorite_GT: false }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `,
+            onReturnError
+        );
+
+        await createMovie({});
+        await createMovie({});
+
+        expect(onReturnError).toHaveBeenCalled();
+        expect(wsClient.events).toEqual([]);
+    });
+    test("subscription with where filter _GTE for Boolean should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
+            subscription {
+                ${typeMovie.operations.subscribe.created}(where: { isFavorite_GTE: false }) {
+                    ${typeMovie.operations.subscribe.payload.created} {
+                        title
+                    }
+                }
+            }
+        `,
+            onReturnError
+        );
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with where filter using gte for Array should error", async () => {
+    test("subscription with where filter _GTE for Array should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.updated}(where: { similarTitles: { gte: "test" } }) {
+                ${typeMovie.operations.subscribe.updated}(where: { similarTitles_GTE: "test" }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
                         similarTitles
                     }
@@ -832,11 +733,8 @@ describe("Delete Subscription", () => {
             onReturnError
         );
 
-        await createMovie({ title: "bad_type_movie25", similarTitles: ["test"] });
-        await createMovie({ title: "bad_type_movie26", similarTitles: ["test"] });
-
-        await deleteMovie("title", "bad_type_movie25");
-        await deleteMovie("title", "bad_type_movie26");
+        await createMovie({ similarTitles: ["dummy"] });
+        await createMovie({ similarTitles: ["test"] });
 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
@@ -881,22 +779,6 @@ describe("Delete Subscription", () => {
                                 fileSize
                                 isFavorite
                             }
-                        }
-                    }
-                `,
-            })
-            .expect(200);
-        return result;
-    }
-
-    async function deleteMovie(fieldName: string, value: number | string): Promise<Response> {
-        const result = await supertest(server.path)
-            .post("")
-            .send({
-                query: `
-                    mutation {
-                        ${typeMovie.operations.delete}(where: { ${fieldName}_EQ: ${makeTypedFieldValue(value)} }) {
-                            nodesDeleted
                         }
                     }
                 `,
