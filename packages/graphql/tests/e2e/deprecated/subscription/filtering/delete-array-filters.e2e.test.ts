@@ -19,11 +19,11 @@
 
 import type { Response } from "supertest";
 import supertest from "supertest";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
-import type { TestGraphQLServer } from "../../setup/apollo-server";
-import { ApolloTestServer } from "../../setup/apollo-server";
-import { WebSocketTestClient } from "../../setup/ws-client";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
+import type { TestGraphQLServer } from "../../../setup/apollo-server";
+import { ApolloTestServer } from "../../../setup/apollo-server";
+import { WebSocketTestClient } from "../../../setup/ws-client";
 
 describe("Create Subscription with optional filters valid for all types", () => {
     const testHelper = new TestHelper({ cdc: true });
@@ -81,8 +81,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
     test("subscription with INCLUDES on String", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { similarTitles: {includes: "movie"} }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
+                ${typeMovie.operations.subscribe.deleted}(where: { similarTitles_INCLUDES: "movie" }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
                         similarTitles
                     }
                 }
@@ -92,13 +92,16 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ similarTitles: ["dummy", "movie"] });
         await createMovie({ similarTitles: ["mock"] });
 
+        await deleteMovie("similarTitles", ["dummy", "movie"]);
+        await deleteMovie("similarTitles", ["mock"]);
+
         await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { similarTitles: ["dummy", "movie"] },
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { similarTitles: ["dummy", "movie"] },
                 },
             },
         ]);
@@ -106,8 +109,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
     test("subscription with INCLUDES on ID as String", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { similarIds: {includes: "1"} }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
+                ${typeMovie.operations.subscribe.deleted}(where: { similarIds_INCLUDES: "1" }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
                         similarIds
                     }
                 }
@@ -117,13 +120,16 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ similarIds: ["1", "12"] });
         await createMovie({ similarIds: ["11"] });
 
+        await deleteMovie("similarIds", ["1", "12"]);
+        await deleteMovie("similarIds", "11");
+
         await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { similarIds: ["1", "12"] },
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { similarIds: ["1", "12"] },
                 },
             },
         ]);
@@ -131,8 +137,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
     test("subscription with INCLUDES on ID as number", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { similarIds: {includes: 42} }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
+                ${typeMovie.operations.subscribe.deleted}(where: { similarIds_INCLUDES: 42 }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
                         similarIds
                     }
                 }
@@ -142,13 +148,16 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ similarIds: [42] });
         await createMovie({ similarIds: [4, 2] });
 
+        await deleteMovie("similarIds", [42]);
+        await deleteMovie("similarIds", [4, 2]);
+
         await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { similarIds: ["42"] },
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { similarIds: ["42"] },
                 },
             },
         ]);
@@ -156,8 +165,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
     test("subscription with INCLUDES on Int", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { allDates: {includes: 2019} }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
+                ${typeMovie.operations.subscribe.deleted}(where: { allDates_INCLUDES: 2019 }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
                         allDates
                     }
                 }
@@ -167,18 +176,21 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ allDates: [2020, 2019] });
         await createMovie({ allDates: [2019] });
 
+        await deleteMovie("allDates", [2020, 2019]);
+        await deleteMovie("allDates", [2019]);
+
         await wsClient.waitForEvents(2);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { allDates: [2020, 2019] },
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { allDates: [2020, 2019] },
                 },
             },
             {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { allDates: [2019] },
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { allDates: [2019] },
                 },
             },
         ]);
@@ -186,8 +198,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
     test("subscription with INCLUDES on Float", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { allRatings: { includes: 5.4 } }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
+                ${typeMovie.operations.subscribe.deleted}(where: { allRatings_INCLUDES: 5.4 }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
                         allRatings
                     }
                 }
@@ -197,13 +209,16 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await createMovie({ allRatings: [6, 5.4] });
         await createMovie({ allRatings: [5.0] });
 
+        await deleteMovie("allRatings", [6, 5.4]);
+        await deleteMovie("allRatings", [5.0]);
+
         await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: { allRatings: [6, 5.4] },
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: { allRatings: [6, 5.4] },
                 },
             },
         ]);
@@ -211,8 +226,8 @@ describe("Create Subscription with optional filters valid for all types", () => 
     test("subscription with INCLUDES on BigInt", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { allSizes: {includes: "9223372036854775608"} }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
+                ${typeMovie.operations.subscribe.deleted}(where: { allSizes_INCLUDES: "9223372036854775608" }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
                         allSizes
                     }
                 }
@@ -224,61 +239,21 @@ describe("Create Subscription with optional filters valid for all types", () => 
         });
         await createMovie({ allSizes: ["123"] });
 
+        await deleteMovie("allSizes", ["9223372036854775608", "922372036854775608"]);
+        await deleteMovie("allSizes", ["123"]);
+
         await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
             {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: {
+                [typeMovie.operations.subscribe.deleted]: {
+                    [typeMovie.operations.subscribe.payload.deleted]: {
                         allSizes: ["9223372036854775608", "922372036854775608"],
                     },
                 },
             },
         ]);
-    });
-
-    test("subscription with INCLUDES on String should error", async () => {
-        const onReturnError = jest.fn();
-        await wsClient.subscribe(
-            `
-            subscription {
-                ${typeMovie.operations.subscribe.created}(where: { similarTitles: {includes: ["movie"]} }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
-                        similarTitles
-                    }
-                }
-            }
-        `,
-            onReturnError
-        );
-
-        await createMovie({ similarTitles: ["dummy", "movie"] });
-        await createMovie({ similarTitles: ["mock"] });
-
-        expect(onReturnError).toHaveBeenCalled();
-        expect(wsClient.events).toEqual([]);
-    });
-    test("subscription with INCLUDES on Boolean should error", async () => {
-        const onReturnError = jest.fn();
-        await wsClient.subscribe(
-            `
-            subscription {
-                ${typeMovie.operations.subscribe.created}(where: { isFavorite: {includes: true} }) {
-                    ${typeMovie.operations.subscribe.payload.created} {
-                        isFavorite
-                    }
-                }
-            }
-        `,
-            onReturnError
-        );
-
-        await createMovie({ isFavorite: true });
-        await createMovie({ isFavorite: false });
-
-        expect(onReturnError).toHaveBeenCalled();
-        expect(wsClient.events).toEqual([]);
     });
 
     const makeTypedFieldValue = (value) => {
@@ -328,6 +303,22 @@ describe("Create Subscription with optional filters valid for all types", () => 
                                 allSizes
                                 isFavorite
                             }
+                        }
+                    }
+                `,
+            })
+            .expect(200);
+        return result;
+    }
+
+    async function deleteMovie(fieldName: string, value: number | string | number[] | string[]): Promise<Response> {
+        const result = await supertest(server.path)
+            .post("")
+            .send({
+                query: `
+                    mutation {
+                        ${typeMovie.operations.delete}(where: { ${fieldName}_EQ: ${makeTypedFieldValue(value)} }) {
+                            nodesDeleted
                         }
                     }
                 `,

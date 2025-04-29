@@ -19,11 +19,11 @@
 
 import type { Response } from "supertest";
 import supertest from "supertest";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
-import type { TestGraphQLServer } from "../../setup/apollo-server";
-import { ApolloTestServer } from "../../setup/apollo-server";
-import { WebSocketTestClient } from "../../setup/ws-client";
+import type { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
+import type { TestGraphQLServer } from "../../../setup/apollo-server";
+import { ApolloTestServer } from "../../../setup/apollo-server";
+import { WebSocketTestClient } from "../../../setup/ws-client";
 
 describe("Create Subscription with filters valid on string types (String, ID)", () => {
     const testHelper = new TestHelper({ cdc: true });
@@ -73,10 +73,11 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         await server.close();
         await testHelper.close();
     });
-    test("subscription with where filter using startsWith for String", async () => {
+
+    test("subscription with where filter STARTS_WITH for String", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { title: { startsWith: "movie" } }) {
+            ${typeMovie.operations.subscribe.created}(where: { title_STARTS_WITH: "movie" }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     title
                 }
@@ -98,11 +99,10 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             },
         ]);
     });
-
-    test("subscription with where filter using startsWith for ID as String", async () => {
+    test("subscription with where filter STARTS_WITH for ID as String", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { id: { startsWith: "dummy" } }) {
+            ${typeMovie.operations.subscribe.created}(where: { id_STARTS_WITH: "dummy" }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     id
                 }
@@ -124,11 +124,10 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             },
         ]);
     });
-
-    test("subscription with where filter using startsWith for ID as Int", async () => {
+    test("subscription with where filter STARTS_WITH for ID as Int", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { id: { startsWith: 1 } }) {
+            ${typeMovie.operations.subscribe.created}(where: { id_STARTS_WITH: 1 }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     id
                 }
@@ -151,10 +150,10 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         ]);
     });
 
-    test("subscription with where filter using endsWith for String", async () => {
+    test("subscription with where filter ENDS_WITH for String", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { title: { endsWith: "movie1" } }) {
+            ${typeMovie.operations.subscribe.created}(where: { title_ENDS_WITH: "movie1" }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     title
                 }
@@ -176,11 +175,10 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             },
         ]);
     });
-
-    test("subscription with where filter using endsWith for ID as String", async () => {
+    test("subscription with where filter ENDS_WITH for ID as String", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { id: { endsWith: "dummy" } }) {
+            ${typeMovie.operations.subscribe.created}(where: { id_ENDS_WITH: "dummy" }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     id
                 }
@@ -202,11 +200,10 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             },
         ]);
     });
-
-    test("subscription with where filter using endsWith for ID as Int", async () => {
+    test("subscription with where filter ENDS_WITH for ID as Int", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { id: { endsWith: 3 } }) {
+            ${typeMovie.operations.subscribe.created}(where: { id_ENDS_WITH: 3 }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     id
                 }
@@ -229,10 +226,10 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         ]);
     });
 
-    test("subscription with where filter using contains for String", async () => {
+    test("subscription with where filter CONTAINS for String", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { title: { contains: "movie1" } }) {
+            ${typeMovie.operations.subscribe.created}(where: { title_CONTAINS: "movie1" }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     title
                 }
@@ -254,11 +251,10 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             },
         ]);
     });
-
-    test("subscription with where filter using contains for ID as String", async () => {
+    test("subscription with where filter CONTAINS for ID as String", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { id: { contains: "dummy" } }) {
+            ${typeMovie.operations.subscribe.created}(where: { id_CONTAINS: "dummy" }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     id
                 }
@@ -280,11 +276,10 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
             },
         ]);
     });
-
-    test("subscription with where filter using contains for ID as Int", async () => {
+    test("subscription with where filter CONTAINS for ID as Int", async () => {
         await wsClient.subscribe(`
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { id: { contains: 3 } }) {
+            ${typeMovie.operations.subscribe.created}(where: { id_CONTAINS: 3 }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     id
                 }
@@ -307,12 +302,12 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         ]);
     });
 
-    test("subscription with where filter using contains for Int should error", async () => {
+    test("subscription with where filter CONTAINS for Int should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { releasedIn: { contains: 2020 } }) {
+            ${typeMovie.operations.subscribe.created}(where: { releasedIn_CONTAINS: 2020 }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     releasedIn
                 }
@@ -328,13 +323,12 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with where filter using contains for Float should error", async () => {
+    test("subscription with where filter CONTAINS for Float should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { averageRating: { contains: 5 } }) {
+            ${typeMovie.operations.subscribe.created}(where: { averageRating_CONTAINS: 5 }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     id
                 }
@@ -350,13 +344,12 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with where filter using contains for BigInt should error", async () => {
+    test("subscription with where filter CONTAINS for BigInt should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { fileSize: { contains: "12" } }) {
+            ${typeMovie.operations.subscribe.created}(where: { fileSize_CONTAINS: "12" }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     id
                 }
@@ -372,13 +365,12 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with where filter using contains for Boolean should error", async () => {
+    test("subscription with where filter CONTAINS for Boolean should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { isFavorite: { contains: false } }) {
+            ${typeMovie.operations.subscribe.created}(where: { isFavorite_CONTAINS: false }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     id
                 }
@@ -394,13 +386,12 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with where filter using contains for Array should error", async () => {
+    test("subscription with where filter CONTAINS for Array should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { similarTitles: { contains: "test" } }) {
+            ${typeMovie.operations.subscribe.created}(where: { similarTitles_CONTAINS: "test" }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     id
                 }
@@ -417,12 +408,12 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with where filter using startsWith for Int should error", async () => {
+    test("subscription with where filter STARTS_WITH for Int should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { releasedIn: { startsWith: 2 } }) {
+            ${typeMovie.operations.subscribe.created}(where: { releasedIn_STARTS_WITH: 2 }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     id
                 }
@@ -438,13 +429,12 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with where filter using startsWith for Float should error", async () => {
+    test("subscription with where filter STARTS_WITH for Float should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { averageRating: { startsWith: 6 } }) {
+            ${typeMovie.operations.subscribe.created}(where: { averageRating_STARTS_WITH: 6 }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     id
                 }
@@ -460,13 +450,12 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with where filter using startsWith for BigInt should error", async () => {
+    test("subscription with where filter STARTS_WITH for BigInt should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { fileSize: { startsWith: 2 } }) {
+            ${typeMovie.operations.subscribe.created}(where: { fileSize_STARTS_WITH: 2 }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     id
                 }
@@ -482,13 +471,12 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with where filter using startsWith for Boolean should error", async () => {
+    test("subscription with where filter STARTS_WITH for Boolean should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { isFavorite: { startsWith: "f" } }) {
+            ${typeMovie.operations.subscribe.created}(where: { isFavorite_STARTS_WITH: "f" }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     id
                 }
@@ -504,13 +492,12 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-
-    test("subscription with where filter using startsWith for Array should error", async () => {
+    test("subscription with where filter STARTS_WITH for Array should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
         subscription {
-            ${typeMovie.operations.subscribe.created}(where: { similarTitles: { startsWith: "test" } }) {
+            ${typeMovie.operations.subscribe.created}(where: { similarTitles_STARTS_WITH: "test" }) {
                 ${typeMovie.operations.subscribe.payload.created} {
                     id
                 }
