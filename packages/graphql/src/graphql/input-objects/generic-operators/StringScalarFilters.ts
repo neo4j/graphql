@@ -49,10 +49,10 @@ export function getStringScalarFilters(features?: Neo4jFeaturesSettings): GraphQ
                 case "LTE":
                     fields["lte"] = { type: GraphQLString };
                     break;
-                case "CASE_INSENSITIVE": {
-                    const CaseInsensitiveFilters = getCaseInsensitiveStringScalarFilters(features);
-                    fields["caseInsensitive"] = { type: CaseInsensitiveFilters };
-                }
+                // case "CASE_INSENSITIVE": {
+                //     const CaseInsensitiveFilters = getCaseInsensitiveStringScalarFilters(features);
+                //     fields["caseInsensitive"] = { type: CaseInsensitiveFilters };
+                // }
             }
         }
     }

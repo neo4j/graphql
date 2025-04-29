@@ -37,7 +37,7 @@ describe("String Comparators", () => {
                         GT: true,
                         GTE: true,
                         LTE: true,
-                        CASE_INSENSITIVE: true,
+                        // CASE_INSENSITIVE: true,
                     },
                 },
             },
@@ -49,19 +49,6 @@ describe("String Comparators", () => {
             "schema {
               query: Query
               mutation: Mutation
-            }
-
-            \\"\\"\\"Case insensitive String filters\\"\\"\\"
-            input CaseInsensitiveStringScalarFilters {
-              contains: String
-              endsWith: String
-              eq: String
-              gt: String
-              gte: String
-              in: [String!]
-              lt: String
-              lte: String
-              startsWith: String
             }
 
             type Count {
@@ -180,7 +167,6 @@ describe("String Comparators", () => {
 
             \\"\\"\\"String filters\\"\\"\\"
             input StringScalarFilters {
-              caseInsensitive: CaseInsensitiveStringScalarFilters
               contains: String
               endsWith: String
               eq: String
@@ -568,7 +554,7 @@ describe("String Comparators", () => {
                         GT: true,
                         LTE: true,
                         GTE: true,
-                        CASE_INSENSITIVE: true,
+                        // CASE_INSENSITIVE: true,
                     },
                 },
             },
@@ -903,19 +889,6 @@ describe("String Comparators", () => {
               edges: [ActorEdge!]!
               pageInfo: PageInfo!
               totalCount: Int!
-            }
-
-            \\"\\"\\"Case insensitive String filters\\"\\"\\"
-            input CaseInsensitiveStringScalarFilters {
-              contains: String
-              endsWith: String
-              eq: String
-              gt: String
-              gte: String
-              in: [String!]
-              lt: String
-              lte: String
-              startsWith: String
             }
 
             input ConnectionAggregationCountFilterInput {
@@ -1285,7 +1258,6 @@ describe("String Comparators", () => {
 
             \\"\\"\\"String filters\\"\\"\\"
             input StringScalarFilters {
-              caseInsensitive: CaseInsensitiveStringScalarFilters
               contains: String
               endsWith: String
               eq: String
