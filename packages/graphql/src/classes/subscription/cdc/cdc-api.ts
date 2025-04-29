@@ -19,6 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Driver, QueryConfig } from "neo4j-driver";
+import { Neo4jError } from "neo4j-driver";
 import { filterTruthy } from "../../../utils/utils";
 import type { CDCQueryResponse } from "./cdc-types";
 
@@ -41,9 +42,22 @@ export class CDCApi {
         const cursorLiteral = new Cypher.Literal(this.cursor);
         const queryProcedure = CDCProcedures.query(cursorLiteral);
 
-        const events = await this.runProcedure<CDCQueryResponse>(queryProcedure);
-        this.updateChangeIdWithLastEvent(events);
-        return events;
+        try {
+            const events = await this.runProcedure<CDCQueryResponse>(queryProcedure);
+            this.updateChangeIdWithLastEvent(events);
+            return events;
+        } catch (err) {
+            if (err instanceof Neo4jError) {
+                // Cursor is stale, needs to be reset
+                // Events between this error and the next poll will be lost
+                if (err.gqlStatus === "52N29") {
+                    console.warn(err);
+                    this.cursor = ""; // Resets cursor
+                    return [];
+                }
+            }
+            throw err;
+        }
     }
 
     public async updateCursor(): Promise<void> {
