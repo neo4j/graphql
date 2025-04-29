@@ -384,7 +384,7 @@ export interface Neo4jStringFiltersSettings {
     LT?: boolean;
     LTE?: boolean;
     MATCHES?: boolean;
-    CASE_INSENSITIVE?: boolean;
+    // CASE_INSENSITIVE?: boolean;
 }
 
 export interface Neo4jIDFiltersSettings {
