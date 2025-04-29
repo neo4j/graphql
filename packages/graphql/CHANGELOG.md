@@ -1,5 +1,39 @@
 # @neo4j/graphql
 
+## 7.1.0
+
+### Minor Changes
+
+- [#6199](https://github.com/neo4j/graphql/pull/6199) [`4404026`](https://github.com/neo4j/graphql/commit/4404026b88929cefbd92aef5fc05e333e11469d1) Thanks [@angrykoala](https://github.com/angrykoala)! - Add support for `@cypher` directive of fields targeting types that do not use the `@node` directive. For example:
+
+    ```graphql
+    type Movie @node {
+        title: String
+        id: String!
+        link: Link!
+            @cypher(
+                statement: """
+                MATCH(l:${Link})
+                WHERE l.movieId=this.id
+                RETURN l {.name, .url} as link
+                """
+                columnName: "link"
+            )
+    }
+
+    type Link {
+        movieId: String!
+        url: String!
+        name: String!
+    }
+    ```
+
+### Patch Changes
+
+- [#6223](https://github.com/neo4j/graphql/pull/6223) [`de2dcea`](https://github.com/neo4j/graphql/commit/de2dceaae81d736c21b76a24f8e25b592edfb802) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix bug with `@populatedBy`. Callback wouldn't be triggered by nested create operations for relationship fields.
+
+- [#6236](https://github.com/neo4j/graphql/pull/6236) [`1866286`](https://github.com/neo4j/graphql/commit/18662864afb0fb1e7858f02896e47a46c49447dc) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix bug with some filters not properly working on subscriptions.
+
 ## 7.0.0
 
 ### Major Changes
