@@ -98,7 +98,7 @@ export class TTYFormatter {
             }
             return undefined;
         }
-        return TTYColors.purpleBackground;
+        return TTYColors.magentaBackground;
     }
 
     private formatFileName(
