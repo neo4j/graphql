@@ -36,6 +36,7 @@ export class TestHelper {
     private neo4jGraphQL: Neo4jGraphQL | undefined;
     private uniqueTypes: UniqueType[] = [];
     private driver: neo4j.Driver | undefined;
+    private graphQLDriver: neo4j.Driver | undefined;
 
     private lock: boolean = false; // Lock to avoid race condition between initNeo4jGraphQL
 
@@ -74,8 +75,16 @@ export class TestHelper {
             throw new Error("Error in getSubscriptionEngine. CDC is not enabled in test database");
         }
 
+        let driver: neo4j.Driver | undefined;
+
+        try {
+            driver = await this.getGraphQLDriver();
+        } catch {
+            driver = await this.getDriver();
+        }
+
         this.subscriptionEngine = new Neo4jGraphQLSubscriptionsCDCEngine({
-            driver: await this.getDriver(),
+            driver,
             pollTime: 100,
             queryConfig: {
                 database: this.database,
@@ -91,7 +100,15 @@ export class TestHelper {
             throw new Error("Neo4jGraphQL already initialized. Did you forget calling .close()?");
         }
         this.lock = true;
-        const driver = await this.getDriver();
+
+        let driver: neo4j.Driver | undefined;
+
+        try {
+            driver = await this.getGraphQLDriver();
+        } catch {
+            driver = await this.getDriver();
+        }
+
         this.neo4jGraphQL = new Neo4jGraphQL({
             ...options,
             driver,
@@ -164,7 +181,7 @@ export class TestHelper {
     }
 
     public async close(preClose?: () => Promise<void>): Promise<void> {
-        if (!this.driver) {
+        if (!this.driver && !this.graphQLDriver) {
             this.reset();
             throw new Error("Closing unopened testHelper. Did you forget to call initNeo4jGraphQL?");
         }
@@ -184,7 +201,14 @@ export class TestHelper {
 
     /** Use this if using graphql() directly. If possible, use .runGraphQL */
     public async getContextValue(options?: Record<string, unknown>): Promise<Neo4jGraphQLContext> {
-        const driver = await this.getDriver();
+        let driver: neo4j.Driver | undefined;
+
+        try {
+            driver = await this.getGraphQLDriver();
+        } catch {
+            driver = await this.getDriver();
+        }
+
         return {
             executionContext: driver,
             sessionConfig: { database: this.database },
@@ -197,10 +221,6 @@ export class TestHelper {
             return this.driver;
         }
         const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
-
-        // if (process.env.NEO_WAIT) {
-        //     await util.promisify(setTimeout)(Number(process.env.NEO_WAIT));
-        // }
 
         const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
         const driver = neo4j.driver(NEO_URL, auth);
@@ -216,11 +236,37 @@ export class TestHelper {
         return this.driver;
     }
 
+    public async getGraphQLDriver(): Promise<neo4j.Driver> {
+        if (this.graphQLDriver) {
+            return this.graphQLDriver;
+        }
+        const { NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
+
+        const auth = neo4j.auth.basic("neo4jgraphqlinttestuser", NEO_PASSWORD);
+        const driver = neo4j.driver(NEO_URL, auth);
+        try {
+            this._database = await this.checkConnectivity(driver);
+        } catch (error: any) {
+            await driver.close();
+            throw new Error(`Could not connect to neo4j @ ${NEO_URL}, Error: ${error.message}`);
+        }
+
+        this.graphQLDriver = driver;
+
+        return this.graphQLDriver;
+    }
+
     /** Use only for tests needing a session, for normal tests use `.runGraphQL` instead.
      * Note that sessions will **not** be cleaned up with `testHelper.close`
      * */
     public async getSession(options?: Record<string, unknown>): Promise<neo4j.Session> {
-        const driver = await this.getDriver();
+        let driver: neo4j.Driver | undefined;
+
+        try {
+            driver = await this.getGraphQLDriver();
+        } catch {
+            driver = await this.getDriver();
+        }
 
         const appliedOptions = { ...options, database: this.database };
         return driver.session(appliedOptions);
@@ -274,6 +320,7 @@ export class TestHelper {
 
     private reset() {
         this.driver = undefined;
+        this.graphQLDriver = undefined;
         this.uniqueTypes = [];
         this.neo4jGraphQL = undefined;
         this.lock = false;

@@ -3,9 +3,18 @@ const neo4j = require("neo4j-driver");
 
 const TZ = "Etc/UTC";
 const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
+const INT_TEST_ROLE_NAME = "neo4jgraphqlinttestrole";
+const INT_TEST_USER_NAME = "neo4jgraphqlinttestuser";
 
 const cypherDropData = `MATCH (n) DETACH DELETE n`;
 const cypherDropIndexes = `CALL apoc.schema.assert({},{},true) YIELD label, key RETURN *`;
+
+const cypherCreateUser = `CREATE USER ${INT_TEST_USER_NAME} IF NOT EXISTS SET PASSWORD 'password' CHANGE NOT REQUIRED`;
+const cypherCreateRole = `CREATE ROLE ${INT_TEST_ROLE_NAME} IF NOT EXISTS`;
+const cypherGrantRole = `GRANT ROLE ${INT_TEST_ROLE_NAME} TO ${INT_TEST_USER_NAME}`;
+
+const cypherDropUser = `DROP USER ${INT_TEST_USER_NAME}`;
+const cypherDropRole = `DROP ROLE ${INT_TEST_ROLE_NAME}`;
 
 module.exports = async function globalSetup() {
     process.env.NODE_ENV = "test";
@@ -32,11 +41,11 @@ module.exports = async function globalSetup() {
         await session.run(cypherCreateDb);
     } catch (error) {
         if (
-            error.message.includes(
-                "This is an administration command and it should be executed against the system database"
-            ) ||
+            error.message.includes("This is an administration command and it should be executed against the system database") ||
             error.message.includes("Unsupported administration command") ||
-            error.message.includes("Unable to route write operation to leader for database 'system'")
+            error.message.includes("Unable to route write operation to leader for database 'system'") ||
+            error.message.includes("CREATE DATABASE is not supported") ||
+            error.message.includes("DROP DATABASE is not supported")
         ) {
             console.log(
                 `\nJest /packages/graphql setup: Will NOT create a separate integration test database as the command is not supported in the current environment.`
@@ -49,6 +58,49 @@ module.exports = async function globalSetup() {
         }
     } finally {
         if (session) await session.close();
+    }
+
+    // Some tests use different DBs, so using "*" for now
+    const dbName = "*"
+
+    const cypherGrants = [
+        `GRANT ACCESS ON DATABASE * TO ${INT_TEST_ROLE_NAME}`,
+        `GRANT SHOW CONSTRAINT ON DATABASE ${dbName} TO ${INT_TEST_ROLE_NAME}`,
+        `GRANT SHOW INDEX ON DATABASE ${dbName} TO ${INT_TEST_ROLE_NAME}`,
+        `GRANT MATCH {*} ON GRAPH ${dbName} TO ${INT_TEST_ROLE_NAME}`,
+        `GRANT EXECUTE PROCEDURE * ON DBMS TO ${INT_TEST_ROLE_NAME}`,
+        `GRANT EXECUTE FUNCTION * ON DBMS TO ${INT_TEST_ROLE_NAME}`,
+        `GRANT WRITE ON GRAPH ${dbName} TO ${INT_TEST_ROLE_NAME}`,
+        `GRANT NAME MANAGEMENT ON DATABASE ${dbName} TO ${INT_TEST_ROLE_NAME}`,
+    ]
+
+    try {
+        session = driver.session();
+
+        await dropUserAndRole(session);
+        await createUserAndRole(session);
+
+        for (const cypherGrant of cypherGrants) {
+            await session.run(cypherGrant);
+        }
+    } catch (error) {
+        if (
+            error.message.includes("Permission has not been granted for CREATE USER")
+        ) {
+            console.log(
+                `\nJest /packages/graphql setup: Will NOT create a separate integration test user as the command is not supported in the current environment.`
+            );
+        }
+
+        if (
+            error.message.includes("Permission has not been granted for CREATE ROLE")
+        ) {
+            console.log(
+                `\nJest /packages/graphql setup: Will NOT create a separate integration test role as the command is not supported in the current environment.`
+            );
+        }
+    } finally {
+        if (session) await session.close();
         if (driver) await driver.close();
     }
 };
@@ -56,4 +108,15 @@ module.exports = async function globalSetup() {
 async function dropDataAndIndexes(session) {
     await session.run(cypherDropData);
     await session.run(cypherDropIndexes);
+}
+
+async function dropUserAndRole(session) {
+    await session.run(cypherDropUser);
+    await session.run(cypherDropRole);
+}
+
+async function createUserAndRole(session) {
+    await session.run(cypherCreateUser);
+    await session.run(cypherCreateRole);
+    await session.run(cypherGrantRole);
 }
