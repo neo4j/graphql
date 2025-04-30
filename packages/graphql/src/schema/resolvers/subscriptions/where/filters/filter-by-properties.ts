@@ -68,14 +68,40 @@ export function filterByProperties<T>({
                 }
             } else {
                 for (const [op, value] of Object.entries(v as Record<string, any>)) {
-                    const checkFilterPasses = getFilteringFn(op, operatorMapOverrides);
-                    if (!checkFilterPasses(receivedValue, value, fieldMeta)) {
-                        return false;
+                    if (op === "caseInsensitive") {
+                        if (!checkCaseInsensitiveFilters(value, receivedValue, fieldMeta)) {
+                            return false;
+                        }
+                    } else {
+                        const checkFilterPasses = getFilteringFn(op, operatorMapOverrides);
+                        if (!checkFilterPasses(receivedValue, value, fieldMeta)) {
+                            return false;
+                        }
                     }
                 }
             }
         }
     }
+    return true;
+}
+
+function checkCaseInsensitiveFilters(
+    v: Record<string, any>,
+    receivedValue: any,
+    fieldMeta?: AttributeAdapter
+): boolean {
+    for (const [op, value] of Object.entries(v)) {
+        const checkFilterPasses = getFilteringFn(op, operatorMapOverrides);
+        if (op === "in") {
+            return value.some((v) => v.toLowerCase() === receivedValue.toLowerCase());
+        }
+        if (typeof receivedValue !== "string" || typeof value !== "string") {
+            return false;
+        } else if (!checkFilterPasses(receivedValue.toLowerCase(), value.toLowerCase(), fieldMeta)) {
+            return false;
+        }
+    }
+
     return true;
 }
 
