@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.1.1
+
+### Patch Changes
+
+- [#6243](https://github.com/neo4j/graphql/pull/6243) [`8d4c5c6`](https://github.com/neo4j/graphql/commit/8d4c5c6d32cb4741dd5480c3122eaec409c6b47c) Thanks [@angrykoala](https://github.com/angrykoala)! - Handles Neo4j error "52N29" on CDC polling by refreshing the cursor. This error could be triggered in some cases by an outdated cursor.
+
 ## 7.1.0
 
 ### Minor Changes
