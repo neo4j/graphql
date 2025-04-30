@@ -89,15 +89,16 @@ export class TTYFormatter {
     private getOldResultComparisonColor(
         tableResult: Performance.ProfileResult & { "time (ms)": number },
         oldResult: Performance.TestDisplayData | undefined
-    ): TTYColors {
+    ): TTYColors | undefined {
         if (oldResult && oldResult.error === undefined) {
             if (this.lessThan(tableResult.dbHits, oldResult.result.dbHits, 0.1)) {
                 return TTYColors.green;
             } else if (this.moreThan(tableResult.dbHits, oldResult.result.dbHits, 0.1)) {
                 return TTYColors.red;
             }
+            return undefined;
         }
-        return TTYColors.magenta;
+        return TTYColors.magentaBackground;
     }
 
     private formatFileName(

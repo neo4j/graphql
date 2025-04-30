@@ -3,8 +3,7 @@ mutation NestedUpdate {
         where: { title_STARTS_WITH: "Sharknado" }
         update: {
             actors: {
-                where: { node: { name_STARTS_WITH: "Sharknado" } }
-                update: { node: { name: { set: "Updated name" } } }
+                update: { where: { node: { name_STARTS_WITH: "Sharknado" } }, node: { name: { set: "Updated name" } } }
             }
         }
     ) {
