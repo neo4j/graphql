@@ -82,7 +82,7 @@ export async function collectCypherTests(rootPath: string): Promise<Array<Perfor
     const testFilesData = await Promise.all(
         files.map(async (filePath) => {
             const fileData = await fs.readFile(filePath, "utf-8");
-            const rawQueries = fileData.split(/^#\s?Test:\s/gim);
+            const rawQueries = fileData.split(/^\/\/\s?Test:\s/gim);
             rawQueries.shift();
             return rawQueries.map((query: string): Performance.TestInfo => {
                 const tokens = query.trim().split("\n");

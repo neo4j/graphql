@@ -1,0 +1,26 @@
+query Fulltext {
+    movieTaglineFulltextQuery(phrase: "the real world") {
+        edges {
+            node {
+                title
+                tagline
+            }
+            score
+        }
+    }
+}
+
+query FulltextWithNestedQuery {
+    movieTaglineFulltextQuery(phrase: "the real world") {
+        edges {
+            node {
+                title
+                tagline
+                actors {
+                    name
+                }
+            }
+            score
+        }
+    }
+}

@@ -1,0 +1,15 @@
+query TopLevelCypherDirective_skip {
+    customCypher {
+        name
+        born
+        movies {
+            title
+        }
+    }
+}
+
+mutation TopLevelMutationDirective {
+    getCustomUser {
+        name
+    }
+}

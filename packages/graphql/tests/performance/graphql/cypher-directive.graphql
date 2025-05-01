@@ -1,15 +1,70 @@
-query TopLevelCypherDirective_skip {
-    customCypher {
-        name
-        born
-        movies {
+query TopLevelSortWithCypher {
+    movies(limit: 5, sort: { oneActorName: DESC }) {
+        title
+        oneActorName
+    }
+}
+
+query TopLevelConnectionSortWithCypher {
+    moviesConnection(first: 5, sort: { oneActorName: DESC }) {
+        edges {
+            node {
+                title
+                oneActorName
+            }
+        }
+    }
+}
+
+query TopLevelSortWithCypherWithNested {
+    movies(limit: 5, sort: { oneActorName: DESC }) {
+        title
+        oneActorName
+        actors {
+            name
+        }
+    }
+}
+
+query TopLevelConnectionSortWithCypherWithNested {
+    moviesConnection(first: 5, sort: { oneActorName: DESC }) {
+        edges {
+            node {
+                title
+                oneActorName
+                actorsConnection {
+                    edges {
+                        node {
+                            name
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+# Expensive Cypher fields not present in sort
+query TopLevelSortWithExpensiveCypher {
+    movies(limit: 5, sort: { oneActorName: DESC }) {
+        title
+        oneActorName
+        otherMoviesWhereActorsActedIn {
             title
         }
     }
 }
 
-mutation TopLevelMutationDirective {
-    getCustomUser {
-        name
+query TopLevelConnectionSortWithExpensiveCypher {
+    moviesConnection(first: 5, sort: { oneActorName: DESC }) {
+        edges {
+            node {
+                title
+                oneActorName
+                otherMoviesWhereActorsActedIn {
+                    title
+                }
+            }
+        }
     }
 }

@@ -1,0 +1,11 @@
+query NestedConnectionWhere {
+    movies(
+        where: {
+            actorsConnection_SOME: {
+                node: { name: { eq: "Hugo Weaving" }, moviesConnection_NONE: { node: { title: { eq: "No" } } } }
+            }
+        }
+    ) {
+        title
+    }
+}

@@ -1,0 +1,5 @@
+query QueryWhere {
+    movies(where: { actors_SOME: { name: { eq: "Keanu Reeves" } } }) {
+        released
+    }
+}

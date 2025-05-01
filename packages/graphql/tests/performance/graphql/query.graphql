@@ -13,18 +13,25 @@ query SimpleQueryWithRelationship {
     }
 }
 
-# https://github.com/neo4j/graphql/issues/187
-query QueryWhere {
-    movies(where: { actors_SOME: { name: { eq: "Keanu Reeves" } } }) {
-        released
-    }
-}
-
 query SimpleQueryWithNestedWhere {
     movies(where: { actors_SOME: { name: { eq: "Keanu Reeves" } } }) {
         title
         actors {
             name
+        }
+    }
+}
+
+query Nested {
+    movies(where: { OR: [{ title: { eq: "The Matrix" } }, { title: { eq: "The Replacements" } }] }) {
+        actors {
+            name
+            movies {
+                title
+                actors {
+                    name
+                }
+            }
         }
     }
 }
@@ -46,20 +53,6 @@ query DeeplyNested_skip {
                             name
                         }
                     }
-                }
-            }
-        }
-    }
-}
-
-query Nested {
-    movies {
-        actors {
-            name
-            movies {
-                title
-                actors {
-                    name
                 }
             }
         }
@@ -115,19 +108,6 @@ query QueryWithNestedIn {
             name
             born
         }
-    }
-}
-
-# From https://github.com/neo4j/graphql/issues/1262
-query NestedConnectionWhere {
-    movies(
-        where: {
-            actorsConnection_SOME: {
-                node: { name: { eq: "Hugo Weaving" }, moviesConnection_NONE: { node: { title: { eq: "No" } } } }
-            }
-        }
-    ) {
-        title
     }
 }
 
@@ -189,40 +169,13 @@ query DeeplyNestedWithRelationshipSingleFilters_skip {
                 actors_SINGLE: {
                     name_CONTAINS: "i"
                     movies_SINGLE: {
-                        NOT: { title: "non-existant" }
-                        actors_SINGLE: { name_CONTAINS: "i", movies_SINGLE: { title: "The Matrix" } }
+                        NOT: { title: { eq: "non-existant" } }
+                        actors_SINGLE: { name_CONTAINS: "i", movies_SINGLE: { title: { eq: "The Matrix" } } }
                     }
                 }
             }
         }
     ) {
         name
-    }
-}
-
-query Fulltext {
-    movieTaglineFulltextQuery(phrase: "the real world") {
-        edges {
-            node {
-                title
-                tagline
-            }
-            score
-        }
-    }
-}
-
-query FulltextWithNestedQuery {
-    movieTaglineFulltextQuery(phrase: "the real world") {
-        edges {
-            node {
-                title
-                tagline
-                actors {
-                    name
-                }
-            }
-            score
-        }
     }
 }
