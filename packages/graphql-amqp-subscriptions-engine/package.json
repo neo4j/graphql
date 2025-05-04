@@ -53,7 +53,7 @@
         "ws": "8.18.2"
     },
     "dependencies": {
-        "amqplib": "0.10.7",
+        "amqplib": "0.10.8",
         "body-parser": "^2.0.0",
         "cors": "^2.8.5"
     },
