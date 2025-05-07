@@ -3059,7 +3059,7 @@ __metadata:
     "@types/cors": "npm:2.8.17"
     "@types/debug": "npm:4.1.12"
     "@types/jest": "npm:29.5.14"
-    "@types/node": "npm:20.17.43"
+    "@types/node": "npm:20.17.44"
     amqplib: "npm:0.10.8"
     body-parser: "npm:^2.0.0"
     camelcase: "npm:6.3.0"
@@ -3088,7 +3088,7 @@ __metadata:
     "@graphql-tools/merge": "npm:^9.0.0"
     "@neo4j/graphql": "npm:^5.12.1"
     "@types/jest": "npm:29.5.14"
-    "@types/node": "npm:20.17.43"
+    "@types/node": "npm:20.17.44"
     camelcase: "npm:6.3.0"
     jest: "npm:29.7.0"
     jsonwebtoken: "npm:9.0.2"
@@ -3126,7 +3126,7 @@ __metadata:
     "@types/is-uuid": "npm:1.0.2"
     "@types/jest": "npm:29.5.14"
     "@types/jsonwebtoken": "npm:9.0.9"
-    "@types/node": "npm:20.17.43"
+    "@types/node": "npm:20.17.44"
     "@types/pluralize": "npm:0.0.33"
     "@types/randomstring": "npm:1.3.0"
     "@types/semver": "npm:7.7.0"
@@ -3173,7 +3173,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": "npm:^5.11.2"
     "@types/jest": "npm:29.5.14"
-    "@types/node": "npm:20.17.43"
+    "@types/node": "npm:20.17.44"
     "@types/pluralize": "npm:0.0.33"
     camelcase: "npm:^6.3.0"
     debug: "npm:^4.3.4"
@@ -4953,12 +4953,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:20.17.43":
-  version: 20.17.43
-  resolution: "@types/node@npm:20.17.43"
+"@types/node@npm:20.17.44":
+  version: 20.17.44
+  resolution: "@types/node@npm:20.17.44"
   dependencies:
     undici-types: "npm:~6.19.2"
-  checksum: 10c0/359ccd811aab90a1e09280fcfad54c8ee27e1a6968b25cf1dcfd6af4a7789e9aa69d6ca446c5afa18e145e0c3c43624422ccfe497267d1475d0c2c9f278f3c9f
+  checksum: 10c0/67a909119ba66309e125e6be3acdf00abbd4b73ab95b6deeb8b5f6f7b058a4aae1eaee6205167ebeb70317a45d04beadb3347aa93411b49946522ac5208dd723
   languageName: node
   linkType: hard
 
@@ -9860,14 +9860,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-config-prettier@npm:10.1.2":
-  version: 10.1.2
-  resolution: "eslint-config-prettier@npm:10.1.2"
+"eslint-config-prettier@npm:10.1.3":
+  version: 10.1.3
+  resolution: "eslint-config-prettier@npm:10.1.3"
   peerDependencies:
     eslint: ">=7.0.0"
   bin:
     eslint-config-prettier: bin/cli.js
-  checksum: 10c0/c22c8e29193cc8fd70becf1c2dd072513f2b3004a175c2a49404c79d1745ba4dc0edc2afd00d16b0e26d24f95813a0469e7445a25104aec218f6d84cdb1697e9
+  checksum: 10c0/8e0b1fea63cb606afe5fe1c01b38eacd8764cc257cbe9af6ee3c8b4b9532432a7bf720eda1434f6e16e31be37ed9e279c3efcf1f3853b608bb67068e73dcd534
   languageName: node
   linkType: hard
 
@@ -15577,7 +15577,7 @@ __metadata:
     concurrently: "npm:9.1.2"
     dotenv: "npm:16.5.0"
     eslint: "npm:8.57.1"
-    eslint-config-prettier: "npm:10.1.2"
+    eslint-config-prettier: "npm:10.1.3"
     eslint-formatter-summary: "npm:2.0.2"
     eslint-import-resolver-typescript: "npm:4.3.4"
     eslint-plugin-eslint-comments: "npm:3.2.0"
