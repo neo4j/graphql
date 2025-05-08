@@ -74,6 +74,7 @@ The new GraphQL API in Aura enables developers to:
 * Leverage declarative data fetching while maintaining the power of graph relationships
 
 ### Availability
+
 GraphQL for Neo4j AuraDB is available now for:
 
 * AuraDB Professional Trials
