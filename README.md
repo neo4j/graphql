@@ -67,6 +67,7 @@ Neo4j is pleased to announce the release of [GraphQL API for Neo4j AuraDB](https
 ### What This Means for Developers
 
 The new GraphQL API in Aura enables developers to:
+
 * Create precisely tailored queries that return only needed data
 * Reduce over-fetching and under-fetching of data
 * Build more responsive applications with fewer round trips
@@ -74,6 +75,7 @@ The new GraphQL API in Aura enables developers to:
 
 ### Availability
 GraphQL for Neo4j AuraDB is available now for:
+
 * AuraDB Professional Trials
 * AuraDB Professional
 * AuraDB Business Critical
