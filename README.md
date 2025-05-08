@@ -59,3 +59,25 @@ GraphQL content.
 ## Learn with GraphAcademy
 
 Learn the fundamentals of GraphQL and how to use the Neo4j GraphQL Toolbox and the Neo4j GraphQL Library to create Neo4j-backed GraphQL APIs with the [Introduction to Neo4j & GraphQL on GraphAcademy](https://graphacademy.neo4j.com/courses/graphql-basics/?ref=graphql).
+
+## Announcing GraphQL for Neo4j AuraDBs 🚀
+
+Neo4j is pleased to announce the release of [GraphQL API for Neo4j AuraDB](https://neo4j.com/docs/graphql/current/aura-graphql/), seamlessly combining the world’s leading graph database with GraphQL’s flexible data access capabilities.
+
+### What This Means for Developers
+
+The new GraphQL API in Aura enables developers to:
+* Create precisely tailored queries that return only needed data
+* Reduce over-fetching and under-fetching of data
+* Build more responsive applications with fewer round trips
+* Leverage declarative data fetching while maintaining the power of graph relationships
+
+### Availability
+GraphQL for Neo4j AuraDB is available now for:
+* AuraDB Professional Trials
+* AuraDB Professional
+* AuraDB Business Critical
+
+Support for AuraDB Virtual Dedicated Cloud is coming soon.
+
+Experience how GraphQL and Neo4j together create a powerful solution for building modern, data-driven applications with unprecedented flexibility and performance.
