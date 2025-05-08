@@ -21,7 +21,8 @@
         "prepare": "husky",
         "changeset-version": "changeset version --since $BRANCH && yarn",
         "release-dev": "yarn build && changeset publish",
-        "release-tagged": "yarn build && changeset publish --tag $BRANCH"
+        "release-lts": "yarn build && changeset publish --tag lts",
+        "release-previous": "yarn build && changeset publish --tag previous"
     },
     "devDependencies": {
         "@tsconfig/node22": "22.0.1",
