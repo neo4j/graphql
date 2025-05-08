@@ -2341,6 +2341,7 @@ __metadata:
     jest: "npm:29.7.0"
     jest-extended: "npm:4.0.2"
     jose: "npm:^5.0.0"
+    jsonwebtoken: "npm:9.0.2"
     jwks-rsa: "npm:3.2.0"
     koa: "npm:3.0.0"
     koa-jwt: "npm:4.0.4"
@@ -10976,7 +10977,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jsonwebtoken@npm:^9.0.0":
+"jsonwebtoken@npm:9.0.2, jsonwebtoken@npm:^9.0.0":
   version: 9.0.2
   resolution: "jsonwebtoken@npm:9.0.2"
   dependencies:
