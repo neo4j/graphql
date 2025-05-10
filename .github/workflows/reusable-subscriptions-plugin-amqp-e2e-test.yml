@@ -26,7 +26,7 @@ jobs:
         ports:
           - 7687:7687
       rabbitmq:
-        image: rabbitmq@sha256:be8bf8383bc311f854ac3f6677820627f563891b9573d1dbb7e35abc7613208e
+        image: rabbitmq@sha256:77004364e1d1ca29d3a840b580e1391d86b09f20609d453a7a41ae8abe8bb38b
         env:
           RABBITMQ_DEFAULT_USER: guest
           RABBITMQ_DEFAULT_PASS: guest
