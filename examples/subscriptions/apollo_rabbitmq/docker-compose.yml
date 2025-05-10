@@ -1,7 +1,7 @@
 version: '3.5'
 services:
     rabbitmq:
-        image: rabbitmq:3.13-management@sha256:d9a32280cc83675baef5750a0a33dd61b3010228cc11d886620e2040979e33b2
+        image: rabbitmq:3.13-management@sha256:9d984edac52ffeea602dd20e28b752394597ad214dcce5f66c1bd45700c8f296
         ports:
             - "5672:5672"
             - "15672:15672"
