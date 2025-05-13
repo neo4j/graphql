@@ -62,6 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/6291", () => {
             }
 
             type ${Carrot.name} {
+                number: String!
                 potato: ${Potato.name}! @relationship(type: "HAS_POTATO", direction: IN)
             }
 
@@ -92,6 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/6291", () => {
         await testHelper.close();
     });
 
+  
     test("should be able to filters pears by non nullable single relationships", async () => {
         const query = /* GraphQL */ `
             query Pears {
