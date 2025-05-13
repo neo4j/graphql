@@ -163,19 +163,7 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             	RETURN c AS this0_publisher_User_unique_ignored
             }
             WITH *
-            CALL {
-                WITH this0_seasons0_node
-                MATCH (this0_seasons0_node)-[:SEASON_OF]->(authorization_0_1_0_0_after_this1:Serie)
-                OPTIONAL MATCH (authorization_0_1_0_0_after_this1)<-[:PUBLISHER]-(authorization_0_1_0_0_after_this2:User)
-                WITH *, count(authorization_0_1_0_0_after_this2) AS authorization_0_1_0_0_after_var3
-                WITH *
-                WHERE (authorization_0_1_0_0_after_var3 <> 0 AND ($jwt.sub IS NOT NULL AND authorization_0_1_0_0_after_this2.id = $jwt.sub))
-                RETURN count(authorization_0_1_0_0_after_this1) = 1 AS authorization_0_1_0_0_after_var0
-            }
-            OPTIONAL MATCH (this0)<-[:PUBLISHER]-(authorization_0_after_this1:User)
-            WITH *, count(authorization_0_after_this1) AS authorization_0_after_var0
-            WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (authorization_0_1_0_0_after_var0 = true AND ($jwt.roles IS NOT NULL AND $authorization_0_1_0_0_after_param2 IN $jwt.roles) AND ($jwt.roles IS NOT NULL AND $authorization_0_1_0_0_after_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((authorization_0_after_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization_0_after_this1.id = $jwt.sub)) AND ($jwt.roles IS NOT NULL AND $authorization_0_after_param2 IN $jwt.roles) AND ($jwt.roles IS NOT NULL AND $authorization_0_after_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (size([(this0_seasons0_node)-[:SEASON_OF]->(authorization_0_1_0_0_after_this1:Serie) WHERE size([(authorization_0_1_0_0_after_this1)<-[:PUBLISHER]-(authorization_0_1_0_0_after_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization_0_1_0_0_after_this0.id = $jwt.sub) | 1]) > 0 | 1]) > 0 AND ($jwt.roles IS NOT NULL AND $authorization_0_1_0_0_after_param2 IN $jwt.roles) AND ($jwt.roles IS NOT NULL AND $authorization_0_1_0_0_after_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (size([(this0)<-[:PUBLISHER]-(authorization_0_after_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization_0_after_this0.id = $jwt.sub) | 1]) > 0 AND ($jwt.roles IS NOT NULL AND $authorization_0_after_param2 IN $jwt.roles) AND ($jwt.roles IS NOT NULL AND $authorization_0_after_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
             CALL {

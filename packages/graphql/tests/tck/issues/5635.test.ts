@@ -85,10 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
                 MERGE (this0_owner_connectOrCreate0:Owner { id: $this0_owner_connectOrCreate_param0 })
                 MERGE (this0)<-[this0_owner_connectOrCreate_this0:OWNS]-(this0_owner_connectOrCreate0)
                 WITH *
-                OPTIONAL MATCH (this0)<-[:OWNS]-(this0_owner_connectOrCreate_this1:Owner)
-                WITH *, count(this0_owner_connectOrCreate_this1) AS this0_owner_connectOrCreate_var2
-                WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (this0_owner_connectOrCreate_var2 <> 0 AND ($jwt.sub IS NOT NULL AND this0_owner_connectOrCreate_this1.id = $jwt.sub))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this0)<-[:OWNS]-(this0_owner_connectOrCreate_this1:Owner) WHERE ($jwt.sub IS NOT NULL AND this0_owner_connectOrCreate_this1.id = $jwt.sub) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN count(*) AS _
             }
             WITH *

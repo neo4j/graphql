@@ -93,34 +93,22 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
             CALL {
                 WITH this
                 MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
-                OPTIONAL MATCH (this1)<-[:CREATOR_OF]-(this2:User)
-                WITH *, count(this2) AS var3
-                CALL {
-                    WITH this1
-                    MATCH (this1)-[:MEMBER_OF]->(this4:Family)
-                    OPTIONAL MATCH (this4)<-[:CREATOR_OF]-(this5:User)
-                    WITH *, count(this5) AS var6
-                    WITH *
-                    WHERE (var6 <> 0 AND ($param0 IS NOT NULL AND $param0 IN this5.roles))
-                    RETURN count(this4) = 1 AS var7
-                }
-                WITH *
-                WHERE ($isAuthenticated = true AND ((var3 <> 0 AND ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid)) AND var7 = true))
-                RETURN count(this1) AS var8
+                WHERE ($isAuthenticated = true AND (size([(this1)<-[:CREATOR_OF]-(this2:User) WHERE ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid) | 1]) > 0 AND size([(this1)-[:MEMBER_OF]->(this4:Family) WHERE size([(this4)<-[:CREATOR_OF]-(this3:User) WHERE ($param2 IS NOT NULL AND $param2 IN this3.roles) | 1]) > 0 | 1]) > 0))
+                RETURN count(this1) AS var5
             }
-            RETURN this { .id, membersAggregate: { count: var8 } } AS this"
+            RETURN this { .id, membersAggregate: { count: var5 } } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"plan:paid\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"michel\\"
-                }
+                },
+                \\"param2\\": \\"plan:paid\\"
             }"
         `);
     });

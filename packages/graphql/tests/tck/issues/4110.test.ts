@@ -68,47 +68,29 @@ describe("https://github.com/neo4j/graphql/issues/4110", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Company)
-            CALL {
-                WITH this
-                MATCH (this)-[:CONNECT_TO]->(this0:InBetween)
-                OPTIONAL MATCH (this0)<-[:CONNECT_TO]-(this1:Company)
-                WITH *, count(this1) AS var2
-                WITH *
-                WHERE (var2 <> 0 AND ($param0 IS NOT NULL AND this1.id = $param0))
-                RETURN count(this0) = 1 AS var3
-            }
             WITH *
-            WHERE ($isAuthenticated = true AND var3 = true)
+            WHERE ($isAuthenticated = true AND single(this1 IN [(this)-[:CONNECT_TO]->(this1:InBetween) WHERE size([(this1)<-[:CONNECT_TO]-(this0:Company) WHERE ($param1 IS NOT NULL AND this0.id = $param1) | 1]) > 0 | 1] WHERE true))
             CALL {
                 WITH this
-                MATCH (this)-[this4:CONNECT_TO]->(this5:InBetween)
+                MATCH (this)-[this2:CONNECT_TO]->(this3:InBetween)
                 CALL {
-                    WITH this5
-                    MATCH (this5)<-[this6:CONNECT_TO]-(this7:Company)
-                    CALL {
-                        WITH this7
-                        MATCH (this7)-[:CONNECT_TO]->(this8:InBetween)
-                        OPTIONAL MATCH (this8)<-[:CONNECT_TO]-(this9:Company)
-                        WITH *, count(this9) AS var10
-                        WITH *
-                        WHERE (var10 <> 0 AND ($param2 IS NOT NULL AND this9.id = $param2))
-                        RETURN count(this8) = 1 AS var11
-                    }
+                    WITH this3
+                    MATCH (this3)<-[this4:CONNECT_TO]-(this5:Company)
                     WITH *
-                    WHERE ($isAuthenticated = true AND var11 = true)
-                    WITH this7 { .id } AS this7
-                    RETURN head(collect(this7)) AS var12
+                    WHERE ($isAuthenticated = true AND single(this7 IN [(this5)-[:CONNECT_TO]->(this7:InBetween) WHERE size([(this7)<-[:CONNECT_TO]-(this6:Company) WHERE ($param2 IS NOT NULL AND this6.id = $param2) | 1]) > 0 | 1] WHERE true))
+                    WITH this5 { .id } AS this5
+                    RETURN head(collect(this5)) AS var8
                 }
-                WITH this5 { company: var12 } AS this5
-                RETURN head(collect(this5)) AS var13
+                WITH this3 { company: var8 } AS this3
+                RETURN head(collect(this3)) AS var9
             }
-            RETURN this { inBetween: var13 } AS this"
+            RETURN this { inBetween: var9 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"example\\",
                 \\"isAuthenticated\\": true,
+                \\"param1\\": \\"example\\",
                 \\"param2\\": \\"example\\"
             }"
         `);
