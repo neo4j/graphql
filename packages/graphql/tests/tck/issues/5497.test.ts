@@ -95,17 +95,7 @@ describe("https://github.com/neo4j/graphql/issues/5497", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)<-[this_disconnect_category0_rel:HAS_FILE]-(this_disconnect_category0:Category)
-            CALL {
-                WITH this_disconnect_category0
-                MATCH (this_disconnect_category0)<-[:HAS_CATEGORY]-(authorization__before_this1:Cabinet)
-                OPTIONAL MATCH (authorization__before_this1)<-[:HAS_CABINET]-(authorization__before_this2:User)
-                WITH *, count(authorization__before_this2) AS authorization__before_var3
-                WITH *
-                WHERE (authorization__before_var3 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this2.id = $jwt.sub))
-                RETURN count(authorization__before_this1) = 1 AS authorization__before_var0
-            }
-            WITH *
-            WHERE NOT (this_disconnect_category0.id = $updateFiles_args_disconnect_category_where_Category_this_disconnect_category0param0) AND ($isAuthenticated = true AND authorization__before_var0 = true)
+            WHERE NOT (this_disconnect_category0.id = $updateFiles_args_disconnect_category_where_Category_this_disconnect_category0param0) AND ($isAuthenticated = true AND size([(this_disconnect_category0)<-[:HAS_CATEGORY]-(authorization__before_this1:Cabinet) WHERE size([(authorization__before_this1)<-[:HAS_CABINET]-(authorization__before_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub) | 1]) > 0 | 1]) > 0)
             CALL {
             	WITH this_disconnect_category0, this_disconnect_category0_rel, this
             	WITH collect(this_disconnect_category0) as this_disconnect_category0, this_disconnect_category0_rel, this
@@ -118,17 +108,7 @@ describe("https://github.com/neo4j/graphql/issues/5497", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_connect_category0_node:Category)
-            CALL {
-                WITH this_connect_category0_node
-                MATCH (this_connect_category0_node)<-[:HAS_CATEGORY]-(authorization__before_this1:Cabinet)
-                OPTIONAL MATCH (authorization__before_this1)<-[:HAS_CABINET]-(authorization__before_this2:User)
-                WITH *, count(authorization__before_this2) AS authorization__before_var3
-                WITH *
-                WHERE (authorization__before_var3 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this2.id = $jwt.sub))
-                RETURN count(authorization__before_this1) = 1 AS authorization__before_var0
-            }
-            WITH *
-            	WHERE this_connect_category0_node.id = $this_connect_category0_node_param0 AND ($isAuthenticated = true AND authorization__before_var0 = true)
+            	WHERE this_connect_category0_node.id = $this_connect_category0_node_param0 AND ($isAuthenticated = true AND size([(this_connect_category0_node)<-[:HAS_CATEGORY]-(authorization__before_this1:Cabinet) WHERE size([(authorization__before_this1)<-[:HAS_CABINET]-(authorization__before_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub) | 1]) > 0 | 1]) > 0)
             	CALL {
             		WITH *
             		WITH collect(this_connect_category0_node) as connectedNodes, collect(this) as parentNodes

@@ -89,17 +89,8 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
                 OPTIONAL MATCH (u:User {id: $jwt.sub}) RETURN u
             }
             WITH u AS this0
-            CALL {
-                WITH this0
-                MATCH (this0)-[:HAS_BLOCKED]->(this1:UserBlockedUser)
-                OPTIONAL MATCH (this1)-[:IS_BLOCKING]->(this2:User)
-                WITH *, count(this2) AS var3
-                WITH *
-                WHERE (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))
-                RETURN count(this1) > 0 AS var4
-            }
             WITH *
-            WHERE ($isAuthenticated = true AND NOT (var4 = true))
+            WHERE ($isAuthenticated = true AND NOT (size([(this0)-[:HAS_BLOCKED]->(this2:UserBlockedUser) WHERE size([(this2)-[:IS_BLOCKING]->(this1:User) WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub) | 1]) > 0 | 1]) > 0))
             WITH this0 { .id } AS this0
             RETURN this0 AS this"
         `);

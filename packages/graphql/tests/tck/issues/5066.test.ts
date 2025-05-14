@@ -125,58 +125,36 @@ describe("https://github.com/neo4j/graphql/issues/5066", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Party)
-            CALL {
-                WITH this
-                MATCH (this)<-[this0:CREATED_PARTY]-(this1:AdminGroup)
-                OPTIONAL MATCH (this1)<-[:CREATED_ADMIN_GROUP]-(this2:User)
-                WITH *, count(this2) AS var3
-                WITH *
-                WHERE (var3 <> 0 AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub))
-                RETURN count(this1) > 0 AS var4
-            }
             WITH *
-            WHERE (($isAuthenticated = true AND single(this5 IN [(this)<-[this6:CREATED_PARTY]-(this5:User) WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub) | 1] WHERE true)) OR ($isAuthenticated = true AND var4 = true))
+            WHERE (($isAuthenticated = true AND single(this0 IN [(this)<-[this1:CREATED_PARTY]-(this0:User) WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) | 1] WHERE true)) OR ($isAuthenticated = true AND single(this3 IN [(this)<-[this4:CREATED_PARTY]-(this3:AdminGroup) WHERE size([(this3)<-[:CREATED_ADMIN_GROUP]-(this2:User) WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub) | 1]) > 0 | 1] WHERE true)))
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)<-[this7:CREATED_PARTY]-(this8:User)
-                    CALL {
-                        WITH this8
-                        MATCH (this8)-[:HAS_BLOCKED]->(this9:UserBlockedUser)
-                        OPTIONAL MATCH (this9)-[:IS_BLOCKING]->(this10:User)
-                        WITH *, count(this10) AS var11
-                        WITH *
-                        WHERE (var11 <> 0 AND ($jwt.sub IS NOT NULL AND this10.id = $jwt.sub))
-                        RETURN count(this9) > 0 AS var12
-                    }
-                    WITH *
-                    WHERE ($isAuthenticated = true AND NOT (var12 = true))
-                    WITH this8 { .username, __resolveType: \\"User\\", __id: id(this8) } AS this8
-                    RETURN this8 AS var13
+                    MATCH (this)<-[this5:CREATED_PARTY]-(this6:User)
+                    WHERE ($isAuthenticated = true AND NOT (size([(this6)-[:HAS_BLOCKED]->(this8:UserBlockedUser) WHERE size([(this8)-[:IS_BLOCKING]->(this7:User) WHERE ($jwt.sub IS NOT NULL AND this7.id = $jwt.sub) | 1]) > 0 | 1]) > 0))
+                    WITH this6 { .username, __resolveType: \\"User\\", __id: id(this6) } AS this6
+                    RETURN this6 AS var9
                     UNION
                     WITH *
-                    MATCH (this)<-[this14:CREATED_PARTY]-(this15:AdminGroup)
-                    OPTIONAL MATCH (this15)<-[:CREATED_ADMIN_GROUP]-(this16:User)
-                    WITH *, count(this16) AS var17
-                    WITH *
-                    WHERE ($isAuthenticated = true AND (var17 <> 0 AND ($jwt.sub IS NOT NULL AND this16.id = $jwt.sub)))
-                    WITH this15 { __resolveType: \\"AdminGroup\\", __id: id(this15) } AS this15
-                    RETURN this15 AS var13
+                    MATCH (this)<-[this10:CREATED_PARTY]-(this11:AdminGroup)
+                    WHERE ($isAuthenticated = true AND size([(this11)<-[:CREATED_ADMIN_GROUP]-(this12:User) WHERE ($jwt.sub IS NOT NULL AND this12.id = $jwt.sub) | 1]) > 0)
+                    WITH this11 { __resolveType: \\"AdminGroup\\", __id: id(this11) } AS this11
+                    RETURN this11 AS var9
                 }
-                WITH var13
-                RETURN head(collect(var13)) AS var13
+                WITH var9
+                RETURN head(collect(var9)) AS var9
             }
-            RETURN this { .id, createdBy: var13 } AS this"
+            RETURN this { .id, createdBy: var9 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"sub\\": \\"1\\"
-                },
-                \\"isAuthenticated\\": true
+                }
             }"
         `);
     });

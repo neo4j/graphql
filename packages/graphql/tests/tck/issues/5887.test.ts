@@ -66,29 +66,24 @@ describe("https://github.com/neo4j/graphql/issues/5887", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Test)
-            OPTIONAL MATCH (this)-[:HAS]->(this0:A)
-            WITH *, count(this0) AS var1
-            OPTIONAL MATCH (this)-[:HAS]->(this2:B)
-            WITH *, count(this2) AS var3
-            WITH *
-            WHERE ((var1 <> 0 AND this0.id = $param0) OR (var3 <> 0 AND this2.id = $param1))
+            WHERE (single(this0 IN [(this)-[:HAS]->(this0:A) WHERE this0.id = $param0 | 1] WHERE true) OR single(this1 IN [(this)-[:HAS]->(this1:B) WHERE this1.id = $param1 | 1] WHERE true))
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this4:HAS]->(this5:A)
-                    WITH this5 { .id, __resolveType: \\"A\\", __id: id(this5) } AS this5
-                    RETURN this5 AS var6
+                    MATCH (this)-[this2:HAS]->(this3:A)
+                    WITH this3 { .id, __resolveType: \\"A\\", __id: id(this3) } AS this3
+                    RETURN this3 AS var4
                     UNION
                     WITH *
-                    MATCH (this)-[this7:HAS]->(this8:B)
-                    WITH this8 { .id, __resolveType: \\"B\\", __id: id(this8) } AS this8
-                    RETURN this8 AS var6
+                    MATCH (this)-[this5:HAS]->(this6:B)
+                    WITH this6 { .id, __resolveType: \\"B\\", __id: id(this6) } AS this6
+                    RETURN this6 AS var4
                 }
-                WITH var6
-                RETURN head(collect(var6)) AS var6
+                WITH var4
+                RETURN head(collect(var4)) AS var4
             }
-            RETURN this { base: var6 } AS this"
+            RETURN this { base: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -114,29 +109,24 @@ describe("https://github.com/neo4j/graphql/issues/5887", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Test)
-            OPTIONAL MATCH (this)-[:HAS]->(this0:A)
-            WITH *, count(this0) AS var1
-            OPTIONAL MATCH (this)-[:HAS]->(this2:B)
-            WITH *, count(this2) AS var3
-            WITH *
-            WHERE ((var1 <> 0 AND this0.id = $param0) OR (var3 <> 0 AND this2.id = $param1))
+            WHERE (single(this0 IN [(this)-[:HAS]->(this0:A) WHERE this0.id = $param0 | 1] WHERE true) OR single(this1 IN [(this)-[:HAS]->(this1:B) WHERE this1.id = $param1 | 1] WHERE true))
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this4:HAS]->(this5:A)
-                    WITH this5 { .id, __resolveType: \\"A\\", __id: id(this5) } AS this5
-                    RETURN this5 AS var6
+                    MATCH (this)-[this2:HAS]->(this3:A)
+                    WITH this3 { .id, __resolveType: \\"A\\", __id: id(this3) } AS this3
+                    RETURN this3 AS var4
                     UNION
                     WITH *
-                    MATCH (this)-[this7:HAS]->(this8:B)
-                    WITH this8 { .id, __resolveType: \\"B\\", __id: id(this8) } AS this8
-                    RETURN this8 AS var6
+                    MATCH (this)-[this5:HAS]->(this6:B)
+                    WITH this6 { .id, __resolveType: \\"B\\", __id: id(this6) } AS this6
+                    RETURN this6 AS var4
                 }
-                WITH var6
-                RETURN head(collect(var6)) AS var6
+                WITH var4
+                RETURN head(collect(var4)) AS var4
             }
-            RETURN this { base: var6 } AS this"
+            RETURN this { base: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -162,29 +152,24 @@ describe("https://github.com/neo4j/graphql/issues/5887", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Test)
-            OPTIONAL MATCH (this)-[:HAS]->(this0:A)
-            WITH *, count(this0) AS var1
-            OPTIONAL MATCH (this)-[:HAS]->(this2:B)
-            WITH *, count(this2) AS var3
-            WITH *
-            WHERE ((var1 <> 0 AND this0.id = $param0) OR (var3 <> 0 AND this2.id = $param1))
+            WHERE (single(this0 IN [(this)-[:HAS]->(this0:A) WHERE this0.id = $param0 | 1] WHERE true) OR single(this1 IN [(this)-[:HAS]->(this1:B) WHERE this1.id = $param1 | 1] WHERE true))
             CALL {
                 WITH this
                 CALL {
                     WITH *
-                    MATCH (this)-[this4:HAS]->(this5:A)
-                    WITH this5 { .id, __resolveType: \\"A\\", __id: id(this5) } AS this5
-                    RETURN this5 AS var6
+                    MATCH (this)-[this2:HAS]->(this3:A)
+                    WITH this3 { .id, __resolveType: \\"A\\", __id: id(this3) } AS this3
+                    RETURN this3 AS var4
                     UNION
                     WITH *
-                    MATCH (this)-[this7:HAS]->(this8:B)
-                    WITH this8 { .id, __resolveType: \\"B\\", __id: id(this8) } AS this8
-                    RETURN this8 AS var6
+                    MATCH (this)-[this5:HAS]->(this6:B)
+                    WITH this6 { .id, __resolveType: \\"B\\", __id: id(this6) } AS this6
+                    RETURN this6 AS var4
                 }
-                WITH var6
-                RETURN head(collect(var6)) AS var6
+                WITH var4
+                RETURN head(collect(var4)) AS var4
             }
-            RETURN this { base: var6 } AS this"
+            RETURN this { base: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

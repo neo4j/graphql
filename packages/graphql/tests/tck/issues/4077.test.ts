@@ -113,33 +113,22 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:PreviewClip)
-            OPTIONAL MATCH (this)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this0:Video)
-            WITH *, count(this0) AS var1
-            CALL {
-                WITH this
-                MATCH (this)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this2:Video)
-                OPTIONAL MATCH (this2)<-[:PUBLISHER]-(this3:User)
-                WITH *, count(this3) AS var4
-                WITH *
-                WHERE (var4 <> 0 AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub))
-                RETURN count(this2) = 1 AS var5
-            }
             WITH *
-            WHERE ((NOT (this.markedAsDone = $param1) AND (var1 <> 0 AND this0.id = $param2)) AND (($isAuthenticated = true AND var5 = true) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles))))
+            WHERE ((NOT (this.markedAsDone = $param0) AND single(this0 IN [(this)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this0:Video) WHERE this0.id = $param1 | 1] WHERE true)) AND (($isAuthenticated = true AND size([(this)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this2:Video) WHERE size([(this2)<-[:PUBLISHER]-(this1:User) WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub) | 1]) > 0 | 1]) > 0) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles))))
             RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": true,
+                \\"param1\\": \\"1234\\",
+                \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"michel\\"
                 },
-                \\"param1\\": true,
-                \\"param2\\": \\"1234\\",
-                \\"isAuthenticated\\": true,
                 \\"param4\\": \\"admin\\"
             }"
         `);
@@ -160,30 +149,17 @@ describe("https://github.com/neo4j/graphql/issues/4077", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Video)
-            OPTIONAL MATCH (this)<-[:PUBLISHER]-(this0:User)
-            WITH *, count(this0) AS var1
             WITH *
-            WHERE (($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)) OR ($param3 IS NOT NULL AND this.processing = $param3))
+            WHERE (($isAuthenticated = true AND size([(this)<-[:PUBLISHER]-(this0:User) WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) | 1]) > 0) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)) OR ($param3 IS NOT NULL AND this.processing = $param3))
             CALL {
                 WITH this
-                MATCH (this)-[this2:VIDEO_HAS_PREVIEW_CLIP]->(this3:PreviewClip)
-                OPTIONAL MATCH (this3)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this4:Video)
-                WITH *, count(this4) AS var5
-                CALL {
-                    WITH this3
-                    MATCH (this3)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this6:Video)
-                    OPTIONAL MATCH (this6)<-[:PUBLISHER]-(this7:User)
-                    WITH *, count(this7) AS var8
-                    WITH *
-                    WHERE (var8 <> 0 AND ($jwt.sub IS NOT NULL AND this7.id = $jwt.sub))
-                    RETURN count(this6) = 1 AS var9
-                }
+                MATCH (this)-[this1:VIDEO_HAS_PREVIEW_CLIP]->(this2:PreviewClip)
                 WITH *
-                WHERE ((NOT (this3.markedAsDone = $param4) AND (var5 <> 0 AND this4.id = $param5)) AND (($isAuthenticated = true AND var9 = true) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles))))
-                WITH this3 { .id } AS this3
-                RETURN collect(this3) AS var10
+                WHERE ((NOT (this2.markedAsDone = $param4) AND single(this3 IN [(this2)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this3:Video) WHERE this3.id = $param5 | 1] WHERE true)) AND (($isAuthenticated = true AND size([(this2)<-[:VIDEO_HAS_PREVIEW_CLIP]-(this5:Video) WHERE size([(this5)<-[:PUBLISHER]-(this4:User) WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub) | 1]) > 0 | 1]) > 0) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles))))
+                WITH this2 { .id } AS this2
+                RETURN collect(this2) AS var6
             }
-            RETURN this { clips: var10 } AS this"
+            RETURN this { clips: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -104,10 +104,8 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-            WITH *, count(this0) AS var1
             WITH *
-            WHERE ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)))
+            WHERE ($isAuthenticated = true AND size([(this)<-[:HAS_CONTENT]-(this0:User) WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) | 1]) > 0)
             RETURN this { .id } AS this"
         `);
 
@@ -138,10 +136,8 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-            WITH *, count(this0) AS var1
             WITH *
-            WHERE (this.content = $param0 AND ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))))
+            WHERE (this.content = $param0 AND ($isAuthenticated = true AND size([(this)<-[:HAS_CONTENT]-(this0:User) WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) | 1]) > 0))
             RETURN this { .id } AS this"
         `);
 
@@ -190,10 +186,7 @@ describe("Cypher Auth Where", () => {
                     UNION
                     WITH *
                     MATCH (this)-[this3:HAS_CONTENT]->(this4:Post)
-                    OPTIONAL MATCH (this4)<-[:HAS_CONTENT]-(this5:User)
-                    WITH *, count(this5) AS var6
-                    WITH *
-                    WHERE ($isAuthenticated = true AND (var6 <> 0 AND ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)))
+                    WHERE ($isAuthenticated = true AND size([(this4)<-[:HAS_CONTENT]-(this5:User) WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub) | 1]) > 0)
                     WITH this4 { .id, __resolveType: \\"Post\\", __id: id(this4) } AS this4
                     RETURN this4 AS var2
                 }
@@ -251,18 +244,15 @@ describe("Cypher Auth Where", () => {
                     UNION
                     WITH this
                     MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
-                    OPTIONAL MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                    WITH *, count(this4) AS var5
-                    WITH *
-                    WHERE ($isAuthenticated = true AND (var5 <> 0 AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)))
+                    WHERE ($isAuthenticated = true AND size([(this3)<-[:HAS_CONTENT]-(this4:User) WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub) | 1]) > 0)
                     WITH { node: { __resolveType: \\"Post\\", __id: id(this3), id: this3.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var6
+                RETURN { edges: edges, totalCount: totalCount } AS var5
             }
-            RETURN this { .id, contentConnection: var6 } AS this"
+            RETURN this { .id, contentConnection: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -314,18 +304,15 @@ describe("Cypher Auth Where", () => {
                     UNION
                     WITH this
                     MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
-                    OPTIONAL MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                    WITH *, count(this4) AS var5
-                    WITH *
-                    WHERE (this3.id = $param3 AND ($isAuthenticated = true AND (var5 <> 0 AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub))))
+                    WHERE (this3.id = $param3 AND ($isAuthenticated = true AND size([(this3)<-[:HAS_CONTENT]-(this4:User) WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub) | 1]) > 0))
                     WITH { node: { __resolveType: \\"Post\\", __id: id(this3), id: this3.id } } AS edge
                     RETURN edge
                 }
                 WITH collect(edge) AS edges
                 WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var6
+                RETURN { edges: edges, totalCount: totalCount } AS var5
             }
-            RETURN this { .id, contentConnection: var6 } AS this"
+            RETURN this { .id, contentConnection: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -359,10 +346,8 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-            WITH *, count(this0) AS var1
             WITH *
-            WHERE ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)))
+            WHERE ($isAuthenticated = true AND size([(this)<-[:HAS_CONTENT]-(this0:User) WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) | 1]) > 0)
             SET this.content = $this_update_content
             WITH *
             CALL {
@@ -372,10 +357,8 @@ describe("Cypher Auth Where", () => {
             	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(update_this0:User)
-            WITH *, count(update_this0) AS update_var1
             WITH *
-            WHERE ($isAuthenticated = true AND (update_var1 <> 0 AND ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)))
+            WHERE ($isAuthenticated = true AND size([(this)<-[:HAS_CONTENT]-(update_this0:User) WHERE ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub) | 1]) > 0)
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -410,10 +393,8 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-            WITH *, count(this0) AS var1
             WITH *
-            WHERE (this.content = $param0 AND ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))))
+            WHERE (this.content = $param0 AND ($isAuthenticated = true AND size([(this)<-[:HAS_CONTENT]-(this0:User) WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) | 1]) > 0))
             SET this.content = $this_update_content
             WITH *
             CALL {
@@ -423,10 +404,8 @@ describe("Cypher Auth Where", () => {
             	WHERE apoc.util.validatePredicate(NOT (c = 1), '@neo4j/graphql/RELATIONSHIP-REQUIREDPost.creator required exactly once', [0])
             	RETURN c AS this_creator_User_unique_ignored
             }
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(update_this0:User)
-            WITH *, count(update_this0) AS update_var1
             WITH *
-            WHERE ($isAuthenticated = true AND (update_var1 <> 0 AND ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)))
+            WHERE ($isAuthenticated = true AND size([(this)<-[:HAS_CONTENT]-(update_this0:User) WHERE ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub) | 1]) > 0)
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -490,9 +469,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
-            	OPTIONAL MATCH (this_content0)<-[:HAS_CONTENT]-(authorization_updatebefore_this1:User)
-            	WITH *, count(authorization_updatebefore_this1) AS authorization_updatebefore_var0
-            	WHERE ($isAuthenticated = true AND (authorization_updatebefore_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization_updatebefore_this1.id = $jwt.sub)))
+            	WHERE ($isAuthenticated = true AND size([(this_content0)<-[:HAS_CONTENT]-(authorization_updatebefore_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization_updatebefore_this0.id = $jwt.sub) | 1]) > 0)
             	SET this_content0.id = $this_update_content0_id
             	WITH this, this_content0
             	CALL {
@@ -540,9 +517,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-            WITH *, count(this0) AS var1
-            WHERE ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)))
+            WHERE ($isAuthenticated = true AND size([(this)<-[:HAS_CONTENT]-(this0:User) WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) | 1]) > 0)
             DETACH DELETE this"
         `);
 
@@ -573,9 +548,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Post)
-            OPTIONAL MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-            WITH *, count(this0) AS var1
-            WHERE (this.content = $param0 AND ($isAuthenticated = true AND (var1 <> 0 AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub))))
+            WHERE (this.content = $param0 AND ($isAuthenticated = true AND size([(this)<-[:HAS_CONTENT]-(this0:User) WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) | 1]) > 0))
             DETACH DELETE this"
         `);
 
@@ -622,14 +595,12 @@ describe("Cypher Auth Where", () => {
             CALL {
                 WITH *
                 OPTIONAL MATCH (this)-[this4:HAS_CONTENT]->(this5:Post)
-                OPTIONAL MATCH (this5)<-[:HAS_CONTENT]-(this6:User)
-                WITH *, count(this6) AS var7
-                WHERE ($isAuthenticated = true AND (var7 <> 0 AND ($jwt.sub IS NOT NULL AND this6.id = $jwt.sub)))
-                WITH this4, collect(DISTINCT this5) AS var8
+                WHERE ($isAuthenticated = true AND size([(this5)<-[:HAS_CONTENT]-(this6:User) WHERE ($jwt.sub IS NOT NULL AND this6.id = $jwt.sub) | 1]) > 0)
+                WITH this4, collect(DISTINCT this5) AS var7
                 CALL {
-                    WITH var8
-                    UNWIND var8 AS var9
-                    DETACH DELETE var9
+                    WITH var7
+                    UNWIND var7 AS var8
+                    DETACH DELETE var8
                 }
             }
             WITH *
@@ -693,10 +664,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_content_connect1_node:Post)
-            OPTIONAL MATCH (this0_content_connect1_node)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            	WHERE ($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub)))
+            	WHERE ($isAuthenticated = true AND size([(this0_content_connect1_node)<-[:HAS_CONTENT]-(authorization__before_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub) | 1]) > 0)
             	CALL {
             		WITH *
             		WITH collect(this0_content_connect1_node) as connectedNodes, collect(this0) as parentNodes
@@ -786,10 +754,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             		WITH this0
             	OPTIONAL MATCH (this0_content_connect1_node:Post)
-            OPTIONAL MATCH (this0_content_connect1_node)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            	WHERE this0_content_connect1_node.id = $this0_content_connect1_node_param0 AND ($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub)))
+            	WHERE this0_content_connect1_node.id = $this0_content_connect1_node_param0 AND ($isAuthenticated = true AND size([(this0_content_connect1_node)<-[:HAS_CONTENT]-(authorization__before_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub) | 1]) > 0)
             	CALL {
             		WITH *
             		WITH collect(this0_content_connect1_node) as connectedNodes, collect(this0) as parentNodes
@@ -878,10 +843,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
-            OPTIONAL MATCH (this_content0_connect0_node)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            	WHERE (($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
+            	WHERE (($isAuthenticated = true AND size([(this_content0_connect0_node)<-[:HAS_CONTENT]-(authorization__before_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub) | 1]) > 0) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             	CALL {
             		WITH *
             		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
@@ -963,10 +925,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             	WITH this
             	OPTIONAL MATCH (this_content0_connect0_node:Post)
-            OPTIONAL MATCH (this_content0_connect0_node)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            	WHERE this_content0_connect0_node.id = $this_content0_connect0_node_param0 AND (($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
+            	WHERE this_content0_connect0_node.id = $this_content0_connect0_node_param0 AND (($isAuthenticated = true AND size([(this_content0_connect0_node)<-[:HAS_CONTENT]-(authorization__before_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub) | 1]) > 0) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             	CALL {
             		WITH *
             		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
@@ -1041,10 +1000,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             		WITH this
             	OPTIONAL MATCH (this_connect_content1_node:Post)
-            OPTIONAL MATCH (this_connect_content1_node)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            	WHERE (($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
+            	WHERE (($isAuthenticated = true AND size([(this_connect_content1_node)<-[:HAS_CONTENT]-(authorization__before_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub) | 1]) > 0) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             	CALL {
             		WITH *
             		WITH collect(this_connect_content1_node) as connectedNodes, collect(this) as parentNodes
@@ -1117,10 +1073,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             		WITH this
             	OPTIONAL MATCH (this_connect_content1_node:Post)
-            OPTIONAL MATCH (this_connect_content1_node)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            	WHERE this_connect_content1_node.id = $this_connect_content1_node_param0 AND (($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
+            	WHERE this_connect_content1_node.id = $this_connect_content1_node_param0 AND (($isAuthenticated = true AND size([(this_connect_content1_node)<-[:HAS_CONTENT]-(authorization__before_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub) | 1]) > 0) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             	CALL {
             		WITH *
             		WITH collect(this_connect_content1_node) as connectedNodes, collect(this) as parentNodes
@@ -1198,10 +1151,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
-            OPTIONAL MATCH (this_content0_disconnect0)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))))
+            WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND size([(this_content0_disconnect0)<-[:HAS_CONTENT]-(authorization__before_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub) | 1]) > 0))
             CALL {
             	WITH this_content0_disconnect0, this_content0_disconnect0_rel, this
             	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel, this
@@ -1273,10 +1223,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             WITH this
             OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
-            OPTIONAL MATCH (this_content0_disconnect0)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            WHERE this_content0_disconnect0.id = $updateUsers_args_update_content0_disconnect0_where_Post_this_content0_disconnect0param0 AND (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))))
+            WHERE this_content0_disconnect0.id = $updateUsers_args_update_content0_disconnect0_where_Post_this_content0_disconnect0param0 AND (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND size([(this_content0_disconnect0)<-[:HAS_CONTENT]-(authorization__before_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub) | 1]) > 0))
             CALL {
             	WITH this_content0_disconnect0, this_content0_disconnect0_rel, this
             	WITH collect(this_content0_disconnect0) as this_content0_disconnect0, this_content0_disconnect0_rel, this
@@ -1361,10 +1308,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
-            OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))))
+            WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND size([(this_disconnect_content0)<-[:HAS_CONTENT]-(authorization__before_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub) | 1]) > 0))
             CALL {
             	WITH this_disconnect_content0, this_disconnect_content0_rel, this
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this
@@ -1438,10 +1382,7 @@ describe("Cypher Auth Where", () => {
             CALL {
             	WITH this
             OPTIONAL MATCH (this)-[this_disconnect_content0_rel:HAS_CONTENT]->(this_disconnect_content0:Post)
-            OPTIONAL MATCH (this_disconnect_content0)<-[:HAS_CONTENT]-(authorization__before_this1:User)
-            WITH *, count(authorization__before_this1) AS authorization__before_var0
-            WITH *
-            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0 AND (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND (authorization__before_var0 <> 0 AND ($jwt.sub IS NOT NULL AND authorization__before_this1.id = $jwt.sub))))
+            WHERE this_disconnect_content0.id = $updateUsers_args_disconnect_content0_where_Post_this_disconnect_content0param0 AND (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND size([(this_disconnect_content0)<-[:HAS_CONTENT]-(authorization__before_this0:User) WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub) | 1]) > 0))
             CALL {
             	WITH this_disconnect_content0, this_disconnect_content0_rel, this
             	WITH collect(this_disconnect_content0) as this_disconnect_content0, this_disconnect_content0_rel, this

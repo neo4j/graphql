@@ -275,47 +275,12 @@ export class RelationshipFilter extends Filter {
         }
     }
 
-    protected shouldCreateOptionalMatch(): boolean {
-        return !this.relationship.isList && !this.relationship.isNullable;
-    }
-
-    public getSelection(queryASTContext: QueryASTContext): Array<Cypher.Match | Cypher.With> {
-        if (this.shouldCreateOptionalMatch() && !this.subqueryPredicate) {
-            const nestedContext = this.getNestedContext(queryASTContext);
-            if (!nestedContext.hasTarget()) {
-                throw new Error("No parent node found!");
-            }
-
-            const pattern = new Cypher.Pattern(nestedContext.source)
-                .related({
-                    type: this.relationship.type,
-                    direction: this.relationship.getCypherDirection(),
-                })
-                .to(nestedContext.target, {
-                    labels: getEntityLabels(this.target, nestedContext.neo4jGraphQLContext),
-                });
-            return [
-                new Cypher.OptionalMatch(pattern).with("*", [Cypher.count(nestedContext.target), this.countVariable]),
-            ];
-        }
-        return [];
-    }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         if (this.subqueryPredicate) {
             return this.subqueryPredicate;
         }
         const nestedContext = this.getNestedContext(queryASTContext);
-
-        if (this.shouldCreateOptionalMatch()) {
-            const predicates = this.targetNodeFilters.map((c) => c.getPredicate(nestedContext));
-            const innerPredicate = Cypher.and(...predicates);
-            if (this.isNot) {
-                return Cypher.and(Cypher.eq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
-            } else {
-                return Cypher.and(Cypher.neq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
-            }
-        }
 
         const pattern = new Cypher.Pattern(nestedContext.source as Cypher.Node)
             .related({
