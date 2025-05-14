@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.12.3
+
+### Patch Changes
+
+-   [#6294](https://github.com/neo4j/graphql/pull/6294) [`8cf40d9`](https://github.com/neo4j/graphql/commit/8cf40d9ee69de3bd3bd6af93ef1176c9039480e7) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fix bug that causes 1:1 non-nullable relationship filters to produce invalid Cypher.
+
 ## 5.12.2
 
 ### Patch Changes
