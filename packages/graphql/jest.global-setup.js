@@ -1,3 +1,4 @@
+
 const setTZ = require("set-tz");
 const neo4j = require("neo4j-driver");
 
@@ -14,7 +15,7 @@ const cypherCreateRole = `CREATE ROLE ${INT_TEST_ROLE_NAME} IF NOT EXISTS`;
 const cypherGrantRole = `GRANT ROLE ${INT_TEST_ROLE_NAME} TO ${INT_TEST_USER_NAME}`;
 
 const cypherDropUser = `DROP USER ${INT_TEST_USER_NAME}`;
-const cypherDropRole = `DROP ROLE ${INT_TEST_ROLE_NAME}`;
+const cypherDropRole = `DROP ROLE ${INT_TEST_ROLE_NAME} IF EXISTS`;
 
 module.exports = async function globalSetup() {
     process.env.NODE_ENV = "test";
@@ -23,7 +24,7 @@ module.exports = async function globalSetup() {
 
     // INFO: The 'global' object can only be accessed in globalSetup and globalTeardown.
     global.INT_TEST_DB_NAME = INT_TEST_DB_NAME;
-
+ 
     const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
     const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
     const driver = neo4j.driver(NEO_URL, auth);
@@ -57,13 +58,15 @@ module.exports = async function globalSetup() {
             await dropDataAndIndexes(session);
         }
     } finally {
-        if (session) await session.close();
+        if (session) { 
+            await session.close();
+        }
     }
 
     // Some tests use different DBs, so using "*" for now
     const dbName = "*"
-
-    const cypherGrants = [
+    // GRANTS READ/WRITE SERVICE ACCOUNT
+    const readWriteGrants = [
         `GRANT ACCESS ON DATABASE * TO ${INT_TEST_ROLE_NAME}`,
         `GRANT SHOW CONSTRAINT ON DATABASE ${dbName} TO ${INT_TEST_ROLE_NAME}`,
         `GRANT SHOW INDEX ON DATABASE ${dbName} TO ${INT_TEST_ROLE_NAME}`,
@@ -72,7 +75,8 @@ module.exports = async function globalSetup() {
         `GRANT EXECUTE FUNCTION * ON DBMS TO ${INT_TEST_ROLE_NAME}`,
         `GRANT WRITE ON GRAPH ${dbName} TO ${INT_TEST_ROLE_NAME}`,
         `GRANT NAME MANAGEMENT ON DATABASE ${dbName} TO ${INT_TEST_ROLE_NAME}`,
-    ]
+    ];
+  
 
     try {
         session = driver.session();
@@ -80,28 +84,23 @@ module.exports = async function globalSetup() {
         await dropUserAndRole(session);
         await createUserAndRole(session);
 
-        for (const cypherGrant of cypherGrants) {
+        for (const cypherGrant of readWriteGrants) {
             await session.run(cypherGrant);
         }
     } catch (error) {
-        if (
-            error.message.includes("Permission has not been granted for CREATE USER")
-        ) {
-            console.log(
-                `\nJest /packages/graphql setup: Will NOT create a separate integration test user as the command is not supported in the current environment.`
-            );
+        if (error.gqlStatus === "42NFF") {
+            console.log(`\nJest /packages/graphql setup: Will NOT create a separate integration test user and role as the command is not supported in the current environment.`);
+        } else {
+            throw error;
         }
-
-        if (
-            error.message.includes("Permission has not been granted for CREATE ROLE")
-        ) {
-            console.log(
-                `\nJest /packages/graphql setup: Will NOT create a separate integration test role as the command is not supported in the current environment.`
-            );
-        }
+        
     } finally {
-        if (session) await session.close();
-        if (driver) await driver.close();
+        if (session) {
+            await session.close();
+        }
+        if (driver) {
+            await driver.close();
+        }
     }
 };
 

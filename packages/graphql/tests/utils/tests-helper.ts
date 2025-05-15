@@ -24,19 +24,21 @@ import * as neo4j from "neo4j-driver";
 import type { Neo4jGraphQLConstructor, Neo4jGraphQLContext } from "../../src";
 import { Neo4jGraphQL, Neo4jGraphQLSubscriptionsCDCEngine } from "../../src";
 import { Neo4jDatabaseInfo } from "../../src/classes";
+import { Neo4jGraphQLSessionConfig } from "../../src/classes/Executor";
 import type { Neo4jEdition } from "../../src/classes/Neo4jDatabaseInfo";
 import { createBearerToken } from "./create-bearer-token";
 import { UniqueType } from "./graphql-types";
 
-const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
+const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase"; 
 const DEFAULT_DB = "neo4j";
+const readWriteUser = "neo4jgraphqlinttestuser";
 
 export class TestHelper {
     private _database: string = DEFAULT_DB;
     private neo4jGraphQL: Neo4jGraphQL | undefined;
     private uniqueTypes: UniqueType[] = [];
     private driver: neo4j.Driver | undefined;
-    private graphQLDriver: neo4j.Driver | undefined;
+    private _useRestrictedUser: boolean = false;
 
     private lock: boolean = false; // Lock to avoid race condition between initNeo4jGraphQL
 
@@ -75,16 +77,8 @@ export class TestHelper {
             throw new Error("Error in getSubscriptionEngine. CDC is not enabled in test database");
         }
 
-        let driver: neo4j.Driver | undefined;
-
-        try {
-            driver = await this.getGraphQLDriver();
-        } catch {
-            driver = await this.getDriver();
-        }
-
         this.subscriptionEngine = new Neo4jGraphQLSubscriptionsCDCEngine({
-            driver,
+            driver: await this.getDriver(),
             pollTime: 100,
             queryConfig: {
                 database: this.database,
@@ -101,13 +95,7 @@ export class TestHelper {
         }
         this.lock = true;
 
-        let driver: neo4j.Driver | undefined;
-
-        try {
-            driver = await this.getGraphQLDriver();
-        } catch {
-            driver = await this.getDriver();
-        }
+        const driver = await this.getDriver();
 
         this.neo4jGraphQL = new Neo4jGraphQL({
             ...options,
@@ -133,7 +121,7 @@ export class TestHelper {
         SHOW DATABASES YIELD name, options
         WHERE name = "${this.database}"
         RETURN coalesce(options.txLogEnrichment = "FULL", false) AS cdcEnabled
-    `);
+        `);
 
         return result.records[0]?.get("cdcEnabled");
     }
@@ -181,7 +169,7 @@ export class TestHelper {
     }
 
     public async close(preClose?: () => Promise<void>): Promise<void> {
-        if (!this.driver && !this.graphQLDriver) {
+        if (!this.driver) {
             this.reset();
             throw new Error("Closing unopened testHelper. Did you forget to call initNeo4jGraphQL?");
         }
@@ -201,17 +189,17 @@ export class TestHelper {
 
     /** Use this if using graphql() directly. If possible, use .runGraphQL */
     public async getContextValue(options?: Record<string, unknown>): Promise<Neo4jGraphQLContext> {
-        let driver: neo4j.Driver | undefined;
+        const driver = await this.getDriver();
 
-        try {
-            driver = await this.getGraphQLDriver();
-        } catch {
-            driver = await this.getDriver();
+        const sessionConfig: Neo4jGraphQLSessionConfig = {
+            database: this.database,
+        };
+        if (this._useRestrictedUser) {
+            sessionConfig.impersonatedUser = readWriteUser;
         }
-
         return {
             executionContext: driver,
-            sessionConfig: { database: this.database },
+            sessionConfig,
             ...(options || {}),
         };
     }
@@ -224,8 +212,10 @@ export class TestHelper {
 
         const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
         const driver = neo4j.driver(NEO_URL, auth);
+
         try {
             this._database = await this.checkConnectivity(driver);
+            this._useRestrictedUser = await this.checkIfUseRestrictedUser(driver);
         } catch (error: any) {
             await driver.close();
             throw new Error(`Could not connect to neo4j @ ${NEO_URL}, Error: ${error.message}`);
@@ -236,38 +226,11 @@ export class TestHelper {
         return this.driver;
     }
 
-    public async getGraphQLDriver(): Promise<neo4j.Driver> {
-        if (this.graphQLDriver) {
-            return this.graphQLDriver;
-        }
-        const { NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
-
-        const auth = neo4j.auth.basic("neo4jgraphqlinttestuser", NEO_PASSWORD);
-        const driver = neo4j.driver(NEO_URL, auth);
-        try {
-            this._database = await this.checkConnectivity(driver);
-        } catch (error: any) {
-            await driver.close();
-            throw new Error(`Could not connect to neo4j @ ${NEO_URL}, Error: ${error.message}`);
-        }
-
-        this.graphQLDriver = driver;
-
-        return this.graphQLDriver;
-    }
-
     /** Use only for tests needing a session, for normal tests use `.runGraphQL` instead.
      * Note that sessions will **not** be cleaned up with `testHelper.close`
      * */
     public async getSession(options?: Record<string, unknown>): Promise<neo4j.Session> {
-        let driver: neo4j.Driver | undefined;
-
-        try {
-            driver = await this.getGraphQLDriver();
-        } catch {
-            driver = await this.getDriver();
-        }
-
+        const driver = await this.getDriver();
         const appliedOptions = { ...options, database: this.database };
         return driver.session(appliedOptions);
     }
@@ -320,7 +283,6 @@ export class TestHelper {
 
     private reset() {
         this.driver = undefined;
-        this.graphQLDriver = undefined;
         this.uniqueTypes = [];
         this.neo4jGraphQL = undefined;
         this.lock = false;
@@ -387,5 +349,23 @@ export class TestHelper {
         const { cypher } = query.build();
 
         await driver.executeQuery(cypher, {}, { database: this.database });
+    }
+
+    /** Check if it is possible to impersonate a restricted user, so that executeGraphQL can be executed with limited grants */
+    private async checkIfUseRestrictedUser(driver: neo4j.Driver): Promise<boolean> {
+        if (!(await driver.supportsUserImpersonation())) {
+            return false;
+        }
+        try {
+            await driver.session({ database: this.database, impersonatedUser: readWriteUser }).run("RETURN 1");
+        } catch (error: any) {
+            // If the user does not exist or we cannot impersonate it, we use the default user
+            if (error.gqlStatus === "42NFF") {
+                return false;
+            }
+            throw error;
+        }
+
+        return true;
     }
 }
