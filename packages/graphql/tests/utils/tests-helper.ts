@@ -153,7 +153,7 @@ export class TestHelper {
             schema,
             ...args,
             source: query,
-            contextValue: await this.getContextValue(args.contextValue as Partial<Neo4jGraphQLContext> | undefined),
+            contextValue: await this.getContextValue(args.contextValue as Partial<Neo4jGraphQLContext> | undefined, true),
         });
     }
 
@@ -188,13 +188,13 @@ export class TestHelper {
     }
 
     /** Use this if using graphql() directly. If possible, use .runGraphQL */
-    public async getContextValue(options?: Record<string, unknown>): Promise<Neo4jGraphQLContext> {
+    public async getContextValue(options?: Record<string, unknown>, useRestrictedUser?: boolean): Promise<Neo4jGraphQLContext> {
         const driver = await this.getDriver();
 
         const sessionConfig: Neo4jGraphQLSessionConfig = {
             database: this.database,
         };
-        if (this._useRestrictedUser) {
+        if (useRestrictedUser && this._useRestrictedUser) {
             sessionConfig.impersonatedUser = readWriteUser;
         }
         return {
