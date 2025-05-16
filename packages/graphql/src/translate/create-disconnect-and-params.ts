@@ -22,6 +22,7 @@ import type { Node, Relationship } from "../classes";
 import type { RelationField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { caseWhere } from "../utils/case-where";
+import { getRelationshipType } from "../utils/get-relationship-type";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
@@ -71,7 +72,8 @@ function createDisconnectAndParams({
         const variableName = `${varName}${index}`;
         const { inStr, outStr } = getRelationshipDirection(relationField);
         const relVarName = `${variableName}_rel`;
-        const relTypeStr = `[${relVarName}:${relationField.type}]`;
+        const fieldType = getRelationshipType(relationField, context.features);
+        const relTypeStr = `[${relVarName}:${fieldType}]`;
         const subquery: string[] = [];
         let params;
         const labels = relatedNode.getLabelString(context);

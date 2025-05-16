@@ -24,6 +24,7 @@ import type { CallbackBucket } from "../classes/CallbackBucket";
 import type { BaseField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { caseWhere } from "../utils/case-where";
+import { getRelationshipType } from "../utils/get-relationship-type";
 import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
 import { checkAuthentication } from "./authorization/check-authentication";
 import {
@@ -101,6 +102,7 @@ export default function createUpdateAndParams({
         const relationField = node.relationFields.find((x) => key === x.fieldName);
 
         if (relationField) {
+            const relationFieldType = getRelationshipType(relationField, context.features);
             const refNodes: Node[] = [];
 
             const relationship = context.relationships.find(
@@ -130,7 +132,7 @@ export default function createUpdateAndParams({
 
                 updates.forEach((update, index) => {
                     const relationshipVariable = `${varName}_${relationField.typeUnescaped.toLowerCase()}${index}_relationship`;
-                    const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
+                    const relTypeStr = `[${relationshipVariable}:${relationFieldType}]`;
                     const variableName = `${varName}_${key}${relationField.union ? `_${refNode.name}` : ""}${index}`;
 
                     if (update.delete) {
@@ -330,7 +332,7 @@ export default function createUpdateAndParams({
 
                                 const validatePredicates: string[] = [];
                                 refNodes.forEach((refNode) => {
-                                    const validateRelationshipExistence = `EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name}))`;
+                                    const validateRelationshipExistence = `EXISTS((${varName})${inStr}[:${relationFieldType}]${outStr}(:${refNode.name}))`;
                                     validatePredicates.push(validateRelationshipExistence);
                                 });
 
@@ -394,7 +396,7 @@ export default function createUpdateAndParams({
                                     `WHERE apoc.util.validatePredicate(${condition},'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
 
                                 const singleCardinalityValidationTemplate = (nodeName) =>
-                                    `EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${nodeName}))`;
+                                    `EXISTS((${varName})${inStr}[:${relationFieldType}]${outStr}(:${nodeName}))`;
 
                                 if (relationField.union && relationField.union.nodes) {
                                     const validateRelationshipExistence = relationField.union.nodes.map(
@@ -455,7 +457,7 @@ export default function createUpdateAndParams({
 
                             const relationVarName = setA ? propertiesName : "";
                             subquery.push(
-                                `MERGE (${parentVar})${inStr}[${relationVarName}:${relationField.type}]${outStr}(${nodeName})`
+                                `MERGE (${parentVar})${inStr}[${relationVarName}:${relationFieldType}]${outStr}(${nodeName})`
                             );
 
                             if (setA) {

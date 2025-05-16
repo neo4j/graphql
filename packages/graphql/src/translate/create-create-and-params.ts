@@ -20,6 +20,7 @@
 import type { Node, Relationship } from "../classes";
 import type { CallbackBucket } from "../classes/CallbackBucket";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { getRelationshipType } from "../utils/get-relationship-type";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { checkAuthentication } from "./authorization/check-authentication";
 import {
@@ -150,8 +151,10 @@ function createCreateAndParams({
 
                         const inStr = relationField.direction === "IN" ? "<-" : "-";
                         const outStr = relationField.direction === "OUT" ? "->" : "-";
+
+                        const fieldType = getRelationshipType(relationField, context.features);
                         const relationVarName = relationField.properties ? propertiesName : "";
-                        const relTypeStr = `[${relationVarName}:${relationField.type}]`;
+                        const relTypeStr = `[${relationVarName}:${fieldType}]`;
                         res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
                         if (relationField.properties) {
