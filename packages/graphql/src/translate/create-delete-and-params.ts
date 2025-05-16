@@ -22,6 +22,7 @@ import type { Node, Relationship } from "../classes";
 import { META_CYPHER_VARIABLE } from "../constants";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { caseWhere } from "../utils/case-where";
+import { getRelationshipType } from "../utils/get-relationship-type";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
 import { createConnectionEventMetaObject } from "./subscriptions/create-connection-event-meta";
@@ -100,7 +101,8 @@ function createDeleteAndParams({
                               relationField.union || relationField.interface ? `_${refNode.name}` : ""
                           }${index}`;
                     const relationshipVariable = `${variableName}_relationship`;
-                    const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
+                    const fieldType = getRelationshipType(relationField, context.features);
+                    const relTypeStr = `[${relationshipVariable}:${fieldType}]`;
                     const nodeToDelete = `${variableName}_to_delete`;
                     const labels = refNode.getLabelString(context);
 
@@ -146,7 +148,7 @@ function createDeleteAndParams({
                                     aggregationWhere = true;
                                 }
                             }
-                        } catch (err) {
+                        } catch (_err) {
                             innerStrs.push(" \n}");
                             return;
                         }

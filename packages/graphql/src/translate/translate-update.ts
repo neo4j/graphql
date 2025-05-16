@@ -27,6 +27,7 @@ import { filterMetaVariable } from "../translate/subscriptions/filter-meta-varia
 import type { GraphQLWhereArg, RelationField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { compileCypher } from "../utils/compile-cypher";
+import { getRelationshipType } from "../utils/get-relationship-type";
 import createConnectAndParams from "./create-connect-and-params";
 import { createConnectOrCreateAndParams } from "./create-connect-or-create-and-params";
 import createCreateAndParams from "./create-create-and-params";
@@ -197,7 +198,7 @@ export default async function translateUpdate({
     if (connectInput) {
         Object.entries(connectInput).forEach((entry) => {
             const relationField = node.relationFields.find((x) => entry[0] === x.fieldName) as RelationField;
-
+            const relationFieldType = getRelationshipType(relationField, context.features);
             const refNodes: Node[] = [];
 
             if (relationField.union) {
@@ -219,7 +220,7 @@ export default async function translateUpdate({
 
                     const validatePredicates: string[] = [];
                     refNodes.forEach((refNode) => {
-                        const validateRelationshipExistence = `EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${refNode.name}))`;
+                        const validateRelationshipExistence = `EXISTS((${varName})${inStr}[:${relationFieldType}]${outStr}(:${refNode.name}))`;
                         validatePredicates.push(validateRelationshipExistence);
                     });
 
@@ -276,7 +277,6 @@ export default async function translateUpdate({
     if (connectOrCreateInput) {
         Object.entries(connectOrCreateInput).forEach(([key, input]) => {
             const relationField = node.relationFields.find((x) => key === x.fieldName) as RelationField;
-
             const refNodes: Node[] = [];
 
             if (relationField.union) {
@@ -312,6 +312,7 @@ export default async function translateUpdate({
     if (createInput) {
         Object.entries(createInput).forEach((entry) => {
             const relationField = node.relationFields.find((x) => entry[0] === x.fieldName) as RelationField;
+            const relationFieldType = getRelationshipType(relationField, context.features);
 
             const refNodes: Node[] = [];
 
@@ -359,7 +360,7 @@ export default async function translateUpdate({
                     const propertiesName = `${baseName}_relationship`;
                     const relationVarName =
                         relationField.properties || context.subscriptionsEnabled ? propertiesName : "";
-                    const relTypeStr = `[${relationVarName}:${relationField.type}]`;
+                    const relTypeStr = `[${relationVarName}:${relationFieldType}]`;
 
                     if (!relationField.typeMeta.array) {
                         createStrs.push("WITH *");
@@ -368,7 +369,7 @@ export default async function translateUpdate({
                             `WHERE apoc.util.validatePredicate(${condition},'Relationship field "%s.%s" cannot have more than one node linked',["${relationField.connectionPrefix}","${relationField.fieldName}"])`;
 
                         const singleCardinalityValidationTemplate = (nodeName) =>
-                            `EXISTS((${varName})${inStr}[:${relationField.type}]${outStr}(:${nodeName}))`;
+                            `EXISTS((${varName})${inStr}[:${relationFieldType}]${outStr}(:${nodeName}))`;
 
                         if (relationField.union && relationField.union.nodes) {
                             const validateRelationshipExistence = relationField.union.nodes.map(
