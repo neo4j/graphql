@@ -14,8 +14,10 @@ const cypherCreateUser = `CREATE USER ${INT_TEST_USER_NAME} IF NOT EXISTS SET PA
 const cypherCreateRole = `CREATE ROLE ${INT_TEST_ROLE_NAME} IF NOT EXISTS`;
 const cypherGrantRole = `GRANT ROLE ${INT_TEST_ROLE_NAME} TO ${INT_TEST_USER_NAME}`;
 
+
 const cypherDropUser = `DROP USER ${INT_TEST_USER_NAME}`;
 const cypherDropRole = `DROP ROLE ${INT_TEST_ROLE_NAME} IF EXISTS`;
+
 
 module.exports = async function globalSetup() {
     process.env.NODE_ENV = "test";
@@ -77,11 +79,21 @@ module.exports = async function globalSetup() {
         `GRANT NAME MANAGEMENT ON DATABASE ${dbName} TO ${INT_TEST_ROLE_NAME}`,
     ];
   
+    try {
+        session = driver.session();
+        await dropUserAndRole(session);
+    } catch (error) {
+        if (error.gqlStatus === "50N42") {
+            console.log(`\nJest /packages/graphql setup: Failure to drop test user/role, this is expected if the user/role does not exist. Error: ${error.message}`);
+        }
+    } finally {
+        if (session) {
+            await session.close();
+        }
+    }
 
     try {
         session = driver.session();
-
-        await dropUserAndRole(session);
         await createUserAndRole(session);
 
         for (const cypherGrant of readWriteGrants) {
@@ -103,6 +115,7 @@ module.exports = async function globalSetup() {
         }
     }
 };
+
 
 async function dropDataAndIndexes(session) {
     await session.run(cypherDropData);
