@@ -20,6 +20,7 @@
 import type { Node } from "../classes";
 import { RELATIONSHIP_REQUIREMENT_PREFIX } from "../constants";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { getRelationshipType } from "../utils/get-relationship-type";
 
 export function createRelationshipValidationString({
     node,
@@ -33,9 +34,11 @@ export function createRelationshipValidationString({
     relationshipFieldNotOverwritable?: string;
 }): string {
     const strs: string[] = [];
-
     node.relationFields.forEach((field) => {
         const isArray = field.typeMeta.array;
+
+        const fieldType = getRelationshipType(field, context.features);
+
         const isUnionOrInterface = Boolean(field.union) || Boolean(field.interface);
         if (isUnionOrInterface) {
             return;
@@ -56,7 +59,7 @@ export function createRelationshipValidationString({
                 subQuery = [
                     `CALL {`,
                     `\tWITH ${varName}`,
-                    `\tMATCH (${varName})${inStr}[${relVarname}:${field.type}]${outStr}(other${toNode.getLabelString(
+                    `\tMATCH (${varName})${inStr}[${relVarname}:${fieldType}]${outStr}(other${toNode.getLabelString(
                         context
                     )})`,
                     `\tWITH count(${relVarname}) as c, other`,
@@ -72,11 +75,10 @@ export function createRelationshipValidationString({
                 predicate = `c <= 1`;
                 errorMsg = `${RELATIONSHIP_REQUIREMENT_PREFIX}${node.name}.${field.fieldName} must be less than or equal to one`;
             }
-
             subQuery = [
                 `CALL {`,
                 `\tWITH ${varName}`,
-                `\tMATCH (${varName})${inStr}[${relVarname}:${field.type}]${outStr}(${toNode.getLabelString(context)})`,
+                `\tMATCH (${varName})${inStr}[${relVarname}:${fieldType}]${outStr}(${toNode.getLabelString(context)})`,
                 `\tWITH count(${relVarname}) as c`,
                 `\tWHERE apoc.util.validatePredicate(NOT (${predicate}), '${errorMsg}', [0])`,
                 `\tRETURN c AS ${relVarname}_ignored`,

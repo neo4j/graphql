@@ -22,6 +22,7 @@ import type { CallbackBucket } from "../classes/CallbackBucket";
 import { Neo4jGraphQLError } from "../classes/Error";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { findConflictingProperties } from "../utils/find-conflicting-properties";
+import { getRelationshipType } from "../utils/get-relationship-type";
 import mapToDbProperty from "../utils/map-to-db-property";
 import { checkAuthentication } from "./authorization/check-authentication";
 import {
@@ -168,7 +169,9 @@ function createCreateAndParams({
                         const outStr = relationField.direction === "OUT" ? "->" : "-";
                         const relationVarName =
                             relationField.properties || context.subscriptionsEnabled ? propertiesName : "";
-                        const relTypeStr = `[${relationVarName}:${relationField.type}]`;
+
+                        const fieldType = getRelationshipType(relationField, context.features);
+                        const relTypeStr = `[${relationVarName}:${fieldType}]`;
                         res.creates.push(`MERGE (${varName})${inStr}${relTypeStr}${outStr}(${nodeName})`);
 
                         if (relationField.properties) {
