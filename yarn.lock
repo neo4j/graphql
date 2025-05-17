@@ -1523,9 +1523,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/batch-execute@npm:^9.0.15":
-  version: 9.0.15
-  resolution: "@graphql-tools/batch-execute@npm:9.0.15"
+"@graphql-tools/batch-execute@npm:^9.0.16":
+  version: 9.0.16
+  resolution: "@graphql-tools/batch-execute@npm:9.0.16"
   dependencies:
     "@graphql-tools/utils": "npm:^10.8.1"
     "@whatwg-node/promise-helpers": "npm:^1.3.0"
@@ -1533,15 +1533,15 @@ __metadata:
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/25a9a56271de326ce229a09c191ceb5792a8909095dd2d342128d58eb18bca462571c02e60e7800f74a421517ca21147de3199d119710b8f1c96b4ff4fcd1c45
+  checksum: 10c0/4fdbe892baccd960d557760c2eb21841d74304a354b6f8386e716ff14cb76585dcbdfd26316c322d82c6bc66b216e2d023cb0c03ea4de9edd8d5799a308aa533
   languageName: node
   linkType: hard
 
-"@graphql-tools/delegate@npm:^10.2.17":
-  version: 10.2.17
-  resolution: "@graphql-tools/delegate@npm:10.2.17"
+"@graphql-tools/delegate@npm:^10.2.18":
+  version: 10.2.18
+  resolution: "@graphql-tools/delegate@npm:10.2.18"
   dependencies:
-    "@graphql-tools/batch-execute": "npm:^9.0.15"
+    "@graphql-tools/batch-execute": "npm:^9.0.16"
     "@graphql-tools/executor": "npm:^1.4.7"
     "@graphql-tools/schema": "npm:^10.0.11"
     "@graphql-tools/utils": "npm:^10.8.1"
@@ -1552,7 +1552,7 @@ __metadata:
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/909489964c337deb821e21b10ed42971d6aff5187a31a6be918041703d89797175382c857f67495001a1a0ccf47c5fe61285dd57b6cedb237ff01fea6950c362
+  checksum: 10c0/fbb052c42cd23ef5696dff159345cb7c4299b3a7f88b59a4b86313f47a04f2c63f7433bfa5c9501d8c74d5a811a4cdfc2f8c85c76c0517a90b992da80cc12cf0
   languageName: node
   linkType: hard
 
@@ -1733,17 +1733,17 @@ __metadata:
   linkType: hard
 
 "@graphql-tools/wrap@npm:^10.0.0":
-  version: 10.0.35
-  resolution: "@graphql-tools/wrap@npm:10.0.35"
+  version: 10.0.36
+  resolution: "@graphql-tools/wrap@npm:10.0.36"
   dependencies:
-    "@graphql-tools/delegate": "npm:^10.2.17"
+    "@graphql-tools/delegate": "npm:^10.2.18"
     "@graphql-tools/schema": "npm:^10.0.11"
     "@graphql-tools/utils": "npm:^10.8.1"
     "@whatwg-node/promise-helpers": "npm:^1.3.0"
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/2b0cace7949102558497928cca8139ceb0fccd86ec510b505f21c9b6cd073ffff7df0bf900e411db717a53d36b0368ea09697490e00f2d3c926e7b74fd90ec25
+  checksum: 10c0/1b6f448101765f67c76a84754f4f3ba61e6803d8242b4cb9ddbb72fd0bb02bee7f0065545b7c90762063f5097145714d9d706a2a3bc4efc8abe3e7395537f229
   languageName: node
   linkType: hard
 
@@ -2353,7 +2353,7 @@ __metadata:
     rimraf: "npm:6.0.1"
     semver: "npm:^7.5.4"
     supertest: "npm:7.1.1"
-    ts-jest: "npm:29.3.3"
+    ts-jest: "npm:29.3.4"
     ts-node: "npm:10.9.2"
     typescript: "npm:5.8.3"
     typescript-memoize: "npm:^1.1.1"
@@ -2376,7 +2376,7 @@ __metadata:
     debug: "npm:^4.3.4"
     jest: "npm:29.7.0"
     pluralize: "npm:^8.0.0"
-    ts-jest: "npm:29.3.3"
+    ts-jest: "npm:29.3.4"
     typescript: "npm:5.8.3"
   peerDependencies:
     neo4j-driver: ^5.8.0
@@ -12629,7 +12629,7 @@ __metadata:
     prettier: "npm:3.5.3"
     prettier-2: "npm:prettier@2.8.8"
     set-tz: "npm:0.2.0"
-    ts-jest: "npm:29.3.3"
+    ts-jest: "npm:29.3.4"
     typescript: "npm:5.8.3"
   languageName: unknown
   linkType: soft
@@ -16229,9 +16229,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:29.3.3":
-  version: 29.3.3
-  resolution: "ts-jest@npm:29.3.3"
+"ts-jest@npm:29.3.4":
+  version: 29.3.4
+  resolution: "ts-jest@npm:29.3.4"
   dependencies:
     bs-logger: "npm:^0.2.6"
     ejs: "npm:^3.1.10"
@@ -16263,7 +16263,7 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: 10c0/16f513a4090734158787e9da04f438ae9313d433c7f14fac802c479a90cc2c47542f810970a699ccb7a595f41529b91ede84d25d80d54a53bac20c1c0c92b211
+  checksum: 10c0/68ed5abbbdb16ff8a9df2ba7ebb8e19ea4fffe87db7e0b59d842d674e7935af8b375b51a69c2cc9215ef22a6325a9f99b80ab97f5c300c30910695000e3bfeee
   languageName: node
   linkType: hard
 
