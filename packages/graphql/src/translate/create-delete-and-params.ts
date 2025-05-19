@@ -21,6 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { caseWhere } from "../utils/case-where";
+import { getRelationshipType } from "../utils/get-relationship-type";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { createAuthorizationBeforeAndParams } from "./authorization/compatibility/create-authorization-before-and-params";
 import { buildClause } from "./utils/build-clause";
@@ -96,7 +97,8 @@ function createDeleteAndParams({
                               relationField.union || relationField.interface ? `_${refNode.name}` : ""
                           }${index}`;
                     const relationshipVariable = `${variableName}_relationship`;
-                    const relTypeStr = `[${relationshipVariable}:${relationField.type}]`;
+                    const fieldType = getRelationshipType(relationField, context.features);
+                    const relTypeStr = `[${relationshipVariable}:${fieldType}]`;
                     const nodeToDelete = `${variableName}_to_delete`;
                     const labels = refNode.getLabelString(context);
 
