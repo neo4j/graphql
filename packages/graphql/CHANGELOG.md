@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.1.2
+
+### Patch Changes
+
+- [#6321](https://github.com/neo4j/graphql/pull/6321) [`c6f3832`](https://github.com/neo4j/graphql/commit/c6f38323cfede60b91e0a122efe48ab0f0013507) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix option "disableRelationshipTypeEscaping" not being applied on some mutations
+
 ## 7.1.1
 
 ### Patch Changes
