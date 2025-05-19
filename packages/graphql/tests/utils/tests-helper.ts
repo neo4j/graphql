@@ -29,7 +29,7 @@ import type { Neo4jEdition } from "../../src/classes/Neo4jDatabaseInfo";
 import { createBearerToken } from "./create-bearer-token";
 import { UniqueType } from "./graphql-types";
 
-const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase"; 
+const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
 const DEFAULT_DB = "neo4j";
 const readWriteUser = "neo4jgraphqlinttestuser";
 
@@ -153,7 +153,10 @@ export class TestHelper {
             schema,
             ...args,
             source: query,
-            contextValue: await this.getContextValue(args.contextValue as Partial<Neo4jGraphQLContext> | undefined, true),
+            contextValue: await this.getContextValue(
+                args.contextValue as Partial<Neo4jGraphQLContext> | undefined,
+                true
+            ),
         });
     }
 
@@ -188,7 +191,10 @@ export class TestHelper {
     }
 
     /** Use this if using graphql() directly. If possible, use .runGraphQL */
-    public async getContextValue(options?: Record<string, unknown>, useRestrictedUser?: boolean): Promise<Neo4jGraphQLContext> {
+    public async getContextValue(
+        options?: Record<string, unknown>,
+        useRestrictedUser?: boolean
+    ): Promise<Neo4jGraphQLContext> {
         const driver = await this.getDriver();
 
         const sessionConfig: Neo4jGraphQLSessionConfig = {
@@ -359,11 +365,7 @@ export class TestHelper {
         try {
             await driver.session({ database: this.database, impersonatedUser: readWriteUser }).run("RETURN 1");
         } catch (error: any) {
-            // If the user does not exist or we cannot impersonate it, we use the default user
-            if (error.gqlStatus === "42NFF") {
-                return false;
-            }
-            throw error;
+            return false;
         }
 
         return true;
