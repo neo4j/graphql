@@ -359,6 +359,7 @@ export class TestHelper {
 
     /** Check if it is possible to impersonate a restricted user, so that executeGraphQL can be executed with limited grants */
     private async checkIfUseRestrictedUser(driver: neo4j.Driver): Promise<boolean> {
+        // Should we do add a warning when we're not using a restricted user?
         if (!(await driver.supportsUserImpersonation())) {
             return false;
         }
