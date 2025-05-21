@@ -261,6 +261,7 @@ describe("cypher directive filtering - relationship auth filter -deprecated", ()
             CREATE (a2)-[:ACTED_IN]->(m2)
             CREATE (a2)-[:ACTED_IN]->(m3)
             CREATE (a3:${Actor} { name: "Jada Pinkett Smith" })
+            CREATE (a3)-[:ACTED_IN]->(m)
             CREATE (a3)-[:ACTED_IN]->(m2)
             CREATE (a3)-[:ACTED_IN]->(m3)
             `,
