@@ -2638,7 +2638,7 @@ __metadata:
     graphql-ws: "npm:5.16.2"
     is-uuid: "npm:1.0.2"
     jest: "npm:29.7.0"
-    jest-extended: "npm:5.0.2"
+    jest-extended: "npm:5.0.3"
     jose: "npm:^5.0.0"
     jwks-rsa: "npm:3.2.0"
     koa: "npm:3.0.0"
@@ -12044,9 +12044,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-extended@npm:5.0.2":
-  version: 5.0.2
-  resolution: "jest-extended@npm:5.0.2"
+"jest-extended@npm:5.0.3":
+  version: 5.0.3
+  resolution: "jest-extended@npm:5.0.3"
   dependencies:
     jest-diff: "npm:^29.0.0"
   peerDependencies:
@@ -12054,7 +12054,7 @@ __metadata:
   peerDependenciesMeta:
     jest:
       optional: true
-  checksum: 10c0/e9ad658568014d9afa2fc6a2a2348341bfd870037385223859c215bd9792d88ba9a7c7434687edfcc9fb27a53905d8f5ffcd0f43a4cb934708ccd589216764ed
+  checksum: 10c0/37b80f90be141e2bb3344346962e435e6b8c5a121d5c6ad89865b07ff9f0810c2f273eb7ea4c00d3fc71a07667fee4da100c2190f180ae3662d023c19e24146a
   languageName: node
   linkType: hard
 
