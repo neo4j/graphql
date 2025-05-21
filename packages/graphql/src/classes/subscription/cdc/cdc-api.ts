@@ -20,6 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Driver, QueryConfig } from "neo4j-driver";
 import { Neo4jError } from "neo4j-driver";
+import { errorHasGQLStatus } from "../../../utils/error-has-gql-status";
 import type { CDCQueryResponse } from "./cdc-types";
 
 export class CDCApi {
@@ -57,7 +58,10 @@ export class CDCApi {
             if (err instanceof Neo4jError) {
                 // Cursor is stale, needs to be reset
                 // Events between this error and the next poll will be lost
-                if (err.gqlStatus === "52N29") {
+                if (
+                    errorHasGQLStatus(err, "52N29") ||
+                    err.code === "Neo.ClientError.ChangeDataCapture.InvalidIdentifier"
+                ) {
                     console.warn(err);
                     this.cursor = ""; // Resets cursor
                     return [];
