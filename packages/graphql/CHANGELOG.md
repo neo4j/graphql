@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.1.3
+
+### Patch Changes
+
+- [#6332](https://github.com/neo4j/graphql/pull/6332) [`b6ebd3a`](https://github.com/neo4j/graphql/commit/b6ebd3a022d536805cff3120068f249b16384dbb) Thanks [@angrykoala](https://github.com/angrykoala)! - Handles more errors for stale CDC cursors on subscriptions
+
 ## 7.1.2
 
 ### Patch Changes
