@@ -170,10 +170,13 @@ export function getWhereFieldsForAttributes({
                 }
             );
             stringWhereOperators.forEach(({ comparator, typeName }) => {
-                result[`${field.name}_${comparator}`] = {
-                    type: typeName,
-                    directives: getAttributeDeprecationDirective(deprecatedDirectives, field, comparator),
-                };
+                const excludedComparators = ["CASE_INSENSITIVE"];
+                if (!excludedComparators.includes(comparator)) {
+                    result[`${field.name}_${comparator}`] = {
+                        type: typeName,
+                        directives: getAttributeDeprecationDirective(deprecatedDirectives, field, comparator),
+                    };
+                }
             });
         }
     }
@@ -189,6 +192,7 @@ function getAttributeDeprecationDirective(
     if (deprecatedDirectives.length) {
         return deprecatedDirectives;
     }
+
     switch (comparator) {
         case "DISTANCE":
         case "LT":

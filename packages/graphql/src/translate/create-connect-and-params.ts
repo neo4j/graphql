@@ -29,6 +29,7 @@ import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-tran
 import { caseWhere } from "../utils/case-where";
 import { compileCypherIfExists } from "../utils/compile-cypher";
 import { getEntityAdapterFromNode } from "../utils/get-entity-adapter-from-node";
+import { getRelationshipType } from "../utils/get-relationship-type";
 import { asArray } from "../utils/utils";
 import { checkAuthentication } from "./authorization/check-authentication";
 import { createAuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
@@ -92,7 +93,9 @@ function createConnectAndParams({
         const relationshipName = getConnectEdgeName(varName, index);
         const inStr = relationField.direction === "IN" ? "<-" : "-";
         const outStr = relationField.direction === "OUT" ? "->" : "-";
-        const relTypeStr = `[${relationField.properties ? relationshipName : ""}:${relationField.type}]`;
+        const relationTypeStr = getRelationshipType(relationField, context.features);
+
+        const relTypeStr = `[${relationField.properties ? relationshipName : ""}:${relationTypeStr}]`;
 
         const subquery: string[] = [];
         const labels = relatedNode.getLabelString(context);

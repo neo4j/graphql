@@ -53,22 +53,6 @@ query AggregationWhereWithinNestedConnections {
     }
 }
 
-query DeeplyNestedCount {
-    people {
-        movies {
-            actors {
-                moviesConnection {
-                    aggregate {
-                        count {
-                            nodes
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
 query InterfacesAggregations {
     movieLikesConnection {
         aggregate {

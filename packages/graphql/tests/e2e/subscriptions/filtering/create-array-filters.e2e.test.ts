@@ -81,7 +81,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
     test("subscription with INCLUDES on String", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { similarTitles_INCLUDES: "movie" }) {
+                ${typeMovie.operations.subscribe.created}(where: { similarTitles: {includes: "movie"} }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         similarTitles
                     }
@@ -106,7 +106,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
     test("subscription with INCLUDES on ID as String", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { similarIds_INCLUDES: "1" }) {
+                ${typeMovie.operations.subscribe.created}(where: { similarIds: {includes: "1"} }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         similarIds
                     }
@@ -131,7 +131,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
     test("subscription with INCLUDES on ID as number", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { similarIds_INCLUDES: 42 }) {
+                ${typeMovie.operations.subscribe.created}(where: { similarIds: {includes: 42} }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         similarIds
                     }
@@ -156,7 +156,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
     test("subscription with INCLUDES on Int", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { allDates_INCLUDES: 2019 }) {
+                ${typeMovie.operations.subscribe.created}(where: { allDates: {includes: 2019} }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         allDates
                     }
@@ -186,7 +186,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
     test("subscription with INCLUDES on Float", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { allRatings_INCLUDES: 5.4 }) {
+                ${typeMovie.operations.subscribe.created}(where: { allRatings: { includes: 5.4 } }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         allRatings
                     }
@@ -211,7 +211,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
     test("subscription with INCLUDES on BigInt", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { allSizes_INCLUDES: "9223372036854775608" }) {
+                ${typeMovie.operations.subscribe.created}(where: { allSizes: {includes: "9223372036854775608"} }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         allSizes
                     }
@@ -243,7 +243,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { similarTitles_INCLUDES: ["movie"] }) {
+                ${typeMovie.operations.subscribe.created}(where: { similarTitles: {includes: ["movie"]} }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         similarTitles
                     }
@@ -264,7 +264,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.created}(where: { isFavorite_INCLUDES: true }) {
+                ${typeMovie.operations.subscribe.created}(where: { isFavorite: {includes: true} }) {
                     ${typeMovie.operations.subscribe.payload.created} {
                         isFavorite
                     }

@@ -1,5 +1,57 @@
 # @neo4j/graphql
 
+## 7.1.3
+
+### Patch Changes
+
+- [#6332](https://github.com/neo4j/graphql/pull/6332) [`b6ebd3a`](https://github.com/neo4j/graphql/commit/b6ebd3a022d536805cff3120068f249b16384dbb) Thanks [@angrykoala](https://github.com/angrykoala)! - Handles more errors for stale CDC cursors on subscriptions
+
+## 7.1.2
+
+### Patch Changes
+
+- [#6321](https://github.com/neo4j/graphql/pull/6321) [`c6f3832`](https://github.com/neo4j/graphql/commit/c6f38323cfede60b91e0a122efe48ab0f0013507) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix option "disableRelationshipTypeEscaping" not being applied on some mutations
+
+## 7.1.1
+
+### Patch Changes
+
+- [#6243](https://github.com/neo4j/graphql/pull/6243) [`8d4c5c6`](https://github.com/neo4j/graphql/commit/8d4c5c6d32cb4741dd5480c3122eaec409c6b47c) Thanks [@angrykoala](https://github.com/angrykoala)! - Handles Neo4j error "52N29" on CDC polling by refreshing the cursor. This error could be triggered in some cases by an outdated cursor.
+
+## 7.1.0
+
+### Minor Changes
+
+- [#6199](https://github.com/neo4j/graphql/pull/6199) [`4404026`](https://github.com/neo4j/graphql/commit/4404026b88929cefbd92aef5fc05e333e11469d1) Thanks [@angrykoala](https://github.com/angrykoala)! - Add support for `@cypher` directive of fields targeting types that do not use the `@node` directive. For example:
+
+    ```graphql
+    type Movie @node {
+        title: String
+        id: String!
+        link: Link!
+            @cypher(
+                statement: """
+                MATCH(l:${Link})
+                WHERE l.movieId=this.id
+                RETURN l {.name, .url} as link
+                """
+                columnName: "link"
+            )
+    }
+
+    type Link {
+        movieId: String!
+        url: String!
+        name: String!
+    }
+    ```
+
+### Patch Changes
+
+- [#6223](https://github.com/neo4j/graphql/pull/6223) [`de2dcea`](https://github.com/neo4j/graphql/commit/de2dceaae81d736c21b76a24f8e25b592edfb802) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix bug with `@populatedBy`. Callback wouldn't be triggered by nested create operations for relationship fields.
+
+- [#6236](https://github.com/neo4j/graphql/pull/6236) [`1866286`](https://github.com/neo4j/graphql/commit/18662864afb0fb1e7858f02896e47a46c49447dc) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix bug with some filters not properly working on subscriptions.
+
 ## 7.0.0
 
 ### Major Changes

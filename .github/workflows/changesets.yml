@@ -5,7 +5,6 @@ on:
     branches:
       - dev
       - lts
-      - "*.*.*"
       - "*.x"
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
@@ -54,12 +53,12 @@ jobs:
 
       - name: Create release PR or release
         id: changesets
-        uses: changesets/action@06245a4e0a36c064a573d4150030f5ec548e4fcc # v1.4.10
+        uses: changesets/action@e0145edc7d9d8679003495b11f87bd8ef63c0cba # v1.5.3
         with:
           title: changesets for branch `${{ github.ref_name }}`
           version: yarn changeset-version
           # Don't use a custom tag if either latest build or prerelease (error under changesets)
-          publish: yarn ${{ (github.ref_name == 'dev' || hashFiles('.changeset/pre.json') != '') && 'release-dev' || 'release-tagged' }}
+          publish: yarn ${{ ((github.ref_name == 'dev' || hashFiles('.changeset/pre.json') != '') && 'release-dev') || (github.ref_name == 'lts' && 'release-lts') || 'release-previous' }}
           setupGitUser: false
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
@@ -81,7 +80,7 @@ jobs:
     steps:
       - name: Send Slack announcement of release
         if: matrix.package.name == '@neo4j/graphql'
-        uses: slackapi/slack-github-action@485a9d42d3a73031f12ec201c457e2162c45d02d # v2.0.0
+        uses: slackapi/slack-github-action@b0fa283ad8fea605de13dc3f449259339835fc52 # v2.1.0
         with:
           payload: |
             version: ${{ matrix.package.version }}

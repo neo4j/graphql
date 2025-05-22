@@ -74,10 +74,10 @@ describe("Delete Subscription", () => {
         await testHelper.close();
     });
 
-    test("subscription with where filter _LT for Int 1 result", async () => {
+    test("subscription with where filter using lt for Int 1 result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_LT: 2000 }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn: {lt: 2000} }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         releasedIn
                     }
@@ -102,10 +102,10 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
-    test("subscription with where filter _LTE for Int multiple result", async () => {
+    test("subscription with where filter using lte for Int multiple result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_LTE: 2000 }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn: { lte: 2000 } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         releasedIn
                     }
@@ -137,10 +137,10 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
-    test("subscription with where filter _GT for Int 1 result", async () => {
+    test("subscription with where filter using gt for Int 1 result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_GT: 2000 }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn: { gt: 2000 } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         releasedIn
                     }
@@ -165,10 +165,11 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
-    test("subscription with where filter _GTE for Int multiple result", async () => {
+
+    test("subscription with where filter using gte for Int multiple result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_GTE: 2000 }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn: { gte: 2000 } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         releasedIn
                     }
@@ -201,10 +202,10 @@ describe("Delete Subscription", () => {
         ]);
     });
 
-    test("subscription with where filter _LT for Float 1 result", async () => {
+    test("subscription with where filter using lt for Float 1 result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { averageRating_LT: 8 }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { averageRating: { lt: 8 } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         averageRating
                     }
@@ -229,10 +230,11 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
-    test("subscription with where filter _LTE for Float multiple result", async () => {
+
+    test("subscription with where filter using lte for Float multiple result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { averageRating_LTE: 7 }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { averageRating: { lte: 7 } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         averageRating
                     }
@@ -264,10 +266,11 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
-    test("subscription with where filter _GT for Float 1 result", async () => {
+
+    test("subscription with where filter using gt for Float 1 result", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { averageRating_GT: 7.9 }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { averageRating: { gt: 7.9 } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         averageRating
                     }
@@ -292,10 +295,11 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
-    test("subscription with where filter _GTE for Float multiple results", async () => {
+
+    test("subscription with where filter using gte for Float multiple results", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { averageRating_GTE: 5 }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { averageRating: { gte: 5 } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         averageRating
                     }
@@ -327,10 +331,11 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
-    test("subscription with where filter _GTE for Float multiple results no decimals", async () => {
+
+    test("subscription with where filter using gte for Float multiple results no decimals", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { averageRating_GTE: 4.2 }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { averageRating: { gte: 4.2 } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         averageRating
                     }
@@ -363,7 +368,7 @@ describe("Delete Subscription", () => {
         ]);
     });
 
-    test("subscription with where filter _LT for BigInt 1 result", async () => {
+    test("subscription with where filter using lt for BigInt 1 result", async () => {
         const bigInts = {
             s: "9223372036854775608",
             m: "9223372036854775708",
@@ -371,7 +376,7 @@ describe("Delete Subscription", () => {
         };
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { fileSize_LT: ${bigInts.m} }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { fileSize: { lt: ${bigInts.m} } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         fileSize
                     }
@@ -396,7 +401,8 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
-    test("subscription with where filter _LTE for BigInt multiple result", async () => {
+
+    test("subscription with where filter using lte for BigInt multiple result", async () => {
         const bigInts = {
             s: "9223372036854775608",
             m: "9223372036854775708",
@@ -404,7 +410,7 @@ describe("Delete Subscription", () => {
         };
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { fileSize_LTE: ${bigInts.m} }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { fileSize: { lte: ${bigInts.m} } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         fileSize
                     }
@@ -436,14 +442,15 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
-    test("subscription with where filter _GT for BigInt 1 result", async () => {
+
+    test("subscription with where filter using gt for BigInt 1 result", async () => {
         const bigInts = {
             m: "9223372036854775708",
             l: "9223372036854775710",
         };
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { fileSize_GT: ${bigInts.m} }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { fileSize: { gt: ${bigInts.m} } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         fileSize
                     }
@@ -468,7 +475,8 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
-    test("subscription with where filter _GTE for BigInt multiple result", async () => {
+
+    test("subscription with where filter using gte for BigInt multiple result", async () => {
         const bigInts = {
             s: "9223372036854775608",
             m: "9223372036854775708",
@@ -476,7 +484,7 @@ describe("Delete Subscription", () => {
         };
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { fileSize_GTE: ${bigInts.m} }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { fileSize: { gte: ${bigInts.m} } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         fileSize
                     }
@@ -509,90 +517,18 @@ describe("Delete Subscription", () => {
         ]);
     });
 
-    test("subscription with where filter _LT for String should error", async () => {
+    test("subscription with where filter using lt for String should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { title_LT: "test" }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { title: { lt: "test" } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         title
                     }
                 }
             }
-        `,
-            onReturnError
-        );
-
-        await createMovie({ title: "movie1" });
-        await createMovie({ title: "movie2" });
-
-        await deleteMovie("title", "movie1");
-        await deleteMovie("title", "movie2");
-
-        expect(onReturnError).toHaveBeenCalled();
-        expect(wsClient.events).toEqual([]);
-    });
-    test("subscription with where filter _LTE for String should error", async () => {
-        const onReturnError = jest.fn();
-        await wsClient.subscribe(
-            `
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { title_LTE: "test" }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
-                    }
-                }
-            }
-        `,
-            onReturnError
-        );
-
-        await createMovie({ title: "movie1" });
-        await createMovie({ title: "movie2" });
-
-        await deleteMovie("title", "movie1");
-        await deleteMovie("title", "movie2");
-
-        expect(onReturnError).toHaveBeenCalled();
-        expect(wsClient.events).toEqual([]);
-    });
-    test("subscription with where filter _GT for String should error", async () => {
-        const onReturnError = jest.fn();
-        await wsClient.subscribe(
-            `
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { title_GT: "abc" }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
-                    }
-                }
-            }
-        `,
-            onReturnError
-        );
-
-        await createMovie({ title: "movie1" });
-        await createMovie({ title: "movie2" });
-
-        await deleteMovie("title", "movie1");
-        await deleteMovie("title", "movie2");
-
-        expect(onReturnError).toHaveBeenCalled();
-        expect(wsClient.events).toEqual([]);
-    });
-    test("subscription with where filter _GTE for String should error", async () => {
-        const onReturnError = jest.fn();
-        await wsClient.subscribe(
-            `
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { title_GTE: "abc" }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
-                    }
-                }
-            }
-        `,
+            `,
             onReturnError
         );
 
@@ -606,18 +542,93 @@ describe("Delete Subscription", () => {
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with where filter _LT for ID as Int should error", async () => {
+    test("subscription with where filter using lte for String should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { id_LT: 50 }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { title: { lte: "test" } }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+            `,
+            onReturnError
+        );
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+
+        expect(onReturnError).toHaveBeenCalled();
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("subscription with where filter using gt for String should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { title: { gt: "abc" } }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+            `,
+            onReturnError
+        );
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+
+        expect(onReturnError).toHaveBeenCalled();
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("subscription with where filter using gte for String should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { title: { gte: "abc" } }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
+                }
+            }
+            `,
+            onReturnError
+        );
+
+        await createMovie({ title: "movie1" });
+        await createMovie({ title: "movie2" });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+
+        expect(onReturnError).toHaveBeenCalled();
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("subscription with where filter using lt for ID as Int should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { id: { lt: 50 } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         id
                     }
                 }
             }
-        `,
+            `,
             onReturnError
         );
 
@@ -630,18 +641,19 @@ describe("Delete Subscription", () => {
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _LTE for ID as Int should error", async () => {
+
+    test("subscription with where filter using lte for ID as Int should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { id_LTE: 50 }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { id: { lte: 50 } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         id
                     }
                 }
             }
-        `,
+            `,
             onReturnError
         );
 
@@ -654,18 +666,19 @@ describe("Delete Subscription", () => {
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _GT for ID as Int should error", async () => {
+
+    test("subscription with where filter using gt for ID as Int should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { id_GT: 2 }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { id: { gt: 2 } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         id
                     }
                 }
             }
-        `,
+            `,
             onReturnError
         );
 
@@ -678,12 +691,13 @@ describe("Delete Subscription", () => {
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _GTE for ID as Int should error", async () => {
+
+    test("subscription with where filter using gte for ID as Int should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { id_GTE: 1 }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { id: { gte: 1 } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         id
                     }
@@ -703,18 +717,43 @@ describe("Delete Subscription", () => {
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with where filter _LT for Boolean should error", async () => {
+    test("subscription with where filter using lt for Boolean should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_LT: true }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite: { lt: true } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         isFavorite
                     }
                 }
             }
-        `,
+            `,
+            onReturnError
+        );
+
+        await createMovie({ isFavorite: false });
+        await createMovie({ isFavorite: false });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+
+        expect(onReturnError).toHaveBeenCalled();
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("subscription with where filter using lte for Boolean should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite: { lte: false } }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        isFavorite
+                    }
+                }
+            }
+            `,
             onReturnError
         );
 
@@ -727,60 +766,13 @@ describe("Delete Subscription", () => {
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter _LTE for Boolean should error", async () => {
+
+    test("subscription with where filter using gt for Boolean should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_LTE: false }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        isFavorite
-                    }
-                }
-            }
-        `,
-            onReturnError
-        );
-
-        await createMovie({ title: "movie1", isFavorite: false });
-        await createMovie({ title: "movie2", isFavorite: false });
-
-        await deleteMovie("title", "movie1");
-        await deleteMovie("title", "movie2");
-
-        expect(onReturnError).toHaveBeenCalled();
-        expect(wsClient.events).toEqual([]);
-    });
-    test("subscription with where filter _GT for Boolean should error", async () => {
-        const onReturnError = jest.fn();
-        await wsClient.subscribe(
-            `
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_GT: false }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        isFavorite
-                    }
-                }
-            }
-        `,
-            onReturnError
-        );
-
-        await createMovie({ title: "movie1", isFavorite: false });
-        await createMovie({ title: "movie2", isFavorite: false });
-
-        await deleteMovie("title", "movie1");
-        await deleteMovie("title", "movie2");
-
-        expect(onReturnError).toHaveBeenCalled();
-        expect(wsClient.events).toEqual([]);
-    });
-    test("subscription with where filter _GTE for Boolean should error", async () => {
-        const onReturnError = jest.fn();
-        await wsClient.subscribe(
-            `
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_GTE: false }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite: { gt: false } }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         isFavorite
                     }
@@ -800,12 +792,37 @@ describe("Delete Subscription", () => {
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with where filter _GT for Array should error", async () => {
+    test("subscription with where filter using gte for Boolean should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
             subscription {
-                ${typeMovie.operations.subscribe.updated}(where: { similarTitles_GT: "dummy" }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite: { gte: false } }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        isFavorite
+                    }
+                }
+            }
+        `,
+            onReturnError
+        );
+
+        await createMovie({ title: "movie1", isFavorite: false });
+        await createMovie({ title: "movie2", isFavorite: false });
+
+        await deleteMovie("title", "movie1");
+        await deleteMovie("title", "movie2");
+
+        expect(onReturnError).toHaveBeenCalled();
+        expect(wsClient.events).toEqual([]);
+    });
+
+    test("subscription with where filter using gte for Array should error", async () => {
+        const onReturnError = jest.fn();
+        await wsClient.subscribe(
+            `
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { similarTitles: { gte: "test" } }) {
                     ${typeMovie.operations.subscribe.payload.updated} {
                         similarTitles
                     }

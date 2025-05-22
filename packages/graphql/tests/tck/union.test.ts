@@ -294,7 +294,7 @@ describe("Cypher Union", () => {
             WITH this
             CREATE (this_search_Genre0_create0_node:Genre)
             SET this_search_Genre0_create0_node.name = $this_search_Genre0_create0_node_name
-            MERGE (this)-[:SEARCH]->(this_search_Genre0_create0_node)
+            MERGE (this)-[this_search_Genre0_create0_relationship:SEARCH]->(this_search_Genre0_create0_node)
             RETURN collect(DISTINCT this { .title }) AS data"
         `);
 

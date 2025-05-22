@@ -23,12 +23,5 @@ export function parseFilterProperty(key: string): { fieldName: string; operator:
     // eslint-disable-next-line prefer-const
     let { fieldName, operator } = parseWhereField(key);
 
-    // These conversions are only temporary necessary until the the _NOT operator exists, after that we can just return the output of parseWhereField
-    if (operator === "EQ") {
-        operator = undefined;
-    }
-
     return { fieldName, operator };
 }
-
-

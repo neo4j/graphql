@@ -74,16 +74,16 @@ describe("Update Subscriptions", () => {
         await testHelper.close();
     });
 
-    test("subscription with where filter STARTS_WITH for String", async () => {
+    test("subscription with where filter startsWith for String", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { title_STARTS_WITH: "movie_starts_with" }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    title
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { title: { startsWith: "movie_starts_with" } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
                 }
             }
-        }
-    `);
+        `);
 
         await createMovie({ title: "movie_starts_with1" });
         await createMovie({ title: "mvie2" });
@@ -102,16 +102,17 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
-    test("subscription with where filter STARTS_WITH for ID as String", async () => {
+
+    test("subscription with where filter startsWith for ID as String", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { id_STARTS_WITH: "dummy" }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    id
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { id: { startsWith: "dummy" } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        id
+                    }
                 }
             }
-        }
-    `);
+        `);
 
         await createMovie({ id: "dummy1" });
         await createMovie({ id: "not-dummy1" });
@@ -130,16 +131,17 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
-    test("subscription with where filter STARTS_WITH for ID as Int", async () => {
+
+    test("subscription with where filter startsWith for ID as Int", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { id_STARTS_WITH: 1 }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    id
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { id: { startsWith: 1 } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        id
+                    }
                 }
             }
-        }
-    `);
+        `);
 
         await createMovie({ id: 1 });
         await createMovie({ id: 2 });
@@ -159,16 +161,16 @@ describe("Update Subscriptions", () => {
         ]);
     });
 
-    test("subscription with where filter ENDS_WITH for String", async () => {
+    test("subscription with where filter endsWith for String", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { title_ENDS_WITH: "movie_ends_with" }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    title
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { title: { endsWith: "movie_ends_with" } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
                 }
             }
-        }
-    `);
+        `);
 
         await createMovie({ title: "test-movie_ends_with" });
         await createMovie({ title: "test-movie2" });
@@ -187,16 +189,17 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
-    test("subscription with where filter ENDS_WITH for ID as String", async () => {
+
+    test("subscription with where filter endsWith for ID as String", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { id_ENDS_WITH: "id_ends_with" }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    id
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { id: { endsWith: "id_ends_with" } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        id
+                    }
                 }
             }
-        }
-    `);
+        `);
 
         await createMovie({ id: "id_ends_with" });
         await createMovie({ id: "dummy2" });
@@ -215,16 +218,17 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
-    test("subscription with where filter ENDS_WITH for ID as Int", async () => {
+
+    test("subscription with where filter endsWith for ID as Int", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { id_ENDS_WITH: 3 }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    id
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { id: { endsWith: 3 } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        id
+                    }
                 }
             }
-        }
-    `);
+        `);
 
         await createMovie({ id: 13 });
         await createMovie({ id: 31 });
@@ -244,16 +248,16 @@ describe("Update Subscriptions", () => {
         ]);
     });
 
-    test("subscription with where filter CONTAINS for String", async () => {
+    test("subscription with where filter contains for String", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { title_CONTAINS: "movie1" }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    title
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { title: { contains: "movie1" } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        title
+                    }
                 }
             }
-        }
-    `);
+        `);
 
         await createMovie({ title: "test-movie2" });
         await createMovie({ title: "test2-movie1" });
@@ -272,16 +276,17 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
-    test("subscription with where filter CONTAINS for ID as String", async () => {
+
+    test("subscription with where filter contains for ID as String", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { id_CONTAINS: "dummy" }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    id
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { id: { contains: "dummy" } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        id
+                    }
                 }
             }
-        }
-    `);
+        `);
 
         await createMovie({ id: "dummy-not" });
         await createMovie({ id: 2 });
@@ -300,16 +305,17 @@ describe("Update Subscriptions", () => {
             },
         ]);
     });
-    test("subscription with where filter CONTAINS for ID as Int", async () => {
+
+    test("subscription with where filter contains for ID as Int", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { id_CONTAINS: 3 }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    id
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { id: { contains: 3 } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        id
+                    }
                 }
             }
-        }
-    `);
+        `);
 
         await createMovie({ id: 31 });
         await createMovie({ id: 1 });
@@ -329,18 +335,18 @@ describe("Update Subscriptions", () => {
         ]);
     });
 
-    test("subscription with where filter CONTAINS for Int should error", async () => {
+    test("subscription with where filter contains for Int should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { releasedIn_CONTAINS: 2020 }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    releasedIn
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { releasedIn: { contains: 2020 } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        releasedIn
+                    }
                 }
             }
-        }
-    `,
+        `,
             onReturnError
         );
 
@@ -353,18 +359,19 @@ describe("Update Subscriptions", () => {
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter CONTAINS for Float should error", async () => {
+
+    test("subscription with where filter contains for Float should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { averageRating_CONTAINS: 5 }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    averageRating
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { averageRating: { contains: 5 } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        averageRating
+                    }
                 }
             }
-        }
-    `,
+        `,
             onReturnError
         );
 
@@ -377,18 +384,19 @@ describe("Update Subscriptions", () => {
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter CONTAINS for BigInt should error", async () => {
+
+    test("subscription with where filter contains for BigInt should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { fileSize_CONTAINS: "12" }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    fileSize
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { fileSize: { contains: "12" } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        fileSize
+                    }
                 }
             }
-        }
-    `,
+        `,
             onReturnError
         );
 
@@ -401,18 +409,19 @@ describe("Update Subscriptions", () => {
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter CONTAINS for Boolean should error", async () => {
+
+    test("subscription with where filter contains for Boolean should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { isFavorite_CONTAINS: false }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    isFavorite
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { isFavorite: { contains: false } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        isFavorite
+                    }
                 }
             }
-        }
-    `,
+        `,
             onReturnError
         );
 
@@ -425,18 +434,19 @@ describe("Update Subscriptions", () => {
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter CONTAINS for Array should error", async () => {
+
+    test("subscription with where filter contains for Array should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { similarTitles_CONTAINS: "test" }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    similarTitles
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { similarTitles: { contains: "test" } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        similarTitles
+                    }
                 }
             }
-        }
-    `,
+        `,
             onReturnError
         );
 
@@ -450,18 +460,18 @@ describe("Update Subscriptions", () => {
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with where filter STARTS_WITH for Int should error", async () => {
+    test("subscription with where filter startsWith for Int should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { releasedIn_STARTS_WITH: 2 }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    releasedIn
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { releasedIn: { startsWith: 2 } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        releasedIn
+                    }
                 }
             }
-        }
-    `,
+        `,
             onReturnError
         );
 
@@ -474,18 +484,19 @@ describe("Update Subscriptions", () => {
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter STARTS_WITH for Float should error", async () => {
+
+    test("subscription with where filter startsWith for Float should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { averageRating_STARTS_WITH: 6 }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    averageRating
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { averageRating: { startsWith: 6 } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        averageRating
+                    }
                 }
             }
-        }
-    `,
+        `,
             onReturnError
         );
 
@@ -498,18 +509,19 @@ describe("Update Subscriptions", () => {
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter STARTS_WITH for BigInt should error", async () => {
+
+    test("subscription with where filter startsWith for BigInt should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { fileSize_STARTS_WITH: 2 }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    fileSize
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { fileSize: { startsWith: 2 } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        fileSize
+                    }
                 }
             }
-        }
-    `,
+        `,
             onReturnError
         );
 
@@ -522,18 +534,19 @@ describe("Update Subscriptions", () => {
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter STARTS_WITH for Boolean should error", async () => {
+
+    test("subscription with where filter startsWith for Boolean should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { isFavorite_STARTS_WITH: "f" }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    isFavorite
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { isFavorite: { startsWith: "f" } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        isFavorite
+                    }
                 }
             }
-        }
-    `,
+        `,
             onReturnError
         );
 
@@ -546,18 +559,19 @@ describe("Update Subscriptions", () => {
         expect(onReturnError).toHaveBeenCalled();
         expect(wsClient.events).toEqual([]);
     });
-    test("subscription with where filter STARTS_WITH for Array should error", async () => {
+
+    test("subscription with where filter startsWith for Array should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
-        subscription {
-            ${typeMovie.operations.subscribe.updated}(where: { similarTitles_STARTS_WITH: "test" }) {
-                ${typeMovie.operations.subscribe.payload.updated} {
-                    similarTitles
+            subscription {
+                ${typeMovie.operations.subscribe.updated}(where: { similarTitles: { startsWith: "test" } }) {
+                    ${typeMovie.operations.subscribe.payload.updated} {
+                        similarTitles
+                    }
                 }
             }
-        }
-    `,
+        `,
             onReturnError
         );
 

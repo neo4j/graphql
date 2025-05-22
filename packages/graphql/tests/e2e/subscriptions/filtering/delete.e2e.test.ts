@@ -77,14 +77,14 @@ describe("Delete Subscription", () => {
 
     test("create subscription with where OR", async () => {
         await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { OR: [{ title_EQ: "movie1"}, {title_EQ: "movie2"}] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted}(where: { OR: [{ title: { eq: "movie1" } }, { title: { eq: "movie2" } }] }) {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            title
+                        }
                     }
                 }
-            }
-        `);
+            `);
 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
@@ -109,16 +109,17 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
+
     test("create subscription with where AND match 1", async () => {
         await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { AND: [{ title_EQ: "movie2"}, {releasedIn_EQ: 2000}] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted}(where: { AND: [{ title: { eq: "movie2" } }, { releasedIn: { eq: 2000 } }] }) {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            title
+                        }
                     }
                 }
-            }
-        `);
+            `);
 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
@@ -137,16 +138,17 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
+
     test("create subscription with where OR match 1", async () => {
         await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { OR: [{ title_EQ: "movie2", releasedIn_EQ: 2020}, {releasedIn_EQ: 2000}] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted}(where: { OR: [{ title: { eq: "movie2" }, releasedIn: { eq: 2020 } }, { releasedIn: { eq: 2000 } }] }) {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            title
+                        }
                     }
                 }
-            }
-        `);
+            `);
 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
@@ -165,10 +167,11 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
+
     test("create subscription with where OR match 2", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { OR: [{ title_EQ: "movie2", releasedIn_EQ: 2000}, {title_EQ: "movie1", releasedIn_EQ: 2020}] }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { OR: [{ title: { eq: "movie2" }, releasedIn: { eq: 2000 } }, { title: { eq: "movie1" }, releasedIn: { eq: 2020 } }] }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         title
                     }
@@ -198,16 +201,17 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
+
     test("create subscription with where property + OR match 1", async () => {
         await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { title_EQ: "movie3", OR: [{ releasedIn_EQ: 2001}, {title_EQ: "movie2", releasedIn_EQ: 2020}] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted}(where: { title: { eq: "movie3" }, OR: [{ releasedIn: { eq: 2001 } }, { title: { eq: "movie2" }, releasedIn: { eq: 2020 } }] }) {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            title
+                        }
                     }
                 }
-            }
-        `);
+            `);
 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
@@ -228,16 +232,17 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
+
     test("create subscription with where property + OR match nothing", async () => {
         await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { title_EQ: "movie2", OR: [{ releasedIn_EQ: 2001}, {title_EQ: "movie2", releasedIn_EQ: 2020}] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted}(where: { title: { eq: "movie2" }, OR: [{ releasedIn: { eq: 2001 } }, { title: { eq: "movie2" }, releasedIn: { eq: 2020 } }] }) {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            title
+                        }
                     }
                 }
-            }
-        `);
+            `);
 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
@@ -247,21 +252,21 @@ describe("Delete Subscription", () => {
         await deleteMovie("title", "movie2");
         await deleteMovie("title", "movie3");
 
-        // forcing a delay to ensure events do not exist
         await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
     });
+
     test("create subscription with where property + OR with filters match 1", async () => {
         await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_GTE: 2000, OR: [{ NOT: { title_STARTS_WITH: "movie" }, releasedIn_EQ: 2001}, {title_EQ: "movie4", releasedIn_EQ: 1000}] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted}(where: { releasedIn: { gte: 2000 }, OR: [{ NOT: { title: { startsWith: "movie" } }, releasedIn: { eq: 2001 } }, { title: { eq: "movie4" }, releasedIn: { eq: 1000 } }] }) {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            title
+                        }
                     }
                 }
-            }
-        `);
+            `);
 
         await createMovie({ title: "movie1", releasedIn: 2000 });
         await createMovie({ title: "movie2", releasedIn: 2020 });
@@ -286,10 +291,11 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
+
     test("create subscription with where property + OR with filters match 2", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_GTE: 2000, OR: [{ title_STARTS_WITH: "moviee", releasedIn_EQ: 2001}, {title_EQ: "amovie"}] }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn: { gte: 2000 }, OR: [{ title: { startsWith: "moviee" }, releasedIn: { eq: 2001 } }, { title: { eq: "amovie" } }] }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         title
                     }
@@ -329,10 +335,11 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
+
     test("create subscription with where property + OR with filters match none", async () => {
         await wsClient.subscribe(`
             subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_GTE: 2000, OR: [{ title_STARTS_WITH: "moviee", releasedIn_EQ: 2001}, {title_EQ: "amovie", releasedIn_GT: 2020}] }) {
+                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn: { gte: 2000 }, OR: [{ title: { startsWith: "moviee" }, releasedIn: { eq: 2001 } }, { title: { eq: "amovie" }, releasedIn: { gt: 2020 } }] }) {
                     ${typeMovie.operations.subscribe.payload.deleted} {
                         title
                     }
@@ -354,21 +361,21 @@ describe("Delete Subscription", () => {
         await deleteMovie("title", "movie5");
         await deleteMovie("title", "moviee2");
 
-        // forcing a delay to ensure events do not exist
         await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([]);
     });
+
     test("create subscription with where OR single element match", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.deleted}(where: { OR: [{ title_EQ: "movie1"}] }) {
-                ${typeMovie.operations.subscribe.payload.deleted} {
-                    title
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { OR: [{ title: { eq: "movie1" } }] }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
                 }
             }
-        }
-    `);
+        `);
 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
@@ -387,16 +394,17 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
+
     test("create subscription with where OR single element no match", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.deleted}(where: { OR: [{ title_EQ: "movie1"}] }) {
-                ${typeMovie.operations.subscribe.payload.deleted} {
-                    title
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { OR: [{ title: { eq: "movie1" } }] }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
                 }
             }
-        }
-    `);
+        `);
 
         await createMovie({ title: "movie3", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
@@ -404,29 +412,29 @@ describe("Delete Subscription", () => {
         await deleteMovie("title", "movie3");
         await deleteMovie("title", "movie2");
 
-        // forcing a delay to ensure events do not exist
         await delay(2);
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toIncludeSameMembers([]);
     });
+
     test("create subscription with where OR nested match 1", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.deleted}(where: {
-                OR: [
-                    { title_EQ: "movie1" },
-                    { AND: [
-                        { title_EQ: "movie2" },
-                        { title_EQ: "movie3" }
-                    ]}
-                ]
-            }) {
-                ${typeMovie.operations.subscribe.payload.deleted} {
-                    title
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: {
+                    OR: [
+                        { title: { eq: "movie1" } },
+                        { AND: [
+                            { title: { eq: "movie2" } },
+                            { title: { eq: "movie3" } }
+                        ]}
+                    ]
+                }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
                 }
             }
-        }
-    `);
+        `);
 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
@@ -445,24 +453,25 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
+
     test("create subscription with where OR nested match some", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.deleted}(where: {
-                OR: [
-                    { title_EQ: "movie1" },
-                    { AND: [
-                        { title_EQ: "movie2" },
-                        { releasedIn_EQ: 2000 }
-                    ]}
-                ]
-            }) {
-                ${typeMovie.operations.subscribe.payload.deleted} {
-                    title
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: {
+                    OR: [
+                        { title: { eq: "movie1" } },
+                        { AND: [
+                            { title: { eq: "movie2" } },
+                            { releasedIn: { eq: 2000 } }
+                        ]}
+                    ]
+                }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
                 }
             }
-        }
-    `);
+        `);
 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
@@ -487,24 +496,25 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
+
     test("create subscription with where OR nested match all", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.deleted}(where: {
-                OR: [
-                    { title_EQ: "movie1" },
-                    { AND: [
-                        { title_EQ: "movie2" },
-                        { releasedIn_GTE: 2000 }
-                    ]}
-                ]
-            }) {
-                ${typeMovie.operations.subscribe.payload.deleted} {
-                    title
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: {
+                    OR: [
+                        { title: { eq: "movie1" } },
+                        { AND: [
+                            { title: { eq: "movie2" } },
+                            { releasedIn: { gte: 2000 } }
+                        ]}
+                    ]
+                }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
+                    }
                 }
             }
-        }
-    `);
+        `);
 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
@@ -536,16 +546,16 @@ describe("Delete Subscription", () => {
     });
 
     // all but boolean types
-    test("subscription with IN on String", async () => {
+    test("subscription with in on String", async () => {
         await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { title_IN: ["abc", "sth"] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted}(where: { title: { in: ["abc", "sth"] } }) {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            title
+                        }
                     }
                 }
-            }
-        `);
+            `);
 
         await createMovie({ title: "abc" });
         await createMovie({ title: "something" });
@@ -565,16 +575,16 @@ describe("Delete Subscription", () => {
         ]);
     });
 
-    test("subscription with IN on ID as String", async () => {
+    test("subscription with in on ID as String", async () => {
         await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { id_IN: ["id1", "id11"] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        id
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted}(where: { id: { in: ["id1", "id11"] } }) {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            id
+                        }
                     }
                 }
-            }
-   `);
+       `);
 
         await createMovie({ id: "id1" });
         await createMovie({ id: "id111" });
@@ -594,16 +604,16 @@ describe("Delete Subscription", () => {
         ]);
     });
 
-    test("subscription with IN on ID as Int", async () => {
+    test("subscription with in on ID as Int", async () => {
         await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { id_IN: [42, 420] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        id
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted}(where: { id: { in: [42, 420] } }) {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            id
+                        }
                     }
                 }
-            }
-        `);
+            `);
 
         await createMovie({ id: 420 });
         await createMovie({ id: 42 });
@@ -628,16 +638,16 @@ describe("Delete Subscription", () => {
         ]);
     });
 
-    test("subscription with IN on Int", async () => {
+    test("subscription with in on Int", async () => {
         await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { releasedIn_IN: [2020, 2021] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        releasedIn
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted}(where: { releasedIn: { in: [2020, 2021] } }) {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            releasedIn
+                        }
                     }
                 }
-            }
-        `);
+            `);
 
         await createMovie({ releasedIn: 2020 });
         await createMovie({ releasedIn: 2022 });
@@ -657,16 +667,16 @@ describe("Delete Subscription", () => {
         ]);
     });
 
-    test("subscription with IN on Float", async () => {
+    test("subscription with in on Float", async () => {
         await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { averageRating_IN: [4.2, 4.20] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        averageRating
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted}(where: { averageRating: { in: [4.2, 4.20] } }) {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            averageRating
+                        }
                     }
                 }
-            }
-        `);
+            `);
 
         await createMovie({ averageRating: 4.2 });
         await createMovie({ averageRating: 10 });
@@ -686,16 +696,16 @@ describe("Delete Subscription", () => {
         ]);
     });
 
-    test("subscription with IN on BigInt", async () => {
+    test("subscription with in on BigInt", async () => {
         await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { fileSize_IN: ["922372036854775608"] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        fileSize
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted}(where: { fileSize: { in: ["922372036854775608"] } }) {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            fileSize
+                        }
                     }
                 }
-            }
-        `);
+            `);
 
         await createMovie({ fileSize: "922372036854775608" });
         await createMovie({ fileSize: "100" });
@@ -715,18 +725,18 @@ describe("Delete Subscription", () => {
         ]);
     });
 
-    test("subscription with IN on Boolean should error", async () => {
+    test("subscription with in on Boolean should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { isFavorite_IN: [true] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        isFavorite
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted}(where: { isFavorite: { in: [true] } }) {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            isFavorite
+                        }
                     }
                 }
-            }
-        `,
+            `,
             onReturnError
         );
 
@@ -740,18 +750,18 @@ describe("Delete Subscription", () => {
         expect(wsClient.events).toEqual([]);
     });
 
-    test("subscription with IN on Array should error", async () => {
+    test("subscription with in on Array should error", async () => {
         const onReturnError = jest.fn();
         await wsClient.subscribe(
             `
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { similarTitles_IN: ["fight club"] }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        similarTitles
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted}(where: { similarTitles: { in: ["fight club"] } }) {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            similarTitles
+                        }
                     }
                 }
-            }
-        `,
+            `,
             onReturnError
         );
 
@@ -766,16 +776,16 @@ describe("Delete Subscription", () => {
     });
 
     // NOT Operator tests
-    test("delete subscription with where NOT operator 1 result", async () => {
+    test("delete subscription with where not operator 1 result", async () => {
         await wsClient.subscribe(`
-            subscription {
-                ${typeMovie.operations.subscribe.deleted}(where: { NOT: { title_EQ: "movie3" } }) {
-                    ${typeMovie.operations.subscribe.payload.deleted} {
-                        title
+                subscription {
+                    ${typeMovie.operations.subscribe.deleted}(where: { NOT: { title: { eq: "movie3" } } }) {
+                        ${typeMovie.operations.subscribe.payload.deleted} {
+                            title
+                        }
                     }
                 }
-            }
-        `);
+            `);
 
         await createMovie({ title: "movie3" });
         await createMovie({ title: "movie4" });
@@ -794,28 +804,29 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
+
     test("create subscription with where OR nested NOT OR match 1", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.deleted}(where: {
-                OR: [
-                    { title_EQ: "movie1" },
-                    { 
-                        NOT: { 
-                            OR: [
-                                { title_EQ: "movie2" },
-                                { title_EQ: "movie3" }
-                            ]
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: {
+                    OR: [
+                        { title: { eq: "movie1" } },
+                        { 
+                            NOT: { 
+                                OR: [
+                                    { title: { eq: "movie2" } },
+                                    { title: { eq: "movie3" } }
+                                ]
+                            }
                         }
+                    ]
+                }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        title
                     }
-                ]
-            }) {
-                ${typeMovie.operations.subscribe.payload.deleted} {
-                    title
                 }
             }
-        }
-    `);
+        `);
 
         await createMovie({ title: "movie1", releasedIn: 2020 });
         await createMovie({ title: "movie2", releasedIn: 2000 });
@@ -834,16 +845,17 @@ describe("Delete Subscription", () => {
             },
         ]);
     });
-    test("subscription with NOT IN on Int", async () => {
+
+    test("subscription with not in on Int", async () => {
         await wsClient.subscribe(`
-        subscription {
-            ${typeMovie.operations.subscribe.deleted}(where: { NOT: { releasedIn_IN: [2020, 2000] } }) {
-                ${typeMovie.operations.subscribe.payload.deleted} {
-                    releasedIn
+            subscription {
+                ${typeMovie.operations.subscribe.deleted}(where: { NOT: { releasedIn: { in: [2020, 2000] } } }) {
+                    ${typeMovie.operations.subscribe.payload.deleted} {
+                        releasedIn
+                    }
                 }
-            }
-           }
-        `);
+               }
+            `);
 
         await createMovie({ releasedIn: 2001 });
         await createMovie({ releasedIn: 2000 });
