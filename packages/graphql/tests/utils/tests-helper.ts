@@ -24,7 +24,7 @@ import * as neo4j from "neo4j-driver";
 import type { Neo4jGraphQLConstructor, Neo4jGraphQLContext } from "../../src";
 import { Neo4jGraphQL, Neo4jGraphQLSubscriptionsCDCEngine } from "../../src";
 import { Neo4jDatabaseInfo } from "../../src/classes";
-import { Neo4jGraphQLSessionConfig } from "../../src/classes/Executor";
+import type { Neo4jGraphQLSessionConfig } from "../../src/classes/Executor";
 import type { Neo4jEdition } from "../../src/classes/Neo4jDatabaseInfo";
 import { createBearerToken } from "./create-bearer-token";
 import { UniqueType } from "./graphql-types";
@@ -38,7 +38,6 @@ export class TestHelper {
     private neo4jGraphQL: Neo4jGraphQL | undefined;
     private uniqueTypes: UniqueType[] = [];
     private driver: neo4j.Driver | undefined;
-    private _useRestrictedUser: boolean = false;
 
     private lock: boolean = false; // Lock to avoid race condition between initNeo4jGraphQL
 
@@ -148,14 +147,14 @@ export class TestHelper {
             throw new Error("contextValue is a promise. Did you forget to use await with 'getContextValue'?");
         }
         const schema = await this.neo4jGraphQL.getSchema();
-
+        const useRestrictedUser = process.env.USE_RESTRICTED_USER === "true";
         return graphqlRuntime({
             schema,
             ...args,
             source: query,
             contextValue: await this.getContextValue(
                 args.contextValue as Partial<Neo4jGraphQLContext> | undefined,
-                true
+                useRestrictedUser
             ),
         });
     }
@@ -180,7 +179,7 @@ export class TestHelper {
         if (preClose) {
             try {
                 await preClose();
-            } catch (err) {
+            } catch (_err) {
                 // Ignore error
             }
         }
@@ -200,9 +199,11 @@ export class TestHelper {
         const sessionConfig: Neo4jGraphQLSessionConfig = {
             database: this.database,
         };
-        if (useRestrictedUser && this._useRestrictedUser) {
+       
+        if (useRestrictedUser) {
             sessionConfig.impersonatedUser = readWriteUser;
         }
+
         return {
             executionContext: driver,
             sessionConfig,
@@ -221,7 +222,6 @@ export class TestHelper {
 
         try {
             this._database = await this.checkConnectivity(driver);
-            this._useRestrictedUser = await this.checkIfUseRestrictedUser(driver);
         } catch (error: any) {
             await driver.close();
             throw new Error(`Could not connect to neo4j @ ${NEO_URL}, Error: ${error.message}`);
@@ -355,20 +355,5 @@ export class TestHelper {
         const { cypher } = query.build();
 
         await driver.executeQuery(cypher, {}, { database: this.database });
-    }
-
-    /** Check if it is possible to impersonate a restricted user, so that executeGraphQL can be executed with limited grants */
-    private async checkIfUseRestrictedUser(driver: neo4j.Driver): Promise<boolean> {
-        // Should we do add a warning when we're not using a restricted user?
-        if (!(await driver.supportsUserImpersonation())) {
-            return false;
-        }
-        try {
-            await driver.session({ database: this.database, impersonatedUser: readWriteUser }).run("RETURN 1");
-        } catch (error: any) {
-            return false;
-        }
-
-        return true;
     }
 }
