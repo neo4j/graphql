@@ -86,18 +86,31 @@ export function filterByProperties<T>({
 }
 
 function checkCaseInsensitiveFilters(
-    v: Record<string, any>,
-    receivedValue: any,
+    v: Record<string, unknown>,
+    receivedValue: unknown,
     fieldMeta?: AttributeAdapter
 ): boolean {
+    if (typeof receivedValue !== "string") {
+        return false;
+    }
+    const lowerCaseReceived = receivedValue.toLowerCase();
     for (const [op, value] of Object.entries(v)) {
         const checkFilterPasses = getFilteringFn(op, operatorMapOverrides);
         if (op === "in") {
-            return value.some((v) => v.toLowerCase() === receivedValue.toLowerCase());
+            if (!Array.isArray(value)) {
+                return false;
+            }
+
+            return value.some((v) => {
+                if (typeof v !== "string") {
+                    return false;
+                }
+                return v.toLowerCase() === lowerCaseReceived;
+            });
         }
-        if (typeof receivedValue !== "string" || typeof value !== "string") {
+        if (typeof value !== "string") {
             return false;
-        } else if (!checkFilterPasses(receivedValue.toLowerCase(), value.toLowerCase(), fieldMeta)) {
+        } else if (!checkFilterPasses(lowerCaseReceived, value.toLowerCase(), fieldMeta)) {
             return false;
         }
     }
