@@ -68,14 +68,53 @@ export function filterByProperties<T>({
                 }
             } else {
                 for (const [op, value] of Object.entries(v as Record<string, any>)) {
-                    const checkFilterPasses = getFilteringFn(op, operatorMapOverrides);
-                    if (!checkFilterPasses(receivedValue, value, fieldMeta)) {
-                        return false;
+                    if (op === "caseInsensitive") {
+                        if (!checkCaseInsensitiveFilters(value, receivedValue, fieldMeta)) {
+                            return false;
+                        }
+                    } else {
+                        const checkFilterPasses = getFilteringFn(op, operatorMapOverrides);
+                        if (!checkFilterPasses(receivedValue, value, fieldMeta)) {
+                            return false;
+                        }
                     }
                 }
             }
         }
     }
+    return true;
+}
+
+function checkCaseInsensitiveFilters(
+    v: Record<string, unknown>,
+    receivedValue: unknown,
+    fieldMeta?: AttributeAdapter
+): boolean {
+    if (typeof receivedValue !== "string") {
+        return false;
+    }
+    const lowerCaseReceived = receivedValue.toLowerCase();
+    for (const [op, value] of Object.entries(v)) {
+        const checkFilterPasses = getFilteringFn(op, operatorMapOverrides);
+        if (op === "in") {
+            if (!Array.isArray(value)) {
+                return false;
+            }
+
+            return value.some((v) => {
+                if (typeof v !== "string") {
+                    return false;
+                }
+                return v.toLowerCase() === lowerCaseReceived;
+            });
+        }
+        if (typeof value !== "string") {
+            return false;
+        } else if (!checkFilterPasses(lowerCaseReceived, value.toLowerCase(), fieldMeta)) {
+            return false;
+        }
+    }
+
     return true;
 }
 
