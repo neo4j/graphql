@@ -141,18 +141,20 @@ export class AuthFilterFactory extends FilterFactory {
         });
     }
 
-    public createPropertyFilter({
+    protected createPropertyFilter({
         attribute,
         comparisonValue,
         operator,
         attachedTo,
         relationship,
+        caseInsensitive,
     }: {
         attribute: AttributeAdapter;
         comparisonValue: unknown;
         operator: FilterOperator | undefined;
         attachedTo?: "node" | "relationship";
         relationship?: RelationshipAdapter;
+        caseInsensitive?: boolean;
     }): Filter {
         const isCypherVariable =
             comparisonValue instanceof Cypher.Variable ||
@@ -232,6 +234,7 @@ export class AuthFilterFactory extends FilterFactory {
                 comparisonValue: new Cypher.Param(comparisonValue),
                 operator,
                 attachedTo,
+                caseInsensitive,
             });
         }
 
@@ -242,6 +245,7 @@ export class AuthFilterFactory extends FilterFactory {
                 comparisonValue: comparisonValue,
                 operator,
                 attachedTo,
+                caseInsensitive,
             });
         } else {
             if (comparisonValue === null) {
@@ -251,6 +255,7 @@ export class AuthFilterFactory extends FilterFactory {
                     comparisonValue: comparisonValue,
                     operator,
                     attachedTo,
+                    caseInsensitive,
                 });
             }
             return new ParamPropertyFilter({
@@ -259,6 +264,7 @@ export class AuthFilterFactory extends FilterFactory {
                 comparisonValue: new Cypher.Param(comparisonValue),
                 operator,
                 attachedTo,
+                caseInsensitive,
             });
         }
     }
