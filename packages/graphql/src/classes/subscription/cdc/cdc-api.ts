@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { Driver, QueryConfig } from "neo4j-driver";
+import type { Driver, Integer, QueryConfig } from "neo4j-driver";
 import { Neo4jError } from "neo4j-driver";
 import { errorHasGQLStatus } from "../../../utils/error-has-gql-status";
 import type { CDCQueryResponse } from "./cdc-types";
@@ -36,22 +36,37 @@ export class CDCApi {
     /** Queries events since last call to queryEvents */
     public async queryEvents(labels?: string[], txFilter?: Cypher.Map): Promise<CDCQueryResponse[]> {
         if (!this.cursor) {
-            this.cursor = await this.fetchCurrentChangeId();
+            // Resets cursor if it doesn't exists
+            await this.refreshCursor();
         }
 
-        const cursorLiteral = new Cypher.Literal(this.cursor);
-
-        const selectors = this.createQuerySelectors(labels);
+        const cdcSelectors = this.createQuerySelectors(labels);
         if (txFilter) {
-            selectors.map((selector) => {
+            cdcSelectors.map((selector) => {
                 selector.set("txMetadata", txFilter);
             });
         }
 
-        const queryProcedure = Cypher.db.cdc.query(cursorLiteral, selectors);
+        const cdcQueryProcedure = this.createCDCQuery(this.cursor, cdcSelectors);
 
         try {
-            const events = await this.runProcedure<CDCQueryResponse>(queryProcedure);
+            const events = await this.runProcedure<CDCQueryResponse & { currentId: string; eventCount: Integer }>(
+                cdcQueryProcedure
+            );
+
+            const firstEventOrNull = events[0];
+            if (!firstEventOrNull) {
+                throw new Error(
+                    "No records found on CDC transaction, this is likely a problem with the GraphQL library, please reach support"
+                );
+            }
+
+            // If no events are returned, update the cursor id wit hthe current change ID to avoid a stale cursor
+            if (firstEventOrNull.eventCount.toInt() === 0) {
+                this.cursor = firstEventOrNull.currentId;
+                return [];
+            }
+
             this.updateChangeIdWithLastEvent(events);
             return events;
         } catch (err) {
@@ -66,7 +81,7 @@ export class CDCApi {
                     err.code === "Neo.ClientError.ChangeDataCapture.InvalidIdentifier"
                 ) {
                     console.warn(err);
-                    this.cursor = ""; // Resets cursor
+                    await this.refreshCursor();
                     return [];
                 }
             }
@@ -74,7 +89,7 @@ export class CDCApi {
         }
     }
 
-    public async updateCursor(): Promise<void> {
+    public async refreshCursor(): Promise<void> {
         this.cursor = await this.fetchCurrentChangeId();
     }
 
@@ -88,6 +103,28 @@ export class CDCApi {
         } else {
             throw new Error("id not available on cdc.current");
         }
+    }
+
+    private createCDCQuery(cursor: string, cdcSelectors: Cypher.Map[]): Cypher.Clause {
+        const cursorLiteral = new Cypher.Literal(cursor);
+
+        const currentId = new Cypher.NamedVariable("currentId");
+        const changeId = new Cypher.NamedVariable("id");
+        const event = new Cypher.NamedVariable("event");
+        const metadata = new Cypher.NamedVariable("metadata");
+        const txId = new Cypher.NamedVariable("txId");
+        const seq = new Cypher.NamedVariable("seq");
+
+        return Cypher.utils.concat(
+            Cypher.db.cdc.current().yield(["id", currentId]),
+            new Cypher.Raw("OPTIONAL "), // TODO: support for OPTIONAL CALL in procedures missing in Cypher Builder: https://github.com/neo4j/cypher-builder/issues/540
+            Cypher.db.cdc
+                .query(cursorLiteral, cdcSelectors)
+                .yield(["id", changeId], "txId", "seq", "event", "metadata"),
+            new Cypher.With("*")
+                .orderBy([txId, "ASC"], [seq, "ASC"])
+                .return(currentId, changeId, event, metadata, [Cypher.count(changeId), "eventCount"])
+        );
     }
 
     private updateChangeIdWithLastEvent(events: CDCQueryResponse[]): void {

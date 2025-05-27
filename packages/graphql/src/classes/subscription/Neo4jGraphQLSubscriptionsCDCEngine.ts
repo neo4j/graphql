@@ -66,7 +66,7 @@ export class Neo4jGraphQLSubscriptionsCDCEngine implements Neo4jGraphQLSubscript
     }
 
     public async init({ schemaModel }: SubscriptionEngineContext): Promise<void> {
-        await this.cdcApi.updateCursor();
+        await this.cdcApi.refreshCursor();
         this._parser = new CDCEventParser(schemaModel);
         this.subscribeToLabels = this.getLabelsToFilter(schemaModel);
 
