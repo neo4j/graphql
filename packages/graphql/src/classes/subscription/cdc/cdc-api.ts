@@ -59,7 +59,10 @@ export class CDCApi {
                 // Cursor is stale, needs to be reset
                 // Events between this error and the next poll will be lost
                 if (
+                    errorHasGQLStatus(err, "52N27") ||
+                    errorHasGQLStatus(err, "52N28") ||
                     errorHasGQLStatus(err, "52N29") ||
+                    errorHasGQLStatus(err, "52N30") ||
                     err.code === "Neo.ClientError.ChangeDataCapture.InvalidIdentifier"
                 ) {
                     console.warn(err);
