@@ -20,9 +20,7 @@
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
-// Case insensitive is not available yet
-// eslint-disable-next-line jest/no-disabled-tests
-describe.skip("Filtering case insensitive string", () => {
+describe("Filtering case insensitive string", () => {
     const testHelper = new TestHelper();
     let Person: UniqueType;
     let Movie: UniqueType;
@@ -68,7 +66,7 @@ describe.skip("Filtering case insensitive string", () => {
             features: {
                 filters: {
                     String: {
-                        // CASE_INSENSITIVE: true,
+                        CASE_INSENSITIVE: true,
                         GTE: true,
                         MATCHES: true,
                     },

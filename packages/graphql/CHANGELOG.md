@@ -1,5 +1,51 @@
 # @neo4j/graphql
 
+## 7.2.0
+
+### Minor Changes
+
+- [#6250](https://github.com/neo4j/graphql/pull/6250) [`1abc5bc`](https://github.com/neo4j/graphql/commit/1abc5bc962a6d0ff0726293bbc4c71128985fe4c) Thanks [@angrykoala](https://github.com/angrykoala)! - Add support for case insensitive string filters. These can be enabled with the option `CASE_INSENSITIVE` in features:
+
+    ```javascript
+    const neoSchema = new Neo4jGraphQL({
+        features: {
+            filters: {
+                String: {
+                    CASE_INSENSITIVE: true,
+                },
+            },
+        },
+    });
+    ```
+
+    This enables the field `caseInsensitive` on string filters:
+
+    ```graphql
+    query {
+        movies(where: { title: { caseInsensitive: { eq: "the matrix" } } }) {
+            title
+        }
+    }
+    ```
+
+    This generates the following Cypher:
+
+    ```cypher
+    MATCH (this:Movie)
+    WHERE toLower(this.title) = toLower($param0)
+    RETURN this { .title } AS this
+    ```
+
+### Patch Changes
+
+- [#6354](https://github.com/neo4j/graphql/pull/6354) [`76c6445`](https://github.com/neo4j/graphql/commit/76c6445be4ce1afa5ae3d3606247d28f4f02e256) Thanks [@angrykoala](https://github.com/angrykoala)! - Handle the following errors in CDC queries for subscription by resetting the cursor:
+
+    - 52N27
+    - 52N28
+    - 52N30
+
+- [#6354](https://github.com/neo4j/graphql/pull/6354) [`532e0d8`](https://github.com/neo4j/graphql/commit/532e0d81143e197d184c9e5ee241ae2cb4c4b880) Thanks [@angrykoala](https://github.com/angrykoala)! - Update CDC changeID if no events are returned to prevent a stale cursor
+
 ## 7.1.3
 
 ### Patch Changes

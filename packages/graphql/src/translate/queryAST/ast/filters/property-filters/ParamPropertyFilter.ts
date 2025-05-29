@@ -36,12 +36,14 @@ export class ParamPropertyFilter extends PropertyFilter {
         operator,
         attachedTo = "node",
         relationship,
+        caseInsensitive,
     }: {
         attribute: AttributeAdapter;
         comparisonValue: CypherVariable;
         operator: FilterOperator;
         attachedTo?: "node" | "relationship";
         relationship?: RelationshipAdapter;
+        caseInsensitive?: boolean;
     }) {
         super({
             attribute,
@@ -49,6 +51,7 @@ export class ParamPropertyFilter extends PropertyFilter {
             relationship,
             attachedTo,
             comparisonValue,
+            caseInsensitive,
         });
         this.comparisonValue = comparisonValue;
     }

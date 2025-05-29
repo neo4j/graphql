@@ -46,7 +46,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
             features: {
                 filters: {
                     String: {
-                        // CASE_INSENSITIVE: true,
+                        CASE_INSENSITIVE: true,
                         MATCHES: true,
                     },
                 },
@@ -246,8 +246,7 @@ describe("Cypher -> Connections -> Filtering -> Node -> String", () => {
         `);
     });
 
-    // eslint-disable-next-line jest/no-disabled-tests
-    test.skip("Case insensitive contains", async () => {
+    test("Case insensitive contains", async () => {
         const query = /* GraphQL */ `
             query {
                 movies {
