@@ -27,6 +27,81 @@ module.exports = async function globalSetup() {
     const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
     const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
     const driver = neo4j.driver(NEO_URL, auth);
+    try {
+        await setupTestDatabase(driver, NEO_URL);
+
+        if (process.env.USE_RESTRICTED_USER === "true") {
+            await dropTestUserAndRole(driver);
+            await createTestUserAndRole(driver);
+        }
+    } finally {
+        await driver.close();
+    }
+};
+
+async function createTestUserAndRole(driver) {
+    let session = null;
+    // Some tests use different DBs, so using "*" for now
+    const dbName = "*";
+    // GRANTS READ/WRITE SERVICE ACCOUNT
+    const readWriteGrants = [
+        `GRANT ACCESS ON DATABASE * TO ${INT_TEST_ROLE_NAME}`,
+        `GRANT SHOW CONSTRAINT ON DATABASE ${dbName} TO ${INT_TEST_ROLE_NAME}`,
+        `GRANT SHOW INDEX ON DATABASE ${dbName} TO ${INT_TEST_ROLE_NAME}`,
+        `GRANT MATCH {*} ON GRAPH ${dbName} TO ${INT_TEST_ROLE_NAME}`,
+        `GRANT EXECUTE PROCEDURE * ON DBMS TO ${INT_TEST_ROLE_NAME}`,
+        `GRANT EXECUTE FUNCTION * ON DBMS TO ${INT_TEST_ROLE_NAME}`,
+        `GRANT WRITE ON GRAPH ${dbName} TO ${INT_TEST_ROLE_NAME}`,
+        `GRANT NAME MANAGEMENT ON DATABASE ${dbName} TO ${INT_TEST_ROLE_NAME}`,
+    ];
+
+    try {
+        session = driver.session();
+        await session.run(cypherCreateUser);
+        await session.run(cypherCreateRole);
+        await session.run(cypherGrantRole);
+
+        for (const cypherGrant of readWriteGrants) {
+            await session.run(cypherGrant);
+        }
+    } catch (error) {
+        if (errorHasGQLStatus("42NFF")) {
+            console.log(
+                `\nJest /packages/graphql setup: Will NOT create a separate integration test user and role as the command is not supported in the current environment.`
+            );
+        } else {
+            throw error;
+        }
+    } finally {
+        if (session) {
+            await session.close();
+        }
+    }
+}
+
+async function dropTestUserAndRole(driver) {
+    let session = null;
+
+    try {
+        session = driver.session();
+        await session.run(cypherDropUser);
+        await session.run(cypherDropRole);
+    } catch (error) {
+        if (errorHasGQLStatus("50N42")) {
+            console.log(
+                `\nJest /packages/graphql setup: Failure to drop test user/role, this is expected if the user/role does not exist. Error: ${error.message}`
+            );
+        } else {
+            throw error;
+        }
+    } finally {
+        if (session) {
+            await session.close();
+        }
+    }
+}
+
+async function setupTestDatabase(driver, neoURL) {
     const cypherCreateDb = `CREATE OR REPLACE DATABASE ${INT_TEST_DB_NAME} WAIT`;
     let session = null;
 
@@ -54,7 +129,7 @@ module.exports = async function globalSetup() {
             );
         } else {
             console.log(
-                `\nJest /packages/graphql setup: Failure to create test DB on neo4j @ ${NEO_URL}, cypher: "${cypherCreateDb}", Error: ${error.message}. Falling back to drop data.`
+                `\nJest /packages/graphql setup: Failure to create test DB on neo4j @ ${neoURL}, cypher: "${cypherCreateDb}", Error: ${error.message}. Falling back to drop data.`
             );
             await dropDataAndIndexes(session);
         }
@@ -63,81 +138,14 @@ module.exports = async function globalSetup() {
             await session.close();
         }
     }
-    if (process.env.USE_RESTRICTED_USER === "true") {
-        // Some tests use different DBs, so using "*" for now
-        const dbName = "*";
-        // GRANTS READ/WRITE SERVICE ACCOUNT
-        const readWriteGrants = [
-            `GRANT ACCESS ON DATABASE * TO ${INT_TEST_ROLE_NAME}`,
-            `GRANT SHOW CONSTRAINT ON DATABASE ${dbName} TO ${INT_TEST_ROLE_NAME}`,
-            `GRANT SHOW INDEX ON DATABASE ${dbName} TO ${INT_TEST_ROLE_NAME}`,
-            `GRANT MATCH {*} ON GRAPH ${dbName} TO ${INT_TEST_ROLE_NAME}`,
-            `GRANT EXECUTE PROCEDURE * ON DBMS TO ${INT_TEST_ROLE_NAME}`,
-            `GRANT EXECUTE FUNCTION * ON DBMS TO ${INT_TEST_ROLE_NAME}`,
-            `GRANT WRITE ON GRAPH ${dbName} TO ${INT_TEST_ROLE_NAME}`,
-            `GRANT NAME MANAGEMENT ON DATABASE ${dbName} TO ${INT_TEST_ROLE_NAME}`,
-        ];
-
-        try {
-            session = driver.session();
-            await dropUserAndRole(session);
-        } catch (error) {
-            if (errorHasGQLStatus("50N42")) {
-                console.log(
-                    `\nJest /packages/graphql setup: Failure to drop test user/role, this is expected if the user/role does not exist. Error: ${error.message}`
-                );
-            } else {
-                throw error;
-            }
-        } finally {
-            if (session) {
-                await session.close();
-            }
-        }
-
-        try {
-            session = driver.session();
-            await createUserAndRole(session);
-
-            for (const cypherGrant of readWriteGrants) {
-                await session.run(cypherGrant);
-            }
-        } catch (error) {
-            if (errorHasGQLStatus("42NFF")) {
-                console.log(
-                    `\nJest /packages/graphql setup: Will NOT create a separate integration test user and role as the command is not supported in the current environment.`
-                );
-            } else {
-                throw error;
-            }
-        } finally {
-            if (session) {
-                await session.close();
-            }
-        }
-    }
-    if (driver) {
-        await driver.close();
-    }
-};
+}
 
 async function dropDataAndIndexes(session) {
     await session.run(cypherDropData);
     await session.run(cypherDropIndexes);
 }
 
-async function dropUserAndRole(session) {
-    await session.run(cypherDropUser);
-    await session.run(cypherDropRole);
-}
-
-async function createUserAndRole(session) {
-    await session.run(cypherCreateUser);
-    await session.run(cypherCreateRole);
-    await session.run(cypherGrantRole);
-}
-
-/* Dummy Javascript copy of the utility function available at: ./src/utils/error-has-gql-status */
+/* Javascript copy of the utility function available at: ./src/utils/error-has-gql-status */
 function errorHasGQLStatus(error, gqlStatus) {
     if (error.gqlStatus === gqlStatus) {
         return true;
