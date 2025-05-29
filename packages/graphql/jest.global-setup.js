@@ -114,10 +114,10 @@ module.exports = async function globalSetup() {
             if (session) {
                 await session.close();
             }
-            if (driver) {
-                await driver.close();
-            }
         }
+    }
+    if (driver) {
+        await driver.close();
     }
 };
 
