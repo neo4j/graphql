@@ -7389,9 +7389,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:28.11.1":
-  version: 28.11.1
-  resolution: "eslint-plugin-jest@npm:28.11.1"
+"eslint-plugin-jest@npm:28.12.0":
+  version: 28.12.0
+  resolution: "eslint-plugin-jest@npm:28.12.0"
   dependencies:
     "@typescript-eslint/utils": "npm:^6.0.0 || ^7.0.0 || ^8.0.0"
   peerDependencies:
@@ -7403,7 +7403,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: 10c0/b2ad56499968291d92ae4ba2062035a38b2f89265f5e2769557a02f286dedbca81d748eb22329f006e7312b144ec191df9bbeda338020b1fc3b529c0f04cc6aa
+  checksum: 10c0/1072070921e0329bd8a369fea6017de930d942387ef325bc656301812d08d8a9dcd862284493d57c0a52b4bd73128f2157e010116f5efe7bf626c61a78f0a2d8
   languageName: node
   linkType: hard
 
@@ -12287,7 +12287,7 @@ __metadata:
     eslint-import-resolver-typescript: "npm:4.4.1"
     eslint-plugin-eslint-comments: "npm:3.2.0"
     eslint-plugin-import: "npm:2.31.0"
-    eslint-plugin-jest: "npm:28.11.1"
+    eslint-plugin-jest: "npm:28.12.0"
     graphql: "npm:16.11.0"
     jest: "npm:29.7.0"
     neo4j-driver: "npm:5.28.1"
