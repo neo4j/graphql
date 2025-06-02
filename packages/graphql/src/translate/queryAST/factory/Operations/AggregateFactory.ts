@@ -176,25 +176,6 @@ export class AggregateFactory {
                 operation.addFilters(...filters);
                 operation.addAuthFilters(...authFilters);
 
-                // TODO: Duplicate logic with hydrateReadOperationWithPagination, check if it's correct to unify.
-                const options = this.queryASTFactory.operationsFactory.getOptions(
-                    entity,
-                    (resolveTree.args.options ?? {}) as any
-                );
-                if (options) {
-                    const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(
-                        options,
-                        entity,
-                        context
-                    );
-                    operation.addSort(...sort);
-
-                    const pagination = this.queryASTFactory.sortAndPaginationFactory.createPagination(options);
-                    if (pagination) {
-                        operation.addPagination(pagination);
-                    }
-                }
-
                 return operation;
             } else {
                 // TOP level interface/union
@@ -340,20 +321,6 @@ export class AggregateFactory {
                 operation.addAuthFilters(...authFilters);
             }
             operation.setFields(fields);
-        }
-
-        const options = this.queryASTFactory.operationsFactory.getOptions(
-            entity,
-            (resolveTree.args.options ?? {}) as any
-        );
-        if (options) {
-            const sort = this.queryASTFactory.sortAndPaginationFactory.createSortFields(options, entity, context);
-            operation.addSort(...sort);
-
-            const pagination = this.queryASTFactory.sortAndPaginationFactory.createPagination(options);
-            if (pagination) {
-                operation.addPagination(pagination);
-            }
         }
 
         return operation;

@@ -74,10 +74,6 @@ export class AggregationOperation extends Operation {
         this.sortFields.push(...sort);
     }
 
-    public addPagination(pagination: Pagination): void {
-        this.pagination = pagination;
-    }
-
     public addFilters(...filters: Filter[]) {
         this.filters.push(...filters);
     }
@@ -138,45 +134,12 @@ export class AggregationOperation extends Operation {
         return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
     }
 
-    protected addSortToClause(
-        context: QueryASTContext,
-        node: Cypher.Variable,
-        clause: Cypher.With | Cypher.Return
-    ): void {
-        const orderByFields = this.sortFields.flatMap((f) => f.getSortFields(context, node));
-        const pagination = this.pagination ? this.pagination.getPagination() : undefined;
-        clause.orderBy(...orderByFields);
-
-        if (pagination?.skip) {
-            clause.skip(pagination.skip);
-        }
-        if (pagination?.limit) {
-            clause.limit(pagination.limit);
-        }
-    }
-
     protected getFieldProjectionClause(
         target: Cypher.Variable,
         returnVariable: Cypher.Variable,
         field: AggregationField
     ): Cypher.Clause {
         return field.getAggregationProjection(target, returnVariable);
-    }
-
-    private getPattern(context: QueryASTContext): Cypher.Pattern {
-        if (!context.target) {
-            throw new Error("Not Target");
-        }
-        if (context.relationship) {
-            if (!context.direction || !context.source) {
-                throw new Error("No valid relationship");
-            }
-            return new Cypher.Pattern(context.source)
-                .related(context.relationship, { direction: context.direction })
-                .to(context.target);
-        } else {
-            return new Cypher.Pattern(context.target);
-        }
     }
 
     private createContext(parentContext: QueryASTContext) {
@@ -196,19 +159,18 @@ export class AggregationOperation extends Operation {
 
     private transpileAggregation(context: QueryASTContext<Cypher.Node>) {
         const operationContext = this.createContext(context);
-        const pattern = this.getPattern(operationContext);
 
         const fieldSubqueries = this.fields.map((f) => {
             const returnVariable = new Cypher.Variable();
             this.aggregationProjectionMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(f, pattern, returnVariable, context);
+            return this.createSubquery(f, returnVariable, context);
         });
 
         const nodeMap = new Cypher.Map();
         const nodeFieldSubqueries = this.nodeFields.map((f) => {
             const returnVariable = new Cypher.Variable();
             nodeMap.set(f.getProjectionField(returnVariable));
-            return this.createSubquery(f, pattern, returnVariable, context);
+            return this.createSubquery(f, returnVariable, context);
         });
 
         if (nodeMap.size > 0) {
@@ -221,7 +183,7 @@ export class AggregationOperation extends Operation {
             edgeFieldSubqueries = this.edgeFields.map((f) => {
                 const returnVariable = new Cypher.Variable();
                 edgeMap.set(f.getProjectionField(returnVariable));
-                return this.createSubquery(f, pattern, returnVariable, context, "edge");
+                return this.createSubquery(f, returnVariable, context, "edge");
             });
             if (edgeMap.size > 0) {
                 this.aggregationProjectionMap.set("edge", edgeMap);
@@ -233,7 +195,6 @@ export class AggregationOperation extends Operation {
 
     private createSubquery(
         field: AggregationField,
-        pattern: Cypher.Pattern,
         returnVariable: Cypher.Variable,
         context: QueryASTContext,
         target: "edge" | "node" = "node"
@@ -264,19 +225,6 @@ export class AggregationOperation extends Operation {
 
         const ret = this.getFieldProjectionClause(targetVar, returnVariable, field);
 
-        let sortClause: Cypher.With | undefined;
-        if (this.sortFields.length > 0 || this.pagination) {
-            sortClause = new Cypher.With("*");
-            this.addSortToClause(nestedContext, targetVar, sortClause);
-        }
-
-        return Cypher.utils.concat(
-            matchClause,
-            ...selectionClauses,
-            ...nestedSubqueries,
-            extraSelectionWith,
-            sortClause,
-            ret
-        );
+        return Cypher.utils.concat(matchClause, ...selectionClauses, ...nestedSubqueries, extraSelectionWith, ret);
     }
 }
