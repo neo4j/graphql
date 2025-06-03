@@ -228,9 +228,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/server@npm:4.12.1, @apollo/server@npm:^4.7.0":
-  version: 4.12.1
-  resolution: "@apollo/server@npm:4.12.1"
+"@apollo/server@npm:4.12.2, @apollo/server@npm:^4.7.0":
+  version: 4.12.2
+  resolution: "@apollo/server@npm:4.12.2"
   dependencies:
     "@apollo/cache-control-types": "npm:^1.0.3"
     "@apollo/server-gateway-interface": "npm:^1.1.1"
@@ -258,7 +258,7 @@ __metadata:
     whatwg-mimetype: "npm:^3.0.0"
   peerDependencies:
     graphql: ^16.6.0
-  checksum: 10c0/0bbdebd863a6a051929fa5c01a8eef4fce867002f6485c4681d4a9fdadc6677a25475aceaab7d0fca9bb4a713e1ee559ec9469b897bb08bcacb343b69995923d
+  checksum: 10c0/c5ac01490adcc1f36787f6be2e0c698a3d7ffe9846bd6f70c18d788c5c60b528fc0f2d037ed5ac4a2ddf4d24e72335371e3e1bfc16c094cbb3e034b883ebffd4
   languageName: node
   linkType: hard
 
@@ -2237,7 +2237,7 @@ __metadata:
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
     "@apollo/gateway": "npm:2.10.2"
-    "@apollo/server": "npm:4.12.1"
+    "@apollo/server": "npm:4.12.2"
     "@apollo/subgraph": "npm:^2.2.3"
     "@graphql-tools/merge": "npm:^9.0.0"
     "@graphql-tools/resolvers-composition": "npm:^7.0.0"
