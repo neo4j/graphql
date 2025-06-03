@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.12.6
+
+### Patch Changes
+
+-   [#6366](https://github.com/neo4j/graphql/pull/6366) [`7741031`](https://github.com/neo4j/graphql/commit/77410315e218951e3f577ae72dd5a0b47fa13c2c) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fix a bug that caused the `@limit` directive to be applied to aggregations
+
 ## 5.12.5
 
 ### Patch Changes
