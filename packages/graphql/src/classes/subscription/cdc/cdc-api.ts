@@ -117,11 +117,11 @@ export class CDCApi {
 
         return Cypher.utils.concat(
             Cypher.db.cdc.current().yield(["id", currentId]),
-            new Cypher.Raw("OPTIONAL "), // TODO: support for OPTIONAL CALL in procedures missing in Cypher Builder: https://github.com/neo4j/cypher-builder/issues/540
             Cypher.db.cdc
                 .query(cursorLiteral, cdcSelectors)
-                .yield(["id", changeId], "txId", "seq", "event", "metadata"),
-            new Cypher.With("*")
+                .optional()
+                .yield(["id", changeId], "txId", "seq", "event", "metadata")
+                .with("*")
                 .orderBy([txId, "ASC"], [seq, "ASC"])
                 .return(currentId, changeId, event, metadata, [Cypher.count(changeId), "eventCount"])
         );

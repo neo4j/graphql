@@ -24,12 +24,14 @@ import * as neo4j from "neo4j-driver";
 import type { Neo4jGraphQLConstructor, Neo4jGraphQLContext } from "../../src";
 import { Neo4jGraphQL, Neo4jGraphQLSubscriptionsCDCEngine } from "../../src";
 import { Neo4jDatabaseInfo } from "../../src/classes";
+import type { Neo4jGraphQLSessionConfig } from "../../src/classes/Executor";
 import type { Neo4jEdition } from "../../src/classes/Neo4jDatabaseInfo";
 import { createBearerToken } from "./create-bearer-token";
 import { UniqueType } from "./graphql-types";
 
 const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
 const DEFAULT_DB = "neo4j";
+const readWriteUser = "neo4jgraphqlinttestuser";
 
 export class TestHelper {
     private _database: string = DEFAULT_DB;
@@ -91,7 +93,9 @@ export class TestHelper {
             throw new Error("Neo4jGraphQL already initialized. Did you forget calling .close()?");
         }
         this.lock = true;
+
         const driver = await this.getDriver();
+
         this.neo4jGraphQL = new Neo4jGraphQL({
             ...options,
             driver,
@@ -116,7 +120,7 @@ export class TestHelper {
         SHOW DATABASES YIELD name, options
         WHERE name = "${this.database}"
         RETURN coalesce(options.txLogEnrichment = "FULL", false) AS cdcEnabled
-    `);
+        `);
 
         return result.records[0]?.get("cdcEnabled");
     }
@@ -143,12 +147,15 @@ export class TestHelper {
             throw new Error("contextValue is a promise. Did you forget to use await with 'getContextValue'?");
         }
         const schema = await this.neo4jGraphQL.getSchema();
-
+        const useRestrictedUser = process.env.USE_RESTRICTED_USER === "true";
         return graphqlRuntime({
             schema,
             ...args,
             source: query,
-            contextValue: await this.getContextValue(args.contextValue as Partial<Neo4jGraphQLContext> | undefined),
+            contextValue: await this.getContextValue(
+                args.contextValue as Partial<Neo4jGraphQLContext> | undefined,
+                useRestrictedUser
+            ),
         });
     }
 
@@ -172,7 +179,7 @@ export class TestHelper {
         if (preClose) {
             try {
                 await preClose();
-            } catch (err) {
+            } catch (_err) {
                 // Ignore error
             }
         }
@@ -183,11 +190,23 @@ export class TestHelper {
     }
 
     /** Use this if using graphql() directly. If possible, use .runGraphQL */
-    public async getContextValue(options?: Record<string, unknown>): Promise<Neo4jGraphQLContext> {
+    public async getContextValue(
+        options?: Record<string, unknown>,
+        useRestrictedUser?: boolean
+    ): Promise<Neo4jGraphQLContext> {
         const driver = await this.getDriver();
+
+        const sessionConfig: Neo4jGraphQLSessionConfig = {
+            database: this.database,
+        };
+       
+        if (useRestrictedUser) {
+            sessionConfig.impersonatedUser = readWriteUser;
+        }
+
         return {
             executionContext: driver,
-            sessionConfig: { database: this.database },
+            sessionConfig,
             ...(options || {}),
         };
     }
@@ -198,12 +217,9 @@ export class TestHelper {
         }
         const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
 
-        // if (process.env.NEO_WAIT) {
-        //     await util.promisify(setTimeout)(Number(process.env.NEO_WAIT));
-        // }
-
         const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
         const driver = neo4j.driver(NEO_URL, auth);
+
         try {
             this._database = await this.checkConnectivity(driver);
         } catch (error: any) {
@@ -221,7 +237,6 @@ export class TestHelper {
      * */
     public async getSession(options?: Record<string, unknown>): Promise<neo4j.Session> {
         const driver = await this.getDriver();
-
         const appliedOptions = { ...options, database: this.database };
         return driver.session(appliedOptions);
     }

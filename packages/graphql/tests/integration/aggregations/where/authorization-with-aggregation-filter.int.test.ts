@@ -260,7 +260,6 @@ describe("Authorization with aggregation filter rule", () => {
 
             CREATE (u1)-[:LIKES]->(p1)
             CREATE (u2)-[:LIKES]->(p1)
-
             CREATE (u2)-[:LIKES]->(p2)
         `);
 
