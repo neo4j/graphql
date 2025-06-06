@@ -24,6 +24,9 @@ import type { QueryASTNode } from "../../QueryASTNode";
 import { Filter } from "../Filter";
 import type { AuthorizationRuleFilter } from "./AuthorizationRuleFilter";
 
+/**
+ * @deprecated This class is deprecated and superseded by `AuthorizationFilters` which support the .getValidate method backed by apoc.util.validate.
+ **/
 export class AuthorizationFiltersDeprecated extends Filter {
     // Maybe we can merge these into a single array
     private validationFilters: AuthorizationRuleFilter[] = [];
