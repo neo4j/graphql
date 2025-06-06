@@ -121,7 +121,7 @@ export class Executor {
         sessionMode: SessionMode,
         info?: GraphQLResolveInfo
     ): Promise<QueryResult> {
-        const params = { ...parameters, ...this.cypherParams };
+        const params ={ ...parameters, ...this.cypherParams };
 
         try {
             if (isDriverLike(this.executionContext)) {

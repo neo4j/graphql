@@ -154,42 +154,38 @@ describe("https://github.com/neo4j/graphql/issues/464", () => {
 
     test("should run the mutation and commit the result, but not close the session", async () => {
         const session = await testHelper.getSession();
-        try {
-            const result = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: createMutation,
-                contextValue: testHelper.getContextValue({ executionContext: session }),
-                variableValues: {
-                    id: bookId,
-                    name: bookName,
-                    authorId,
-                    authorName,
-                },
-            });
+        const result = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: createMutation,
+            contextValue: await testHelper.getContextValue({ executionContext: session }),
+            variableValues: {
+                id: bookId,
+                name: bookName,
+                authorId,
+                authorName,
+            },
+        });
 
-            expect(result.errors).toBeFalsy();
+        expect(result.errors).toBeFalsy();
 
-            expect(result.data).toEqual({
-                [typeBook.operations.create]: {
-                    [typeBook.plural]: [
-                        {
-                            id: bookId,
-                            name: bookName,
-                        },
-                    ],
-                },
-            });
+        expect(result.data).toEqual({
+            [typeBook.operations.create]: {
+                [typeBook.plural]: [
+                    {
+                        id: bookId,
+                        name: bookName,
+                    },
+                ],
+            },
+        });
 
-            const books = await graphql({
-                schema: await neoSchema.getSchema(),
-                source: queryBooks,
-                contextValue: testHelper.getContextValue({ executionContext: session }),
-            });
+        const books = await graphql({
+            schema: await neoSchema.getSchema(),
+            source: queryBooks,
+            contextValue: await testHelper.getContextValue({ executionContext: session }),
+        });
 
-            expect(books.data?.[typeBook.plural]).toEqual([{ id: bookId, name: bookName }]);
-        } finally {
-            await session.close();
-        }
+        expect(books.data?.[typeBook.plural]).toEqual([{ id: bookId, name: bookName }]);
     });
 
     test("should run the mutation but not commit until it is done explicitly", async () => {
