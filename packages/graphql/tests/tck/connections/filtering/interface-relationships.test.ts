@@ -185,7 +185,7 @@ describe("interface relationships with aliased fields", () => {
             "CYPHER 5
             MATCH (this:ProtectedActor)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)-[this1:ACTED_IN]->(this0) WHERE (($jwt.title IS NOT NULL AND CASE
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND size([(this)-[this1:ACTED_IN]->(this0) WHERE (($jwt.title IS NOT NULL AND CASE
                 WHEN this0:Movie THEN this0.movieTitle
                 WHEN this0:Series THEN this0.seriesTitle
                 ELSE this0.title

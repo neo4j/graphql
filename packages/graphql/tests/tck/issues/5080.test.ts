@@ -136,7 +136,7 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
             }
             WITH s AS this0
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this0)-[:OWNED_BY]->(this1:Tenant)
                 WHERE EXISTS {
                     MATCH (this1)<-[:ADMIN_IN]-(this2:User)

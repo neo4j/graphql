@@ -116,15 +116,6 @@ export class CompositeAggregationOperation extends Operation {
         this.edgeFields = fields;
     }
 
-    protected getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        const authPredicates = this.getAuthFilterPredicate(queryASTContext);
-        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authPredicates);
-    }
-
-    protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
-        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
-    }
-
     protected getFieldProjectionClause(
         target: Cypher.Variable,
         returnVariable: Cypher.Variable,
@@ -160,6 +151,15 @@ export class CompositeAggregationOperation extends Operation {
         };
     }
 
+    private getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        const authPredicates = this.getAuthFilterPredicate(queryASTContext);
+        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authPredicates);
+    }
+
+    private getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
+        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
+    }
+
     private createSubqueries(
         fields: AggregationField[],
         context: QueryASTContext,
@@ -192,12 +192,17 @@ export class CompositeAggregationOperation extends Operation {
         });
 
         const filterPredicates = this.getPredicates(filterContext);
+        const validations = filterTruthy(this.authFilters.map((auth) => auth.getValidation(filterContext)));
 
         let withClause: Cypher.With | undefined;
-        if (filterPredicates) {
+        if (filterPredicates || validations.length > 0) {
             withClause = new Cypher.With("*");
             withClause.where(filterPredicates);
+            for (const validation of validations) {
+                withClause.call(validation);
+            }
         }
+
         return withClause;
     }
 

@@ -60,10 +60,6 @@ export class CompositeAggregationPartial extends QueryASTNode {
         this.authFilters.push(...filter);
     }
 
-    protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
-        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
-    }
-
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         if (!context.target) {
             throw new Error("No parent node found!");
@@ -75,6 +71,7 @@ export class CompositeAggregationPartial extends QueryASTNode {
         let target: Cypher.Node | Cypher.Relationship = targetNode;
 
         const authFilterPredicates = this.getAuthFilterPredicate(context);
+        const authFilterValidations = this.getValidations(context);
 
         if (this.entity instanceof RelationshipAdapter) {
             const relVar = new Cypher.Relationship();
@@ -94,6 +91,7 @@ export class CompositeAggregationPartial extends QueryASTNode {
             return [
                 Cypher.utils.concat(
                     matchClause,
+                    ...authFilterValidations,
                     ...nestedSubqueries,
                     new Cypher.Return([targetNode, "node"], [relVar, "edge"])
                 ),
@@ -104,7 +102,14 @@ export class CompositeAggregationPartial extends QueryASTNode {
 
             const nestedSubqueries = wrapSubqueriesInCypherCalls(context, this.getChildren(), [target]);
 
-            return [Cypher.utils.concat(matchClause, ...nestedSubqueries, new Cypher.Return([targetNode, "node"]))];
+            return [
+                Cypher.utils.concat(
+                    matchClause,
+                    ...authFilterValidations,
+                    ...nestedSubqueries,
+                    new Cypher.Return([targetNode, "node"])
+                ),
+            ];
         }
     }
 
@@ -114,5 +119,13 @@ export class CompositeAggregationPartial extends QueryASTNode {
 
     public setAttachedTo(attachedTo: "node" | "relationship"): void {
         this.attachedTo = attachedTo;
+    }
+
+    private getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
+        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
+    }
+
+    private getValidations(context: QueryASTContext): Cypher.VoidProcedure[] {
+        return filterTruthy(this.authFilters.map((f) => f.getValidation(context)));
     }
 }

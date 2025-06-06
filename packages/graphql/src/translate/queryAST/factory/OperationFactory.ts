@@ -63,11 +63,11 @@ import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 
 export class OperationsFactory {
+    // specialized operations factories
     private filterFactory: FilterFactory;
     private fieldFactory: FieldFactory;
     private sortAndPaginationFactory: SortAndPaginationFactory;
     private authorizationFactory: AuthorizationFactory;
-    // specialized operations factories
     private createFactory: CreateFactory;
     private updateFactory: UpdateFactory;
     private deleteFactory: DeleteFactory;

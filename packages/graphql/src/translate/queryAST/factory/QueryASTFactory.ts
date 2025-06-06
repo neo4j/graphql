@@ -24,6 +24,7 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 import { QueryAST } from "../ast/QueryAST";
 import { AuthFilterFactory } from "./AuthFilterFactory";
 import { AuthorizationFactory } from "./AuthorizationFactory";
+import { AuthorizationFactoryDeprecated } from "./AuthorizationFactoryDeprecated";
 import { FieldFactory } from "./FieldFactory";
 import { FilterFactory } from "./FilterFactory";
 import { OperationsFactory } from "./OperationFactory";
@@ -37,6 +38,7 @@ export class QueryASTFactory {
     public fieldFactory: FieldFactory;
     public sortAndPaginationFactory: SortAndPaginationFactory;
     public authorizationFactory: AuthorizationFactory;
+    public authorizationFactoryDeprecated: AuthorizationFactoryDeprecated;
 
     constructor(schemaModel: Neo4jGraphQLSchemaModel) {
         this.schemaModel = schemaModel;
@@ -45,6 +47,7 @@ export class QueryASTFactory {
         this.sortAndPaginationFactory = new SortAndPaginationFactory(this);
         const authFilterFactory = new AuthFilterFactory(this);
         this.authorizationFactory = new AuthorizationFactory(authFilterFactory);
+        this.authorizationFactoryDeprecated = new AuthorizationFactoryDeprecated(authFilterFactory);
         this.operationsFactory = new OperationsFactory(this);
     }
 

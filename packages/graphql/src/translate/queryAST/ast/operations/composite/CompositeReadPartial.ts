@@ -56,6 +56,7 @@ export class CompositeReadPartial extends ReadOperation {
             new Cypher.Call(sq).importWith(nestedContext.target)
         );
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
+        const validations = this.getValidations(nestedContext);
 
         if (extraMatches.length > 0 || filterSubqueries.length > 0 || authFilterSubqueries.length > 0) {
             extraMatches = [matchClause, ...extraMatches];
@@ -81,6 +82,7 @@ export class CompositeReadPartial extends ReadOperation {
             ...filterSubqueries,
             ...authFilterSubqueries,
             matchClause,
+            ...validations,
             subqueries,
             ...sortSubqueries,
             ret

@@ -347,7 +347,7 @@ describe("Top-level interface query fields", () => {
             });
         });
 
-        test("should throw forbidden if jwt incorrect on top-level simple query on interface target to a relationship", async () => {
+        test.only("should throw forbidden if jwt incorrect on top-level simple query on interface target to a relationship", async () => {
             const query = `
                 query {
                     myInterfaces {

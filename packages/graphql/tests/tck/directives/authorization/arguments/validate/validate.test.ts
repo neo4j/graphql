@@ -96,7 +96,7 @@ describe("Cypher Auth Allow", () => {
                     create_this1.id = create_var0.id,
                     create_this1.name = create_var0.name
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
@@ -175,18 +175,18 @@ describe("Cypher Auth Allow", () => {
                             create_this6.id = create_var5.node.id
                         MERGE (create_this3)<-[create_this7:HAS_POST]-(create_this6)
                         WITH *
-                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this6.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                        CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this6.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                         RETURN collect(NULL) AS create_var8
                     }
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (create_this3)<-[:HAS_POST]-(create_this9:User)
                         WHERE ($jwt.sub IS NOT NULL AND create_this9.id = $jwt.sub)
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     RETURN collect(NULL) AS create_var10
                 }
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"

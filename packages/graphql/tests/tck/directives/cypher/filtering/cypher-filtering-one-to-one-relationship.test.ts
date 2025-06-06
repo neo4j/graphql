@@ -998,7 +998,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
                     RETURN head(collect(this5)) AS this6
                 }
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this2 { .title, directed_by: var4 } AS this2
                 RETURN head(collect(this2)) AS var7
             }
@@ -1124,7 +1124,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
                     RETURN head(collect(this5)) AS this6
                 }
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this2 { .title, directed_by: var4 } AS this2
                 RETURN head(collect(this2)) AS var7
             }
@@ -1249,7 +1249,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
                     RETURN head(collect(this5)) AS this6
                 }
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this2 { .title, directed_by: var4 } AS this2
                 RETURN head(collect(this2)) AS var7
             }
@@ -1374,7 +1374,7 @@ describe("cypher directive filtering - One To One Relationship", () => {
                     RETURN head(collect(this5)) AS this6
                 }
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this2 { .title, directed_by: var4 } AS this2
                 RETURN head(collect(this2)) AS var7
             }
