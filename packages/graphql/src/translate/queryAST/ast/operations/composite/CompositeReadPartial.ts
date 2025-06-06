@@ -113,6 +113,7 @@ export class CompositeReadPartial extends ReadOperation {
         const filterPredicates = this.getPredicates(nestedContext);
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
+        const validations = this.getValidations(nestedContext);
 
         const wherePredicate = Cypher.and(filterPredicates, ...authFiltersPredicate);
         if (wherePredicate) {
@@ -125,8 +126,9 @@ export class CompositeReadPartial extends ReadOperation {
         const clause = Cypher.utils.concat(
             ...extraMatches,
             ...filterSubqueries,
-            matchClause,
             ...authFilterSubqueries,
+            matchClause,
+            ...validations,
             subqueries,
             ret
         );
