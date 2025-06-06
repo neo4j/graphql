@@ -100,11 +100,11 @@ export class AuthorizationFactory {
         authAnnotation,
         ...params
     }: AuthFilterParams): AuthorizationFilters | undefined {
-        const whereFilters = this.createAuthRuleFilter(params, authAnnotation?.filter ?? []);
-        if (!whereFilters.length) {
+        const filters = this.createAuthRuleFilter(params, authAnnotation?.filter ?? []);
+        if (!filters.length) {
             return;
         }
-        return new AuthorizationFilters({ validationFilters: [], whereFilters });
+        return new AuthorizationFilters({ validations: [], filters });
     }
 
     public createAuthValidateRule({
@@ -114,11 +114,11 @@ export class AuthorizationFactory {
         ...params
     }: AuthValidateParams): AuthorizationFilters | undefined {
         const rules = authAnnotation?.validate?.filter((rule) => rule.when.includes(when));
-        const validationFilters = this.createAuthRuleFilter(params, rules ?? []);
-        if (!validationFilters.length) {
+        const validations = this.createAuthRuleFilter(params, rules ?? []);
+        if (!validations.length) {
             return;
         }
-        return new AuthorizationFilters({ validationFilters, whereFilters: [], conditionForEvaluation });
+        return new AuthorizationFilters({ validations, filters: [], conditionForEvaluation });
     }
 
     private createAuthRuleFilter(
