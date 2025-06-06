@@ -49,6 +49,9 @@ type AuthValidateParams = AuthParams & {
     authAnnotation: AuthorizationAnnotation | undefined;
 };
 
+/**
+ * @deprecated This class is deprecated and superseded by `AuthorizationFactory`, this is to due to kept compatibility with the old `AuthorizationFilters` class, still used by the legacy translation code.
+ **/
 export class AuthorizationFactoryDeprecated {
     constructor(private filterFactory: AuthFilterFactory) {}
     // TODO: rename this to getProjectionAuthFilters
