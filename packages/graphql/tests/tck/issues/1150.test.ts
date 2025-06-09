@@ -128,7 +128,8 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                             CALL {
                                 WITH this1
                                 MATCH (this1)-[this2:HAS]->(this3:Battery)
-                                WHERE (this2.current = $param2 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                                WHERE this2.current = $param2
+                                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                                 WITH { properties: { current: this2.current, __resolveType: \\"RelationProps\\" }, node: { __resolveType: \\"Battery\\", __id: id(this3), id: this3.id } } AS edge
                                 RETURN edge
                                 UNION

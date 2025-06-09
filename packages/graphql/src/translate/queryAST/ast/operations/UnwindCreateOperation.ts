@@ -212,30 +212,37 @@ export class UnwindCreateOperation extends MutationOperation {
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
-        const { selections, subqueries, predicates } = this.getAuthFilters(context);
+        const { selections, subqueries, predicates, validations } = this.transpileAuthClauses(context);
+        const predicate = Cypher.and(...predicates);
         const lastSelection = selections[selections.length - 1];
-        if (lastSelection) {
-            lastSelection.where(Cypher.and(...predicates));
-            return [...subqueries, new Cypher.With("*"), ...selections];
+
+        if (!predicates.length && !validations.length) {
+            return [];
+        } else {
+            if (lastSelection) {
+                lastSelection.where(predicate);
+                return [...subqueries, new Cypher.With("*"), ...selections, ...validations];
+            }
+            return [...subqueries, new Cypher.With("*").where(predicate), ...selections, ...validations];
         }
-        if (predicates.length) {
-            return [...subqueries, new Cypher.With("*").where(Cypher.and(...predicates))];
-        }
-        return [...subqueries];
     }
 
-    private getAuthFilters(context: QueryASTContext): {
+    private transpileAuthClauses(context: QueryASTContext): {
         selections: (Cypher.With | Cypher.Match)[];
         subqueries: Cypher.Clause[];
         predicates: Cypher.Predicate[];
+        validations: Cypher.VoidProcedure[];
     } {
         const selections: (Cypher.With | Cypher.Match)[] = [];
         const subqueries: Cypher.Clause[] = [];
         const predicates: Cypher.Predicate[] = [];
+        const validations: Cypher.VoidProcedure[] = [];
         for (const authFilter of this.authFilters) {
             const extraSelections = authFilter.getSelection(context);
             const authSubqueries = authFilter.getSubqueries(context);
             const authPredicate = authFilter.getPredicate(context);
+            const validation = authFilter.getValidation(context);
+
             if (extraSelections) {
                 selections.push(...extraSelections);
             }
@@ -245,8 +252,11 @@ export class UnwindCreateOperation extends MutationOperation {
             if (authPredicate) {
                 predicates.push(authPredicate);
             }
+            if (validation) {
+                validations.push(validation);
+            }
         }
-        return { selections, subqueries, predicates };
+        return { selections, subqueries, predicates, validations };
     }
 
     private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {

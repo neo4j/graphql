@@ -106,7 +106,7 @@ describe("@auth allow on specific interface implementation", () => {
                     UNION
                     WITH *
                     MATCH (this)-[this3:HAS_CONTENT]->(this4:Post)
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this4)<-[:HAS_CONTENT]-(this5:User)
                         WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -168,10 +168,11 @@ describe("@auth allow on specific interface implementation", () => {
                     UNION
                     WITH *
                     MATCH (this)-[this3:HAS_CONTENT]->(this4:Post)
-                    WHERE (this4.id = $param2 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                    WHERE this4.id = $param2
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this4)<-[:HAS_CONTENT]-(this5:User)
                         WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)
-                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     CALL {
                         WITH this4
                         MATCH (this4)-[this6:HAS_COMMENT]->(this7:Comment)
@@ -270,7 +271,7 @@ describe("@auth allow on specific interface implementation", () => {
                     UNION
                     WITH *
                     MATCH (this)-[update_this3:HAS_CONTENT]->(update_this4:Post)
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (update_this4)<-[:HAS_CONTENT]-(update_this5:User)
                         WHERE ($jwt.sub IS NOT NULL AND update_this5.id = $jwt.sub)
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -335,10 +336,11 @@ describe("@auth allow on specific interface implementation", () => {
             CALL {
                 WITH *
                 OPTIONAL MATCH (this)-[this4:HAS_CONTENT]->(this5:Post)
-                WHERE (this5.id = $param2 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                WHERE this5.id = $param2
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                     MATCH (this5)<-[:HAS_CONTENT]-(this6:User)
                     WHERE ($jwt.sub IS NOT NULL AND this6.id = $jwt.sub)
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this4, collect(DISTINCT this5) AS var7
                 CALL {
                     WITH var7

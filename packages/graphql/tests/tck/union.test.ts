@@ -83,7 +83,7 @@ describe("Cypher Union", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:Genre)
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                     UNION
@@ -133,7 +133,7 @@ describe("Cypher Union", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:Genre)
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                     UNION
@@ -191,7 +191,8 @@ describe("Cypher Union", () => {
                 CALL {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:Genre)
-                    WHERE (this1.name = $param1 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    WHERE this1.name = $param1
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS this1
                     RETURN this1 AS var2
                     UNION

@@ -106,11 +106,6 @@ export class AggregationOperation extends Operation {
         };
     }
 
-    protected getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        const authPredicates = this.getAuthFilterPredicate(queryASTContext);
-        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authPredicates);
-    }
-
     protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
         return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
     }
@@ -192,6 +187,15 @@ export class AggregationOperation extends Operation {
         return [...fieldSubqueries, ...nodeFieldSubqueries, ...edgeFieldSubqueries];
     }
 
+    private getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        const authPredicates = this.getAuthFilterPredicate(queryASTContext);
+        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authPredicates);
+    }
+
+    private getValidations(queryASTContext: QueryASTContext): Cypher.VoidProcedure[] {
+        return filterTruthy(this.authFilters.flatMap((f) => f.getValidation(queryASTContext)));
+    }
+
     private createSubquery(
         field: AggregationField,
         pattern: Cypher.Pattern,
@@ -207,6 +211,7 @@ export class AggregationOperation extends Operation {
         if (!targetVar) throw new Error("Edge not define in aggregations");
 
         const filterPredicates = this.getPredicates(nestedContext);
+        const validations = this.getValidations(nestedContext);
 
         const selectionClauses = this.getChildren().flatMap((c) => {
             return c.getSelection(nestedContext);
@@ -229,6 +234,13 @@ export class AggregationOperation extends Operation {
 
         const ret = this.getFieldProjectionClause(targetVar, returnVariable, field);
 
-        return Cypher.utils.concat(matchClause, ...selectionClauses, ...nestedSubqueries, extraSelectionWith, ret);
+        return Cypher.utils.concat(
+            matchClause,
+            ...validations,
+            ...selectionClauses,
+            ...nestedSubqueries,
+            extraSelectionWith,
+            ret
+        );
     }
 }

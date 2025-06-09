@@ -57,7 +57,7 @@ export function createAuthorizationAfterPredicate({
             neo4jGraphQLContext: context,
         });
 
-        const authorizationFilters = factory.authorizationFactory.createAuthValidateRule({
+        const authorizationFilters = factory.authorizationFactoryDeprecated.createAuthValidateRule({
             authAnnotation: entity.annotations.authorization,
             entity,
             operations,
@@ -123,7 +123,7 @@ export function createAuthorizationAfterPredicateField({
             if (!attributeAdapter) {
                 throw new Error("Couldn't match attribute");
             }
-            const attributesFilters = factory.authorizationFactory.createAuthValidateRule({
+            const attributesFilters = factory.authorizationFactoryDeprecated.createAuthValidateRule({
                 authAnnotation: attributeAdapter.annotations.authorization,
                 entity,
                 operations,

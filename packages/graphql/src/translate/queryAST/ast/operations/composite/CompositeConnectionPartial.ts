@@ -48,6 +48,7 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
         const predicates = this.filters.map((f) => f.getPredicate(nestedContext));
 
         const authPredicate = this.getAuthFilterPredicate(nestedContext);
+        const validations = this.getValidations(nestedContext);
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext);
 
@@ -128,6 +129,7 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
             clause,
             ...authFilterSubqueries,
             withWhere,
+            ...validations,
             ...nodeProjectionSubqueries,
             projectionClauses
         );

@@ -153,10 +153,11 @@ describe("Cypher -> fulltext -> Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-            WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+            WHERE $param1 IN labels(this0)
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this0)<-[:DIRECTED]-(this2:Person)
                 WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -226,13 +227,14 @@ describe("Cypher -> fulltext -> Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-            WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
+            WHERE $param1 IN labels(this0)
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND (EXISTS {
                 MATCH (this0)<-[:DIRECTED]-(this2:Person)
                 WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
             } AND NOT (EXISTS {
                 MATCH (this0)<-[:DIRECTED]-(this2:Person)
                 WHERE NOT ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
-            }))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            }))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -307,10 +309,11 @@ describe("Cypher -> fulltext -> Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-            WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+            WHERE $param1 IN labels(this0)
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
                 WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -385,13 +388,14 @@ describe("Cypher -> fulltext -> Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-            WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
+            WHERE $param1 IN labels(this0)
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND (EXISTS {
                 MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
                 WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
             } AND NOT (EXISTS {
                 MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
                 WHERE NOT ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
-            }))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            }))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -470,10 +474,11 @@ describe("Cypher -> fulltext -> Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-            WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+            WHERE $param1 IN labels(this0)
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
                 WHERE ($param3 IS NOT NULL AND this2.year = $param3)
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -549,13 +554,14 @@ describe("Cypher -> fulltext -> Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
-            WHERE ($param1 IN labels(this0) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
+            WHERE $param1 IN labels(this0)
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND (EXISTS {
                 MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
                 WHERE ($param3 IS NOT NULL AND this2.year = $param3)
             } AND NOT (EXISTS {
                 MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
                 WHERE NOT ($param3 IS NOT NULL AND this2.year = $param3)
-            }))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            }))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {

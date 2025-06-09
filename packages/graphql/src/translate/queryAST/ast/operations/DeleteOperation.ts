@@ -25,6 +25,7 @@ import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls"
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Filter } from "../filters/Filter";
+import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { EntitySelection, SelectionClause } from "../selection/EntitySelection";
 import type { OperationTranspileResult } from "./operations";
 import { MutationOperation } from "./operations";
@@ -33,7 +34,7 @@ export class DeleteOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter | InterfaceEntityAdapter;
     private selection: EntitySelection;
     private filters: Filter[];
-    private authFilters: Filter[];
+    private authFilters: AuthorizationFilters[];
     private nestedOperations: MutationOperation[];
 
     constructor({
@@ -47,7 +48,7 @@ export class DeleteOperation extends MutationOperation {
         selection: EntitySelection;
         filters?: Filter[];
         nestedOperations?: DeleteOperation[];
-        authFilters?: Filter[];
+        authFilters?: AuthorizationFilters[];
     }) {
         super();
         this.target = target;
@@ -82,6 +83,7 @@ export class DeleteOperation extends MutationOperation {
             return new Cypher.Call(c).importWith(context.target);
         });
         const predicate = this.getPredicate(context);
+        const validations = this.getValidations(context);
         const extraSelections = this.getExtraSelections(context);
 
         const nestedOperations: (Cypher.Call | Cypher.With)[] = this.getNestedDeleteSubQueries(context);
@@ -89,6 +91,7 @@ export class DeleteOperation extends MutationOperation {
         let statements = [selection, ...extraSelections, ...filterSubqueries, ...authBeforeSubqueries];
 
         statements = this.appendFilters(statements, predicate);
+        statements.push(...validations);
         if (nestedOperations.length) {
             statements.push(new Cypher.With("*"), ...nestedOperations);
         }
@@ -111,8 +114,9 @@ export class DeleteOperation extends MutationOperation {
         const authBeforeSubqueries = this.getAuthFilterSubqueries(context).map((c) => {
             return new Cypher.Call(c).importWith(context.target);
         });
-        const predicate = this.getPredicate(context);
         const extraSelections = this.getExtraSelections(context);
+        const predicate = this.getPredicate(context);
+        const validations = this.getValidations(context);
         const collect = Cypher.collect(context.target).distinct();
         const deleteVar = new Cypher.Variable();
         const withBeforeDeleteBlock = new Cypher.With(context.relationship, [collect, deleteVar]);
@@ -126,6 +130,7 @@ export class DeleteOperation extends MutationOperation {
             [selection, ...extraSelections, ...filterSubqueries, ...authBeforeSubqueries],
             predicate
         );
+        statements.push(...validations);
 
         if (nestedOperations.length) {
             statements.push(new Cypher.With("*"), ...nestedOperations);
@@ -196,6 +201,10 @@ export class DeleteOperation extends MutationOperation {
     private getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         const authBeforePredicates = this.getAuthFilterPredicate(queryASTContext);
         return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authBeforePredicates);
+    }
+
+    private getValidations(queryASTContext: QueryASTContext): Cypher.VoidProcedure[] {
+        return filterTruthy(this.authFilters.map((auth) => auth.getValidation(queryASTContext)));
     }
 
     private getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {

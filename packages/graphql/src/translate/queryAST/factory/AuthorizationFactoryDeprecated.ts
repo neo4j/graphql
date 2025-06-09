@@ -29,7 +29,7 @@ import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-a
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { filterTruthy } from "../../../utils/utils";
 import { populateWhereParams } from "../../authorization/utils/populate-where-params";
-import { AuthorizationFilters } from "../ast/filters/authorization-filters/AuthorizationFilters";
+import { AuthorizationFiltersDeprecated } from "../ast/filters/authorization-filters/AuthorizationFiltersDeprecated";
 import { AuthorizationRuleFilter } from "../ast/filters/authorization-filters/AuthorizationRuleFilter";
 import { isConcreteEntity } from "../utils/is-concrete-entity";
 import type { AuthFilterFactory } from "./AuthFilterFactory";
@@ -49,7 +49,10 @@ type AuthValidateParams = AuthParams & {
     authAnnotation: AuthorizationAnnotation | undefined;
 };
 
-export class AuthorizationFactory {
+/**
+ * @deprecated This class is deprecated and superseded by `AuthorizationFactory`, this is to due to kept compatibility with the old `AuthorizationFilters` class, still used by the legacy translation code.
+ **/
+export class AuthorizationFactoryDeprecated {
     constructor(private filterFactory: AuthFilterFactory) {}
     // TODO: rename this to getProjectionAuthFilters
     public getAuthFilters({
@@ -57,8 +60,8 @@ export class AuthorizationFactory {
         ...params
     }: AuthParams & {
         attributes?: AttributeAdapter[];
-    }): AuthorizationFilters[] {
-        const authorizationFilters = this.createAuthFilterRule({
+    }): AuthorizationFiltersDeprecated[] {
+        const AuthorizationFiltersDeprecated = this.createAuthFilterRule({
             ...params,
             authAnnotation: params.entity.annotations.authorization,
         });
@@ -68,8 +71,8 @@ export class AuthorizationFactory {
             when: "BEFORE",
         });
 
-        const attributeAuthFilters: (AuthorizationFilters | undefined)[] = [];
-        const attributeAuthValidate: (AuthorizationFilters | undefined)[] = [];
+        const attributeAuthFilters: (AuthorizationFiltersDeprecated | undefined)[] = [];
+        const attributeAuthValidate: (AuthorizationFiltersDeprecated | undefined)[] = [];
         if (attributes?.length && isConcreteEntity(params.entity)) {
             for (const attribute of attributes) {
                 attributeAuthFilters.push(
@@ -89,7 +92,7 @@ export class AuthorizationFactory {
         }
 
         return filterTruthy([
-            authorizationFilters,
+            AuthorizationFiltersDeprecated,
             ...attributeAuthFilters,
             authorizationValidate,
             ...attributeAuthValidate,
@@ -99,12 +102,12 @@ export class AuthorizationFactory {
     public createAuthFilterRule({
         authAnnotation,
         ...params
-    }: AuthFilterParams): AuthorizationFilters | undefined {
-        const filters = this.createAuthRuleFilter(params, authAnnotation?.filter ?? []);
-        if (!filters.length) {
+    }: AuthFilterParams): AuthorizationFiltersDeprecated | undefined {
+        const whereFilters = this.createAuthRuleFilter(params, authAnnotation?.filter ?? []);
+        if (!whereFilters.length) {
             return;
         }
-        return new AuthorizationFilters({ validations: [], filters });
+        return new AuthorizationFiltersDeprecated({ validationFilters: [], whereFilters });
     }
 
     public createAuthValidateRule({
@@ -112,13 +115,13 @@ export class AuthorizationFactory {
         when,
         conditionForEvaluation,
         ...params
-    }: AuthValidateParams): AuthorizationFilters | undefined {
+    }: AuthValidateParams): AuthorizationFiltersDeprecated | undefined {
         const rules = authAnnotation?.validate?.filter((rule) => rule.when.includes(when));
-        const validations = this.createAuthRuleFilter(params, rules ?? []);
-        if (!validations.length) {
+        const validationFilters = this.createAuthRuleFilter(params, rules ?? []);
+        if (!validationFilters.length) {
             return;
         }
-        return new AuthorizationFilters({ validations, filters: [], conditionForEvaluation });
+        return new AuthorizationFiltersDeprecated({ validationFilters, whereFilters: [], conditionForEvaluation });
     }
 
     private createAuthRuleFilter(

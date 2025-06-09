@@ -20,55 +20,56 @@
 import Cypher from "@neo4j/cypher-builder";
 import { AUTH_FORBIDDEN_ERROR } from "../../../../../constants";
 import type { QueryASTContext } from "../../QueryASTContext";
-import type { QueryASTNode } from "../../QueryASTNode";
-import { Filter } from "../Filter";
+import { QueryASTNode } from "../../QueryASTNode";
 import type { AuthorizationRuleFilter } from "./AuthorizationRuleFilter";
 
-export class AuthorizationFilters extends Filter {
-    // Maybe we can merge these into a single array
-    private validationFilters: AuthorizationRuleFilter[] = [];
-    private whereFilters: AuthorizationRuleFilter[] = [];
+export class AuthorizationFilters extends QueryASTNode {
+    private validations: AuthorizationRuleFilter[] = [];
+    private filters: AuthorizationRuleFilter[] = [];
     private conditionForEvaluation: Cypher.Predicate | undefined;
 
     constructor({
-        validationFilters,
-        whereFilters,
+        validations,
+        filters,
         conditionForEvaluation,
     }: {
-        validationFilters: AuthorizationRuleFilter[];
-        whereFilters: AuthorizationRuleFilter[];
+        validations: AuthorizationRuleFilter[];
+        filters: AuthorizationRuleFilter[];
         conditionForEvaluation?: Cypher.Predicate;
     }) {
         super();
-        this.validationFilters = validationFilters;
-        this.whereFilters = whereFilters;
+        this.validations = validations;
+        this.filters = filters;
         this.conditionForEvaluation = conditionForEvaluation;
     }
 
     public getPredicate(context: QueryASTContext): Cypher.Predicate | undefined {
-        const validateInnerPredicate = Cypher.or(...this.validationFilters.map((f) => f.getPredicate(context)));
-        const wherePredicate = Cypher.or(...this.whereFilters.map((f) => f.getPredicate(context)));
+        return Cypher.or(...this.filters.map((f) => f.getPredicate(context)));
+    }
 
-        let validatePredicate: Cypher.Predicate | undefined;
-        if (validateInnerPredicate) {
+    public getValidation(context: QueryASTContext): Cypher.VoidProcedure | undefined {
+        const validationPredicate = Cypher.or(
+            ...this.validations.flatMap((validationRule) => validationRule.getPredicate(context))
+        );
+        if (validationPredicate) {
             const predicate = this.conditionForEvaluation
-                ? Cypher.and(this.conditionForEvaluation, Cypher.not(validateInnerPredicate))
-                : Cypher.not(validateInnerPredicate);
-            validatePredicate = Cypher.apoc.util.validatePredicate(predicate, AUTH_FORBIDDEN_ERROR);
+                ? Cypher.and(this.conditionForEvaluation, Cypher.not(validationPredicate))
+                : Cypher.not(validationPredicate);
+            return Cypher.apoc.util.validate(predicate, AUTH_FORBIDDEN_ERROR);
         }
 
-        return Cypher.and(wherePredicate, validatePredicate);
+        return;
     }
 
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
-        return [...this.validationFilters, ...this.whereFilters].flatMap((c) => c.getSubqueries(context));
+        return [...this.validations, ...this.filters].flatMap((c) => c.getSubqueries(context));
     }
 
     public getSelection(context: QueryASTContext): Array<Cypher.Match | Cypher.With> {
-        return [...this.validationFilters, ...this.whereFilters].flatMap((c) => c.getSelection(context));
+        return [...this.validations, ...this.filters].flatMap((c) => c.getSelection(context));
     }
 
     public getChildren(): QueryASTNode[] {
-        return [...this.validationFilters, ...this.whereFilters];
+        return [...this.validations, ...this.filters];
     }
 }

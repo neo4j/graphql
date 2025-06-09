@@ -218,7 +218,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
                 WITH DISTINCT this1
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND (EXISTS {
                     MATCH (this1)<-[:CREATOR_OF]-(this2:User)
                     WHERE ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid)
                 } OR EXISTS {
@@ -249,7 +249,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                 CALL {
                     WITH this1
                     MATCH (this1)-[this11:PARTNER_OF]-(this12:Person)
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (EXISTS {
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND (EXISTS {
                         MATCH (this12)<-[:CREATOR_OF]-(this13:User)
                         WHERE ($jwt.uid IS NOT NULL AND this13.id = $jwt.uid)
                     } OR EXISTS {
