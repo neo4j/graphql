@@ -227,14 +227,13 @@ export class ConnectionReadOperation extends Operation {
             }),
             context.returnVariable,
         ]);
-
-        let connectionClauses: Cypher.Clause;
-
-        connectionClauses = Cypher.utils.concat(
+        const validations = this.getValidations(nestedContext);
+        let connectionClauses: Cypher.Clause = Cypher.utils.concat(
             ...extraMatches,
             selectionClause,
             ...filtersSubqueries,
             withWhere,
+            ...validations,
             withCollectEdgesAndTotalCount,
             unwindAndProjectionSubquery
         );
@@ -261,6 +260,10 @@ export class ConnectionReadOperation extends Operation {
 
     protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
         return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
+    }
+
+    protected getValidations(context: QueryASTContext): Cypher.VoidProcedure[] {
+        return filterTruthy(this.authFilters.flatMap((f) => f.getValidation(context)));
     }
 
     protected getUnwindClause(

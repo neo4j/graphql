@@ -123,7 +123,7 @@ describe("Cypher Auth Allow", () => {
             "CYPHER 5
             MATCH (this:User)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .id } AS this"
         `);
 
@@ -158,7 +158,8 @@ describe("Cypher Auth Allow", () => {
             "CYPHER 5
             MATCH (this:User)
             WITH *
-            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .password } AS this"
         `);
 
@@ -196,13 +197,13 @@ describe("Cypher Auth Allow", () => {
             "CYPHER 5
             MATCH (this:User)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
                 WITH DISTINCT this1
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                     MATCH (this1)<-[:HAS_POST]-(this2:User)
                     WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
                 }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -245,7 +246,7 @@ describe("Cypher Auth Allow", () => {
             "CYPHER 5
             MATCH (this:Post)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this)<-[:HAS_POST]-(this0:User)
                 WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -254,7 +255,8 @@ describe("Cypher Auth Allow", () => {
                 MATCH (this)<-[this1:HAS_POST]-(this2:User)
                 WITH DISTINCT this2
                 WITH *
-                WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this2 { .password } AS this2
                 RETURN collect(this2) AS var3
             }
@@ -297,25 +299,28 @@ describe("Cypher Auth Allow", () => {
             "CYPHER 5
             MATCH (this:User)
             WITH *
-            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE this.id = $param0
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
                 WITH DISTINCT this1
                 WITH *
-                WHERE (this1.id = $param3 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                WHERE this1.id = $param3
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                     MATCH (this1)<-[:HAS_POST]-(this2:User)
                     WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL {
                     WITH this1
                     MATCH (this1)-[this3:HAS_COMMENT]->(this4:Comment)
                     WITH DISTINCT this4
                     WITH *
-                    WHERE (this4.id = $param4 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                    WHERE this4.id = $param4
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this4)<-[:HAS_COMMENT]-(this5:User)
                         WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)
-                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH this4 { .content } AS this4
                     RETURN collect(this4) AS var6
                 }
@@ -364,7 +369,7 @@ describe("Cypher Auth Allow", () => {
             WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             SET this.id = $this_update_id_SET
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -409,7 +414,7 @@ describe("Cypher Auth Allow", () => {
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             SET this.password = $this_update_password_SET
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -465,7 +470,7 @@ describe("Cypher Auth Allow", () => {
             	RETURN count(*) AS update_this_creator0
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this)<-[:HAS_POST]-(update_this0:User)
                 WHERE ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -526,7 +531,7 @@ describe("Cypher Auth Allow", () => {
             	RETURN count(*) AS update_this_creator0
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this)<-[:HAS_POST]-(update_this0:User)
                 WHERE ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -566,7 +571,9 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE this.id = $param0
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
             DETACH DELETE this"
         `);
 
@@ -604,15 +611,17 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE this.id = $param0
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             CALL {
                 WITH *
                 OPTIONAL MATCH (this)-[this0:HAS_POST]->(this1:Post)
-                WHERE (this1.id = $param3 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                WHERE this1.id = $param3
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                     MATCH (this1)<-[:HAS_POST]-(this2:User)
                     WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this0, collect(DISTINCT this1) AS var3
                 CALL {
                     WITH var3
@@ -680,7 +689,7 @@ describe("Cypher Auth Allow", () => {
             RETURN count(*) AS disconnect_this_posts0_disconnect_Post
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -787,7 +796,7 @@ describe("Cypher Auth Allow", () => {
             RETURN count(*) AS disconnect_this_post0_disconnect_Post
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this)<-[:HAS_COMMENT]-(update_this0:User)
                 WHERE ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -883,7 +892,7 @@ describe("Cypher Auth Allow", () => {
             	RETURN count(*) AS connect_this_posts0_connect_Post0
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 

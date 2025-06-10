@@ -61,7 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $jwt.roles = $param2) OR ($jwt.roles IS NOT NULL AND $jwt.roles = $param3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $jwt.roles = $param2) OR ($jwt.roles IS NOT NULL AND $jwt.roles = $param3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } AS this"
         `);
 
@@ -132,7 +132,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((($jwt.roles IS NOT NULL AND $jwt.roles = $param2) OR ($jwt.roles IS NOT NULL AND $jwt.roles = $param3)) OR (($jwt.roles IS NOT NULL AND $jwt.roles = $param4) OR ($jwt.roles IS NOT NULL AND $jwt.roles = $param5)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ((($jwt.roles IS NOT NULL AND $jwt.roles = $param2) OR ($jwt.roles IS NOT NULL AND $jwt.roles = $param3)) OR (($jwt.roles IS NOT NULL AND $jwt.roles = $param4) OR ($jwt.roles IS NOT NULL AND $jwt.roles = $param5)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } AS this"
         `);
 
@@ -198,7 +198,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $jwt.roles = $param2) AND ($jwt.roles IS NOT NULL AND $jwt.roles = $param3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $jwt.roles = $param2) AND ($jwt.roles IS NOT NULL AND $jwt.roles = $param3))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } AS this"
         `);
 
@@ -269,7 +269,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ((($jwt.roles IS NOT NULL AND $jwt.roles = $param2) AND ($jwt.roles IS NOT NULL AND $jwt.roles = $param3)) AND (($jwt.roles IS NOT NULL AND $jwt.roles = $param4) AND ($jwt.roles IS NOT NULL AND $jwt.roles = $param5)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ((($jwt.roles IS NOT NULL AND $jwt.roles = $param2) AND ($jwt.roles IS NOT NULL AND $jwt.roles = $param3)) AND (($jwt.roles IS NOT NULL AND $jwt.roles = $param4) AND ($jwt.roles IS NOT NULL AND $jwt.roles = $param5)))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } AS this"
         `);
 
@@ -328,7 +328,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND NOT ($jwt.roles IS NOT NULL AND $jwt.roles = $param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND NOT ($jwt.roles IS NOT NULL AND $jwt.roles = $param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } AS this"
         `);
 
@@ -386,7 +386,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND NOT (NOT ($jwt.roles IS NOT NULL AND $jwt.roles = $param2))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND NOT (NOT ($jwt.roles IS NOT NULL AND $jwt.roles = $param2))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } AS this"
         `);
 

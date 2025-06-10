@@ -60,7 +60,6 @@ export class ReadOperation extends Operation {
         super();
         this.target = target;
         this.relationship = relationship;
-
         this.selection = selection;
     }
 
@@ -90,6 +89,10 @@ export class ReadOperation extends Operation {
 
     protected getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
         return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
+    }
+
+    protected getValidations(context: QueryASTContext): Cypher.VoidProcedure[] {
+        return filterTruthy(this.authFilters.map((f) => f.getValidation(context)));
     }
 
     protected getProjectionClause(context: QueryASTContext, returnVariable: Cypher.Variable): Cypher.Return {
@@ -149,8 +152,11 @@ export class ReadOperation extends Operation {
 
         let filterSubqueryWith: Cypher.With | undefined;
         let filterSubqueriesClause: Cypher.Clause | undefined;
-        // This weird condition is just for cypher compatibility
-        const shouldAddWithForAuth = authFilterSubqueries.length || authFiltersPredicate.length;
+
+        const validations = this.getValidations(nestedContext);
+
+        // WITH is required between SET and CALL
+        const shouldAddWithForAuth = authFilterSubqueries.length || authFiltersPredicate.length || validations.length;
         if (filterSubqueries.length || shouldAddWithForAuth) {
             filterSubqueriesClause = Cypher.utils.concat(...filterSubqueries);
             if (!isCreateSelection || authFilterSubqueries.length) {
@@ -208,16 +214,13 @@ export class ReadOperation extends Operation {
             }
             matchBlock.push(...extraMatches, extraMatchesWith);
 
-            if (this.relationship) {
-                const distinctTargetWith = new Cypher.With(nestedContext.target).distinct();
-                matchBlock.push(distinctTargetWith);
-            }
-
             clause = Cypher.utils.concat(
                 ...matchBlock,
+                this.relationship ? new Cypher.With(nestedContext.target).distinct() : undefined,
                 ...authFilterSubqueries,
                 filterSubqueriesClause,
                 filterSubqueryWith,
+                ...validations,
                 sortAndLimitBlock,
                 subqueries,
                 ret

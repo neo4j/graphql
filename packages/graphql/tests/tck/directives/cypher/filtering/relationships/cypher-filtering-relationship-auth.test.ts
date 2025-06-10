@@ -284,7 +284,8 @@ describe("cypher directive filtering - relationship auth filter", () => {
                 RETURN collect(this1) AS this2
             }
             WITH *
-            WHERE (this0.rating < $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND any(this3 IN this2 WHERE ($jwt.custom_value IS NOT NULL AND this3.name = $jwt.custom_value))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE this0.rating < $param0
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND any(this3 IN this2 WHERE ($jwt.custom_value IS NOT NULL AND this3.name = $jwt.custom_value))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -379,7 +380,8 @@ describe("cypher directive filtering - relationship auth filter", () => {
                 RETURN collect(this1) AS this2
             }
             WITH *
-            WHERE (this0.rating > $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND any(this3 IN this2 WHERE ($jwt.custom_value IS NOT NULL AND this3.name = $jwt.custom_value))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE this0.rating > $param0
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND any(this3 IN this2 WHERE ($jwt.custom_value IS NOT NULL AND this3.name = $jwt.custom_value))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {

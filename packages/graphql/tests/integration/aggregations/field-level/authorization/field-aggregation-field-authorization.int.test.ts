@@ -59,7 +59,7 @@ describe("Field Level Aggregations Field Authorization", () => {
         });
 
         await testHelper.executeCypher(`
-            CREATE (a:${Actor} {name: "Keanu"})-[:ACTED_ON  {screenTime: 10}]->(:${Series} {title: "Doctor Who", cost: 10.0, episodes: 5000})
+            CREATE (a:${Actor} {name: "Keanu"})-[:ACTED_IN  {screenTime: 10}]->(:${Series} {title: "Doctor Who", cost: 10.0, episodes: 5000})
         `);
     });
 

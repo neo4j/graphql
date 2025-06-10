@@ -81,11 +81,11 @@ describe("Cypher Auth Projection On Connections", () => {
             "CYPHER 5
             MATCH (this:User)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                     MATCH (this1)<-[:HAS_POST]-(this2:User)
                     WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
                 }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -145,11 +145,11 @@ describe("Cypher Auth Projection On Connections", () => {
             "CYPHER 5
             MATCH (this:User)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL {
                 WITH this
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                     MATCH (this1)<-[:HAS_POST]-(this2:User)
                     WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
                 }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -162,7 +162,7 @@ describe("Cypher Auth Projection On Connections", () => {
                     CALL {
                         WITH this1
                         MATCH (this1)<-[this3:HAS_POST]-(this4:User)
-                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                        CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                         WITH collect({ node: this4, relationship: this3 }) AS edges
                         WITH edges, size(edges) AS totalCount
                         CALL {
@@ -255,7 +255,7 @@ describe("Cypher Auth Projection On top-level connections", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:User)
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -265,7 +265,7 @@ describe("Cypher Auth Projection On top-level connections", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:HAS_POST]->(this2:Post)
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this2)<-[:HAS_POST]-(this3:User)
                         WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -330,7 +330,7 @@ describe("Cypher Auth Projection On top-level connections", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:User)
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
@@ -340,7 +340,7 @@ describe("Cypher Auth Projection On top-level connections", () => {
                 CALL {
                     WITH this0
                     MATCH (this0)-[this1:HAS_POST]->(this2:Post)
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this2)<-[:HAS_POST]-(this3:User)
                         WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -353,7 +353,7 @@ describe("Cypher Auth Projection On top-level connections", () => {
                         CALL {
                             WITH this2
                             MATCH (this2)<-[this4:HAS_POST]-(this5:User)
-                            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                             WITH collect({ node: this5, relationship: this4 }) AS edges
                             WITH edges, size(edges) AS totalCount
                             CALL {

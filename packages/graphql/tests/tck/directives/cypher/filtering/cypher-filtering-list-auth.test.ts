@@ -540,7 +540,7 @@ describe("cypher directive filtering - List Auth", () => {
                 RETURN collect(this1) AS var2
             }
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var2 IS NOT NULL AND $jwt.custom_value IN var2)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var2 IS NOT NULL AND $jwt.custom_value IN var2)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } AS this"
         `);
 

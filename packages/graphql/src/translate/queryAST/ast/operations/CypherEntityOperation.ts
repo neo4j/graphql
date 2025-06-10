@@ -57,10 +57,12 @@ export class CypherEntityOperation extends ReadOperation {
         );
 
         const authPredicates = this.getAuthFilterPredicate(nestedContext);
+        const validations = this.getValidations(nestedContext);
 
-        const authClauses = authPredicates.length
-            ? [...authFilterSubqueries, new Cypher.With("*").where(Cypher.and(...authPredicates))]
-            : [];
+        const authClauses =
+            authPredicates.length || validations.length
+                ? [...authFilterSubqueries, new Cypher.With("*").where(Cypher.and(...authPredicates)), ...validations]
+                : [];
 
         const ret = this.getReturnClause(nestedContext, context.returnVariable);
         const extraMatches: SelectionClause[] = this.getChildren().flatMap((f) => f.getSelection(nestedContext));

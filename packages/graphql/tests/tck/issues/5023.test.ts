@@ -194,7 +194,7 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
                 WHERE ($jwt.id IS NOT NULL AND authorization__after_this0.userId = $jwt.id)
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this)<-[:ADMIN_IN]-(update_this0:User)
                 WHERE ($jwt.id IS NOT NULL AND update_this0.userId = $jwt.id)
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -203,7 +203,7 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
                 MATCH (this)-[update_this1:HAS_SETTINGS]->(update_this2:Settings)
                 WITH DISTINCT update_this2
                 WITH *
-                WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                     MATCH (update_this2)<-[:HAS_SETTINGS]-(update_this3:Tenant)
                     WHERE EXISTS {
                         MATCH (update_this3)<-[:ADMIN_IN]-(update_this4:User)
@@ -215,7 +215,7 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
                     MATCH (update_this2)-[update_this5:HAS_OPENING_HOURS]->(update_this6:OpeningDay)
                     WITH DISTINCT update_this6
                     WITH *
-                    WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (update_this6)<-[:HAS_OPENING_HOURS]-(update_this7:Settings)
                         WHERE EXISTS {
                             MATCH (update_this7)<-[:HAS_SETTINGS]-(update_this8:Tenant)
@@ -230,7 +230,7 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
                         MATCH (update_this6)-[update_this10:HAS_OPEN_INTERVALS]->(update_this11:OpeningHoursInterval)
                         WITH DISTINCT update_this11
                         WITH *
-                        WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+                        CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                             MATCH (update_this11)<-[:HAS_OPEN_INTERVALS]-(update_this12:OpeningDay)
                             WHERE EXISTS {
                                 MATCH (update_this12)<-[:HAS_OPENING_HOURS]-(update_this13:Settings)

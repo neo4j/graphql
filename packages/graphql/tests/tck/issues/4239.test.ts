@@ -83,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND size([(this)<-[this1:DIRECTED]-(this0:Person) WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND size([(this)<-[this1:DIRECTED]-(this0:Person) WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this { .title } AS this"
         `);
 
@@ -139,7 +139,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this)<-[:DIRECTED]-(this0:Person)
                 WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
@@ -203,7 +203,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this)<-[this0:DIRECTED]-(this1:Person)
                 WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
