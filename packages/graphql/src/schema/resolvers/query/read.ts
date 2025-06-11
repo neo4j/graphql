@@ -47,20 +47,45 @@ export function findResolver({
         if (isConcreteEntity(entityAdapter)) {
             varName = "this";
         }
-        const { cypher, params } = translateRead({
+        const { cypher, params, hooks } = translateRead({
             context: context as Neo4jGraphQLTranslationContext,
             entityAdapter,
             varName,
         });
-        const executeResult = await execute({
-            cypher,
-            params,
-            defaultAccessMode: "READ",
-            context,
-            info,
-        });
 
-        return executeResult.records.map((x) => x.this);
+        const next = async () => {
+            const executeResult = await execute({
+                cypher,
+                params,
+                defaultAccessMode: "READ",
+                context,
+                info,
+            });
+
+            return executeResult.records.map((x) => x.this);
+        };
+
+        if (hooks.length) {
+            let nextHook: () => any = next;
+            for (const hookAnnotation of hooks) {
+                const callback = context.features.hooks?.callbacks[hookAnnotation.callback];
+                if (callback) {
+                    const nextHook2 = nextHook;
+                    nextHook = () => {
+                        return callback(nextHook2);
+                    };
+                } else {
+                    console.warn("Callback not available", hookAnnotation.callback);
+                }
+            }
+
+            const result = await nextHook();
+            return result;
+            // DO STUFF
+        } else {
+            const result = await next();
+            return result;
+        }
     }
 
     const extraArgs = {};

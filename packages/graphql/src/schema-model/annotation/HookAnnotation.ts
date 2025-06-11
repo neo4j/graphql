@@ -17,27 +17,13 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
-import type { HookAnnotation } from "../../../schema-model/annotation/HookAnnotation";
-import type { QueryASTContext } from "./QueryASTContext";
+import type { Annotation } from "./Annotation";
 
-export abstract class QueryASTNode {
-    public abstract getChildren(): QueryASTNode[];
+export class HookAnnotation implements Annotation {
+    readonly name = "hook";
+    public readonly callback: string;
 
-    /** Prints the name of the Node */
-    public print(): string {
-        return this.constructor.name;
-    }
-
-    public getHooks(): HookAnnotation[] {
-        return [];
-    }
-
-    public getSubqueries(_context: QueryASTContext): Cypher.Clause[] {
-        return [];
-    }
-
-    public getSelection(_context: QueryASTContext): Array<Cypher.Match | Cypher.With> {
-        return [];
+    constructor({ callback }: { callback: string }) {
+        this.callback = callback;
     }
 }

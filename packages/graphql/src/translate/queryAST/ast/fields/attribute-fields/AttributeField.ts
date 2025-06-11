@@ -18,6 +18,7 @@
  */
 
 import type Cypher from "@neo4j/cypher-builder";
+import type { HookAnnotation } from "../../../../../schema-model/annotation/HookAnnotation";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { coalesceValueIfNeeded } from "../../filters/utils/coalesce-if-needed";
 import type { QueryASTNode } from "../../QueryASTNode";
@@ -33,6 +34,10 @@ export class AttributeField extends Field {
 
     public getChildren(): QueryASTNode[] {
         return [];
+    }
+
+    public getHooks(): HookAnnotation[] {
+        return this.attribute.annotations.hook ? [this.attribute.annotations.hook] : [];
     }
 
     public getFieldName(): string {

@@ -28,6 +28,7 @@ import { FIELD_DIRECTIVES } from "../../../schema-model/library-directives";
 type InvalidFieldCombinations = Record<FieldDirective, ReadonlyArray<FieldDirective | "private">>;
 
 export const invalidFieldCombinations: InvalidFieldCombinations = {
+    hook: ["customResolver", "populatedBy"],
     alias: ["jwtClaim", "cypher", "customResolver", "relationship"],
     authentication: ["jwtClaim", "customResolver", "relationship"],
     authorization: ["jwtClaim", "customResolver", "relationship"],
@@ -92,6 +93,7 @@ type InvalidObjectCombinations = Record<Exclude<ObjectDirective, "jwt">, Readonl
 
 export const invalidObjectCombinations: InvalidObjectCombinations = {
     relationshipProperties: [],
+    hook: [],
     authentication: [],
     authorization: [],
     deprecated: [],

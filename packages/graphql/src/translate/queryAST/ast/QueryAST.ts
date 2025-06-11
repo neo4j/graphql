@@ -18,6 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { HookAnnotation } from "../../../schema-model/annotation/HookAnnotation";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { createNode } from "../utils/create-node-from-entity";
 import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
@@ -39,6 +40,10 @@ export class QueryAST {
     public build(neo4jGraphQLContext: Neo4jGraphQLTranslationContext, varName?: string): Cypher.Clause {
         const context = this.buildQueryASTContext(neo4jGraphQLContext, varName);
         return Cypher.utils.concat(...this.transpile(context).clauses);
+    }
+
+    public getHooks(): HookAnnotation[] {
+        return this.operation.getHooks();
     }
 
     // TODO: refactor other top level operations to use this method instead of build

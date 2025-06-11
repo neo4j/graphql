@@ -25,6 +25,7 @@ export { declareRelationshipDirective } from "./declare-relationship";
 export { defaultDirective } from "./default";
 export { filterableDirective } from "./filterable";
 export { fulltextDirective } from "./fulltext";
+export { hookDirective } from "./hook";
 export { idDirective } from "./id";
 export { jwtClaim } from "./jwt-claim";
 export { jwt } from "./jwt-payload";

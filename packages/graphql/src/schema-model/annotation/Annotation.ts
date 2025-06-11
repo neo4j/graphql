@@ -26,6 +26,7 @@ import { parseCypherAnnotation } from "../parser/annotations-parser/cypher-annot
 import { parseDefaultAnnotation } from "../parser/annotations-parser/default-annotation";
 import { parseFilterableAnnotation } from "../parser/annotations-parser/filterable-annotation";
 import { parseFulltextAnnotation } from "../parser/annotations-parser/full-text-annotation";
+import { parseHookAnnotation } from "../parser/annotations-parser/hook-annotation";
 import { parseJWTClaimAnnotation } from "../parser/annotations-parser/jwt-claim-annotation";
 import { parseKeyAnnotation } from "../parser/annotations-parser/key-annotation";
 import { parseLimitAnnotation } from "../parser/annotations-parser/limit-annotation";
@@ -48,6 +49,7 @@ import type { CypherAnnotation } from "./CypherAnnotation";
 import type { DefaultAnnotation } from "./DefaultAnnotation";
 import type { FilterableAnnotation } from "./FilterableAnnotation";
 import type { FulltextAnnotation } from "./FulltextAnnotation";
+import type { HookAnnotation } from "./HookAnnotation";
 import { IDAnnotation } from "./IDAnnotation";
 import type { JWTClaimAnnotation } from "./JWTClaimAnnotation";
 import { JWTPayloadAnnotation } from "./JWTPayloadAnnotation";
@@ -103,6 +105,7 @@ export type Annotations = CheckAnnotationName<{
     subscription: SubscriptionAnnotation;
     subscriptionsAuthorization: SubscriptionsAuthorizationAnnotation;
     timestamp: TimestampAnnotation;
+    hook: HookAnnotation;
 }>;
 
 export type AnnotationParser<T extends Annotation> = (
@@ -137,4 +140,5 @@ export const annotationsParsers: { [key in keyof Annotations]: AnnotationParser<
     timestamp: parseTimestampAnnotation,
     relayId: () => new RelayIDAnnotation(),
     vector: parseVectorAnnotation,
+    hook: parseHookAnnotation,
 };

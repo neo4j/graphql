@@ -18,6 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { HookAnnotation } from "../../../../schema-model/annotation/HookAnnotation";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
@@ -61,6 +62,10 @@ export class ReadOperation extends Operation {
         this.target = target;
         this.relationship = relationship;
         this.selection = selection;
+    }
+
+    public getHooks(): HookAnnotation[] {
+        return this.fields.flatMap((f) => f.getHooks());
     }
 
     public setFields(fields: Field[]) {

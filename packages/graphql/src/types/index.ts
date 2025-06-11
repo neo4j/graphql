@@ -440,6 +440,9 @@ export type Key = string | RemoteJWKS;
 export type Neo4jFeaturesSettings = {
     filters?: Neo4jFiltersSettings;
     populatedBy?: Neo4jPopulatedBySettings;
+    hooks?: {
+        callbacks: Record<string, (next: () => any) => any>;
+    };
     authorization?: Neo4jAuthorizationSettings;
     subscriptions?: boolean | Neo4jGraphQLSubscriptionsCDCEngine;
     /** If set to `true`, removes `@neo4j/graphql` fields that are marked as deprecated to reduce schema size.

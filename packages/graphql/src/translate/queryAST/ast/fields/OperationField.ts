@@ -18,6 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { HookAnnotation } from "../../../../schema-model/annotation/HookAnnotation";
 import { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import { CypherAttributeOperation } from "../operations/CypherAttributeOperation";
@@ -38,6 +39,10 @@ export class OperationField extends Field {
 
     public getChildren(): QueryASTNode[] {
         return [this.operation];
+    }
+
+    public getHooks(): HookAnnotation[] {
+        return this.operation.getHooks();
     }
 
     public getProjectionField(): Record<string, Cypher.Expr> {

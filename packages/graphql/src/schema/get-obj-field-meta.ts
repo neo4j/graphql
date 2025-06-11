@@ -159,6 +159,7 @@ export function getObjFieldMeta({
                         ![
                             "relationship",
                             "cypher",
+                            "hook",
                             "id",
                             "authorization",
                             "authentication",

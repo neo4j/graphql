@@ -20,6 +20,7 @@
 import type Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
 import { DEBUG_TRANSLATE } from "../constants";
+import type { HookAnnotation } from "../schema-model/annotation/HookAnnotation";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
@@ -35,7 +36,7 @@ export function translateRead({
     context: Neo4jGraphQLTranslationContext;
     entityAdapter: EntityAdapter;
     varName?: string;
-}): Cypher.CypherResult {
+}): Cypher.CypherResult & { hooks: HookAnnotation[] } {
     const { resolveTree } = context;
     const operationsTreeFactory = new QueryASTFactory(context.schemaModel);
     const operationsTree = operationsTreeFactory.createQueryAST({
@@ -44,7 +45,10 @@ export function translateRead({
         context,
         varName,
     });
+
+    const hooks = operationsTree.getHooks();
+
     debug(operationsTree.print());
     const clause = operationsTree.build(context, varName);
-    return buildClause(clause, { context });
+    return { ...buildClause(clause, { context }), hooks };
 }
