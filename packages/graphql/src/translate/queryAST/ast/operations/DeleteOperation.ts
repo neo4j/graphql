@@ -80,7 +80,7 @@ export class DeleteOperation extends MutationOperation {
         this.validateSelection(selection);
         const filterSubqueries = wrapSubqueriesInCypherCalls(context, this.filters, [context.target]);
         const authBeforeSubqueries = this.getAuthFilterSubqueries(context).map((c) => {
-            return new Cypher.Call(c).importWith(context.target);
+            return new Cypher.Call(c, [context.target]);
         });
         const predicate = this.getPredicate(context);
         const validations = this.getValidations(context);
@@ -112,7 +112,7 @@ export class DeleteOperation extends MutationOperation {
         const filterSubqueries = wrapSubqueriesInCypherCalls(context, this.filters, [context.target]);
 
         const authBeforeSubqueries = this.getAuthFilterSubqueries(context).map((c) => {
-            return new Cypher.Call(c).importWith(context.target);
+            return new Cypher.Call(c, [context.target]);
         });
         const extraSelections = this.getExtraSelections(context);
         const predicate = this.getPredicate(context);
@@ -124,7 +124,7 @@ export class DeleteOperation extends MutationOperation {
         const unwindDeleteVar = new Cypher.Variable();
         const deleteClause = new Cypher.Unwind([deleteVar, unwindDeleteVar]).detachDelete(unwindDeleteVar);
 
-        const deleteBlock = new Cypher.Call(deleteClause).importWith(deleteVar);
+        const deleteBlock = new Cypher.Call(deleteClause, [deleteVar]);
         const nestedOperations: (Cypher.Call | Cypher.With)[] = this.getNestedDeleteSubQueries(context);
         const statements = this.appendFilters(
             [selection, ...extraSelections, ...filterSubqueries, ...authBeforeSubqueries],
@@ -187,7 +187,7 @@ export class DeleteOperation extends MutationOperation {
         const nestedOperations: Cypher.Call[] = [];
         for (const nestedDeleteOperation of this.nestedOperations) {
             const { clauses } = nestedDeleteOperation.transpile(context);
-            nestedOperations.push(...clauses.map((c) => new Cypher.Call(c).importWith("*")));
+            nestedOperations.push(...clauses.map((c) => new Cypher.Call(c, "*")));
         }
         return nestedOperations;
     }

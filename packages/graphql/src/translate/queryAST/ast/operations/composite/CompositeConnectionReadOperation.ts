@@ -60,10 +60,11 @@ export class CompositeConnectionReadOperation extends Operation {
 
         const union = new Cypher.Union(...nestedSubqueries);
 
-        const nestedSubquery = new Cypher.Call(new Cypher.Call(union).return([Cypher.collect(edgeVar), edgesVar]));
-        if (context.target) {
-            nestedSubquery.importWith(context.target);
-        }
+        const contextTarget = context.target ? [context.target] : [];
+        const nestedSubquery = new Cypher.Call(
+            new Cypher.Call(union).return([Cypher.collect(edgeVar), edgesVar]),
+            contextTarget
+        );
 
         let orderSubquery: Cypher.Call | undefined;
 
@@ -97,7 +98,7 @@ export class CompositeConnectionReadOperation extends Operation {
 
             extraWithOrder.return([Cypher.collect(edgeVar), edgesVar2]);
             returnEdgesVar = edgesVar2;
-            orderSubquery = new Cypher.Call(extraWithOrder).importWith(edgesVar);
+            orderSubquery = new Cypher.Call(extraWithOrder, [edgesVar]);
         }
 
         const {
@@ -126,9 +127,7 @@ export class CompositeConnectionReadOperation extends Operation {
             clauses: [
                 Cypher.utils.concat(
                     nestedSubquery,
-                    ...aggregateSubqueries.map((clause) =>
-                        new Cypher.Call(clause).importWith(...filterTruthy([context.target]))
-                    ),
+                    ...aggregateSubqueries.map((clause) => new Cypher.Call(clause, filterTruthy([context.target]))),
                     subqueryWith,
                     orderSubquery,
                     returnClause

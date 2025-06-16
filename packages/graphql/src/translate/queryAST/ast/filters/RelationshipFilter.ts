@@ -236,7 +236,7 @@ export class RelationshipFilter extends Filter {
             const returnVar = new Cypher.Variable();
             returnVariables.push(returnVar);
             const nestedSubqueries = f.getSubqueries(context).map((sq) => {
-                return new Cypher.Call(sq).importWith(context.target);
+                return new Cypher.Call(sq, [context.target]);
             });
 
             let predicate = f.getPredicate(context);

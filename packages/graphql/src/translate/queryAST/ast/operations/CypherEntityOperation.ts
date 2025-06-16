@@ -52,8 +52,8 @@ export class CypherEntityOperation extends ReadOperation {
             ...this.getCypherFieldsSubqueries(nestedContext)
         );
 
-        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
-            new Cypher.Call(sq).importWith(nestedContext.target)
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map(
+            (sq) => new Cypher.Call(sq, [nestedContext.target])
         );
 
         const authPredicates = this.getAuthFilterPredicate(nestedContext);

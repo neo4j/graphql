@@ -158,11 +158,11 @@ export class ConnectionReadOperation extends Operation {
         }
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) => {
-            return new Cypher.Call(sq).importWith(nestedContext.target);
+            return new Cypher.Call(sq, [nestedContext.target]);
         });
 
         const normalFilterSubqueries = this.getFilterSubqueries(nestedContext).map((sq) => {
-            return new Cypher.Call(sq).importWith(nestedContext.target);
+            return new Cypher.Call(sq, [nestedContext.target]);
         });
 
         const filtersSubqueries = [...authFilterSubqueries, ...normalFilterSubqueries];
@@ -171,11 +171,10 @@ export class ConnectionReadOperation extends Operation {
         const isTopLevel = !this.relationship;
 
         const aggregationSubqueries = (this.aggregationField?.getSubqueries(context) ?? []).map((sq) => {
-            const subquery = new Cypher.Call(sq);
             if (!isTopLevel) {
-                return subquery.importWith(context.target);
+                return new Cypher.Call(sq, [context.target]);
             } else {
-                return subquery;
+                return new Cypher.Call(sq);
             }
         });
 
@@ -240,8 +239,9 @@ export class ConnectionReadOperation extends Operation {
 
         if (aggregationSubqueries.length > 0) {
             connectionClauses = new Cypher.Call( // NOTE: this call is only needed when aggregate is used
-                Cypher.utils.concat(connectionClauses, new Cypher.Return(edgesProjectionVar, totalCount))
-            ).importWith("*");
+                Cypher.utils.concat(connectionClauses, new Cypher.Return(edgesProjectionVar, totalCount)),
+                "*"
+            );
         }
 
         return {
@@ -303,8 +303,9 @@ export class ConnectionReadOperation extends Operation {
                 paginationWith,
                 ...postPaginationSubqueries,
                 new Cypher.Return([Cypher.collect(edgeProjectionMap), returnVar])
-            )
-        ).importWith(edgesVar);
+            ),
+            [edgesVar]
+        );
     }
 
     protected createProjectionMapForNode(context: QueryASTContext<Cypher.Node>): Cypher.Map {

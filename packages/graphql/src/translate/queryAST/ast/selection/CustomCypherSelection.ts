@@ -82,8 +82,9 @@ export class CustomCypherSelection extends EntitySelection {
 
         if (this.isNested && context.target) {
             const aliasTargetToPublicTarget = new Cypher.With([context.target, CYPHER_TARGET_VARIABLE]);
-            statementSubquery = new Cypher.Call(Cypher.utils.concat(aliasTargetToPublicTarget, statementCypherQuery));
-            statementSubquery.importWith(context.target);
+            statementSubquery = new Cypher.Call(Cypher.utils.concat(aliasTargetToPublicTarget, statementCypherQuery), [
+                context.target,
+            ]);
         } else {
             statementSubquery = new Cypher.Call(statementCypherQuery);
         }

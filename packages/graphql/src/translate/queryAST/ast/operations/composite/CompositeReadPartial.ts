@@ -52,8 +52,8 @@ export class CompositeReadPartial extends ReadOperation {
 
         const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
         const filterPredicates = this.getPredicates(nestedContext);
-        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) =>
-            new Cypher.Call(sq).importWith(nestedContext.target)
+        const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map(
+            (sq) => new Cypher.Call(sq, [nestedContext.target])
         );
         const authFiltersPredicate = this.getAuthFilterPredicate(nestedContext);
         const validations = this.getValidations(nestedContext);
@@ -73,7 +73,7 @@ export class CompositeReadPartial extends ReadOperation {
         const subqueries = Cypher.utils.concat(...this.getFieldsSubqueries(nestedContext), ...cypherFieldSubqueries);
         const sortSubqueries = this.sortFields
             .flatMap((sq) => sq.getSubqueries(nestedContext))
-            .map((sq) => new Cypher.Call(sq).importWith(nestedContext.target));
+            .map((sq) => new Cypher.Call(sq, [nestedContext.target]));
 
         const ret = this.getProjectionClause(nestedContext, context.returnVariable);
 
@@ -149,8 +149,8 @@ export class CompositeReadPartial extends ReadOperation {
             __id: Cypher.id(context.target),
         });
 
-        const withClause = new Cypher.With([projection, context.target]);
+        const withClause = new Cypher.With([projection, returnVariable]);
 
-        return withClause.return([context.target, returnVariable]);
+        return withClause.return(returnVariable);
     }
 }
