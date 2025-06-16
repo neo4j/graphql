@@ -25,8 +25,8 @@
     },
     "devDependencies": {
         "@tsconfig/node22": "22.0.2",
-        "@typescript-eslint/eslint-plugin": "8.34.0",
-        "@typescript-eslint/parser": "8.34.0",
+        "@typescript-eslint/eslint-plugin": "8.34.1",
+        "@typescript-eslint/parser": "8.34.1",
         "concurrently": "9.1.2",
         "dotenv": "16.5.0",
         "eslint": "8.57.1",
