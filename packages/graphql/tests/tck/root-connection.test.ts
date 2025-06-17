@@ -65,8 +65,7 @@ describe("Root Connection Query tests", () => {
             WHERE this0.title = $param0
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var1
@@ -101,8 +100,7 @@ describe("Root Connection Query tests", () => {
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 WITH *
@@ -141,8 +139,7 @@ describe("Root Connection Query tests", () => {
             WHERE this0.title CONTAINS $param0
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 WITH *
@@ -188,20 +185,17 @@ describe("Root Connection Query tests", () => {
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 WITH *
                 ORDER BY this0.title ASC
                 LIMIT $param0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
                     WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
+                    CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
                         RETURN collect({ node: { name: this2.name, __resolveType: \\"Actor\\" } }) AS var3

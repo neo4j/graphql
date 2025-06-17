@@ -67,8 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/1628", () => {
             }
             WITH *
             LIMIT $param1
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this1:dcterms__title]->(this2:dcterms_title:property)
                 WHERE this2.value CONTAINS $param2
                 WITH DISTINCT this2

@@ -106,18 +106,17 @@ describe("Interface Relationships - Update create", () => {
             RETURN count(*) AS update_this_Series
             }
             WITH *
-            CALL {
-                WITH this
-                CALL {
+            CALL (this) {
+                CALL (*) {
                     WITH *
                     MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
-                    WITH update_this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(update_this1) } AS update_this1
-                    RETURN update_this1 AS update_var2
+                    WITH update_this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(update_this1) } AS update_var2
+                    RETURN update_var2
                     UNION
                     WITH *
                     MATCH (this)-[update_this3:ACTED_IN]->(update_this4:Series)
-                    WITH update_this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(update_this4) } AS update_this4
-                    RETURN update_this4 AS update_var2
+                    WITH update_this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(update_this4) } AS update_var2
+                    RETURN update_var2
                 }
                 WITH update_var2
                 RETURN collect(update_var2) AS update_var2

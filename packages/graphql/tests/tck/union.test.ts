@@ -78,19 +78,18 @@ describe("Cypher Union", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
+            CALL (this) {
+                CALL (*) {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:Genre)
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS this1
-                    RETURN this1 AS var2
+                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS var2
+                    RETURN var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:SEARCH]->(this4:Movie)
-                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this4) } AS this4
-                    RETURN this4 AS var2
+                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this4) } AS var2
+                    RETURN var2
                 }
                 WITH var2
                 RETURN collect(var2) AS var2
@@ -128,19 +127,18 @@ describe("Cypher Union", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
+            CALL (this) {
+                CALL (*) {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:Genre)
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS this1
-                    RETURN this1 AS var2
+                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS var2
+                    RETURN var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:SEARCH]->(this4:Movie)
-                    WITH this4 { __resolveType: \\"Movie\\", __id: id(this4) } AS this4
-                    RETURN this4 AS var2
+                    WITH this4 { __resolveType: \\"Movie\\", __id: id(this4) } AS var2
+                    RETURN var2
                 }
                 WITH var2
                 RETURN collect(var2) AS var2
@@ -186,21 +184,20 @@ describe("Cypher Union", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE this.title = $param0
-            CALL {
-                WITH this
-                CALL {
+            CALL (this) {
+                CALL (*) {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:Genre)
                     WHERE this1.name = $param1
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS this1
-                    RETURN this1 AS var2
+                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS var2
+                    RETURN var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:SEARCH]->(this4:Movie)
                     WHERE this4.title = $param4
-                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this4) } AS this4
-                    RETURN this4 AS var2
+                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this4) } AS var2
+                    RETURN var2
                 }
                 WITH var2
                 SKIP $param5

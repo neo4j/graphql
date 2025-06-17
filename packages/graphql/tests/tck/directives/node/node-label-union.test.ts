@@ -69,20 +69,19 @@ describe("Node directive with unions", () => {
             "CYPHER 5
             MATCH (this:Film)
             WHERE this.title = $param0
-            CALL {
-                WITH this
-                CALL {
+            CALL (this) {
+                CALL (*) {
                     WITH *
                     MATCH (this)-[this0:SEARCH]->(this1:Category:ExtraLabel1:ExtraLabel2)
                     WHERE this1.name = $param1
-                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS this1
-                    RETURN this1 AS var2
+                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS var2
+                    RETURN var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:SEARCH]->(this4:Film)
                     WHERE this4.title = $param2
-                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this4) } AS this4
-                    RETURN this4 AS var2
+                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this4) } AS var2
+                    RETURN var2
                 }
                 WITH var2
                 SKIP $param3

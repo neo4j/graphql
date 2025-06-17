@@ -78,14 +78,12 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE this.title = $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE ((this1.firstName = $param1 AND this1.lastName = $param2) AND (this0.screenTime > $param3 AND this0.screenTime < $param4))
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { firstName: this1.firstName, lastName: this1.lastName, __resolveType: \\"Actor\\" } }) AS var2
@@ -143,14 +141,12 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE this.title = $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE (NOT (this1.firstName = $param1 AND this1.lastName = $param2) AND NOT (this0.screenTime > $param3 AND this0.screenTime < $param4))
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { firstName: this1.firstName, lastName: this1.lastName, __resolveType: \\"Actor\\" } }) AS var2
@@ -210,14 +206,12 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE this.title = $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE ((this1.firstName = $param1 AND this1.lastName = $param2) OR (this0.screenTime > $param3 AND this0.screenTime < $param4))
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { firstName: this1.firstName, lastName: this1.lastName, __resolveType: \\"Actor\\" } }) AS var2
@@ -279,14 +273,12 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE this.title = $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE NOT ((this1.firstName = $param1 AND this1.lastName = $param2) OR (this0.screenTime > $param3 AND this0.screenTime < $param4))
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { firstName: this1.firstName, lastName: this1.lastName, __resolveType: \\"Actor\\" } }) AS var2
@@ -357,14 +349,12 @@ describe("Cypher -> Connections -> Filtering -> Composite", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE this.title = $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE NOT (((this1.firstName = $param1 AND this1.lastName = $param2) OR (this0.screenTime > $param3 AND this0.screenTime < $param4)) AND (this1.firstName = $param5 AND this1.lastName = $param6))
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { firstName: this1.firstName, lastName: this1.lastName, __resolveType: \\"Actor\\" } }) AS var2

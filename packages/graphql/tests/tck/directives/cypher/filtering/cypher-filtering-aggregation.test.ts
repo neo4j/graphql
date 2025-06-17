@@ -61,10 +61,8 @@ describe("cypher directive filtering - Aggregation", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                CALL {
-                    WITH this
-                    CALL {
-                        WITH this
+                CALL (this) {
+                    CALL (this) {
                         WITH this AS this
                         MATCH (this)
                         RETURN this.custom_field as s
@@ -129,10 +127,8 @@ describe("cypher directive filtering - Aggregation", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                CALL {
-                    WITH this
-                    CALL {
-                        WITH this
+                CALL (this) {
+                    CALL (this) {
                         WITH this AS this
                         MATCH (this)
                         RETURN this.custom_field as s
@@ -198,10 +194,8 @@ describe("cypher directive filtering - Aggregation", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                CALL {
-                    WITH this
-                    CALL {
-                        WITH this
+                CALL (this) {
+                    CALL (this) {
                         WITH this AS this
                         MATCH (this)
                         RETURN this.custom_field as s
@@ -267,10 +261,8 @@ describe("cypher directive filtering - Aggregation", () => {
             "CYPHER 5
             CALL {
                 MATCH (this:Movie)
-                CALL {
-                    WITH this
-                    CALL {
-                        WITH this
+                CALL (this) {
+                    CALL (this) {
                         WITH this AS this
                         MATCH (this)
                         RETURN this.custom_field as s

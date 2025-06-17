@@ -59,8 +59,7 @@ describe("Authorization with aggregation filter rule", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN count(this1) = $param0 AS var2
@@ -96,8 +95,7 @@ describe("Authorization with aggregation filter rule", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:Post)
-            CALL {
-                WITH this0
+            CALL (this0) {
                 MATCH (this0)<-[this1:LIKES]-(this2:User)
                 WITH DISTINCT this2
                 RETURN count(this2) = $param0 AS var3
@@ -106,8 +104,7 @@ describe("Authorization with aggregation filter rule", () => {
             WHERE ($isAuthenticated = true AND var3 = true)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { content: this0.content, __resolveType: \\"Post\\" } }) AS var4

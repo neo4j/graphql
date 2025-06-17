@@ -109,8 +109,7 @@ describe("Cypher Auth Projection - deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:User)
                 SET
                     create_this1.id = create_var0.id

@@ -96,13 +96,11 @@ describe("Relationship Properties Connect Cypher", () => {
             }
             CALL {
                 WITH this0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
                     WITH collect({ node: create_this1, relationship: create_this0 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
+                    CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
                         RETURN collect({ properties: { screenTime: create_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this1.name, __resolveType: \\"Actor\\" } }) AS create_var2
@@ -186,13 +184,11 @@ describe("Relationship Properties Connect Cypher", () => {
             }
             CALL {
                 WITH this0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
                     WITH collect({ node: create_this1, relationship: create_this0 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
+                    CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS create_this1, edge.relationship AS create_this0
                         RETURN collect({ properties: { screenTime: create_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this1.name, __resolveType: \\"Actor\\" } }) AS create_var2
@@ -266,13 +262,11 @@ describe("Relationship Properties Connect Cypher", () => {
             	RETURN count(*) AS connect_this_actors0_connect_Actor0
             }
             WITH *
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[update_this0:ACTED_IN]-(update_this1:Actor)
                 WITH collect({ node: update_this1, relationship: update_this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS update_this1, edge.relationship AS update_this0
                     RETURN collect({ properties: { screenTime: update_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: update_this1.name, __resolveType: \\"Actor\\" } }) AS update_var2
@@ -348,13 +342,11 @@ describe("Relationship Properties Connect Cypher", () => {
             	RETURN count(*) AS connect_this_actors0_connect_Actor0
             }
             WITH *
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[update_this0:ACTED_IN]-(update_this1:Actor)
                 WITH collect({ node: update_this1, relationship: update_this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS update_this1, edge.relationship AS update_this0
                     RETURN collect({ properties: { screenTime: update_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: update_this1.name, __resolveType: \\"Actor\\" } }) AS update_var2

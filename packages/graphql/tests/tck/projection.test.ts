@@ -89,31 +89,27 @@ describe("Cypher Projection", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Product)
                 SET
                     create_this1.id = create_var0.id
                 RETURN create_this1
             }
-            CALL {
-                WITH create_this1
+            CALL (create_this1) {
                 MATCH (create_this1)-[create_this2:HAS_PHOTO]->(create_this3:Photo)
                 WHERE create_this3.url = $create_param1
                 WITH DISTINCT create_this3
                 WITH create_this3 { .url, .location } AS create_this3
                 RETURN collect(create_this3) AS create_var4
             }
-            CALL {
-                WITH create_this1
+            CALL (create_this1) {
                 MATCH (create_this1)-[create_this5:HAS_COLOR]->(create_this6:Color)
                 WHERE create_this6.id = $create_param2
                 WITH DISTINCT create_this6
                 WITH create_this6 { .id } AS create_this6
                 RETURN collect(create_this6) AS create_var7
             }
-            CALL {
-                WITH create_this1
+            CALL (create_this1) {
                 MATCH (create_this1)-[create_this8:HAS_SIZE]->(create_this9:Size)
                 WHERE create_this9.name = $create_param3
                 WITH DISTINCT create_this9

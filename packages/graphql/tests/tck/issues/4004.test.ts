@@ -64,10 +64,8 @@ describe("https://github.com/neo4j/graphql/issues/4004", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Series)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH(this)<-[:IN_SERIES]-(episode:Episode)
                     RETURN episode as n LIMIT $param0[0]

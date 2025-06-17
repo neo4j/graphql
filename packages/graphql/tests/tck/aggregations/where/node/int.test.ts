@@ -56,8 +56,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN avg(this1.someInt) = $param0 AS var2
@@ -88,8 +87,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN avg(this1.someInt) > $param0 AS var2
@@ -120,8 +118,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN avg(this1.someInt) >= $param0 AS var2
@@ -152,8 +149,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN avg(this1.someInt) < $param0 AS var2
@@ -184,8 +180,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN avg(this1.someInt) <= $param0 AS var2
@@ -216,8 +211,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN sum(this1.someInt) = $param0 AS var2
@@ -251,8 +245,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN sum(this1.someInt) > $param0 AS var2
@@ -286,8 +279,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN sum(this1.someInt) >= $param0 AS var2
@@ -321,8 +313,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN sum(this1.someInt) < $param0 AS var2
@@ -356,8 +347,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN sum(this1.someInt) <= $param0 AS var2
@@ -391,8 +381,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN min(this1.someInt) = $param0 AS var2
@@ -426,8 +415,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN min(this1.someInt) > $param0 AS var2
@@ -461,8 +449,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN min(this1.someInt) >= $param0 AS var2
@@ -496,8 +483,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN min(this1.someInt) < $param0 AS var2
@@ -531,8 +517,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN min(this1.someInt) <= $param0 AS var2
@@ -566,8 +551,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN max(this1.someInt) = $param0 AS var2
@@ -601,8 +585,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN max(this1.someInt) > $param0 AS var2
@@ -636,8 +619,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN max(this1.someInt) >= $param0 AS var2
@@ -671,8 +653,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN max(this1.someInt) < $param0 AS var2
@@ -706,8 +687,7 @@ describe("Cypher Aggregations where node with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN max(this1.someInt) <= $param0 AS var2

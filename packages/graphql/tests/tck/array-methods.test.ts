@@ -505,20 +505,17 @@ describe("Arrays Methods", () => {
             	RETURN count(*) AS update_this_actedIn0
             }
             WITH *
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
                 WITH DISTINCT update_this1
                 WITH update_this1 { .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[update_this3:ACTED_IN]->(update_this4:Movie)
                 WITH collect({ node: update_this4, relationship: update_this3 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS update_this4, edge.relationship AS update_this3
                     RETURN collect({ properties: { pay: update_this3.pay, __resolveType: \\"ActedIn\\" }, node: { __id: id(update_this4), __resolveType: \\"Movie\\" } }) AS update_var5
@@ -609,20 +606,17 @@ describe("Arrays Methods", () => {
             	RETURN count(*) AS update_this_actedIn0
             }
             WITH *
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
                 WITH DISTINCT update_this1
                 WITH update_this1 { .title } AS update_this1
                 RETURN collect(update_this1) AS update_var2
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[update_this3:ACTED_IN]->(update_this4:Movie)
                 WITH collect({ node: update_this4, relationship: update_this3 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS update_this4, edge.relationship AS update_this3
                     RETURN collect({ properties: { pay: update_this3.pay, __resolveType: \\"ActedIn\\" }, node: { __id: id(update_this4), __resolveType: \\"Movie\\" } }) AS update_var5

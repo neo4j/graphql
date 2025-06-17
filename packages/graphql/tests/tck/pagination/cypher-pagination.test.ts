@@ -99,10 +99,8 @@ describe("Cypher Sort tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                     RETURN count(DISTINCT genre) as result
@@ -132,10 +130,8 @@ describe("Cypher Sort tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                     RETURN count(DISTINCT genre) as result
@@ -166,20 +162,16 @@ describe("Cypher Sort tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
                 }
                 WITH count AS this0
                 RETURN this0 AS var1
             }
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                     RETURN count(DISTINCT genre) as result
@@ -216,10 +208,8 @@ describe("Cypher Sort tests", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE this.title = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
                 }
@@ -264,14 +254,11 @@ describe("Cypher Sort tests", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
                 WITH DISTINCT this1
-                CALL {
-                    WITH this1
-                    CALL {
-                        WITH this1
+                CALL (this1) {
+                    CALL (this1) {
                         WITH this1 AS this
                         MATCH (this)<-[:HAS_GENRE]-(movie:Movie)
                         RETURN count(DISTINCT movie) as result

@@ -69,8 +69,7 @@ describe("tck/rfs/022 subquery projection", () => {
                 "CYPHER 5
                 MATCH (this:Movie)
                 WHERE this.released = $param0
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WHERE this1.name = $param1
                     WITH DISTINCT this1
@@ -113,13 +112,11 @@ describe("tck/rfs/022 subquery projection", () => {
                 "CYPHER 5
                 MATCH (this:Movie)
                 WHERE this.released = $param0
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WHERE this1.name = $param1
                     WITH DISTINCT this1
-                    CALL {
-                        WITH this1
+                    CALL (this1) {
                         MATCH (this1)-[this2:DIRECTED]->(this3:Movie)
                         WITH DISTINCT this3
                         WITH this3 { .title, .released } AS this3
@@ -205,8 +202,7 @@ describe("tck/rfs/022 subquery projection", () => {
                 "CYPHER 5
                 MATCH (this:Movie)
                 WHERE this.released = $param0
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WITH DISTINCT this1
                     WITH *

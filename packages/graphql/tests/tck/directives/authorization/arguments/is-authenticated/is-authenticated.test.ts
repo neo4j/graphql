@@ -133,10 +133,8 @@ describe("Cypher Auth isAuthenticated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h
                 }
@@ -169,8 +167,7 @@ describe("Cypher Auth isAuthenticated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:User)
                 SET
                     create_this1.id = create_var0.id
@@ -209,8 +206,7 @@ describe("Cypher Auth isAuthenticated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:User)
                 SET
                     create_this1.id = create_var0.id,
@@ -339,12 +335,10 @@ describe("Cypher Auth isAuthenticated", () => {
             "CYPHER 5
             MATCH (this:User)
             WITH *
-            CALL {
-                WITH *
+            CALL (*) {
                 OPTIONAL MATCH (this)-[this0:HAS_POST]->(this1:Post)
                 WITH this0, collect(DISTINCT this1) AS var2
-                CALL {
-                    WITH var2
+                CALL (var2) {
                     UNWIND var2 AS var3
                     DETACH DELETE var3
                 }

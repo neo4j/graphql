@@ -261,8 +261,7 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
             }
             CALL {
                 WITH this0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)<-[create_this0:ADMIN_IN]-(create_this1:User)
                     WITH DISTINCT create_this1
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.id IS NOT NULL AND create_this1.userId = $jwt.id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])

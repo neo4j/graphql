@@ -206,14 +206,12 @@ describe("Cypher coalesce()", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                 WHERE coalesce(this1.status, \\"ACTIVE\\") = $param0
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ node: { id: this1.id, status: coalesce(this1.status, \\"ACTIVE\\"), __resolveType: \\"Movie\\" } }) AS var2
@@ -270,14 +268,12 @@ describe("Cypher coalesce()", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                 WHERE coalesce(this1.statuses, [\\"ACTIVE\\", \\"INACTIVE\\"]) = $param0
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ node: { id: this1.id, statuses: coalesce(this1.statuses, [\\"ACTIVE\\", \\"INACTIVE\\"]), __resolveType: \\"Movie\\" } }) AS var2

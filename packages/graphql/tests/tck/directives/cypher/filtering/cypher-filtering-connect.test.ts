@@ -89,10 +89,8 @@ describe("cypher directive filtering", () => {
             CALL {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-            CALL {
-                WITH this0_actors_connect0_node
-                CALL {
-                    WITH this0_actors_connect0_node
+            CALL (this0_actors_connect0_node) {
+                CALL (this0_actors_connect0_node) {
                     WITH this0_actors_connect0_node AS this
                     RETURN \\"hello world!\\" AS s
                 }
@@ -121,8 +119,7 @@ describe("cypher directive filtering", () => {
             }
             CALL {
                 WITH this0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
                     WITH DISTINCT create_this1
                     WITH create_this1 { .name } AS create_this1

@@ -50,13 +50,11 @@ describe("QueryDirection in relationships connection", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ node: { __id: id(this1), __resolveType: \\"User\\" } }) AS var2
@@ -95,13 +93,11 @@ describe("QueryDirection in relationships connection", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ node: { __id: id(this1), __resolveType: \\"User\\" } }) AS var2

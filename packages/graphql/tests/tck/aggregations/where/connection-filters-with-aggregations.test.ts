@@ -78,10 +78,8 @@ describe("Field Level Aggregations Edge Filters", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE (this1.title = $param0 AND this0.screentime = $param1)
                     WITH DISTINCT this1
@@ -127,10 +125,8 @@ describe("Field Level Aggregations Edge Filters", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     CALL {
                         WITH this
                         MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
@@ -146,8 +142,7 @@ describe("Field Level Aggregations Edge Filters", () => {
                     }
                     RETURN collect(edge) AS edges
                 }
-                CALL {
-                    WITH this
+                CALL (this) {
                     CALL {
                         WITH this
                         MATCH (this)-[this4:ACTED_IN]->(this5:Movie)

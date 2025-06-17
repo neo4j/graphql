@@ -53,10 +53,8 @@ describe("cypher directive filtering", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (m:Movie)
                     RETURN count(m) as c
@@ -66,10 +64,8 @@ describe("cypher directive filtering", () => {
             }
             WITH *
             WHERE (this.title = $param0 AND var1 >= $param1)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (m:Movie)
                     RETURN count(m) as c
@@ -123,10 +119,8 @@ describe("cypher directive filtering", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (m:Movie)
                     RETURN count(m) as c
@@ -136,10 +130,8 @@ describe("cypher directive filtering", () => {
             }
             WITH *
             WHERE (this.title = $param0 AND var1 >= $param1)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (m:Movie)
                     RETURN count(m) as c
@@ -193,10 +185,8 @@ describe("cypher directive filtering", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (m:Movie)
                     RETURN count(m) as c

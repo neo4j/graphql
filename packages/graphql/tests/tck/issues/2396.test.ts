@@ -166,14 +166,12 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                     WHERE this1.floor >= $param0
                 }
             } AND ($isAuthenticated = true AND this.archivedAt IS NULL))
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this2:HAS_VALUATION]->(this3:Valuation)
                 WITH DISTINCT this3
                 WITH *
                 WHERE ($isAuthenticated = true AND this3.archivedAt IS NULL)
-                CALL {
-                    WITH this3
+                CALL (this3) {
                     MATCH (this3)-[this4:VALUATION_FOR]->(this5:Estate)
                     WITH DISTINCT this5
                     WITH *
@@ -245,14 +243,12 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                     WHERE this1.floor >= $param1
                 }
             }) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this2:HAS_VALUATION]->(this3:Valuation)
                 WITH DISTINCT this3
                 WITH *
                 WHERE ($isAuthenticated = true AND this3.archivedAt IS NULL)
-                CALL {
-                    WITH this3
+                CALL (this3) {
                     MATCH (this3)-[this4:VALUATION_FOR]->(this5:Estate)
                     WITH DISTINCT this5
                     WITH *
@@ -342,14 +338,12 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
                     })
                 }
             }) AND ($isAuthenticated = true AND this.archivedAt IS NULL))
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this4:HAS_VALUATION]->(this5:Valuation)
                 WITH DISTINCT this5
                 WITH *
                 WHERE ($isAuthenticated = true AND this5.archivedAt IS NULL)
-                CALL {
-                    WITH this5
+                CALL (this5) {
                     MATCH (this5)-[this6:VALUATION_FOR]->(this7:Estate)
                     WITH DISTINCT this7
                     WITH *
@@ -449,14 +443,12 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             WITH *
             SKIP $param6
             LIMIT $param7
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this4:HAS_VALUATION]->(this5:Valuation)
                 WITH DISTINCT this5
                 WITH *
                 WHERE ($isAuthenticated = true AND this5.archivedAt IS NULL)
-                CALL {
-                    WITH this5
+                CALL (this5) {
                     MATCH (this5)-[this6:VALUATION_FOR]->(this7:Estate)
                     WITH DISTINCT this7
                     WITH *
@@ -564,14 +556,12 @@ describe("https://github.com/neo4j/graphql/issues/2396", () => {
             WITH *
             SKIP $param6
             LIMIT $param7
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this4:HAS_VALUATION]->(this5:Valuation)
                 WITH DISTINCT this5
                 WITH *
                 WHERE ($isAuthenticated = true AND this5.archivedAt IS NULL)
-                CALL {
-                    WITH this5
+                CALL (this5) {
                     MATCH (this5)-[this6:VALUATION_FOR]->(this7:Estate)
                     WITH DISTINCT this7
                     WITH *

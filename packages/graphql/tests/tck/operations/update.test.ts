@@ -576,8 +576,7 @@ describe("Cypher Update", () => {
             SET this_movies0_create0_node.title = $this_movies0_create0_node_title
             MERGE (this)-[this_movies0_create0_relationship:ACTED_IN]->(this_movies0_create0_node)
             WITH *
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
                 WITH DISTINCT update_this1
                 WITH update_this1 { .id, .title } AS update_this1
@@ -626,8 +625,7 @@ describe("Cypher Update", () => {
             SET this_movies0_create0_node.title = $this_movies0_create0_node_title
             MERGE (this)-[this_movies0_create0_relationship:ACTED_IN]->(this_movies0_create0_node)
             WITH *
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
                 WITH DISTINCT update_this1
                 WITH update_this1 { .id, .title } AS update_this1
@@ -687,8 +685,7 @@ describe("Cypher Update", () => {
             SET this_movies0_create1_node.title = $this_movies0_create1_node_title
             MERGE (this)-[this_movies0_create1_relationship:ACTED_IN]->(this_movies0_create1_node)
             WITH *
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
                 WITH DISTINCT update_this1
                 WITH update_this1 { .id, .title } AS update_this1

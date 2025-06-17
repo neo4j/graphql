@@ -91,8 +91,7 @@ describe("phrase input - genAI plugin", () => {
             WHERE $param1 IN labels(this1)
             WITH collect({ node: this1, score: var2 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this1, edge.score AS var2
                 RETURN collect({ node: { title: this1.title, __resolveType: \\"Movie\\" }, score: var2 }) AS var3

@@ -60,8 +60,7 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Person)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:attends]->(this1:School)
                 WHERE (EXISTS {
                     MATCH (this1)<-[:attends]-(this2:Person)

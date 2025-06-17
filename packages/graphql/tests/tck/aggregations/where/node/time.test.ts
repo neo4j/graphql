@@ -56,8 +56,7 @@ describe("Cypher Aggregations where node with Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN min(this1.someTime) = time($param0) AS var2
@@ -88,8 +87,7 @@ describe("Cypher Aggregations where node with Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN min(this1.someTime) > time($param0) AS var2
@@ -120,8 +118,7 @@ describe("Cypher Aggregations where node with Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN min(this1.someTime) >= time($param0) AS var2
@@ -152,8 +149,7 @@ describe("Cypher Aggregations where node with Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN min(this1.someTime) < time($param0) AS var2
@@ -184,8 +180,7 @@ describe("Cypher Aggregations where node with Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN min(this1.someTime) <= time($param0) AS var2
@@ -216,8 +211,7 @@ describe("Cypher Aggregations where node with Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN max(this1.someTime) = time($param0) AS var2
@@ -248,8 +242,7 @@ describe("Cypher Aggregations where node with Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN max(this1.someTime) > time($param0) AS var2
@@ -280,8 +273,7 @@ describe("Cypher Aggregations where node with Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN max(this1.someTime) >= time($param0) AS var2
@@ -312,8 +304,7 @@ describe("Cypher Aggregations where node with Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN max(this1.someTime) < time($param0) AS var2
@@ -344,8 +335,7 @@ describe("Cypher Aggregations where node with Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN max(this1.someTime) <= time($param0) AS var2

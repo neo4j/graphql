@@ -83,8 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Employee)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:CAN_ACCESS]->(this1:Product)
                 WITH DISTINCT this1
                 WITH this1 { .description, id: this1.fg_item_id, partNumber: this1.fg_item } AS this1
@@ -119,8 +118,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
                 MATCH (this0:Product)
                 WITH collect({ node: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this0
                     WITH *
@@ -155,13 +153,11 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this:Employee)
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[this0:CAN_ACCESS]->(this1:Product)
                     WITH collect({ node: this1, relationship: this0 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
+                    CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this1, edge.relationship AS this0
                         WITH *

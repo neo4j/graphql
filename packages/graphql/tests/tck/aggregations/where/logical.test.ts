@@ -61,14 +61,12 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN count(this1) > $param0 AS var2
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this3:LIKES]-(this4:User)
                 WITH DISTINCT this4
                 RETURN count(this4) < $param1 AS var5
@@ -112,14 +110,12 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN count(this1) > $param0 AS var2
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this3:LIKES]-(this4:User)
                 WITH DISTINCT this4
                 RETURN count(this4) < $param1 AS var5
@@ -157,8 +153,7 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN count(this1) > $param0 AS var2
@@ -201,26 +196,22 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN count(this1) > $param0 AS var2
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this3:LIKES]-(this4:User)
                 WITH DISTINCT this4
                 RETURN count(this4) < $param1 AS var5
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this6:LIKES]-(this7:User)
                 WITH DISTINCT this7
                 RETURN count(this7) > $param2 AS var8
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this9:LIKES]-(this10:User)
                 WITH DISTINCT this10
                 RETURN count(this10) < $param3 AS var11
@@ -279,32 +270,27 @@ describe("Cypher Aggregations where with logical AND plus OR", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN count(this1) > $param0 AS var2
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this3:LIKES]-(this4:User)
                 WITH DISTINCT this4
                 RETURN count(this4) < $param1 AS var5
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this6:LIKES]-(this7:User)
                 WITH DISTINCT this7
                 RETURN count(this7) > $param2 AS var8
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this9:LIKES]-(this10:User)
                 WITH DISTINCT this10
                 RETURN count(this10) < $param3 AS var11
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this12:LIKES]-(this13:User)
                 WITH DISTINCT this13
                 RETURN count(this13) < $param4 AS var14

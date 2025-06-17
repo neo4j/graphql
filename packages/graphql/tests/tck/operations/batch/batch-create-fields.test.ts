@@ -79,8 +79,7 @@ describe("Batch Create, Scalar types", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Movie)
                 SET
                     create_this1.createdAt = datetime(),
@@ -156,15 +155,13 @@ describe("Batch Create, Scalar types", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Movie)
                 SET
                     create_this1.createdAt = datetime(),
                     create_this1.id = create_var0.id
                 WITH create_this1, create_var0
-                CALL {
-                    WITH create_this1, create_var0
+                CALL (create_this1, create_var0) {
                     UNWIND create_var0.actors.create AS create_var2
                     CREATE (create_this3:Actor)
                     SET
@@ -175,8 +172,7 @@ describe("Batch Create, Scalar types", () => {
                     SET
                         create_this4.year = create_var2.edge.year
                     WITH create_this3, create_var2
-                    CALL {
-                        WITH create_this3, create_var2
+                    CALL (create_this3, create_var2) {
                         UNWIND create_var2.node.website.create AS create_var5
                         CREATE (create_this6:Website)
                         SET
@@ -187,8 +183,7 @@ describe("Batch Create, Scalar types", () => {
                     RETURN collect(NULL) AS create_var9
                 }
                 WITH create_this1, create_var0
-                CALL {
-                    WITH create_this1, create_var0
+                CALL (create_this1, create_var0) {
                     UNWIND create_var0.website.create AS create_var10
                     CREATE (create_this11:Website)
                     SET
@@ -272,15 +267,13 @@ describe("Batch Create, Scalar types", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Movie)
                 SET
                     create_this1.createdAt = datetime(),
                     create_this1.id = create_var0.id
                 WITH create_this1, create_var0
-                CALL {
-                    WITH create_this1, create_var0
+                CALL (create_this1, create_var0) {
                     UNWIND create_var0.actors.create AS create_var2
                     CREATE (create_this3:Actor)
                     SET
@@ -294,8 +287,7 @@ describe("Batch Create, Scalar types", () => {
                 }
                 RETURN create_this1
             }
-            CALL {
-                WITH create_this1
+            CALL (create_this1) {
                 MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
                 WITH DISTINCT create_this7
                 WITH create_this7 { .name } AS create_this7

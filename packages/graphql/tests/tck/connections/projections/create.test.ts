@@ -72,20 +72,17 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Movie)
                 SET
                     create_this1.title = create_var0.title
                 RETURN create_this1
             }
-            CALL {
-                WITH create_this1
+            CALL (create_this1) {
                 MATCH (create_this1)<-[create_this2:ACTED_IN]-(create_this3:Actor)
                 WITH collect({ node: create_this3, relationship: create_this2 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS create_this3, edge.relationship AS create_this2
                     RETURN collect({ properties: { screenTime: create_this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this3.name, __resolveType: \\"Actor\\" } }) AS create_var4
@@ -132,20 +129,17 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Movie)
                 SET
                     create_this1.title = create_var0.title
                 RETURN create_this1
             }
-            CALL {
-                WITH create_this1
+            CALL (create_this1) {
                 MATCH (create_this1)<-[create_this2:ACTED_IN]-(create_this3:Actor)
                 WITH collect({ node: create_this3, relationship: create_this2 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS create_this3, edge.relationship AS create_this2
                     RETURN collect({ properties: { screenTime: create_this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this3.name, __resolveType: \\"Actor\\" } }) AS create_var4
@@ -195,21 +189,18 @@ describe("Cypher -> Connections -> Projections -> Create", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Movie)
                 SET
                     create_this1.title = create_var0.title
                 RETURN create_this1
             }
-            CALL {
-                WITH create_this1
+            CALL (create_this1) {
                 MATCH (create_this1)<-[create_this2:ACTED_IN]-(create_this3:Actor)
                 WHERE create_this3.name = $create_param1
                 WITH collect({ node: create_this3, relationship: create_this2 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS create_this3, edge.relationship AS create_this2
                     RETURN collect({ properties: { screenTime: create_this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this3.name, __resolveType: \\"Actor\\" } }) AS create_var4

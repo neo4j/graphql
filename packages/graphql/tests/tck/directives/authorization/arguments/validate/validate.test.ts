@@ -89,8 +89,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:User)
                 SET
                     create_this1.id = create_var0.id,
@@ -152,23 +151,20 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:User)
                 SET
                     create_this1.id = create_var0.id,
                     create_this1.name = create_var0.name
                 WITH create_this1, create_var0
-                CALL {
-                    WITH create_this1, create_var0
+                CALL (create_this1, create_var0) {
                     UNWIND create_var0.posts.create AS create_var2
                     CREATE (create_this3:Post)
                     SET
                         create_this3.id = create_var2.node.id
                     MERGE (create_this1)-[create_this4:HAS_POST]->(create_this3)
                     WITH create_this3, create_var2
-                    CALL {
-                        WITH create_this3, create_var2
+                    CALL (create_this3, create_var2) {
                         UNWIND create_var2.node.creator.create AS create_var5
                         CREATE (create_this6:User)
                         SET

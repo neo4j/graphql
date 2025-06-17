@@ -78,8 +78,7 @@ describe("Cypher -> vector -> Score", () => {
             WHERE ($param1 IN labels(this0) AND var1 >= $param2)
             WITH collect({ node: this0, score: var1 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0, edge.score AS var1
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
@@ -251,8 +250,7 @@ describe("Cypher -> vector -> Score", () => {
             WHERE $param1 IN labels(this0)
             WITH collect({ node: this0, score: var1 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0, edge.score AS var1
                 WITH *
@@ -425,8 +423,7 @@ describe("Cypher -> vector -> Score", () => {
             WHERE $param1 IN labels(this0)
             WITH collect({ node: this0, score: var1 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0, edge.score AS var1
                 WITH *

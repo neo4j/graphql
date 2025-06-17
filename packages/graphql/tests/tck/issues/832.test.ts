@@ -737,34 +737,32 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
             CALL {
                 WITH this0
-                CALL {
-                    WITH this0
-                    CALL {
+                CALL (this0) {
+                    CALL (*) {
                         WITH *
                         MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Person)
-                        WITH create_this1 { .id, __resolveType: \\"Person\\", __id: id(create_this1) } AS create_this1
-                        RETURN create_this1 AS create_var2
+                        WITH create_this1 { .id, __resolveType: \\"Person\\", __id: id(create_this1) } AS create_var2
+                        RETURN create_var2
                         UNION
                         WITH *
                         MATCH (this0)<-[create_this3:ACTED_IN]-(create_this4:Place)
-                        WITH create_this4 { .id, __resolveType: \\"Place\\", __id: id(create_this4) } AS create_this4
-                        RETURN create_this4 AS create_var2
+                        WITH create_this4 { .id, __resolveType: \\"Place\\", __id: id(create_this4) } AS create_var2
+                        RETURN create_var2
                     }
                     WITH create_var2
                     RETURN collect(create_var2) AS create_var2
                 }
-                CALL {
-                    WITH this0
-                    CALL {
+                CALL (this0) {
+                    CALL (*) {
                         WITH *
                         MATCH (this0)-[create_this5:ACTED_IN]->(create_this6:Person)
-                        WITH create_this6 { .id, __resolveType: \\"Person\\", __id: id(create_this6) } AS create_this6
-                        RETURN create_this6 AS create_var7
+                        WITH create_this6 { .id, __resolveType: \\"Person\\", __id: id(create_this6) } AS create_var7
+                        RETURN create_var7
                         UNION
                         WITH *
                         MATCH (this0)-[create_this8:ACTED_IN]->(create_this9:Place)
-                        WITH create_this9 { .id, __resolveType: \\"Place\\", __id: id(create_this9) } AS create_this9
-                        RETURN create_this9 AS create_var7
+                        WITH create_this9 { .id, __resolveType: \\"Place\\", __id: id(create_this9) } AS create_var7
+                        RETURN create_var7
                     }
                     WITH create_var7
                     RETURN collect(create_var7) AS create_var7
@@ -773,34 +771,32 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
             CALL {
                 WITH this1
-                CALL {
-                    WITH this1
-                    CALL {
+                CALL (this1) {
+                    CALL (*) {
                         WITH *
                         MATCH (this1)<-[create_this11:ACTED_IN]-(create_this12:Person)
-                        WITH create_this12 { .id, __resolveType: \\"Person\\", __id: id(create_this12) } AS create_this12
-                        RETURN create_this12 AS create_var13
+                        WITH create_this12 { .id, __resolveType: \\"Person\\", __id: id(create_this12) } AS create_var13
+                        RETURN create_var13
                         UNION
                         WITH *
                         MATCH (this1)<-[create_this14:ACTED_IN]-(create_this15:Place)
-                        WITH create_this15 { .id, __resolveType: \\"Place\\", __id: id(create_this15) } AS create_this15
-                        RETURN create_this15 AS create_var13
+                        WITH create_this15 { .id, __resolveType: \\"Place\\", __id: id(create_this15) } AS create_var13
+                        RETURN create_var13
                     }
                     WITH create_var13
                     RETURN collect(create_var13) AS create_var13
                 }
-                CALL {
-                    WITH this1
-                    CALL {
+                CALL (this1) {
+                    CALL (*) {
                         WITH *
                         MATCH (this1)-[create_this16:ACTED_IN]->(create_this17:Person)
-                        WITH create_this17 { .id, __resolveType: \\"Person\\", __id: id(create_this17) } AS create_this17
-                        RETURN create_this17 AS create_var18
+                        WITH create_this17 { .id, __resolveType: \\"Person\\", __id: id(create_this17) } AS create_var18
+                        RETURN create_var18
                         UNION
                         WITH *
                         MATCH (this1)-[create_this19:ACTED_IN]->(create_this20:Place)
-                        WITH create_this20 { .id, __resolveType: \\"Place\\", __id: id(create_this20) } AS create_this20
-                        RETURN create_this20 AS create_var18
+                        WITH create_this20 { .id, __resolveType: \\"Place\\", __id: id(create_this20) } AS create_var18
+                        RETURN create_var18
                     }
                     WITH create_var18
                     RETURN collect(create_var18) AS create_var18

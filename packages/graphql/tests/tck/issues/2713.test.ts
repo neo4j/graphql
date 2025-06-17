@@ -65,11 +65,9 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                CALL {
-                    WITH this1
+                CALL (this1) {
                     MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN count(this3) = $param0 AS var4
                 }
@@ -77,11 +75,9 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
                 WHERE var4 = true
                 RETURN count(this1) > 0 AS var5
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                CALL {
-                    WITH this1
+                CALL (this1) {
                     MATCH (this1)<-[this6:IN_GENRE]-(this7:Movie)
                     RETURN count(this7) = $param1 AS var8
                 }
@@ -128,11 +124,9 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                CALL {
-                    WITH this1
+                CALL (this1) {
                     MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
                     RETURN count(this3) = $param0 AS var4
                 }
@@ -140,11 +134,9 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
                 WHERE (this1.name = $param1 AND var4 = true)
                 RETURN count(this1) > 0 AS var5
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                CALL {
-                    WITH this1
+                CALL (this1) {
                     MATCH (this1)<-[this6:IN_GENRE]-(this7:Movie)
                     RETURN count(this7) = $param2 AS var8
                 }

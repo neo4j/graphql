@@ -54,8 +54,7 @@ describe("queryDirection in relationships", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this:User)
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
                     WITH DISTINCT this1
                     WITH this1 { .name } AS this1
@@ -88,8 +87,7 @@ describe("queryDirection in relationships", () => {
                     MATCH (this)-[:FRIENDS_WITH]->(this0:User)
                     WHERE this0.name = $param0
                 }
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
                     WITH DISTINCT this2
                     WITH this2 { .name } AS this2
@@ -145,8 +143,7 @@ describe("queryDirection in relationships", () => {
                 RETURN count(*) AS disconnect_this_friends0_disconnect_User
                 }
                 WITH *
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[update_this0:FRIENDS_WITH]->(update_this1:User)
                     WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
@@ -224,8 +221,7 @@ describe("queryDirection in relationships", () => {
                 }
                 }
                 WITH *
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[update_this0:FRIENDS_WITH]->(update_this1:User)
                     WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
@@ -306,8 +302,7 @@ describe("queryDirection in relationships", () => {
                 	RETURN count(*) AS update_this_friends0
                 }
                 WITH *
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[update_this0:FRIENDS_WITH]->(update_this1:User)
                     WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
@@ -370,13 +365,11 @@ describe("queryDirection in relationships", () => {
                     WHERE this0.name = $param0
                 }
                 WITH *
-                CALL {
-                    WITH *
+                CALL (*) {
                     OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
                     WHERE this2.name = $param1
                     WITH this1, collect(DISTINCT this2) AS var3
-                    CALL {
-                        WITH var3
+                    CALL (var3) {
                         UNWIND var3 AS var4
                         DETACH DELETE var4
                     }
@@ -427,8 +420,7 @@ describe("queryDirection in relationships", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this:User)
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
                     WITH DISTINCT this1
                     WITH this1 { .name } AS this1
@@ -461,8 +453,7 @@ describe("queryDirection in relationships", () => {
                     MATCH (this)-[:FRIENDS_WITH]-(this0:User)
                     WHERE this0.name = $param0
                 }
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
                     WITH DISTINCT this2
                     WITH this2 { .name } AS this2
@@ -518,8 +509,7 @@ describe("queryDirection in relationships", () => {
                 RETURN count(*) AS disconnect_this_friends0_disconnect_User
                 }
                 WITH *
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[update_this0:FRIENDS_WITH]-(update_this1:User)
                     WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
@@ -597,8 +587,7 @@ describe("queryDirection in relationships", () => {
                 }
                 }
                 WITH *
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[update_this0:FRIENDS_WITH]-(update_this1:User)
                     WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
@@ -679,8 +668,7 @@ describe("queryDirection in relationships", () => {
                 	RETURN count(*) AS update_this_friends0
                 }
                 WITH *
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[update_this0:FRIENDS_WITH]-(update_this1:User)
                     WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
@@ -743,13 +731,11 @@ describe("queryDirection in relationships", () => {
                     WHERE this0.name = $param0
                 }
                 WITH *
-                CALL {
-                    WITH *
+                CALL (*) {
                     OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
                     WHERE this2.name = $param1
                     WITH this1, collect(DISTINCT this2) AS var3
-                    CALL {
-                        WITH var3
+                    CALL (var3) {
                         UNWIND var3 AS var4
                         DETACH DELETE var4
                     }

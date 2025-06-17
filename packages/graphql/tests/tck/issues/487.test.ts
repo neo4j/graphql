@@ -95,34 +95,31 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
                 RETURN node
             }
             WITH node AS this0
-            CALL {
-                WITH this0
-                CALL {
+            CALL (this0) {
+                CALL (*) {
                     WITH *
                     MATCH (this0)
                     WHERE this0:Book
-                    CALL {
-                        WITH this0
+                    CALL (this0) {
                         MATCH (this0)<-[this1:WROTE]-(this2:Author)
                         WITH DISTINCT this2
                         WITH this2 { .id } AS this2
                         RETURN collect(this2) AS var3
                     }
-                    WITH this0 { .id, author: var3, __resolveType: \\"Book\\", __id: id(this0) } AS this0
-                    RETURN this0 AS var4
+                    WITH this0 { .id, author: var3, __resolveType: \\"Book\\", __id: id(this0) } AS var4
+                    RETURN var4
                     UNION
                     WITH *
                     MATCH (this0)
                     WHERE this0:Movie
-                    CALL {
-                        WITH this0
+                    CALL (this0) {
                         MATCH (this0)<-[this5:DIRECTED]-(this6:Director)
                         WITH DISTINCT this6
                         WITH this6 { .id } AS this6
                         RETURN collect(this6) AS var7
                     }
-                    WITH this0 { .id, director: var7, __resolveType: \\"Movie\\", __id: id(this0) } AS this0
-                    RETURN this0 AS var4
+                    WITH this0 { .id, director: var7, __resolveType: \\"Movie\\", __id: id(this0) } AS var4
+                    RETURN var4
                 }
                 RETURN var4
             }
@@ -207,34 +204,31 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
                 RETURN node
             }
             WITH node AS this0
-            CALL {
-                WITH this0
-                CALL {
+            CALL (this0) {
+                CALL (*) {
                     WITH *
                     MATCH (this0)
                     WHERE this0:Book
-                    CALL {
-                        WITH this0
+                    CALL (this0) {
                         MATCH (this0)<-[this1:WROTE]-(this2:Author)
                         WITH DISTINCT this2
                         WITH this2 { .id } AS this2
                         RETURN collect(this2) AS var3
                     }
-                    WITH this0 { .id, author: var3, __resolveType: \\"Book\\", __id: id(this0) } AS this0
-                    RETURN this0 AS var4
+                    WITH this0 { .id, author: var3, __resolveType: \\"Book\\", __id: id(this0) } AS var4
+                    RETURN var4
                     UNION
                     WITH *
                     MATCH (this0)
                     WHERE this0:Movie
-                    CALL {
-                        WITH this0
+                    CALL (this0) {
                         MATCH (this0)<-[this5:DIRECTED]-(this6:Director)
                         WITH DISTINCT this6
                         WITH this6 { .id } AS this6
                         RETURN collect(this6) AS var7
                     }
-                    WITH this0 { .id, director: var7, __resolveType: \\"Movie\\", __id: id(this0) } AS this0
-                    RETURN this0 AS var4
+                    WITH this0 { .id, director: var7, __resolveType: \\"Movie\\", __id: id(this0) } AS var4
+                    RETURN var4
                 }
                 RETURN var4
             }

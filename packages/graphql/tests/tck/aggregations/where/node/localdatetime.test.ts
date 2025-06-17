@@ -58,8 +58,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this1.someLocalDateTime) = $param0 AS var2
             }
@@ -99,8 +98,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this1.someLocalDateTime) > $param0 AS var2
             }
@@ -140,8 +138,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this1.someLocalDateTime) >= $param0 AS var2
             }
@@ -181,8 +178,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this1.someLocalDateTime) < $param0 AS var2
             }
@@ -222,8 +218,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this1.someLocalDateTime) <= $param0 AS var2
             }
@@ -263,8 +258,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this1.someLocalDateTime) = $param0 AS var2
             }
@@ -304,8 +298,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this1.someLocalDateTime) > $param0 AS var2
             }
@@ -345,8 +338,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this1.someLocalDateTime) >= $param0 AS var2
             }
@@ -386,8 +378,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this1.someLocalDateTime) < $param0 AS var2
             }
@@ -427,8 +418,7 @@ describe("Cypher Aggregations where node with LocalDateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this1.someLocalDateTime) <= $param0 AS var2
             }

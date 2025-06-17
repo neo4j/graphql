@@ -73,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL () {
                 CALL {
                     MATCH (this0:Series)
                     WHERE this0:Movie
@@ -122,14 +122,11 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
             MATCH (this0:Actor)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         CALL {
                             WITH this0
                             MATCH (this0)-[this1:ACTED_IN]->(this2:Series)

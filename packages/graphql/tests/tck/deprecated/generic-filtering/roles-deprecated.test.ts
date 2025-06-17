@@ -194,10 +194,8 @@ describe("Cypher Auth Roles - deprecated", () => {
             WITH *
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h
                 }
@@ -245,8 +243,7 @@ describe("Cypher Auth Roles - deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:User)
                 SET
                     create_this1.id = create_var0.id
@@ -297,8 +294,7 @@ describe("Cypher Auth Roles - deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:User)
                 SET
                     create_this1.id = create_var0.id,
@@ -783,13 +779,11 @@ describe("Cypher Auth Roles - deprecated", () => {
             MATCH (this:User)
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
-            CALL {
-                WITH *
+            CALL (*) {
                 OPTIONAL MATCH (this)-[this0:HAS_POST]->(this1:Post)
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this0, collect(DISTINCT this1) AS var2
-                CALL {
-                    WITH var2
+                CALL (var2) {
                     UNWIND var2 AS var3
                     DETACH DELETE var3
                 }

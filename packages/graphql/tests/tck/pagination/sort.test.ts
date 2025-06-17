@@ -165,8 +165,7 @@ describe("Sort", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
                 WITH DISTINCT this1
                 WITH this1 { .name } AS this1
@@ -195,8 +194,7 @@ describe("Sort", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
                 WITH DISTINCT this1
                 WITH this1 { .name } AS this1

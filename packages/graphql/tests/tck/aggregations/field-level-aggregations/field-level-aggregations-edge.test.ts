@@ -72,10 +72,8 @@ describe("Field Level Aggregations", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                     WITH DISTINCT this0
                     RETURN { min: min(this0.screentime), max: max(this0.screentime), average: avg(this0.screentime), sum: sum(this0.screentime) } AS var2

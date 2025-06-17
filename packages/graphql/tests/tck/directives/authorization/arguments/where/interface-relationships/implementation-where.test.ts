@@ -191,13 +191,12 @@ describe("Cypher Auth Where", () => {
             MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            CALL {
-                WITH this
-                CALL {
+            CALL (this) {
+                CALL (*) {
                     WITH *
                     MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                    WITH this1 { __resolveType: \\"Comment\\", __id: id(this1) } AS this1
-                    RETURN this1 AS var2
+                    WITH this1 { __resolveType: \\"Comment\\", __id: id(this1) } AS var2
+                    RETURN var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:HAS_CONTENT]->(this4:Post)
@@ -205,8 +204,8 @@ describe("Cypher Auth Where", () => {
                         MATCH (this4)<-[:HAS_CONTENT]-(this5:User)
                         WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)
                     })
-                    WITH this4 { .id, __resolveType: \\"Post\\", __id: id(this4) } AS this4
-                    RETURN this4 AS var2
+                    WITH this4 { .id, __resolveType: \\"Post\\", __id: id(this4) } AS var2
+                    RETURN var2
                 }
                 WITH var2
                 RETURN collect(var2) AS var2
@@ -253,10 +252,8 @@ describe("Cypher Auth Where", () => {
             MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     CALL {
                         WITH this
                         MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
@@ -320,10 +317,8 @@ describe("Cypher Auth Where", () => {
             MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     CALL {
                         WITH this
                         MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
@@ -611,26 +606,22 @@ describe("Cypher Auth Where", () => {
             MATCH (this:User)
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             WITH *
-            CALL {
-                WITH *
+            CALL (*) {
                 OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
                 WITH this0, collect(DISTINCT this1) AS var2
-                CALL {
-                    WITH var2
+                CALL (var2) {
                     UNWIND var2 AS var3
                     DETACH DELETE var3
                 }
             }
-            CALL {
-                WITH *
+            CALL (*) {
                 OPTIONAL MATCH (this)-[this4:HAS_CONTENT]->(this5:Post)
                 WHERE ($isAuthenticated = true AND EXISTS {
                     MATCH (this5)<-[:HAS_CONTENT]-(this6:User)
                     WHERE ($jwt.sub IS NOT NULL AND this6.id = $jwt.sub)
                 })
                 WITH this4, collect(DISTINCT this5) AS var7
-                CALL {
-                    WITH var7
+                CALL (var7) {
                     UNWIND var7 AS var8
                     DETACH DELETE var8
                 }

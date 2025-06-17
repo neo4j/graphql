@@ -53,10 +53,8 @@ describe("cypher directive filtering - Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN datetime(\\"2024-09-03T15:30:00Z\\") AS t
                 }
@@ -65,10 +63,8 @@ describe("cypher directive filtering - Auth", () => {
             }
             WITH *
             WHERE var1 > datetime($param0)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN datetime(\\"2024-09-03T15:30:00Z\\") AS t
                 }
@@ -115,10 +111,8 @@ describe("cypher directive filtering - Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN duration('P14DT16H12M') AS d
                 }

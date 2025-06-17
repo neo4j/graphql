@@ -87,13 +87,11 @@ describe("Cypher Delete - Deprecated", () => {
             MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
-            CALL {
-                WITH *
+            CALL (*) {
                 OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.name = $param1
                 WITH this0, collect(DISTINCT this1) AS var2
-                CALL {
-                    WITH var2
+                CALL (var2) {
                     UNWIND var2 AS var3
                     DETACH DELETE var3
                 }
@@ -134,24 +132,20 @@ describe("Cypher Delete - Deprecated", () => {
             MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
-            CALL {
-                WITH *
+            CALL (*) {
                 OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.name = $param1
                 WITH this0, collect(DISTINCT this1) AS var2
-                CALL {
-                    WITH var2
+                CALL (var2) {
                     UNWIND var2 AS var3
                     DETACH DELETE var3
                 }
             }
-            CALL {
-                WITH *
+            CALL (*) {
                 OPTIONAL MATCH (this)<-[this4:ACTED_IN]-(this5:Actor)
                 WHERE this5.name = $param2
                 WITH this4, collect(DISTINCT this5) AS var6
-                CALL {
-                    WITH var6
+                CALL (var6) {
                     UNWIND var6 AS var7
                     DETACH DELETE var7
                 }
@@ -193,25 +187,21 @@ describe("Cypher Delete - Deprecated", () => {
             MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
-            CALL {
-                WITH *
+            CALL (*) {
                 OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.name = $param1
                 WITH *
-                CALL {
-                    WITH *
+                CALL (*) {
                     OPTIONAL MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
                     WHERE this3.id = $param2
                     WITH this2, collect(DISTINCT this3) AS var4
-                    CALL {
-                        WITH var4
+                    CALL (var4) {
                         UNWIND var4 AS var5
                         DETACH DELETE var5
                     }
                 }
                 WITH this0, collect(DISTINCT this1) AS var6
-                CALL {
-                    WITH var6
+                CALL (var6) {
                     UNWIND var6 AS var7
                     DETACH DELETE var7
                 }
@@ -258,37 +248,31 @@ describe("Cypher Delete - Deprecated", () => {
             MATCH (this:Movie)
             WHERE this.id = $param0
             WITH *
-            CALL {
-                WITH *
+            CALL (*) {
                 OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.name = $param1
                 WITH *
-                CALL {
-                    WITH *
+                CALL (*) {
                     OPTIONAL MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
                     WHERE this3.id = $param2
                     WITH *
-                    CALL {
-                        WITH *
+                    CALL (*) {
                         OPTIONAL MATCH (this3)<-[this4:ACTED_IN]-(this5:Actor)
                         WHERE this5.name = $param3
                         WITH this4, collect(DISTINCT this5) AS var6
-                        CALL {
-                            WITH var6
+                        CALL (var6) {
                             UNWIND var6 AS var7
                             DETACH DELETE var7
                         }
                     }
                     WITH this2, collect(DISTINCT this3) AS var8
-                    CALL {
-                        WITH var8
+                    CALL (var8) {
                         UNWIND var8 AS var9
                         DETACH DELETE var9
                     }
                 }
                 WITH this0, collect(DISTINCT this1) AS var10
-                CALL {
-                    WITH var10
+                CALL (var10) {
                     UNWIND var10 AS var11
                     DETACH DELETE var11
                 }

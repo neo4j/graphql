@@ -69,10 +69,8 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:Movie)
-            CALL {
-                WITH this0
-                CALL {
-                    WITH this0
+            CALL (this0) {
+                CALL (this0) {
                     WITH this0 AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -84,8 +82,7 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             WHERE NOT (any(this3 IN this2 WHERE this3.name = $param0))
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
@@ -147,10 +144,8 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:Movie)
-            CALL {
-                WITH this0
-                CALL {
-                    WITH this0
+            CALL (this0) {
+                CALL (this0) {
                     WITH this0 AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -162,8 +157,7 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             WHERE all(this3 IN this2 WHERE this3.name = $param0)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
@@ -225,10 +219,8 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:Movie)
-            CALL {
-                WITH this0
-                CALL {
-                    WITH this0
+            CALL (this0) {
+                CALL (this0) {
                     WITH this0 AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -240,8 +232,7 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             WHERE single(this3 IN this2 WHERE this3.name = $param0)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
@@ -303,10 +294,8 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:Movie)
-            CALL {
-                WITH this0
-                CALL {
-                    WITH this0
+            CALL (this0) {
+                CALL (this0) {
                     WITH this0 AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -318,8 +307,7 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             WHERE any(this3 IN this2 WHERE this3.name = $param0)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
@@ -381,10 +369,8 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:Movie)
-            CALL {
-                WITH this0
-                CALL {
-                    WITH this0
+            CALL (this0) {
+                CALL (this0) {
                     WITH this0 AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -396,8 +382,7 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             WHERE any(this3 IN this2 WHERE this3.name = $param0)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 WITH *
@@ -461,10 +446,8 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:Movie)
-            CALL {
-                WITH this0
-                CALL {
-                    WITH this0
+            CALL (this0) {
+                CALL (this0) {
                     WITH this0 AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -476,8 +459,7 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             WHERE none(this3 IN this2 WHERE this3.name = $param0)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
@@ -566,10 +548,8 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:Movie)
-            CALL {
-                WITH this0
-                CALL {
-                    WITH this0
+            CALL (this0) {
+                CALL (this0) {
                     WITH this0 AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -577,10 +557,8 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
                 WITH actor AS this1
                 RETURN collect(this1) AS this2
             }
-            CALL {
-                WITH this0
-                CALL {
-                    WITH this0
+            CALL (this0) {
+                CALL (this0) {
                     WITH this0 AS this
                     MATCH (this)-[:IN_GENRE]->(g:Genre)
                     RETURN g
@@ -592,8 +570,7 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             WHERE (any(this5 IN this2 WHERE this5.name = $param0) OR any(this6 IN this4 WHERE this6.name = $param1))
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var7

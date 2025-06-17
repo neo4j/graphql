@@ -223,16 +223,14 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
             }
             CALL {
                 WITH this0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)-[create_this0:ITEM_TRANSACTED]->(create_this1:Transaction)
                     WHERE (($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $create_param4 IN $jwt.roles)) AND EXISTS {
                         MATCH (create_this1)-[:TRANSACTION]->(create_this2:Store)
                         WHERE ($jwt.store IS NOT NULL AND create_this2.id = $jwt.store)
                     }))
                     WITH DISTINCT create_this1
-                    CALL {
-                        WITH create_this1
+                    CALL (create_this1) {
                         MATCH (create_this1)-[create_this3:TRANSACTION]->(create_this4:Store)
                         WITH DISTINCT create_this4
                         WITH create_this4 { .name } AS create_this4
