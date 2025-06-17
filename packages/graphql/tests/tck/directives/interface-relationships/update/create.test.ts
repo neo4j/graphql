@@ -90,8 +90,7 @@ describe("Interface Relationships - Update create", () => {
             "CYPHER 5
             MATCH (this:Actor)
             WITH this
-            CALL {
-            	 WITH this
+            CALL (this) {
             WITH this
             CREATE (this_actedIn0_create0_node:Movie)
             SET this_actedIn0_create0_node.title = $this_actedIn0_create0_node_title
@@ -100,8 +99,7 @@ describe("Interface Relationships - Update create", () => {
             SET this_actedIn0_create0_relationship.screenTime = $updateActors.args.update.actedIn[0].create[0].edge.screenTime
             RETURN count(*) AS update_this_Movie
             }
-            CALL {
-            	 WITH this
+            CALL (this){
             	WITH this
             RETURN count(*) AS update_this_Series
             }

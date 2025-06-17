@@ -91,19 +91,17 @@ describe("Interface Relationships - Create connect", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Movie)
             	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_actedIn_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actedIn_connect0_node
             			CREATE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
@@ -113,15 +111,13 @@ describe("Interface Relationships - Create connect", () => {
             WITH this0, this0_actedIn_connect0_node
             	RETURN count(*) AS connect_this0_actedIn_connect_Movie0
             }
-            CALL {
+            CALL(*) {
             		WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect1_node:Series)
             	WHERE this0_actedIn_connect1_node.title STARTS WITH $this0_actedIn_connect1_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_actedIn_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actedIn_connect1_node
             			CREATE (this0)-[this0_actedIn_connect1_relationship:ACTED_IN]->(this0_actedIn_connect1_node)
@@ -133,8 +129,7 @@ describe("Interface Relationships - Create connect", () => {
             }
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 CALL (this0) {
                     CALL (*) {
                         WITH *

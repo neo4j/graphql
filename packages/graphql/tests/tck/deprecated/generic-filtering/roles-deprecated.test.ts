@@ -449,15 +449,13 @@ describe("Cypher Auth Roles - deprecated", () => {
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this
             	OPTIONAL MATCH (this_posts0_connect0_node:Post)
             	WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this_posts0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_posts0_connect0_node
             			CREATE (this)-[:HAS_POST]->(this_posts0_connect0_node)
@@ -519,19 +517,17 @@ describe("Cypher Auth Roles - deprecated", () => {
             "CYPHER 5
             MATCH (this:Comment)
             WITH this
-            CALL {
+            CALL(*) {
             	WITH this
             	MATCH (this)<-[this_has_comment0_relationship:HAS_COMMENT]-(this_post0:Post)
             	WITH *
-            	CALL {
+            	CALL(*) {
             		WITH this, this_post0
             		OPTIONAL MATCH (this_post0_creator0_connect0_node:User)
             		WHERE this_post0_creator0_connect0_node.id = $this_post0_creator0_connect0_node_param0 AND (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            		CALL {
-            			WITH *
+            		CALL(*) {
             			WITH this, collect(this_post0_creator0_connect0_node) as connectedNodes, collect(this_post0) as parentNodes
-            			CALL {
-            				WITH connectedNodes, parentNodes
+            			CALL(connectedNodes, parentNodes) {
             				UNWIND parentNodes as this_post0
             				UNWIND connectedNodes as this_post0_creator0_connect0_node
             				CREATE (this_post0)-[:HAS_POST]->(this_post0_creator0_connect0_node)
@@ -588,14 +584,13 @@ describe("Cypher Auth Roles - deprecated", () => {
             WITH *
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
-            CALL {
+            CALL(*) {
             WITH this
             OPTIONAL MATCH (this)-[this_posts0_disconnect0_rel:HAS_POST]->(this_posts0_disconnect0:Post)
             WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            CALL {
-            	WITH this_posts0_disconnect0, this_posts0_disconnect0_rel, this
-            	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0, this_posts0_disconnect0_rel, this
-            	UNWIND this_posts0_disconnect0 as x
+            CALL (this_posts0_disconnect0, this_posts0_disconnect0_rel, this) {
+            	WITH collect(this_posts0_disconnect0) as this_posts0_disconnect0_x, this_posts0_disconnect0_rel, this
+            	UNWIND this_posts0_disconnect0_x as x
             	DELETE this_posts0_disconnect0_rel
             }
             WITH this, this_posts0_disconnect0
@@ -655,18 +650,17 @@ describe("Cypher Auth Roles - deprecated", () => {
             "CYPHER 5
             MATCH (this:Comment)
             WITH this
-            CALL {
+            CALL(*) {
             	WITH this
             	MATCH (this)<-[this_has_comment0_relationship:HAS_COMMENT]-(this_post0:Post)
             	WITH this, this_post0
-            	CALL {
+            	CALL(*) {
             	WITH this, this_post0
             	OPTIONAL MATCH (this_post0)-[this_post0_creator0_disconnect0_rel:HAS_POST]->(this_post0_creator0_disconnect0:User)
             	WHERE this_post0_creator0_disconnect0.id = $updateComments_args_update_post0_update_node_creator0_disconnect0_where_User_this_post0_creator0_disconnect0param0 AND (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            	CALL {
-            		WITH this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel, this_post0
-            		WITH collect(this_post0_creator0_disconnect0) as this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel, this_post0
-            		UNWIND this_post0_creator0_disconnect0 as x
+            	CALL (this_post0_creator0_disconnect0, this_post0_creator0_disconnect0_rel, this_post0) {
+            		WITH collect(this_post0_creator0_disconnect0) as this_post0_creator0_disconnect0_x, this_post0_creator0_disconnect0_rel, this_post0
+            		UNWIND this_post0_creator0_disconnect0_x as x
             		DELETE this_post0_creator0_disconnect0_rel
             	}
             	WITH this, this_post0, this_post0_creator0_disconnect0

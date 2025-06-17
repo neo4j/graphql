@@ -137,7 +137,7 @@ describe("Batch Create, Interface", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Movie)
             SET this0.id = $this0_id
             WITH *
@@ -148,7 +148,7 @@ describe("Batch Create, Interface", () => {
             SET this0_workersActor0_relationship.year = $this0_workersActor0_relationship_year
             RETURN this0
             }
-            CALL {
+            CALL(*) {
             CREATE (this1:Movie)
             SET this1.id = $this1_id
             WITH *
@@ -159,8 +159,7 @@ describe("Batch Create, Interface", () => {
             SET this1_workersModeler0_relationship.year = $this1_workersModeler0_relationship_year
             RETURN this1
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 CALL (this0) {
                     CALL (*) {
                         WITH *
@@ -178,8 +177,7 @@ describe("Batch Create, Interface", () => {
                 }
                 RETURN this0 { .id, workers: create_var2 } AS create_var5
             }
-            CALL {
-                WITH this1
+            CALL (this1) {
                 CALL (this1) {
                     CALL (*) {
                         WITH *
@@ -259,7 +257,7 @@ describe("Batch Create, Interface", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Movie)
             SET this0.id = $this0_id
             WITH *
@@ -270,7 +268,7 @@ describe("Batch Create, Interface", () => {
             SET this0_workersActor0_relationship.year = $this0_workersActor0_relationship_year
             RETURN this0
             }
-            CALL {
+            CALL(*) {
             CREATE (this1:Movie)
             SET this1.id = $this1_id
             WITH *
@@ -281,7 +279,7 @@ describe("Batch Create, Interface", () => {
             SET this1_workersActor0_relationship.year = $this1_workersActor0_relationship_year
             RETURN this1
             }
-            CALL {
+            CALL(*) {
             CREATE (this2:Movie)
             SET this2.id = $this2_id
             WITH *
@@ -290,19 +288,17 @@ describe("Batch Create, Interface", () => {
             MERGE (this2)-[:HAS_WEBSITE]->(this2_website0_node)
             RETURN this2
             }
-            CALL {
+            CALL(*) {
             CREATE (this3:Movie)
             SET this3.id = $this3_id
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this3
             	OPTIONAL MATCH (this3_workers_connect0_node:Actor)
             	WHERE this3_workers_connect0_node.id = $this3_workers_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this3_workers_connect0_node) as connectedNodes, collect(this3) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this3
             			UNWIND connectedNodes as this3_workers_connect0_node
             			CREATE (this3)<-[this3_workers_connect0_relationship:EMPLOYED]-(this3_workers_connect0_node)
@@ -311,15 +307,13 @@ describe("Batch Create, Interface", () => {
             WITH this3, this3_workers_connect0_node
             	RETURN count(*) AS connect_this3_workers_connect_Actor0
             }
-            CALL {
+            CALL(*) {
             		WITH this3
             	OPTIONAL MATCH (this3_workers_connect1_node:Modeler)
             	WHERE this3_workers_connect1_node.id = $this3_workers_connect1_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this3_workers_connect1_node) as connectedNodes, collect(this3) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this3
             			UNWIND connectedNodes as this3_workers_connect1_node
             			CREATE (this3)<-[this3_workers_connect1_relationship:EMPLOYED]-(this3_workers_connect1_node)
@@ -330,8 +324,7 @@ describe("Batch Create, Interface", () => {
             }
             RETURN this3
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 CALL (this0) {
                     MATCH (this0)-[create_this0:HAS_WEBSITE]->(create_this1:Website)
                     WITH DISTINCT create_this1
@@ -355,8 +348,7 @@ describe("Batch Create, Interface", () => {
                 }
                 RETURN this0 { .id, website: create_var2, workers: create_var5 } AS create_var8
             }
-            CALL {
-                WITH this1
+            CALL (this1) {
                 CALL (this1) {
                     MATCH (this1)-[create_this9:HAS_WEBSITE]->(create_this10:Website)
                     WITH DISTINCT create_this10
@@ -380,8 +372,7 @@ describe("Batch Create, Interface", () => {
                 }
                 RETURN this1 { .id, website: create_var11, workers: create_var14 } AS create_var17
             }
-            CALL {
-                WITH this2
+            CALL (this2) {
                 CALL (this2) {
                     MATCH (this2)-[create_this18:HAS_WEBSITE]->(create_this19:Website)
                     WITH DISTINCT create_this19
@@ -405,8 +396,7 @@ describe("Batch Create, Interface", () => {
                 }
                 RETURN this2 { .id, website: create_var20, workers: create_var23 } AS create_var26
             }
-            CALL {
-                WITH this3
+            CALL (this3) {
                 CALL (this3) {
                     MATCH (this3)-[create_this27:HAS_WEBSITE]->(create_this28:Website)
                     WITH DISTINCT create_this28

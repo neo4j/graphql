@@ -163,7 +163,7 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Tenant)
             SET this0.id = randomUUID()
             WITH *
@@ -217,8 +217,7 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 CALL (this0) {
                     MATCH (this0)<-[create_this0:ADMIN_IN]-(create_this1:User)
                     WITH DISTINCT create_this1

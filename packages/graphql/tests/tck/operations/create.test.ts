@@ -311,19 +311,17 @@ describe("Cypher Create", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Movie)
             SET this0.id = $this0_id
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
             	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
             			CREATE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
@@ -334,8 +332,7 @@ describe("Cypher Create", () => {
             }
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 RETURN this0 { .id } AS create_var0
             }
             RETURN [create_var0] AS data"
@@ -375,19 +372,17 @@ describe("Cypher Create", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_movies_connect0_node:Movie)
             	WHERE this0_movies_connect0_node.id = $this0_movies_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_movies_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_movies_connect0_node
             			CREATE (this0)-[:ACTED_IN]->(this0_movies_connect0_node)
@@ -398,8 +393,7 @@ describe("Cypher Create", () => {
             }
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 CALL (this0) {
                     MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:Movie)
                     WITH DISTINCT create_this1

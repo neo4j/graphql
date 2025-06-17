@@ -231,10 +231,9 @@ describe("@auth allow on specific interface implementation", () => {
             MATCH (this:User)
             WHERE this.id = $param0
             WITH this
-            CALL {
-            	 WITH this
+            CALL (this) {
             WITH this
-            CALL {
+            CALL(*) {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
             	SET this_content0.id = $this_update_content0_id_SET
@@ -242,10 +241,9 @@ describe("@auth allow on specific interface implementation", () => {
             }
             RETURN count(*) AS update_this_Comment
             }
-            CALL {
-            	 WITH this
+            CALL (this){
             	WITH this
-            CALL {
+            CALL(*) {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
             	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {

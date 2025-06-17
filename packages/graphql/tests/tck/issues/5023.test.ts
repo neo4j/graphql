@@ -147,7 +147,7 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
                 WHERE ($jwt.id IS NOT NULL AND this0.userId = $jwt.id)
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
-            CALL {
+            CALL(*) {
             	WITH this
             	MATCH (this)-[this_has_settings0_relationship:HAS_SETTINGS]->(this_settings0:Settings)
             	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
@@ -158,8 +158,7 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
             	    }
             	}), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	WITH *
-            	CALL {
-            	WITH *
+            	CALL(*) {
             	OPTIONAL MATCH (this_settings0)-[this_settings0_extendedOpeningHours0_delete0_relationship:HAS_OPENING_HOURS]->(this_settings0_extendedOpeningHours0_delete0:OpeningDay)
             	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
             	    MATCH (this_settings0_extendedOpeningHours0_delete0)<-[:HAS_OPENING_HOURS]-(authorization_deletebefore_this0:Settings)
@@ -172,8 +171,7 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
             	    }
             	}), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	WITH this_settings0_extendedOpeningHours0_delete0_relationship, collect(DISTINCT this_settings0_extendedOpeningHours0_delete0) AS this_settings0_extendedOpeningHours0_delete0_to_delete
-            	CALL {
-            		WITH this_settings0_extendedOpeningHours0_delete0_to_delete
+            	CALL(this_settings0_extendedOpeningHours0_delete0_to_delete) {
             		UNWIND this_settings0_extendedOpeningHours0_delete0_to_delete AS x
             		DETACH DELETE x
             	}

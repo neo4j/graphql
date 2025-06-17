@@ -91,7 +91,7 @@ describe("Interface Relationships - Create create", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
             WITH *
@@ -102,8 +102,7 @@ describe("Interface Relationships - Create create", () => {
             SET this0_actedInMovie0_relationship.screenTime = $this0_actedInMovie0_relationship_screenTime
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 CALL (this0) {
                     CALL (*) {
                         WITH *

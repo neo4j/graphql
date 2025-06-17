@@ -89,8 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
             MATCH (this:Movie)
             WHERE this.title = $param0
             WITH this
-            CALL {
-            	 WITH this
+            CALL (this) {
             WITH this
             CREATE (this_reviewers0_create0_node:Person)
             SET this_reviewers0_create0_node.name = $this_reviewers0_create0_node_name
@@ -99,8 +98,7 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
             SET this_reviewers0_create0_relationship.score = $updateMovies.args.update.reviewers[0].create[0].edge.score
             RETURN count(*) AS update_this_Person
             }
-            CALL {
-            	 WITH this
+            CALL (this){
             	WITH this
             RETURN count(*) AS update_this_Influencer
             }

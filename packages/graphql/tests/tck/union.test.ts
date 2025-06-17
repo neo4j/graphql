@@ -247,7 +247,7 @@ describe("Cypher Union", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
             WITH *
@@ -256,8 +256,7 @@ describe("Cypher Union", () => {
             MERGE (this0)-[:SEARCH]->(this0_search_Genre0_node)
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 RETURN this0 { .title } AS create_var0
             }
             RETURN [create_var0] AS data"
@@ -327,19 +326,17 @@ describe("Cypher Union", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_search_Genre_connect0_node:Genre)
             	WHERE this0_search_Genre_connect0_node.name = $this0_search_Genre_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_search_Genre_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_search_Genre_connect0_node
             			CREATE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
@@ -350,8 +347,7 @@ describe("Cypher Union", () => {
             }
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 RETURN this0 { .title } AS create_var0
             }
             RETURN [create_var0] AS data"
@@ -397,7 +393,7 @@ describe("Cypher Union", () => {
             MATCH (this:Movie)
             WHERE this.title = $param0
             WITH this
-            CALL {
+            CALL(*) {
             	WITH this
             	MATCH (this)-[this_search0_relationship:SEARCH]->(this_search_Genre0:Genre)
             	WHERE this_search_Genre0.name = $updateMovies_args_update_search_Genre0_where_this_search_Genre0param0
@@ -463,14 +459,13 @@ describe("Cypher Union", () => {
             MATCH (this:Movie)
             WHERE this.title = $param0
             WITH this
-            CALL {
+            CALL(*) {
             WITH this
             OPTIONAL MATCH (this)-[this_search_Genre0_disconnect0_rel:SEARCH]->(this_search_Genre0_disconnect0:Genre)
             WHERE this_search_Genre0_disconnect0.name = $updateMovies_args_update_search_Genre0_disconnect0_where_Genre_this_search_Genre0_disconnect0param0
-            CALL {
-            	WITH this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel, this
-            	WITH collect(this_search_Genre0_disconnect0) as this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel, this
-            	UNWIND this_search_Genre0_disconnect0 as x
+            CALL (this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel, this) {
+            	WITH collect(this_search_Genre0_disconnect0) as this_search_Genre0_disconnect0_x, this_search_Genre0_disconnect0_rel, this
+            	UNWIND this_search_Genre0_disconnect0_x as x
             	DELETE this_search_Genre0_disconnect0_rel
             }
             RETURN count(*) AS disconnect_this_search_Genre0_disconnect_Genre
@@ -532,15 +527,13 @@ describe("Cypher Union", () => {
             MATCH (this:Movie)
             WHERE this.title = $param0
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this
             	OPTIONAL MATCH (this_search_Genre0_connect0_node:Genre)
             	WHERE this_search_Genre0_connect0_node.name = $this_search_Genre0_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this_search_Genre0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_search_Genre0_connect0_node
             			CREATE (this)-[:SEARCH]->(this_search_Genre0_connect0_node)
@@ -583,13 +576,11 @@ describe("Cypher Union", () => {
             MATCH (this:Movie)
             WHERE this.title = $param0
             WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this)-[this_search_Genre0_delete0_relationship:SEARCH]->(this_search_Genre0_delete0:Genre)
             WHERE this_search_Genre0_delete0.name = $updateMovies_args_update_search0_delete_Genre0_where_this_search_Genre0_delete0param0
             WITH this_search_Genre0_delete0_relationship, collect(DISTINCT this_search_Genre0_delete0) AS this_search_Genre0_delete0_to_delete
-            CALL {
-            	WITH this_search_Genre0_delete0_to_delete
+            CALL(this_search_Genre0_delete0_to_delete) {
             	UNWIND this_search_Genre0_delete0_to_delete AS x
             	DETACH DELETE x
             }

@@ -103,7 +103,7 @@ describe("Subscriptions metadata on update", () => {
             WHERE this.id = $param0
             SET this.id = $this_update_id_SET
             WITH this
-            CALL {
+            CALL(*) {
             	WITH this
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
             	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0

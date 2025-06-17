@@ -498,7 +498,7 @@ describe("Arrays Methods", () => {
             MATCH (this:Actor)
             WHERE this.id = $param0
             WITH this
-            CALL {
+            CALL(*) {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             	SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_PUSH
@@ -599,7 +599,7 @@ describe("Arrays Methods", () => {
             MATCH (this:Actor)
             WHERE this.id = $param0
             WITH this
-            CALL {
+            CALL(*) {
             	WITH this
             	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
             	SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay[0..-$updateActors.args.update.actedIn[0].update.edge.pay_POP]

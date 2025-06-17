@@ -471,7 +471,7 @@ describe("Subscriptions metadata on create", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
             WITH *
@@ -486,8 +486,7 @@ describe("Subscriptions metadata on create", () => {
             SET this0_directors_Actor0_relationship.year = $this0_directors_Actor0_relationship_year
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 CALL (this0) {
                     CALL (*) {
                         WITH *
@@ -610,7 +609,7 @@ describe("Subscriptions metadata on create", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
             WITH *
@@ -630,8 +629,7 @@ describe("Subscriptions metadata on create", () => {
             SET this0_directors_Actor0_relationship.year = $this0_directors_Actor0_relationship_year
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 CALL (this0) {
                     CALL (*) {
                         WITH *

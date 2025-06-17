@@ -89,19 +89,17 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Movie)
             	WHERE (this0_actedIn_connect0_node.title = $this0_actedIn_connect0_node_param0 AND this0_actedIn_connect0_node:Movie)
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_actedIn_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actedIn_connect0_node
             			CREATE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
@@ -111,15 +109,13 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
             WITH this0, this0_actedIn_connect0_node
             	RETURN count(*) AS connect_this0_actedIn_connect_Movie0
             }
-            CALL {
+            CALL(*) {
             		WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect1_node:Series)
             	WHERE (this0_actedIn_connect1_node.title = $this0_actedIn_connect1_node_param0 AND this0_actedIn_connect1_node:Movie)
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_actedIn_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actedIn_connect1_node
             			CREATE (this0)-[this0_actedIn_connect1_relationship:ACTED_IN]->(this0_actedIn_connect1_node)
@@ -131,8 +127,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
             }
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 RETURN this0 { .name } AS create_var0
             }
             RETURN [create_var0] AS data"
@@ -183,19 +178,17 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Movie)
             	WHERE (this0_actedIn_connect0_node.title = $this0_actedIn_connect0_node_param0 OR this0_actedIn_connect0_node:Movie)
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_actedIn_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actedIn_connect0_node
             			CREATE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
@@ -205,15 +198,13 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
             WITH this0, this0_actedIn_connect0_node
             	RETURN count(*) AS connect_this0_actedIn_connect_Movie0
             }
-            CALL {
+            CALL(*) {
             		WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect1_node:Series)
             	WHERE (this0_actedIn_connect1_node.title = $this0_actedIn_connect1_node_param0 OR this0_actedIn_connect1_node:Movie)
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_actedIn_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actedIn_connect1_node
             			CREATE (this0)-[this0_actedIn_connect1_relationship:ACTED_IN]->(this0_actedIn_connect1_node)
@@ -225,8 +216,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
             }
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 RETURN this0 { .name } AS create_var0
             }
             RETURN [create_var0] AS data"
@@ -283,19 +273,17 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect0_node:Movie)
             	WHERE (this0_actedIn_connect0_node.title = $this0_actedIn_connect0_node_param0 AND this0_actedIn_connect0_node:Movie)
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_actedIn_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actedIn_connect0_node
             			CREATE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
@@ -303,15 +291,13 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
             		}
             	}
             WITH this0, this0_actedIn_connect0_node
-            CALL {
+            CALL(*) {
             	WITH this0, this0_actedIn_connect0_node
             	OPTIONAL MATCH (this0_actedIn_connect0_node_actors0_node:Actor)
             	WHERE this0_actedIn_connect0_node_actors0_node.name = $this0_actedIn_connect0_node_actors0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH this0, collect(this0_actedIn_connect0_node_actors0_node) as connectedNodes, collect(this0_actedIn_connect0_node) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0_actedIn_connect0_node
             			UNWIND connectedNodes as this0_actedIn_connect0_node_actors0_node
             			CREATE (this0_actedIn_connect0_node)<-[this0_actedIn_connect0_node_actors0_relationship:ACTED_IN]-(this0_actedIn_connect0_node_actors0_node)
@@ -323,15 +309,13 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
             }
             	RETURN count(*) AS connect_this0_actedIn_connect_Movie0
             }
-            CALL {
+            CALL(*) {
             		WITH this0
             	OPTIONAL MATCH (this0_actedIn_connect1_node:Series)
             	WHERE (this0_actedIn_connect1_node.title = $this0_actedIn_connect1_node_param0 AND this0_actedIn_connect1_node:Movie)
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_actedIn_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actedIn_connect1_node
             			CREATE (this0)-[this0_actedIn_connect1_relationship:ACTED_IN]->(this0_actedIn_connect1_node)
@@ -339,15 +323,13 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
             		}
             	}
             WITH this0, this0_actedIn_connect1_node
-            CALL {
+            CALL(*) {
             	WITH this0, this0_actedIn_connect1_node
             	OPTIONAL MATCH (this0_actedIn_connect1_node_actors0_node:Actor)
             	WHERE this0_actedIn_connect1_node_actors0_node.name = $this0_actedIn_connect1_node_actors0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH this0, collect(this0_actedIn_connect1_node_actors0_node) as connectedNodes, collect(this0_actedIn_connect1_node) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0_actedIn_connect1_node
             			UNWIND connectedNodes as this0_actedIn_connect1_node_actors0_node
             			CREATE (this0_actedIn_connect1_node)<-[this0_actedIn_connect1_node_actors0_relationship:ACTED_IN]-(this0_actedIn_connect1_node_actors0_node)
@@ -361,8 +343,7 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
             }
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 RETURN this0 { .name } AS create_var0
             }
             RETURN [create_var0] AS data"

@@ -297,7 +297,7 @@ describe("Label in Node directive", () => {
             MATCH (this:Film)
             WHERE this.id = $param0
             WITH this
-            CALL {
+            CALL(*) {
             	WITH this
             	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Person)
             	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
@@ -360,15 +360,13 @@ describe("Label in Node directive", () => {
             MATCH (this:Film)
             WHERE this.id = $param0
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this
             	OPTIONAL MATCH (this_actors0_connect0_node:Person)
             	WHERE this_actors0_connect0_node.name = $this_actors0_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this_actors0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors0_connect0_node
             			CREATE (this)<-[:ACTED_IN]-(this_actors0_connect0_node)
@@ -410,14 +408,13 @@ describe("Label in Node directive", () => {
             MATCH (this:Film)
             WHERE this.id = $param0
             WITH this
-            CALL {
+            CALL(*) {
             WITH this
             OPTIONAL MATCH (this)<-[this_actors0_disconnect0_rel:ACTED_IN]-(this_actors0_disconnect0:Person)
             WHERE this_actors0_disconnect0.name = $updateMovies_args_update_actors0_disconnect0_where_Actor_this_actors0_disconnect0param0
-            CALL {
-            	WITH this_actors0_disconnect0, this_actors0_disconnect0_rel, this
-            	WITH collect(this_actors0_disconnect0) as this_actors0_disconnect0, this_actors0_disconnect0_rel, this
-            	UNWIND this_actors0_disconnect0 as x
+            CALL (this_actors0_disconnect0, this_actors0_disconnect0_rel, this) {
+            	WITH collect(this_actors0_disconnect0) as this_actors0_disconnect0_x, this_actors0_disconnect0_rel, this
+            	UNWIND this_actors0_disconnect0_x as x
             	DELETE this_actors0_disconnect0_rel
             }
             RETURN count(*) AS disconnect_this_actors0_disconnect_Actor

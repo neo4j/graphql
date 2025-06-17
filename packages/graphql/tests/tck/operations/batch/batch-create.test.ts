@@ -330,19 +330,17 @@ describe("Batch Create", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Movie)
             SET this0.id = $this0_id
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
             	WHERE this0_actors_connect0_node.id = $this0_actors_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
             			CREATE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
@@ -353,19 +351,17 @@ describe("Batch Create", () => {
             }
             RETURN this0
             }
-            CALL {
+            CALL(*) {
             CREATE (this1:Movie)
             SET this1.id = $this1_id
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this1
             	OPTIONAL MATCH (this1_actors_connect0_node:Actor)
             	WHERE this1_actors_connect0_node.id = $this1_actors_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this1_actors_connect0_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_actors_connect0_node
             			CREATE (this1)<-[this1_actors_connect0_relationship:ACTED_IN]-(this1_actors_connect0_node)
@@ -376,8 +372,7 @@ describe("Batch Create", () => {
             }
             RETURN this1
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 CALL (this0) {
                     MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
                     WITH DISTINCT create_this1
@@ -386,8 +381,7 @@ describe("Batch Create", () => {
                 }
                 RETURN this0 { .id, actors: create_var2 } AS create_var3
             }
-            CALL {
-                WITH this1
+            CALL (this1) {
                 CALL (this1) {
                     MATCH (this1)<-[create_this4:ACTED_IN]-(create_this5:Actor)
                     WITH DISTINCT create_this5

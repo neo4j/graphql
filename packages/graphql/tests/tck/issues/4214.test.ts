@@ -171,13 +171,13 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:TransactionItem)
             SET this0.name = $this0_name
             SET this0.price = $this0_price
             SET this0.quantity = $this0_quantity
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_transaction_connect0_node:Transaction)
             	WHERE this0_transaction_connect0_node.id = $this0_transaction_connect0_node_param0 AND ((($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization_0_before_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $authorization_0_before_param3 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_before_param4 IN $jwt.roles)) AND EXISTS {
@@ -187,11 +187,9 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                 MATCH (this0_transaction_connect0_node)-[:TRANSACTION]->(authorization_0_before_this1:Store)
                 WHERE ($jwt.store IS NOT NULL AND authorization_0_before_this1.id = $jwt.store)
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_transaction_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_transaction_connect0_node
             			CREATE (this0)-[:ITEM_TRANSACTED]->(this0_transaction_connect0_node)
@@ -221,8 +219,7 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 CALL (this0) {
                     MATCH (this0)-[create_this0:ITEM_TRANSACTED]->(create_this1:Transaction)
                     WHERE (($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $create_param4 IN $jwt.roles)) AND EXISTS {

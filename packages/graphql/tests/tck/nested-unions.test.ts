@@ -96,30 +96,26 @@ describe("Nested Unions", () => {
             MATCH (this:Movie)
             WHERE this.title = $param0
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this
             	OPTIONAL MATCH (this_actors_LeadActor0_connect0_node:LeadActor)
             	WHERE this_actors_LeadActor0_connect0_node.name = $this_actors_LeadActor0_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this_actors_LeadActor0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_actors_LeadActor0_connect0_node
             			CREATE (this)<-[:ACTED_IN]-(this_actors_LeadActor0_connect0_node)
             		}
             	}
             WITH this, this_actors_LeadActor0_connect0_node
-            CALL {
+            CALL(*) {
             	WITH this, this_actors_LeadActor0_connect0_node
             	OPTIONAL MATCH (this_actors_LeadActor0_connect0_node_actedIn_Series0_node:Series)
             	WHERE this_actors_LeadActor0_connect0_node_actedIn_Series0_node.name = $this_actors_LeadActor0_connect0_node_actedIn_Series0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH this, collect(this_actors_LeadActor0_connect0_node_actedIn_Series0_node) as connectedNodes, collect(this_actors_LeadActor0_connect0_node) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this_actors_LeadActor0_connect0_node
             			UNWIND connectedNodes as this_actors_LeadActor0_connect0_node_actedIn_Series0_node
             			CREATE (this_actors_LeadActor0_connect0_node)-[:ACTED_IN]->(this_actors_LeadActor0_connect0_node_actedIn_Series0_node)
@@ -214,24 +210,22 @@ describe("Nested Unions", () => {
             MATCH (this:Movie)
             WHERE this.title = $param0
             WITH this
-            CALL {
+            CALL(*) {
             WITH this
             OPTIONAL MATCH (this)<-[this_actors_LeadActor0_disconnect0_rel:ACTED_IN]-(this_actors_LeadActor0_disconnect0:LeadActor)
             WHERE this_actors_LeadActor0_disconnect0.name = $updateMovies_args_update_actors_LeadActor0_disconnect0_where_LeadActor_this_actors_LeadActor0_disconnect0param0
-            CALL {
-            	WITH this_actors_LeadActor0_disconnect0, this_actors_LeadActor0_disconnect0_rel, this
-            	WITH collect(this_actors_LeadActor0_disconnect0) as this_actors_LeadActor0_disconnect0, this_actors_LeadActor0_disconnect0_rel, this
-            	UNWIND this_actors_LeadActor0_disconnect0 as x
+            CALL (this_actors_LeadActor0_disconnect0, this_actors_LeadActor0_disconnect0_rel, this) {
+            	WITH collect(this_actors_LeadActor0_disconnect0) as this_actors_LeadActor0_disconnect0_x, this_actors_LeadActor0_disconnect0_rel, this
+            	UNWIND this_actors_LeadActor0_disconnect0_x as x
             	DELETE this_actors_LeadActor0_disconnect0_rel
             }
-            CALL {
+            CALL(*) {
             WITH this, this_actors_LeadActor0_disconnect0
             OPTIONAL MATCH (this_actors_LeadActor0_disconnect0)-[this_actors_LeadActor0_disconnect0_actedIn_Series0_rel:ACTED_IN]->(this_actors_LeadActor0_disconnect0_actedIn_Series0:Series)
             WHERE this_actors_LeadActor0_disconnect0_actedIn_Series0.name = $updateMovies_args_update_actors_LeadActor0_disconnect0_disconnect_actedIn_Series0_where_Series_this_actors_LeadActor0_disconnect0_actedIn_Series0param0
-            CALL {
-            	WITH this_actors_LeadActor0_disconnect0_actedIn_Series0, this_actors_LeadActor0_disconnect0_actedIn_Series0_rel, this_actors_LeadActor0_disconnect0
-            	WITH collect(this_actors_LeadActor0_disconnect0_actedIn_Series0) as this_actors_LeadActor0_disconnect0_actedIn_Series0, this_actors_LeadActor0_disconnect0_actedIn_Series0_rel, this_actors_LeadActor0_disconnect0
-            	UNWIND this_actors_LeadActor0_disconnect0_actedIn_Series0 as x
+            CALL (this_actors_LeadActor0_disconnect0_actedIn_Series0, this_actors_LeadActor0_disconnect0_actedIn_Series0_rel, this_actors_LeadActor0_disconnect0) {
+            	WITH collect(this_actors_LeadActor0_disconnect0_actedIn_Series0) as this_actors_LeadActor0_disconnect0_actedIn_Series0_x, this_actors_LeadActor0_disconnect0_actedIn_Series0_rel, this_actors_LeadActor0_disconnect0
+            	UNWIND this_actors_LeadActor0_disconnect0_actedIn_Series0_x as x
             	DELETE this_actors_LeadActor0_disconnect0_actedIn_Series0_rel
             }
             RETURN count(*) AS disconnect_this_actors_LeadActor0_disconnect0_actedIn_Series_Series
