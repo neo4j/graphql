@@ -103,10 +103,7 @@ function createDeleteAndParams({
                     const labels = refNode.getLabelString(context);
 
                     innerStrs.push("WITH *");
-                    innerStrs.push("CALL {");
-                    if (withVars) {
-                        innerStrs.push(`WITH *`);
-                    }
+                    innerStrs.push("CALL(*) {");
                     innerStrs.push(
                         `OPTIONAL MATCH (${parentVar})${inStr}${relTypeStr}${outStr}(${variableName}${labels})`
                     );
@@ -211,8 +208,7 @@ function createDeleteAndParams({
 
                     const statements = [
                         `WITH ${relationshipVariable}, collect(DISTINCT ${variableName}) AS ${nodeToDelete}`,
-                        "CALL {",
-                        `\tWITH ${nodeToDelete}`,
+                        `CALL(${nodeToDelete}) {`,
                         `\tUNWIND ${nodeToDelete} AS x`,
                         `\tDETACH DELETE x`,
                         `}`,
