@@ -20,17 +20,15 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { hasTarget } from "../../utils/context-has-target";
-import { createNode, getEntityLabels } from "../../utils/create-node-from-entity";
 import type { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTNode } from "../QueryASTNode";
 import { EntitySelection, type SelectionClause } from "./EntitySelection";
+import { RelationshipSelectionPattern } from "./SelectionPattern/RelationshipSelectionPattern";
 
 export class RelationshipSelection extends EntitySelection {
-    private relationship: RelationshipAdapter;
-    // Overrides relationship target for composite entities
-    private targetOverride: ConcreteEntityAdapter | undefined;
-    private alias: string | undefined;
     private optional: boolean;
+
+    private selectionPattern: RelationshipSelectionPattern;
 
     constructor({
         relationship,
@@ -45,30 +43,26 @@ export class RelationshipSelection extends EntitySelection {
         optional?: boolean;
     }) {
         super();
-        this.relationship = relationship;
-        this.alias = alias;
-        this.targetOverride = targetOverride;
         this.optional = optional ?? false;
+
+        this.selectionPattern = new RelationshipSelectionPattern({
+            relationship,
+            alias,
+            targetOverride,
+        });
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [...super.getChildren(), this.selectionPattern];
     }
 
     public apply(context: QueryASTContext<Cypher.Node>): {
         nestedContext: QueryASTContext<Cypher.Node>;
         selection: SelectionClause;
     } {
-        if (!hasTarget(context)) throw new Error("No parent node over a nested relationship match!");
-        const relVar = new Cypher.Relationship();
-
-        const relationshipTarget = this.targetOverride ?? this.relationship.target;
-        const targetNode = createNode(this.alias);
-        const labels = getEntityLabels(relationshipTarget, context.neo4jGraphQLContext);
-        const relDirection = this.relationship.getCypherDirection();
-
-        const pattern = new Cypher.Pattern(context.target)
-            .related(relVar, { direction: relDirection, type: this.relationship.type })
-            .to(targetNode, { labels });
+        const { nestedContext, pattern } = this.selectionPattern.apply(context);
 
         // NOTE: Direction not passed (can we remove it from context?)
-        const nestedContext = context.push({ target: targetNode, relationship: relVar });
         const match = new Cypher.Match(pattern);
         if (this.optional) {
             match.optional();

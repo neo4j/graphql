@@ -303,7 +303,7 @@ describe("Cypher Create", () => {
         `);
     });
 
-    test.only("Simple create and connect", async () => {
+    test("Simple create and connect", async () => {
         const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: 1, actors: { connect: [{ where: { node: { name: { eq: "Dan" } } } }] } }]) {
@@ -418,6 +418,75 @@ describe("Cypher Create", () => {
                 \\"this0_id\\": \\"1\\",
                 \\"this0_actors_connect0_node_param0\\": \\"Dan\\",
                 \\"this1_id\\": \\"2\\",
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
+
+    test.only("create with nested create and connect", async () => {
+        const query = /* GraphQL */ `
+            mutation {
+                createMovies(
+                    input: [
+                        {
+                            id: 1
+                            actors: {
+                                connect: [{ where: { node: { name: { eq: "Dan" } } } }]
+                                create: [{ node: { name: "Not Dan" } }]
+                            }
+                        }
+                    ]
+                ) {
+                    movies {
+                        id
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            CALL {
+            CREATE (this0:Movie)
+            SET this0.id = $this0_id
+            WITH *
+            CREATE (this0_actors0_node:Actor)
+            SET this0_actors0_node.name = $this0_actors0_node_name
+            MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
+            WITH *
+            CALL {
+            	WITH this0
+            	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
+            	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_param0
+            	CALL {
+            		WITH *
+            		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_actors_connect0_node
+            			CREATE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
+            		}
+            	}
+            WITH this0, this0_actors_connect0_node
+            	RETURN count(*) AS connect_this0_actors_connect_Actor0
+            }
+            RETURN this0
+            }
+            CALL {
+                WITH this0
+                RETURN this0 { .id } AS create_var0
+            }
+            RETURN [create_var0] AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this0_id\\": \\"1\\",
+                \\"this0_actors0_node_name\\": \\"Not Dan\\",
+                \\"this0_actors_connect0_node_param0\\": \\"Dan\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

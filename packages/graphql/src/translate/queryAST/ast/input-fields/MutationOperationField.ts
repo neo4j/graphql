@@ -40,10 +40,6 @@ export class MutationOperationField extends InputField {
         return [this.mutationOperation];
     }
 
-    public print(): string {
-        return `${super.print()} <${this.name}>`;
-    }
-
     public getSetParams(): Cypher.SetParam[] {
         return [];
     }

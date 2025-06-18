@@ -30,6 +30,8 @@ import { PropertyInputField } from "../../ast/input-fields/PropertyInputField";
 import { CreateOperation } from "../../ast/operations/CreateOperation";
 import type { ReadOperation } from "../../ast/operations/ReadOperation";
 import { UnwindCreateOperation } from "../../ast/operations/UnwindCreateOperation";
+import { NodeSelectionPattern } from "../../ast/selection/SelectionPattern/NodeSelectionPattern";
+import { RelationshipSelectionPattern } from "../../ast/selection/SelectionPattern/RelationshipSelectionPattern";
 import { assertIsConcreteEntity, isConcreteEntity } from "../../utils/is-concrete-entity";
 import { raiseAttributeAmbiguity } from "../../utils/raise-attribute-ambiguity";
 import type { QueryASTFactory } from "../QueryASTFactory";
@@ -51,7 +53,12 @@ export class CreateFactory {
             resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.create] ?? {}
         );
 
-        const createOP = new CreateOperation({ target: entity });
+        const createOP = new CreateOperation({
+            target: entity,
+            selectionPattern: new NodeSelectionPattern({
+                target: entity,
+            }),
+        });
         const projectionFields = responseFields
             .filter((f) => f.name === entity.plural)
             .map((field) => {
@@ -67,11 +74,11 @@ export class CreateFactory {
 
         const rawInput = resolveTree.args.input as Record<string, any>[];
         const input = rawInput ?? [];
-        this.hydrateUnwindCreateOperation({
+        this.hydrateCreateOperation({
             target: entity,
             relationship: undefined,
             input,
-            unwindCreate: createOP,
+            create: createOP,
             context,
         });
         return createOP;
@@ -155,7 +162,7 @@ export class CreateFactory {
         target: ConcreteEntityAdapter;
         relationship?: RelationshipAdapter;
         input: Record<string, any>[];
-        unwindCreate: UnwindCreateOperation | CreateOperation;
+        unwindCreate: UnwindCreateOperation;
         context: Neo4jGraphQLTranslationContext;
     }) {
         const isNested = Boolean(relationship);
@@ -177,23 +184,11 @@ export class CreateFactory {
                     throw new Error(`Transpile Error: Input field ${key} not found in entity ${target.name}`);
                 }
                 if (attribute) {
-                    if (unwindCreate instanceof UnwindCreateOperation) {
-                        this.parseAttributeInputField({
-                            target,
-                            attribute,
-                            unwindCreate,
-                        });
-                    } else {
-                        const isConcreteEntityTarget = isConcreteEntity(target);
-                        const attachedTo = isConcreteEntityTarget ? "node" : "relationship";
-
-                        const paramInputField = new ParamInputField({
-                            attachedTo,
-                            attribute,
-                            inputValue: targetInput[key],
-                        });
-                        unwindCreate.addField(paramInputField, attachedTo);
-                    }
+                    this.parseAttributeInputField({
+                        target,
+                        attribute,
+                        unwindCreate,
+                    });
                 } else if (nestedRelationship) {
                     const nestedEntity = nestedRelationship.target;
                     assertIsConcreteEntity(nestedEntity);
@@ -212,17 +207,14 @@ export class CreateFactory {
                             unwindCreate: relField.mutationOperation,
                             context,
                         });
-                    } else if (unwindCreate instanceof UnwindCreateOperation) {
-                        this.addRelationshipInputFieldToUnwindOperation({
-                            relationship: nestedRelationship,
-                            unwindCreate,
-                            context,
-                            nestedCreateInput,
-                            isNested,
-                        });
-                    } else {
-                        // TODO: nested Create
                     }
+                    this.addRelationshipInputFieldToUnwindOperation({
+                        relationship: nestedRelationship,
+                        unwindCreate,
+                        context,
+                        nestedCreateInput,
+                        isNested,
+                    });
                 }
             }
             if (relationship) {
@@ -233,6 +225,102 @@ export class CreateFactory {
                             target: relationship,
                             attribute,
                             unwindCreate,
+                        });
+                    }
+                }
+            }
+        });
+    }
+    private hydrateCreateOperation({
+        target,
+        relationship,
+        input,
+        create,
+        context,
+    }: {
+        target: ConcreteEntityAdapter;
+        relationship?: RelationshipAdapter;
+        input: Record<string, any>[];
+        create: CreateOperation;
+        context: Neo4jGraphQLTranslationContext;
+    }) {
+        const isNested = Boolean(relationship);
+        // TODO: there is no need to get always the autogenerated field as these are static fields and can be cached
+        [target, relationship].forEach((t) =>
+            this.addAutogeneratedFields({
+                target: t,
+                unwindCreate: create,
+            })
+        );
+        asArray(input).forEach((inputItem) => {
+            const targetInput = this.getInputNode(inputItem, isNested);
+            raiseAttributeAmbiguity(Object.keys(targetInput), target);
+            raiseAttributeAmbiguity(Object.keys(this.getInputEdge(target)), relationship);
+            console.log(targetInput);
+            for (const key of Object.keys(targetInput)) {
+                const nestedRelationship = target.relationships.get(key);
+                const attribute = target.attributes.get(key);
+                if (!attribute && !nestedRelationship) {
+                    throw new Error(`Transpile Error: Input field ${key} not found in entity ${target.name}`);
+                }
+                if (attribute) {
+                    const isConcreteEntityTarget = isConcreteEntity(target);
+                    const attachedTo = isConcreteEntityTarget ? "node" : "relationship";
+
+                    const paramInputField = new ParamInputField({
+                        attachedTo,
+                        attribute,
+                        inputValue: targetInput[key],
+                    });
+                    create.addField(paramInputField, attachedTo);
+                } else if (nestedRelationship) {
+                    const nestedEntity = nestedRelationship.target;
+                    assertIsConcreteEntity(nestedEntity);
+                    // const relField = unwindCreate.getField(key, "node");
+                    const nestedCreateInput = targetInput[key]?.create;
+                    if (nestedCreateInput) {
+                        const nestedCreateOperation = new CreateOperation({
+                            target: nestedEntity,
+                            relationship: nestedRelationship,
+                            selectionPattern: new RelationshipSelectionPattern({
+                                relationship: nestedRelationship,
+                            }),
+                        });
+
+                        this.hydrateCreateOperation({
+                            create: nestedCreateOperation,
+                            target: nestedEntity,
+                            input: nestedCreateInput[0].node, // TODO: handle multiple inputs
+                            context,
+                        });
+                        const mutationOperationField = new MutationOperationField(key, nestedCreateOperation);
+                        create.addField(mutationOperationField, "node");
+                    }
+                    // if (
+                    //     relField &&
+                    //     relField instanceof MutationOperationField &&
+                    //     relField.mutationOperation instanceof UnwindCreateOperation // This may never happen
+                    // ) {
+                    //     // in case relationship field is already present in the unwind operation we want still to hydrate the unwind-create operation as it might have different fields.
+                    //     this.hydrateUnwindCreateOperation({
+                    //         target: nestedEntity,
+                    //         relationship: nestedRelationship,
+                    //         input: nestedCreateInput,
+                    //         unwindCreate: relField.mutationOperation,
+                    //         context,
+                    //     });
+                    // }
+                    // TODO: nested Create
+                }
+            }
+            if (relationship) {
+                for (const key of Object.keys(this.getInputEdge(inputItem))) {
+                    const attribute = relationship.attributes.get(key);
+                    if (attribute) {
+                        this.parseAttributeInputField({
+                            target: relationship,
+                            attribute,
+                            unwindCreate: create,
                         });
                     }
                 }

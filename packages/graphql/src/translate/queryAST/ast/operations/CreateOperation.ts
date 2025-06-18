@@ -19,11 +19,13 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { InputField } from "../input-fields/InputField";
+import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
 import type { ReadOperation } from "./ReadOperation";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
 
@@ -32,20 +34,34 @@ import { MutationOperation, type OperationTranspileResult } from "./operations";
  * The whole mutation part is still implemented in the old way, the current scope of this node is just to contains the nested fields.
  **/
 export class CreateOperation extends MutationOperation {
-    public readonly target: ConcreteEntityAdapter; // IS this used? (same in delete)
+    public readonly target: ConcreteEntityAdapter;
+    public readonly relationship: RelationshipAdapter | undefined;
+
+    private selectionPattern: SelectionPattern;
+
     // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
     public projectionOperations: ReadOperation[] = [];
 
     public readonly inputFields: Map<string, InputField> = new Map();
     private createVariable = new Cypher.Variable();
 
-    constructor({ target }: { target: ConcreteEntityAdapter }) {
+    constructor({
+        target,
+        relationship,
+        selectionPattern,
+    }: {
+        target: ConcreteEntityAdapter;
+        selectionPattern: SelectionPattern;
+        relationship?: RelationshipAdapter;
+    }) {
         super();
         this.target = target;
+        this.relationship = relationship;
+        this.selectionPattern = selectionPattern;
     }
 
     public getChildren(): QueryASTNode[] {
-        return filterTruthy([...this.inputFields.values(), ...this.projectionOperations]);
+        return filterTruthy([this.selectionPattern, ...this.inputFields.values(), ...this.projectionOperations]);
     }
 
     /**
@@ -73,7 +89,9 @@ export class CreateOperation extends MutationOperation {
         context.env.topLevelOperationName = "CREATE";
         // TODO: implement the actual create / unwind create
 
-        const createPattern = new Cypher.Pattern(context.target, {
+        const { nestedContext, pattern: mergePattern } = this.selectionPattern.apply(context);
+
+        const createPattern = new Cypher.Pattern(nestedContext.target, {
             labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
         });
 
@@ -81,13 +99,29 @@ export class CreateOperation extends MutationOperation {
 
         const setParams = Array.from(
             this.inputFields.values().flatMap((input) => {
-                return input.getSetParams(context);
+                return input.getSetParams(nestedContext);
+            })
+        );
+
+        const mutationSubqueries = Array.from(
+            this.inputFields.values().flatMap((input) => {
+                return input.getSubqueries(nestedContext);
             })
         );
 
         createClause.set(...setParams);
 
-        const clauses = [createClause, ...this.getProjectionClause(context)];
+        let mergeClause: Cypher.Merge | undefined;
+        if (this.relationship) {
+            mergeClause = new Cypher.Merge(mergePattern);
+        }
+
+        const clauses = filterTruthy([
+            createClause,
+            ...mutationSubqueries,
+            mergeClause,
+            ...this.getProjectionClause(nestedContext),
+        ]);
         return { projectionExpr: context.returnVariable, clauses };
     }
 

@@ -19,15 +19,16 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { createNode, getEntityLabels } from "../../utils/create-node-from-entity";
-import { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTContext } from "../QueryASTContext";
+import type { QueryASTNode } from "../QueryASTNode";
 import { EntitySelection, type SelectionClause } from "./EntitySelection";
+import { NodeSelectionPattern } from "./SelectionPattern/NodeSelectionPattern";
 
+/** Selects a node using Match */
 export class NodeSelection extends EntitySelection {
-    private target: ConcreteEntityAdapter;
-    private alias: string | undefined;
     private optional: boolean;
-    private useContextTarget: boolean;
+
+    private selectionPattern: NodeSelectionPattern;
 
     constructor({
         target,
@@ -41,34 +42,24 @@ export class NodeSelection extends EntitySelection {
         useContextTarget?: boolean;
     }) {
         super();
-        this.target = target;
-        this.alias = alias;
         this.optional = optional;
-        this.useContextTarget = useContextTarget;
+
+        this.selectionPattern = new NodeSelectionPattern({
+            target: target,
+            alias: alias,
+            useContextTarget: useContextTarget,
+        });
+    }
+
+    public getChildren(): QueryASTNode[] {
+        return [...super.getChildren(), this.selectionPattern];
     }
 
     public apply(context: QueryASTContext): {
         nestedContext: QueryASTContext<Cypher.Node>;
         selection: SelectionClause;
     } {
-        let node: Cypher.Node;
-        let matchPattern: Cypher.Pattern | undefined;
-
-        // useContextTarget is used when you have to select a node already matched,
-        // this could be simplified a lot, it's currently not possible as there is no way to build a Cypher.Node from an existing Cypher.Node.
-        if (this.useContextTarget) {
-            if (!context.hasTarget()) {
-                throw new Error("No target found in the context");
-            }
-            node = context.target;
-            matchPattern = new Cypher.Pattern(node);
-        } else {
-            node = createNode(this.alias);
-
-            matchPattern = new Cypher.Pattern(node, {
-                labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
-            });
-        }
+        const { pattern: matchPattern, nestedContext } = this.selectionPattern.apply(context);
         const match = new Cypher.Match(matchPattern);
 
         if (this.optional) {
@@ -77,13 +68,7 @@ export class NodeSelection extends EntitySelection {
 
         return {
             selection: match,
-            nestedContext: new QueryASTContext({
-                target: node,
-                neo4jGraphQLContext: context.neo4jGraphQLContext,
-                returnVariable: context.returnVariable,
-                env: context.env,
-                shouldCollect: context.shouldCollect,
-            }),
+            nestedContext: nestedContext,
         };
     }
 }
