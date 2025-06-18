@@ -19,9 +19,11 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Node } from "../classes";
 import { CallbackBucket } from "../classes/CallbackBucket";
 import { DEBUG_TRANSLATE } from "../constants";
+import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { compileCypherIfExists } from "../utils/compile-cypher";
 import { asArray, filterTruthy } from "../utils/utils";
@@ -35,7 +37,72 @@ import { getAuthorizationStatements } from "./utils/get-authorization-statements
 
 const debug = Debug(DEBUG_TRANSLATE);
 
+function translateUsingQueryAST({
+    context,
+    entityAdapter,
+    resolveTree,
+    varName,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    entityAdapter: EntityAdapter;
+    resolveTree: ResolveTree;
+    varName: string;
+}) {
+    const operationsTreeFactory = new QueryASTFactory(context.schemaModel);
+
+    if (!entityAdapter) {
+        throw new Error("Entity not found");
+    }
+    const operationsTree = operationsTreeFactory.createQueryAST({
+        resolveTree,
+        entityAdapter,
+        context,
+        varName,
+    });
+    debug(operationsTree.print());
+    const clause = operationsTree.build(context, varName);
+    return buildClause(clause, { context });
+}
+
 export default async function translateCreate({
+    context,
+    node,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    node: Node;
+}): Promise<{ cypher: string; params: Record<string, any> }> {
+    const { resolveTree } = context;
+    const mutationInputs = resolveTree.args.input as any[];
+    const entityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
+    if (!entityAdapter) {
+        throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
+    }
+    const { isSupported, reason } = isUnwindCreateSupported(entityAdapter, asArray(mutationInputs), context);
+    if (isSupported) {
+        return unwindCreate({ context, entityAdapter });
+    }
+    debug(`Unwind create optimization not supported: ${reason}`);
+    const callbackBucket: CallbackBucket = new CallbackBucket(context);
+
+    const varName = "this";
+    const createQueryCypher = translateUsingQueryAST({ context, entityAdapter, resolveTree, varName });
+
+    const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
+        cypher: createQueryCypher.cypher,
+    });
+
+    const result = {
+        cypher,
+        params: {
+            ...createQueryCypher.params,
+            resolvedCallbacks,
+        },
+    };
+
+    return result;
+}
+
+async function translateCreateOld({
     context,
     node,
 }: {

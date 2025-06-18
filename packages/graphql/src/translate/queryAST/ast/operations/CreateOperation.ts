@@ -20,8 +20,10 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { filterTruthy } from "../../../../utils/utils";
+import { getEntityLabels } from "../../utils/create-node-from-entity";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
+import type { InputField } from "../input-fields/InputField";
 import type { ReadOperation } from "./ReadOperation";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
 
@@ -30,9 +32,12 @@ import { MutationOperation, type OperationTranspileResult } from "./operations";
  * The whole mutation part is still implemented in the old way, the current scope of this node is just to contains the nested fields.
  **/
 export class CreateOperation extends MutationOperation {
-    public readonly target: ConcreteEntityAdapter;
+    public readonly target: ConcreteEntityAdapter; // IS this used? (same in delete)
     // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
     public projectionOperations: ReadOperation[] = [];
+
+    public readonly inputFields: Map<string, InputField> = new Map();
+    private createVariable = new Cypher.Variable();
 
     constructor({ target }: { target: ConcreteEntityAdapter }) {
         super();
@@ -40,7 +45,21 @@ export class CreateOperation extends MutationOperation {
     }
 
     public getChildren(): QueryASTNode[] {
-        return filterTruthy(this.projectionOperations);
+        return filterTruthy([...this.inputFields.values(), ...this.projectionOperations]);
+    }
+
+    /**
+     * Get and set field methods are utilities to remove duplicate fields between separate inputs
+     * TODO: This logic should be handled in the factory.
+     */
+    public getField(key: string, attachedTo: "node" | "relationship") {
+        return this.inputFields.get(`${attachedTo}_${key}`);
+    }
+
+    public addField(field: InputField, attachedTo: "node" | "relationship") {
+        if (!this.inputFields.has(field.name)) {
+            this.inputFields.set(`${attachedTo}_${field.name}`, field);
+        }
     }
 
     public addProjectionOperations(operations: ReadOperation[]) {
@@ -48,10 +67,27 @@ export class CreateOperation extends MutationOperation {
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
-        if (!context.target) throw new Error("No parent node found!");
+        if (!context.hasTarget()) {
+            throw new Error("No parent node found!");
+        }
         context.env.topLevelOperationName = "CREATE";
         // TODO: implement the actual create / unwind create
-        const clauses = this.getProjectionClause(context);
+
+        const createPattern = new Cypher.Pattern(context.target, {
+            labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
+        });
+
+        const createClause = new Cypher.Create(createPattern);
+
+        const setParams = Array.from(
+            this.inputFields.values().flatMap((input) => {
+                return input.getSetParams(context);
+            })
+        );
+
+        createClause.set(...setParams);
+
+        const clauses = [createClause, ...this.getProjectionClause(context)];
         return { projectionExpr: context.returnVariable, clauses };
     }
 

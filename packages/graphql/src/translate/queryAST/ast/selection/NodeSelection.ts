@@ -69,7 +69,7 @@ export class NodeSelection extends EntitySelection {
                 labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
             });
         }
-        const match = new Cypher.Match(matchPattern ?? node);
+        const match = new Cypher.Match(matchPattern);
 
         if (this.optional) {
             match.optional();

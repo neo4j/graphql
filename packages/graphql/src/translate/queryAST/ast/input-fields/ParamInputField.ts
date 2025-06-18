@@ -22,21 +22,32 @@ import type { AttributeAdapter } from "../../../../schema-model/attribute/model-
 import type { QueryASTContext } from "../QueryASTContext";
 import { InputField } from "./InputField";
 
-/** Input field from a property,
- * given an inputVariable it will generate a set operation from a property of that variable
+// TODO: this should be the default case (PropertyInputField)
+/** Input field from a parameter
+ * it will generate a set operation from param
  *
  * ```cypher
  * CREATE (var0:Movie)
  * SET
- *   this.id = var0.id
+ *   this.id = $param0
  * ```
  */
-export class PropertyInputField extends InputField {
+export class ParamInputField extends InputField {
     private attribute: AttributeAdapter;
+    protected inputValue: unknown;
 
-    constructor({ attribute, attachedTo }: { attribute: AttributeAdapter; attachedTo: "node" | "relationship" }) {
+    constructor({
+        attribute,
+        attachedTo,
+        inputValue,
+    }: {
+        attribute: AttributeAdapter;
+        attachedTo: "node" | "relationship";
+        inputValue: unknown;
+    }) {
         super(attribute.name, attachedTo);
         this.attribute = attribute;
+        this.inputValue = inputValue;
     }
 
     public getChildren() {
@@ -53,10 +64,7 @@ export class PropertyInputField extends InputField {
     ): Cypher.SetParam[] {
         const target = this.getTarget(queryASTContext);
 
-        if (!inputVariable) {
-            throw new Error("Transpile Error: No input variable found");
-        }
-        const rightVariable = this.getVariablePath(queryASTContext, inputVariable);
+        const rightVariable = new Cypher.Param(this.inputValue);
 
         const leftExpr = target.property(this.attribute.databaseName);
         const rightExpr = this.coerceReference(rightVariable);

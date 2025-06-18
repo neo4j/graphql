@@ -303,7 +303,7 @@ describe("Cypher Create", () => {
         `);
     });
 
-    test("Simple create and connect", async () => {
+    test.only("Simple create and connect", async () => {
         const query = /* GraphQL */ `
             mutation {
                 createMovies(input: [{ id: 1, actors: { connect: [{ where: { node: { name: { eq: "Dan" } } } }] } }]) {
@@ -352,6 +352,72 @@ describe("Cypher Create", () => {
             "{
                 \\"this0_id\\": \\"1\\",
                 \\"this0_actors_connect0_node_param0\\": \\"Dan\\",
+                \\"resolvedCallbacks\\": {}
+            }"
+        `);
+    });
+
+    test("Simple create and connect with multiple inputs", async () => {
+        const query = /* GraphQL */ `
+            mutation {
+                createMovies(
+                    input: [{ id: 1, actors: { connect: [{ where: { node: { name: { eq: "Dan" } } } }] } }, { id: 2 }]
+                ) {
+                    movies {
+                        id
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            CALL {
+            CREATE (this0:Movie)
+            SET this0.id = $this0_id
+            WITH *
+            CALL {
+            	WITH this0
+            	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
+            	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_param0
+            	CALL {
+            		WITH *
+            		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		CALL {
+            			WITH connectedNodes, parentNodes
+            			UNWIND parentNodes as this0
+            			UNWIND connectedNodes as this0_actors_connect0_node
+            			CREATE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
+            		}
+            	}
+            WITH this0, this0_actors_connect0_node
+            	RETURN count(*) AS connect_this0_actors_connect_Actor0
+            }
+            RETURN this0
+            }
+            CALL {
+            CREATE (this1:Movie)
+            SET this1.id = $this1_id
+            RETURN this1
+            }
+            CALL {
+                WITH this0
+                RETURN this0 { .id } AS create_var0
+            }
+            CALL {
+                WITH this1
+                RETURN this1 { .id } AS create_var1
+            }
+            RETURN [create_var0, create_var1] AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"this0_id\\": \\"1\\",
+                \\"this0_actors_connect0_node_param0\\": \\"Dan\\",
+                \\"this1_id\\": \\"2\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);

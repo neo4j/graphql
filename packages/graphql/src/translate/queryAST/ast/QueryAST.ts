@@ -24,6 +24,7 @@ import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import type { QueryASTNode } from "./QueryASTNode";
 import { AggregationOperation } from "./operations/AggregationOperation";
 import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
+import { CreateOperation } from "./operations/CreateOperation";
 import { DeleteOperation } from "./operations/DeleteOperation";
 import { ReadOperation } from "./operations/ReadOperation";
 import { UnwindCreateOperation } from "./operations/UnwindCreateOperation";
@@ -85,7 +86,8 @@ export class QueryAST {
             this.operation instanceof ConnectionReadOperation ||
             this.operation instanceof DeleteOperation ||
             this.operation instanceof AggregationOperation ||
-            this.operation instanceof UnwindCreateOperation
+            this.operation instanceof UnwindCreateOperation ||
+            this.operation instanceof CreateOperation
         ) {
             return createNode(varName);
         }

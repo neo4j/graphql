@@ -25,6 +25,7 @@ import type { RelationshipAdapter } from "../../../../schema-model/relationship/
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
 import { asArray } from "../../../../utils/utils";
 import { MutationOperationField } from "../../ast/input-fields/MutationOperationField";
+import { ParamInputField } from "../../ast/input-fields/ParamInputField";
 import { PropertyInputField } from "../../ast/input-fields/PropertyInputField";
 import { CreateOperation } from "../../ast/operations/CreateOperation";
 import type { ReadOperation } from "../../ast/operations/ReadOperation";
@@ -49,6 +50,7 @@ export class CreateFactory {
         const responseFields = Object.values(
             resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.create] ?? {}
         );
+
         const createOP = new CreateOperation({ target: entity });
         const projectionFields = responseFields
             .filter((f) => f.name === entity.plural)
@@ -62,6 +64,16 @@ export class CreateFactory {
             });
 
         createOP.addProjectionOperations(projectionFields);
+
+        const rawInput = resolveTree.args.input as Record<string, any>[];
+        const input = rawInput ?? [];
+        this.hydrateUnwindCreateOperation({
+            target: entity,
+            relationship: undefined,
+            input,
+            unwindCreate: createOP,
+            context,
+        });
         return createOP;
     }
 
@@ -143,7 +155,7 @@ export class CreateFactory {
         target: ConcreteEntityAdapter;
         relationship?: RelationshipAdapter;
         input: Record<string, any>[];
-        unwindCreate: UnwindCreateOperation;
+        unwindCreate: UnwindCreateOperation | CreateOperation;
         context: Neo4jGraphQLTranslationContext;
     }) {
         const isNested = Boolean(relationship);
@@ -165,11 +177,23 @@ export class CreateFactory {
                     throw new Error(`Transpile Error: Input field ${key} not found in entity ${target.name}`);
                 }
                 if (attribute) {
-                    this.parseAttributeInputField({
-                        target,
-                        attribute,
-                        unwindCreate,
-                    });
+                    if (unwindCreate instanceof UnwindCreateOperation) {
+                        this.parseAttributeInputField({
+                            target,
+                            attribute,
+                            unwindCreate,
+                        });
+                    } else {
+                        const isConcreteEntityTarget = isConcreteEntity(target);
+                        const attachedTo = isConcreteEntityTarget ? "node" : "relationship";
+
+                        const paramInputField = new ParamInputField({
+                            attachedTo,
+                            attribute,
+                            inputValue: targetInput[key],
+                        });
+                        unwindCreate.addField(paramInputField, attachedTo);
+                    }
                 } else if (nestedRelationship) {
                     const nestedEntity = nestedRelationship.target;
                     assertIsConcreteEntity(nestedEntity);
@@ -188,7 +212,7 @@ export class CreateFactory {
                             unwindCreate: relField.mutationOperation,
                             context,
                         });
-                    } else {
+                    } else if (unwindCreate instanceof UnwindCreateOperation) {
                         this.addRelationshipInputFieldToUnwindOperation({
                             relationship: nestedRelationship,
                             unwindCreate,
@@ -196,6 +220,8 @@ export class CreateFactory {
                             nestedCreateInput,
                             isNested,
                         });
+                    } else {
+                        // TODO: nested Create
                     }
                 }
             }
@@ -230,7 +256,7 @@ export class CreateFactory {
         unwindCreate,
     }: {
         target: ConcreteEntityAdapter | RelationshipAdapter | undefined;
-        unwindCreate: UnwindCreateOperation;
+        unwindCreate: UnwindCreateOperation | CreateOperation;
     }): void {
         if (!target) {
             return;
@@ -253,7 +279,7 @@ export class CreateFactory {
     }: {
         target: ConcreteEntityAdapter | RelationshipAdapter;
         attribute: AttributeAdapter;
-        unwindCreate: UnwindCreateOperation;
+        unwindCreate: UnwindCreateOperation | CreateOperation;
     }) {
         const isConcreteEntityTarget = isConcreteEntity(target);
         const attachedTo = isConcreteEntityTarget ? "node" : "relationship";
@@ -292,7 +318,7 @@ export class CreateFactory {
         attachedTo,
     }: {
         attribute: AttributeAdapter;
-        unwindCreate: UnwindCreateOperation;
+        unwindCreate: UnwindCreateOperation | CreateOperation;
         pathStr: string;
         attachedTo: "relationship" | "node";
     }): void {

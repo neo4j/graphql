@@ -22,6 +22,12 @@ import type { QueryASTContext } from "../QueryASTContext";
 import type { MutationOperation } from "../operations/operations";
 import { InputField } from "./InputField";
 
+/** Input field wrapping a nested mutation operation
+ * @example
+ * ```
+ * actors: { connect: [{ where: { node: { name: { eq: "Dan" } } } }] }
+ * ```
+ */
 export class MutationOperationField extends InputField {
     public mutationOperation: MutationOperation;
 
