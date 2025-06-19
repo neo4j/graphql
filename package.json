@@ -37,7 +37,7 @@
         "eslint-plugin-import": "2.31.0",
         "eslint-plugin-jest": "28.14.0",
         "graphql": "16.11.0",
-        "jest": "30.0.1",
+        "jest": "30.0.2",
         "neo4j-driver": "5.28.1",
         "prettier": "3.5.3",
         "prettier-2": "npm:prettier@2.8.8",
