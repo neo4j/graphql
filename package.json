@@ -34,7 +34,7 @@
         "eslint-formatter-summary": "2.0.2",
         "eslint-import-resolver-typescript": "4.4.3",
         "eslint-plugin-eslint-comments": "3.2.0",
-        "eslint-plugin-import": "2.31.0",
+        "eslint-plugin-import": "2.32.0",
         "eslint-plugin-jest": "28.14.0",
         "graphql": "16.11.0",
         "jest": "30.0.2",
@@ -48,6 +48,6 @@
     "packageManager": "yarn@4.9.2",
     "dependencies": {
         "@changesets/changelog-github": "0.5.1",
-        "@changesets/cli": "2.29.4"
+        "@changesets/cli": "2.29.5"
     }
 }
