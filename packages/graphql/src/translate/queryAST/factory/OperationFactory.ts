@@ -61,6 +61,7 @@ import type { QueryASTFactory } from "./QueryASTFactory";
 import type { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
+import { ConnectFactory } from "./Operations/ConnectFactory";
 
 export class OperationsFactory {
     // specialized operations factories
@@ -69,6 +70,7 @@ export class OperationsFactory {
     private sortAndPaginationFactory: SortAndPaginationFactory;
     private authorizationFactory: AuthorizationFactory;
     private createFactory: CreateFactory;
+    private connectFactory: ConnectFactory;
     private updateFactory: UpdateFactory;
     private deleteFactory: DeleteFactory;
     private fulltextFactory: FulltextFactory;
@@ -84,6 +86,7 @@ export class OperationsFactory {
         this.sortAndPaginationFactory = queryASTFactory.sortAndPaginationFactory;
         this.authorizationFactory = queryASTFactory.authorizationFactory;
         this.createFactory = new CreateFactory(queryASTFactory);
+        this.connectFactory = new ConnectFactory(queryASTFactory);
         this.updateFactory = new UpdateFactory(queryASTFactory);
         this.deleteFactory = new DeleteFactory(queryASTFactory);
         this.fulltextFactory = new FulltextFactory(queryASTFactory);
@@ -197,6 +200,15 @@ export class OperationsFactory {
      *  Proxy methods to specialized operations factories.
      *  TODO: Refactor the following to use a generic dispatcher as done in createTopLevelOperation
      **/
+
+    public createConnectOperation(
+        entity: ConcreteEntityAdapter,
+        resolveTree: ResolveTree,
+        context: Neo4jGraphQLTranslationContext
+    ) {
+        return this.connectFactory.createConnectOperation(entity, resolveTree, context);
+    }
+
     public createReadOperation(arg: {
         entityOrRel: EntityAdapter | RelationshipAdapter;
         resolveTree: ResolveTree;
