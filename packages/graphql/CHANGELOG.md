@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.2.1
+
+### Patch Changes
+
+- [#6389](https://github.com/neo4j/graphql/pull/6389) [`5d74c3e`](https://github.com/neo4j/graphql/commit/5d74c3e0f5890d4cf02e68db5c73c72a0eb3e6c1) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - The Authorization validation has moved to use the procedure `apoc.util.validate` outside filtering to avoid flakiness caused by the order of evaluation in Cypher.
+
 ## 7.2.0
 
 ### Minor Changes
