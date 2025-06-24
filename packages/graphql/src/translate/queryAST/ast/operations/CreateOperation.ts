@@ -24,7 +24,7 @@ import { filterTruthy } from "../../../../utils/utils";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
-import { OperationField } from "../fields/OperationField";
+import type { OperationField } from "../fields/OperationField";
 import type { InputField } from "../input-fields/InputField";
 import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
@@ -43,7 +43,6 @@ export class CreateOperation extends MutationOperation {
     private projectionOperations: OperationField[] = [];
 
     public readonly inputFields: InputField[] = [];
-    private createVariable = new Cypher.Variable();
 
     constructor({
         target,
@@ -130,14 +129,14 @@ export class CreateOperation extends MutationOperation {
             withClause = new Cypher.With("*");
         }
 
-        const clauses = filterTruthy([
+        const clauses = Cypher.utils.concat(
             createClause,
             withClause,
             ...mutationSubqueries,
             mergeClause,
-            this.getProjectionClause(nestedContext),
-        ]);
-        return { projectionExpr: context.returnVariable, clauses };
+            this.getProjectionClause(nestedContext)
+        );
+        return { projectionExpr: context.returnVariable, clauses: [clauses] };
     }
 
     private getProjectionClause(context: QueryASTContext<Cypher.Node>): Cypher.Clause {
@@ -155,6 +154,11 @@ export class CreateOperation extends MutationOperation {
                 return Object.values(projectionMap);
             });
 
-        return Cypher.utils.concat(...subqueries, new Cypher.Return([new Cypher.List(projectionFields), "data"]));
+        let returnClause: Cypher.Clause | undefined;
+        if (projectionFields.length > 0) {
+            returnClause = new Cypher.Return([new Cypher.List(projectionFields), "data"]);
+        }
+
+        return Cypher.utils.concat(...subqueries, returnClause);
     }
 }

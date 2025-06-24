@@ -263,7 +263,6 @@ export class CreateFactory {
             const targetInput = this.getInputNode(inputItem, isNested);
             raiseAttributeAmbiguity(Object.keys(targetInput), target);
             raiseAttributeAmbiguity(Object.keys(this.getInputEdge(target)), relationship);
-            console.log(targetInput);
             for (const key of Object.keys(targetInput)) {
                 const nestedRelationship = target.relationships.get(key);
                 const attribute = target.attributes.get(key);
@@ -305,7 +304,6 @@ export class CreateFactory {
                     }
                     const nestedConnectInput = targetInput[key]?.connect;
                     if (nestedConnectInput) {
-                        console.log("nestedConnectInput", nestedConnectInput);
                         const nestedConnectOperation = this.queryASTFactory.operationsFactory.createConnectOperation(
                             nestedEntity,
                             nestedRelationship,
