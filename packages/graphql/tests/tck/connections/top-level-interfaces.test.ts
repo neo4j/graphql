@@ -79,8 +79,8 @@ describe("Top level interface connections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
-                CALL {
+            CALL () {
+                CALL () {
                     MATCH (this0:Movie)
                     WHERE this0.title = $param0
                     WITH { node: { __resolveType: \\"Movie\\", __id: id(this0), cost: this0.cost, title: this0.title } } AS edge
@@ -125,8 +125,8 @@ describe("Top level interface connections", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
-                CALL {
+            CALL () {
+                CALL () {
                     MATCH (this0:Movie)
                     WHERE this0.title = $param0
                     WITH { node: { __resolveType: \\"Movie\\", __id: id(this0), cost: this0.cost, title: this0.title } } AS edge
@@ -141,8 +141,7 @@ describe("Top level interface connections", () => {
             }
             WITH edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge
                 LIMIT $param2

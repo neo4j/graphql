@@ -60,8 +60,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someBigInt) = $param0 AS var2
             }
@@ -94,8 +93,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someBigInt) > $param0 AS var2
             }
@@ -128,8 +126,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someBigInt) >= $param0 AS var2
             }
@@ -162,8 +159,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someBigInt) < $param0 AS var2
             }
@@ -196,8 +192,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someBigInt) <= $param0 AS var2
             }
@@ -230,8 +225,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someBigInt) = $param0 AS var2
             }
@@ -264,8 +258,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someBigInt) > $param0 AS var2
             }
@@ -298,8 +291,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someBigInt) >= $param0 AS var2
             }
@@ -332,8 +324,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someBigInt) < $param0 AS var2
             }
@@ -366,8 +357,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someBigInt) <= $param0 AS var2
             }
@@ -400,8 +390,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someBigInt) = $param0 AS var2
             }
@@ -434,8 +423,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someBigInt) > $param0 AS var2
             }
@@ -468,8 +456,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someBigInt) >= $param0 AS var2
             }
@@ -502,8 +489,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someBigInt) < $param0 AS var2
             }
@@ -536,8 +522,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someBigInt) <= $param0 AS var2
             }
@@ -570,8 +555,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someBigInt) = $param0 AS var2
             }
@@ -604,8 +588,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someBigInt) > $param0 AS var2
             }
@@ -638,8 +621,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someBigInt) >= $param0 AS var2
             }
@@ -672,8 +654,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someBigInt) < $param0 AS var2
             }
@@ -706,8 +687,7 @@ describe("Cypher Aggregations where edge with BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someBigInt) <= $param0 AS var2
             }

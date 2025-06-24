@@ -66,8 +66,7 @@ describe("Cypher relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH DISTINCT this1
                 WITH this1 { .name } AS this1

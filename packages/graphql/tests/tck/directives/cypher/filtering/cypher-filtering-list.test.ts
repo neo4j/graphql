@@ -52,10 +52,8 @@ describe("cypher directive filtering - Lists", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN ['a', 'b', 'c'] as list
                 }

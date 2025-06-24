@@ -87,8 +87,7 @@ describe("Label in Node directive", () => {
             "CYPHER 5
             MATCH (this:Actor:Person)
             WHERE this.age > $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Film)
                 WHERE this1.title = $param1
                 WITH DISTINCT this1
@@ -126,8 +125,7 @@ describe("Label in Node directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Film)
                 SET
                     create_this1.title = create_var0.title

@@ -65,10 +65,8 @@ describe("cypher directive filtering - Relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -131,10 +129,8 @@ describe("cypher directive filtering - Relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -197,10 +193,8 @@ describe("cypher directive filtering - Relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -263,10 +257,8 @@ describe("cypher directive filtering - Relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -328,10 +320,8 @@ describe("cypher directive filtering - Relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -421,10 +411,8 @@ describe("cypher directive filtering - Relationship", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -432,10 +420,8 @@ describe("cypher directive filtering - Relationship", () => {
                 WITH actor AS this0
                 RETURN collect(this0) AS this1
             }
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:IN_GENRE]->(g:Genre)
                     RETURN g

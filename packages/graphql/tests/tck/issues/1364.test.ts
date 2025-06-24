@@ -95,16 +95,13 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 WITH *
                 ORDER BY this0.title ASC
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                         RETURN count(DISTINCT genre) as result
@@ -139,14 +136,11 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                         RETURN count(DISTINCT genre) as result
@@ -184,14 +178,11 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                         RETURN count(DISTINCT genre) as result
@@ -201,10 +192,8 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                 }
                 WITH *
                 ORDER BY var2 ASC
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                         RETURN count(DISTINCT actor) as result

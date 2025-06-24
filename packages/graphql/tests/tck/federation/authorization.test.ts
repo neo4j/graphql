@@ -203,8 +203,7 @@ describe("Federation and authorization", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:AUTHORED]-(this1:User)
                 RETURN count(this1) > $param0 AS var2
             }

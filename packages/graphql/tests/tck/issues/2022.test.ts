@@ -92,16 +92,13 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
             MATCH (this0:ArtPiece)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)-[this1:SOLD_AT_AUCTION_AS]->(this2:AuctionItem)
                     WITH DISTINCT this2
-                    CALL {
-                        WITH this2
+                    CALL (this2) {
                         MATCH (this2)<-[this3:BOUGHT_ITEM_AT_AUCTION]-(this4:Organization)
                         WITH DISTINCT this4
                         WITH this4 { .name, dbId: this4.id } AS this4
@@ -110,8 +107,7 @@ describe("https://github.com/neo4j/graphql/issues/2022", () => {
                     WITH this2 { .auctionName, .lotNumber, dbId: this2.id, buyer: var5 } AS this2
                     RETURN collect(this2) AS var6
                 }
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)-[this7:OWNED_BY]->(this8:Organization)
                     WITH DISTINCT this8
                     WITH this8 { .name, dbId: this8.id } AS this8

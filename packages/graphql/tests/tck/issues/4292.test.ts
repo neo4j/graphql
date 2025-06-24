@@ -213,8 +213,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             "CYPHER 5
             MATCH (this:Group)
             WHERE this.id = $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
                 WITH DISTINCT this1
                 WITH *
@@ -246,8 +245,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                         WHERE ($jwt.uid IS NOT NULL AND this10.id = $jwt.uid)
                     }
                 })), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                CALL {
-                    WITH this1
+                CALL (this1) {
                     MATCH (this1)-[this11:PARTNER_OF]-(this12:Person)
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND (EXISTS {
                         MATCH (this12)<-[:CREATOR_OF]-(this13:User)
@@ -279,8 +277,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                     })), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH collect({ node: this12, relationship: this11 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
+                    CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this12, edge.relationship AS this11
                         RETURN collect({ properties: { active: this11.active, firstDay: this11.firstDay, lastDay: this11.lastDay, __resolveType: \\"PartnerOf\\" }, node: { __id: id(this12), __resolveType: \\"Person\\" } }) AS var22

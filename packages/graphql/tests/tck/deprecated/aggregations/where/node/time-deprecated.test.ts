@@ -56,8 +56,7 @@ describe("Cypher Aggregations where node with Time - deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this1.someTime) = time($param0) AS var2
             }
@@ -87,8 +86,7 @@ describe("Cypher Aggregations where node with Time - deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this1.someTime) > time($param0) AS var2
             }
@@ -118,8 +116,7 @@ describe("Cypher Aggregations where node with Time - deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this1.someTime) >= time($param0) AS var2
             }
@@ -149,8 +146,7 @@ describe("Cypher Aggregations where node with Time - deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this1.someTime) < time($param0) AS var2
             }
@@ -180,8 +176,7 @@ describe("Cypher Aggregations where node with Time - deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this1.someTime) <= time($param0) AS var2
             }
@@ -211,8 +206,7 @@ describe("Cypher Aggregations where node with Time - deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this1.someTime) = time($param0) AS var2
             }
@@ -242,8 +236,7 @@ describe("Cypher Aggregations where node with Time - deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this1.someTime) > time($param0) AS var2
             }
@@ -273,8 +266,7 @@ describe("Cypher Aggregations where node with Time - deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this1.someTime) >= time($param0) AS var2
             }
@@ -304,8 +296,7 @@ describe("Cypher Aggregations where node with Time - deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this1.someTime) < time($param0) AS var2
             }
@@ -335,8 +326,7 @@ describe("Cypher Aggregations where node with Time - deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this1.someTime) <= time($param0) AS var2
             }

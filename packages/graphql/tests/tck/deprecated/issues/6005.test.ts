@@ -61,8 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 RETURN count(this1) = $param0 AS var2
             }
@@ -96,12 +95,10 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                 WITH DISTINCT this1
-                CALL {
-                    WITH this1
+                CALL (this1) {
                     MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
                     RETURN count(this3) = $param0 AS var4
                 }
@@ -136,11 +133,9 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[:ACTED_IN]-(this0:Actor)
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)-[this1:ACTED_IN]->(this2:Movie)
                     RETURN count(this2) = $param0 AS var3
                 }

@@ -70,10 +70,8 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Serie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (n:Video) RETURN n
                     SKIP toInteger($param0.offset) LIMIT toInteger($param0.limit)
@@ -124,10 +122,8 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Serie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (n:Video) RETURN n
                     SKIP toInteger($param0.offset) LIMIT toInteger($param0.limit)
@@ -171,10 +167,8 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Serie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (n:Video) RETURN n
                     SKIP toInteger($param0.offset) LIMIT toInteger($param0.limit)

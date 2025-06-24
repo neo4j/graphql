@@ -64,10 +64,8 @@ describe("cypher directive filtering - Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN \\"hello world!\\" AS s
                 }
@@ -79,18 +77,15 @@ describe("cypher directive filtering - Auth", () => {
                 MATCH (this)<-[:ACTED_IN]-(this2:Actor)
                 WHERE this2.name = $param1
             })
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN \\"hello world!\\" AS s
                 }
                 WITH s AS this3
                 RETURN this3 AS var4
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this5:ACTED_IN]-(this6:Actor)
                 WITH DISTINCT this6
                 WITH this6 { .name } AS this6
@@ -147,14 +142,11 @@ describe("cypher directive filtering - Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                 WITH DISTINCT this1
-                CALL {
-                    WITH this1
-                    CALL {
-                        WITH this1
+                CALL (this1) {
+                    CALL (this1) {
                         WITH this1 AS this
                         RETURN \\"hello world!\\" AS s
                     }
@@ -216,10 +208,8 @@ describe("cypher directive filtering - Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN \\"hello world!\\" AS s
                 }
@@ -228,8 +218,7 @@ describe("cypher directive filtering - Auth", () => {
             }
             WITH *
             WHERE var1 = $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
                 WHERE this3.name = $param1
                 WITH DISTINCT this3
@@ -301,20 +290,16 @@ describe("cypher directive filtering - Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN \\"hello world!\\" AS s
                 }
                 WITH s AS this0
                 RETURN this0 AS var1
             }
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN 100 AS i
                 }
@@ -323,8 +308,7 @@ describe("cypher directive filtering - Auth", () => {
             }
             WITH *
             WHERE (var1 = $param0 AND var3 > $param1)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this4:ACTED_IN]-(this5:Actor)
                 WITH DISTINCT this5
                 WITH this5 { .name } AS this5
@@ -391,10 +375,8 @@ describe("cypher directive filtering - Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN \\"hello world!\\" AS s
                 }
@@ -403,14 +385,11 @@ describe("cypher directive filtering - Auth", () => {
             }
             WITH *
             WHERE var1 = $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
                 WITH DISTINCT this3
-                CALL {
-                    WITH this3
-                    CALL {
-                        WITH this3
+                CALL (this3) {
+                    CALL (this3) {
                         WITH this3 AS this
                         RETURN \\"goodbye!\\" AS s
                     }

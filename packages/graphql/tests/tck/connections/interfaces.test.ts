@@ -85,11 +85,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    CALL {
+            CALL (this) {
+                CALL (this) {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                         WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
@@ -142,11 +140,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    CALL {
+            CALL (this) {
+                CALL (this) {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                         WHERE this1.title STARTS WITH $param0
@@ -206,11 +202,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    CALL {
+            CALL (this) {
+                CALL (this) {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                         WHERE this0.screenTime > $param0
@@ -278,11 +272,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "CYPHER 5
                     MATCH (this:Actor)
-                    CALL {
-                        WITH this
-                        CALL {
-                            WITH this
-                            CALL {
+                    CALL (this) {
+                        CALL (this) {
+                            CALL (this) {
                                 WITH this
                                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                                 WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
@@ -297,8 +289,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         }
                         WITH edges
                         WITH edges, size(edges) AS totalCount
-                        CALL {
-                            WITH edges
+                        CALL (edges) {
                             UNWIND edges AS edge
                             WITH edge
                             ORDER BY edge.properties.screenTime ASC
@@ -342,11 +333,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "CYPHER 5
                     MATCH (this:Actor)
-                    CALL {
-                        WITH this
-                        CALL {
-                            WITH this
-                            CALL {
+                    CALL (this) {
+                        CALL (this) {
+                            CALL (this) {
                                 WITH this
                                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                                 WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
@@ -361,8 +350,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         }
                         WITH edges
                         WITH edges, size(edges) AS totalCount
-                        CALL {
-                            WITH edges
+                        CALL (edges) {
                             UNWIND edges AS edge
                             WITH edge
                             ORDER BY edge.node.title ASC
@@ -405,11 +393,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "CYPHER 5
                     MATCH (this:Actor)
-                    CALL {
-                        WITH this
-                        CALL {
-                            WITH this
-                            CALL {
+                    CALL (this) {
+                        CALL (this) {
+                            CALL (this) {
                                 WITH this
                                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                                 WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
@@ -424,8 +410,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         }
                         WITH edges
                         WITH edges, size(edges) AS totalCount
-                        CALL {
-                            WITH edges
+                        CALL (edges) {
                             UNWIND edges AS edge
                             WITH edge
                             ORDER BY edge.properties.screenTime ASC
@@ -468,11 +453,9 @@ describe("Cypher -> Connections -> Interfaces", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "CYPHER 5
                     MATCH (this:Actor)
-                    CALL {
-                        WITH this
-                        CALL {
-                            WITH this
-                            CALL {
+                    CALL (this) {
+                        CALL (this) {
+                            CALL (this) {
                                 WITH this
                                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                                 WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
@@ -487,8 +470,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         }
                         WITH edges
                         WITH edges, size(edges) AS totalCount
-                        CALL {
-                            WITH edges
+                        CALL (edges) {
                             UNWIND edges AS edge
                             WITH edge
                             ORDER BY edge.node.title ASC

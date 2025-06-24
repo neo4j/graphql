@@ -82,29 +82,26 @@ describe("https://github.com/neo4j/graphql/issues/1566", () => {
             "CYPHER 5
             MATCH (this:Community)
             WHERE this.id = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     Match(this)-[:COMMUNITY_CONTENTPIECE_HASCONTENTPIECES|:COMMUNITY_PROJECT_HASASSOCIATEDPROJECTS]-(pag)
                        return pag SKIP ($param1 * $pageIndex) LIMIT $param1
                 }
                 WITH pag AS this0
-                CALL {
-                    WITH this0
-                    CALL {
+                CALL (this0) {
+                    CALL (*) {
                         WITH *
                         MATCH (this0)
                         WHERE this0:Content
-                        WITH this0 { .name, __resolveType: \\"Content\\", __id: id(this0) } AS this0
-                        RETURN this0 AS var1
+                        WITH this0 { .name, __resolveType: \\"Content\\", __id: id(this0) } AS var1
+                        RETURN var1
                         UNION
                         WITH *
                         MATCH (this0)
                         WHERE this0:Project
-                        WITH this0 { .name, __resolveType: \\"Project\\", __id: id(this0) } AS this0
-                        RETURN this0 AS var1
+                        WITH this0 { .name, __resolveType: \\"Project\\", __id: id(this0) } AS var1
+                        RETURN var1
                     }
                     RETURN var1
                 }

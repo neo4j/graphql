@@ -72,7 +72,7 @@ export function createRelationshipValidationClauses({
                 .with([Cypher.count(relVarnameCypher), cVariable])
                 .where(Cypher.apoc.util.validatePredicate(predicateCypher, errorMsg))
                 .return([returnVar, new Cypher.Variable()]);
-            return new Cypher.Call(match).importWith(varName);
+            return new Cypher.Call(match, [varName]);
         })
     );
 }

@@ -133,9 +133,7 @@ export function buildMathStatements(
     const statements: string[] = [];
     const mathScope = Array.from(new Set([scope, ...withVars]));
     statements.push(`WITH ${mathScope.join(", ")}`);
-    statements.push(`CALL {`);
-    // Importing WITH
-    statements.push(`WITH ${scope}`);
+    statements.push(`CALL(${scope}) {`);
     statements.push(`WITH ${scope}`);
     // Validations
     statements.push(`WHERE ${validatePredicates.join(" AND ")}`);

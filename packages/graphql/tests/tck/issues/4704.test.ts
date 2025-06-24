@@ -123,18 +123,17 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
                     WHERE NOT (this7.name = $param1)
                 }))
             })))
-            CALL {
-                WITH this
-                CALL {
+            CALL (this) {
+                CALL (*) {
                     WITH *
                     MATCH (this)-[this8:ACTED_IN]->(this9:Movie)
-                    WITH this9 { .title, __resolveType: \\"Movie\\", __id: id(this9) } AS this9
-                    RETURN this9 AS var10
+                    WITH this9 { .title, __resolveType: \\"Movie\\", __id: id(this9) } AS var10
+                    RETURN var10
                     UNION
                     WITH *
                     MATCH (this)-[this11:ACTED_IN]->(this12:Series)
-                    WITH this12 { .title, __resolveType: \\"Series\\", __id: id(this12) } AS this12
-                    RETURN this12 AS var10
+                    WITH this12 { .title, __resolveType: \\"Series\\", __id: id(this12) } AS var10
+                    RETURN var10
                 }
                 WITH var10
                 RETURN collect(var10) AS var10
@@ -175,18 +174,17 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
             "CYPHER 5
             MATCH (this:Actor)
             WHERE (single(this1 IN [(this)-[this3:ACTED_IN]->(this1:Movie) WHERE single(this0 IN [(this1)<-[this2:ACTED_IN]-(this0:Actor) WHERE this0.name = $param0 | 1] WHERE true) | 1] WHERE true) XOR single(this5 IN [(this)-[this7:ACTED_IN]->(this5:Series) WHERE single(this4 IN [(this5)<-[this6:STARRED_IN]-(this4:Actor) WHERE this4.name = $param1 | 1] WHERE true) | 1] WHERE true))
-            CALL {
-                WITH this
-                CALL {
+            CALL (this) {
+                CALL (*) {
                     WITH *
                     MATCH (this)-[this8:ACTED_IN]->(this9:Movie)
-                    WITH this9 { .title, __resolveType: \\"Movie\\", __id: id(this9) } AS this9
-                    RETURN this9 AS var10
+                    WITH this9 { .title, __resolveType: \\"Movie\\", __id: id(this9) } AS var10
+                    RETURN var10
                     UNION
                     WITH *
                     MATCH (this)-[this11:ACTED_IN]->(this12:Series)
-                    WITH this12 { .title, __resolveType: \\"Series\\", __id: id(this12) } AS this12
-                    RETURN this12 AS var10
+                    WITH this12 { .title, __resolveType: \\"Series\\", __id: id(this12) } AS var10
+                    RETURN var10
                 }
                 WITH var10
                 RETURN collect(var10) AS var10
@@ -237,18 +235,17 @@ describe("https://github.com/neo4j/graphql/issues/4704", () => {
                     WHERE this7.name = $param1
                 })
             }))
-            CALL {
-                WITH this
-                CALL {
+            CALL (this) {
+                CALL (*) {
                     WITH *
                     MATCH (this)-[this8:ACTED_IN]->(this9:Movie)
-                    WITH this9 { .title, __resolveType: \\"Movie\\", __id: id(this9) } AS this9
-                    RETURN this9 AS var10
+                    WITH this9 { .title, __resolveType: \\"Movie\\", __id: id(this9) } AS var10
+                    RETURN var10
                     UNION
                     WITH *
                     MATCH (this)-[this11:ACTED_IN]->(this12:Series)
-                    WITH this12 { .title, __resolveType: \\"Series\\", __id: id(this12) } AS this12
-                    RETURN this12 AS var10
+                    WITH this12 { .title, __resolveType: \\"Series\\", __id: id(this12) } AS var10
+                    RETURN var10
                 }
                 WITH var10
                 RETURN collect(var10) AS var10

@@ -68,15 +68,13 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             "CYPHER 5
             MATCH (this:Source)
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this
             	OPTIONAL MATCH (this_targets0_connect0_node:Target)
             	WHERE this_targets0_connect0_node.id = $this_targets0_connect0_node_param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this_targets0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_targets0_connect0_node
             			CREATE (this)-[:HAS_TARGET]->(this_targets0_connect0_node)
@@ -147,14 +145,13 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             "CYPHER 5
             MATCH (this:Source)
             WITH this
-            CALL {
+            CALL(*) {
             WITH this
             OPTIONAL MATCH (this)-[this_targets0_disconnect0_rel:HAS_TARGET]->(this_targets0_disconnect0:Target)
             WHERE this_targets0_disconnect0.id = $updateSources_args_update_targets0_disconnect0_where_Target_this_targets0_disconnect0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL {
-            	WITH this_targets0_disconnect0, this_targets0_disconnect0_rel, this
-            	WITH collect(this_targets0_disconnect0) as this_targets0_disconnect0, this_targets0_disconnect0_rel, this
-            	UNWIND this_targets0_disconnect0 as x
+            CALL (this_targets0_disconnect0, this_targets0_disconnect0_rel, this) {
+            	WITH collect(this_targets0_disconnect0) as this_targets0_disconnect0_x, this_targets0_disconnect0_rel, this
+            	UNWIND this_targets0_disconnect0_x as x
             	DELETE this_targets0_disconnect0_rel
             }
             RETURN count(*) AS disconnect_this_targets0_disconnect_Target

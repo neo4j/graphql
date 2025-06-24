@@ -61,8 +61,7 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH DISTINCT this1
                 RETURN count(this1) = $param0 AS var2
@@ -97,12 +96,10 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                 WITH DISTINCT this1
-                CALL {
-                    WITH this1
+                CALL (this1) {
                     MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
                     WITH DISTINCT this3
                     RETURN count(this3) = $param0 AS var4
@@ -142,8 +139,7 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:Movie)
-            CALL {
-                WITH this0
+            CALL (this0) {
                 MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
                 WITH DISTINCT this2
                 RETURN count(this2) = $param0 AS var3
@@ -152,8 +148,7 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
             WHERE var3 = true
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
@@ -198,15 +193,12 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
             MATCH (this0:Actor)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)-[this1:ACTED_IN]->(this2:Movie)
-                    CALL {
-                        WITH this2
+                    CALL (this2) {
                         MATCH (this2)<-[this3:ACTED_IN]-(this4:Actor)
                         WITH DISTINCT this4
                         RETURN count(this4) = $param0 AS var5
@@ -215,8 +207,7 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
                     WHERE var5 = true
                     WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
+                    CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
                         RETURN collect({ node: { title: this2.title, __resolveType: \\"Movie\\" } }) AS var6

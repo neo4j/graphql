@@ -57,15 +57,12 @@ describe("https://github.com/neo4j/graphql/issues/4838", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Test)
                 RETURN create_this1
             }
-            CALL {
-                WITH create_this1
-                CALL {
-                    WITH create_this1
+            CALL (create_this1) {
+                CALL (create_this1) {
                     WITH create_this1 AS this
                     RETURN true AS value
                 }
@@ -102,12 +99,10 @@ describe("https://github.com/neo4j/graphql/issues/4838", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:ParentTest)
                 WITH create_this1, create_var0
-                CALL {
-                    WITH create_this1, create_var0
+                CALL (create_this1, create_var0) {
                     UNWIND create_var0.tests.create AS create_var2
                     CREATE (create_this3:Test)
                     MERGE (create_this1)-[create_this4:REL]->(create_this3)
@@ -115,14 +110,11 @@ describe("https://github.com/neo4j/graphql/issues/4838", () => {
                 }
                 RETURN create_this1
             }
-            CALL {
-                WITH create_this1
+            CALL (create_this1) {
                 MATCH (create_this1)-[create_this6:REL]->(create_this7:Test)
                 WITH DISTINCT create_this7
-                CALL {
-                    WITH create_this7
-                    CALL {
-                        WITH create_this7
+                CALL (create_this7) {
+                    CALL (create_this7) {
                         WITH create_this7 AS this
                         RETURN true AS value
                     }

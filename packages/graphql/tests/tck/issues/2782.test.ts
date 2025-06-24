@@ -100,34 +100,31 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             SET this.id = $this_update_id_SET
             SET this.name = $this_update_name_SET
             WITH this
-            CALL {
+            CALL(*) {
             WITH this
             OPTIONAL MATCH (this)-[this_colors0_disconnect0_rel:HAS_COLOR]->(this_colors0_disconnect0:Color)
             WHERE this_colors0_disconnect0.name = $updateProducts_args_update_colors0_disconnect0_where_Color_this_colors0_disconnect0param0
-            CALL {
-            	WITH this_colors0_disconnect0, this_colors0_disconnect0_rel, this
-            	WITH collect(this_colors0_disconnect0) as this_colors0_disconnect0, this_colors0_disconnect0_rel, this
-            	UNWIND this_colors0_disconnect0 as x
+            CALL (this_colors0_disconnect0, this_colors0_disconnect0_rel, this) {
+            	WITH collect(this_colors0_disconnect0) as this_colors0_disconnect0_x, this_colors0_disconnect0_rel, this
+            	UNWIND this_colors0_disconnect0_x as x
             	DELETE this_colors0_disconnect0_rel
             }
-            CALL {
+            CALL(*) {
             WITH this, this_colors0_disconnect0
             OPTIONAL MATCH (this_colors0_disconnect0)<-[this_colors0_disconnect0_photos0_rel:OF_COLOR]-(this_colors0_disconnect0_photos0:Photo)
             WHERE this_colors0_disconnect0_photos0.id = $updateProducts_args_update_colors0_disconnect0_disconnect_photos0_where_Photo_this_colors0_disconnect0_photos0param0
-            CALL {
-            	WITH this_colors0_disconnect0_photos0, this_colors0_disconnect0_photos0_rel, this_colors0_disconnect0
-            	WITH collect(this_colors0_disconnect0_photos0) as this_colors0_disconnect0_photos0, this_colors0_disconnect0_photos0_rel, this_colors0_disconnect0
-            	UNWIND this_colors0_disconnect0_photos0 as x
+            CALL (this_colors0_disconnect0_photos0, this_colors0_disconnect0_photos0_rel, this_colors0_disconnect0) {
+            	WITH collect(this_colors0_disconnect0_photos0) as this_colors0_disconnect0_photos0_x, this_colors0_disconnect0_photos0_rel, this_colors0_disconnect0
+            	UNWIND this_colors0_disconnect0_photos0_x as x
             	DELETE this_colors0_disconnect0_photos0_rel
             }
-            CALL {
+            CALL(*) {
             WITH this, this_colors0_disconnect0, this_colors0_disconnect0_photos0
             OPTIONAL MATCH (this_colors0_disconnect0_photos0)-[this_colors0_disconnect0_photos0_color0_rel:OF_COLOR]->(this_colors0_disconnect0_photos0_color0:Color)
             WHERE this_colors0_disconnect0_photos0_color0.id = $updateProducts_args_update_colors0_disconnect0_disconnect_photos0_disconnect_color0_where_Color_this_colors0_disconnect0_photos0_color0param0
-            CALL {
-            	WITH this_colors0_disconnect0_photos0_color0, this_colors0_disconnect0_photos0_color0_rel, this_colors0_disconnect0_photos0
-            	WITH collect(this_colors0_disconnect0_photos0_color0) as this_colors0_disconnect0_photos0_color0, this_colors0_disconnect0_photos0_color0_rel, this_colors0_disconnect0_photos0
-            	UNWIND this_colors0_disconnect0_photos0_color0 as x
+            CALL (this_colors0_disconnect0_photos0_color0, this_colors0_disconnect0_photos0_color0_rel, this_colors0_disconnect0_photos0) {
+            	WITH collect(this_colors0_disconnect0_photos0_color0) as this_colors0_disconnect0_photos0_color0_x, this_colors0_disconnect0_photos0_color0_rel, this_colors0_disconnect0_photos0
+            	UNWIND this_colors0_disconnect0_photos0_color0_x as x
             	DELETE this_colors0_disconnect0_photos0_color0_rel
             }
             RETURN count(*) AS disconnect_this_colors0_disconnect0_photos0_color_Color
@@ -137,24 +134,22 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             RETURN count(*) AS disconnect_this_colors0_disconnect_Color
             }
             WITH this
-            CALL {
+            CALL(*) {
             WITH this
             OPTIONAL MATCH (this)-[this_photos0_disconnect0_rel:HAS_PHOTO]->(this_photos0_disconnect0:Photo)
             WHERE this_photos0_disconnect0.id = $updateProducts_args_update_photos0_disconnect0_where_Photo_this_photos0_disconnect0param0
-            CALL {
-            	WITH this_photos0_disconnect0, this_photos0_disconnect0_rel, this
-            	WITH collect(this_photos0_disconnect0) as this_photos0_disconnect0, this_photos0_disconnect0_rel, this
-            	UNWIND this_photos0_disconnect0 as x
+            CALL (this_photos0_disconnect0, this_photos0_disconnect0_rel, this) {
+            	WITH collect(this_photos0_disconnect0) as this_photos0_disconnect0_x, this_photos0_disconnect0_rel, this
+            	UNWIND this_photos0_disconnect0_x as x
             	DELETE this_photos0_disconnect0_rel
             }
-            CALL {
+            CALL(*) {
             WITH this, this_photos0_disconnect0
             OPTIONAL MATCH (this_photos0_disconnect0)-[this_photos0_disconnect0_color0_rel:OF_COLOR]->(this_photos0_disconnect0_color0:Color)
             WHERE this_photos0_disconnect0_color0.name = $updateProducts_args_update_photos0_disconnect0_disconnect_color0_where_Color_this_photos0_disconnect0_color0param0
-            CALL {
-            	WITH this_photos0_disconnect0_color0, this_photos0_disconnect0_color0_rel, this_photos0_disconnect0
-            	WITH collect(this_photos0_disconnect0_color0) as this_photos0_disconnect0_color0, this_photos0_disconnect0_color0_rel, this_photos0_disconnect0
-            	UNWIND this_photos0_disconnect0_color0 as x
+            CALL (this_photos0_disconnect0_color0, this_photos0_disconnect0_color0_rel, this_photos0_disconnect0) {
+            	WITH collect(this_photos0_disconnect0_color0) as this_photos0_disconnect0_color0_x, this_photos0_disconnect0_color0_rel, this_photos0_disconnect0
+            	UNWIND this_photos0_disconnect0_color0_x as x
             	DELETE this_photos0_disconnect0_color0_rel
             }
             RETURN count(*) AS disconnect_this_photos0_disconnect0_color_Color
@@ -162,24 +157,22 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
             RETURN count(*) AS disconnect_this_photos0_disconnect_Photo
             }
             WITH this
-            CALL {
+            CALL(*) {
             WITH this
             OPTIONAL MATCH (this)-[this_photos0_disconnect1_rel:HAS_PHOTO]->(this_photos0_disconnect1:Photo)
             WHERE this_photos0_disconnect1.id = $updateProducts_args_update_photos0_disconnect1_where_Photo_this_photos0_disconnect1param0
-            CALL {
-            	WITH this_photos0_disconnect1, this_photos0_disconnect1_rel, this
-            	WITH collect(this_photos0_disconnect1) as this_photos0_disconnect1, this_photos0_disconnect1_rel, this
-            	UNWIND this_photos0_disconnect1 as x
+            CALL (this_photos0_disconnect1, this_photos0_disconnect1_rel, this) {
+            	WITH collect(this_photos0_disconnect1) as this_photos0_disconnect1_x, this_photos0_disconnect1_rel, this
+            	UNWIND this_photos0_disconnect1_x as x
             	DELETE this_photos0_disconnect1_rel
             }
-            CALL {
+            CALL(*) {
             WITH this, this_photos0_disconnect1
             OPTIONAL MATCH (this_photos0_disconnect1)-[this_photos0_disconnect1_color0_rel:OF_COLOR]->(this_photos0_disconnect1_color0:Color)
             WHERE this_photos0_disconnect1_color0.name = $updateProducts_args_update_photos0_disconnect0_disconnect_color0_where_Color_this_photos0_disconnect1_color0param0
-            CALL {
-            	WITH this_photos0_disconnect1_color0, this_photos0_disconnect1_color0_rel, this_photos0_disconnect1
-            	WITH collect(this_photos0_disconnect1_color0) as this_photos0_disconnect1_color0, this_photos0_disconnect1_color0_rel, this_photos0_disconnect1
-            	UNWIND this_photos0_disconnect1_color0 as x
+            CALL (this_photos0_disconnect1_color0, this_photos0_disconnect1_color0_rel, this_photos0_disconnect1) {
+            	WITH collect(this_photos0_disconnect1_color0) as this_photos0_disconnect1_color0_x, this_photos0_disconnect1_color0_rel, this_photos0_disconnect1
+            	UNWIND this_photos0_disconnect1_color0_x as x
             	DELETE this_photos0_disconnect1_color0_rel
             }
             RETURN count(*) AS disconnect_this_photos0_disconnect1_color_Color

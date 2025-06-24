@@ -69,10 +69,8 @@ describe("Field Level Aggregations Alias", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Film)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WITH DISTINCT this1
                     ORDER BY size(this1.name) DESC

@@ -71,11 +71,9 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Inventory)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    CALL {
+            CALL (this) {
+                CALL (this) {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:HasChildren]->(this1:Image)
                         WITH { properties: { order: this0.order, __resolveType: \\"InventoryChildRelation\\" }, node: { __resolveType: \\"Image\\", __id: id(this1), id: this1.id } } AS edge
@@ -90,8 +88,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
                 }
                 WITH edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge
                     ORDER BY edge.properties.order ASC

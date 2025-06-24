@@ -92,18 +92,14 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Author)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:AUTHORED_BOOK]->(b:Book) RETURN b AS result ORDER BY b.year DESC LIMIT 1
                 }
                 WITH result AS this0
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result
                     }
@@ -137,18 +133,14 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Author)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:AUTHORED_BOOK]->(b:Book) RETURN b AS result ORDER BY b.year DESC LIMIT 1
                 }
                 WITH result AS this0
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result
                     }

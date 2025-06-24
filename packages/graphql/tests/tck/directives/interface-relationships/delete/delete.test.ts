@@ -74,24 +74,20 @@ describe("Interface Relationships - Delete delete", () => {
             "CYPHER 5
             MATCH (this:Actor)
             WITH *
-            CALL {
-                WITH *
+            CALL (*) {
                 OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                 WHERE this1.title STARTS WITH $param0
                 WITH this0, collect(DISTINCT this1) AS var2
-                CALL {
-                    WITH var2
+                CALL (var2) {
                     UNWIND var2 AS var3
                     DETACH DELETE var3
                 }
             }
-            CALL {
-                WITH *
+            CALL (*) {
                 OPTIONAL MATCH (this)-[this4:ACTED_IN]->(this5:Series)
                 WHERE this5.title STARTS WITH $param1
                 WITH this4, collect(DISTINCT this5) AS var6
-                CALL {
-                    WITH var6
+                CALL (var6) {
                     UNWIND var6 AS var7
                     DETACH DELETE var7
                 }
@@ -131,48 +127,40 @@ describe("Interface Relationships - Delete delete", () => {
             "CYPHER 5
             MATCH (this:Actor)
             WITH *
-            CALL {
-                WITH *
+            CALL (*) {
                 OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                 WHERE this1.title STARTS WITH $param0
                 WITH *
-                CALL {
-                    WITH *
+                CALL (*) {
                     OPTIONAL MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
                     WHERE this3.name = $param1
                     WITH this2, collect(DISTINCT this3) AS var4
-                    CALL {
-                        WITH var4
+                    CALL (var4) {
                         UNWIND var4 AS var5
                         DETACH DELETE var5
                     }
                 }
                 WITH this0, collect(DISTINCT this1) AS var6
-                CALL {
-                    WITH var6
+                CALL (var6) {
                     UNWIND var6 AS var7
                     DETACH DELETE var7
                 }
             }
-            CALL {
-                WITH *
+            CALL (*) {
                 OPTIONAL MATCH (this)-[this8:ACTED_IN]->(this9:Series)
                 WHERE this9.title STARTS WITH $param2
                 WITH *
-                CALL {
-                    WITH *
+                CALL (*) {
                     OPTIONAL MATCH (this9)<-[this10:ACTED_IN]-(this11:Actor)
                     WHERE this11.name = $param3
                     WITH this10, collect(DISTINCT this11) AS var12
-                    CALL {
-                        WITH var12
+                    CALL (var12) {
                         UNWIND var12 AS var13
                         DETACH DELETE var13
                     }
                 }
                 WITH this8, collect(DISTINCT this9) AS var14
-                CALL {
-                    WITH var14
+                CALL (var14) {
                     UNWIND var14 AS var15
                     DETACH DELETE var15
                 }

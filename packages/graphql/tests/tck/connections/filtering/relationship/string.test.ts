@@ -78,14 +78,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this0.role CONTAINS $param0
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ properties: { role: this0.role, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
@@ -126,14 +124,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this0.role STARTS WITH $param0
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ properties: { role: this0.role, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
@@ -174,14 +170,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this0.role ENDS WITH $param0
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ properties: { role: this0.role, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
@@ -222,14 +216,12 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this0.role =~ $param0
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ properties: { role: this0.role, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2

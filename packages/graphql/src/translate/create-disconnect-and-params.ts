@@ -152,11 +152,10 @@ function createDisconnectAndParams({
             }
         }
 
-        subquery.push("CALL {");
+        subquery.push(`CALL (${variableName}, ${relVarName}, ${parentVar}) {`);
         // Trick to avoid execution on null values
-        subquery.push(`\tWITH ${variableName}, ${relVarName}, ${parentVar}`);
-        subquery.push(`\tWITH collect(${variableName}) as ${variableName}, ${relVarName}, ${parentVar}`);
-        subquery.push(`\tUNWIND ${variableName} as x`);
+        subquery.push(`\tWITH collect(${variableName}) as ${variableName}_x, ${relVarName}, ${parentVar}`);
+        subquery.push(`\tUNWIND ${variableName}_x as x`);
 
         subquery.push(`\tDELETE ${relVarName}`);
 
@@ -266,7 +265,7 @@ function createDisconnectAndParams({
                 }
             });
             if (subqueries.length > 0) {
-                inner.push(subqueries.join("\n}\nCALL {\n\t"));
+                inner.push(subqueries.join("\n}\nCALL(*) {\n\t"));
             }
         } else {
             const subquery = createSubqueryContents(refNodes[0] as Node, disconnect, index);
@@ -275,7 +274,7 @@ function createDisconnectAndParams({
         }
 
         if (inner.length > 0) {
-            res.disconnects.push("CALL {");
+            res.disconnects.push("CALL(*) {");
             res.disconnects.push(...inner);
             res.disconnects.push("}");
         }

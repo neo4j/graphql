@@ -67,8 +67,7 @@ describe("#190", () => {
                 MATCH (this)-[:HAS_DEMOGRAPHIC]->(this0:UserDemographics)
                 WHERE (this0.type = $param0 AND this0.value = $param1)
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this1:HAS_DEMOGRAPHIC]->(this2:UserDemographics)
                 WITH DISTINCT this2
                 WITH this2 { .type, .value } AS this2
@@ -119,8 +118,7 @@ describe("#190", () => {
                 MATCH (this)-[:HAS_DEMOGRAPHIC]->(this0:UserDemographics)
                 WHERE ((this0.type = $param0 AND this0.value = $param1) OR this0.type = $param2 OR this0.type = $param3)
             }
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this1:HAS_DEMOGRAPHIC]->(this2:UserDemographics)
                 WITH DISTINCT this2
                 WITH this2 { .type, .value } AS this2

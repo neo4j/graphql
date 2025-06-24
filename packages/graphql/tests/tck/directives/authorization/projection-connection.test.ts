@@ -82,8 +82,7 @@ describe("Cypher Auth Projection On Connections", () => {
             MATCH (this:User)
             WITH *
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                     MATCH (this1)<-[:HAS_POST]-(this2:User)
@@ -91,8 +90,7 @@ describe("Cypher Auth Projection On Connections", () => {
                 }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ node: { content: this1.content, __resolveType: \\"Post\\" } }) AS var3
@@ -146,8 +144,7 @@ describe("Cypher Auth Projection On Connections", () => {
             MATCH (this:User)
             WITH *
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                     MATCH (this1)<-[:HAS_POST]-(this2:User)
@@ -155,18 +152,15 @@ describe("Cypher Auth Projection On Connections", () => {
                 }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    CALL {
-                        WITH this1
+                    CALL (this1) {
                         MATCH (this1)<-[this3:HAS_POST]-(this4:User)
                         CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                         WITH collect({ node: this4, relationship: this3 }) AS edges
                         WITH edges, size(edges) AS totalCount
-                        CALL {
-                            WITH edges
+                        CALL (edges) {
                             UNWIND edges AS edge
                             WITH edge.node AS this4, edge.relationship AS this3
                             RETURN collect({ node: { name: this4.name, __resolveType: \\"User\\" } }) AS var5
@@ -258,12 +252,10 @@ describe("Cypher Auth Projection On top-level connections", () => {
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)-[this1:HAS_POST]->(this2:Post)
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this2)<-[:HAS_POST]-(this3:User)
@@ -271,8 +263,7 @@ describe("Cypher Auth Projection On top-level connections", () => {
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
+                    CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
                         RETURN collect({ node: { content: this2.content, __resolveType: \\"Post\\" } }) AS var4
@@ -333,12 +324,10 @@ describe("Cypher Auth Projection On top-level connections", () => {
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)-[this1:HAS_POST]->(this2:Post)
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this2)<-[:HAS_POST]-(this3:User)
@@ -346,18 +335,15 @@ describe("Cypher Auth Projection On top-level connections", () => {
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
+                    CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
-                        CALL {
-                            WITH this2
+                        CALL (this2) {
                             MATCH (this2)<-[this4:HAS_POST]-(this5:User)
                             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                             WITH collect({ node: this5, relationship: this4 }) AS edges
                             WITH edges, size(edges) AS totalCount
-                            CALL {
-                                WITH edges
+                            CALL (edges) {
                                 UNWIND edges AS edge
                                 WITH edge.node AS this5, edge.relationship AS this4
                                 RETURN collect({ node: { name: this5.name, __resolveType: \\"User\\" } }) AS var6

@@ -82,11 +82,9 @@ describe("Cypher -> Connections -> Unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Author)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    CALL {
+            CALL (this) {
+                CALL (this) {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:WROTE]->(this1:Book)
                         WITH { properties: { words: this0.words, __resolveType: \\"Wrote\\" }, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
@@ -143,11 +141,9 @@ describe("Cypher -> Connections -> Unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Author)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    CALL {
+            CALL (this) {
+                CALL (this) {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:WROTE]->(this1:Book)
                         WHERE this1.title = $param0
@@ -208,11 +204,9 @@ describe("Cypher -> Connections -> Unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Author)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    CALL {
+            CALL (this) {
+                CALL (this) {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:WROTE]->(this1:Book)
                         WHERE this0.words = $param0
@@ -282,11 +276,9 @@ describe("Cypher -> Connections -> Unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Author)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    CALL {
+            CALL (this) {
+                CALL (this) {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:WROTE]->(this1:Book)
                         WHERE (this1.title = $param0 AND this0.words = $param1)
@@ -353,11 +345,9 @@ describe("Cypher -> Connections -> Unions", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Author)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    CALL {
+            CALL (this) {
+                CALL (this) {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:WROTE]->(this1:Book)
                         WITH { properties: { words: this0.words, __resolveType: \\"Wrote\\" }, node: { __resolveType: \\"Book\\", __id: id(this1), title: this1.title } } AS edge
@@ -372,8 +362,7 @@ describe("Cypher -> Connections -> Unions", () => {
                 }
                 WITH edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge
                     ORDER BY edge.properties.words ASC

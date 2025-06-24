@@ -115,10 +115,8 @@ describe("Cypher directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (a:Actor)
                     RETURN a
@@ -147,10 +145,8 @@ describe("Cypher directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN rand() as res
                 }
@@ -179,10 +175,8 @@ describe("Cypher directive", () => {
             MATCH (this:Actor)
             WITH *
             LIMIT $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN rand() as res
                 }
@@ -216,10 +210,8 @@ describe("Cypher directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN rand() as res
                 }
@@ -262,19 +254,15 @@ describe("Cypher directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (a:Actor)
                     RETURN a
                 }
                 WITH a AS this0
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         MATCH (m:Movie {title: $param0})
                         RETURN m
@@ -322,37 +310,29 @@ describe("Cypher directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (a:Actor)
                     RETURN a
                 }
                 WITH a AS this0
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         MATCH (m:Movie {title: $param0})
                         RETURN m
                     }
                     WITH m AS this1
-                    CALL {
-                        WITH this1
-                        CALL {
-                            WITH this1
+                    CALL (this1) {
+                        CALL (this1) {
                             WITH this1 AS this
                             MATCH (a:Actor)
                             RETURN a
                         }
                         WITH a AS this2
-                        CALL {
-                            WITH this2
-                            CALL {
-                                WITH this2
+                        CALL (this2) {
+                            CALL (this2) {
                                 WITH this2 AS this
                                 MATCH (m:Movie {title: $param1})
                                 RETURN m
@@ -401,19 +381,15 @@ describe("Cypher directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (a:Actor)
                     RETURN a
                 }
                 WITH a AS this0
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         MATCH (m:Movie {title: $param0})
                         RETURN m
@@ -482,8 +458,7 @@ describe("Cypher directive", () => {
                     RETURN m
                 }
                 WITH m AS this0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
                     WITH DISTINCT this2
                     WITH this2 { .name } AS this2
@@ -546,8 +521,7 @@ describe("Cypher directive", () => {
                     RETURN m
                 }
                 WITH m AS this0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
                     WITH DISTINCT this2
                     WITH this2 { .name } AS this2
@@ -605,17 +579,14 @@ describe("Cypher directive", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this:Movie)
-                CALL {
-                    WITH this
-                    CALL {
-                        WITH this
+                CALL (this) {
+                    CALL (this) {
                         WITH this AS this
                         MATCH (m:Movie {title: $param0})
                         RETURN m
                     }
                     WITH m AS this0
-                    CALL {
-                        WITH this0
+                    CALL (this0) {
                         MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
                         WITH DISTINCT this2
                         WITH this2 { .name } AS this2

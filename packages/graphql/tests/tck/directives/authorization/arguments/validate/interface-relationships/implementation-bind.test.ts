@@ -118,7 +118,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:User)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
@@ -137,8 +137,7 @@ describe("Cypher Auth Allow", () => {
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 RETURN this0 { .id } AS create_var0
             }
             RETURN [create_var0] AS data"
@@ -199,7 +198,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:User)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
@@ -215,8 +214,7 @@ describe("Cypher Auth Allow", () => {
             WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0_contentComment0_node_creator0_node.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 RETURN this0 { .id } AS create_var0
             }
             RETURN [create_var0] AS data"
@@ -271,15 +269,14 @@ describe("Cypher Auth Allow", () => {
             MATCH (this:User)
             WHERE this.id = $param0
             WITH this
-            CALL {
-            	 WITH this
+            CALL (this) {
             WITH this
-            CALL {
+            CALL(*) {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
             	WHERE this_content0.id = $updateUsers_args_update_content0_where_this_content0param0
             	WITH this, this_content0
-            	CALL {
+            	CALL(*) {
             		WITH this, this_content0
             		MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
             		SET this_content0_creator0.id = $this_update_content0_creator0_id_SET
@@ -291,15 +288,14 @@ describe("Cypher Auth Allow", () => {
             }
             RETURN count(*) AS update_this_Comment
             }
-            CALL {
-            	 WITH this
+            CALL (this){
             	WITH this
-            CALL {
+            CALL(*) {
             	WITH this
             	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
             	WHERE this_content0.id = $updateUsers_args_update_content0_where_this_content0param0
             	WITH this, this_content0
-            	CALL {
+            	CALL(*) {
             		WITH this, this_content0
             		MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
             		SET this_content0_creator0.id = $this_update_content0_creator0_id_SET

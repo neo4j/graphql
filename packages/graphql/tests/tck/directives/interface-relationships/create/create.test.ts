@@ -91,7 +91,7 @@ describe("Interface Relationships - Create create", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
             WITH *
@@ -102,20 +102,18 @@ describe("Interface Relationships - Create create", () => {
             SET this0_actedInMovie0_relationship.screenTime = $this0_actedInMovie0_relationship_screenTime
             RETURN this0
             }
-            CALL {
-                WITH this0
-                CALL {
-                    WITH this0
-                    CALL {
+            CALL (this0) {
+                CALL (this0) {
+                    CALL (*) {
                         WITH *
                         MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:Movie)
-                        WITH create_this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(create_this1) } AS create_this1
-                        RETURN create_this1 AS create_var2
+                        WITH create_this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(create_this1) } AS create_var2
+                        RETURN create_var2
                         UNION
                         WITH *
                         MATCH (this0)-[create_this3:ACTED_IN]->(create_this4:Series)
-                        WITH create_this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(create_this4) } AS create_this4
-                        RETURN create_this4 AS create_var2
+                        WITH create_this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(create_this4) } AS create_var2
+                        RETURN create_var2
                     }
                     WITH create_var2
                     RETURN collect(create_var2) AS create_var2

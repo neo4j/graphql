@@ -86,8 +86,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             }))
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var3
@@ -160,8 +159,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var3
@@ -237,8 +235,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             }))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var3
@@ -316,8 +313,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
@@ -398,8 +394,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             }))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
@@ -481,8 +476,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
@@ -564,8 +558,7 @@ describe("Cypher -> fulltext -> Auth", () => {
             }))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4

@@ -59,8 +59,7 @@ describe("Cypher -> fulltext -> Match", () => {
             WHERE $param1 IN labels(this0)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var2
@@ -97,8 +96,7 @@ describe("Cypher -> fulltext -> Match", () => {
             WHERE ($param1 IN labels(this0) AND this0.title = $param2)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var2

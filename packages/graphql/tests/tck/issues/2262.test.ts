@@ -72,22 +72,18 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
             "CYPHER 5
             MATCH (this:Component)
             WHERE this.uuid = $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:OUTPUT]-(this1:Process)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    CALL {
-                        WITH this1
+                    CALL (this1) {
                         MATCH (this1)<-[this2:INPUT]-(this3:Component)
                         WITH collect({ node: this3, relationship: this2 }) AS edges
                         WITH edges, size(edges) AS totalCount
-                        CALL {
-                            WITH edges
+                        CALL (edges) {
                             UNWIND edges AS edge
                             WITH edge.node AS this3, edge.relationship AS this2
                             WITH *
