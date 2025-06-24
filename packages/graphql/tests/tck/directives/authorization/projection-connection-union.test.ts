@@ -94,7 +94,7 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL (this) {
                 CALL (this) {
-                    CALL {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:PUBLISHED]->(this1:Post)
                         CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {

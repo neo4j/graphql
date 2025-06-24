@@ -445,7 +445,7 @@ describe("Cypher Auth Where", () => {
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             CALL (this) {
                 CALL (this) {
-                    CALL {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:HAS_POST]->(this1:Post)
                         WHERE ($isAuthenticated = true AND EXISTS {
@@ -507,7 +507,7 @@ describe("Cypher Auth Where", () => {
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             CALL (this) {
                 CALL (this) {
-                    CALL {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:HAS_POST]->(this1:Post)
                         WHERE (this1.id = $param2 AND ($isAuthenticated = true AND EXISTS {

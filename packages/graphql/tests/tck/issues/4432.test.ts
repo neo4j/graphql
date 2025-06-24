@@ -73,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
             MATCH (this:Inventory)
             CALL (this) {
                 CALL (this) {
-                    CALL {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:HasChildren]->(this1:Image)
                         WITH { properties: { order: this0.order, __resolveType: \\"InventoryChildRelation\\" }, node: { __resolveType: \\"Image\\", __id: id(this1), id: this1.id } } AS edge

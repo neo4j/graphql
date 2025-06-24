@@ -197,7 +197,7 @@ describe("Relay Cursor Connection projections", () => {
             WHERE this.name = $param0
             CALL (this) {
                 CALL (this) {
-                    CALL {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                         WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
@@ -249,7 +249,7 @@ describe("Relay Cursor Connection projections", () => {
             WHERE this.name = $param0
             CALL (this) {
                 CALL (this) {
-                    CALL {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                         WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge

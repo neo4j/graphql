@@ -74,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL () {
-                CALL {
+                CALL () {
                     MATCH (this0:Series)
                     WHERE this0:Movie
                     WITH { node: { __resolveType: \\"Series\\", __id: id(this0), title: this0.title } } AS edge
@@ -127,7 +127,7 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
                 WITH edge.node AS this0
                 CALL (this0) {
                     CALL (this0) {
-                        CALL {
+                        CALL (this0) {
                             WITH this0
                             MATCH (this0)-[this1:ACTED_IN]->(this2:Series)
                             WHERE this2:Movie

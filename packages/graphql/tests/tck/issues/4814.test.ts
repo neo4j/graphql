@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
                 WHERE this0.id = $param0
                 CALL (this0) {
                     CALL (this0) {
-                        CALL {
+                        CALL (this0) {
                             WITH this0
                             MATCH (this0)-[this1:FOLLOWED_BY]->(this2:AStep)
                             WITH { node: { __resolveType: \\"AStep\\", __id: id(this2), id: this2.id } } AS edge
@@ -101,7 +101,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
                 WHERE this6.id = $param1
                 CALL (this6) {
                     CALL (this6) {
-                        CALL {
+                        CALL (this6) {
                             WITH this6
                             MATCH (this6)-[this7:FOLLOWED_BY]->(this8:AStep)
                             WITH { node: { __resolveType: \\"AStep\\", __id: id(this8), id: this8.id } } AS edge
@@ -159,7 +159,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
                 WHERE this0.id = $param0
                 CALL (this0) {
                     CALL (this0) {
-                        CALL {
+                        CALL (this0) {
                             WITH this0
                             MATCH (this0)<-[this1:FOLLOWED_BY]-(this2:AStep)
                             WITH { node: { __resolveType: \\"AStep\\", __id: id(this2), id: this2.id } } AS edge
@@ -183,7 +183,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
                 WHERE this6.id = $param1
                 CALL (this6) {
                     CALL (this6) {
-                        CALL {
+                        CALL (this6) {
                             WITH this6
                             MATCH (this6)<-[this7:FOLLOWED_BY]-(this8:AStep)
                             WITH { node: { __resolveType: \\"AStep\\", __id: id(this8), id: this8.id } } AS edge

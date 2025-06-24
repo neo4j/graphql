@@ -71,7 +71,7 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
             MATCH (this:Actor)
             CALL (this) {
                 CALL (this) {
-                    CALL {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                         WHERE (this1.title = $param0 OR this1.title = $param1)

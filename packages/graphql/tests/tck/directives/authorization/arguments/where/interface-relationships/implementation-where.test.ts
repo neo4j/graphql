@@ -254,7 +254,7 @@ describe("Cypher Auth Where", () => {
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             CALL (this) {
                 CALL (this) {
-                    CALL {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
                         WITH { node: { __resolveType: \\"Comment\\", __id: id(this1) } } AS edge
@@ -319,7 +319,7 @@ describe("Cypher Auth Where", () => {
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             CALL (this) {
                 CALL (this) {
-                    CALL {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
                         WHERE this1.id = $param2

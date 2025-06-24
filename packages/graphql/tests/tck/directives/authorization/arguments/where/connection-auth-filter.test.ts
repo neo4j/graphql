@@ -523,7 +523,7 @@ describe("Connection auth filter", () => {
                 WITH edge.node AS this0
                 CALL (this0) {
                     CALL (this0) {
-                        CALL {
+                        CALL (this0) {
                             WITH this0
                             MATCH (this0)-[this1:HAS_POST]->(this2:Post)
                             WHERE ($isAuthenticated = true AND EXISTS {
@@ -595,7 +595,7 @@ describe("Connection auth filter", () => {
                 WITH edge.node AS this0
                 CALL (this0) {
                     CALL (this0) {
-                        CALL {
+                        CALL (this0) {
                             WITH this0
                             MATCH (this0)-[this1:HAS_POST]->(this2:Post)
                             WHERE (this2.id = $param2 AND ($isAuthenticated = true AND EXISTS {

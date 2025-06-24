@@ -62,7 +62,7 @@ export class CompositeConnectionReadOperation extends Operation {
 
         const contextTarget = context.target ? [context.target] : [];
         const nestedSubquery = new Cypher.Call(
-            new Cypher.Call(union).return([Cypher.collect(edgeVar), edgesVar]),
+            new Cypher.Call(union, contextTarget).return([Cypher.collect(edgeVar), edgesVar]),
             contextTarget
         );
 

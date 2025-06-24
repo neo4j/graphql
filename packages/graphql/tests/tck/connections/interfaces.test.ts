@@ -87,7 +87,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             MATCH (this:Actor)
             CALL (this) {
                 CALL (this) {
-                    CALL {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                         WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
@@ -142,7 +142,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             MATCH (this:Actor)
             CALL (this) {
                 CALL (this) {
-                    CALL {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                         WHERE this1.title STARTS WITH $param0
@@ -204,7 +204,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
             MATCH (this:Actor)
             CALL (this) {
                 CALL (this) {
-                    CALL {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                         WHERE this0.screenTime > $param0
@@ -274,7 +274,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     MATCH (this:Actor)
                     CALL (this) {
                         CALL (this) {
-                            CALL {
+                            CALL (this) {
                                 WITH this
                                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                                 WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
@@ -335,7 +335,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     MATCH (this:Actor)
                     CALL (this) {
                         CALL (this) {
-                            CALL {
+                            CALL (this) {
                                 WITH this
                                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                                 WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
@@ -395,7 +395,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     MATCH (this:Actor)
                     CALL (this) {
                         CALL (this) {
-                            CALL {
+                            CALL (this) {
                                 WITH this
                                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                                 WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge
@@ -455,7 +455,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                     MATCH (this:Actor)
                     CALL (this) {
                         CALL (this) {
-                            CALL {
+                            CALL (this) {
                                 WITH this
                                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                                 WITH { properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __resolveType: \\"Movie\\", __id: id(this1), runtime: this1.runtime, title: this1.title } } AS edge

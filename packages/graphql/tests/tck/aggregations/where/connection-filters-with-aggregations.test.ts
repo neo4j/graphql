@@ -127,7 +127,7 @@ describe("Field Level Aggregations Edge Filters", () => {
             MATCH (this:Actor)
             CALL (this) {
                 CALL (this) {
-                    CALL {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                         WHERE (this1.title = $param0 AND this0.screentime = $param1)

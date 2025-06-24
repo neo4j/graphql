@@ -121,7 +121,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                     WITH edge.node AS this1, edge.relationship AS this0
                     CALL (this1) {
                         CALL (this1) {
-                            CALL {
+                            CALL (this1) {
                                 WITH this1
                                 MATCH (this1)-[this2:HAS]->(this3:Battery)
                                 WHERE this2.current = $param2

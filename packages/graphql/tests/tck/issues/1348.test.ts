@@ -136,7 +136,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
             MATCH (this:ProgrammeItem)
             CALL (this) {
                 CALL (this) {
-                    CALL {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:RELATES_TO]-(this1:Series)
                         WITH { node: { __resolveType: \\"Series\\", __id: id(this1), productTitle: this1.productTitle } } AS edge
