@@ -160,20 +160,17 @@ describe("Missing custom Cypher on unions", () => {
             })
             WITH *
             LIMIT $param2
-            CALL {
-                WITH this
-                CALL {
+            CALL (this) {
+                CALL (*) {
                     WITH *
                     MATCH (this)-[this1:relatesToChild]->(this2:HierarchicalRoot:Resource)
-                    WITH this2 { __resolveType: \\"HierarchicalRoot\\", __id: id(this2) } AS this2
-                    RETURN this2 AS var3
+                    WITH this2 { __resolveType: \\"HierarchicalRoot\\", __id: id(this2) } AS var3
+                    RETURN var3
                     UNION
                     WITH *
                     MATCH (this)-[this4:relatesToChild]->(this5:HierarchicalComponent:Resource)
-                    CALL {
-                        WITH this5
-                        CALL {
-                            WITH this5
+                    CALL (this5) {
+                        CALL (this5) {
                             WITH this5 AS this
                             MATCH p=(this)<-[:relatesToChild*..10]-(parent:HierarchicalRoot)
                             WITH p, parent
@@ -200,23 +197,23 @@ describe("Missing custom Cypher on unions", () => {
                         WITH this6 { .hasSortKey, iri: this6.uri } AS this6
                         RETURN collect(this6) AS var7
                     }
-                    WITH this5 { hierarchicalPathNodes: var7, __resolveType: \\"HierarchicalComponent\\", __id: id(this5) } AS this5
-                    RETURN this5 AS var3
+                    WITH this5 { hierarchicalPathNodes: var7, __resolveType: \\"HierarchicalComponent\\", __id: id(this5) } AS var3
+                    RETURN var3
                     UNION
                     WITH *
                     MATCH (this)-[this8:relatesToChild]->(this9:Expression:MyTenant:Resource)
-                    WITH this9 { __resolveType: \\"Expression\\", __id: id(this9) } AS this9
-                    RETURN this9 AS var3
+                    WITH this9 { __resolveType: \\"Expression\\", __id: id(this9) } AS var3
+                    RETURN var3
                     UNION
                     WITH *
                     MATCH (this)-[this10:relatesToChild]->(this11:Work:MyTenant:Resource)
-                    WITH this11 { __resolveType: \\"Work\\", __id: id(this11) } AS this11
-                    RETURN this11 AS var3
+                    WITH this11 { __resolveType: \\"Work\\", __id: id(this11) } AS var3
+                    RETURN var3
                     UNION
                     WITH *
                     MATCH (this)-[this12:relatesToChild]->(this13:Fragment:MyTenant:Resource)
-                    WITH this13 { __resolveType: \\"Fragment\\", __id: id(this13) } AS this13
-                    RETURN this13 AS var3
+                    WITH this13 { __resolveType: \\"Fragment\\", __id: id(this13) } AS var3
+                    RETURN var3
                 }
                 WITH var3
                 RETURN collect(var3) AS var3

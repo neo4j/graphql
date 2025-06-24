@@ -69,10 +69,8 @@ describe("cypher directive filtering - List Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)
                     RETURN this.custom_field as list
@@ -83,10 +81,8 @@ describe("cypher directive filtering - List Auth", () => {
             }
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var2 IS NOT NULL AND $jwt.custom_value IN var2))
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)
                     RETURN this.custom_field as list
@@ -156,10 +152,8 @@ describe("cypher directive filtering - List Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)
                     RETURN this.custom_field as list
@@ -230,10 +224,8 @@ describe("cypher directive filtering - List Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)
                     RETURN this.custom_field as list
@@ -244,10 +236,8 @@ describe("cypher directive filtering - List Auth", () => {
             }
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var2 IS NOT NULL AND $jwt.custom_value IN var2))
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)
                     RETURN this.custom_field as list
@@ -371,13 +361,10 @@ describe("cypher directive filtering - List Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[:ACTED_IN]->(this0:Movie)
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         MATCH (this)
                         RETURN this.custom_field as list
@@ -452,10 +439,8 @@ describe("cypher directive filtering - List Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)
                     RETURN this.custom_field as list
@@ -527,10 +512,8 @@ describe("cypher directive filtering - List Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)
                     RETURN ['a', 'b', 'c'] as list

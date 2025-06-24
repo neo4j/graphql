@@ -75,56 +75,46 @@ describe("Interface Relationships - Update delete", () => {
             "CYPHER 5
             MATCH (this:Actor)
             WITH this
-            CALL {
-            	 WITH this
+            CALL (this) {
             WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this)-[this_actedIn0_delete0_relationship:ACTED_IN]->(this_actedIn0_delete0:Movie)
             WHERE this_actedIn0_delete0.title STARTS WITH $updateActors_args_update_actedIn0_delete0_where_this_actedIn0_delete0param0
             WITH this_actedIn0_delete0_relationship, collect(DISTINCT this_actedIn0_delete0) AS this_actedIn0_delete0_to_delete
-            CALL {
-            	WITH this_actedIn0_delete0_to_delete
+            CALL(this_actedIn0_delete0_to_delete) {
             	UNWIND this_actedIn0_delete0_to_delete AS x
             	DETACH DELETE x
             }
             }
             WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this)-[this_actedIn0_delete0_relationship:ACTED_IN]->(this_actedIn0_delete0:Series)
             WHERE this_actedIn0_delete0.title STARTS WITH $updateActors_args_update_actedIn0_delete0_where_this_actedIn0_delete0param0
             WITH this_actedIn0_delete0_relationship, collect(DISTINCT this_actedIn0_delete0) AS this_actedIn0_delete0_to_delete
-            CALL {
-            	WITH this_actedIn0_delete0_to_delete
+            CALL(this_actedIn0_delete0_to_delete) {
             	UNWIND this_actedIn0_delete0_to_delete AS x
             	DETACH DELETE x
             }
             }
             RETURN count(*) AS update_this_Movie
             }
-            CALL {
-            	 WITH this
+            CALL (this){
             	WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this)-[this_actedIn0_delete0_relationship:ACTED_IN]->(this_actedIn0_delete0:Movie)
             WHERE this_actedIn0_delete0.title STARTS WITH $updateActors_args_update_actedIn0_delete0_where_this_actedIn0_delete0param0
             WITH this_actedIn0_delete0_relationship, collect(DISTINCT this_actedIn0_delete0) AS this_actedIn0_delete0_to_delete
-            CALL {
-            	WITH this_actedIn0_delete0_to_delete
+            CALL(this_actedIn0_delete0_to_delete) {
             	UNWIND this_actedIn0_delete0_to_delete AS x
             	DETACH DELETE x
             }
             }
             WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this)-[this_actedIn0_delete0_relationship:ACTED_IN]->(this_actedIn0_delete0:Series)
             WHERE this_actedIn0_delete0.title STARTS WITH $updateActors_args_update_actedIn0_delete0_where_this_actedIn0_delete0param0
             WITH this_actedIn0_delete0_relationship, collect(DISTINCT this_actedIn0_delete0) AS this_actedIn0_delete0_to_delete
-            CALL {
-            	WITH this_actedIn0_delete0_to_delete
+            CALL(this_actedIn0_delete0_to_delete) {
             	UNWIND this_actedIn0_delete0_to_delete AS x
             	DETACH DELETE x
             }
@@ -189,104 +179,86 @@ describe("Interface Relationships - Update delete", () => {
             "CYPHER 5
             MATCH (this:Actor)
             WITH this
-            CALL {
-            	 WITH this
+            CALL (this) {
             WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this)-[this_actedIn0_delete0_relationship:ACTED_IN]->(this_actedIn0_delete0:Movie)
             WHERE this_actedIn0_delete0.title STARTS WITH $updateActors_args_update_actedIn0_delete0_where_this_actedIn0_delete0param0
             WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this_actedIn0_delete0)<-[this_actedIn0_delete0_actors0_relationship:ACTED_IN]-(this_actedIn0_delete0_actors0:Actor)
             WHERE this_actedIn0_delete0_actors0.name = $updateActors_args_update_actedIn0_delete0_delete_actors0_where_this_actedIn0_delete0_actors0param0
             WITH this_actedIn0_delete0_actors0_relationship, collect(DISTINCT this_actedIn0_delete0_actors0) AS this_actedIn0_delete0_actors0_to_delete
-            CALL {
-            	WITH this_actedIn0_delete0_actors0_to_delete
+            CALL(this_actedIn0_delete0_actors0_to_delete) {
             	UNWIND this_actedIn0_delete0_actors0_to_delete AS x
             	DETACH DELETE x
             }
             }
             WITH this_actedIn0_delete0_relationship, collect(DISTINCT this_actedIn0_delete0) AS this_actedIn0_delete0_to_delete
-            CALL {
-            	WITH this_actedIn0_delete0_to_delete
+            CALL(this_actedIn0_delete0_to_delete) {
             	UNWIND this_actedIn0_delete0_to_delete AS x
             	DETACH DELETE x
             }
             }
             WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this)-[this_actedIn0_delete0_relationship:ACTED_IN]->(this_actedIn0_delete0:Series)
             WHERE this_actedIn0_delete0.title STARTS WITH $updateActors_args_update_actedIn0_delete0_where_this_actedIn0_delete0param0
             WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this_actedIn0_delete0)<-[this_actedIn0_delete0_actors0_relationship:ACTED_IN]-(this_actedIn0_delete0_actors0:Actor)
             WHERE this_actedIn0_delete0_actors0.name = $updateActors_args_update_actedIn0_delete0_delete_actors0_where_this_actedIn0_delete0_actors0param0
             WITH this_actedIn0_delete0_actors0_relationship, collect(DISTINCT this_actedIn0_delete0_actors0) AS this_actedIn0_delete0_actors0_to_delete
-            CALL {
-            	WITH this_actedIn0_delete0_actors0_to_delete
+            CALL(this_actedIn0_delete0_actors0_to_delete) {
             	UNWIND this_actedIn0_delete0_actors0_to_delete AS x
             	DETACH DELETE x
             }
             }
             WITH this_actedIn0_delete0_relationship, collect(DISTINCT this_actedIn0_delete0) AS this_actedIn0_delete0_to_delete
-            CALL {
-            	WITH this_actedIn0_delete0_to_delete
+            CALL(this_actedIn0_delete0_to_delete) {
             	UNWIND this_actedIn0_delete0_to_delete AS x
             	DETACH DELETE x
             }
             }
             RETURN count(*) AS update_this_Movie
             }
-            CALL {
-            	 WITH this
+            CALL (this){
             	WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this)-[this_actedIn0_delete0_relationship:ACTED_IN]->(this_actedIn0_delete0:Movie)
             WHERE this_actedIn0_delete0.title STARTS WITH $updateActors_args_update_actedIn0_delete0_where_this_actedIn0_delete0param0
             WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this_actedIn0_delete0)<-[this_actedIn0_delete0_actors0_relationship:ACTED_IN]-(this_actedIn0_delete0_actors0:Actor)
             WHERE this_actedIn0_delete0_actors0.name = $updateActors_args_update_actedIn0_delete0_delete_actors0_where_this_actedIn0_delete0_actors0param0
             WITH this_actedIn0_delete0_actors0_relationship, collect(DISTINCT this_actedIn0_delete0_actors0) AS this_actedIn0_delete0_actors0_to_delete
-            CALL {
-            	WITH this_actedIn0_delete0_actors0_to_delete
+            CALL(this_actedIn0_delete0_actors0_to_delete) {
             	UNWIND this_actedIn0_delete0_actors0_to_delete AS x
             	DETACH DELETE x
             }
             }
             WITH this_actedIn0_delete0_relationship, collect(DISTINCT this_actedIn0_delete0) AS this_actedIn0_delete0_to_delete
-            CALL {
-            	WITH this_actedIn0_delete0_to_delete
+            CALL(this_actedIn0_delete0_to_delete) {
             	UNWIND this_actedIn0_delete0_to_delete AS x
             	DETACH DELETE x
             }
             }
             WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this)-[this_actedIn0_delete0_relationship:ACTED_IN]->(this_actedIn0_delete0:Series)
             WHERE this_actedIn0_delete0.title STARTS WITH $updateActors_args_update_actedIn0_delete0_where_this_actedIn0_delete0param0
             WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this_actedIn0_delete0)<-[this_actedIn0_delete0_actors0_relationship:ACTED_IN]-(this_actedIn0_delete0_actors0:Actor)
             WHERE this_actedIn0_delete0_actors0.name = $updateActors_args_update_actedIn0_delete0_delete_actors0_where_this_actedIn0_delete0_actors0param0
             WITH this_actedIn0_delete0_actors0_relationship, collect(DISTINCT this_actedIn0_delete0_actors0) AS this_actedIn0_delete0_actors0_to_delete
-            CALL {
-            	WITH this_actedIn0_delete0_actors0_to_delete
+            CALL(this_actedIn0_delete0_actors0_to_delete) {
             	UNWIND this_actedIn0_delete0_actors0_to_delete AS x
             	DETACH DELETE x
             }
             }
             WITH this_actedIn0_delete0_relationship, collect(DISTINCT this_actedIn0_delete0) AS this_actedIn0_delete0_to_delete
-            CALL {
-            	WITH this_actedIn0_delete0_to_delete
+            CALL(this_actedIn0_delete0_to_delete) {
             	UNWIND this_actedIn0_delete0_to_delete AS x
             	DETACH DELETE x
             }

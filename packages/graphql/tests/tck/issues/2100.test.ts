@@ -108,27 +108,22 @@ describe("https://github.com/neo4j/graphql/issues/2100", () => {
             "CYPHER 5
             MATCH (this:Bacenta)
             WHERE this.id = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:HAS_HISTORY]->(:ServiceLog)-[:HAS_BUSSING]->(records:BussingRecord)-[:BUSSED_ON]->(date:TimeGraph)
                     WITH DISTINCT records, date LIMIT $param1
                     RETURN records ORDER BY date.date DESC
                 }
                 WITH records AS this0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)-[this1:BUSSED_ON]->(this2:TimeGraph)
                     WITH DISTINCT this2
                     WITH this2 { .date } AS this2
                     RETURN collect(this2) AS var3
                 }
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         MATCH (this)<-[:PRESENT_AT_SERVICE|ABSENT_FROM_SERVICE]-(member:Member)
                         RETURN COUNT(member) > 0 AS markedAttendance

@@ -107,7 +107,7 @@ describe("Cypher Create Pringles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Product)
             SET this0.id = $this0_id
             SET this0.name = $this0_name
@@ -143,15 +143,13 @@ describe("Cypher Create Pringles", () => {
             SET this0_photos1_node.description = $this0_photos1_node_description
             SET this0_photos1_node.url = $this0_photos1_node_url
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0, this0_photos1_node
             	OPTIONAL MATCH (this0_photos1_node_color_connect0_node:Color)
             	WHERE this0_photos1_node_color_connect0_node.id = $this0_photos1_node_color_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH this0, collect(this0_photos1_node_color_connect0_node) as connectedNodes, collect(this0_photos1_node) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0_photos1_node
             			UNWIND connectedNodes as this0_photos1_node_color_connect0_node
             			CREATE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
@@ -167,15 +165,13 @@ describe("Cypher Create Pringles", () => {
             SET this0_photos2_node.description = $this0_photos2_node_description
             SET this0_photos2_node.url = $this0_photos2_node_url
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0, this0_photos2_node
             	OPTIONAL MATCH (this0_photos2_node_color_connect0_node:Color)
             	WHERE this0_photos2_node_color_connect0_node.id = $this0_photos2_node_color_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH this0, collect(this0_photos2_node_color_connect0_node) as connectedNodes, collect(this0_photos2_node) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0_photos2_node
             			UNWIND connectedNodes as this0_photos2_node_color_connect0_node
             			CREATE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
@@ -187,8 +183,7 @@ describe("Cypher Create Pringles", () => {
             MERGE (this0)-[:HAS_PHOTO]->(this0_photos2_node)
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 RETURN this0 { .id } AS create_var0
             }
             RETURN [create_var0] AS data"
@@ -258,34 +253,31 @@ describe("Cypher Create Pringles", () => {
             MATCH (this:Product)
             WHERE this.name = $param0
             WITH this
-            CALL {
+            CALL(*) {
             	WITH this
             	MATCH (this)-[this_has_photo0_relationship:HAS_PHOTO]->(this_photos0:Photo)
             	WHERE this_photos0.description = $updateProducts_args_update_photos0_where_this_photos0param0
             	SET this_photos0.description = $this_update_photos0_description_SET
             	WITH this, this_photos0
-            	CALL {
+            	CALL(*) {
             	WITH this, this_photos0
             	OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
             	WHERE this_photos0_color0_disconnect0.name = $updateProducts_args_update_photos0_update_node_color0_disconnect0_where_Color_this_photos0_color0_disconnect0param0
-            	CALL {
-            		WITH this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
-            		WITH collect(this_photos0_color0_disconnect0) as this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0
-            		UNWIND this_photos0_color0_disconnect0 as x
+            	CALL (this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0) {
+            		WITH collect(this_photos0_color0_disconnect0) as this_photos0_color0_disconnect0_x, this_photos0_color0_disconnect0_rel, this_photos0
+            		UNWIND this_photos0_color0_disconnect0_x as x
             		DELETE this_photos0_color0_disconnect0_rel
             	}
             	RETURN count(*) AS disconnect_this_photos0_color0_disconnect_Color
             	}
             	WITH *
-            	CALL {
+            	CALL(*) {
             		WITH this, this_photos0
             		OPTIONAL MATCH (this_photos0_color0_connect0_node:Color)
             		WHERE this_photos0_color0_connect0_node.name = $this_photos0_color0_connect0_node_param0
-            		CALL {
-            			WITH *
+            		CALL(*) {
             			WITH this, collect(this_photos0_color0_connect0_node) as connectedNodes, collect(this_photos0) as parentNodes
-            			CALL {
-            				WITH connectedNodes, parentNodes
+            			CALL(connectedNodes, parentNodes) {
             				UNWIND parentNodes as this_photos0
             				UNWIND connectedNodes as this_photos0_color0_connect0_node
             				CREATE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)

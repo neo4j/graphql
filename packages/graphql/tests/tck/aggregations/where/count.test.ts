@@ -55,8 +55,7 @@ describe("Cypher Aggregations where with count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN count(this1) = $param0 AS var2
@@ -90,8 +89,7 @@ describe("Cypher Aggregations where with count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN count(this1) < $param0 AS var2
@@ -125,8 +123,7 @@ describe("Cypher Aggregations where with count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN count(this1) <= $param0 AS var2
@@ -160,8 +157,7 @@ describe("Cypher Aggregations where with count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN count(this1) > $param0 AS var2
@@ -195,8 +191,7 @@ describe("Cypher Aggregations where with count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN count(this1) >= $param0 AS var2
@@ -230,8 +225,7 @@ describe("Cypher Aggregations where with count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
                 RETURN count(this1) IN $param0 AS var2

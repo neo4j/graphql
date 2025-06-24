@@ -83,22 +83,18 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Employee)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:PARTICIPATES]->(this1:Project)
                 RETURN sum(this0.allocation) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     MATCH (this)-[this3:PARTICIPATES]->(this4:Project)
                     RETURN { nodes: count(DISTINCT this4) } AS var5
                 }
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[this6:PARTICIPATES]->(this7:Project)
                     WITH DISTINCT this6
                     RETURN { min: min(this6.allocation), max: max(this6.allocation), average: avg(this6.allocation), sum: sum(this6.allocation) } AS var8

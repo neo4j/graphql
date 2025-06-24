@@ -206,7 +206,7 @@ export class ConnectionFilter extends Filter {
         const subqueries = this.innerFilters.flatMap((f) => {
             const nestedSubqueries = f
                 .getSubqueries(queryASTContext)
-                .map((sq) => new Cypher.Call(sq).importWith(queryASTContext.target));
+                .map((sq) => new Cypher.Call(sq, [queryASTContext.target]));
             const selection = f.getSelection(queryASTContext);
             const predicate = f.getPredicate(queryASTContext);
             const clauses = [...selection, ...nestedSubqueries];
@@ -253,8 +253,7 @@ export class ConnectionFilter extends Filter {
                 if (predicate) {
                     const returnVar = new Cypher.Variable();
                     truthyFilters.push(returnVar);
-                    return new Cypher.Call(sq)
-                        .importWith(queryASTContext.target)
+                    return new Cypher.Call(sq, [queryASTContext.target])
                         .with("*")
                         .where(predicate)
                         .return([Cypher.gt(Cypher.count(queryASTContext.target), new Cypher.Literal(0)), returnVar]);
@@ -274,8 +273,7 @@ export class ConnectionFilter extends Filter {
                 if (predicate) {
                     const returnVar = new Cypher.Variable();
                     falsyFilters.push(returnVar);
-                    return new Cypher.Call(sq)
-                        .importWith(queryASTContext.target)
+                    return new Cypher.Call(sq, [queryASTContext.target])
                         .with("*")
                         .where(Cypher.not(predicate))
                         .return([Cypher.gt(Cypher.count(queryASTContext.target), new Cypher.Literal(0)), returnVar]);

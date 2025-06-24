@@ -69,8 +69,7 @@ describe("Batch Create", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Movie)
                 SET
                     create_this1.id = create_var0.id
@@ -127,14 +126,12 @@ describe("Batch Create", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Movie)
                 SET
                     create_this1.id = create_var0.id
                 WITH create_this1, create_var0
-                CALL {
-                    WITH create_this1, create_var0
+                CALL (create_this1, create_var0) {
                     UNWIND create_var0.actors.create AS create_var2
                     CREATE (create_this3:Actor)
                     SET
@@ -144,8 +141,7 @@ describe("Batch Create", () => {
                     SET
                         create_this4.year = create_var2.edge.year
                     WITH create_this3, create_var2
-                    CALL {
-                        WITH create_this3, create_var2
+                    CALL (create_this3, create_var2) {
                         UNWIND create_var2.node.website.create AS create_var5
                         CREATE (create_this6:Website)
                         SET
@@ -156,8 +152,7 @@ describe("Batch Create", () => {
                     RETURN collect(NULL) AS create_var9
                 }
                 WITH create_this1, create_var0
-                CALL {
-                    WITH create_this1, create_var0
+                CALL (create_this1, create_var0) {
                     UNWIND create_var0.website.create AS create_var10
                     CREATE (create_this11:Website)
                     SET
@@ -241,14 +236,12 @@ describe("Batch Create", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Movie)
                 SET
                     create_this1.id = create_var0.id
                 WITH create_this1, create_var0
-                CALL {
-                    WITH create_this1, create_var0
+                CALL (create_this1, create_var0) {
                     UNWIND create_var0.actors.create AS create_var2
                     CREATE (create_this3:Actor)
                     SET
@@ -261,8 +254,7 @@ describe("Batch Create", () => {
                 }
                 RETURN create_this1
             }
-            CALL {
-                WITH create_this1
+            CALL (create_this1) {
                 MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
                 WITH DISTINCT create_this7
                 WITH create_this7 { .name } AS create_this7
@@ -338,19 +330,17 @@ describe("Batch Create", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Movie)
             SET this0.id = $this0_id
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
             	WHERE this0_actors_connect0_node.id = $this0_actors_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
             			CREATE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
@@ -361,19 +351,17 @@ describe("Batch Create", () => {
             }
             RETURN this0
             }
-            CALL {
+            CALL(*) {
             CREATE (this1:Movie)
             SET this1.id = $this1_id
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this1
             	OPTIONAL MATCH (this1_actors_connect0_node:Actor)
             	WHERE this1_actors_connect0_node.id = $this1_actors_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this1_actors_connect0_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_actors_connect0_node
             			CREATE (this1)<-[this1_actors_connect0_relationship:ACTED_IN]-(this1_actors_connect0_node)
@@ -384,10 +372,8 @@ describe("Batch Create", () => {
             }
             RETURN this1
             }
-            CALL {
-                WITH this0
-                CALL {
-                    WITH this0
+            CALL (this0) {
+                CALL (this0) {
                     MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
                     WITH DISTINCT create_this1
                     WITH create_this1 { .name } AS create_this1
@@ -395,10 +381,8 @@ describe("Batch Create", () => {
                 }
                 RETURN this0 { .id, actors: create_var2 } AS create_var3
             }
-            CALL {
-                WITH this1
-                CALL {
-                    WITH this1
+            CALL (this1) {
+                CALL (this1) {
                     MATCH (this1)<-[create_this4:ACTED_IN]-(create_this5:Actor)
                     WITH DISTINCT create_this5
                     WITH create_this5 { .name } AS create_this5

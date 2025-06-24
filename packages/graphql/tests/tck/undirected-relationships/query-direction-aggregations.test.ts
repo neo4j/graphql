@@ -54,10 +54,8 @@ describe("QueryDirection in relationships aggregations", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
                     RETURN { nodes: count(DISTINCT this1) } AS var2
                 }
@@ -98,10 +96,8 @@ describe("QueryDirection in relationships aggregations", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
                     RETURN { nodes: count(DISTINCT this1) } AS var2
                 }

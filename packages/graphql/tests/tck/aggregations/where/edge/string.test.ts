@@ -60,8 +60,7 @@ describe("Cypher Aggregations where edge with String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(size(this0.someString)) = $param0 AS var2
             }
@@ -94,8 +93,7 @@ describe("Cypher Aggregations where edge with String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(size(this0.someString)) > $param0 AS var2
             }
@@ -128,8 +126,7 @@ describe("Cypher Aggregations where edge with String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(size(this0.someString)) >= $param0 AS var2
             }
@@ -162,8 +159,7 @@ describe("Cypher Aggregations where edge with String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(size(this0.someString)) < $param0 AS var2
             }
@@ -196,8 +192,7 @@ describe("Cypher Aggregations where edge with String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(size(this0.someString)) <= $param0 AS var2
             }
@@ -230,8 +225,7 @@ describe("Cypher Aggregations where edge with String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(size(this0.someString)) = $param0 AS var2
             }
@@ -264,8 +258,7 @@ describe("Cypher Aggregations where edge with String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(size(this0.someString)) > $param0 AS var2
             }
@@ -298,8 +291,7 @@ describe("Cypher Aggregations where edge with String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(size(this0.someString)) >= $param0 AS var2
             }
@@ -332,8 +324,7 @@ describe("Cypher Aggregations where edge with String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(size(this0.someString)) < $param0 AS var2
             }
@@ -366,8 +357,7 @@ describe("Cypher Aggregations where edge with String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(size(this0.someString)) <= $param0 AS var2
             }
@@ -400,8 +390,7 @@ describe("Cypher Aggregations where edge with String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(size(this0.someString)) = $param0 AS var2
             }
@@ -431,8 +420,7 @@ describe("Cypher Aggregations where edge with String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(size(this0.someString)) > $param0 AS var2
             }
@@ -462,8 +450,7 @@ describe("Cypher Aggregations where edge with String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(size(this0.someString)) >= $param0 AS var2
             }
@@ -493,8 +480,7 @@ describe("Cypher Aggregations where edge with String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(size(this0.someString)) < $param0 AS var2
             }
@@ -524,8 +510,7 @@ describe("Cypher Aggregations where edge with String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(size(this0.someString)) <= $param0 AS var2
             }

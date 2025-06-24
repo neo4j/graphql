@@ -80,8 +80,7 @@ describe("Node directive with additionalLabels", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Film:Multimedia)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor:Person)
                 WITH DISTINCT this1
                 WITH this1 { .name } AS this1
@@ -114,14 +113,12 @@ describe("Node directive with additionalLabels", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Film:Multimedia)
                 SET
                     create_this1.id = create_var0.id
                 WITH create_this1, create_var0
-                CALL {
-                    WITH create_this1, create_var0
+                CALL (create_this1, create_var0) {
                     UNWIND create_var0.actors.create AS create_var2
                     CREATE (create_this3:Actor:Person)
                     SET

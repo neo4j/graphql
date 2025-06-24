@@ -66,10 +66,8 @@ describe("Field Level Aggregations Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WHERE this1.age > $param0
                     RETURN { nodes: count(DISTINCT this1) } AS var2
@@ -117,20 +115,16 @@ describe("Field Level Aggregations Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WHERE this1.name CONTAINS $param0
                     RETURN { nodes: count(DISTINCT this1) } AS var2
                 }
                 RETURN { aggregate: { count: var2 } } AS var3
             }
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     MATCH (this)<-[this4:DIRECTED]-(this5:Person)
                     WHERE this5.name CONTAINS $param1
                     RETURN { nodes: count(DISTINCT this5) } AS var6

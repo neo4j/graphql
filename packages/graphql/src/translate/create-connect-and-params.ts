@@ -160,8 +160,7 @@ function createConnectAndParams({
            Replace with subclauses https://neo4j.com/developer/kb/conditional-cypher-execution/
            https://neo4j.slack.com/archives/C02PUHA7C/p1603458561099100
         */
-        subquery.push("\tCALL {");
-        subquery.push("\t\tWITH *");
+        subquery.push("\tCALL(*) {");
         const withVarsInner = [
             ...withVars.filter((v) => v !== parentVar),
             `collect(${nodeName}) as connectedNodes`,
@@ -170,8 +169,7 @@ function createConnectAndParams({
 
         subquery.push(`\t\tWITH ${filterMetaVariable(withVarsInner).join(", ")}`);
 
-        subquery.push("\t\tCALL {"); //
-        subquery.push("\t\t\tWITH connectedNodes, parentNodes"); //
+        subquery.push("\t\tCALL(connectedNodes, parentNodes) {");
         subquery.push(`\t\t\tUNWIND parentNodes as ${parentVar}`);
         subquery.push(`\t\t\tUNWIND connectedNodes as ${nodeName}`);
         subquery.push(`\t\t\tCREATE (${parentVar})${inStr}${relTypeStr}${outStr}(${nodeName})`);
@@ -326,7 +324,7 @@ function createConnectAndParams({
                 }
             });
             if (subqueries.length > 0) {
-                inner.push(subqueries.join("\n}\nCALL {\n\t"));
+                inner.push(subqueries.join("\n}\nCALL(*) {\n\t"));
             }
         } else {
             const targetNode = refNodes[0];
@@ -342,7 +340,7 @@ function createConnectAndParams({
         }
 
         if (inner.length > 0) {
-            res.connects.push("CALL {");
+            res.connects.push("CALL(*) {");
             res.connects.push(...inner);
             res.connects.push("}");
         }

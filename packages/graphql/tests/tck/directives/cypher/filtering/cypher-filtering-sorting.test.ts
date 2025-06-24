@@ -62,10 +62,8 @@ describe("cypher directive filtering", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     WITH this
                     RETURN this.title AS s
@@ -75,10 +73,8 @@ describe("cypher directive filtering", () => {
             }
             WITH *
             WHERE var1 STARTS WITH $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     WITH this
                     RETURN this.title AS s
@@ -88,8 +84,7 @@ describe("cypher directive filtering", () => {
             }
             WITH *
             ORDER BY var3 DESC
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this4:ACTED_IN]-(this5:Actor)
                 WITH DISTINCT this5
                 WITH this5 { .name } AS this5
@@ -145,10 +140,8 @@ describe("cypher directive filtering", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN \\"hello world!\\" AS s
                 }
@@ -159,8 +152,7 @@ describe("cypher directive filtering", () => {
             WHERE var1 = $param0
             WITH *
             ORDER BY this.title DESC
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
                 WITH DISTINCT this3
                 WITH this3 { .name } AS this3

@@ -109,14 +109,11 @@ describe("Cypher Connection pagination", () => {
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                         RETURN count(DISTINCT genre) as result
@@ -154,14 +151,11 @@ describe("Cypher Connection pagination", () => {
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                         RETURN count(DISTINCT genre) as result
@@ -200,24 +194,19 @@ describe("Cypher Connection pagination", () => {
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
                     }
                     WITH count AS this1
                     RETURN this1 AS var2
                 }
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                         RETURN count(DISTINCT genre) as result
@@ -263,14 +252,11 @@ describe("Cypher Connection pagination", () => {
             WHERE this0.title = $param0
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
                     }
@@ -327,23 +313,18 @@ describe("Cypher Connection pagination", () => {
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)-[this1:HAS_GENRE]->(this2:Genre)
                     WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
+                    CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
-                        CALL {
-                            WITH this2
-                            CALL {
-                                WITH this2
+                        CALL (this2) {
+                            CALL (this2) {
                                 WITH this2 AS this
                                 MATCH (this)<-[:HAS_GENRE]-(movie:Movie)
                                 RETURN count(DISTINCT movie) as result
@@ -396,23 +377,18 @@ describe("Cypher Connection pagination", () => {
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
                     WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
+                    CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
-                        CALL {
-                            WITH this2
-                            CALL {
-                                WITH this2
+                        CALL (this2) {
+                            CALL (this2) {
                                 WITH this2 AS this
                                 MATCH (this)-[r:ACTED_IN]->(:Movie)
                                 RETURN sum(r.screenTime) as sum

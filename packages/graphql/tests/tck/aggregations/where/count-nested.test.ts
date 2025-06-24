@@ -59,12 +59,10 @@ describe("Cypher Aggregations where with count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
-                CALL {
-                    WITH this1
+                CALL (this1) {
                     MATCH (this1)-[this2:HAS_POST]->(this3:Post)
                     WITH DISTINCT this3
                     RETURN count(this3) = $param0 AS var4
@@ -104,12 +102,10 @@ describe("Cypher Aggregations where with count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
-                CALL {
-                    WITH this1
+                CALL (this1) {
                     MATCH (this1)-[this2:HAS_POST]->(this3:Post)
                     WITH DISTINCT this3
                     RETURN count(this3) < $param0 AS var4
@@ -149,12 +145,10 @@ describe("Cypher Aggregations where with count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
-                CALL {
-                    WITH this1
+                CALL (this1) {
                     MATCH (this1)-[this2:HAS_POST]->(this3:Post)
                     WITH DISTINCT this3
                     RETURN count(this3) <= $param0 AS var4
@@ -194,12 +188,10 @@ describe("Cypher Aggregations where with count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
-                CALL {
-                    WITH this1
+                CALL (this1) {
                     MATCH (this1)-[this2:HAS_POST]->(this3:Post)
                     WITH DISTINCT this3
                     RETURN count(this3) > $param0 AS var4
@@ -239,12 +231,10 @@ describe("Cypher Aggregations where with count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
-                CALL {
-                    WITH this1
+                CALL (this1) {
                     MATCH (this1)-[this2:HAS_POST]->(this3:Post)
                     WITH DISTINCT this3
                     RETURN count(this3) >= $param0 AS var4
@@ -284,12 +274,10 @@ describe("Cypher Aggregations where with count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 WITH DISTINCT this1
-                CALL {
-                    WITH this1
+                CALL (this1) {
                     MATCH (this1)-[this2:HAS_POST]->(this3:Post)
                     WITH DISTINCT this3
                     RETURN count(this3) IN $param0 AS var4

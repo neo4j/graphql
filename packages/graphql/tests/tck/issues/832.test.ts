@@ -84,20 +84,18 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect0_node
             			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
@@ -106,15 +104,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             WITH this0, this0_subjects_connect0_node
             	RETURN count(*) AS connect_this0_subjects_connect_Person0
             }
-            CALL {
+            CALL(*) {
             		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect1_node:Place)
             	WHERE this0_subjects_connect1_node.id IN $this0_subjects_connect1_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_subjects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect1_node
             			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
@@ -124,15 +120,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	RETURN count(*) AS connect_this0_subjects_connect_Place1
             }
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect0_node
             			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
@@ -141,15 +135,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             WITH this0, this0_objects_connect0_node
             	RETURN count(*) AS connect_this0_objects_connect_Person0
             }
-            CALL {
+            CALL(*) {
             		WITH this0
             	OPTIONAL MATCH (this0_objects_connect1_node:Place)
             	WHERE this0_objects_connect1_node.id IN $this0_objects_connect1_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_objects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect1_node
             			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
@@ -160,20 +152,18 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
             RETURN this0
             }
-            CALL {
+            CALL(*) {
             CREATE (this1:Interaction)
             SET this1.id = randomUUID()
             SET this1.kind = $this1_kind
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Person)
             	WHERE this1_subjects_connect0_node.id IN $this1_subjects_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this1_subjects_connect0_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_subjects_connect0_node
             			CREATE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
@@ -182,15 +172,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             WITH this1, this1_subjects_connect0_node
             	RETURN count(*) AS connect_this1_subjects_connect_Person0
             }
-            CALL {
+            CALL(*) {
             		WITH this1
             	OPTIONAL MATCH (this1_subjects_connect1_node:Place)
             	WHERE this1_subjects_connect1_node.id IN $this1_subjects_connect1_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this1_subjects_connect1_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_subjects_connect1_node
             			CREATE (this1)<-[:ACTED_IN]-(this1_subjects_connect1_node)
@@ -200,15 +188,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	RETURN count(*) AS connect_this1_subjects_connect_Place1
             }
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Person)
             	WHERE this1_objects_connect0_node.id IN $this1_objects_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this1_objects_connect0_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_objects_connect0_node
             			CREATE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
@@ -217,15 +203,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             WITH this1, this1_objects_connect0_node
             	RETURN count(*) AS connect_this1_objects_connect_Person0
             }
-            CALL {
+            CALL(*) {
             		WITH this1
             	OPTIONAL MATCH (this1_objects_connect1_node:Place)
             	WHERE this1_objects_connect1_node.id IN $this1_objects_connect1_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this1_objects_connect1_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_objects_connect1_node
             			CREATE (this1)-[:ACTED_IN]->(this1_objects_connect1_node)
@@ -236,12 +220,10 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
             RETURN this1
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 RETURN this0 { .id } AS create_var0
             }
-            CALL {
-                WITH this1
+            CALL (this1) {
                 RETURN this1 { .id } AS create_var1
             }
             RETURN [create_var0, create_var1] AS data"
@@ -310,20 +292,18 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect0_node
             			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
@@ -332,15 +312,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             WITH this0, this0_subjects_connect0_node
             	RETURN count(*) AS connect_this0_subjects_connect_Person0
             }
-            CALL {
+            CALL(*) {
             		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect1_node:Place)
             	WHERE this0_subjects_connect1_node.id IN $this0_subjects_connect1_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_subjects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect1_node
             			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
@@ -350,15 +328,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	RETURN count(*) AS connect_this0_subjects_connect_Place1
             }
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect0_node
             			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
@@ -367,15 +343,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             WITH this0, this0_objects_connect0_node
             	RETURN count(*) AS connect_this0_objects_connect_Person0
             }
-            CALL {
+            CALL(*) {
             		WITH this0
             	OPTIONAL MATCH (this0_objects_connect1_node:Place)
             	WHERE this0_objects_connect1_node.id IN $this0_objects_connect1_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_objects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect1_node
             			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
@@ -386,8 +360,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 RETURN this0 { .id } AS create_var0
             }
             RETURN [create_var0] AS data"
@@ -441,20 +414,18 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect0_node
             			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
@@ -463,15 +434,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             WITH this0, this0_subjects_connect0_node
             	RETURN count(*) AS connect_this0_subjects_connect_Person0
             }
-            CALL {
+            CALL(*) {
             		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect1_node:Place)
             	WHERE this0_subjects_connect1_node.id IN $this0_subjects_connect1_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_subjects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect1_node
             			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
@@ -481,15 +450,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	RETURN count(*) AS connect_this0_subjects_connect_Place1
             }
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect0_node
             			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
@@ -498,15 +465,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             WITH this0, this0_objects_connect0_node
             	RETURN count(*) AS connect_this0_objects_connect_Person0
             }
-            CALL {
+            CALL(*) {
             		WITH this0
             	OPTIONAL MATCH (this0_objects_connect1_node:Place)
             	WHERE this0_objects_connect1_node.id IN $this0_objects_connect1_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_objects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect1_node
             			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
@@ -517,8 +482,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
             RETURN this0
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 RETURN this0 { .id } AS create_var0
             }
             RETURN [create_var0] AS data"
@@ -583,20 +547,18 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect0_node
             			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
@@ -605,15 +567,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             WITH this0, this0_subjects_connect0_node
             	RETURN count(*) AS connect_this0_subjects_connect_Person0
             }
-            CALL {
+            CALL(*) {
             		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect1_node:Place)
             	WHERE this0_subjects_connect1_node.id IN $this0_subjects_connect1_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_subjects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect1_node
             			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
@@ -623,15 +583,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	RETURN count(*) AS connect_this0_subjects_connect_Place1
             }
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_objects_connect0_node:Person)
             	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect0_node
             			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
@@ -640,15 +598,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             WITH this0, this0_objects_connect0_node
             	RETURN count(*) AS connect_this0_objects_connect_Person0
             }
-            CALL {
+            CALL(*) {
             		WITH this0
             	OPTIONAL MATCH (this0_objects_connect1_node:Place)
             	WHERE this0_objects_connect1_node.id IN $this0_objects_connect1_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_objects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_objects_connect1_node
             			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
@@ -659,20 +615,18 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
             RETURN this0
             }
-            CALL {
+            CALL(*) {
             CREATE (this1:Interaction)
             SET this1.id = randomUUID()
             SET this1.kind = $this1_kind
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this1
             	OPTIONAL MATCH (this1_subjects_connect0_node:Person)
             	WHERE this1_subjects_connect0_node.id IN $this1_subjects_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this1_subjects_connect0_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_subjects_connect0_node
             			CREATE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
@@ -681,15 +635,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             WITH this1, this1_subjects_connect0_node
             	RETURN count(*) AS connect_this1_subjects_connect_Person0
             }
-            CALL {
+            CALL(*) {
             		WITH this1
             	OPTIONAL MATCH (this1_subjects_connect1_node:Place)
             	WHERE this1_subjects_connect1_node.id IN $this1_subjects_connect1_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this1_subjects_connect1_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_subjects_connect1_node
             			CREATE (this1)<-[:ACTED_IN]-(this1_subjects_connect1_node)
@@ -699,15 +651,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             	RETURN count(*) AS connect_this1_subjects_connect_Place1
             }
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this1
             	OPTIONAL MATCH (this1_objects_connect0_node:Person)
             	WHERE this1_objects_connect0_node.id IN $this1_objects_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this1_objects_connect0_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_objects_connect0_node
             			CREATE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
@@ -716,15 +666,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             WITH this1, this1_objects_connect0_node
             	RETURN count(*) AS connect_this1_objects_connect_Person0
             }
-            CALL {
+            CALL(*) {
             		WITH this1
             	OPTIONAL MATCH (this1_objects_connect1_node:Place)
             	WHERE this1_objects_connect1_node.id IN $this1_objects_connect1_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this1_objects_connect1_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this1
             			UNWIND connectedNodes as this1_objects_connect1_node
             			CREATE (this1)-[:ACTED_IN]->(this1_objects_connect1_node)
@@ -735,72 +683,66 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
             RETURN this1
             }
-            CALL {
-                WITH this0
-                CALL {
-                    WITH this0
-                    CALL {
+            CALL (this0) {
+                CALL (this0) {
+                    CALL (*) {
                         WITH *
                         MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Person)
-                        WITH create_this1 { .id, __resolveType: \\"Person\\", __id: id(create_this1) } AS create_this1
-                        RETURN create_this1 AS create_var2
+                        WITH create_this1 { .id, __resolveType: \\"Person\\", __id: id(create_this1) } AS create_var2
+                        RETURN create_var2
                         UNION
                         WITH *
                         MATCH (this0)<-[create_this3:ACTED_IN]-(create_this4:Place)
-                        WITH create_this4 { .id, __resolveType: \\"Place\\", __id: id(create_this4) } AS create_this4
-                        RETURN create_this4 AS create_var2
+                        WITH create_this4 { .id, __resolveType: \\"Place\\", __id: id(create_this4) } AS create_var2
+                        RETURN create_var2
                     }
                     WITH create_var2
                     RETURN collect(create_var2) AS create_var2
                 }
-                CALL {
-                    WITH this0
-                    CALL {
+                CALL (this0) {
+                    CALL (*) {
                         WITH *
                         MATCH (this0)-[create_this5:ACTED_IN]->(create_this6:Person)
-                        WITH create_this6 { .id, __resolveType: \\"Person\\", __id: id(create_this6) } AS create_this6
-                        RETURN create_this6 AS create_var7
+                        WITH create_this6 { .id, __resolveType: \\"Person\\", __id: id(create_this6) } AS create_var7
+                        RETURN create_var7
                         UNION
                         WITH *
                         MATCH (this0)-[create_this8:ACTED_IN]->(create_this9:Place)
-                        WITH create_this9 { .id, __resolveType: \\"Place\\", __id: id(create_this9) } AS create_this9
-                        RETURN create_this9 AS create_var7
+                        WITH create_this9 { .id, __resolveType: \\"Place\\", __id: id(create_this9) } AS create_var7
+                        RETURN create_var7
                     }
                     WITH create_var7
                     RETURN collect(create_var7) AS create_var7
                 }
                 RETURN this0 { .id, subjects: create_var2, objects: create_var7 } AS create_var10
             }
-            CALL {
-                WITH this1
-                CALL {
-                    WITH this1
-                    CALL {
+            CALL (this1) {
+                CALL (this1) {
+                    CALL (*) {
                         WITH *
                         MATCH (this1)<-[create_this11:ACTED_IN]-(create_this12:Person)
-                        WITH create_this12 { .id, __resolveType: \\"Person\\", __id: id(create_this12) } AS create_this12
-                        RETURN create_this12 AS create_var13
+                        WITH create_this12 { .id, __resolveType: \\"Person\\", __id: id(create_this12) } AS create_var13
+                        RETURN create_var13
                         UNION
                         WITH *
                         MATCH (this1)<-[create_this14:ACTED_IN]-(create_this15:Place)
-                        WITH create_this15 { .id, __resolveType: \\"Place\\", __id: id(create_this15) } AS create_this15
-                        RETURN create_this15 AS create_var13
+                        WITH create_this15 { .id, __resolveType: \\"Place\\", __id: id(create_this15) } AS create_var13
+                        RETURN create_var13
                     }
                     WITH create_var13
                     RETURN collect(create_var13) AS create_var13
                 }
-                CALL {
-                    WITH this1
-                    CALL {
+                CALL (this1) {
+                    CALL (*) {
                         WITH *
                         MATCH (this1)-[create_this16:ACTED_IN]->(create_this17:Person)
-                        WITH create_this17 { .id, __resolveType: \\"Person\\", __id: id(create_this17) } AS create_this17
-                        RETURN create_this17 AS create_var18
+                        WITH create_this17 { .id, __resolveType: \\"Person\\", __id: id(create_this17) } AS create_var18
+                        RETURN create_var18
                         UNION
                         WITH *
                         MATCH (this1)-[create_this19:ACTED_IN]->(create_this20:Place)
-                        WITH create_this20 { .id, __resolveType: \\"Place\\", __id: id(create_this20) } AS create_this20
-                        RETURN create_this20 AS create_var18
+                        WITH create_this20 { .id, __resolveType: \\"Place\\", __id: id(create_this20) } AS create_var18
+                        RETURN create_var18
                     }
                     WITH create_var18
                     RETURN collect(create_var18) AS create_var18
@@ -873,20 +815,18 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Interaction)
             SET this0.id = randomUUID()
             SET this0.kind = $this0_kind
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
             	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect0_node
             			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
@@ -895,15 +835,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             WITH this0, this0_subjects_connect0_node
             	RETURN count(*) AS connect_this0_subjects_connect_Person0
             }
-            CALL {
+            CALL(*) {
             		WITH this0
             	OPTIONAL MATCH (this0_subjects_connect1_node:Place)
             	WHERE this0_subjects_connect1_node.id IN $this0_subjects_connect1_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_subjects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_subjects_connect1_node
             			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
@@ -914,18 +852,16 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
             }
             RETURN this0
             }
-            CALL {
+            CALL(*) {
             CREATE (this1:Interaction)
             SET this1.id = randomUUID()
             SET this1.kind = $this1_kind
             RETURN this1
             }
-            CALL {
-                WITH this0
+            CALL (this0) {
                 RETURN this0 { .id } AS create_var0
             }
-            CALL {
-                WITH this1
+            CALL (this1) {
                 RETURN this1 { .id } AS create_var1
             }
             RETURN [create_var0, create_var1] AS data"

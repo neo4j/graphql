@@ -102,10 +102,8 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Family)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
                     WHERE ($isAuthenticated = true AND (EXISTS {
                         MATCH (this1)<-[:CREATOR_OF]-(this2:User)

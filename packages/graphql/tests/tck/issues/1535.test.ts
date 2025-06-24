@@ -80,18 +80,17 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Tenant)
-            CALL {
-                WITH this
-                CALL {
+            CALL (this) {
+                CALL (*) {
                     WITH *
                     MATCH (this)<-[this0:HOSTED_BY]-(this1:Screening)
-                    WITH this1 { .id, __resolveType: \\"Screening\\", __id: id(this1) } AS this1
-                    RETURN this1 AS var2
+                    WITH this1 { .id, __resolveType: \\"Screening\\", __id: id(this1) } AS var2
+                    RETURN var2
                     UNION
                     WITH *
                     MATCH (this)<-[this3:HOSTED_BY]-(this4:Booking)
-                    WITH this4 { .id, __resolveType: \\"Booking\\", __id: id(this4) } AS this4
-                    RETURN this4 AS var2
+                    WITH this4 { .id, __resolveType: \\"Booking\\", __id: id(this4) } AS var2
+                    RETURN var2
                 }
                 WITH var2
                 RETURN collect(var2) AS var2

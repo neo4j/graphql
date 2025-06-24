@@ -59,8 +59,7 @@ describe("#288", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:USER)
                 SET
                     create_this1.USERID = create_var0.USERID,

@@ -159,8 +159,7 @@ describe("tck/rfcs/query-limits", () => {
                 MATCH (this:Movie)
                 WITH *
                 LIMIT $param0
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WITH DISTINCT this1
                     WITH this1 { .id } AS this1
@@ -207,13 +206,11 @@ describe("tck/rfcs/query-limits", () => {
                 MATCH (this:Movie)
                 WITH *
                 LIMIT $param0
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WITH collect({ node: this1, relationship: this0 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
+                    CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this1, edge.relationship AS this0
                         WITH *
@@ -262,13 +259,11 @@ describe("tck/rfcs/query-limits", () => {
                 MATCH (this:Movie)
                 WITH *
                 LIMIT $param0
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WITH collect({ node: this1, relationship: this0 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
+                    CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this1, edge.relationship AS this0
                         WITH *
@@ -315,13 +310,11 @@ describe("tck/rfcs/query-limits", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this:Festival)
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)<-[this0:PART_OF]-(this1:Show)
                     WITH collect({ node: this1, relationship: this0 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
+                    CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this1, edge.relationship AS this0
                         WITH *
@@ -362,8 +355,7 @@ describe("tck/rfcs/query-limits", () => {
                 MATCH (this:Movie)
                 WITH *
                 LIMIT $param0
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WITH DISTINCT this1
                     WITH this1 { .id } AS this1

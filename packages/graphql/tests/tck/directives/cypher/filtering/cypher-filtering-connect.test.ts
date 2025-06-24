@@ -78,7 +78,7 @@ describe("cypher directive filtering", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL {
+            CALL(*) {
             CREATE (this0:Movie)
             SET this0.title = $this0_title
             WITH *
@@ -86,13 +86,11 @@ describe("cypher directive filtering", () => {
             SET this0_actors0_node.name = $this0_actors0_node_name
             MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this0
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-            CALL {
-                WITH this0_actors_connect0_node
-                CALL {
-                    WITH this0_actors_connect0_node
+            CALL (this0_actors_connect0_node) {
+                CALL (this0_actors_connect0_node) {
                     WITH this0_actors_connect0_node AS this
                     RETURN \\"hello world!\\" AS s
                 }
@@ -104,11 +102,9 @@ describe("cypher directive filtering", () => {
                 ELSE [NULL]
             END AS aggregateWhereFiltervar0
             WITH *, aggregateWhereFiltervar0[0] AS this0_actors_connect0_node
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this0
             			UNWIND connectedNodes as this0_actors_connect0_node
             			CREATE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
@@ -119,10 +115,8 @@ describe("cypher directive filtering", () => {
             }
             RETURN this0
             }
-            CALL {
-                WITH this0
-                CALL {
-                    WITH this0
+            CALL (this0) {
+                CALL (this0) {
                     MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
                     WITH DISTINCT create_this1
                     WITH create_this1 { .name } AS create_this1

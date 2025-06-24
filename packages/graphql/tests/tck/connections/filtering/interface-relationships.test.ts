@@ -100,18 +100,17 @@ describe("interface relationships with aliased fields", () => {
                     ELSE this1.title
                 END = $param0 AND (this1:Movie OR this1:Series))
             }
-            CALL {
-                WITH this
-                CALL {
+            CALL (this) {
+                CALL (*) {
                     WITH *
                     MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
-                    WITH this3 { .runtime, title: this3.movieTitle, __resolveType: \\"Movie\\", __id: id(this3) } AS this3
-                    RETURN this3 AS var4
+                    WITH this3 { .runtime, title: this3.movieTitle, __resolveType: \\"Movie\\", __id: id(this3) } AS var4
+                    RETURN var4
                     UNION
                     WITH *
                     MATCH (this)-[this5:ACTED_IN]->(this6:Series)
-                    WITH this6 { .episodes, title: this6.seriesTitle, __resolveType: \\"Series\\", __id: id(this6) } AS this6
-                    RETURN this6 AS var4
+                    WITH this6 { .episodes, title: this6.seriesTitle, __resolveType: \\"Series\\", __id: id(this6) } AS var4
+                    RETURN var4
                 }
                 WITH var4
                 RETURN collect(var4) AS var4
@@ -190,18 +189,17 @@ describe("interface relationships with aliased fields", () => {
                 WHEN this0:Series THEN this0.seriesTitle
                 ELSE this0.title
             END = $jwt.title) AND (this0:Movie OR this0:Series)) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL {
-                WITH this
-                CALL {
+            CALL (this) {
+                CALL (*) {
                     WITH *
                     MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
-                    WITH this3 { .runtime, title: this3.movieTitle, __resolveType: \\"Movie\\", __id: id(this3) } AS this3
-                    RETURN this3 AS var4
+                    WITH this3 { .runtime, title: this3.movieTitle, __resolveType: \\"Movie\\", __id: id(this3) } AS var4
+                    RETURN var4
                     UNION
                     WITH *
                     MATCH (this)-[this5:ACTED_IN]->(this6:Series)
-                    WITH this6 { .episodes, title: this6.seriesTitle, __resolveType: \\"Series\\", __id: id(this6) } AS this6
-                    RETURN this6 AS var4
+                    WITH this6 { .episodes, title: this6.seriesTitle, __resolveType: \\"Series\\", __id: id(this6) } AS var4
+                    RETURN var4
                 }
                 WITH var4
                 RETURN collect(var4) AS var4

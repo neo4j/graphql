@@ -60,8 +60,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someFloat) = $param0 AS var2
             }
@@ -91,8 +90,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someFloat) > $param0 AS var2
             }
@@ -122,8 +120,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someFloat) >= $param0 AS var2
             }
@@ -153,8 +150,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someFloat) < $param0 AS var2
             }
@@ -184,8 +180,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someFloat) <= $param0 AS var2
             }
@@ -215,8 +210,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someFloat) = $param0 AS var2
             }
@@ -246,8 +240,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someFloat) > $param0 AS var2
             }
@@ -277,8 +270,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someFloat) >= $param0 AS var2
             }
@@ -308,8 +300,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someFloat) < $param0 AS var2
             }
@@ -339,8 +330,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someFloat) <= $param0 AS var2
             }
@@ -370,8 +360,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someFloat) = $param0 AS var2
             }
@@ -401,8 +390,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someFloat) > $param0 AS var2
             }
@@ -432,8 +420,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someFloat) >= $param0 AS var2
             }
@@ -463,8 +450,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someFloat) < $param0 AS var2
             }
@@ -494,8 +480,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someFloat) <= $param0 AS var2
             }
@@ -525,8 +510,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someFloat) = $param0 AS var2
             }
@@ -556,8 +540,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someFloat) > $param0 AS var2
             }
@@ -587,8 +570,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someFloat) >= $param0 AS var2
             }
@@ -618,8 +600,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someFloat) < $param0 AS var2
             }
@@ -649,8 +630,7 @@ describe("Cypher Aggregations where edge with Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someFloat) <= $param0 AS var2
             }

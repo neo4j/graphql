@@ -125,7 +125,7 @@ export class UnwindCreateOperation extends MutationOperation {
 
         const nestedSubqueries = setSubqueries.flatMap((clause) => [
             new Cypher.With(nestedContext.target, this.unwindVariable),
-            new Cypher.Call(clause).importWith(nestedContext.target, this.unwindVariable),
+            new Cypher.Call(clause, [nestedContext.target, this.unwindVariable]),
         ]);
 
         const authorizationClauses = this.getAuthorizationClauses(nestedContext);
@@ -150,8 +150,9 @@ export class UnwindCreateOperation extends MutationOperation {
             );
         } else {
             subQueryClause = new Cypher.Call(
-                Cypher.utils.concat(unwindCreateClauses, new Cypher.Return(nestedContext.target))
-            ).importWith(this.unwindVariable);
+                Cypher.utils.concat(unwindCreateClauses, new Cypher.Return(nestedContext.target)),
+                [this.unwindVariable]
+            );
         }
         const projectionContext = new QueryASTContext({
             ...nestedContext,

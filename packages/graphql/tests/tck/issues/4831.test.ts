@@ -53,10 +53,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this:Test)
-                CALL {
-                    WITH this
-                    CALL {
-                        WITH this
+                CALL (this) {
+                    CALL (this) {
                         WITH this AS this
                         RETURN $param0 as value
                     }
@@ -87,10 +85,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this:Test)
-                CALL {
-                    WITH this
-                    CALL {
-                        WITH this
+                CALL (this) {
+                    CALL (this) {
                         WITH this AS this
                         RETURN $param0 as value
                     }
@@ -121,10 +117,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this:Test)
-                CALL {
-                    WITH this
-                    CALL {
-                        WITH this
+                CALL (this) {
+                    CALL (this) {
                         WITH this AS this
                         RETURN NULL as value
                     }
@@ -151,10 +145,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this:Test)
-                CALL {
-                    WITH this
-                    CALL {
-                        WITH this
+                CALL (this) {
+                    CALL (this) {
                         WITH this AS this
                         RETURN NULL as value
                     }
@@ -183,10 +175,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this:Test)
-                CALL {
-                    WITH this
-                    CALL {
-                        WITH this
+                CALL (this) {
+                    CALL (this) {
                         WITH this AS this
                         RETURN $param0 as value
                     }
@@ -217,10 +207,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this:Test)
-                CALL {
-                    WITH this
-                    CALL {
-                        WITH this
+                CALL (this) {
+                    CALL (this) {
                         WITH this AS this
                         RETURN $param0 as value
                     }
@@ -251,10 +239,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this:Test)
-                CALL {
-                    WITH this
-                    CALL {
-                        WITH this
+                CALL (this) {
+                    CALL (this) {
                         WITH this AS this
                         RETURN NULL as value
                     }
@@ -281,10 +267,8 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this:Test)
-                CALL {
-                    WITH this
-                    CALL {
-                        WITH this
+                CALL (this) {
+                    CALL (this) {
                         WITH this AS this
                         RETURN NULL as value
                     }

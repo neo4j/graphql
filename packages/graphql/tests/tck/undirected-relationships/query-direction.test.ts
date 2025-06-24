@@ -54,8 +54,7 @@ describe("queryDirection in relationships", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this:User)
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
                     WITH DISTINCT this1
                     WITH this1 { .name } AS this1
@@ -88,8 +87,7 @@ describe("queryDirection in relationships", () => {
                     MATCH (this)-[:FRIENDS_WITH]->(this0:User)
                     WHERE this0.name = $param0
                 }
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
                     WITH DISTINCT this2
                     WITH this2 { .name } AS this2
@@ -132,21 +130,19 @@ describe("queryDirection in relationships", () => {
                     WHERE this0.name = $param0
                 }
                 WITH this
-                CALL {
+                CALL(*) {
                 WITH this
                 OPTIONAL MATCH (this)-[this_friends0_disconnect0_rel:FRIENDS_WITH]->(this_friends0_disconnect0:User)
                 WHERE this_friends0_disconnect0.name = $updateUsers_args_update_friends0_disconnect0_where_User_this_friends0_disconnect0param0
-                CALL {
-                	WITH this_friends0_disconnect0, this_friends0_disconnect0_rel, this
-                	WITH collect(this_friends0_disconnect0) as this_friends0_disconnect0, this_friends0_disconnect0_rel, this
-                	UNWIND this_friends0_disconnect0 as x
+                CALL (this_friends0_disconnect0, this_friends0_disconnect0_rel, this) {
+                	WITH collect(this_friends0_disconnect0) as this_friends0_disconnect0_x, this_friends0_disconnect0_rel, this
+                	UNWIND this_friends0_disconnect0_x as x
                 	DELETE this_friends0_disconnect0_rel
                 }
                 RETURN count(*) AS disconnect_this_friends0_disconnect_User
                 }
                 WITH *
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[update_this0:FRIENDS_WITH]->(update_this1:User)
                     WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
@@ -212,20 +208,17 @@ describe("queryDirection in relationships", () => {
                     WHERE this0.name = $param0
                 }
                 WITH *
-                CALL {
-                WITH *
+                CALL(*) {
                 OPTIONAL MATCH (this)-[this_friends0_delete0_relationship:FRIENDS_WITH]->(this_friends0_delete0:User)
                 WHERE this_friends0_delete0.name = $updateUsers_args_update_friends0_delete0_where_this_friends0_delete0param0
                 WITH this_friends0_delete0_relationship, collect(DISTINCT this_friends0_delete0) AS this_friends0_delete0_to_delete
-                CALL {
-                	WITH this_friends0_delete0_to_delete
+                CALL(this_friends0_delete0_to_delete) {
                 	UNWIND this_friends0_delete0_to_delete AS x
                 	DETACH DELETE x
                 }
                 }
                 WITH *
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[update_this0:FRIENDS_WITH]->(update_this1:User)
                     WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
@@ -298,7 +291,7 @@ describe("queryDirection in relationships", () => {
                     WHERE this0.name = $param0
                 }
                 WITH this
-                CALL {
+                CALL(*) {
                 	WITH this
                 	MATCH (this)-[this_friends_with0_relationship:FRIENDS_WITH]->(this_friends0:User)
                 	WHERE this_friends0.name = $updateUsers_args_update_friends0_where_this_friends0param0
@@ -306,8 +299,7 @@ describe("queryDirection in relationships", () => {
                 	RETURN count(*) AS update_this_friends0
                 }
                 WITH *
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[update_this0:FRIENDS_WITH]->(update_this1:User)
                     WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
@@ -370,13 +362,11 @@ describe("queryDirection in relationships", () => {
                     WHERE this0.name = $param0
                 }
                 WITH *
-                CALL {
-                    WITH *
+                CALL (*) {
                     OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
                     WHERE this2.name = $param1
                     WITH this1, collect(DISTINCT this2) AS var3
-                    CALL {
-                        WITH var3
+                    CALL (var3) {
                         UNWIND var3 AS var4
                         DETACH DELETE var4
                     }
@@ -427,8 +417,7 @@ describe("queryDirection in relationships", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this:User)
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
                     WITH DISTINCT this1
                     WITH this1 { .name } AS this1
@@ -461,8 +450,7 @@ describe("queryDirection in relationships", () => {
                     MATCH (this)-[:FRIENDS_WITH]-(this0:User)
                     WHERE this0.name = $param0
                 }
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
                     WITH DISTINCT this2
                     WITH this2 { .name } AS this2
@@ -505,21 +493,19 @@ describe("queryDirection in relationships", () => {
                     WHERE this0.name = $param0
                 }
                 WITH this
-                CALL {
+                CALL(*) {
                 WITH this
                 OPTIONAL MATCH (this)-[this_friends0_disconnect0_rel:FRIENDS_WITH]-(this_friends0_disconnect0:User)
                 WHERE this_friends0_disconnect0.name = $updateUsers_args_update_friends0_disconnect0_where_User_this_friends0_disconnect0param0
-                CALL {
-                	WITH this_friends0_disconnect0, this_friends0_disconnect0_rel, this
-                	WITH collect(this_friends0_disconnect0) as this_friends0_disconnect0, this_friends0_disconnect0_rel, this
-                	UNWIND this_friends0_disconnect0 as x
+                CALL (this_friends0_disconnect0, this_friends0_disconnect0_rel, this) {
+                	WITH collect(this_friends0_disconnect0) as this_friends0_disconnect0_x, this_friends0_disconnect0_rel, this
+                	UNWIND this_friends0_disconnect0_x as x
                 	DELETE this_friends0_disconnect0_rel
                 }
                 RETURN count(*) AS disconnect_this_friends0_disconnect_User
                 }
                 WITH *
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[update_this0:FRIENDS_WITH]-(update_this1:User)
                     WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
@@ -585,20 +571,17 @@ describe("queryDirection in relationships", () => {
                     WHERE this0.name = $param0
                 }
                 WITH *
-                CALL {
-                WITH *
+                CALL(*) {
                 OPTIONAL MATCH (this)-[this_friends0_delete0_relationship:FRIENDS_WITH]-(this_friends0_delete0:User)
                 WHERE this_friends0_delete0.name = $updateUsers_args_update_friends0_delete0_where_this_friends0_delete0param0
                 WITH this_friends0_delete0_relationship, collect(DISTINCT this_friends0_delete0) AS this_friends0_delete0_to_delete
-                CALL {
-                	WITH this_friends0_delete0_to_delete
+                CALL(this_friends0_delete0_to_delete) {
                 	UNWIND this_friends0_delete0_to_delete AS x
                 	DETACH DELETE x
                 }
                 }
                 WITH *
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[update_this0:FRIENDS_WITH]-(update_this1:User)
                     WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
@@ -671,7 +654,7 @@ describe("queryDirection in relationships", () => {
                     WHERE this0.name = $param0
                 }
                 WITH this
-                CALL {
+                CALL(*) {
                 	WITH this
                 	MATCH (this)-[this_friends_with0_relationship:FRIENDS_WITH]-(this_friends0:User)
                 	WHERE this_friends0.name = $updateUsers_args_update_friends0_where_this_friends0param0
@@ -679,8 +662,7 @@ describe("queryDirection in relationships", () => {
                 	RETURN count(*) AS update_this_friends0
                 }
                 WITH *
-                CALL {
-                    WITH this
+                CALL (this) {
                     MATCH (this)-[update_this0:FRIENDS_WITH]-(update_this1:User)
                     WITH DISTINCT update_this1
                     WITH update_this1 { .name } AS update_this1
@@ -743,13 +725,11 @@ describe("queryDirection in relationships", () => {
                     WHERE this0.name = $param0
                 }
                 WITH *
-                CALL {
-                    WITH *
+                CALL (*) {
                     OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
                     WHERE this2.name = $param1
                     WITH this1, collect(DISTINCT this2) AS var3
-                    CALL {
-                        WITH var3
+                    CALL (var3) {
                         UNWIND var3 AS var4
                         DETACH DELETE var4
                     }

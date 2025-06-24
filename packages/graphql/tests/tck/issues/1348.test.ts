@@ -78,23 +78,22 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:ProgrammeItem)
-            CALL {
-                WITH this
-                CALL {
+            CALL (this) {
+                CALL (*) {
                     WITH *
                     MATCH (this)-[this0:RELATES_TO]-(this1:Series)
-                    WITH this1 { .productTitle, __resolveType: \\"Series\\", __id: id(this1) } AS this1
-                    RETURN this1 AS var2
+                    WITH this1 { .productTitle, __resolveType: \\"Series\\", __id: id(this1) } AS var2
+                    RETURN var2
                     UNION
                     WITH *
                     MATCH (this)-[this3:RELATES_TO]-(this4:Season)
-                    WITH this4 { .productTitle, __resolveType: \\"Season\\", __id: id(this4) } AS this4
-                    RETURN this4 AS var2
+                    WITH this4 { .productTitle, __resolveType: \\"Season\\", __id: id(this4) } AS var2
+                    RETURN var2
                     UNION
                     WITH *
                     MATCH (this)-[this5:RELATES_TO]-(this6:ProgrammeItem)
-                    WITH this6 { .productTitle, __resolveType: \\"ProgrammeItem\\", __id: id(this6) } AS this6
-                    RETURN this6 AS var2
+                    WITH this6 { .productTitle, __resolveType: \\"ProgrammeItem\\", __id: id(this6) } AS var2
+                    RETURN var2
                 }
                 WITH var2
                 RETURN collect(var2) AS var2
@@ -135,11 +134,9 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:ProgrammeItem)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    CALL {
+            CALL (this) {
+                CALL (this) {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:RELATES_TO]-(this1:Series)
                         WITH { node: { __resolveType: \\"Series\\", __id: id(this1), productTitle: this1.productTitle } } AS edge

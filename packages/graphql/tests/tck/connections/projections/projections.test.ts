@@ -67,13 +67,11 @@ describe("Relay Cursor Connection projections", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE this.title = $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ node: { __id: id(this1), __resolveType: \\"Actor\\" } }) AS var2
@@ -113,13 +111,11 @@ describe("Relay Cursor Connection projections", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE this.title = $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ node: { __id: id(this1), __resolveType: \\"Actor\\" } }) AS var2
@@ -154,13 +150,11 @@ describe("Relay Cursor Connection projections", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE this.title = $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     WITH *
@@ -201,11 +195,9 @@ describe("Relay Cursor Connection projections", () => {
             "CYPHER 5
             MATCH (this:Actor)
             WHERE this.name = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    CALL {
+            CALL (this) {
+                CALL (this) {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                         WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
@@ -255,11 +247,9 @@ describe("Relay Cursor Connection projections", () => {
             "CYPHER 5
             MATCH (this:Actor)
             WHERE this.name = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
-                    CALL {
+            CALL (this) {
+                CALL (this) {
+                    CALL (this) {
                         WITH this
                         MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                         WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
@@ -309,13 +299,11 @@ describe("Relay Cursor Connection projections", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE this.title = $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
@@ -355,13 +343,11 @@ describe("Relay Cursor Connection projections", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE this.title = $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     WITH *

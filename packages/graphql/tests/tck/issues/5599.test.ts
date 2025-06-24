@@ -68,13 +68,11 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this)<-[this_actors_LeadActor0_delete0_relationship:ACTED_IN]-(this_actors_LeadActor0_delete0:LeadActor)
             WHERE this_actors_LeadActor0_delete0.name = $updateMovies_args_update_actors0_delete_LeadActor0_where_this_actors_LeadActor0_delete0param0
             WITH this_actors_LeadActor0_delete0_relationship, collect(DISTINCT this_actors_LeadActor0_delete0) AS this_actors_LeadActor0_delete0_to_delete
-            CALL {
-            	WITH this_actors_LeadActor0_delete0_to_delete
+            CALL(this_actors_LeadActor0_delete0_to_delete) {
             	UNWIND this_actors_LeadActor0_delete0_to_delete AS x
             	DETACH DELETE x
             }
@@ -137,25 +135,21 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this)<-[this_actors_LeadActor0_delete0_relationship:ACTED_IN]-(this_actors_LeadActor0_delete0:LeadActor)
             WHERE this_actors_LeadActor0_delete0.name = $updateMovies_args_update_actors0_delete_LeadActor0_where_this_actors_LeadActor0_delete0param0
             WITH this_actors_LeadActor0_delete0_relationship, collect(DISTINCT this_actors_LeadActor0_delete0) AS this_actors_LeadActor0_delete0_to_delete
-            CALL {
-            	WITH this_actors_LeadActor0_delete0_to_delete
+            CALL(this_actors_LeadActor0_delete0_to_delete) {
             	UNWIND this_actors_LeadActor0_delete0_to_delete AS x
             	DETACH DELETE x
             }
             }
             WITH *
-            CALL {
-            WITH *
+            CALL(*) {
             OPTIONAL MATCH (this)<-[this_actors_Extra0_delete0_relationship:ACTED_IN]-(this_actors_Extra0_delete0:Extra)
             WHERE this_actors_Extra0_delete0.name = $updateMovies_args_update_actors0_delete_Extra0_where_this_actors_Extra0_delete0param0
             WITH this_actors_Extra0_delete0_relationship, collect(DISTINCT this_actors_Extra0_delete0) AS this_actors_Extra0_delete0_to_delete
-            CALL {
-            	WITH this_actors_Extra0_delete0_to_delete
+            CALL(this_actors_Extra0_delete0_to_delete) {
             	UNWIND this_actors_Extra0_delete0_to_delete AS x
             	DETACH DELETE x
             }

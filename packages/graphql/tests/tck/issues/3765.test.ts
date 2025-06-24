@@ -68,18 +68,15 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "CYPHER 5
                     MATCH (this:Post)
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this0:LIKES]-(this1:User)
                         RETURN count(this1) > $param0 AS var2
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this3:LIKES]-(this4:User)
                         RETURN count(this4) > $param1 AS var5
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this6:LIKES]-(this7:User)
                         RETURN count(this7) < $param2 AS var8
                     }
@@ -120,18 +117,15 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "CYPHER 5
                     MATCH (this:Post)
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this0:LIKES]-(this1:User)
                         RETURN count(this1) > $param0 AS var2
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this3:LIKES]-(this4:User)
                         RETURN count(this4) > $param1 AS var5
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this6:LIKES]-(this7:User)
                         RETURN count(this7) < $param2 AS var8
                     }
@@ -179,18 +173,15 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "CYPHER 5
                     MATCH (this:Post)
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this0:LIKES]-(this1:User)
                         RETURN count(this1) > $param0 AS var2
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this3:LIKES]-(this4:User)
                         RETURN count(this4) > $param1 AS var5
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this6:LIKES]-(this7:User)
                         RETURN count(this7) < $param2 AS var8
                     }
@@ -238,23 +229,19 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "CYPHER 5
                     MATCH (this:Post)
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this0:LIKES]-(this1:User)
                         RETURN count(this1) > $param0 AS var2
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this3:LIKES]-(this4:User)
                         RETURN count(this4) > $param1 AS var5
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this6:LIKES]-(this7:User)
                         RETURN count(this7) <= $param2 AS var8
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this9:LIKES]-(this10:User)
                         RETURN count(this10) < $param3 AS var11
                     }
@@ -309,23 +296,19 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "CYPHER 5
                     MATCH (this:Post)
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this0:LIKES]-(this1:User)
                         RETURN count(this1) > $param0 AS var2
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this3:LIKES]-(this4:User)
                         RETURN count(this4) > $param1 AS var5
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this6:LIKES]-(this7:User)
                         RETURN count(this7) <= $param2 AS var8
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this9:LIKES]-(this10:User)
                         RETURN count(this10) < $param3 AS var11
                     }
@@ -384,18 +367,15 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "CYPHER 5
                     MATCH (this:Post)
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this0:LIKES]-(this1:User)
                         RETURN count(this1) > $param0 AS var2
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this3:LIKES]-(this4:User)
                         RETURN min(size(this4.name)) > $param1 AS var5
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this6:LIKES]-(this7:User)
                         RETURN min(size(this7.name)) < $param2 AS var8
                     }
@@ -443,18 +423,15 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "CYPHER 5
                     MATCH (this:Post)
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this0:LIKES]-(this1:User)
                         RETURN count(this1) > $param0 AS var2
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this3:LIKES]-(this4:User)
                         RETURN min(size(this4.name)) > $param1 AS var5
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this6:LIKES]-(this7:User)
                         RETURN min(size(this7.name)) < $param2 AS var8
                     }
@@ -507,18 +484,15 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "CYPHER 5
                     MATCH (this:Post)
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this0:LIKES]-(this1:User)
                         RETURN count(this1) > $param0 AS var2
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this3:LIKES]-(this4:User)
                         RETURN min(size(this4.name)) > $param1 AS var5
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this6:LIKES]-(this7:User)
                         RETURN min(size(this7.name)) < $param2 AS var8
                     }
@@ -571,23 +545,19 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "CYPHER 5
                     MATCH (this:Post)
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this0:LIKES]-(this1:User)
                         RETURN count(this1) > $param0 AS var2
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this3:LIKES]-(this4:User)
                         RETURN min(size(this4.name)) > $param1 AS var5
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this6:LIKES]-(this7:User)
                         RETURN min(size(this7.name)) < $param2 AS var8
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this9:LIKES]-(this10:User)
                         RETURN min(size(this10.name)) >= $param3 AS var11
                     }
@@ -646,38 +616,31 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                     "CYPHER 5
                     MATCH (this:Post)
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this0:LIKES]-(this1:User)
                         RETURN count(this1) > $param0 AS var2
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this3:LIKES]-(this4:User)
                         RETURN avg(size(this4.name)) > $param1 AS var5
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this6:LIKES]-(this7:User)
                         RETURN min(size(this6.someProp)) < $param2 AS var8
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this9:LIKES]-(this10:User)
                         RETURN max(size(this9.someProp)) > $param3 AS var11
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this12:LIKES]-(this13:User)
                         RETURN min(size(this13.name)) > $param4 AS var14
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this15:LIKES]-(this16:User)
                         RETURN min(size(this15.someProp)) > $param5 AS var17
                     }
-                    CALL {
-                        WITH this
+                    CALL (this) {
                         MATCH (this)<-[this18:LIKES]-(this19:User)
                         RETURN max(size(this18.someProp)) < $param6 AS var20
                     }

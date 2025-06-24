@@ -56,8 +56,7 @@ describe("Cypher Aggregations where node with Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN (datetime() + avg(this1.someDuration)) = (datetime() + $param0) AS var2
             }
@@ -98,8 +97,7 @@ describe("Cypher Aggregations where node with Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN (datetime() + avg(this1.someDuration)) > (datetime() + $param0) AS var2
             }
@@ -140,8 +138,7 @@ describe("Cypher Aggregations where node with Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN (datetime() + avg(this1.someDuration)) >= (datetime() + $param0) AS var2
             }
@@ -182,8 +179,7 @@ describe("Cypher Aggregations where node with Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN (datetime() + avg(this1.someDuration)) < (datetime() + $param0) AS var2
             }
@@ -224,8 +220,7 @@ describe("Cypher Aggregations where node with Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN (datetime() + avg(this1.someDuration)) <= (datetime() + $param0) AS var2
             }
@@ -266,8 +261,7 @@ describe("Cypher Aggregations where node with Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN (datetime() + min(this1.someDuration)) = (datetime() + $param0) AS var2
             }
@@ -308,8 +302,7 @@ describe("Cypher Aggregations where node with Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN (datetime() + min(this1.someDuration)) > (datetime() + $param0) AS var2
             }
@@ -350,8 +343,7 @@ describe("Cypher Aggregations where node with Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN (datetime() + min(this1.someDuration)) >= (datetime() + $param0) AS var2
             }
@@ -392,8 +384,7 @@ describe("Cypher Aggregations where node with Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN (datetime() + min(this1.someDuration)) < (datetime() + $param0) AS var2
             }
@@ -434,8 +425,7 @@ describe("Cypher Aggregations where node with Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN (datetime() + min(this1.someDuration)) <= (datetime() + $param0) AS var2
             }
@@ -476,8 +466,7 @@ describe("Cypher Aggregations where node with Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN (datetime() + max(this1.someDuration)) = (datetime() + $param0) AS var2
             }
@@ -518,8 +507,7 @@ describe("Cypher Aggregations where node with Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN (datetime() + max(this1.someDuration)) > (datetime() + $param0) AS var2
             }
@@ -560,8 +548,7 @@ describe("Cypher Aggregations where node with Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN (datetime() + max(this1.someDuration)) >= (datetime() + $param0) AS var2
             }
@@ -602,8 +589,7 @@ describe("Cypher Aggregations where node with Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN (datetime() + max(this1.someDuration)) < (datetime() + $param0) AS var2
             }
@@ -644,8 +630,7 @@ describe("Cypher Aggregations where node with Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN (datetime() + max(this1.someDuration)) <= (datetime() + $param0) AS var2
             }

@@ -83,30 +83,24 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Place)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     return '' + '' as result
                 }
                 WITH result AS this0
                 RETURN this0 AS var1
             }
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     return '' + '' as result
                 }
                 WITH result AS this2
                 RETURN this2 AS var3
             }
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     return ['' + ''] as result
                 }
@@ -114,10 +108,8 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
                 WITH var4 AS this5
                 RETURN collect(this5) AS var6
             }
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     return ['' + ''] as result
                 }

@@ -56,10 +56,8 @@ describe("cypher directive filtering - Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN point({ longitude: 1.0, latitude: 1.0 }) AS l
                 }
@@ -68,10 +66,8 @@ describe("cypher directive filtering - Auth", () => {
             }
             WITH *
             WHERE point.distance(var1, point($param0.point)) = $param0.distance
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN point({ longitude: 1.0, latitude: 1.0 }) AS l
                 }
@@ -130,10 +126,8 @@ describe("cypher directive filtering - Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN point({ x: 1.0, y: 1.0, z: 1.0 }) AS l
                 }
@@ -142,10 +136,8 @@ describe("cypher directive filtering - Auth", () => {
             }
             WITH *
             WHERE point.distance(var1, point($param0.point)) = $param0.distance
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     RETURN point({ x: 1.0, y: 1.0, z: 1.0 }) AS l
                 }

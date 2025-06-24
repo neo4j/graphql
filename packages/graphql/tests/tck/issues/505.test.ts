@@ -123,8 +123,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
             "CYPHER 5
             MATCH (this:User)
             WHERE this.id = $param0
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:CREATED_PAGE]->(this1:Page)
                 WITH DISTINCT this1
                 WITH *
@@ -191,8 +190,7 @@ describe("https://github.com/neo4j/graphql/issues/505", () => {
                 MATCH (this)-[:HAS_ADMIN]->(this1:User)
                 WHERE ($jwt.sub IS NOT NULL AND this1.authId = $jwt.sub)
             })))
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this2:HAS_PAGE]->(this3:Page)
                 WITH DISTINCT this3
                 WITH *

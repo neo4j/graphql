@@ -70,7 +70,7 @@ export default async function translateCreate({
                 throw new Error("Expected varName to be defined");
             }
 
-            const create = [`CALL {`];
+            const create = [`CALL(*) {`];
             const withVars = [varName];
             projectionWith.push(varName);
 
@@ -133,7 +133,7 @@ export default async function translateCreate({
                 if (queryASTResult.clauses.length) {
                     projectedVariables.push(queryASTResult.projectionExpr as Cypher.Node);
                     const clause = Cypher.utils.concat(...queryASTResult.clauses);
-                    return new Cypher.Call(clause).importWith(varName);
+                    return new Cypher.Call(clause, [varName]);
                 }
             })
         )

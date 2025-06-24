@@ -60,8 +60,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someInt) = $param0 AS var2
             }
@@ -91,8 +90,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someInt) > $param0 AS var2
             }
@@ -122,8 +120,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someInt) >= $param0 AS var2
             }
@@ -153,8 +150,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someInt) < $param0 AS var2
             }
@@ -184,8 +180,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN avg(this0.someInt) <= $param0 AS var2
             }
@@ -215,8 +210,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someInt) = $param0 AS var2
             }
@@ -249,8 +243,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someInt) > $param0 AS var2
             }
@@ -283,8 +276,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someInt) >= $param0 AS var2
             }
@@ -317,8 +309,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someInt) < $param0 AS var2
             }
@@ -351,8 +342,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN sum(this0.someInt) <= $param0 AS var2
             }
@@ -385,8 +375,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someInt) = $param0 AS var2
             }
@@ -419,8 +408,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someInt) > $param0 AS var2
             }
@@ -453,8 +441,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someInt) >= $param0 AS var2
             }
@@ -487,8 +474,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someInt) < $param0 AS var2
             }
@@ -521,8 +507,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN min(this0.someInt) <= $param0 AS var2
             }
@@ -555,8 +540,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someInt) = $param0 AS var2
             }
@@ -589,8 +573,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someInt) > $param0 AS var2
             }
@@ -623,8 +606,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someInt) >= $param0 AS var2
             }
@@ -657,8 +639,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someInt) < $param0 AS var2
             }
@@ -691,8 +672,7 @@ describe("Cypher Aggregations where edge with Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:LIKES]-(this1:User)
                 RETURN max(this0.someInt) <= $param0 AS var2
             }

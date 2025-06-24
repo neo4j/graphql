@@ -67,10 +67,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:ACTED_IN]->(actor:Actor)
                     RETURN actor
@@ -136,10 +134,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:ACTED_IN]->(actor:Actor)
                     RETURN actor
@@ -214,10 +210,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -227,10 +221,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             }
             WITH *
             WHERE this1.name = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -294,10 +286,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -365,10 +355,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)<-[:ACTED_IN]-(actor:Actor)
                     RETURN actor
@@ -452,10 +440,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Person)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
@@ -465,19 +451,15 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             }
             WITH *
             WHERE this1.title = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
                 }
                 WITH movie AS this2
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -486,10 +468,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     WITH this3 { .name } AS this3
                     RETURN head(collect(this3)) AS var4
                 }
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -576,10 +556,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Person)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
@@ -589,19 +567,15 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             }
             WITH *
             WHERE this1.title = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
                 }
                 WITH movie AS this2
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -610,10 +584,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     WITH this3 { .name } AS this3
                     RETURN head(collect(this3)) AS var4
                 }
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -699,10 +671,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Person)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
@@ -712,19 +682,15 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             }
             WITH *
             WHERE this1.title = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
                 }
                 WITH movie AS this2
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -733,10 +699,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     WITH this3 { .name } AS this3
                     RETURN head(collect(this3)) AS var4
                 }
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -822,10 +786,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Person)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
@@ -835,19 +797,15 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             }
             WITH *
             WHERE this1.title = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
                 }
                 WITH movie AS this2
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -856,10 +814,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     WITH this3 { .name } AS this3
                     RETURN head(collect(this3)) AS var4
                 }
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -946,10 +902,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Person)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
@@ -959,19 +913,15 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             }
             WITH *
             WHERE this1.title = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
                 }
                 WITH movie AS this2
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -980,10 +930,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     WITH this3 { .name } AS this3
                     RETURN head(collect(this3)) AS var4
                 }
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -1070,10 +1018,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Person)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
@@ -1083,19 +1029,15 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             }
             WITH *
             WHERE this1.title = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
                 }
                 WITH movie AS this2
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -1104,10 +1046,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     WITH this3 { .name } AS this3
                     RETURN head(collect(this3)) AS var4
                 }
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -1193,10 +1133,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Person)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
@@ -1206,19 +1144,15 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             }
             WITH *
             WHERE this1.title = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
                 }
                 WITH movie AS this2
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -1227,10 +1161,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     WITH this3 { .name } AS this3
                     RETURN head(collect(this3)) AS var4
                 }
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -1316,10 +1248,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Person)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
@@ -1329,19 +1259,15 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             }
             WITH *
             WHERE this1.title = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
                 }
                 WITH movie AS this2
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -1350,10 +1276,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     WITH this3 { .name } AS this3
                     RETURN head(collect(this3)) AS var4
                 }
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -1442,10 +1366,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Person)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
@@ -1455,27 +1377,21 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             }
             WITH *
             WHERE this1.title = $param0
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:DIRECTED]->(movie:Movie)
                     RETURN movie
                 }
                 WITH movie AS this2
-                CALL {
-                    WITH this2
+                CALL (this2) {
                     MATCH (this2)<-[this3:ACTED_IN]-(this4:Person)
                     WITH DISTINCT this4
-                    CALL {
-                        WITH this4
+                    CALL (this4) {
                         MATCH (this4)-[this5:ACTED_IN]->(this6:Movie)
                         WITH DISTINCT this6
-                        CALL {
-                            WITH this6
-                            CALL {
-                                WITH this6
+                        CALL (this6) {
+                            CALL (this6) {
                                 WITH this6 AS this
                                 MATCH (this)<-[:DIRECTED]-(director:Person)
                                 RETURN director
@@ -1490,10 +1406,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     WITH this4 { .name, movies: var9 } AS this4
                     RETURN collect(this4) AS var10
                 }
-                CALL {
-                    WITH this2
-                    CALL {
-                        WITH this2
+                CALL (this2) {
+                    CALL (this2) {
                         WITH this2 AS this
                         MATCH (this)<-[:DIRECTED]-(director:Person)
                         RETURN director
@@ -1569,10 +1483,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)<-[:DIRECTED]-(director:Person)
                     RETURN director
@@ -1582,13 +1494,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             }
             WITH *
             WHERE (this.title ENDS WITH $param0 AND this1.name = $param1)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this2:ACTED_IN]-(this3:Person)
                 WITH collect({ node: this3, relationship: this2 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this3, edge.relationship AS this2
                     RETURN collect({ node: { name: this3.name, __resolveType: \\"Person\\" } }) AS var4

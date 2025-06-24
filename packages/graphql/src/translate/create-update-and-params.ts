@@ -318,7 +318,7 @@ export default function createUpdateAndParams({
 
                         subquery.push(
                             `WITH ${withVars.join(", ")}`,
-                            "CALL {",
+                            "CALL(*) {",
                             indentBlock(innerUpdate.join("\n")),
                             "}"
                         );
@@ -483,11 +483,11 @@ export default function createUpdateAndParams({
             });
             if (relationField.interface) {
                 res.strs.push(`WITH ${withVars.join(", ")}`);
-                res.strs.push(`CALL {\n\t WITH ${withVars.join(", ")}\n\t`);
+                res.strs.push(`CALL (${withVars.join(", ")}) {\n\t`);
                 const subqueriesWithMetaPassedOn = subqueries.map(
                     (each, i) => each + `\n}\n${intermediateWithMetaStatements[i] || ""}`
                 );
-                res.strs.push(subqueriesWithMetaPassedOn.join(`\nCALL {\n\t WITH ${withVars.join(", ")}\n\t`));
+                res.strs.push(subqueriesWithMetaPassedOn.join(`\nCALL (${withVars.join(", ")}){\n\t`));
             } else {
                 res.strs.push(subqueries.join("\n"));
             }

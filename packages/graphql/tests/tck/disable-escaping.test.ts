@@ -61,8 +61,7 @@ describe("Disable escaping", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:\`Movie:Film\`)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN|PATICIPATED]-(this1:Actor)
                 WITH DISTINCT this1
                 WITH this1 { .name } AS this1
@@ -98,8 +97,7 @@ describe("Disable escaping", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie:Film)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:\`ACTED_IN|PATICIPATED\`]-(this1:Actor)
                 WITH DISTINCT this1
                 WITH this1 { .name } AS this1

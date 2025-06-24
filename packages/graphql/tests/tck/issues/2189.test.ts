@@ -78,8 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Test_Item)
                 SET
                     create_this1.uuid = randomUUID(),
@@ -87,8 +86,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                     create_this1.str = create_var0.str,
                     create_this1.bool = create_var0.bool
                 WITH create_this1, create_var0
-                CALL {
-                    WITH create_this1, create_var0
+                CALL (create_this1, create_var0) {
                     UNWIND create_var0.feedback.create AS create_var2
                     CREATE (create_this3:Test_Feedback)
                     SET
@@ -155,8 +153,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Test_Item)
                 SET
                     create_this1.uuid = randomUUID(),
@@ -164,8 +161,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                     create_this1.str = create_var0.str,
                     create_this1.bool = create_var0.bool
                 WITH create_this1, create_var0
-                CALL {
-                    WITH create_this1, create_var0
+                CALL (create_this1, create_var0) {
                     UNWIND create_var0.feedback.create AS create_var2
                     CREATE (create_this3:Test_Feedback)
                     SET
@@ -250,8 +246,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Test_Item)
                 SET
                     create_this1.uuid = randomUUID(),
@@ -259,8 +254,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                     create_this1.str = create_var0.str,
                     create_this1.bool = create_var0.bool
                 WITH create_this1, create_var0
-                CALL {
-                    WITH create_this1, create_var0
+                CALL (create_this1, create_var0) {
                     UNWIND create_var0.feedback.create AS create_var2
                     CREATE (create_this3:Test_Feedback)
                     SET
@@ -271,10 +265,8 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                 }
                 RETURN create_this1
             }
-            CALL {
-                WITH create_this1
-                CALL {
-                    WITH create_this1
+            CALL (create_this1) {
+                CALL (create_this1) {
                     WITH create_this1 AS this
                     OPTIONAL MATCH (this)<-[:TEST_RELATIONSHIP]-(t:Test_Feedback)
                     RETURN t
@@ -284,8 +276,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                 WITH create_this6 { .bool, .str, .int, .uuid } AS create_this6
                 RETURN head(collect(create_this6)) AS create_var7
             }
-            CALL {
-                WITH create_this1
+            CALL (create_this1) {
                 MATCH (create_this1)<-[create_this8:TEST_RELATIONSHIP]-(create_this9:Test_Feedback)
                 WITH DISTINCT create_this9
                 WITH create_this9 { .uuid, .int, .str, .bool } AS create_this9
@@ -359,8 +350,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
-            CALL {
-                WITH create_var0
+            CALL (create_var0) {
                 CREATE (create_this1:Test_Item)
                 SET
                     create_this1.uuid = randomUUID(),
@@ -368,8 +358,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                     create_this1.str = create_var0.str,
                     create_this1.bool = create_var0.bool
                 WITH create_this1, create_var0
-                CALL {
-                    WITH create_this1, create_var0
+                CALL (create_this1, create_var0) {
                     UNWIND create_var0.feedback.create AS create_var2
                     CREATE (create_this3:Test_Feedback)
                     SET
@@ -380,8 +369,7 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
                 }
                 RETURN create_this1
             }
-            CALL {
-                WITH create_this1
+            CALL (create_this1) {
                 MATCH (create_this1)<-[create_this6:TEST_RELATIONSHIP]-(create_this7:Test_Feedback)
                 WITH DISTINCT create_this7
                 WITH create_this7 { .uuid, .int, .str, .bool } AS create_this7

@@ -177,10 +177,8 @@ describe("Cypher sort deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                     RETURN count(DISTINCT genre) as result
@@ -210,10 +208,8 @@ describe("Cypher sort deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                     RETURN count(DISTINCT genre) as result
@@ -241,10 +237,8 @@ describe("Cypher sort deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
-                CALL {
-                    WITH this
+            CALL (this) {
+                CALL (this) {
                     WITH this AS this
                     MATCH (this)-[:HAS_GENRE]->(genre:Genre)
                     RETURN count(DISTINCT genre) as result
@@ -344,8 +338,7 @@ describe("Cypher sort deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
                 WITH DISTINCT this1
                 WITH this1 { .name } AS this1
@@ -374,8 +367,7 @@ describe("Cypher sort deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
                 WITH DISTINCT this1
                 WITH this1 { .name } AS this1
@@ -405,14 +397,11 @@ describe("Cypher sort deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
                 WITH DISTINCT this1
-                CALL {
-                    WITH this1
-                    CALL {
-                        WITH this1
+                CALL (this1) {
+                    CALL (this1) {
                         WITH this1 AS this
                         MATCH (this)<-[:HAS_GENRE]-(movie:Movie)
                         RETURN count(DISTINCT movie) as result
@@ -463,14 +452,11 @@ describe("Cypher sort deprecated", () => {
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL {
-                WITH edges
+            CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                CALL {
-                    WITH this0
-                    CALL {
-                        WITH this0
+                CALL (this0) {
+                    CALL (this0) {
                         WITH this0 AS this
                         MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
                     }
@@ -480,19 +466,15 @@ describe("Cypher sort deprecated", () => {
                 WITH *
                 ORDER BY this0.title DESC, var2 ASC
                 LIMIT $param0
-                CALL {
-                    WITH this0
+                CALL (this0) {
                     MATCH (this0)<-[this3:ACTED_IN]-(this4:Actor)
                     WITH collect({ node: this4, relationship: this3 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL {
-                        WITH edges
+                    CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this4, edge.relationship AS this3
-                        CALL {
-                            WITH this4
-                            CALL {
-                                WITH this4
+                        CALL (this4) {
+                            CALL (this4) {
                                 WITH this4 AS this
                                 MATCH (this)-[r:ACTED_IN]->(:Movie)
                                 RETURN sum(r.screenTime) as sum
@@ -552,19 +534,15 @@ describe("Cypher sort deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    CALL {
-                        WITH this1
-                        CALL {
-                            WITH this1
+                    CALL (this1) {
+                        CALL (this1) {
                             WITH this1 AS this
                             MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
                         }
@@ -574,19 +552,15 @@ describe("Cypher sort deprecated", () => {
                     WITH *
                     ORDER BY this1.title DESC, var3 ASC
                     LIMIT $param0
-                    CALL {
-                        WITH this1
+                    CALL (this1) {
                         MATCH (this1)<-[this4:ACTED_IN]-(this5:Actor)
                         WITH collect({ node: this5, relationship: this4 }) AS edges
                         WITH edges, size(edges) AS totalCount
-                        CALL {
-                            WITH edges
+                        CALL (edges) {
                             UNWIND edges AS edge
                             WITH edge.node AS this5, edge.relationship AS this4
-                            CALL {
-                                WITH this5
-                                CALL {
-                                    WITH this5
+                            CALL (this5) {
+                                CALL (this5) {
                                     WITH this5 AS this
                                     MATCH (this)-[r:ACTED_IN]->(:Movie)
                                     RETURN sum(r.screenTime) as sum

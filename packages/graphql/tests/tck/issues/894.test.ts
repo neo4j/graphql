@@ -69,28 +69,25 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             MATCH (this:User)
             WHERE this.name = $param0
             WITH this
-            CALL {
+            CALL(*) {
             WITH this
             OPTIONAL MATCH (this)-[this_activeOrganization0_disconnect0_rel:ACTIVELY_MANAGING]->(this_activeOrganization0_disconnect0:Organization)
             WHERE NOT (this_activeOrganization0_disconnect0._id = $updateUsers_args_update_activeOrganization0_disconnect0_where_Organization_this_activeOrganization0_disconnect0param0)
-            CALL {
-            	WITH this_activeOrganization0_disconnect0, this_activeOrganization0_disconnect0_rel, this
-            	WITH collect(this_activeOrganization0_disconnect0) as this_activeOrganization0_disconnect0, this_activeOrganization0_disconnect0_rel, this
-            	UNWIND this_activeOrganization0_disconnect0 as x
+            CALL (this_activeOrganization0_disconnect0, this_activeOrganization0_disconnect0_rel, this) {
+            	WITH collect(this_activeOrganization0_disconnect0) as this_activeOrganization0_disconnect0_x, this_activeOrganization0_disconnect0_rel, this
+            	UNWIND this_activeOrganization0_disconnect0_x as x
             	DELETE this_activeOrganization0_disconnect0_rel
             }
             RETURN count(*) AS disconnect_this_activeOrganization0_disconnect_Organization
             }
             WITH *
-            CALL {
+            CALL(*) {
             	WITH this
             	OPTIONAL MATCH (this_activeOrganization0_connect0_node:Organization)
             	WHERE this_activeOrganization0_connect0_node._id = $this_activeOrganization0_connect0_node_param0
-            	CALL {
-            		WITH *
+            	CALL(*) {
             		WITH collect(this_activeOrganization0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL {
-            			WITH connectedNodes, parentNodes
+            		CALL(connectedNodes, parentNodes) {
             			UNWIND parentNodes as this
             			UNWIND connectedNodes as this_activeOrganization0_connect0_node
             			CREATE (this)-[:ACTIVELY_MANAGING]->(this_activeOrganization0_connect0_node)

@@ -71,19 +71,15 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Genre)
-            CALL {
-                WITH this
+            CALL (this) {
                 MATCH (this)<-[this0:IS_GENRE]-(this1:Movie)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL {
-                    WITH edges
+                CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
-                    CALL {
-                        WITH this1
-                        CALL {
-                            WITH this1
+                    CALL (this1) {
+                        CALL (this1) {
                             WITH this1 AS this
                             MATCH (this)<-[:ACTED_IN]-(ac:Person)
                             RETURN count(ac) as res
