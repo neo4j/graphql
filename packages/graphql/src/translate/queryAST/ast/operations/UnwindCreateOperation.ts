@@ -36,7 +36,7 @@ import { MutationOperation } from "./operations";
 export class UnwindCreateOperation extends MutationOperation {
     public readonly inputFields: Map<string, InputField>;
     public readonly target: ConcreteEntityAdapter | RelationshipAdapter;
-    public readonly projectionOperations: ReadOperation[] = [];
+    public readonly projectionOperations: ReadOperation[] = []; // This array is always length 1 or 0
     protected readonly authFilters: AuthorizationFilters[] = [];
     private readonly argumentToUnwind: Cypher.Param | Cypher.Property;
     private readonly unwindVariable: Cypher.Variable;

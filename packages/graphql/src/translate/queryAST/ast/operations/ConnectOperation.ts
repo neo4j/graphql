@@ -122,15 +122,15 @@ export class ConnectOperation extends MutationOperation {
 
         const relDirection = this.relationship.getCypherDirection();
 
-        const mergePattern = new Cypher.Pattern(context.target)
+        const connectPattern = new Cypher.Pattern(context.target)
             .related(relVar, { direction: relDirection, type: this.relationship.type })
             .to(nestedContext.target);
-        const mergeClause = new Cypher.Merge(mergePattern);
+        const connectClause = new Cypher.Create(connectPattern);
 
         const clauses = Cypher.utils.concat(
             matchClause,
             // ...mutationSubqueries,
-            mergeClause,
+            connectClause,
             ...this.getProjectionClause(nestedContext)
         );
         // return { projectionExpr: context.returnVariable, clauses };

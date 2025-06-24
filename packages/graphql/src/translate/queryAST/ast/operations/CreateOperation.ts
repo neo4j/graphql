@@ -24,9 +24,9 @@ import { filterTruthy } from "../../../../utils/utils";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
+import { OperationField } from "../fields/OperationField";
 import type { InputField } from "../input-fields/InputField";
 import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
-import type { ReadOperation } from "./ReadOperation";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
 
 /**
@@ -40,7 +40,7 @@ export class CreateOperation extends MutationOperation {
     private selectionPattern: SelectionPattern;
 
     // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
-    public projectionOperations: ReadOperation[] = [];
+    private projectionOperations: OperationField[] = [];
 
     public readonly inputFields: InputField[] = [];
     private createVariable = new Cypher.Variable();
@@ -74,14 +74,13 @@ export class CreateOperation extends MutationOperation {
     }
 
     public addField(field: InputField, _attachedTo: "node" | "relationship") {
-        console.log(field.name);
         // if (!this.inputFields.has(field.name)) {
         //     this.inputFields.set(`${attachedTo}_${field.name}`, field);
         // }
         this.inputFields.push(field);
     }
 
-    public addProjectionOperations(operations: ReadOperation[]) {
+    public addProjectionOperations(operations: OperationField[]) {
         this.projectionOperations.push(...operations);
     }
 
@@ -136,19 +135,26 @@ export class CreateOperation extends MutationOperation {
             withClause,
             ...mutationSubqueries,
             mergeClause,
-            ...this.getProjectionClause(nestedContext),
+            this.getProjectionClause(nestedContext),
         ]);
         return { projectionExpr: context.returnVariable, clauses };
     }
 
-    private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {
-        const clauses = this.projectionOperations.map((operationField) => {
-            return Cypher.utils.concat(...operationField.transpile(context).clauses);
-        });
+    private getProjectionClause(context: QueryASTContext<Cypher.Node>): Cypher.Clause {
+        const subqueries = this.projectionOperations
+            .flatMap((operationField) => {
+                return operationField.getSubqueries(context);
+            })
+            .map((sq) => new Cypher.Call(sq, [context.target]));
 
-        if (clauses.length > 0) {
-            return [new Cypher.With("*"), ...clauses];
-        }
-        return [];
+        const projectionFields = this.projectionOperations
+            .map((f) => {
+                return f.getProjectionField();
+            })
+            .flatMap((projectionMap) => {
+                return Object.values(projectionMap);
+            });
+
+        return Cypher.utils.concat(...subqueries, new Cypher.Return([new Cypher.List(projectionFields), "data"]));
     }
 }

@@ -24,6 +24,7 @@ import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/mode
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
 import { asArray } from "../../../../utils/utils";
+import { OperationField } from "../../ast/fields/OperationField";
 import { MutationOperationField } from "../../ast/input-fields/MutationOperationField";
 import { ParamInputField } from "../../ast/input-fields/ParamInputField";
 import { PropertyInputField } from "../../ast/input-fields/PropertyInputField";
@@ -59,6 +60,7 @@ export class CreateFactory {
                 target: entity,
             }),
         });
+
         const projectionFields = responseFields
             .filter((f) => f.name === entity.plural)
             .map((field) => {
@@ -67,7 +69,12 @@ export class CreateFactory {
                     resolveTree: field,
                     context,
                 }) as ReadOperation;
-                return readOP;
+
+                const fieldOperation = new OperationField({
+                    operation: readOP,
+                    alias: field.alias,
+                });
+                return fieldOperation;
             });
 
         createOP.addProjectionOperations(projectionFields);
