@@ -21,14 +21,14 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
+import { getEntityLabels } from "../../utils/create-node-from-entity";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
+import type { Filter } from "../filters/Filter";
 import type { InputField } from "../input-fields/InputField";
 import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
 import type { ReadOperation } from "./ReadOperation";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
-import { Filter } from "../filters/Filter";
-import { getEntityLabels } from "../../utils/create-node-from-entity";
 
 /**
  * This is currently just a dummy tree node,
@@ -36,7 +36,7 @@ import { getEntityLabels } from "../../utils/create-node-from-entity";
  **/
 export class ConnectOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter;
-    public readonly relationship: RelationshipAdapter | undefined;
+    public readonly relationship: RelationshipAdapter;
 
     private selectionPattern: SelectionPattern;
 
@@ -54,7 +54,7 @@ export class ConnectOperation extends MutationOperation {
     }: {
         target: ConcreteEntityAdapter;
         selectionPattern: SelectionPattern;
-        relationship?: RelationshipAdapter;
+        relationship: RelationshipAdapter;
         filters?: Filter[];
     }) {
         super();
@@ -98,14 +98,14 @@ export class ConnectOperation extends MutationOperation {
         // context.env.topLevelOperationName = "CREATE";
         // // TODO: implement the actual create / unwind create
 
-        const { nestedContext, pattern: mergePattern } = this.selectionPattern.apply(context);
+        const { nestedContext } = this.selectionPattern.apply(context);
 
         const matchPattern = new Cypher.Pattern(nestedContext.target, {
             labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
         });
 
         const matchClause = new Cypher.Match(matchPattern);
-        const predicate = Cypher.and(...this.filters.map((f) => f.getPredicate(context)));
+        const predicate = Cypher.and(...this.filters.map((f) => f.getPredicate(nestedContext)));
         matchClause.where(predicate);
 
         // const setParams = Array.from(this.inputFields.values()).flatMap((input) => {
@@ -118,20 +118,24 @@ export class ConnectOperation extends MutationOperation {
 
         // createClause.set(...setParams);
 
-        let mergeClause: Cypher.Merge | undefined;
-        if (this.relationship) {
-            mergeClause = new Cypher.Merge(mergePattern);
-        }
+        const relVar = new Cypher.Relationship();
 
-        const clauses = filterTruthy([
+        const relDirection = this.relationship.getCypherDirection();
+
+        const mergePattern = new Cypher.Pattern(context.target)
+            .related(relVar, { direction: relDirection, type: this.relationship.type })
+            .to(nestedContext.target);
+        const mergeClause = new Cypher.Merge(mergePattern);
+
+        const clauses = Cypher.utils.concat(
             matchClause,
             // ...mutationSubqueries,
             mergeClause,
-            ...this.getProjectionClause(nestedContext),
-        ]);
+            ...this.getProjectionClause(nestedContext)
+        );
         // return { projectionExpr: context.returnVariable, clauses };
 
-        return { projectionExpr: context.returnVariable, clauses };
+        return { projectionExpr: context.returnVariable, clauses: [clauses] };
     }
 
     private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {

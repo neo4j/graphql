@@ -423,7 +423,7 @@ describe("Cypher Create", () => {
         `);
     });
 
-    test.only("create with nested create and connect", async () => {
+    test("create with nested create and connect", async () => {
         const query = /* GraphQL */ `
             mutation {
                 createMovies(

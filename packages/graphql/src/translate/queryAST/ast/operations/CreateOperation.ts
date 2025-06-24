@@ -92,7 +92,7 @@ export class CreateOperation extends MutationOperation {
         context.env.topLevelOperationName = "CREATE";
         // TODO: implement the actual create / unwind create
 
-        const { nestedContext, pattern: mergePattern } = this.selectionPattern.apply(context);
+        const { nestedContext } = this.selectionPattern.apply(context);
 
         const createPattern = new Cypher.Pattern(nestedContext.target, {
             labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
@@ -104,19 +104,36 @@ export class CreateOperation extends MutationOperation {
             return input.getSetParams(nestedContext);
         });
 
-        const mutationSubqueries = Array.from(this.inputFields.values()).flatMap((input) => {
-            return input.getSubqueries(nestedContext);
-        });
+        const mutationSubqueries = Array.from(this.inputFields.values())
+            .flatMap((input) => {
+                return input.getSubqueries(nestedContext);
+            })
+            .map((sq) => {
+                return new Cypher.Call(sq, "*");
+            });
 
         createClause.set(...setParams);
 
         let mergeClause: Cypher.Merge | undefined;
         if (this.relationship) {
+            const relVar = new Cypher.Relationship();
+
+            const relDirection = this.relationship.getCypherDirection();
+
+            const mergePattern = new Cypher.Pattern(context.target)
+                .related(relVar, { direction: relDirection, type: this.relationship.type })
+                .to(nestedContext.target);
             mergeClause = new Cypher.Merge(mergePattern);
+        }
+
+        let withClause: Cypher.With | undefined;
+        if (mutationSubqueries.length > 0) {
+            withClause = new Cypher.With("*");
         }
 
         const clauses = filterTruthy([
             createClause,
+            withClause,
             ...mutationSubqueries,
             mergeClause,
             ...this.getProjectionClause(nestedContext),
@@ -125,8 +142,13 @@ export class CreateOperation extends MutationOperation {
     }
 
     private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {
-        return this.projectionOperations.map((operationField) => {
+        const clauses = this.projectionOperations.map((operationField) => {
             return Cypher.utils.concat(...operationField.transpile(context).clauses);
         });
+
+        if (clauses.length > 0) {
+            return [new Cypher.With("*"), ...clauses];
+        }
+        return [];
     }
 }

@@ -49,6 +49,7 @@ import type { AuthorizationFactory } from "./AuthorizationFactory";
 import type { FieldFactory } from "./FieldFactory";
 import type { FilterFactory } from "./FilterFactory";
 import { AggregateFactory } from "./Operations/AggregateFactory";
+import { ConnectFactory } from "./Operations/ConnectFactory";
 import { ConnectionFactory } from "./Operations/ConnectionFactory";
 import { CreateFactory } from "./Operations/CreateFactory";
 import { CustomCypherFactory } from "./Operations/CustomCypherFactory";
@@ -61,7 +62,6 @@ import type { QueryASTFactory } from "./QueryASTFactory";
 import type { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import { ConnectFactory } from "./Operations/ConnectFactory";
 
 export class OperationsFactory {
     // specialized operations factories
@@ -203,10 +203,11 @@ export class OperationsFactory {
 
     public createConnectOperation(
         entity: ConcreteEntityAdapter,
+        relationship: RelationshipAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ) {
-        return this.connectFactory.createConnectOperation(entity, resolveTree, context);
+        return this.connectFactory.createConnectOperation(entity, relationship, resolveTree, context);
     }
 
     public createReadOperation(arg: {

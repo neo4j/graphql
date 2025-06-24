@@ -19,11 +19,12 @@
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
+import { isRecord } from "../../../../utils/utils";
 import { ConnectOperation } from "../../ast/operations/ConnectOperation";
 import { NodeSelectionPattern } from "../../ast/selection/SelectionPattern/NodeSelectionPattern";
 import type { QueryASTFactory } from "../QueryASTFactory";
-import { isRecord } from "../../../../utils/utils";
 
 export class ConnectFactory {
     private queryASTFactory: QueryASTFactory;
@@ -34,6 +35,7 @@ export class ConnectFactory {
 
     public createConnectOperation(
         entity: ConcreteEntityAdapter,
+        relationship: RelationshipAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext
     ): ConnectOperation {
@@ -41,7 +43,6 @@ export class ConnectFactory {
         //     resolveTree.fieldsByTypeName?.[entity.operations.mutationResponseTypeNames.connect] ?? {}
         // );
 
-        console.log("connectFactory:", resolveTree);
         const { whereArg } = this.parseConnectArgs(resolveTree, false); //connectArg
 
         const nodeFilters = this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArg.node);
@@ -51,6 +52,7 @@ export class ConnectFactory {
                 target: entity,
             }),
             filters: nodeFilters,
+            relationship,
         });
         // createConnectionPredicates
 

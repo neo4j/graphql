@@ -59,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/2812", () => {
         features: { authorization: { key: secret } },
     });
 
-    test.only("auth fields partially included in the input", async () => {
+    test("auth fields partially included in the input", async () => {
         const query = /* GraphQL */ `
             mutation {
                 createMovies(
