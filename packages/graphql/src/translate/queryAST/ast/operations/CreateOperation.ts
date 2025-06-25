@@ -110,18 +110,22 @@ export class CreateOperation extends MutationOperation {
                 return new Cypher.Call(sq, "*");
             });
 
-        createClause.set(...setParams);
-
         let mergeClause: Cypher.Merge | undefined;
         if (this.relationship) {
-            const relVar = new Cypher.Relationship();
-
+            const relVar = nestedContext.relationship;
+            if (!relVar) {
+                throw new Error(
+                    "GraphQL Error: Transpilation Error, relationship variable not avaialbe. Please contact support"
+                );
+            }
             const relDirection = this.relationship.getCypherDirection();
 
             const mergePattern = new Cypher.Pattern(context.target)
                 .related(relVar, { direction: relDirection, type: this.relationship.type })
                 .to(nestedContext.target);
-            mergeClause = new Cypher.Merge(mergePattern);
+            mergeClause = new Cypher.Merge(mergePattern).set(...setParams);
+        } else {
+            createClause.set(...setParams);
         }
 
         let withClause: Cypher.With | undefined;
@@ -159,6 +163,11 @@ export class CreateOperation extends MutationOperation {
             returnClause = new Cypher.Return([new Cypher.List(projectionFields), "data"]);
         }
 
-        return Cypher.utils.concat(...subqueries, returnClause);
+        let extraWith: Cypher.With | undefined;
+        if (subqueries.length > 0) {
+            extraWith = new Cypher.With(context.target);
+        }
+
+        return Cypher.utils.concat(extraWith, ...subqueries, returnClause);
     }
 }

@@ -191,6 +191,21 @@ export class ConcreteEntityAdapter {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isEventPayloadField());
     }
 
+    public getPopulatedByFields(operation: "CREATE" | "UPDATE"): AttributeAdapter[] {
+        switch (operation) {
+            case "CREATE":
+                return Array.from(this.attributes.values()).filter((attribute) =>
+                    attribute.populatedByCreateIsGenerated()
+                );
+            case "UPDATE":
+                return Array.from(this.attributes.values()).filter((attribute) =>
+                    attribute.populatedByUpdateIsGenerated()
+                );
+            default:
+                throw new Error("Invalid operation");
+        }
+    }
+
     public isSubscribable(schemaModel: Neo4jGraphQLSchemaModel): boolean {
         if (this.annotations.subscription) {
             return this.annotations.subscription.events?.size > 0;

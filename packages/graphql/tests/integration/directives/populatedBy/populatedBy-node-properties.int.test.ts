@@ -9,7 +9,7 @@ describe("@populatedBy directive - Node properties", () => {
     });
 
     describe("@populatedBy - Int", () => {
-        test("Should use on CREATE", async () => {
+        test.only("Should use on CREATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
             const int1 = 123456;
 
