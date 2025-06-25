@@ -100,6 +100,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@apollo/federation-internals@npm:2.11.1":
+  version: 2.11.1
+  resolution: "@apollo/federation-internals@npm:2.11.1"
+  dependencies:
+    "@types/uuid": "npm:^9.0.0"
+    chalk: "npm:^4.1.0"
+    js-levenshtein: "npm:^1.1.6"
+    uuid: "npm:^9.0.0"
+  peerDependencies:
+    graphql: ^16.5.0
+  checksum: 10c0/cf6880880b1b185ab54e4048d2042cd4502630772ea5d23de6bfe4b012f8f0ceabec3deaf86196ca02eee3737dcb990f072852e570a1ae1475e0ea6dda29ada6
+  languageName: node
+  linkType: hard
+
 "@apollo/federation-subgraph-compatibility-tests@npm:2.2.1":
   version: 2.2.1
   resolution: "@apollo/federation-subgraph-compatibility-tests@npm:2.2.1"
@@ -275,14 +289,14 @@ __metadata:
   linkType: hard
 
 "@apollo/subgraph@npm:^2.2.3":
-  version: 2.11.0
-  resolution: "@apollo/subgraph@npm:2.11.0"
+  version: 2.11.1
+  resolution: "@apollo/subgraph@npm:2.11.1"
   dependencies:
     "@apollo/cache-control-types": "npm:^1.0.2"
-    "@apollo/federation-internals": "npm:2.11.0"
+    "@apollo/federation-internals": "npm:2.11.1"
   peerDependencies:
     graphql: ^16.5.0
-  checksum: 10c0/6d0040e599f886752c270b3906eb40b3f5f3016865f10aec5d2c71e2ace4adb8807929a4fef214a6861cc2647bc47a1d41ad81367e4841629f5a5c7566e0738d
+  checksum: 10c0/214b39632aac70d2176d74709631189119acafbfd64cba354469f0b23d750aa46d074805c19a10b8d959759f3bacecb4d1a61880a43ea33046dbba980f4d2651
   languageName: node
   linkType: hard
 
@@ -2537,9 +2551,9 @@ __metadata:
   linkType: hard
 
 "@neo4j/cypher-builder@npm:^2.4.0":
-  version: 2.7.0
-  resolution: "@neo4j/cypher-builder@npm:2.7.0"
-  checksum: 10c0/729678bd37b6408eddb8b50fde97e63d20092b24253ede5ad80b92be29d352dccfedf5a424d8b91f07e7149f518d0fdb8e38b1a9538e83e109ac3e59852b133b
+  version: 2.7.1
+  resolution: "@neo4j/cypher-builder@npm:2.7.1"
+  checksum: 10c0/8dd7ea26891f895f633687d176089b4754dbd6a80d1f7277fa903c139daeebb12ea1d5aec12cffd87b97927a45cc8aa23df12db2daa556e4f9f63af4e0febaa5
   languageName: node
   linkType: hard
 
