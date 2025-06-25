@@ -19,7 +19,7 @@
 
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
-import { CallbackBucket } from "../classes/CallbackBucket";
+import { CallbackBucketDeprecated } from "../classes/CallbackBucketDeprecated";
 import { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import { Attribute } from "../schema-model/attribute/Attribute";
 import { GraphQLBuiltInScalarType, ScalarType } from "../schema-model/attribute/AttributeType";
@@ -109,7 +109,7 @@ describe("createCreateAndParams", () => {
         const result = createCreateAndParams({
             input,
             node,
-            callbackBucket: new CallbackBucket(context),
+            callbackBucket: new CallbackBucketDeprecated(context),
             context,
             varName: "this0",
             withVars: ["this0"],

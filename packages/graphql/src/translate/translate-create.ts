@@ -21,7 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Node } from "../classes";
-import { CallbackBucket } from "../classes/CallbackBucket";
+import { CallbackBucketDeprecated } from "../classes/CallbackBucketDeprecated";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
@@ -82,7 +82,7 @@ export default async function translateCreate({
         return unwindCreate({ context, entityAdapter });
     }
     debug(`Unwind create optimization not supported: ${reason}`);
-    const callbackBucket: CallbackBucket = new CallbackBucket(context);
+    const callbackBucket: CallbackBucketDeprecated = new CallbackBucketDeprecated(context);
 
     const varName = "this";
     const createQueryCypher = translateUsingQueryAST({ context, entityAdapter, resolveTree, varName });
@@ -122,7 +122,7 @@ async function translateCreateOld({
     debug(`Unwind create optimization not supported: ${reason}`);
 
     const projectionWith: string[] = [];
-    const callbackBucket: CallbackBucket = new CallbackBucket(context);
+    const callbackBucket: CallbackBucketDeprecated = new CallbackBucketDeprecated(context);
 
     const metaNames: string[] = [];
 

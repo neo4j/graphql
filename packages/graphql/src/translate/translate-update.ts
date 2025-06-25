@@ -20,7 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
 import type { Node, Relationship } from "../classes";
-import { CallbackBucket } from "../classes/CallbackBucket";
+import { CallbackBucketDeprecated } from "../classes/CallbackBucketDeprecated";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { GraphQLWhereArg, RelationField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
@@ -54,7 +54,7 @@ export default async function translateUpdate({
     const createInput = resolveTree.args.create;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
-    const callbackBucket: CallbackBucket = new CallbackBucket(context);
+    const callbackBucket: CallbackBucketDeprecated = new CallbackBucketDeprecated(context);
     const withVars = [varName];
 
     let matchAndWhereStr = "";

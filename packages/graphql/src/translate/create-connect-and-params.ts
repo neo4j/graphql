@@ -19,7 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { Node, Relationship } from "../classes";
-import type { CallbackBucket } from "../classes/CallbackBucket";
+import type { CallbackBucketDeprecated } from "../classes/CallbackBucketDeprecated";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import { InterfaceEntity } from "../schema-model/entity/InterfaceEntity";
 import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -70,7 +70,7 @@ function createConnectAndParams({
     relationField: RelationField;
     parentVar: string;
     context: Neo4jGraphQLTranslationContext;
-    callbackBucket: CallbackBucket;
+    callbackBucket: CallbackBucketDeprecated;
     refNodes: Node[];
     labelOverride?: string;
     parentNode: Node;

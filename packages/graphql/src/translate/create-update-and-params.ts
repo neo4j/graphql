@@ -20,7 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import pluralize from "pluralize";
 import type { Node, Relationship } from "../classes";
-import type { CallbackBucket } from "../classes/CallbackBucket";
+import type { CallbackBucketDeprecated } from "../classes/CallbackBucketDeprecated";
 import type { BaseField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { caseWhere } from "../utils/case-where";
@@ -82,7 +82,7 @@ export default function createUpdateAndParams({
     node: Node;
     withVars: string[];
     context: Neo4jGraphQLTranslationContext;
-    callbackBucket: CallbackBucket;
+    callbackBucket: CallbackBucketDeprecated;
     parameterPrefix: string;
 }): [string, any] {
     let hasAppliedTimeStamps = false;

@@ -18,7 +18,7 @@
  */
 
 import type { Node, Relationship } from "../classes";
-import type { CallbackBucket } from "../classes/CallbackBucket";
+import type { CallbackBucketDeprecated } from "../classes/CallbackBucketDeprecated";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { getRelationshipType } from "../utils/get-relationship-type";
 import mapToDbProperty from "../utils/map-to-db-property";
@@ -64,7 +64,7 @@ function createCreateAndParams({
     varName: string;
     node: Node;
     context: Neo4jGraphQLTranslationContext;
-    callbackBucket: CallbackBucket;
+    callbackBucket: CallbackBucketDeprecated;
     withVars: string[];
     topLevelNodeVariable?: string;
     //used to build authorization variable in auth subqueries

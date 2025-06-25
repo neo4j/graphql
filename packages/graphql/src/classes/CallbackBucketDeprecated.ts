@@ -57,7 +57,8 @@ type CallbackResult =
     | Duration<Integer>
     | Array<CallbackResult>;
 
-export class CallbackBucket {
+/** @deprecated */
+export class CallbackBucketDeprecated {
     public callbacks: Callback[];
     private context: Neo4jGraphQLTranslationContext;
 

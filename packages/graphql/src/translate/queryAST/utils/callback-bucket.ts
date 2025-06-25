@@ -17,24 +17,25 @@
  * limitations under the License.
  */
 
+import type Cypher from "@neo4j/cypher-builder";
 import { GraphQLBoolean, GraphQLError, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
+import { GraphQLDate } from "graphql-compose";
 import type { DateTime, Duration, Integer, LocalDateTime, LocalTime, Date as Neo4jDate, Time } from "neo4j-driver";
 import {
     GraphQLBigInt,
-    GraphQLDate,
     GraphQLDateTime,
     GraphQLDuration,
     GraphQLLocalDateTime,
     GraphQLLocalTime,
     GraphQLTime,
-} from "../graphql/scalars";
-import type { Neo4jGraphQLCallbacks, TypeMeta } from "../types";
-import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
-import { AttributeType, ListType } from "../../../schema-model/attribute/AttributeType";
-import Cypher from "@neo4j/cypher-builder";
+} from "../../../graphql/scalars";
+import type { AttributeType } from "../../../schema-model/attribute/AttributeType";
+import { ListType } from "../../../schema-model/attribute/AttributeType";
+import type { Neo4jGraphQLCallbacks } from "../../../types";
+import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
-interface SpecialCallback {
+interface Callback {
     functionName: string;
     paramName: Cypher.Param;
     parent?: Record<string, unknown>;
@@ -60,7 +61,7 @@ type CallbackResult =
     | Array<CallbackResult>;
 
 export class CallbackBucket {
-    public callbacks: SpecialCallback[];
+    public callbacks: Callback[];
     private context: Neo4jGraphQLTranslationContext;
 
     constructor(context: Neo4jGraphQLTranslationContext) {
@@ -68,7 +69,7 @@ export class CallbackBucket {
         this.callbacks = [];
     }
 
-    public addCallback(callback: SpecialCallback): void {
+    public addCallback(callback: Callback): void {
         this.callbacks.push(callback);
     }
 
@@ -76,7 +77,7 @@ export class CallbackBucket {
         cypher: string;
     }): Promise<{ cypher: string; params: Record<string, unknown> }> {
         const params: Record<string, unknown> = {};
-        let cypher = options.cypher;
+        const cypher = options.cypher;
 
         await Promise.all(
             this.callbacks.map(async (cb) => {
