@@ -95,7 +95,7 @@ export class CallbackBucket {
                 throw new GraphQLError("Expected list as callback result but did not.");
             }
 
-            return result.map((r) => this.parseCallbackResult(r, type));
+            return result.map((r) => this.parseCallbackResult(r, type.ofType));
         }
 
         switch (type.name) {
