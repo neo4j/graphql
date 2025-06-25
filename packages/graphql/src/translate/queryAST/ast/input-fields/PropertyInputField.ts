@@ -43,10 +43,6 @@ export class PropertyInputField extends InputField {
         return [];
     }
 
-    public print(): string {
-        return `${super.print()}`;
-    }
-
     public getSetParams(
         queryASTContext: QueryASTContext<Cypher.Node>,
         inputVariable?: Cypher.Variable

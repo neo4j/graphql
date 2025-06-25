@@ -33,7 +33,7 @@ import { InputField } from "./InputField";
  * ```
  */
 export class ParamInputField extends InputField {
-    private attribute: AttributeAdapter;
+    protected attribute: AttributeAdapter;
     protected inputValue: unknown;
 
     constructor({
@@ -54,13 +54,9 @@ export class ParamInputField extends InputField {
         return [];
     }
 
-    public print(): string {
-        return `${super.print()}`;
-    }
-
     public getSetParams(
         queryASTContext: QueryASTContext<Cypher.Node>,
-        inputVariable?: Cypher.Variable
+        _inputVariable?: Cypher.Variable
     ): Cypher.SetParam[] {
         const target = this.getTarget(queryASTContext);
 
@@ -71,17 +67,6 @@ export class ParamInputField extends InputField {
 
         const setField: Cypher.SetParam = [leftExpr, rightExpr];
         return [setField];
-    }
-
-    private getVariablePath(
-        queryASTContext: QueryASTContext<Cypher.Node>,
-        variable: Cypher.Property | Cypher.Variable
-    ): Cypher.Property | Cypher.Variable {
-        const path = this.attachedTo === "node" ? "node" : "edge";
-        if (queryASTContext.relationship) {
-            return variable.property(path).property(this.attribute.name);
-        }
-        return variable.property(this.attribute.name);
     }
 
     private coerceReference(
