@@ -31,13 +31,14 @@ import createCreateAndParams from "./create-create-and-params";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 import { isUnwindCreateSupported } from "./queryAST/factory/parsers/is-unwind-create-supported";
+import { CallbackBucket } from "./queryAST/utils/callback-bucket";
 import unwindCreate from "./unwind-create";
 import { buildClause } from "./utils/build-clause";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
-function translateUsingQueryAST({
+async function translateUsingQueryAST({
     context,
     entityAdapter,
     resolveTree,
@@ -47,19 +48,24 @@ function translateUsingQueryAST({
     entityAdapter: EntityAdapter;
     resolveTree: ResolveTree;
     varName: string;
-}) {
+}): Promise<Cypher.CypherResult> {
     const operationsTreeFactory = new QueryASTFactory(context.schemaModel);
 
     if (!entityAdapter) {
         throw new Error("Entity not found");
     }
-    const operationsTree = operationsTreeFactory.createQueryAST({
+
+    const callbackBucket = new CallbackBucket(context);
+
+    const operationsTree = operationsTreeFactory.createMutationAST({
         resolveTree,
         entityAdapter,
         context,
         varName,
+        callbackBucket,
     });
     debug(operationsTree.print());
+    await callbackBucket.resolveCallbacks();
     const clause = operationsTree.build(context, varName);
     return buildClause(clause, { context });
 }
@@ -82,22 +88,14 @@ export default async function translateCreate({
         return unwindCreate({ context, entityAdapter });
     }
     debug(`Unwind create optimization not supported: ${reason}`);
-    const callbackBucket: CallbackBucketDeprecated = new CallbackBucketDeprecated(context);
+    // const callbackBucket: CallbackBucketDeprecated = new CallbackBucketDeprecated(context);
 
     const varName = "this";
-    const createQueryCypher = translateUsingQueryAST({ context, entityAdapter, resolveTree, varName });
+    const result = await translateUsingQueryAST({ context, entityAdapter, resolveTree, varName });
 
-    const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
-        cypher: createQueryCypher.cypher,
-    });
-
-    const result = {
-        cypher,
-        params: {
-            ...createQueryCypher.params,
-            resolvedCallbacks,
-        },
-    };
+    // const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
+    //     cypher: createQueryCypher.cypher,
+    // });
 
     return result;
 }

@@ -19,10 +19,10 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import { GraphQLBoolean, GraphQLError, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
-import { GraphQLDate } from "graphql-compose";
 import type { DateTime, Duration, Integer, LocalDateTime, LocalTime, Date as Neo4jDate, Time } from "neo4j-driver";
 import {
     GraphQLBigInt,
+    GraphQLDate,
     GraphQLDateTime,
     GraphQLDuration,
     GraphQLLocalDateTime,
@@ -37,7 +37,7 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 
 interface Callback {
     functionName: string;
-    paramName: Cypher.Param;
+    param: Cypher.Param;
     parent?: Record<string, unknown>;
     type: AttributeType;
 }
@@ -73,12 +73,7 @@ export class CallbackBucket {
         this.callbacks.push(callback);
     }
 
-    public async resolveCallbacksAndFilterCypher(options: {
-        cypher: string;
-    }): Promise<{ cypher: string; params: Record<string, unknown> }> {
-        const params: Record<string, unknown> = {};
-        const cypher = options.cypher;
-
+    public async resolveCallbacks(): Promise<void> {
         await Promise.all(
             this.callbacks.map(async (cb) => {
                 const callbackFunction = (this.context.features.populatedBy?.callbacks as Neo4jGraphQLCallbacks)[
@@ -88,22 +83,10 @@ export class CallbackBucket {
                     args?: Record<string, never>,
                     context?: Neo4jGraphQLContext
                 ) => Promise<any>;
-                const param = await callbackFunction(cb.parent, {}, this.context);
-
-                // if (param === undefined) {
-                //     cypher = cypher
-                //         .split("\n")
-                //         .filter((line) => !line.includes(`$resolvedCallbacks.${cb.paramName}`))
-                //         .join("\n");
-                // } else if (param === null) {
-                //     params[cb.paramName] = null;
-                // } else {
-                //     params[cb.paramName] = this.parseCallbackResult(param, cb.type);
-                // }
+                const paramValue = await callbackFunction(cb.parent, {}, this.context);
+                cb.param.value = this.parseCallbackResult(paramValue, cb.type);
             })
         );
-
-        return { cypher, params };
     }
 
     private parseCallbackResult(result: unknown, type: AttributeType): CallbackResult {

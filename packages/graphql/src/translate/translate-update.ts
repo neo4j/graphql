@@ -34,6 +34,7 @@ import { createSetRelationshipProperties } from "./create-set-relationship-prope
 import createUpdateAndParams from "./create-update-and-params";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import { CallbackBucket } from "./queryAST/utils/callback-bucket";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import { buildClause } from "./utils/build-clause";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
@@ -387,10 +388,11 @@ export default async function translateUpdate({
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
 
-    const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST({
+    const queryAST = new QueryASTFactory(context.schemaModel).createMutationAST({
         resolveTree,
         entityAdapter,
         context,
+        callbackBucket: new CallbackBucket(context), // TODO: unused for now
     });
     const queryASTEnv = new QueryASTEnv();
 

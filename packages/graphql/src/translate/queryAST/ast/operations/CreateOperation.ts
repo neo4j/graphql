@@ -21,6 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
+import type { CallbackBucket } from "../../utils/callback-bucket";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
@@ -43,6 +44,8 @@ export class CreateOperation extends MutationOperation {
     private projectionOperations: OperationField[] = [];
 
     public readonly inputFields: InputField[] = [];
+
+    public callbackBucket: CallbackBucket | undefined;
 
     constructor({
         target,

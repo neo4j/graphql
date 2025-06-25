@@ -42,6 +42,7 @@ import type { CompositeReadOperation } from "../ast/operations/composite/Composi
 import type { Operation } from "../ast/operations/operations";
 import type { FulltextSelection } from "../ast/selection/FulltextSelection";
 import type { VectorSelection } from "../ast/selection/VectorSelection";
+import type { CallbackBucket } from "../utils/callback-bucket";
 import { assertIsConcreteEntity, isConcreteEntity } from "../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
@@ -103,14 +104,12 @@ export class OperationsFactory {
         context,
         varName,
         reference,
-        resolveAsUnwind = false,
     }: {
         entity?: EntityAdapter;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         varName?: string;
         reference?: any;
-        resolveAsUnwind?: boolean;
     }): Operation {
         const operationMatch = parseTopLevelOperationField(resolveTree.name, context, entity);
         switch (operationMatch) {
@@ -168,12 +167,52 @@ export class OperationsFactory {
                     context,
                 });
             }
+            // case "UPDATE": {
+            //     assertIsConcreteEntity(entity);
+            //     return this.updateFactory.createUpdateOperation(entity, resolveTree, context);
+            // }
+            // case "DELETE": {
+            //     assertIsConcreteEntity(entity);
+            //     return this.deleteFactory.createTopLevelDeleteOperation({
+            //         entity,
+            //         resolveTree,
+            //         context,
+            //         varName,
+            //     });
+            // }
+            case "CUSTOM_CYPHER": {
+                return this.customCypherFactory.createTopLevelCustomCypherOperation({ entity, resolveTree, context });
+            }
+            default: {
+                throw new Error(`Unsupported top level operation: ${resolveTree.name}`);
+            }
+        }
+    }
+
+    public createTopLevelMutationOperation({
+        entity,
+        resolveTree,
+        context,
+        varName,
+        callbackBucket,
+        resolveAsUnwind = false,
+    }: {
+        entity?: EntityAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        varName?: string;
+        callbackBucket: CallbackBucket;
+        resolveAsUnwind?: boolean;
+    }): Operation {
+        const operationMatch = parseTopLevelOperationField(resolveTree.name, context, entity);
+        switch (operationMatch) {
             case "CREATE": {
                 assertIsConcreteEntity(entity);
                 if (resolveAsUnwind) {
                     return this.createFactory.createUnwindCreateOperation(entity, resolveTree, context);
                 }
-                return this.createFactory.createCreateOperation(entity, resolveTree, context);
+
+                return this.createFactory.createCreateOperation({ entity, resolveTree, callbackBucket, context });
             }
             case "UPDATE": {
                 assertIsConcreteEntity(entity);
@@ -188,9 +227,7 @@ export class OperationsFactory {
                     varName,
                 });
             }
-            case "CUSTOM_CYPHER": {
-                return this.customCypherFactory.createTopLevelCustomCypherOperation({ entity, resolveTree, context });
-            }
+
             default: {
                 throw new Error(`Unsupported top level operation: ${resolveTree.name}`);
             }

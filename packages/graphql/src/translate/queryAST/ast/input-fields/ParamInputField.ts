@@ -24,7 +24,8 @@ import { InputField } from "./InputField";
 
 // TODO: this should be the default case (PropertyInputField)
 /** Input field from a parameter
- * it will generate a set operation from param
+ * it will generate a set operation from param, if a Cypher.Variable or Param is passed, it will be used
+ * otherwise, the value will be wrapped in a param
  *
  * ```cypher
  * CREATE (var0:Movie)
@@ -60,7 +61,12 @@ export class ParamInputField extends InputField {
     ): Cypher.SetParam[] {
         const target = this.getTarget(queryASTContext);
 
-        const rightVariable = new Cypher.Param(this.inputValue);
+        let rightVariable: Cypher.Expr;
+        if (this.inputValue instanceof Cypher.Variable) {
+            rightVariable = this.inputValue;
+        } else {
+            rightVariable = new Cypher.Param(this.inputValue);
+        }
 
         const leftExpr = target.property(this.attribute.databaseName);
         const rightExpr = this.coerceReference(rightVariable);

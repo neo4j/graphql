@@ -33,6 +33,7 @@ import type { ReadOperation } from "../../ast/operations/ReadOperation";
 import { UnwindCreateOperation } from "../../ast/operations/UnwindCreateOperation";
 import { NodeSelectionPattern } from "../../ast/selection/SelectionPattern/NodeSelectionPattern";
 import { RelationshipSelectionPattern } from "../../ast/selection/SelectionPattern/RelationshipSelectionPattern";
+import type { CallbackBucket } from "../../utils/callback-bucket";
 import { assertIsConcreteEntity, isConcreteEntity } from "../../utils/is-concrete-entity";
 import { raiseAttributeAmbiguity } from "../../utils/raise-attribute-ambiguity";
 import type { QueryASTFactory } from "../QueryASTFactory";
@@ -45,12 +46,17 @@ export class CreateFactory {
         this.queryASTFactory = queryASTFactory;
     }
 
-    public createCreateOperation(
-        entity: ConcreteEntityAdapter,
-        resolveTree: ResolveTree,
-        // callbackBucket: CallbackBucketDeprecated,
-        context: Neo4jGraphQLTranslationContext
-    ): CreateOperation {
+    public createCreateOperation({
+        entity,
+        resolveTree,
+        callbackBucket,
+        context,
+    }: {
+        entity: ConcreteEntityAdapter;
+        resolveTree: ResolveTree;
+        callbackBucket: CallbackBucket;
+        context: Neo4jGraphQLTranslationContext;
+    }): CreateOperation {
         const responseFields = Object.values(
             resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.create] ?? {}
         );
@@ -86,7 +92,7 @@ export class CreateFactory {
             target: entity,
             input,
             create: createOP,
-            // callbackBucket,
+            callbackBucket,
             context,
         });
         return createOP;
@@ -244,14 +250,14 @@ export class CreateFactory {
         relationship,
         input,
         create,
-        // callbackBucket,
+        callbackBucket,
         context,
     }: {
         target: ConcreteEntityAdapter;
         relationship?: RelationshipAdapter;
         input: Record<string, any>[];
         create: CreateOperation;
-        // callbackBucket: CallbackBucketDeprecated;
+        callbackBucket: CallbackBucket;
         context: Neo4jGraphQLTranslationContext;
     }) {
         const isNested = Boolean(relationship);
@@ -298,7 +304,7 @@ export class CreateFactory {
                             target: nestedEntity,
                             relationship: nestedRelationship,
                             input: nestedCreateInput,
-                            // callbackBucket,
+                            callbackBucket,
                             context,
                         });
 
@@ -340,47 +346,48 @@ export class CreateFactory {
             }
         });
 
-        // this.addPopulatedByFieldToCreate({ entity: target, create, input, callbackBucket, context });
+        this.addPopulatedByFieldToCreate({ entity: target, create, input, callbackBucket, context });
     }
 
-    // private addPopulatedByFieldToCreate({
-    //     entity,
-    //     create,
-    //     input,
-    //     callbackBucket,
-    //     context,
-    // }: {
-    //     entity: ConcreteEntityAdapter;
-    //     create: CreateOperation;
-    //     input: Record<string, any>[];
-    //     callbackBucket: CallbackBucketDeprecated;
-    //     context: Neo4jGraphQLTranslationContext;
-    // }) {
-    //     entity.getPopulatedByFields("CREATE").forEach((attribute) => {
-    //         const attachedTo = "node";
-    //         const callbackFn = context.features.populatedBy?.callbacks?.[attribute.name];
-    //         if (!callbackFn) {
-    //             throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
-    //         }
-    //         const field = new CallbackInputField({
-    //             attribute,
-    //             attachedTo,
-    //             callback: callbackFn,
-    //             input: input[0] ?? {}, // TODO: handle multiple inputs
-    //         });
-    //         create.addField(field, attachedTo);
+    private addPopulatedByFieldToCreate({
+        entity,
+        create,
+        input,
+        callbackBucket,
+        context,
+    }: {
+        entity: ConcreteEntityAdapter;
+        create: CreateOperation;
+        input: Record<string, any>[];
+        callbackBucket: CallbackBucket;
+        context: Neo4jGraphQLTranslationContext;
+    }) {
+        entity.getPopulatedByFields("CREATE").forEach((attribute) => {
+            const attachedTo = "node";
+            // const callbackFn = context.features.populatedBy?.callbacks?.[attribute.name];
+            // if (!callbackFn) {
+            //     throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
+            // }
 
-    //         if (!attribute.annotations.populatedBy?.callback) {
-    //             throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
-    //         }
-    //         callbackBucket.addCallback({
-    //             functionName: attribute.annotations.populatedBy?.callback,
-    //             paramName: new Cypher.Param(""),
-    //             parent: input[0] ?? {}, // TODO: handle multiple inputs
-    //             type: attribute.type,
-    //         });
-    //     });
-    // }
+            const callbackParam = new Cypher.Param("1234");
+            const field = new ParamInputField({
+                attribute,
+                attachedTo,
+                inputValue: callbackParam,
+            });
+            create.addField(field, attachedTo);
+
+            if (!attribute.annotations.populatedBy?.callback) {
+                throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
+            }
+            callbackBucket.addCallback({
+                functionName: attribute.annotations.populatedBy?.callback,
+                param: callbackParam,
+                parent: input[0] ?? {}, // TODO: handle multiple inputs
+                type: attribute.type,
+            });
+        });
+    }
 
     private getInputNode(inputItem: Record<string, any>, isNested: boolean): Record<string, any> {
         if (isNested) {
