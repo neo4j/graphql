@@ -29,6 +29,7 @@ import type { InputField } from "../input-fields/InputField";
 import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
 import type { ReadOperation } from "./ReadOperation";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 
 /**
  * This is currently just a dummy tree node,
@@ -92,9 +93,9 @@ export class ConnectOperation extends MutationOperation {
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
-        // if (!context.hasTarget()) {
-        //     throw new Error("No parent node found!");
-        // }
+        if (!context.hasTarget()) {
+            throw new Error("No parent node found!");
+        }
         // context.env.topLevelOperationName = "CREATE";
         // // TODO: implement the actual create / unwind create
 
@@ -103,10 +104,20 @@ export class ConnectOperation extends MutationOperation {
         const matchPattern = new Cypher.Pattern(nestedContext.target, {
             labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
         });
+        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
 
-        const matchClause = new Cypher.Match(matchPattern);
-        const predicate = Cypher.and(...this.filters.map((f) => f.getPredicate(nestedContext)));
-        matchClause.where(predicate);
+        let matchClause: Cypher.Clause;
+        if (filterSubqueries.length > 0) {
+            const predicate = Cypher.and(...this.filters.map((f) => f.getPredicate(nestedContext)));
+            matchClause = Cypher.utils.concat(
+                new Cypher.Match(matchPattern),
+                ...filterSubqueries,
+                new Cypher.With("*").where(predicate)
+            );
+        } else {
+            const predicate = Cypher.and(...this.filters.map((f) => f.getPredicate(nestedContext)));
+            matchClause = new Cypher.Match(matchPattern).where(predicate);
+        }
 
         const relVar = new Cypher.Relationship();
 
