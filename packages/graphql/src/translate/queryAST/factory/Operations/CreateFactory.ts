@@ -325,7 +325,8 @@ export class CreateFactory {
                 }
             }
             if (relationship) {
-                for (const key of Object.keys(this.getInputEdge(inputItem))) {
+                const targetInputEdge = this.getInputEdge(inputItem);
+                for (const key of Object.keys(targetInputEdge)) {
                     const attribute = relationship.attributes.get(key);
                     if (attribute) {
                         const attachedTo = "relationship";
@@ -333,7 +334,7 @@ export class CreateFactory {
                         const paramInputField = new ParamInputField({
                             attachedTo,
                             attribute,
-                            inputValue: targetInput[key],
+                            inputValue: targetInputEdge[key],
                         });
                         create.addField(paramInputField, attachedTo);
                         // this.parseAttributeInputField({
@@ -346,7 +347,14 @@ export class CreateFactory {
             }
         });
 
-        this.addPopulatedByFieldToCreate({ entity: target, create, input, callbackBucket, context });
+        this.addPopulatedByFieldToCreate({
+            entity: target,
+            create,
+            input,
+            callbackBucket,
+            isNested,
+            relationship,
+        });
     }
 
     private addPopulatedByFieldToCreate({
@@ -354,39 +362,59 @@ export class CreateFactory {
         create,
         input,
         callbackBucket,
-        context,
+        isNested,
+        relationship,
     }: {
         entity: ConcreteEntityAdapter;
         create: CreateOperation;
         input: Record<string, any>[];
         callbackBucket: CallbackBucket;
-        context: Neo4jGraphQLTranslationContext;
+        isNested: boolean;
+        relationship?: RelationshipAdapter;
     }) {
-        entity.getPopulatedByFields("CREATE").forEach((attribute) => {
-            const attachedTo = "node";
-            // const callbackFn = context.features.populatedBy?.callbacks?.[attribute.name];
-            // if (!callbackFn) {
-            //     throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
-            // }
+        if (!isNested) {
+            entity.getPopulatedByFields("CREATE").forEach((attribute) => {
+                const attachedTo = "node";
+                const callbackParam = new Cypher.Param("1234");
+                const field = new ParamInputField({
+                    attribute,
+                    attachedTo,
+                    inputValue: callbackParam,
+                });
+                create.addField(field, attachedTo);
 
-            const callbackParam = new Cypher.Param("1234");
-            const field = new ParamInputField({
-                attribute,
-                attachedTo,
-                inputValue: callbackParam,
+                if (!attribute.annotations.populatedBy?.callback) {
+                    throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
+                }
+                callbackBucket.addCallback({
+                    functionName: attribute.annotations.populatedBy?.callback,
+                    param: callbackParam,
+                    parent: input[0] ?? {}, // TODO: handle multiple inputs
+                    type: attribute.type,
+                });
             });
-            create.addField(field, attachedTo);
+        } else {
+            relationship?.getPopulatedByFields("CREATE").forEach((attribute) => {
+                const attachedTo = "relationship";
+                const relCallbackParam = new Cypher.Param("5678");
+                const relField = new ParamInputField({
+                    attribute,
+                    attachedTo,
+                    inputValue: relCallbackParam,
+                });
+                create.addField(relField, attachedTo);
 
-            if (!attribute.annotations.populatedBy?.callback) {
-                throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
-            }
-            callbackBucket.addCallback({
-                functionName: attribute.annotations.populatedBy?.callback,
-                param: callbackParam,
-                parent: input[0] ?? {}, // TODO: handle multiple inputs
-                type: attribute.type,
+                if (!attribute.annotations.populatedBy?.callback) {
+                    throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
+                }
+                callbackBucket.addCallback({
+                    functionName: attribute.annotations.populatedBy?.callback,
+                    param: relCallbackParam,
+                    parent: input[0]?.edge ?? {}, // TODO: handle multiple inputs
+                    type: attribute.type,
+                });
             });
-        });
+        }
     }
 
     private getInputNode(inputItem: Record<string, any>, isNested: boolean): Record<string, any> {

@@ -2434,12 +2434,14 @@ describe("@populatedBy directive - Relationship properties", () => {
         type: string;
         callback: () => Promise<string>;
         expectedValue: string;
+        expectedValueTemp?: string;
     }>([
         {
             description: "@populatedBy - Time",
             type: "Time",
             callback: () => Promise.resolve(`${date.toISOString().split("T")[1]}`),
-            expectedValue: `${date.toISOString().split("T")[1]?.split("Z")[0]}Z`,
+            expectedValue: `${date.toISOString().split("T")[1]?.split("Z")[0]}000000Z`,
+            expectedValueTemp: `${date.toISOString().split("T")[1]?.split("Z")[0]}Z`, // TODO: this is a due to a bug with custom input objects, only used for Update until this is moved to QueryAST
         },
         {
             description: "@populatedBy - LocalDateTime",
@@ -2459,7 +2461,7 @@ describe("@populatedBy directive - Relationship properties", () => {
             callback: () => Promise.resolve(`P14M3DT14700S`),
             expectedValue: `P14M3DT14700S`,
         },
-    ])("$description", ({ type, callback, expectedValue }) => {
+    ])("$description", ({ type, callback, expectedValue, expectedValueTemp }) => {
         test("Should use on CREATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
             const testGenre = testHelper.createUniqueType("Genre");
@@ -2643,7 +2645,7 @@ describe("@populatedBy directive - Relationship properties", () => {
                             genresConnection: {
                                 edges: [
                                     {
-                                        properties: { callback: expectedValue },
+                                        properties: { callback: expectedValueTemp || expectedValue },
                                         node: {
                                             id: genreId,
                                         },
