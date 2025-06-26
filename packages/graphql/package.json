@@ -41,7 +41,7 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@apollo/gateway": "2.11.1",
+        "@apollo/gateway": "2.11.2",
         "@apollo/server": "4.12.2",
         "@types/deep-equal": "1.0.4",
         "@types/is-uuid": "1.0.2",
@@ -80,7 +80,7 @@
         "@graphql-tools/resolvers-composition": "^7.0.0",
         "@graphql-tools/schema": "^10.0.0",
         "@graphql-tools/utils": "10.8.6",
-        "@neo4j/cypher-builder": "2.7.0",
+        "@neo4j/cypher-builder": "2.7.1",
         "camelcase": "^6.3.0",
         "debug": "^4.3.4",
         "dot-prop": "^6.0.1",
