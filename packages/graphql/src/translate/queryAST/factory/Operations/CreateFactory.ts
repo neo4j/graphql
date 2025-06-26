@@ -272,7 +272,7 @@ export class CreateFactory {
         asArray(input).forEach((inputItem) => {
             const targetInput = this.getInputNode(inputItem, isNested);
             raiseAttributeAmbiguity(Object.keys(targetInput), target);
-            raiseAttributeAmbiguity(Object.keys(this.getInputEdge(target)), relationship);
+            raiseAttributeAmbiguity(Object.keys(this.getInputEdge(inputItem)), relationship);
             for (const key of Object.keys(targetInput)) {
                 const nestedRelationship = target.relationships.get(key);
                 const attribute = target.attributes.get(key);
@@ -319,6 +319,7 @@ export class CreateFactory {
                             nestedConnectInput[0], // TODO: handle multiple inputs
                             context
                         );
+
                         const mutationOperationField = new MutationOperationField(key, nestedConnectOperation);
                         create.addField(mutationOperationField, "node");
                     }

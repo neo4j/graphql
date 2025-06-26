@@ -108,16 +108,6 @@ export class ConnectOperation extends MutationOperation {
         const predicate = Cypher.and(...this.filters.map((f) => f.getPredicate(nestedContext)));
         matchClause.where(predicate);
 
-        // const setParams = Array.from(this.inputFields.values()).flatMap((input) => {
-        //     return input.getSetParams(nestedContext);
-        // });
-
-        // const mutationSubqueries = Array.from(this.inputFields.values()).flatMap((input) => {
-        //     return input.getSubqueries(nestedContext);
-        // });
-
-        // createClause.set(...setParams);
-
         const relVar = new Cypher.Relationship();
 
         const relDirection = this.relationship.getCypherDirection();
@@ -125,15 +115,27 @@ export class ConnectOperation extends MutationOperation {
         const connectPattern = new Cypher.Pattern(context.target)
             .related(relVar, { direction: relDirection, type: this.relationship.type })
             .to(nestedContext.target);
+
+        // TODO: find a better way to do this pls
+        const connectContext = context.push({ target: nestedContext.target, relationship: relVar });
+
         const connectClause = new Cypher.Create(connectPattern);
+
+        const setParams = Array.from(this.inputFields.values()).flatMap((input) => {
+            return input.getSetParams(connectContext);
+        });
+        connectClause.set(...setParams);
+
+        const mutationSubqueries = Array.from(this.inputFields.values()).flatMap((input) => {
+            return input.getSubqueries(connectContext);
+        });
 
         const clauses = Cypher.utils.concat(
             matchClause,
-            // ...mutationSubqueries,
+            ...mutationSubqueries,
             connectClause,
             ...this.getProjectionClause(nestedContext)
         );
-        // return { projectionExpr: context.returnVariable, clauses };
 
         return { projectionExpr: context.returnVariable, clauses: [clauses] };
     }

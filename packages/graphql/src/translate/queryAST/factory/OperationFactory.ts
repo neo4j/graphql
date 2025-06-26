@@ -241,10 +241,10 @@ export class OperationsFactory {
     public createConnectOperation(
         entity: ConcreteEntityAdapter,
         relationship: RelationshipAdapter,
-        resolveTree: ResolveTree,
+        input: Record<string, any>[],
         context: Neo4jGraphQLTranslationContext
     ) {
-        return this.connectFactory.createConnectOperation(entity, relationship, resolveTree, context);
+        return this.connectFactory.createConnectOperation(entity, relationship, input, context);
     }
 
     public createReadOperation(arg: {
