@@ -1705,8 +1705,9 @@ describe("@populatedBy directive - Node properties", () => {
             const testMovie = testHelper.createUniqueType("Movie");
 
             const date = new Date(1716458062912);
+            const cbValue = date.toISOString().split("T")[1];
 
-            const callback = () => Promise.resolve(date.toISOString().split("T")[1]);
+            const callback = () => Promise.resolve(cbValue);
 
             const typeDefs = /* GraphQL */ `
                     type ${testMovie.name} @node {
@@ -1747,7 +1748,7 @@ describe("@populatedBy directive - Node properties", () => {
                     [testMovie.plural]: [
                         {
                             id: movieId,
-                            callback: `${date.toISOString().split("T")[1]?.split("Z")[0]}Z`,
+                            callback: `${cbValue?.split("Z")[0]}000000Z`,
                         },
                     ],
                 },
