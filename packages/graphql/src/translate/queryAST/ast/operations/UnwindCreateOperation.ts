@@ -77,7 +77,7 @@ export class UnwindCreateOperation extends MutationOperation {
         }
     }
 
-    public getUnwindVariable(): Cypher.Variable {
+    public getCypherVariable(): Cypher.Variable {
         return this.unwindVariable;
     }
 

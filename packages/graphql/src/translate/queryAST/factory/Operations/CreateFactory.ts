@@ -68,6 +68,14 @@ export class CreateFactory {
             }),
         });
 
+        this.addEntityAuthorization({ entity, context, unwindCreate: createOP });
+        this.addAuthorizationsForAttributes({
+            target: entity,
+            context,
+            unwindCreate: createOP,
+            isNested: false,
+        });
+
         const projectionFields = responseFields
             .filter((f) => f.name === entity.plural)
             .map((field) => {
@@ -540,7 +548,7 @@ export class CreateFactory {
         if (!relField) {
             if (nestedCreateInput) {
                 const partialPath = this.getEdgeOrNodePath({
-                    unwindVariable: unwindCreate.getUnwindVariable(),
+                    unwindVariable: unwindCreate.getCypherVariable(),
                     isNested,
                     isRelField: false,
                 });
@@ -568,7 +576,7 @@ export class CreateFactory {
     }: {
         entity: ConcreteEntityAdapter;
         context: Neo4jGraphQLTranslationContext;
-        unwindCreate: UnwindCreateOperation;
+        unwindCreate: UnwindCreateOperation | CreateOperation;
     }): void {
         const authFilters = this.queryASTFactory.authorizationFactory.createAuthValidateRule({
             entity,
@@ -591,7 +599,7 @@ export class CreateFactory {
     }: {
         attribute: AttributeAdapter;
         context: Neo4jGraphQLTranslationContext;
-        unwindCreate: UnwindCreateOperation;
+        unwindCreate: UnwindCreateOperation | CreateOperation;
         entity: ConcreteEntityAdapter;
         conditionForEvaluation?: Cypher.Predicate;
     }): void {
@@ -616,11 +624,11 @@ export class CreateFactory {
     }: {
         target: ConcreteEntityAdapter;
         context: Neo4jGraphQLTranslationContext;
-        unwindCreate: UnwindCreateOperation;
+        unwindCreate: UnwindCreateOperation | CreateOperation;
         isNested: boolean;
     }): void {
         const edgeOrNodePath = this.getEdgeOrNodePath({
-            unwindVariable: unwindCreate.getUnwindVariable(),
+            unwindVariable: unwindCreate.getCypherVariable(),
             isRelField: false,
             isNested,
         });

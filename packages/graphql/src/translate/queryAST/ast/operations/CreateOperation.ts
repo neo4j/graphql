@@ -29,6 +29,9 @@ import type { OperationField } from "../fields/OperationField";
 import type { InputField } from "../input-fields/InputField";
 import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
+import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
+import { PropertyInputField } from "../input-fields/PropertyInputField";
+import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 
 /**
  * This is currently just a dummy tree node,
@@ -45,6 +48,9 @@ export class CreateOperation extends MutationOperation {
 
     public readonly inputFields: InputField[] = [];
 
+    protected readonly authFilters: AuthorizationFilters[] = [];
+    private readonly variable: Cypher.Variable;
+
     public callbackBucket: CallbackBucket | undefined;
 
     constructor({
@@ -60,10 +66,20 @@ export class CreateOperation extends MutationOperation {
         this.target = target;
         this.relationship = relationship;
         this.selectionPattern = selectionPattern;
+        this.variable = new Cypher.Variable();
     }
 
     public getChildren(): QueryASTNode[] {
-        return filterTruthy([this.selectionPattern, ...this.inputFields, ...this.projectionOperations]);
+        return filterTruthy([
+            this.selectionPattern,
+            ...this.inputFields,
+            ...this.authFilters,
+            ...this.projectionOperations,
+        ]);
+    }
+
+    public addAuthFilters(...filter: AuthorizationFilters[]) {
+        this.authFilters.push(...filter);
     }
 
     /**
@@ -82,6 +98,10 @@ export class CreateOperation extends MutationOperation {
         this.inputFields.push(field);
     }
 
+    public getCypherVariable(): Cypher.Variable {
+        return this.variable;
+    }
+
     public addProjectionOperations(operations: OperationField[]) {
         this.projectionOperations.push(...operations);
     }
@@ -92,6 +112,21 @@ export class CreateOperation extends MutationOperation {
         }
         context.env.topLevelOperationName = "CREATE";
         // TODO: implement the actual create / unwind create
+
+        checkEntityAuthentication({
+            context: context.neo4jGraphQLContext,
+            entity: this.target.entity,
+            targetOperations: ["CREATE"],
+        });
+        this.inputFields.forEach((field) => {
+            if (field.attachedTo === "node" && field instanceof PropertyInputField)
+                checkEntityAuthentication({
+                    context: context.neo4jGraphQLContext,
+                    entity: this.target.entity,
+                    targetOperations: ["CREATE"],
+                    field: field.name,
+                });
+        });
 
         const { nestedContext } = this.selectionPattern.apply(context);
 
@@ -136,14 +171,65 @@ export class CreateOperation extends MutationOperation {
             withClause = new Cypher.With("*");
         }
 
+        const authorizationClauses = this.getAuthorizationClauses(nestedContext);
+
         const clauses = Cypher.utils.concat(
             createClause,
             withClause,
             ...mutationSubqueries,
             mergeClause,
+            ...authorizationClauses,
             this.getProjectionClause(nestedContext)
         );
         return { projectionExpr: context.returnVariable, clauses: [clauses] };
+    }
+
+    private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
+        const { selections, subqueries, predicates, validations } = this.transpileAuthClauses(context);
+        const predicate = Cypher.and(...predicates);
+        const lastSelection = selections[selections.length - 1];
+
+        if (!predicates.length && !validations.length) {
+            return [];
+        } else {
+            if (lastSelection) {
+                lastSelection.where(predicate);
+                return [...subqueries, new Cypher.With("*"), ...selections, ...validations];
+            }
+            return [...subqueries, new Cypher.With("*").where(predicate), ...selections, ...validations];
+        }
+    }
+
+    private transpileAuthClauses(context: QueryASTContext): {
+        selections: (Cypher.With | Cypher.Match)[];
+        subqueries: Cypher.Clause[];
+        predicates: Cypher.Predicate[];
+        validations: Cypher.VoidProcedure[];
+    } {
+        const selections: (Cypher.With | Cypher.Match)[] = [];
+        const subqueries: Cypher.Clause[] = [];
+        const predicates: Cypher.Predicate[] = [];
+        const validations: Cypher.VoidProcedure[] = [];
+        for (const authFilter of this.authFilters) {
+            const extraSelections = authFilter.getSelection(context);
+            const authSubqueries = authFilter.getSubqueries(context);
+            const authPredicate = authFilter.getPredicate(context);
+            const validation = authFilter.getValidation(context);
+
+            if (extraSelections) {
+                selections.push(...extraSelections);
+            }
+            if (authSubqueries) {
+                subqueries.push(...authSubqueries);
+            }
+            if (authPredicate) {
+                predicates.push(authPredicate);
+            }
+            if (validation) {
+                validations.push(validation);
+            }
+        }
+        return { selections, subqueries, predicates, validations };
     }
 
     private getProjectionClause(context: QueryASTContext<Cypher.Node>): Cypher.Clause {
