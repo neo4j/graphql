@@ -1560,9 +1560,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/delegate@npm:^10.2.19":
-  version: 10.2.19
-  resolution: "@graphql-tools/delegate@npm:10.2.19"
+"@graphql-tools/delegate@npm:^10.2.20":
+  version: 10.2.20
+  resolution: "@graphql-tools/delegate@npm:10.2.20"
   dependencies:
     "@graphql-tools/batch-execute": "npm:^9.0.17"
     "@graphql-tools/executor": "npm:^1.4.7"
@@ -1575,7 +1575,7 @@ __metadata:
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/d65bbb23eaec59c60524fb6e3eb5a08149b080609dc26c1dce807a3f53b26e9ed5ff55dfd67d9cfffda6d330f35f4414392995200d7a388a919a0b7ec67c8311
+  checksum: 10c0/cfbdbcab69039503911a733cc61590f91a2e25afede633fdc52501f72a76d66baf721a278c957282a1061a5eea681679b0656b7bf8cddef3b6da7730b9a7efc7
   languageName: node
   linkType: hard
 
@@ -1756,17 +1756,17 @@ __metadata:
   linkType: hard
 
 "@graphql-tools/wrap@npm:^10.0.0":
-  version: 10.1.0
-  resolution: "@graphql-tools/wrap@npm:10.1.0"
+  version: 10.1.1
+  resolution: "@graphql-tools/wrap@npm:10.1.1"
   dependencies:
-    "@graphql-tools/delegate": "npm:^10.2.19"
+    "@graphql-tools/delegate": "npm:^10.2.20"
     "@graphql-tools/schema": "npm:^10.0.11"
     "@graphql-tools/utils": "npm:^10.8.1"
     "@whatwg-node/promise-helpers": "npm:^1.3.0"
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/9b041abc37590491c6129f6499f9f8f2661f5496c4960bd987099d1c75aa4c404a44710051efff4b0e69279c8b6b43b334f41ce349f0d2192624ebf8c145bac6
+  checksum: 10c0/319245fef309261852f8af76baa8bce441bdc2da4fc808df5ea4c7edb936ac97ca7662922e68860c31df985f3749ae6e5afe055230fce0a16c3d7a359d9d6c8f
   languageName: node
   linkType: hard
 
@@ -7129,10 +7129,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:16.5.0":
-  version: 16.5.0
-  resolution: "dotenv@npm:16.5.0"
-  checksum: 10c0/5bc94c919fbd955bf0ba44d33922a1e93d1078e64a1db5c30faeded1d996e7a83c55332cb8ea4fae5a9ca4d0be44cbceb95c5811e70f9f095298df09d1997dd9
+"dotenv@npm:16.6.0":
+  version: 16.6.0
+  resolution: "dotenv@npm:16.6.0"
+  checksum: 10c0/c1029a8656e03abc53c0522baf733131ffd4e633d8ab66c3f2d470ebdd7c5d143ffab64945afc475e60c5f803f0e734a9f9247949d17cc8ff564fba5c15978b1
   languageName: node
   linkType: hard
 
@@ -13262,7 +13262,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:8.35.0"
     "@typescript-eslint/parser": "npm:8.35.0"
     concurrently: "npm:9.2.0"
-    dotenv: "npm:16.5.0"
+    dotenv: "npm:16.6.0"
     eslint: "npm:8.57.1"
     eslint-config-prettier: "npm:10.1.5"
     eslint-formatter-summary: "npm:2.0.2"
@@ -13273,7 +13273,7 @@ __metadata:
     graphql: "npm:16.11.0"
     jest: "npm:30.0.3"
     neo4j-driver: "npm:5.28.1"
-    prettier: "npm:3.6.1"
+    prettier: "npm:3.6.2"
     prettier-2: "npm:prettier@2.8.8"
     set-tz: "npm:0.2.0"
     ts-jest: "npm:29.4.0"
@@ -14352,12 +14352,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:3.6.1":
-  version: 3.6.1
-  resolution: "prettier@npm:3.6.1"
+"prettier@npm:3.6.2":
+  version: 3.6.2
+  resolution: "prettier@npm:3.6.2"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10c0/cf54254b9ddf1a8dff12f84bf0089e6aef3eeb9d0ce9d0344e39549ddc4f5c290fc5060d7d5a597848b9617e53e05b33a4118e37cd560f9e132ecc19c211300a
+  checksum: 10c0/488cb2f2b99ec13da1e50074912870217c11edaddedeadc649b1244c749d15ba94e846423d062e2c4c9ae683e2d65f754de28889ba06e697ac4f988d44f45812
   languageName: node
   linkType: hard
 
