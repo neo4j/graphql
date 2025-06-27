@@ -26,6 +26,7 @@ import { NodeSelectionPattern } from "../../ast/selection/SelectionPattern/NodeS
 import type { QueryASTFactory } from "../QueryASTFactory";
 import { ParamInputField } from "../../ast/input-fields/ParamInputField";
 import { raiseAttributeAmbiguity } from "../../utils/raise-attribute-ambiguity";
+import type { Filter } from "../../ast/filters/Filter";
 
 export class ConnectFactory {
     private queryASTFactory: QueryASTFactory;
@@ -45,8 +46,10 @@ export class ConnectFactory {
         // );
 
         const { whereArg } = this.parseConnectArgs(input, false); //connectArg
-
-        const nodeFilters = this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArg.node);
+        const nodeFilters: Filter[] = [];
+        if (whereArg.node) {
+            nodeFilters.push(...this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArg.node));
+        }
         const connectOP = new ConnectOperation({
             target: entity,
             selectionPattern: new NodeSelectionPattern({
