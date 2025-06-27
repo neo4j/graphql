@@ -291,37 +291,42 @@ export class CreateFactory {
                     assertIsConcreteEntity(nestedEntity);
                     const nestedCreateInput = targetInput[key]?.create;
                     if (nestedCreateInput) {
-                        const nestedCreateOperation = new CreateOperation({
-                            target: nestedEntity,
-                            relationship: nestedRelationship,
-                            selectionPattern: new RelationshipSelectionPattern({
+                        asArray(nestedCreateInput).forEach((nestedCreateInputItem) => {
+                            const nestedCreateOperation = new CreateOperation({
+                                target: nestedEntity,
                                 relationship: nestedRelationship,
-                            }),
-                        });
+                                selectionPattern: new RelationshipSelectionPattern({
+                                    relationship: nestedRelationship,
+                                }),
+                            });
 
-                        this.hydrateCreateOperation({
-                            create: nestedCreateOperation,
-                            target: nestedEntity,
-                            relationship: nestedRelationship,
-                            input: nestedCreateInput,
-                            callbackBucket,
-                            context,
-                        });
+                            this.hydrateCreateOperation({
+                                create: nestedCreateOperation,
+                                target: nestedEntity,
+                                relationship: nestedRelationship,
+                                input: nestedCreateInputItem,
+                                callbackBucket,
+                                context,
+                            });
 
-                        const mutationOperationField = new MutationOperationField(key, nestedCreateOperation);
-                        create.addField(mutationOperationField, "node");
+                            const mutationOperationField = new MutationOperationField(key, nestedCreateOperation);
+                            create.addField(mutationOperationField, "node");
+                        });
                     }
                     const nestedConnectInput = targetInput[key]?.connect;
                     if (nestedConnectInput) {
-                        const nestedConnectOperation = this.queryASTFactory.operationsFactory.createConnectOperation(
-                            nestedEntity,
-                            nestedRelationship,
-                            nestedConnectInput[0], // TODO: handle multiple inputs
-                            context
-                        );
+                        asArray(nestedConnectInput).forEach((nestedConnectInputItem) => {
+                            const nestedConnectOperation =
+                                this.queryASTFactory.operationsFactory.createConnectOperation(
+                                    nestedEntity,
+                                    nestedRelationship,
+                                    nestedConnectInputItem,
+                                    context
+                                );
 
-                        const mutationOperationField = new MutationOperationField(key, nestedConnectOperation);
-                        create.addField(mutationOperationField, "node");
+                            const mutationOperationField = new MutationOperationField(key, nestedConnectOperation);
+                            create.addField(mutationOperationField, "node");
+                        });
                     }
                 }
             }
@@ -384,15 +389,18 @@ export class CreateFactory {
                 });
                 create.addField(field, attachedTo);
 
-                if (!attribute.annotations.populatedBy?.callback) {
+                const callbackFunctionName = attribute.annotations.populatedBy?.callback;
+                if (!callbackFunctionName) {
                     throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
                 }
-                callbackBucket.addCallback({
-                    functionName: attribute.annotations.populatedBy?.callback,
-                    param: callbackParam,
-                    parent: input[0] ?? {}, // TODO: handle multiple inputs
-                    type: attribute.type,
-                });
+                asArray(input).forEach((inputItem) =>
+                    callbackBucket.addCallback({
+                        functionName: callbackFunctionName,
+                        param: callbackParam,
+                        parent: inputItem,
+                        type: attribute.type,
+                    })
+                );
             });
         } else {
             relationship?.getPopulatedByFields("CREATE").forEach((attribute) => {
@@ -405,15 +413,18 @@ export class CreateFactory {
                 });
                 create.addField(relField, attachedTo);
 
-                if (!attribute.annotations.populatedBy?.callback) {
+                const callbackFunctionName = attribute.annotations.populatedBy?.callback;
+                if (!callbackFunctionName) {
                     throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
                 }
-                callbackBucket.addCallback({
-                    functionName: attribute.annotations.populatedBy?.callback,
-                    param: relCallbackParam,
-                    parent: input[0]?.edge ?? {}, // TODO: handle multiple inputs
-                    type: attribute.type,
-                });
+                asArray(input).forEach((inputItem) =>
+                    callbackBucket.addCallback({
+                        functionName: callbackFunctionName,
+                        param: relCallbackParam,
+                        parent: inputItem.edge,
+                        type: attribute.type,
+                    })
+                );
             });
         }
     }
