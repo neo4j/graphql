@@ -43,7 +43,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@0no-co/graphql.web@npm:^1.0.5":
+"@0no-co/graphql.web@npm:^1.0.13":
   version: 1.1.2
   resolution: "@0no-co/graphql.web@npm:1.1.2"
   peerDependencies:
@@ -5035,12 +5035,12 @@ __metadata:
   linkType: hard
 
 "@urql/core@npm:^5.0.3":
-  version: 5.1.1
-  resolution: "@urql/core@npm:5.1.1"
+  version: 5.1.2
+  resolution: "@urql/core@npm:5.1.2"
   dependencies:
-    "@0no-co/graphql.web": "npm:^1.0.5"
+    "@0no-co/graphql.web": "npm:^1.0.13"
     wonka: "npm:^6.3.2"
-  checksum: 10c0/2a66f58452bbf153c251dd6d127fc0bc0473b4cde47171ca360960059eb08fc019202aee16911168a800814a3b9748300bb88b87817b5d05cf92c16f5772447b
+  checksum: 10c0/6be61b97692751bb616b88b43786f2914ef9dca50cd8da488c689bb2fc78294a7b5a9f4712ee5024ca0dd088ddaa9e5dcc2e9549d3eb2183572ba09401a9052c
   languageName: node
   linkType: hard
 
@@ -8506,10 +8506,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:16.6.0, dotenv@npm:^16.0.3, dotenv@npm:^16.4.5, dotenv@npm:^16.5.0":
-  version: 16.6.0
-  resolution: "dotenv@npm:16.6.0"
-  checksum: 10c0/c1029a8656e03abc53c0522baf733131ffd4e633d8ab66c3f2d470ebdd7c5d143ffab64945afc475e60c5f803f0e734a9f9247949d17cc8ff564fba5c15978b1
+"dotenv@npm:16.6.1, dotenv@npm:^16.0.3, dotenv@npm:^16.4.5, dotenv@npm:^16.5.0":
+  version: 16.6.1
+  resolution: "dotenv@npm:16.6.1"
+  checksum: 10c0/15ce56608326ea0d1d9414a5c8ee6dcf0fffc79d2c16422b4ac2268e7e2d76ff5a572d37ffe747c377de12005f14b3cc22361e79fc7f1061cce81f77d2c973dc
   languageName: node
   linkType: hard
 
@@ -14567,7 +14567,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:8.35.0"
     "@typescript-eslint/parser": "npm:8.35.0"
     concurrently: "npm:9.2.0"
-    dotenv: "npm:16.6.0"
+    dotenv: "npm:16.6.1"
     eslint: "npm:8.57.1"
     eslint-config-prettier: "npm:10.1.5"
     eslint-formatter-summary: "npm:2.0.2"
