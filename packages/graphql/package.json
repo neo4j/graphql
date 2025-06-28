@@ -71,7 +71,7 @@
         "ts-jest": "29.4.0",
         "ts-node": "10.9.2",
         "typescript": "5.8.3",
-        "ws": "8.18.2"
+        "ws": "8.18.3"
     },
     "dependencies": {
         "@apollo/subgraph": "^2.2.3",
