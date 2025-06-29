@@ -5035,12 +5035,12 @@ __metadata:
   linkType: hard
 
 "@urql/core@npm:^5.0.3":
-  version: 5.1.2
-  resolution: "@urql/core@npm:5.1.2"
+  version: 5.2.0
+  resolution: "@urql/core@npm:5.2.0"
   dependencies:
     "@0no-co/graphql.web": "npm:^1.0.13"
     wonka: "npm:^6.3.2"
-  checksum: 10c0/6be61b97692751bb616b88b43786f2914ef9dca50cd8da488c689bb2fc78294a7b5a9f4712ee5024ca0dd088ddaa9e5dcc2e9549d3eb2183572ba09401a9052c
+  checksum: 10c0/1893a7417c6e5e3604fc3bd27e8b63b748d1817fb906fa95beba52be103d18e015d20ca740a9be570bca2bd11e98d34f605e108a4d3428678d9a1e3368ab2275
   languageName: node
   linkType: hard
 
