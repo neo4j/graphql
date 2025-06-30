@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.2.2
+
+### Patch Changes
+
+- [#6446](https://github.com/neo4j/graphql/pull/6446) [`5ed0ac9`](https://github.com/neo4j/graphql/commit/5ed0ac90eb1b5aed73a3bae49600c775c7006c2b) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Fixed mutation input type generation for enum and custom scalar list operations. The `push`, `pop`, and `set` operations in list mutation inputs for enums and custom scalars are now correctly marked as optional instead of required.
+
 ## 7.2.1
 
 ### Patch Changes
@@ -45,7 +51,6 @@
 ### Patch Changes
 
 - [#6354](https://github.com/neo4j/graphql/pull/6354) [`76c6445`](https://github.com/neo4j/graphql/commit/76c6445be4ce1afa5ae3d3606247d28f4f02e256) Thanks [@angrykoala](https://github.com/angrykoala)! - Handle the following errors in CDC queries for subscription by resetting the cursor:
-
     - 52N27
     - 52N28
     - 52N30
@@ -257,7 +262,6 @@
     Previously, conditions inside single and some were evaluated separately for each concrete type in the union, requiring all to match. This was incorrect.
 
     New behavior:
-
     - `single`: Now correctly returns actors with exactly one related node across the whole union, rather than per type.
     - `some`: Now correctly returns actors with at least one matching related node of any type in the union.
 
@@ -667,7 +671,6 @@
 - [#6180](https://github.com/neo4j/graphql/pull/6180) [`eae9bb4`](https://github.com/neo4j/graphql/commit/eae9bb427bb41f8436951400b36aa4f30a8e2b9c) Thanks [@angrykoala](https://github.com/angrykoala)! - Revert dual package bundling. Publishing only cjs package
 
 - [#5871](https://github.com/neo4j/graphql/pull/5871) [`722c650`](https://github.com/neo4j/graphql/commit/722c6507977072122041e985b94a84a707179f39) Thanks [@angrykoala](https://github.com/angrykoala)! - Deprecate individual mutations in favor of generic mutations
-
     - `_SET`
     - `_POP`
     - `_PUSH`
@@ -877,7 +880,6 @@
     Previously, conditions inside single and some were evaluated separately for each concrete type in the union, requiring all to match. This was incorrect.
 
     New behavior:
-
     - `single`: Now correctly returns actors with exactly one related node across the whole union, rather than per type.
     - `some`: Now correctly returns actors with at least one matching related node of any type in the union.
 
@@ -1631,7 +1633,6 @@
 ### Patch Changes
 
 - [#6046](https://github.com/neo4j/graphql/pull/6046) [`dcf4c76`](https://github.com/neo4j/graphql/commit/dcf4c761b21e8dbce8436e4000eae53f9780923c) Thanks [@angrykoala](https://github.com/angrykoala)! - Add `unsafeEscapeOptions` to `Neo4jGraphQL` features with the following flags:
-
     - `disableRelationshipTypeEscaping` (default to `false`)
     - `disableNodeLabelEscaping` (defaults to `false`)
 
@@ -1689,7 +1690,6 @@
 ### Patch Changes
 
 - [#5871](https://github.com/neo4j/graphql/pull/5871) [`722c650`](https://github.com/neo4j/graphql/commit/722c6507977072122041e985b94a84a707179f39) Thanks [@angrykoala](https://github.com/angrykoala)! - Deprecate individual mutations in favor of generic mutations
-
     - `_SET`
     - `_POP`
     - `_PUSH`
@@ -1932,7 +1932,6 @@
 - [#5637](https://github.com/neo4j/graphql/pull/5637) [`8832dd6`](https://github.com/neo4j/graphql/commit/8832dd67cfc30faa920dc17831cb241bca757911) Thanks [@darrellwarde](https://github.com/darrellwarde)! - Remove deprecated relationship filters without suffix. Queries which previously used these should migrate over to `_SOME` filters.
 
 - [#5662](https://github.com/neo4j/graphql/pull/5662) [`98e04db`](https://github.com/neo4j/graphql/commit/98e04db04fec55bbd244bc15c52a04a3f6e43057) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove support for relationship subscriptions:
-
     - `*RelationshipCreated`
     - `*RelationshipDeleted`
 
@@ -1997,7 +1996,6 @@
 - [#5649](https://github.com/neo4j/graphql/pull/5649) [`8206edd`](https://github.com/neo4j/graphql/commit/8206eddb54597d60012c8e30cc0c033b2714348f) Thanks [@darrellwarde](https://github.com/darrellwarde)! - The deprecated `options` argument of `assertIndexesAndConstraints` has been removed. Database migrations are outside of the scope of the Neo4j GraphQL Library, and all indexes and constraints will have to be managed manually.
 
 - [#5630](https://github.com/neo4j/graphql/pull/5630) [`af866e0`](https://github.com/neo4j/graphql/commit/af866e058d7ba05f50fe0986cbbf63f252439e09) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove deprecated top level arguments for nested operations in mutations:
-
     - create
     - delete
     - connect
@@ -2045,7 +2043,6 @@
     ```
 
 - [#5668](https://github.com/neo4j/graphql/pull/5668) [`ffb2ae3`](https://github.com/neo4j/graphql/commit/ffb2ae31cde5e07ff6c09ec1f592512909f69f81) Thanks [@angrykoala](https://github.com/angrykoala)! - Remove exported types for custom subscriptions engine:
-
     - `Neo4jGraphQLSubscriptionsEngine`
     - `SubscriptionsEvent`
 
@@ -2171,7 +2168,6 @@
 ### Patch Changes
 
 - [#5583](https://github.com/neo4j/graphql/pull/5583) [`d35b00d`](https://github.com/neo4j/graphql/commit/d35b00d0fa19b5c5a5632a3a2485a3ede6d73e3b) Thanks [@angrykoala](https://github.com/angrykoala)! - Deprecates top level arguments for nested operations on updates in favor of traversing the update argument. The deprecated arguments are:
-
     - create
     - delete
     - connect
@@ -2755,7 +2751,6 @@
 ### Minor Changes
 
 - [#4036](https://github.com/neo4j/graphql/pull/4036) [`120e22f8e`](https://github.com/neo4j/graphql/commit/120e22f8ef63af0aa72d2f66841451bc457bfee9) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Schema generation logic improved
-
     - allow operations on Interface relationships to Interfaces
     - add descriptions to generated graphql types
     - improve schema generation logic
@@ -3432,7 +3427,6 @@
 ### Minor Changes
 
 - [#2359](https://github.com/neo4j/graphql/pull/2359) [`3fd44b3ef`](https://github.com/neo4j/graphql/commit/3fd44b3ef08d6eebec3cb1dd51111af8bf4e9fb2) Thanks [@farhadnowzari](https://github.com/farhadnowzari)! - - The `JwksEndpoint` in `Neo4jGraphQLAuthJWKSPlugin` now will accept a function as well which returns a computed endpoint.
-
     - The `Secret` in `Neo4jGraphQLAuthJWTPlugin` now will accept a function as well which returns a computed secret.
 
 - [#2588](https://github.com/neo4j/graphql/pull/2588) [`ef1822849`](https://github.com/neo4j/graphql/commit/ef182284930c8444c7205e2bc398ef17481e6279) Thanks [@a-alle](https://github.com/a-alle)! - Add `overwrite` argument on connect operation for relationships to standard types and arrays of
