@@ -183,57 +183,57 @@ function makeAugmentedSchema({
             name: `${enumType.name.value}ListEnumScalarMutations`,
             description: `Mutations for a list for ${enumType.name.value}`,
             fields: {
-                set: { type: `[${enumType.name.value}!]!` },
-                push: { type: `[${enumType.name.value}!]!` },
+                set: { type: `[${enumType.name.value}!]` },
+                push: { type: `[${enumType.name.value}!]` },
                 pop: { type: enumType.name.value },
             },
         });
     });
 
     // Generates the filters for custom scalars
-    Array.from(scalarTypes.values()).forEach((enumType) => {
+    Array.from(scalarTypes.values()).forEach((scalarType) => {
         composer.createInputTC({
-            name: `${enumType.name.value}ScalarFilters`,
-            description: `${enumType.name.value} filters`,
+            name: `${scalarType.name.value}ScalarFilters`,
+            description: `${scalarType.name.value} filters`,
             fields: {
                 eq: {
-                    type: enumType.name.value,
+                    type: scalarType.name.value,
                 },
-                in: { type: `[${enumType.name.value}!]` },
+                in: { type: `[${scalarType.name.value}!]` },
             },
         });
 
         composer.createInputTC({
-            name: `${enumType.name.value}ListScalarFilters`,
-            description: `${enumType.name.value} filters`,
+            name: `${scalarType.name.value}ListScalarFilters`,
+            description: `${scalarType.name.value} filters`,
             fields: {
                 eq: {
-                    type: `[${enumType.name.value}!]`,
+                    type: `[${scalarType.name.value}!]`,
                 },
                 includes: {
-                    type: enumType.name.value,
+                    type: scalarType.name.value,
                 },
             },
         });
     });
 
     // Generates the mutations for custom scalars
-    Array.from(scalarTypes.values()).forEach((enumType) => {
+    Array.from(scalarTypes.values()).forEach((scalarType) => {
         composer.createInputTC({
-            name: `${enumType.name.value}ScalarMutations`,
-            description: `${enumType.name.value} filters`,
+            name: `${scalarType.name.value}ScalarMutations`,
+            description: `${scalarType.name.value} filters`,
             fields: {
-                set: { type: enumType.name.value },
+                set: { type: scalarType.name.value },
             },
         });
 
         composer.createInputTC({
-            name: `${enumType.name.value}ListScalarMutations`,
-            description: `Mutations for a list for ${enumType.name.value}`,
+            name: `${scalarType.name.value}ListScalarMutations`,
+            description: `Mutations for a list for ${scalarType.name.value}`,
             fields: {
-                set: { type: `[${enumType.name.value}!]!` },
-                push: { type: `[${enumType.name.value}!]!` },
-                pop: { type: enumType.name.value },
+                set: { type: `[${scalarType.name.value}!]` },
+                push: { type: `[${scalarType.name.value}!]` },
+                pop: { type: scalarType.name.value },
             },
         });
     });
