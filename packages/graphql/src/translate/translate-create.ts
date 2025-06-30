@@ -88,7 +88,6 @@ export default async function translateCreate({
         return unwindCreate({ context, entityAdapter });
     }
     debug(`Unwind create optimization not supported: ${reason}`);
-    // const callbackBucket: CallbackBucketDeprecated = new CallbackBucketDeprecated(context);
 
     const varName = "this";
     const result = await translateUsingQueryAST({ context, entityAdapter, resolveTree, varName });

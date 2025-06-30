@@ -69,12 +69,12 @@ export class CreateFactory {
         });
 
         this.addEntityAuthorization({ entity, context, unwindCreate: createOP });
-        this.addAuthorizationsForAttributes({
-            target: entity,
-            context,
-            unwindCreate: createOP,
-            isNested: false,
-        });
+        // this.addAuthorizationsForAttributes({
+        //     target: entity,
+        //     context,
+        //     unwindCreate: createOP,
+        //     isNested: false,
+        // });
 
         const projectionFields = responseFields
             .filter((f) => f.name === entity.plural)
@@ -157,7 +157,7 @@ export class CreateFactory {
             argumentToUnwind,
         });
         this.addEntityAuthorization({ entity: target, context, unwindCreate: unwindCreate });
-        this.addAuthorizationsForAttributes({
+        this.addAuthorizationsForAttributesInUnwind({
             target,
             context,
             unwindCreate: unwindCreate,
@@ -294,6 +294,13 @@ export class CreateFactory {
                         inputValue: targetInput[key],
                     });
                     create.addField(paramInputField, "node");
+
+                    this.addAttributeAuthorization({
+                        attribute,
+                        context,
+                        unwindCreate: create,
+                        entity: target,
+                    });
                 } else if (nestedRelationship) {
                     const nestedEntity = nestedRelationship.target;
                     assertIsConcreteEntity(nestedEntity);
@@ -351,6 +358,7 @@ export class CreateFactory {
                             inputValue: targetInputEdge[key],
                         });
                         create.addField(paramInputField, attachedTo);
+
                         // this.parseAttributeInputField({
                         //     target: relationship,
                         //     attribute,
@@ -613,6 +621,35 @@ export class CreateFactory {
         });
         if (attributeAuthorization) {
             unwindCreate.addAuthFilters(attributeAuthorization);
+        }
+    }
+
+    private addAuthorizationsForAttributesInUnwind({
+        target,
+        context,
+        unwindCreate,
+        isNested,
+    }: {
+        target: ConcreteEntityAdapter;
+        context: Neo4jGraphQLTranslationContext;
+        unwindCreate: UnwindCreateOperation | CreateOperation;
+        isNested: boolean;
+    }): void {
+        const edgeOrNodePath = this.getEdgeOrNodePath({
+            unwindVariable: unwindCreate.getCypherVariable(),
+            isRelField: false,
+            isNested,
+        });
+
+        for (const attribute of target.attributes.values()) {
+            const path = edgeOrNodePath.property(attribute.name);
+            this.addAttributeAuthorization({
+                attribute,
+                context,
+                unwindCreate,
+                entity: target,
+                conditionForEvaluation: Cypher.isNotNull(path),
+            });
         }
     }
 
