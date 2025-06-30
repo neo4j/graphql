@@ -71,8 +71,8 @@ describe("Scalar", () => {
             \\"\\"\\"Mutations for a list for CustomScalar\\"\\"\\"
             input CustomScalarListScalarMutations {
               pop: CustomScalar
-              push: [CustomScalar!]!
-              set: [CustomScalar!]!
+              push: [CustomScalar!]
+              set: [CustomScalar!]
             }
 
             \\"\\"\\"CustomScalar filters\\"\\"\\"
