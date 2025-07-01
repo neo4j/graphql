@@ -2581,7 +2581,7 @@ __metadata:
     "@graphql-codegen/plugin-helpers": "npm:^5.0.0"
     "@graphql-codegen/typescript": "npm:^4.0.0"
     "@graphql-tools/merge": "npm:^9.0.0"
-    "@neo4j/graphql": "npm:^5.12.6"
+    "@neo4j/graphql": "npm:^5.12.7"
     "@types/jest": "npm:29.5.14"
     "@types/node": "npm:20.19.2"
     camelcase: "npm:6.3.0"
@@ -2605,7 +2605,7 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@neo4j/graphql@npm:^5.0.0, @neo4j/graphql@npm:^5.11.2, @neo4j/graphql@npm:^5.12.6, @neo4j/graphql@npm:^5.4.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@npm:^5.0.0, @neo4j/graphql@npm:^5.11.2, @neo4j/graphql@npm:^5.12.7, @neo4j/graphql@npm:^5.4.0, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -5701,7 +5701,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": "npm:2.2.1"
     "@apollo/server": "npm:^4.7.0"
     "@graphql-tools/wrap": "npm:^10.0.0"
-    "@neo4j/graphql": "npm:^5.12.6"
+    "@neo4j/graphql": "npm:^5.12.7"
     fork-ts-checker-webpack-plugin: "npm:9.1.0"
     graphql: "npm:16.11.0"
     graphql-tag: "npm:^2.12.6"
