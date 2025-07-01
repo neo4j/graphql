@@ -1319,15 +1319,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@envelop/core@npm:^5.2.3":
-  version: 5.2.3
-  resolution: "@envelop/core@npm:5.2.3"
+"@envelop/core@npm:^5.3.0":
+  version: 5.3.0
+  resolution: "@envelop/core@npm:5.3.0"
   dependencies:
     "@envelop/instrumentation": "npm:^1.0.0"
     "@envelop/types": "npm:^5.2.1"
     "@whatwg-node/promise-helpers": "npm:^1.2.4"
     tslib: "npm:^2.5.0"
-  checksum: 10c0/77ba5807ddee5d08d6a4f47b2787735f0ad5aef71dcd809d51f5004f937de4c6a0b9a32651f2c6b81a0b9ef0510a917af408813c485e93da151c91d33b453061
+  checksum: 10c0/002aacab9089c18a6b7d55c96d2cfc71fd1c6077d2f5dbbc81a317b594664b809b64cf2c017c3c0d3f4425c441c1f19a45127666da1aadcc63727f900201ee6b
   languageName: node
   linkType: hard
 
@@ -2554,7 +2554,7 @@ __metadata:
     "@types/cors": "npm:2.8.19"
     "@types/debug": "npm:4.1.12"
     "@types/jest": "npm:29.5.14"
-    "@types/node": "npm:20.19.2"
+    "@types/node": "npm:20.19.4"
     amqplib: "npm:0.10.8"
     body-parser: "npm:^2.0.0"
     camelcase: "npm:6.3.0"
@@ -2583,7 +2583,7 @@ __metadata:
     "@graphql-tools/merge": "npm:^9.0.0"
     "@neo4j/graphql": "npm:^5.12.7"
     "@types/jest": "npm:29.5.14"
-    "@types/node": "npm:20.19.2"
+    "@types/node": "npm:20.19.4"
     camelcase: "npm:6.3.0"
     jest: "npm:29.7.0"
     jsonwebtoken: "npm:9.0.2"
@@ -2621,7 +2621,7 @@ __metadata:
     "@types/is-uuid": "npm:1.0.2"
     "@types/jest": "npm:29.5.14"
     "@types/jsonwebtoken": "npm:9.0.10"
-    "@types/node": "npm:20.19.2"
+    "@types/node": "npm:20.19.4"
     "@types/pluralize": "npm:0.0.33"
     "@types/randomstring": "npm:1.3.0"
     "@types/semver": "npm:7.7.0"
@@ -2643,7 +2643,7 @@ __metadata:
     jwks-rsa: "npm:3.2.0"
     koa: "npm:3.0.0"
     koa-jwt: "npm:4.0.4"
-    koa-router: "npm:13.0.1"
+    koa-router: "npm:13.1.1"
     mock-jwks: "npm:3.3.5"
     nock: "npm:14.0.5"
     pluralize: "npm:^8.0.0"
@@ -2668,7 +2668,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": "npm:^5.11.2"
     "@types/jest": "npm:29.5.14"
-    "@types/node": "npm:20.19.2"
+    "@types/node": "npm:20.19.4"
     "@types/pluralize": "npm:0.0.33"
     camelcase: "npm:^6.3.0"
     debug: "npm:^4.3.4"
@@ -4533,12 +4533,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:20.19.2":
-  version: 20.19.2
-  resolution: "@types/node@npm:20.19.2"
+"@types/node@npm:20.19.4":
+  version: 20.19.4
+  resolution: "@types/node@npm:20.19.4"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10c0/85195d2435a215c886b3dabb2a93c557397e2b933a18803c6dd4fb3f87c3de9c8290fe78f08b52ebeb3b14063a00b217f66b4f9c0192581dc7a677c4f8663a9c
+  checksum: 10c0/53f40c963d1804d2e87ad942636fee4be0e1ca88f2173b2a52b198797747bfb55d9ba6613cd918a0c5083a03b87d58688497c7ea58a8f3108fc86a5d627528e1
   languageName: node
   linkType: hard
 
@@ -8506,10 +8506,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:17.0.0, dotenv@npm:^17.0.0":
-  version: 17.0.0
-  resolution: "dotenv@npm:17.0.0"
-  checksum: 10c0/961c9841529f691efb0547cf20b62c952b40e195ef23a254e6b3cd2487bd529b29e194ffcb1f97d4e6a0d9c2df9a6555464f2491da10e725c7bc40855c7b45af
+"dotenv@npm:17.0.1, dotenv@npm:^17.0.0":
+  version: 17.0.1
+  resolution: "dotenv@npm:17.0.1"
+  checksum: 10c0/79d3381832ffc6ada0cab8158120c6190e8f8680c1ff985e9d4d1345229219923b23b800969ff47412a71f965da582c7a86a5ea0d257f9106f8f3522ceb5befa
   languageName: node
   linkType: hard
 
@@ -10749,10 +10749,10 @@ __metadata:
   linkType: hard
 
 "graphql-yoga@npm:^5.0.0":
-  version: 5.13.5
-  resolution: "graphql-yoga@npm:5.13.5"
+  version: 5.14.0
+  resolution: "graphql-yoga@npm:5.14.0"
   dependencies:
-    "@envelop/core": "npm:^5.2.3"
+    "@envelop/core": "npm:^5.3.0"
     "@envelop/instrumentation": "npm:^1.0.0"
     "@graphql-tools/executor": "npm:^1.4.0"
     "@graphql-tools/schema": "npm:^10.0.11"
@@ -10767,7 +10767,7 @@ __metadata:
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^15.2.0 || ^16.0.0
-  checksum: 10c0/52793fe7af8e144b38288beba2f6d90b95ce746a36745c040bf1d6787123b29b7411ebf164ca18bd7828d61c325f2ba293967b9c1ad5298abc9856ff4c03b7fc
+  checksum: 10c0/6e2a1fb17f88994b77d83299415cdf15331ff36218d7c58238db73914863da13010c5fb7af3329b94f99af9757b389238a5e3c6fb8cf9dc02ba198d958684d90
   languageName: node
   linkType: hard
 
@@ -12905,14 +12905,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"koa-router@npm:13.0.1":
-  version: 13.0.1
-  resolution: "koa-router@npm:13.0.1"
+"koa-router@npm:13.1.1":
+  version: 13.1.1
+  resolution: "koa-router@npm:13.1.1"
   dependencies:
+    debug: "npm:^4.4.1"
     http-errors: "npm:^2.0.0"
     koa-compose: "npm:^4.1.0"
-    path-to-regexp: "npm:^8.1.0"
-  checksum: 10c0/f99fc92c1a88cd8ad2bd7d319397453400cfbab9cef4e7933d0aa6d824f773c7eed904969334e37d82aad187740b07e5665dee9f30d718cd2c92d1b529abb5e8
+    path-to-regexp: "npm:^6.3.0"
+  checksum: 10c0/273a61c51162738690c444fcfe2cc77b9f9515bb0edeb0920867cccf665e6a4ab376d0482b6c67a57a06d7dba7ea5683a3cca1f4ca7d0abd317d661891931f2a
   languageName: node
   linkType: hard
 
@@ -14574,7 +14575,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:8.35.1"
     "@typescript-eslint/parser": "npm:8.35.1"
     concurrently: "npm:9.2.0"
-    dotenv: "npm:17.0.0"
+    dotenv: "npm:17.0.1"
     eslint: "npm:8.57.1"
     eslint-config-prettier: "npm:10.1.5"
     eslint-formatter-summary: "npm:2.0.2"
@@ -15490,7 +15491,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"path-to-regexp@npm:^8.0.0, path-to-regexp@npm:^8.1.0":
+"path-to-regexp@npm:^8.0.0":
   version: 8.2.0
   resolution: "path-to-regexp@npm:8.2.0"
   checksum: 10c0/ef7d0a887b603c0a142fad16ccebdcdc42910f0b14830517c724466ad676107476bba2fe9fffd28fd4c141391ccd42ea426f32bb44c2c82ecaefe10c37b90f5a
