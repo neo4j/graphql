@@ -49,7 +49,7 @@ describe("https://github.com/neo4j/graphql/issues/6448", () => {
                         columnName: "roles"
                     )
                 Actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
-                Studio: ${Studio} @relationship(type: "PRODUCED_BY", direction: OUT)
+                Studio: [${Studio}!]! @relationship(type: "PRODUCED_BY", direction: OUT)
             }
 
             type ${Studio}
@@ -107,12 +107,14 @@ describe("https://github.com/neo4j/graphql/issues/6448", () => {
         const query = /* GraphQL */ `
             mutation {
                 ${Studio.operations.update}(
-                    where: { Name: "A Studio" }
+                    where: { Name: {eq: "A Studio"} }
                     update: {
                         Movies: [
                             {
-                                update: { node: { Actors: [{ connect: [{ where: { node: { Name: "An Actor" } } }] }] } }
-                                where: { node: { Name: "A Movie" } }
+                                update: { 
+                                    node: { Actors: [{ connect: [{ where: { node: { Name: {eq: "An Actor"} } } }] }] } 
+                                    where: { node: { Name: {eq: "A Movie"} } }
+                                }
                             }
                         ]
                     }
