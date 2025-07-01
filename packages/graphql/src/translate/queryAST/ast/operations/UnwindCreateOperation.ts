@@ -99,13 +99,14 @@ export class UnwindCreateOperation extends MutationOperation {
             targetOperations: ["CREATE"],
         });
         this.inputFields.forEach((field) => {
-            if (field.attachedTo === "node" && field instanceof PropertyInputField)
+            if (field.attachedTo === "node" && field instanceof PropertyInputField) {
                 checkEntityAuthentication({
                     context: nestedContext.neo4jGraphQLContext,
                     entity: target.entity,
                     targetOperations: ["CREATE"],
                     field: field.name,
                 });
+            }
         });
         const unwindClause = new Cypher.Unwind([this.argumentToUnwind, this.unwindVariable]);
 
