@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.2.3
+
+### Patch Changes
+
+- [#6457](https://github.com/neo4j/graphql/pull/6457) [`cdb24c4`](https://github.com/neo4j/graphql/commit/cdb24c4dc7c6c798be7b5ec5b4353f82b0c81d7b) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix Cypher error on nested update operations with authorization
+
 ## 7.2.2
 
 ### Patch Changes
