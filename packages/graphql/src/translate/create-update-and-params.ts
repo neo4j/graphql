@@ -260,6 +260,9 @@ export default function createUpdateAndParams({
 
                             if (subqueries) {
                                 innerUpdate.push(subqueries);
+                                if (whereStrs.length) {
+                                    innerUpdate.push("WITH *");
+                                }
                             }
                         }
 
