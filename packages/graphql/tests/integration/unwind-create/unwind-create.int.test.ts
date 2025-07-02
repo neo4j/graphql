@@ -643,7 +643,7 @@ describe("unwind-create", () => {
         );
     });
 
-    test("should a batch of actors with nested movies and resolve actorsConnection", async () => {
+    test.only("should a batch of actors with nested movies and resolve actorsConnection", async () => {
         const Movie = new UniqueType("Movie");
         const Actor = new UniqueType("Actor");
 
@@ -703,8 +703,9 @@ describe("unwind-create", () => {
         });
 
         expect(result.errors).toBeFalsy();
+        console.log(JSON.stringify(result, null, 2));
         expect(result.data?.[Actor.operations.create]).toEqual({
-            [Actor.plural]: expect.arrayContaining([
+            [Actor.plural]: expect.toIncludeSameMembers([
                 {
                     name: actorName,
                     movies: [

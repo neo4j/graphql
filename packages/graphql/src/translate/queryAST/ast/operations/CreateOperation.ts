@@ -21,25 +21,22 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
+import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import type { CallbackBucket } from "../../utils/callback-bucket";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { OperationField } from "../fields/OperationField";
+import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { InputField } from "../input-fields/InputField";
+import { PropertyInputField } from "../input-fields/PropertyInputField";
 import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
-import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
-import { PropertyInputField } from "../input-fields/PropertyInputField";
-import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 
-/**
- * This is currently just a dummy tree node,
- * The whole mutation part is still implemented in the old way, the current scope of this node is just to contains the nested fields.
- **/
 export class CreateOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter;
     public readonly relationship: RelationshipAdapter | undefined;
+    private readonly addReturn: boolean;
 
     private selectionPattern: SelectionPattern;
 
@@ -57,15 +54,18 @@ export class CreateOperation extends MutationOperation {
         target,
         relationship,
         selectionPattern,
+        addReturn,
     }: {
         target: ConcreteEntityAdapter;
-        selectionPattern: SelectionPattern;
         relationship?: RelationshipAdapter;
+        selectionPattern: SelectionPattern;
+        addReturn: boolean;
     }) {
         super();
         this.target = target;
         this.relationship = relationship;
         this.selectionPattern = selectionPattern;
+        this.addReturn = addReturn;
         this.variable = new Cypher.Variable();
     }
 
@@ -111,7 +111,6 @@ export class CreateOperation extends MutationOperation {
             throw new Error("No parent node found!");
         }
         context.env.topLevelOperationName = "CREATE";
-        // TODO: implement the actual create / unwind create
 
         checkEntityAuthentication({
             context: context.neo4jGraphQLContext,
@@ -153,7 +152,7 @@ export class CreateOperation extends MutationOperation {
             const relVar = nestedContext.relationship;
             if (!relVar) {
                 throw new Error(
-                    "GraphQL Error: Transpilation Error, relationship variable not avaialbe. Please contact support"
+                    "GraphQL Error: Transpilation Error, relationship variable not available. Please contact support"
                 );
             }
             const relDirection = this.relationship.getCypherDirection();
@@ -179,7 +178,7 @@ export class CreateOperation extends MutationOperation {
             ...mutationSubqueries,
             mergeClause,
             ...authorizationClauses,
-            this.getProjectionClause(nestedContext)
+            this.addReturn ? new Cypher.Return([nestedContext.target, context.returnVariable]) : undefined
         );
         return { projectionExpr: context.returnVariable, clauses: [clauses] };
     }
@@ -230,33 +229,5 @@ export class CreateOperation extends MutationOperation {
             }
         }
         return { selections, subqueries, predicates, validations };
-    }
-
-    private getProjectionClause(context: QueryASTContext<Cypher.Node>): Cypher.Clause {
-        const subqueries = this.projectionOperations
-            .flatMap((operationField) => {
-                return operationField.getSubqueries(context);
-            })
-            .map((sq) => new Cypher.Call(sq, [context.target]));
-
-        const projectionFields = this.projectionOperations
-            .map((f) => {
-                return f.getProjectionField();
-            })
-            .flatMap((projectionMap) => {
-                return Object.values(projectionMap);
-            });
-
-        let returnClause: Cypher.Clause | undefined;
-        if (projectionFields.length > 0) {
-            returnClause = new Cypher.Return([new Cypher.List(projectionFields), "data"]);
-        }
-
-        let extraWith: Cypher.With | undefined;
-        if (subqueries.length > 0) {
-            extraWith = new Cypher.With(context.target);
-        }
-
-        return Cypher.utils.concat(extraWith, ...subqueries, returnClause);
     }
 }

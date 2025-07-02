@@ -24,9 +24,9 @@ import { QueryASTContext, QueryASTEnv } from "./QueryASTContext";
 import type { QueryASTNode } from "./QueryASTNode";
 import { AggregationOperation } from "./operations/AggregationOperation";
 import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
-import { CreateOperation } from "./operations/CreateOperation";
 import { DeleteOperation } from "./operations/DeleteOperation";
 import { ReadOperation } from "./operations/ReadOperation";
+import { TopLevelCreateMutationOperation } from "./operations/TopLevelCreateMutationOperation";
 import { UnwindCreateOperation } from "./operations/UnwindCreateOperation";
 import type { Operation, OperationTranspileResult } from "./operations/operations";
 
@@ -87,7 +87,7 @@ export class QueryAST {
             this.operation instanceof DeleteOperation ||
             this.operation instanceof AggregationOperation ||
             this.operation instanceof UnwindCreateOperation ||
-            this.operation instanceof CreateOperation
+            this.operation instanceof TopLevelCreateMutationOperation
         ) {
             return createNode(varName);
         }

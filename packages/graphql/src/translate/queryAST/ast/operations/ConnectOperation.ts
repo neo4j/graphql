@@ -31,10 +31,6 @@ import type { ReadOperation } from "./ReadOperation";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 
-/**
- * This is currently just a dummy tree node,
- * The whole mutation part is still implemented in the old way, the current scope of this node is just to contains the nested fields.
- **/
 export class ConnectOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter;
     public readonly relationship: RelationshipAdapter;
