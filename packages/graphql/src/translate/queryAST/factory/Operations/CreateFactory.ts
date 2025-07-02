@@ -68,14 +68,6 @@ export class CreateFactory {
             }),
         });
 
-        this.addEntityAuthorization({ entity, context, unwindCreate: createOP });
-        // this.addAuthorizationsForAttributes({
-        //     target: entity,
-        //     context,
-        //     unwindCreate: createOP,
-        //     isNested: false,
-        // });
-
         const projectionFields = responseFields
             .filter((f) => f.name === entity.plural)
             .map((field) => {
@@ -156,7 +148,7 @@ export class CreateFactory {
             target: relationship ?? target,
             argumentToUnwind,
         });
-        this.addEntityAuthorization({ entity: target, context, unwindCreate: unwindCreate });
+        this.addEntityAuthorization({ entity: target, context, operation: unwindCreate });
         this.addAuthorizationsForAttributesInUnwind({
             target,
             context,
@@ -276,6 +268,8 @@ export class CreateFactory {
                 unwindCreate: create,
             });
         });
+
+        this.addEntityAuthorization({ entity: target, context, operation: create });
 
         asArray(input).forEach((inputItem) => {
             const targetInput = this.getInputNode(inputItem, isNested);
@@ -580,11 +574,11 @@ export class CreateFactory {
     private addEntityAuthorization({
         entity,
         context,
-        unwindCreate,
+        operation,
     }: {
         entity: ConcreteEntityAdapter;
         context: Neo4jGraphQLTranslationContext;
-        unwindCreate: UnwindCreateOperation | CreateOperation;
+        operation: UnwindCreateOperation | CreateOperation;
     }): void {
         const authFilters = this.queryASTFactory.authorizationFactory.createAuthValidateRule({
             entity,
@@ -594,7 +588,7 @@ export class CreateFactory {
             context,
         });
         if (authFilters) {
-            unwindCreate.addAuthFilters(authFilters);
+            operation.addAuthFilters(authFilters);
         }
     }
 
