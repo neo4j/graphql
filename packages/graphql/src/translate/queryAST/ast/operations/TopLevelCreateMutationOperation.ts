@@ -68,6 +68,7 @@ export class TopLevelCreateMutationOperation extends MutationOperation {
         const subqueries = this.projectionOperations
             .getSubqueries(context)
             .map((sq) => new Cypher.Call(sq, [context.target]));
+        // TODO: Change with another contract from getProjectionField or changing the output cypher.
         const projectionField = Object.values(this.projectionOperations.getProjectionField())[0];
 
         let returnClause: Cypher.Clause | undefined;
