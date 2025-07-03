@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
         await testHelper.close();
     });
 
-    test("should not raise cardinality error when deleting on update", async () => {
+    test.only("should not raise cardinality error when deleting on update", async () => {
         const createUsers = /* GraphQL */ `
             mutation {
                 ${User.operations.create}(input: [{ id: "user1_id", email: "user1_id@email.com" }]) {

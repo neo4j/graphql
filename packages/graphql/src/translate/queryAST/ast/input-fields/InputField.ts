@@ -35,6 +35,10 @@ export abstract class InputField extends QueryASTNode {
         return `${super.print()} <${this.name}>`;
     }
 
+    public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
+        return [];
+    }
+
     protected getTarget(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.Node | Cypher.Relationship {
         const target = this.attachedTo === "node" ? queryASTContext.target : queryASTContext.relationship;
         if (!target) {
@@ -43,5 +47,5 @@ export abstract class InputField extends QueryASTNode {
         return target;
     }
 
-    abstract getSetParams(_queryASTContext: QueryASTContext, inputVariable?: Cypher.Variable): Cypher.SetParam[];
+    public abstract getSetParams(_queryASTContext: QueryASTContext, inputVariable?: Cypher.Variable): Cypher.SetParam[];
 }

@@ -22,6 +22,7 @@ import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/mode
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Filter } from "../filters/Filter";
@@ -29,7 +30,6 @@ import type { InputField } from "../input-fields/InputField";
 import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
 import type { ReadOperation } from "./ReadOperation";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
-import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 
 export class ConnectOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter;
@@ -88,6 +88,11 @@ export class ConnectOperation extends MutationOperation {
         this.projectionOperations.push(...operations);
     }
 
+    // TODO
+    public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
+        return [];
+    }
+
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.hasTarget()) {
             throw new Error("No parent node found!");
@@ -143,6 +148,8 @@ export class ConnectOperation extends MutationOperation {
             connectClause,
             ...this.getProjectionClause(nestedContext)
         );
+
+        new Cypher.Call(clauses, [context.target]);
 
         return { projectionExpr: context.returnVariable, clauses: [clauses] };
     }

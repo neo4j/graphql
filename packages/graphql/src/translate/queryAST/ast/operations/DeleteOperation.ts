@@ -73,6 +73,11 @@ export class DeleteOperation extends MutationOperation {
         return this.transpileTopLevel(selection, nestedContext);
     }
 
+    /** No need for this, as all auth is done before */
+    public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
+        return [];
+    }
+
     private transpileTopLevel(
         selection: SelectionClause,
         context: QueryASTContext<Cypher.Node>

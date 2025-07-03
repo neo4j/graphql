@@ -31,6 +31,10 @@ export abstract class Operation extends QueryASTNode {
     abstract transpile(context: QueryASTContext): OperationTranspileResult;
 }
 
-export abstract class MutationOperation extends Operation {
+/** This represent an atomic mutation operation (CREATE, DELETE, UPDATE)
+ * It is not the same as an Operation (as above) because it does not return a projection
+ */
+export abstract class MutationOperation extends QueryASTNode {
     abstract transpile(context: QueryASTContext): OperationTranspileResult;
+    abstract getAuthorizationSubqueries(context: QueryASTContext): Cypher.Clause[];
 }

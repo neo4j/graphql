@@ -85,6 +85,10 @@ export class UnwindCreateOperation extends MutationOperation {
         this.projectionOperations.push(...operations);
     }
 
+    public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
+        return [];
+    }
+
     public transpile(context: QueryASTContext): OperationTranspileResult {
         const nestedContext = this.getNestedContext(context);
         nestedContext.env.topLevelOperationName = "CREATE";

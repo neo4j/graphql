@@ -35,7 +35,6 @@ import { MutationOperation, type OperationTranspileResult } from "./operations";
 export class CreateOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter;
     public readonly relationship: RelationshipAdapter | undefined;
-    private readonly addReturn: boolean;
 
     private selectionPattern: SelectionPattern;
 
@@ -53,18 +52,15 @@ export class CreateOperation extends MutationOperation {
         target,
         relationship,
         selectionPattern,
-        addReturn,
     }: {
         target: ConcreteEntityAdapter;
         relationship?: RelationshipAdapter;
         selectionPattern: SelectionPattern;
-        addReturn: boolean;
     }) {
         super();
         this.target = target;
         this.relationship = relationship;
         this.selectionPattern = selectionPattern;
-        this.addReturn = addReturn;
         this.variable = new Cypher.Variable();
     }
 
@@ -105,14 +101,31 @@ export class CreateOperation extends MutationOperation {
         this.projectionOperations.push(...operations);
     }
 
-    /** Subqueries (auth) for the nested operation */
-    public getSubqueries(_context: QueryASTContext): Cypher.Clause[] {
-        if (!this.nestedContext) {
+    // /** Subqueries (auth) for the nested operation */
+    // public getSubqueries(_context: QueryASTContext): Cypher.Clause[] {
+    //     if (!this.nestedContext) {
+    //         throw new Error(
+    //             "Error parsing query, nested context not available, need to call transpile first. Please contact support"
+    //         );
+    //     }
+    //     return this.getAuthorizationClauses(this.nestedContext);
+    // }
+
+    public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
+        const nestedContext = this.nestedContext;
+
+        if (!nestedContext) {
             throw new Error(
                 "Error parsing query, nested context not available, need to call transpile first. Please contact support"
             );
         }
-        return this.getAuthorizationClauses(this.nestedContext);
+
+        return [
+            ...this.getAuthorizationClauses(nestedContext),
+            ...this.inputFields.flatMap((inputField) => {
+                return inputField.getAuthorizationSubqueries(nestedContext);
+            }),
+        ];
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -149,13 +162,9 @@ export class CreateOperation extends MutationOperation {
             return input.getSetParams(nestedContext);
         });
 
-        const mutationSubqueries = Array.from(this.inputFields.values())
-            .flatMap((input) => {
-                return input.getSubqueries(nestedContext);
-            })
-            .map((sq) => {
-                return new Cypher.Call(sq, "*");
-            });
+        const mutationSubqueries = Array.from(this.inputFields.values()).flatMap((input) => {
+            return input.getSubqueries(nestedContext);
+        });
 
         let mergeClause: Cypher.Merge | undefined;
         if (this.relationship) {
@@ -175,23 +184,16 @@ export class CreateOperation extends MutationOperation {
             createClause.set(...setParams);
         }
 
-        let withClause: Cypher.With | undefined;
-        if (mutationSubqueries.length > 0) {
-            withClause = new Cypher.With("*");
-        }
-
         // TODO: this should be collected on the top level create
-        const authorizationClauses = this.getAuthorizationClauses(nestedContext);
+        // const authorizationClauses = this.getAuthorizationClauses(nestedContext);
 
         const clauses = Cypher.utils.concat(
             createClause,
-            withClause,
-            ...mutationSubqueries,
-            mergeClause,
-            ...authorizationClauses,
-            this.addReturn ? new Cypher.Return([nestedContext.target, context.returnVariable]) : undefined
+            ...mutationSubqueries.map((sq) => Cypher.utils.concat(new Cypher.With("*"), sq)),
+            mergeClause
         );
-        return { projectionExpr: context.returnVariable, clauses: [clauses] };
+
+        return { projectionExpr: nestedContext.target, clauses: [clauses] };
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {

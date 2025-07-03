@@ -64,13 +64,12 @@ export class CreateFactory {
 
         const rawInput = resolveTree.args.input as Record<string, any>[];
         const input = rawInput ?? [];
-        const mutationOperationFields: MutationOperationField[] = input.map((inputItem) => {
+        const mutationOperationFields: CreateOperation[] = input.map((inputItem) => {
             const createOperation = new CreateOperation({
                 target: entity,
                 selectionPattern: new NodeSelectionPattern({
                     target: entity,
                 }),
-                addReturn: true,
             });
             this.addEntityAuthorization({ entity, context, operation: createOperation });
             this.hydrateCreateOperation({
@@ -80,7 +79,9 @@ export class CreateFactory {
                 callbackBucket,
                 context,
             });
-            return new MutationOperationField(entity.plural, createOperation);
+
+            return createOperation;
+            // return new MutationOperationField(entity.plural, createOperation);
         });
 
         const projectionOperations = responseFields
@@ -318,7 +319,6 @@ export class CreateFactory {
                                 selectionPattern: new RelationshipSelectionPattern({
                                     relationship: nestedRelationship,
                                 }),
-                                addReturn: false,
                             });
 
                             this.hydrateCreateOperation({

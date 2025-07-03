@@ -23,15 +23,16 @@ import { filterTruthy } from "../../../../utils/utils";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { OperationField } from "../fields/OperationField";
-import type { MutationOperationField } from "../input-fields/MutationOperationField";
-import { MutationOperation, type OperationTranspileResult } from "./operations";
+import type { CreateOperation } from "./CreateOperation";
+import { Operation, type OperationTranspileResult } from "./operations";
 
-export class TopLevelCreateMutationOperation extends MutationOperation {
+// This extends Operation because we don't need the mutationOperation API for top level
+export class TopLevelCreateMutationOperation extends Operation {
     private readonly target: ConcreteEntityAdapter;
     // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
     private readonly projectionOperations: OperationField;
 
-    private readonly mutationOperationFields: MutationOperationField[] = [];
+    private readonly mutationOperationFields: CreateOperation[] = [];
 
     constructor({
         target,
@@ -39,7 +40,7 @@ export class TopLevelCreateMutationOperation extends MutationOperation {
         projectionOperations,
     }: {
         target: ConcreteEntityAdapter;
-        mutationOperationFields: MutationOperationField[];
+        mutationOperationFields: CreateOperation[];
         projectionOperations: OperationField;
     }) {
         super();
@@ -56,12 +57,22 @@ export class TopLevelCreateMutationOperation extends MutationOperation {
         if (!context.hasTarget()) {
             throw new Error("No parent node found!");
         }
-        const subqueries = this.mutationOperationFields.flatMap((field) => {
-            return field.getSubqueries(context);
+        const subqueries = this.mutationOperationFields.map((field) => {
+            const { clauses, projectionExpr } = field.transpile(context);
+
+            return Cypher.utils.concat(
+                ...clauses,
+                ...field.getAuthorizationSubqueries(context),
+                new Cypher.Return([projectionExpr, context.returnVariable])
+            );
         });
+
         const unionStatement = new Cypher.Call(new Cypher.Union(...subqueries));
         const projection: Cypher.Clause = this.getProjectionClause(context);
-        return { projectionExpr: context.returnVariable, clauses: [unionStatement, projection] };
+        return {
+            projectionExpr: context.returnVariable,
+            clauses: [unionStatement, projection],
+        };
     }
 
     private getProjectionClause(context: QueryASTContext<Cypher.Node>): Cypher.Clause {
@@ -82,5 +93,11 @@ export class TopLevelCreateMutationOperation extends MutationOperation {
         }
 
         return Cypher.utils.concat(extraWith, ...subqueries, returnClause);
+    }
+
+    private getAuthorizationSubqueries(context: QueryASTContext) {
+        return this.mutationOperationFields.flatMap((operation) => {
+            return operation.getAuthorizationSubqueries(context);
+        });
     }
 }
