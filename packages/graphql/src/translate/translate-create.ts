@@ -78,11 +78,11 @@ export default async function translateCreate({
     node: Node;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
     const { resolveTree } = context;
-    const mutationInputs = resolveTree.args.input as any[];
     const entityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
     if (!entityAdapter) {
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
+    const mutationInputs = resolveTree.args.input as any[];
     const { isSupported, reason } = isUnwindCreateSupported(entityAdapter, asArray(mutationInputs), context);
     if (isSupported) {
         return unwindCreate({ context, entityAdapter });

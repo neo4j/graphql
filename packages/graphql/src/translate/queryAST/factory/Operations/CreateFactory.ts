@@ -30,6 +30,7 @@ import { ParamInputField } from "../../ast/input-fields/ParamInputField";
 import { PropertyInputField } from "../../ast/input-fields/PropertyInputField";
 import { CreateOperation } from "../../ast/operations/CreateOperation";
 import type { ReadOperation } from "../../ast/operations/ReadOperation";
+import { TopLevelCreateMutationOperation } from "../../ast/operations/TopLevelCreateMutationOperation";
 import { UnwindCreateOperation } from "../../ast/operations/UnwindCreateOperation";
 import { NodeSelectionPattern } from "../../ast/selection/SelectionPattern/NodeSelectionPattern";
 import { RelationshipSelectionPattern } from "../../ast/selection/SelectionPattern/RelationshipSelectionPattern";
@@ -56,19 +57,33 @@ export class CreateFactory {
         resolveTree: ResolveTree;
         callbackBucket: CallbackBucket;
         context: Neo4jGraphQLTranslationContext;
-    }): CreateOperation {
+    }): TopLevelCreateMutationOperation {
         const responseFields = Object.values(
             resolveTree.fieldsByTypeName[entity.operations.mutationResponseTypeNames.create] ?? {}
         );
 
-        const createOP = new CreateOperation({
-            target: entity,
-            selectionPattern: new NodeSelectionPattern({
+        const rawInput = resolveTree.args.input as Record<string, any>[];
+        const input = rawInput ?? [];
+        const mutationOperationFields: MutationOperationField[] = input.map((inputItem) => {
+            const createOperation = new CreateOperation({
                 target: entity,
-            }),
+                selectionPattern: new NodeSelectionPattern({
+                    target: entity,
+                }),
+                addReturn: true,
+            });
+            this.addEntityAuthorization({ entity, context, operation: createOperation });
+            this.hydrateCreateOperation({
+                target: entity,
+                input: inputItem,
+                create: createOperation,
+                callbackBucket,
+                context,
+            });
+            return new MutationOperationField(entity.plural, createOperation);
         });
 
-        const projectionFields = responseFields
+        const projectionOperations = responseFields
             .filter((f) => f.name === entity.plural)
             .map((field) => {
                 const readOP = this.queryASTFactory.operationsFactory.createReadOperation({
@@ -82,20 +97,16 @@ export class CreateFactory {
                     alias: field.alias,
                 });
                 return fieldOperation;
-            });
-
-        createOP.addProjectionOperations(projectionFields);
-
-        const rawInput = resolveTree.args.input as Record<string, any>[];
-        const input = rawInput ?? [];
-        this.hydrateCreateOperation({
+            })[0]; // TODO, just a temporary fix.
+        if (!projectionOperations) {
+            throw new Error("TODO: Not implemented fix later");
+        }
+        const topLevelMutation = new TopLevelCreateMutationOperation({
             target: entity,
-            input,
-            create: createOP,
-            callbackBucket,
-            context,
+            mutationOperationFields,
+            projectionOperations,
         });
-        return createOP;
+        return topLevelMutation;
     }
 
     public createUnwindCreateOperation(
@@ -255,7 +266,7 @@ export class CreateFactory {
     }: {
         target: ConcreteEntityAdapter;
         relationship?: RelationshipAdapter;
-        input: Record<string, any>[];
+        input: Record<string, any>;
         create: CreateOperation;
         callbackBucket: CallbackBucket;
         context: Neo4jGraphQLTranslationContext;
@@ -307,6 +318,7 @@ export class CreateFactory {
                                 selectionPattern: new RelationshipSelectionPattern({
                                     relationship: nestedRelationship,
                                 }),
+                                addReturn: false,
                             });
 
                             this.hydrateCreateOperation({
@@ -383,7 +395,7 @@ export class CreateFactory {
     }: {
         entity: ConcreteEntityAdapter;
         create: CreateOperation;
-        input: Record<string, any>[];
+        input: Record<string, any>;
         callbackBucket: CallbackBucket;
         isNested: boolean;
         relationship?: RelationshipAdapter;
@@ -403,14 +415,13 @@ export class CreateFactory {
                 if (!callbackFunctionName) {
                     throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
                 }
-                asArray(input).forEach((inputItem) =>
-                    callbackBucket.addCallback({
-                        functionName: callbackFunctionName,
-                        param: callbackParam,
-                        parent: inputItem,
-                        type: attribute.type,
-                    })
-                );
+
+                callbackBucket.addCallback({
+                    functionName: callbackFunctionName,
+                    param: callbackParam,
+                    parent: input,
+                    type: attribute.type,
+                });
             });
         } else {
             relationship?.getPopulatedByFields("CREATE").forEach((attribute) => {
@@ -427,14 +438,13 @@ export class CreateFactory {
                 if (!callbackFunctionName) {
                     throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
                 }
-                asArray(input).forEach((inputItem) =>
-                    callbackBucket.addCallback({
-                        functionName: callbackFunctionName,
-                        param: relCallbackParam,
-                        parent: inputItem.edge,
-                        type: attribute.type,
-                    })
-                );
+
+                callbackBucket.addCallback({
+                    functionName: callbackFunctionName,
+                    param: relCallbackParam,
+                    parent: input.edge,
+                    type: attribute.type,
+                });
             });
         }
     }

@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { MutationOperation } from "../operations/operations";
 import { InputField } from "./InputField";
@@ -49,3 +49,4 @@ export class MutationOperationField extends InputField {
         return clauses;
     }
 }
+
