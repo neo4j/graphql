@@ -22,14 +22,13 @@ import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/mode
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
-import type { CallbackBucket } from "../../utils/callback-bucket";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { OperationField } from "../fields/OperationField";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { InputField } from "../input-fields/InputField";
-import { PropertyInputField } from "../input-fields/PropertyInputField";
+import { ParamInputField } from "../input-fields/ParamInputField";
 import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
 
@@ -48,7 +47,7 @@ export class CreateOperation extends MutationOperation {
     protected readonly authFilters: AuthorizationFilters[] = [];
     private readonly variable: Cypher.Variable;
 
-    public callbackBucket: CallbackBucket | undefined;
+    private nestedContext: QueryASTContext | undefined;
 
     constructor({
         target,
@@ -106,28 +105,39 @@ export class CreateOperation extends MutationOperation {
         this.projectionOperations.push(...operations);
     }
 
+    /** Subqueries (auth) for the nested operation */
+    public getSubqueries(_context: QueryASTContext): Cypher.Clause[] {
+        if (!this.nestedContext) {
+            throw new Error(
+                "Error parsing query, nested context not available, need to call transpile first. Please contact support"
+            );
+        }
+        return this.getAuthorizationClauses(this.nestedContext);
+    }
+
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.hasTarget()) {
             throw new Error("No parent node found!");
         }
         context.env.topLevelOperationName = "CREATE";
 
+        const { nestedContext } = this.selectionPattern.apply(context);
+        this.nestedContext = nestedContext;
         checkEntityAuthentication({
-            context: context.neo4jGraphQLContext,
+            context: nestedContext.neo4jGraphQLContext,
             entity: this.target.entity,
             targetOperations: ["CREATE"],
         });
         this.inputFields.forEach((field) => {
-            if (field.attachedTo === "node" && field instanceof PropertyInputField)
+            if (field.attachedTo === "node" && field instanceof ParamInputField) {
                 checkEntityAuthentication({
-                    context: context.neo4jGraphQLContext,
+                    context: nestedContext.neo4jGraphQLContext,
                     entity: this.target.entity,
                     targetOperations: ["CREATE"],
                     field: field.name,
                 });
+            }
         });
-
-        const { nestedContext } = this.selectionPattern.apply(context);
 
         const createPattern = new Cypher.Pattern(nestedContext.target, {
             labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
@@ -170,6 +180,7 @@ export class CreateOperation extends MutationOperation {
             withClause = new Cypher.With("*");
         }
 
+        // TODO: this should be collected on the top level create
         const authorizationClauses = this.getAuthorizationClauses(nestedContext);
 
         const clauses = Cypher.utils.concat(
