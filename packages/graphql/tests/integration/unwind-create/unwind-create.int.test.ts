@@ -643,7 +643,7 @@ describe("unwind-create", () => {
         );
     });
 
-    test.only("should a batch of actors with nested movies and resolve actorsConnection", async () => {
+    test("should a batch of actors with nested movies and resolve actorsConnection", async () => {
         const Movie = new UniqueType("Movie");
         const Actor = new UniqueType("Actor");
 

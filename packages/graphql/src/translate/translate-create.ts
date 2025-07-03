@@ -82,12 +82,12 @@ export default async function translateCreate({
     if (!entityAdapter) {
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
-//    const mutationInputs = resolveTree.args.input as any[];
-    // const { isSupported, reason } = isUnwindCreateSupported(entityAdapter, asArray(mutationInputs), context);
-    // if (isSupported) {
-    //     return unwindCreate({ context, entityAdapter });
-    // }
-    // debug(`Unwind create optimization not supported: ${reason}`);
+    const mutationInputs = resolveTree.args.input as any[];
+    const { isSupported, reason } = isUnwindCreateSupported(entityAdapter, asArray(mutationInputs), context);
+    if (isSupported) {
+        return unwindCreate({ context, entityAdapter });
+    }
+    debug(`Unwind create optimization not supported: ${reason}`);
 
     const varName = "this";
     const result = await translateUsingQueryAST({ context, entityAdapter, resolveTree, varName });
