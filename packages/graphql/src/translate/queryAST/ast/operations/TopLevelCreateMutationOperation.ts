@@ -30,7 +30,7 @@ import { Operation, type OperationTranspileResult } from "./operations";
 export class TopLevelCreateMutationOperation extends Operation {
     private readonly target: ConcreteEntityAdapter;
     // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
-    private readonly projectionOperations: OperationField;
+    private readonly projectionOperations: OperationField[];
 
     private readonly mutationOperationFields: CreateOperation[] = [];
 
@@ -41,7 +41,7 @@ export class TopLevelCreateMutationOperation extends Operation {
     }: {
         target: ConcreteEntityAdapter;
         mutationOperationFields: CreateOperation[];
-        projectionOperations: OperationField;
+        projectionOperations: OperationField[];
     }) {
         super();
         this.target = target;
@@ -50,7 +50,7 @@ export class TopLevelCreateMutationOperation extends Operation {
     }
 
     public getChildren(): QueryASTNode[] {
-        return filterTruthy([...this.mutationOperationFields, this.projectionOperations]);
+        return filterTruthy([...this.mutationOperationFields, ...this.projectionOperations]);
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -76,16 +76,22 @@ export class TopLevelCreateMutationOperation extends Operation {
     }
 
     private getProjectionClause(context: QueryASTContext<Cypher.Node>): Cypher.Clause {
-        const subqueries = this.projectionOperations
+        // TODO, refactor these cases and explicit castings when multiple projection are handled
+        if (this.projectionOperations.length === 0) {
+            const emptyProjection = new Cypher.Literal("Query cannot conclude with CALL");
+            return new Cypher.Return(emptyProjection);
+        }
+        if (this.projectionOperations.length > 1) {
+            throw new Error("TODO: handle multiple projection fields in TopLevelCreateMutationOperation");
+        }
+        const projectionOperation = this.projectionOperations[0] as OperationField;
+        const subqueries = projectionOperation
             .getSubqueries(context)
             .map((sq) => new Cypher.Call(sq, [context.target]));
-        // TODO: Change with another contract from getProjectionField or changing the output cypher.
-        const projectionField = Object.values(this.projectionOperations.getProjectionField())[0];
 
-        let returnClause: Cypher.Clause | undefined;
-        if (projectionField) {
-            returnClause = new Cypher.Return([Cypher.collect(projectionField), "data"]);
-        }
+        const projectionField = Object.values(projectionOperation.getProjectionField())[0] as Cypher.Expr;
+
+        const returnClause = new Cypher.Return([Cypher.collect(projectionField), "data"]);
 
         let extraWith: Cypher.With | undefined;
         if (subqueries.length > 0) {

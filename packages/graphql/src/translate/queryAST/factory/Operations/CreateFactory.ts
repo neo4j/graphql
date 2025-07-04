@@ -98,7 +98,7 @@ export class CreateFactory {
                     alias: field.alias,
                 });
                 return fieldOperation;
-            })[0]; // TODO, just a temporary fix.
+            }); // TODO, just a temporary fix.
         if (!projectionOperations) {
             throw new Error("TODO: Not implemented fix later");
         }
