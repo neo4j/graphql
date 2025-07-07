@@ -93,6 +93,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         `;
 
         const mutation0Result = await testHelper.executeGraphQL(mutation0);
+        expect(mutation0Result.errors).toBeFalsy();
         expect((mutation0Result.data as any)?.[Interaction.operations.create].info.nodesCreated).toBe(1);
         expect((mutation0Result.data as any)?.[Interaction.operations.create].info.relationshipsCreated).toBe(3);
 
@@ -119,6 +120,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         `;
 
         const mutation1Result = await testHelper.executeGraphQL(mutation1);
+        expect(mutation1Result.errors).toBeFalsy();
         expect((mutation1Result.data as any)?.[Interaction.operations.create].info.nodesCreated).toBe(1);
         expect((mutation1Result.data as any)?.[Interaction.operations.create].info.relationshipsCreated).toBe(3);
     });

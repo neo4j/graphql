@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
         Group = testHelper.createUniqueType("Group");
         Person = testHelper.createUniqueType("Person");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type JWT @jwt {
                 uid: String!
             }
@@ -77,7 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
         await testHelper.close();
     });
 
-    test.only("should not raise cardinality error when deleting on update", async () => {
+    test("should not raise cardinality error when deleting on update", async () => {
         const createUsers = /* GraphQL */ `
             mutation {
                 ${User.operations.create}(input: [{ id: "user1_id", email: "user1_id@email.com" }]) {
@@ -119,7 +119,6 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
         const createUsersResult = await testHelper.executeGraphQLWithToken(createUsers, token);
 
         expect(createUsersResult.errors).toBeFalsy();
-
         const createGroupsResult = await testHelper.executeGraphQLWithToken(createGroups, token, {
             variableValues: {
                 input: [
