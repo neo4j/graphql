@@ -22,8 +22,9 @@ import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/mod
 import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
-import { asArray, isRecord } from "../../../../utils/utils";
+import { asArray } from "../../../../utils/utils";
 import type { Filter } from "../../ast/filters/Filter";
+import { MutationOperationField } from "../../ast/input-fields/MutationOperationField";
 import { ParamInputField } from "../../ast/input-fields/ParamInputField";
 import { CompositeConnectOperation } from "../../ast/operations/composite/CompositeConnectOperation";
 import { CompositeConnectPartial } from "../../ast/operations/composite/CompositeConnectPartial";
@@ -40,22 +41,18 @@ export class ConnectFactory {
     }
 
     public createConnectOperation(
-        entity: ConcreteEntityAdapter,
+        entity: ConcreteEntityAdapter, // TODO: DO we need entity and relationship?
         relationship: RelationshipAdapter,
         input: Record<string, any>[],
         context: Neo4jGraphQLTranslationContext
     ): ConnectOperation {
-        const { whereArg } = this.parseConnectArgs(input, false); //connectArg
-        const nodeFilters: Filter[] = [];
-        if (whereArg.node) {
-            nodeFilters.push(...this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArg.node));
-        }
+        // NESTED CONNECT
+
         const connectOP = new ConnectOperation({
             target: entity,
             selectionPattern: new NodeSelectionPattern({
                 target: entity,
             }),
-            filters: nodeFilters,
             relationship,
         });
 
@@ -92,17 +89,11 @@ export class ConnectFactory {
         input: Record<string, any>[],
         context: Neo4jGraphQLTranslationContext
     ): CompositeConnectPartial {
-        const { whereArg } = this.parseConnectArgs(input, false); //connectArg
-        const nodeFilters: Filter[] = [];
-        if (whereArg.node) {
-            nodeFilters.push(...this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArg.node));
-        }
         const connectOP = new CompositeConnectPartial({
             target: entity,
             selectionPattern: new NodeSelectionPattern({
                 target: entity,
             }),
-            filters: nodeFilters,
             relationship,
         });
 
@@ -138,8 +129,40 @@ export class ConnectFactory {
         //         unwindCreate: create,
         //     });
         // });
-
         asArray(input).forEach((inputItem) => {
+            const { whereArg, connectArg } = this.parseConnectArgs(inputItem); //connectArg
+            const nodeFilters: Filter[] = [];
+            if (whereArg.node) {
+                nodeFilters.push(...this.queryASTFactory.filterFactory.createNodeFilters(target, whereArg.node));
+            }
+
+            connect.addFilters(...nodeFilters);
+
+            asArray(connectArg).forEach((nestedConnectInputFields) => {
+                Object.entries(nestedConnectInputFields).forEach(([key, value]) => {
+                    const nestedRelationship = target.relationships.get(key);
+                    if (!nestedRelationship) {
+                        throw new Error("Expected relationship on connect operation. Please contact support");
+                    }
+
+                    const nestedEntity = nestedRelationship.target;
+
+                    asArray(value).forEach((nestedConnectInputItem) => {
+                        // TODO: Can we ask directly to this.createConnectOperation?
+                        const nestedConnectOperation = this.queryASTFactory.operationsFactory.createConnectOperation(
+                            nestedEntity,
+                            nestedRelationship,
+                            nestedConnectInputItem,
+                            context
+                        );
+
+                        const mutationOperationField = new MutationOperationField(key, nestedConnectOperation);
+                        connect.addField(mutationOperationField, "node");
+                    });
+                });
+            });
+
+            /* Create the attributes for the edge */
             raiseAttributeAmbiguity(Object.keys(this.getInputEdge(inputItem)), relationship);
             const targetInputEdge = this.getInputEdge(inputItem);
             for (const key of Object.keys(targetInputEdge)) {
@@ -199,21 +222,14 @@ export class ConnectFactory {
     //     });
     // }
 
-    private parseConnectArgs(
-        args: Record<string, any>,
-        isTopLevel: boolean
-    ): {
+    private parseConnectArgs(args: Record<string, any>): {
         whereArg: { node: Record<string, any>; edge: Record<string, any> };
-        connectArg: Record<string, any>;
+        connectArg: Record<string, any>[];
     } {
-        let whereArg;
-        const rawWhere = isRecord(args.where) ? args.where : {};
-        if (isTopLevel) {
-            whereArg = { node: rawWhere.node ?? {}, edge: rawWhere.edge ?? {} };
-        } else {
-            whereArg = { node: rawWhere.node, edge: {} };
-        }
-        const connectArg = isRecord(args.connect) ? args.connect : {};
+        const rawWhere = args.where ?? {};
+
+        const whereArg = { node: rawWhere.node, edge: {} };
+        const connectArg = args.connect ?? {};
         return { whereArg, connectArg };
     }
 }
