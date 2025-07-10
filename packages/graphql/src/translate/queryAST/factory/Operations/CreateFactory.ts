@@ -350,9 +350,46 @@ export class CreateFactory {
                             });
                         }
                     } else {
-                        throw new Error(
-                            `Transpile Error: Relationship ${nestedRelationship.name} target is not a concrete entity`
-                        );
+                        const nestedCreateInput = targetInput[key]?.create;
+                        if (nestedCreateInput) {
+                            throw new Error("Nested create to an interface not supported");
+                            // asArray(nestedCreateInput).forEach((nestedCreateInputItem) => {
+                            //     const nestedCreateOperation = new CreateOperation({
+                            //         target: nestedEntity,
+                            //         relationship: nestedRelationship,
+                            //         selectionPattern: new RelationshipSelectionPattern({
+                            //             relationship: nestedRelationship,
+                            //         }),
+                            //     });
+
+                            //     this.hydrateCreateOperation({
+                            //         create: nestedCreateOperation,
+                            //         target: nestedEntity,
+                            //         relationship: nestedRelationship,
+                            //         input: nestedCreateInputItem,
+                            //         callbackBucket,
+                            //         context,
+                            //     });
+
+                            //     const mutationOperationField = new MutationOperationField(key, nestedCreateOperation);
+                            //     create.addField(mutationOperationField, "node");
+                            // });
+                        }
+                        const nestedConnectInput = targetInput[key]?.connect;
+                        if (nestedConnectInput) {
+                            asArray(nestedConnectInput).forEach((nestedConnectInputItem) => {
+                                const nestedConnectOperation =
+                                    this.queryASTFactory.operationsFactory.createConnectOperation(
+                                        nestedEntity,
+                                        nestedRelationship,
+                                        nestedConnectInputItem,
+                                        context
+                                    );
+
+                                const mutationOperationField = new MutationOperationField(key, nestedConnectOperation);
+                                create.addField(mutationOperationField, "node");
+                            });
+                        }
                     }
                 }
             }

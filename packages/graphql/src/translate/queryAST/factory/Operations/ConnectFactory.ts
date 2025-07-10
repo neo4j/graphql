@@ -18,15 +18,19 @@
  */
 
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
 import { asArray, isRecord } from "../../../../utils/utils";
+import type { Filter } from "../../ast/filters/Filter";
+import { ParamInputField } from "../../ast/input-fields/ParamInputField";
+import { CompositeConnectOperation } from "../../ast/operations/composite/CompositeConnectOperation";
+import { CompositeConnectPartial } from "../../ast/operations/composite/CompositeConnectPartial";
 import { ConnectOperation } from "../../ast/operations/ConnectOperation";
 import { NodeSelectionPattern } from "../../ast/selection/SelectionPattern/NodeSelectionPattern";
-import type { QueryASTFactory } from "../QueryASTFactory";
-import { ParamInputField } from "../../ast/input-fields/ParamInputField";
 import { raiseAttributeAmbiguity } from "../../utils/raise-attribute-ambiguity";
-import type { Filter } from "../../ast/filters/Filter";
+import type { QueryASTFactory } from "../QueryASTFactory";
 
 export class ConnectFactory {
     private queryASTFactory: QueryASTFactory;
@@ -41,10 +45,6 @@ export class ConnectFactory {
         input: Record<string, any>[],
         context: Neo4jGraphQLTranslationContext
     ): ConnectOperation {
-        // const responseFields = Object.values(
-        //     resolveTree.fieldsByTypeName?.[entity.operations.mutationResponseTypeNames.connect] ?? {}
-        // );
-
         const { whereArg } = this.parseConnectArgs(input, false); //connectArg
         const nodeFilters: Filter[] = [];
         if (whereArg.node) {
@@ -58,20 +58,53 @@ export class ConnectFactory {
             filters: nodeFilters,
             relationship,
         });
-        // createConnectionPredicates
 
-        // const projectionFields = responseFields
-        //     .filter((f) => f.name === entity.plural)
-        //     .map((field) => {
-        //         const readOP = this.queryASTFactory.operationsFactory.createReadOperation({
-        //             entityOrRel: entity,
-        //             resolveTree: field,
-        //             context,
-        //         }) as ReadOperation;
-        //         return readOP;
-        //     });
+        this.hydrateConnectOperation({
+            target: entity,
+            relationship,
+            input,
+            connect: connectOP,
+            context,
+        });
+        return connectOP;
+    }
 
-        // connectOP.addProjectionOperations(projectionFields);
+    public createCompositeConnectOperation(
+        entity: InterfaceEntityAdapter | UnionEntityAdapter,
+        relationship: RelationshipAdapter,
+        input: Record<string, any>[],
+        context: Neo4jGraphQLTranslationContext
+    ): CompositeConnectOperation {
+        const partials: CompositeConnectPartial[] = [];
+        for (const concreteEntity of entity.concreteEntities) {
+            const partial = this.createCompositeConnectPartial(concreteEntity, relationship, input, context);
+            partials.push(partial);
+        }
+
+        return new CompositeConnectOperation({
+            partials,
+        });
+    }
+
+    private createCompositeConnectPartial(
+        entity: ConcreteEntityAdapter,
+        relationship: RelationshipAdapter,
+        input: Record<string, any>[],
+        context: Neo4jGraphQLTranslationContext
+    ): CompositeConnectPartial {
+        const { whereArg } = this.parseConnectArgs(input, false); //connectArg
+        const nodeFilters: Filter[] = [];
+        if (whereArg.node) {
+            nodeFilters.push(...this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArg.node));
+        }
+        const connectOP = new CompositeConnectPartial({
+            target: entity,
+            selectionPattern: new NodeSelectionPattern({
+                target: entity,
+            }),
+            filters: nodeFilters,
+            relationship,
+        });
 
         this.hydrateConnectOperation({
             target: entity,

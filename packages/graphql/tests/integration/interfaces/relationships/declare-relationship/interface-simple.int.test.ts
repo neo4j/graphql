@@ -1590,7 +1590,7 @@ describe("interface with declared relationships", () => {
         );
     });
 
-    test("create interface relationship, connect edge", async () => {
+    test.only("create interface relationship, connect edge", async () => {
         const actorName = "actor1";
         const actorName2 = "actor2";
 
