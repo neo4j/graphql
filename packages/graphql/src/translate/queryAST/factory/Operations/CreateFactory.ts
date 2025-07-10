@@ -352,28 +352,46 @@ export class CreateFactory {
                     } else {
                         const nestedCreateInput = targetInput[key]?.create;
                         if (nestedCreateInput) {
-                            throw new Error("Nested create to an interface not supported");
-                            // asArray(nestedCreateInput).forEach((nestedCreateInputItem) => {
-                            //     const nestedCreateOperation = new CreateOperation({
-                            //         target: nestedEntity,
-                            //         relationship: nestedRelationship,
-                            //         selectionPattern: new RelationshipSelectionPattern({
-                            //             relationship: nestedRelationship,
-                            //         }),
-                            //     });
+                            asArray(nestedCreateInput).forEach((nestedCreateInputItem) => {
+                                const edgeFields = nestedCreateInputItem.edge ?? {};
+                                const nodeFieldsByType = nestedCreateInputItem.node ?? {};
 
-                            //     this.hydrateCreateOperation({
-                            //         create: nestedCreateOperation,
-                            //         target: nestedEntity,
-                            //         relationship: nestedRelationship,
-                            //         input: nestedCreateInputItem,
-                            //         callbackBucket,
-                            //         context,
-                            //     });
+                                Object.entries(nodeFieldsByType).forEach(([concreteTypename, nodeInputFields]) => {
+                                    const concreteEntity = nestedEntity.concreteEntities.find(
+                                        (e) => e.name === concreteTypename
+                                    );
+                                    console.log(concreteEntity);
+                                    if (!concreteEntity) {
+                                        throw new Error("Concrete entity not found in create, please contact support");
+                                    }
 
-                            //     const mutationOperationField = new MutationOperationField(key, nestedCreateOperation);
-                            //     create.addField(mutationOperationField, "node");
-                            // });
+                                    const nestedCreateOperation = new CreateOperation({
+                                        target: concreteEntity,
+                                        relationship: nestedRelationship,
+                                        selectionPattern: new RelationshipSelectionPattern({
+                                            relationship: nestedRelationship,
+                                        }),
+                                    });
+
+                                    this.hydrateCreateOperation({
+                                        create: nestedCreateOperation,
+                                        target: concreteEntity,
+                                        relationship: nestedRelationship,
+                                        input: {
+                                            node: nodeInputFields,
+                                            edge: edgeFields,
+                                        },
+                                        callbackBucket,
+                                        context,
+                                    });
+
+                                    const mutationOperationField = new MutationOperationField(
+                                        key,
+                                        nestedCreateOperation
+                                    );
+                                    create.addField(mutationOperationField, "node");
+                                });
+                            });
                         }
                         const nestedConnectInput = targetInput[key]?.connect;
                         if (nestedConnectInput) {

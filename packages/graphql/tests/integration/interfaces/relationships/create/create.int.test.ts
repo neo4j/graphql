@@ -76,7 +76,7 @@ describe("interface relationships", () => {
         await testHelper.close();
     });
 
-    test.only("should create create using interface relationship fields", async () => {
+    test("should create create using interface relationship fields", async () => {
         const actorName = generate({
             readable: true,
             charset: "alphabetic",
