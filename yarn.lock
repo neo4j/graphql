@@ -5734,7 +5734,7 @@ __metadata:
     ts-loader: "npm:9.5.2"
     tsconfig-paths-webpack-plugin: "npm:4.2.0"
     typescript: "npm:5.8.3"
-    webpack: "npm:5.100.0"
+    webpack: "npm:5.100.1"
   languageName: unknown
   linkType: soft
 
@@ -10784,8 +10784,8 @@ __metadata:
   linkType: hard
 
 "graphql-yoga@npm:^5.0.0":
-  version: 5.14.0
-  resolution: "graphql-yoga@npm:5.14.0"
+  version: 5.15.1
+  resolution: "graphql-yoga@npm:5.15.1"
   dependencies:
     "@envelop/core": "npm:^5.3.0"
     "@envelop/instrumentation": "npm:^1.0.0"
@@ -10802,7 +10802,7 @@ __metadata:
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^15.2.0 || ^16.0.0
-  checksum: 10c0/6e2a1fb17f88994b77d83299415cdf15331ff36218d7c58238db73914863da13010c5fb7af3329b94f99af9757b389238a5e3c6fb8cf9dc02ba198d958684d90
+  checksum: 10c0/60c27e5da20de8a148f34ca1ef63b068547b126618518ab8449c45a6595ed41fd2287cf5996bfb7310cdd5434e46cc603b4ecdc6bb0947ec4d2fd20096f17e6b
   languageName: node
   linkType: hard
 
@@ -19364,9 +19364,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"webpack@npm:5.100.0":
-  version: 5.100.0
-  resolution: "webpack@npm:5.100.0"
+"webpack@npm:5.100.1":
+  version: 5.100.1
+  resolution: "webpack@npm:5.100.1"
   dependencies:
     "@types/eslint-scope": "npm:^3.7.7"
     "@types/estree": "npm:^1.0.8"
@@ -19398,7 +19398,7 @@ __metadata:
       optional: true
   bin:
     webpack: bin/webpack.js
-  checksum: 10c0/65e93807985a469b683b6a089e994a3b61c64aa67fa60b4322f6e857cc9b3312080ba1f29041aacb5d382bd16bea1ab6384e149034cdd71ee138a17df295860a
+  checksum: 10c0/6dd8e286a5e361650c543dc6c4922b82276b0ed57ae545014bf4f6486d857d1c388dc8ec798f1dc3b77a765936357286910879fab65e6ff53e4cba1cc13db538
   languageName: node
   linkType: hard
 
