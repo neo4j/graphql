@@ -27,24 +27,10 @@ import type { CompositeConnectPartial } from "./CompositeConnectPartial";
 
 export class CompositeConnectOperation extends MutationOperation {
     private partials: CompositeConnectPartial[] = [];
-    // public readonly target: InterfaceEntity;
-    // public readonly relationship: RelationshipAdapter;
-
-    // private selectionPattern: SelectionPattern;
-
-    // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
-    // public projectionOperations: ReadOperation[] = [];
-
-    // public readonly inputFields: Map<string, InputField> = new Map();
-    // private filters: Filter[];
 
     constructor({ partials }: { partials: CompositeConnectPartial[] }) {
         super();
         this.partials = partials;
-        // this.target = target;
-        // this.relationship = relationship;
-        // this.selectionPattern = selectionPattern;
-        // this.filters = filters;
     }
 
     public getChildren(): QueryASTNode[] {

@@ -37,7 +37,6 @@ import { NodeSelectionPattern } from "../../ast/selection/SelectionPattern/NodeS
 import { RelationshipSelectionPattern } from "../../ast/selection/SelectionPattern/RelationshipSelectionPattern";
 import type { CallbackBucket } from "../../utils/callback-bucket";
 import { assertIsConcreteEntity, isConcreteEntity } from "../../utils/is-concrete-entity";
-import { isInterfaceEntity } from "../../utils/is-interface-entity";
 import { isUnionEntity } from "../../utils/is-union-entity";
 import { raiseAttributeAmbiguity } from "../../utils/raise-attribute-ambiguity";
 import type { QueryASTFactory } from "../QueryASTFactory";
@@ -314,7 +313,27 @@ export class CreateFactory {
                 } else if (nestedRelationship) {
                     const nestedEntity = nestedRelationship.target;
                     const operationInput = targetInput[key] ?? {};
-                    if (isConcreteEntity(nestedEntity) || isInterfaceEntity(nestedEntity)) {
+
+                    const entityAndNodeInput: Array<
+                        [ConcreteEntityAdapter | InterfaceEntityAdapter, Record<string, any>]
+                    > = [];
+
+                    if (isUnionEntity(nestedEntity)) {
+                        Object.entries(operationInput).forEach(([entityTypename, input]) => {
+                            const concreteNestedEntity = nestedEntity.concreteEntities.find(
+                                (e) => e.name === entityTypename
+                            );
+                            if (!concreteNestedEntity) {
+                                throw new Error("Concrete entity not found in create, please contact support");
+                            }
+
+                            entityAndNodeInput.push([concreteNestedEntity, input as any]);
+                        });
+                    } else {
+                        entityAndNodeInput.push([nestedEntity, operationInput]);
+                    }
+
+                    entityAndNodeInput.forEach(([nestedEntity, operationInput]) => {
                         const nestedCreateInput = operationInput.create;
                         if (nestedCreateInput) {
                             this.createNestedCreateOperation({
@@ -342,47 +361,7 @@ export class CreateFactory {
                                 create.addField(mutationOperationField, "node");
                             });
                         }
-                    } else if (isUnionEntity(nestedEntity)) {
-                        Object.entries(operationInput).forEach(([entityTypename, input]) => {
-                            const concreteNestedEntity = nestedEntity.concreteEntities.find(
-                                (e) => e.name === entityTypename
-                            );
-
-                            if (!concreteNestedEntity) {
-                                throw new Error("Concrete entity not found in create, please contact support");
-                            }
-                            const nestedCreateInput = (input as any).create;
-                            if (nestedCreateInput) {
-                                this.createNestedCreateOperation({
-                                    relationship: nestedRelationship,
-                                    targetEntity: concreteNestedEntity,
-                                    input: nestedCreateInput,
-                                    callbackBucket,
-                                    context,
-                                    operation: create,
-                                    key,
-                                });
-                            }
-                            const nestedConnectInput = (input as any).connect;
-                            if (nestedConnectInput) {
-                                asArray(nestedConnectInput).forEach((nestedConnectInputItem) => {
-                                    const nestedConnectOperation =
-                                        this.queryASTFactory.operationsFactory.createConnectOperation(
-                                            concreteNestedEntity,
-                                            nestedRelationship,
-                                            nestedConnectInputItem,
-                                            context
-                                        );
-
-                                    const mutationOperationField = new MutationOperationField(
-                                        nestedConnectOperation,
-                                        key
-                                    );
-                                    create.addField(mutationOperationField, "node");
-                                });
-                            }
-                        });
-                    }
+                    });
                 }
             }
             if (relationship) {

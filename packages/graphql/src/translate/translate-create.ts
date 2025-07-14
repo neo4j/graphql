@@ -87,9 +87,5 @@ export default async function translateCreate({
     const varName = "this";
     const result = await translateUsingQueryAST({ context, entityAdapter, resolveTree, varName });
 
-    // const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
-    //     cypher: createQueryCypher.cypher,
-    // });
-
     return result;
 }
