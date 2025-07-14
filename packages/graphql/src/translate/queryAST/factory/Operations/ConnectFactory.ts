@@ -169,7 +169,7 @@ export class ConnectFactory {
                             context
                         );
 
-                        const mutationOperationField = new MutationOperationField(key, nestedConnectOperation);
+                        const mutationOperationField = new MutationOperationField(nestedConnectOperation, key);
                         connect.addField(mutationOperationField, "node");
                     });
                 });

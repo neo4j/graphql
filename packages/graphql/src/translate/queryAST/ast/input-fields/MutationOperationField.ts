@@ -31,8 +31,11 @@ import { InputField } from "./InputField";
 export class MutationOperationField extends InputField {
     public mutationOperation: MutationOperation;
 
-    constructor(name: string, mutationOperation: MutationOperation) {
-        super(name);
+    /**
+     * @param fieldName - Used for debugging only
+     */
+    constructor(mutationOperation: MutationOperation, fieldName: string = "") {
+        super(fieldName);
         this.mutationOperation = mutationOperation;
     }
 
