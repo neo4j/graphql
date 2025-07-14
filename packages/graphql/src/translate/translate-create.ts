@@ -17,24 +17,19 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
+import type Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Node } from "../classes";
-import { CallbackBucketDeprecated } from "../classes/CallbackBucketDeprecated";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
-import { compileCypherIfExists } from "../utils/compile-cypher";
-import { asArray, filterTruthy } from "../utils/utils";
-import createCreateAndParams from "./create-create-and-params";
-import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
+import { asArray } from "../utils/utils";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 import { isUnwindCreateSupported } from "./queryAST/factory/parsers/is-unwind-create-supported";
 import { CallbackBucket } from "./queryAST/utils/callback-bucket";
 import unwindCreate from "./unwind-create";
 import { buildClause } from "./utils/build-clause";
-import { getAuthorizationStatements } from "./utils/get-authorization-statements";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -82,12 +77,12 @@ export default async function translateCreate({
     if (!entityAdapter) {
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
-    // const mutationInputs = resolveTree.args.input as any[];
-    // const { isSupported, reason } = isUnwindCreateSupported(entityAdapter, asArray(mutationInputs), context);
-    // if (isSupported) {
-    //     return unwindCreate({ context, entityAdapter });
-    // }
-    // debug(`Unwind create optimization not supported: ${reason}`);
+    const mutationInputs = resolveTree.args.input as any[];
+    const { isSupported, reason } = isUnwindCreateSupported(entityAdapter, asArray(mutationInputs), context);
+    if (isSupported) {
+        return unwindCreate({ context, entityAdapter });
+    }
+    debug(`Unwind create optimization not supported: ${reason}`);
 
     const varName = "this";
     const result = await translateUsingQueryAST({ context, entityAdapter, resolveTree, varName });
@@ -97,153 +92,4 @@ export default async function translateCreate({
     // });
 
     return result;
-}
-
-async function translateCreateOld({
-    context,
-    node,
-}: {
-    context: Neo4jGraphQLTranslationContext;
-    node: Node;
-}): Promise<{ cypher: string; params: Record<string, any> }> {
-    const { resolveTree } = context;
-    const mutationInputs = resolveTree.args.input as any[];
-    const entityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
-    if (!entityAdapter) {
-        throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
-    }
-    const { isSupported, reason } = isUnwindCreateSupported(entityAdapter, asArray(mutationInputs), context);
-    if (isSupported) {
-        return unwindCreate({ context, entityAdapter });
-    }
-    debug(`Unwind create optimization not supported: ${reason}`);
-
-    const projectionWith: string[] = [];
-    const callbackBucket: CallbackBucketDeprecated = new CallbackBucketDeprecated(context);
-
-    const metaNames: string[] = [];
-
-    // TODO: after the createCreateAndParams refactor, remove varNameStrs and only use Cypher Variables
-    const varNameStrs = mutationInputs.map((_, i) => `this${i}`);
-    const varNameVariables = varNameStrs.map((varName) => new Cypher.NamedNode(varName));
-
-    const { createStrs, params } = mutationInputs.reduce(
-        (res, input, index) => {
-            const varName = varNameStrs[index];
-            if (!varName) {
-                throw new Error("Expected varName to be defined");
-            }
-
-            const create = [`CALL(*) {`];
-            const withVars = [varName];
-            projectionWith.push(varName);
-
-            const {
-                create: nestedCreate,
-                params,
-                authorizationPredicates,
-                authorizationSubqueries,
-            } = createCreateAndParams({
-                input,
-                node,
-                context,
-                varName,
-                withVars,
-                topLevelNodeVariable: varName,
-                callbackBucket,
-            });
-            create.push(nestedCreate);
-
-            create.push(...getAuthorizationStatements(authorizationPredicates, authorizationSubqueries));
-
-            create.push(`RETURN ${varName}`);
-
-            create.push(`}`);
-            res.createStrs.push(create.join("\n"));
-            res.params = { ...res.params, ...params };
-            return res;
-        },
-        { createStrs: [], params: {}, withVars: [] }
-    ) as {
-        createStrs: string[];
-        params: any;
-    };
-
-    if (metaNames.length > 0) {
-        projectionWith.push(`${metaNames.join(" + ")} AS meta`);
-    }
-
-    const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST({
-        resolveTree,
-        entityAdapter,
-        context,
-    });
-    const queryASTEnv = new QueryASTEnv();
-    const projectedVariables: Cypher.Node[] = [];
-    /**
-     * Currently, the create projections are resolved separately for each input,
-     * the following block reuses the same ReadOperation for each of the variable names generated during the create operations.
-     **/
-    const projectionClause = Cypher.utils.concat(
-        ...filterTruthy(
-            varNameVariables.map((varName): Cypher.Clause | undefined => {
-                const queryASTContext = new QueryASTContext({
-                    target: varName,
-                    env: queryASTEnv,
-                    neo4jGraphQLContext: context,
-                });
-                debug(queryAST.print());
-                const queryASTResult = queryAST.transpile(queryASTContext);
-                if (queryASTResult.clauses.length) {
-                    projectedVariables.push(queryASTResult.projectionExpr as Cypher.Node);
-                    const clause = Cypher.utils.concat(...queryASTResult.clauses);
-                    return new Cypher.Call(clause, [varName]);
-                }
-            })
-        )
-    );
-
-    const returnStatement = getReturnStatement(projectedVariables);
-    const createQuery = new Cypher.Raw((env) => {
-        const cypher = filterTruthy([
-            `${createStrs.join("\n")}`,
-            compileCypherIfExists(projectionClause, env),
-            compileCypherIfExists(returnStatement, env),
-        ])
-            .filter(Boolean)
-            .join("\n");
-        return [
-            cypher,
-            {
-                ...params,
-            },
-        ];
-    });
-
-    const createQueryCypher = buildClause(createQuery, { context, prefix: "create_" });
-    const { cypher, params: resolvedCallbacks } = await callbackBucket.resolveCallbacksAndFilterCypher({
-        cypher: createQueryCypher.cypher,
-    });
-
-    const result = {
-        cypher,
-        params: {
-            ...createQueryCypher.params,
-            resolvedCallbacks,
-        },
-    };
-
-    return result;
-}
-
-function getReturnStatement(projectedVariables: Cypher.Variable[]): Cypher.Return {
-    const ret = new Cypher.Return();
-    if (projectedVariables.length) {
-        ret.addColumns([new Cypher.List(projectedVariables), new Cypher.NamedVariable("data")]);
-    }
-
-    if (!projectedVariables.length) {
-        ret.addColumns(new Cypher.Literal("Query cannot conclude with CALL"));
-    }
-    return ret;
 }

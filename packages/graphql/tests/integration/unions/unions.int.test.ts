@@ -474,9 +474,15 @@ describe("unions", () => {
         const gqlResult = await testHelper.executeGraphQL(mutation);
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any)[MovieType.operations.create][MovieType.plural][0]).toMatchObject({
-            title: movieTitle,
-            search: [{ __typename: GenreType.name, name: genreName }],
+        expect(gqlResult.data).toEqual({
+            [MovieType.operations.create]: {
+                [MovieType.plural]: [
+                    {
+                        title: movieTitle,
+                        search: [{ __typename: GenreType.name, name: genreName }],
+                    },
+                ],
+            },
         });
     });
 

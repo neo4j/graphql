@@ -21,6 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
 import { asArray } from "../../../../utils/utils";
@@ -317,6 +318,7 @@ export class CreateFactory {
                         const nestedCreateInput = operationInput.create;
                         if (nestedCreateInput) {
                             this.createNestedCreateOperation({
+                                targetEntity: nestedEntity,
                                 relationship: nestedRelationship,
                                 input: nestedCreateInput,
                                 callbackBucket,
@@ -341,7 +343,45 @@ export class CreateFactory {
                             });
                         }
                     } else if (isUnionEntity(nestedEntity)) {
-                        console.log(operationInput);
+                        Object.entries(operationInput).forEach(([entityTypename, input]) => {
+                            const concreteNestedEntity = nestedEntity.concreteEntities.find(
+                                (e) => e.name === entityTypename
+                            );
+
+                            if (!concreteNestedEntity) {
+                                throw new Error("Concrete entity not found in create, please contact support");
+                            }
+                            const nestedCreateInput = (input as any).create;
+                            if (nestedCreateInput) {
+                                this.createNestedCreateOperation({
+                                    relationship: nestedRelationship,
+                                    targetEntity: concreteNestedEntity,
+                                    input: nestedCreateInput,
+                                    callbackBucket,
+                                    context,
+                                    operation: create,
+                                    key,
+                                });
+                            }
+                            const nestedConnectInput = (input as any).connect;
+                            if (nestedConnectInput) {
+                                asArray(nestedConnectInput).forEach((nestedConnectInputItem) => {
+                                    const nestedConnectOperation =
+                                        this.queryASTFactory.operationsFactory.createConnectOperation(
+                                            concreteNestedEntity,
+                                            nestedRelationship,
+                                            nestedConnectInputItem,
+                                            context
+                                        );
+
+                                    const mutationOperationField = new MutationOperationField(
+                                        nestedConnectOperation,
+                                        key
+                                    );
+                                    create.addField(mutationOperationField, "node");
+                                });
+                            }
+                        });
                     }
                 }
             }
@@ -375,6 +415,7 @@ export class CreateFactory {
 
     private createNestedCreateOperation({
         relationship,
+        targetEntity,
         input,
         callbackBucket,
         context,
@@ -382,14 +423,13 @@ export class CreateFactory {
         key,
     }: {
         input: Record<string, any> | Array<Record<string, any>>;
+        targetEntity: ConcreteEntityAdapter | InterfaceEntityAdapter;
         relationship: RelationshipAdapter;
-
         callbackBucket: CallbackBucket;
         context: Neo4jGraphQLTranslationContext;
         operation: CreateOperation;
         key: string;
     }) {
-        const targetEntity = relationship.target;
         asArray(input).forEach((input) => {
             const edgeFields = input.edge ?? {};
             const nodeInputFields = input.node ?? {};
