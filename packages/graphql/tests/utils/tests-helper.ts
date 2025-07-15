@@ -26,6 +26,7 @@ import { Neo4jGraphQL, Neo4jGraphQLSubscriptionsCDCEngine } from "../../src";
 import { Neo4jDatabaseInfo } from "../../src/classes";
 import type { Neo4jGraphQLSessionConfig } from "../../src/classes/Executor";
 import type { Neo4jEdition } from "../../src/classes/Neo4jDatabaseInfo";
+import { ADD_CYPHER_VERSION_PREFIX } from "./constants";
 import { createBearerToken } from "./create-bearer-token";
 import { UniqueType } from "./graphql-types";
 
@@ -199,14 +200,16 @@ export class TestHelper {
         const sessionConfig: Neo4jGraphQLSessionConfig = {
             database: this.database,
         };
-       
+
         if (useRestrictedUser) {
             sessionConfig.impersonatedUser = readWriteUser;
         }
-
         return {
             executionContext: driver,
             sessionConfig,
+            cypherQueryOptions: {
+                addVersionPrefix: ADD_CYPHER_VERSION_PREFIX,
+            },
             ...(options || {}),
         };
     }

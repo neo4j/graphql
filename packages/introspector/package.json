@@ -36,9 +36,9 @@
     "devDependencies": {
         "@neo4j/graphql": "^7.0.0",
         "@types/jest": "30.0.0",
-        "@types/node": "22.15.32",
+        "@types/node": "22.16.3",
         "@types/pluralize": "0.0.33",
-        "jest": "30.0.2",
+        "jest": "30.0.4",
         "ts-jest": "29.4.0",
         "typescript": "5.8.3"
     },

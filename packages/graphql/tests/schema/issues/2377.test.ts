@@ -224,8 +224,8 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             \\"\\"\\"Mutations for a list for Property\\"\\"\\"
             input PropertyListEnumScalarMutations {
               pop: Property
-              push: [Property!]!
-              set: [Property!]!
+              push: [Property!]
+              set: [Property!]
             }
 
             type Query {
@@ -712,8 +712,8 @@ describe("https://github.com/neo4j/graphql/issues/2377", () => {
             \\"\\"\\"Mutations for a list for Tag\\"\\"\\"
             input TagListEnumScalarMutations {
               pop: Tag
-              push: [Tag!]!
-              set: [Tag!]!
+              push: [Tag!]
+              set: [Tag!]
             }
 
             \\"\\"\\"
