@@ -25,6 +25,7 @@ import type { Neo4jGraphQLConstructor, Neo4jGraphQLContext } from "../../src";
 import { Neo4jGraphQL } from "../../src";
 import { Neo4jDatabaseInfo } from "../../src/classes";
 import type { Neo4jEdition } from "../../src/classes/Neo4jDatabaseInfo";
+import { ADD_CYPHER_VERSION_PREFIX } from "./constants";
 import { createBearerToken } from "./create-bearer-token";
 import { UniqueType } from "./graphql-types";
 
@@ -141,6 +142,9 @@ export class TestHelper {
         return {
             executionContext: driver,
             sessionConfig: { database: this.database },
+            cypherQueryOptions: {
+                addVersionPrefix: ADD_CYPHER_VERSION_PREFIX,
+            },
             ...(options || {}),
         };
     }
