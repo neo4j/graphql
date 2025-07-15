@@ -18,15 +18,22 @@
  */
 
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
-import { asArray, isRecord } from "../../../../utils/utils";
+import { asArray } from "../../../../utils/utils";
+import type { Filter } from "../../ast/filters/Filter";
+import { MutationOperationField } from "../../ast/input-fields/MutationOperationField";
+import { ParamInputField } from "../../ast/input-fields/ParamInputField";
+import { CompositeConnectOperation } from "../../ast/operations/composite/CompositeConnectOperation";
+import { CompositeConnectPartial } from "../../ast/operations/composite/CompositeConnectPartial";
 import { ConnectOperation } from "../../ast/operations/ConnectOperation";
 import { NodeSelectionPattern } from "../../ast/selection/SelectionPattern/NodeSelectionPattern";
-import type { QueryASTFactory } from "../QueryASTFactory";
-import { ParamInputField } from "../../ast/input-fields/ParamInputField";
+import { isConcreteEntity } from "../../utils/is-concrete-entity";
+import { isInterfaceEntity } from "../../utils/is-interface-entity";
 import { raiseAttributeAmbiguity } from "../../utils/raise-attribute-ambiguity";
-import type { Filter } from "../../ast/filters/Filter";
+import type { QueryASTFactory } from "../QueryASTFactory";
 
 export class ConnectFactory {
     private queryASTFactory: QueryASTFactory;
@@ -41,37 +48,54 @@ export class ConnectFactory {
         input: Record<string, any>[],
         context: Neo4jGraphQLTranslationContext
     ): ConnectOperation {
-        // const responseFields = Object.values(
-        //     resolveTree.fieldsByTypeName?.[entity.operations.mutationResponseTypeNames.connect] ?? {}
-        // );
-
-        const { whereArg } = this.parseConnectArgs(input, false); //connectArg
-        const nodeFilters: Filter[] = [];
-        if (whereArg.node) {
-            nodeFilters.push(...this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArg.node));
-        }
         const connectOP = new ConnectOperation({
             target: entity,
             selectionPattern: new NodeSelectionPattern({
                 target: entity,
             }),
-            filters: nodeFilters,
             relationship,
         });
-        // createConnectionPredicates
 
-        // const projectionFields = responseFields
-        //     .filter((f) => f.name === entity.plural)
-        //     .map((field) => {
-        //         const readOP = this.queryASTFactory.operationsFactory.createReadOperation({
-        //             entityOrRel: entity,
-        //             resolveTree: field,
-        //             context,
-        //         }) as ReadOperation;
-        //         return readOP;
-        //     });
+        this.hydrateConnectOperation({
+            target: entity,
+            relationship,
+            input,
+            connect: connectOP,
+            context,
+        });
+        return connectOP;
+    }
 
-        // connectOP.addProjectionOperations(projectionFields);
+    public createCompositeConnectOperation(
+        entity: InterfaceEntityAdapter | UnionEntityAdapter,
+        relationship: RelationshipAdapter,
+        input: Record<string, any>[],
+        context: Neo4jGraphQLTranslationContext
+    ): CompositeConnectOperation {
+        const partials: CompositeConnectPartial[] = [];
+        for (const concreteEntity of entity.concreteEntities) {
+            const partial = this.createCompositeConnectPartial(concreteEntity, relationship, input, context);
+            partials.push(partial);
+        }
+
+        return new CompositeConnectOperation({
+            partials,
+        });
+    }
+
+    private createCompositeConnectPartial(
+        entity: ConcreteEntityAdapter,
+        relationship: RelationshipAdapter,
+        input: Record<string, any>[],
+        context: Neo4jGraphQLTranslationContext
+    ): CompositeConnectPartial {
+        const connectOP = new CompositeConnectPartial({
+            target: entity,
+            selectionPattern: new NodeSelectionPattern({
+                target: entity,
+            }),
+            relationship,
+        });
 
         this.hydrateConnectOperation({
             target: entity,
@@ -105,10 +129,54 @@ export class ConnectFactory {
         //         unwindCreate: create,
         //     });
         // });
-
         asArray(input).forEach((inputItem) => {
-            raiseAttributeAmbiguity(Object.keys(this.getInputEdge(inputItem)), relationship);
-            const targetInputEdge = this.getInputEdge(inputItem);
+            const { whereArg, connectArg } = this.parseConnectArgs(inputItem); //connectArg
+            const nodeFilters: Filter[] = [];
+            if (whereArg.node) {
+                if (isConcreteEntity(relationship.target)) {
+                    nodeFilters.push(...this.queryASTFactory.filterFactory.createNodeFilters(target, whereArg.node));
+                } else if (isInterfaceEntity(relationship.target)) {
+                    nodeFilters.push(
+                        ...this.queryASTFactory.filterFactory.createInterfaceNodeFilters({
+                            entity: relationship.target,
+                            targetEntity: target,
+                            whereFields: whereArg.node,
+                            relationship,
+                        })
+                    );
+                }
+            }
+
+            connect.addFilters(...nodeFilters);
+
+            asArray(connectArg).forEach((nestedConnectInputFields) => {
+                Object.entries(nestedConnectInputFields).forEach(([key, value]) => {
+                    const nestedRelationship = target.relationships.get(key);
+                    if (!nestedRelationship) {
+                        throw new Error("Expected relationship on connect operation. Please contact support");
+                    }
+
+                    const nestedEntity = nestedRelationship.target;
+
+                    asArray(value).forEach((nestedConnectInputItem) => {
+                        // TODO: Can we ask directly to this.createConnectOperation?
+                        const nestedConnectOperation = this.queryASTFactory.operationsFactory.createConnectOperation(
+                            nestedEntity,
+                            nestedRelationship,
+                            nestedConnectInputItem,
+                            context
+                        );
+
+                        const mutationOperationField = new MutationOperationField(nestedConnectOperation, key);
+                        connect.addField(mutationOperationField, "node");
+                    });
+                });
+            });
+
+            const targetInputEdge = this.getInputEdge(inputItem, relationship);
+
+            /* Create the attributes for the edge */
+            raiseAttributeAmbiguity(Object.keys(targetInputEdge), relationship);
             for (const key of Object.keys(targetInputEdge)) {
                 const attribute = relationship.attributes.get(key);
                 if (attribute) {
@@ -123,15 +191,6 @@ export class ConnectFactory {
                 }
             }
         });
-
-        // this.addPopulatedByFieldToCreate({
-        //     entity: target,
-        //     create,
-        //     input,
-        //     callbackBucket,
-        //     isNested,
-        //     relationship,
-        // });
     }
 
     private getInputNode(inputItem: Record<string, any>, isNested: boolean): Record<string, any> {
@@ -141,46 +200,25 @@ export class ConnectFactory {
         return inputItem;
     }
 
-    private getInputEdge(inputItem: Record<string, any>): Record<string, any> {
-        return inputItem.edge ?? {};
+    private getInputEdge(inputItem: Record<string, any>, relationship: RelationshipAdapter): Record<string, any> {
+        const edge = inputItem.edge ?? {};
+
+        // Deals with composite relationships
+        if (relationship.propertiesTypeName && edge[relationship.propertiesTypeName]) {
+            return edge[relationship.propertiesTypeName];
+        }
+
+        return edge;
     }
 
-    // private addAutogeneratedFields({
-    //     target,
-    //     unwindCreate,
-    // }: {
-    //     target: ConcreteEntityAdapter | RelationshipAdapter | undefined;
-    //     unwindCreate: UnwindCreateOperation | CreateOperation;
-    // }): void {
-    //     if (!target) {
-    //         return;
-    //     }
-    //     const attachedTo = isConcreteEntity(target) ? "node" : "relationship";
-    //     const autoGeneratedFields = getAutogeneratedFields(target);
-
-    //     autoGeneratedFields.forEach((field) => {
-    //         if (unwindCreate.getField(field.name, attachedTo)) {
-    //             return;
-    //         }
-    //         unwindCreate.addField(field, attachedTo);
-    //     });
-    // }
-
-    private parseConnectArgs(
-        args: Record<string, any>,
-        isTopLevel: boolean
-    ): {
+    private parseConnectArgs(args: Record<string, any>): {
         whereArg: { node: Record<string, any>; edge: Record<string, any> };
-        connectArg: Record<string, any>;
+        connectArg: Record<string, any>[];
     } {
-        let whereArg;
-        const rawWhere = isRecord(args.where) ? args.where : {};
-        if (isTopLevel) {
-            whereArg = { node: rawWhere.node ?? {}, edge: rawWhere.edge ?? {} };
-        } else {
-            whereArg = { node: rawWhere.node, edge: {} };
-        }
-        const connectArg = isRecord(args.connect) ? args.connect : {};
+        const rawWhere = args.where ?? {};
+
+        const whereArg = { node: rawWhere.node, edge: {} };
+        const connectArg = args.connect ?? {};
         return { whereArg, connectArg };
     }
 }

@@ -1776,6 +1776,10 @@ describe("interface with declared relationships", () => {
               ${Actor.plural} {
                 name
               }
+              info {
+                relationshipsCreated
+                nodesCreated
+            }
             }
           }
         `;
@@ -1785,6 +1789,7 @@ describe("interface with declared relationships", () => {
                 CREATE (a:${Actor} { name: $actorName })
                 CREATE (a2:${Actor} { name: $actorName2 })
                 CREATE (m:${Movie} { title: $movieTitle, runtime:$movieRuntime })
+                CREATE (:${Series} { title: $movieTitle, runtime:$movieRuntime })
                 CREATE (m2:${Movie} { title: $movieTitle2, runtime:$movieRuntime })
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m)
                 CREATE (a)-[:ACTED_IN { screenTime: $movieScreenTime }]->(m2)
@@ -1816,6 +1821,10 @@ describe("interface with declared relationships", () => {
                         name: "My Actor",
                     },
                 ]),
+                info: {
+                    relationshipsCreated: 1,
+                    nodesCreated: 1,
+                },
             },
         });
     });

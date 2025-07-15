@@ -41,24 +41,21 @@ export class ConnectOperation extends MutationOperation {
     public projectionOperations: ReadOperation[] = [];
 
     public readonly inputFields: Map<string, InputField> = new Map();
-    private filters: Filter[];
+    private filters: Filter[] = [];
 
     constructor({
         target,
         relationship,
         selectionPattern,
-        filters = [],
     }: {
         target: ConcreteEntityAdapter;
         selectionPattern: SelectionPattern;
         relationship: RelationshipAdapter;
-        filters?: Filter[];
     }) {
         super();
         this.target = target;
         this.relationship = relationship;
         this.selectionPattern = selectionPattern;
-        this.filters = filters;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -82,6 +79,10 @@ export class ConnectOperation extends MutationOperation {
         if (!this.inputFields.has(field.name)) {
             this.inputFields.set(`${attachedTo}_${field.name}`, field);
         }
+    }
+
+    public addFilters(...filters: Filter[]): void {
+        this.filters.push(...filters);
     }
 
     public addProjectionOperations(operations: ReadOperation[]) {
