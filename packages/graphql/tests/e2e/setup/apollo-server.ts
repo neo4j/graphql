@@ -24,15 +24,16 @@ import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHt
 import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
+import { type DocumentNode } from "graphql";
+import { getComplexity } from "graphql-query-complexity";
 import { useServer } from "graphql-ws/lib/use/ws";
 import type { Server } from "http";
 import { createServer } from "http";
 import type { AddressInfo } from "ws";
 import { WebSocketServer } from "ws";
 import type { Neo4jGraphQL } from "../../../src";
-import { getComplexity } from "graphql-query-complexity";
-import { type DocumentNode } from "graphql";
 import { DefaultComplexityEstimators } from "../../../src/classes";
+import { ADD_CYPHER_VERSION_PREFIX } from "../../utils/constants";
 
 export interface TestGraphQLServer {
     path: string;
@@ -148,10 +149,24 @@ export class ApolloTestServer implements TestGraphQLServer {
             bodyParser.json(),
             expressMiddleware(server, {
                 context: this.customContext
-                    ? this.customContext
+                    ? async (ctx) => {
+                          const customContext = await this.customContext!(ctx);
+                          return {
+                              cypherQueryOptions: {
+                                  addVersionPrefix: ADD_CYPHER_VERSION_PREFIX,
+                              },
+                              ...customContext,
+                          };
+                      }
                     : // eslint-disable-next-line @typescript-eslint/require-await
                       async ({ req }) => {
-                          return { req, token: req.headers.authorization };
+                          return {
+                              req,
+                              token: req.headers.authorization,
+                              cypherQueryOptions: {
+                                  addVersionPrefix: ADD_CYPHER_VERSION_PREFIX,
+                              },
+                          };
                       },
             })
         );
