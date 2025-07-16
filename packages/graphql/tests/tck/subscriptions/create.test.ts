@@ -471,55 +471,58 @@ describe("Subscriptions metadata on create", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            WITH *
-            CREATE (this0_directors_Person0_node:Person)
-            SET this0_directors_Person0_node.name = $this0_directors_Person0_node_name
-            MERGE (this0)<-[this0_directors_Person0_relationship:DIRECTED]-(this0_directors_Person0_node)
-            SET this0_directors_Person0_relationship.year = $this0_directors_Person0_relationship_year
-            WITH *
-            CREATE (this0_directors_Actor0_node:Actor)
-            SET this0_directors_Actor0_node.name = $this0_directors_Actor0_node_name
-            MERGE (this0)<-[this0_directors_Actor0_relationship:DIRECTED]-(this0_directors_Actor0_node)
-            SET this0_directors_Actor0_relationship.year = $this0_directors_Actor0_relationship_year
-            RETURN this0
+            CALL {
+                CREATE (this0:Movie)
+                SET
+                    this0.title = $param0
+                WITH *
+                CREATE (this1:Person)
+                MERGE (this0)<-[this2:DIRECTED]-(this1)
+                SET
+                    this1.name = $param1,
+                    this2.year = $param2
+                WITH *
+                CREATE (this3:Actor)
+                MERGE (this0)<-[this4:DIRECTED]-(this3)
+                SET
+                    this3.name = $param3,
+                    this4.year = $param4
+                RETURN this0 AS this
             }
-            CALL (this0) {
-                CALL (this0) {
+            WITH this
+            CALL (this) {
+                CALL (this) {
                     CALL (*) {
                         WITH *
-                        MATCH (this0)<-[create_this0:DIRECTED]-(create_this1:Person)
-                        WITH create_this1 { .name, __resolveType: \\"Person\\", __id: id(create_this1) } AS create_var2
-                        RETURN create_var2
+                        MATCH (this)<-[this5:DIRECTED]-(this6:Person)
+                        WITH this6 { .name, __resolveType: \\"Person\\", __id: id(this6) } AS var7
+                        RETURN var7
                         UNION
                         WITH *
-                        MATCH (this0)<-[create_this3:DIRECTED]-(create_this4:Actor)
-                        WITH create_this4 { .name, __resolveType: \\"Actor\\", __id: id(create_this4) } AS create_var2
-                        RETURN create_var2
+                        MATCH (this)<-[this8:DIRECTED]-(this9:Actor)
+                        WITH this9 { .name, __resolveType: \\"Actor\\", __id: id(this9) } AS var7
+                        RETURN var7
                     }
-                    WITH create_var2
-                    RETURN collect(create_var2) AS create_var2
+                    WITH var7
+                    RETURN collect(var7) AS var7
                 }
-                RETURN this0 { .title, directors: create_var2 } AS create_var5
+                RETURN this { .title, directors: var7 } AS var10
             }
-            RETURN [create_var5] AS data"
+            RETURN collect(var10) AS data"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_title\\": \\"The Matrix\\",
-                \\"this0_directors_Person0_node_name\\": \\"Lilly Wachowski\\",
-                \\"this0_directors_Person0_relationship_year\\": {
+                \\"param0\\": \\"The Matrix\\",
+                \\"param1\\": \\"Lilly Wachowski\\",
+                \\"param2\\": {
                     \\"low\\": 1999,
                     \\"high\\": 0
                 },
-                \\"this0_directors_Actor0_node_name\\": \\"Keanu Reeves\\",
-                \\"this0_directors_Actor0_relationship_year\\": {
+                \\"param3\\": \\"Keanu Reeves\\",
+                \\"param4\\": {
                     \\"low\\": 2420,
                     \\"high\\": 0
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });
@@ -609,71 +612,75 @@ describe("Subscriptions metadata on create", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            WITH *
-            CREATE (this0_directors_Person0_node:Person)
-            SET this0_directors_Person0_node.name = $this0_directors_Person0_node_name
-            MERGE (this0)<-[this0_directors_Person0_relationship:DIRECTED]-(this0_directors_Person0_node)
-            SET this0_directors_Person0_relationship.year = $this0_directors_Person0_relationship_year
-            WITH *
-            CREATE (this0_directors_Actor0_node:Actor)
-            SET this0_directors_Actor0_node.name = $this0_directors_Actor0_node_name
-            WITH *
-            CREATE (this0_directors_Actor0_node_movies0_node:Movie)
-            SET this0_directors_Actor0_node_movies0_node.title = $this0_directors_Actor0_node_movies0_node_title
-            MERGE (this0_directors_Actor0_node)-[this0_directors_Actor0_node_movies0_relationship:ACTED_IN]->(this0_directors_Actor0_node_movies0_node)
-            SET this0_directors_Actor0_node_movies0_relationship.screenTime = $this0_directors_Actor0_node_movies0_relationship_screenTime
-            MERGE (this0)<-[this0_directors_Actor0_relationship:DIRECTED]-(this0_directors_Actor0_node)
-            SET this0_directors_Actor0_relationship.year = $this0_directors_Actor0_relationship_year
-            RETURN this0
+            CALL {
+                CREATE (this0:Movie)
+                SET
+                    this0.title = $param0
+                WITH *
+                CREATE (this1:Person)
+                MERGE (this0)<-[this2:DIRECTED]-(this1)
+                SET
+                    this1.name = $param1,
+                    this2.year = $param2
+                WITH *
+                CREATE (this3:Actor)
+                WITH *
+                CREATE (this4:Movie)
+                MERGE (this3)-[this5:ACTED_IN]->(this4)
+                SET
+                    this4.title = $param3,
+                    this5.screenTime = $param4
+                MERGE (this0)<-[this6:DIRECTED]-(this3)
+                SET
+                    this3.name = $param5,
+                    this6.year = $param6
+                RETURN this0 AS this
             }
-            CALL (this0) {
-                CALL (this0) {
+            WITH this
+            CALL (this) {
+                CALL (this) {
                     CALL (*) {
                         WITH *
-                        MATCH (this0)<-[create_this0:DIRECTED]-(create_this1:Person)
-                        WITH create_this1 { .name, __resolveType: \\"Person\\", __id: id(create_this1) } AS create_var2
-                        RETURN create_var2
+                        MATCH (this)<-[this7:DIRECTED]-(this8:Person)
+                        WITH this8 { .name, __resolveType: \\"Person\\", __id: id(this8) } AS var9
+                        RETURN var9
                         UNION
                         WITH *
-                        MATCH (this0)<-[create_this3:DIRECTED]-(create_this4:Actor)
-                        CALL (create_this4) {
-                            MATCH (create_this4)-[create_this5:ACTED_IN]->(create_this6:Movie)
-                            WITH DISTINCT create_this6
-                            WITH create_this6 { .title } AS create_this6
-                            RETURN collect(create_this6) AS create_var7
+                        MATCH (this)<-[this10:DIRECTED]-(this11:Actor)
+                        CALL (this11) {
+                            MATCH (this11)-[this12:ACTED_IN]->(this13:Movie)
+                            WITH DISTINCT this13
+                            WITH this13 { .title } AS this13
+                            RETURN collect(this13) AS var14
                         }
-                        WITH create_this4 { .name, movies: create_var7, __resolveType: \\"Actor\\", __id: id(create_this4) } AS create_var2
-                        RETURN create_var2
+                        WITH this11 { .name, movies: var14, __resolveType: \\"Actor\\", __id: id(this11) } AS var9
+                        RETURN var9
                     }
-                    WITH create_var2
-                    RETURN collect(create_var2) AS create_var2
+                    WITH var9
+                    RETURN collect(var9) AS var9
                 }
-                RETURN this0 { .title, directors: create_var2 } AS create_var8
+                RETURN this { .title, directors: var9 } AS var15
             }
-            RETURN [create_var8] AS data"
+            RETURN collect(var15) AS data"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_title\\": \\"The Matrix\\",
-                \\"this0_directors_Person0_node_name\\": \\"Lilly Wachowski\\",
-                \\"this0_directors_Person0_relationship_year\\": {
+                \\"param0\\": \\"The Matrix\\",
+                \\"param1\\": \\"Lilly Wachowski\\",
+                \\"param2\\": {
                     \\"low\\": 1999,
                     \\"high\\": 0
                 },
-                \\"this0_directors_Actor0_node_name\\": \\"Keanu Reeves\\",
-                \\"this0_directors_Actor0_node_movies0_node_title\\": \\"Funny movie\\",
-                \\"this0_directors_Actor0_node_movies0_relationship_screenTime\\": {
+                \\"param3\\": \\"Funny movie\\",
+                \\"param4\\": {
                     \\"low\\": 190,
                     \\"high\\": 0
                 },
-                \\"this0_directors_Actor0_relationship_year\\": {
+                \\"param5\\": \\"Keanu Reeves\\",
+                \\"param6\\": {
                     \\"low\\": 2420,
                     \\"high\\": 0
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });

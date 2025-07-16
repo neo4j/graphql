@@ -91,79 +91,63 @@ describe("Interface Relationships - Create connect", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Actor)
-            SET this0.name = $this0_name
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_actedIn_connect0_node:Movie)
-            	WHERE this0_actedIn_connect0_node.title STARTS WITH $this0_actedIn_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_actedIn_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_actedIn_connect0_node
-            			CREATE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
-            			SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
-            		}
-            	}
-            WITH this0, this0_actedIn_connect0_node
-            	RETURN count(*) AS connect_this0_actedIn_connect_Movie0
-            }
-            CALL(*) {
-            		WITH this0
-            	OPTIONAL MATCH (this0_actedIn_connect1_node:Series)
-            	WHERE this0_actedIn_connect1_node.title STARTS WITH $this0_actedIn_connect1_node_param0
-            	CALL(*) {
-            		WITH collect(this0_actedIn_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_actedIn_connect1_node
-            			CREATE (this0)-[this0_actedIn_connect1_relationship:ACTED_IN]->(this0_actedIn_connect1_node)
-            			SET this0_actedIn_connect1_relationship.screenTime = $this0_actedIn_connect1_relationship_screenTime
-            		}
-            	}
-            WITH this0, this0_actedIn_connect1_node
-            	RETURN count(*) AS connect_this0_actedIn_connect_Series1
-            }
-            RETURN this0
-            }
-            CALL (this0) {
+            CALL {
+                CREATE (this0:Actor)
+                SET
+                    this0.name = $param0
+                WITH *
                 CALL (this0) {
+                    MATCH (this1:Movie)
+                    WHERE this1.title STARTS WITH $param1
+                    CREATE (this0)-[this2:ACTED_IN]->(this1)
+                    SET
+                        this2.screenTime = $param2
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this3:Series)
+                    WHERE this3.title STARTS WITH $param3
+                    CREATE (this0)-[this4:ACTED_IN]->(this3)
+                    SET
+                        this4.screenTime = $param4
+                }
+                RETURN this0 AS this
+            }
+            WITH this
+            CALL (this) {
+                CALL (this) {
                     CALL (*) {
                         WITH *
-                        MATCH (this0)-[create_this0:ACTED_IN]->(create_this1:Movie)
-                        WITH create_this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(create_this1) } AS create_var2
-                        RETURN create_var2
+                        MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
+                        WITH this6 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this6) } AS var7
+                        RETURN var7
                         UNION
                         WITH *
-                        MATCH (this0)-[create_this3:ACTED_IN]->(create_this4:Series)
-                        WITH create_this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(create_this4) } AS create_var2
-                        RETURN create_var2
+                        MATCH (this)-[this8:ACTED_IN]->(this9:Series)
+                        WITH this9 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this9) } AS var7
+                        RETURN var7
                     }
-                    WITH create_var2
-                    RETURN collect(create_var2) AS create_var2
+                    WITH var7
+                    RETURN collect(var7) AS var7
                 }
-                RETURN this0 { .name, actedIn: create_var2 } AS create_var5
+                RETURN this { .name, actedIn: var7 } AS var10
             }
-            RETURN [create_var5] AS data"
+            RETURN collect(var10) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_name\\": \\"Actor Name\\",
-                \\"this0_actedIn_connect0_node_param0\\": \\"The \\",
-                \\"this0_actedIn_connect0_relationship_screenTime\\": {
+                \\"param0\\": \\"Actor Name\\",
+                \\"param1\\": \\"The \\",
+                \\"param2\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"this0_actedIn_connect1_node_param0\\": \\"The \\",
-                \\"this0_actedIn_connect1_relationship_screenTime\\": {
+                \\"param3\\": \\"The \\",
+                \\"param4\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });

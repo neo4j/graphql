@@ -89,64 +89,48 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Actor)
-            SET this0.name = $this0_name
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_actedIn_connect0_node:Movie)
-            	WHERE (this0_actedIn_connect0_node.title = $this0_actedIn_connect0_node_param0 AND this0_actedIn_connect0_node:Movie)
-            	CALL(*) {
-            		WITH collect(this0_actedIn_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_actedIn_connect0_node
-            			CREATE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
-            			SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
-            		}
-            	}
-            WITH this0, this0_actedIn_connect0_node
-            	RETURN count(*) AS connect_this0_actedIn_connect_Movie0
+            CALL {
+                CREATE (this0:Actor)
+                SET
+                    this0.name = $param0
+                WITH *
+                CALL (this0) {
+                    MATCH (this1:Movie)
+                    WHERE (this1.title = $param1 AND this1:Movie)
+                    CREATE (this0)-[this2:ACTED_IN]->(this1)
+                    SET
+                        this2.screenTime = $param2
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this3:Series)
+                    WHERE (this3.title = $param3 AND this3:Movie)
+                    CREATE (this0)-[this4:ACTED_IN]->(this3)
+                    SET
+                        this4.screenTime = $param4
+                }
+                RETURN this0 AS this
             }
-            CALL(*) {
-            		WITH this0
-            	OPTIONAL MATCH (this0_actedIn_connect1_node:Series)
-            	WHERE (this0_actedIn_connect1_node.title = $this0_actedIn_connect1_node_param0 AND this0_actedIn_connect1_node:Movie)
-            	CALL(*) {
-            		WITH collect(this0_actedIn_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_actedIn_connect1_node
-            			CREATE (this0)-[this0_actedIn_connect1_relationship:ACTED_IN]->(this0_actedIn_connect1_node)
-            			SET this0_actedIn_connect1_relationship.screenTime = $this0_actedIn_connect1_relationship_screenTime
-            		}
-            	}
-            WITH this0, this0_actedIn_connect1_node
-            	RETURN count(*) AS connect_this0_actedIn_connect_Series1
+            WITH this
+            CALL (this) {
+                RETURN this { .name } AS var5
             }
-            RETURN this0
-            }
-            CALL (this0) {
-                RETURN this0 { .name } AS create_var0
-            }
-            RETURN [create_var0] AS data"
+            RETURN collect(var5) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_name\\": \\"My Actor\\",
-                \\"this0_actedIn_connect0_node_param0\\": \\"movieTitle\\",
-                \\"this0_actedIn_connect0_relationship_screenTime\\": {
+                \\"param0\\": \\"My Actor\\",
+                \\"param1\\": \\"movieTitle\\",
+                \\"param2\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"this0_actedIn_connect1_node_param0\\": \\"movieTitle\\",
-                \\"this0_actedIn_connect1_relationship_screenTime\\": {
+                \\"param3\\": \\"movieTitle\\",
+                \\"param4\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });
@@ -178,64 +162,48 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Actor)
-            SET this0.name = $this0_name
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_actedIn_connect0_node:Movie)
-            	WHERE (this0_actedIn_connect0_node.title = $this0_actedIn_connect0_node_param0 OR this0_actedIn_connect0_node:Movie)
-            	CALL(*) {
-            		WITH collect(this0_actedIn_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_actedIn_connect0_node
-            			CREATE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
-            			SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
-            		}
-            	}
-            WITH this0, this0_actedIn_connect0_node
-            	RETURN count(*) AS connect_this0_actedIn_connect_Movie0
+            CALL {
+                CREATE (this0:Actor)
+                SET
+                    this0.name = $param0
+                WITH *
+                CALL (this0) {
+                    MATCH (this1:Movie)
+                    WHERE (this1.title = $param1 OR this1:Movie)
+                    CREATE (this0)-[this2:ACTED_IN]->(this1)
+                    SET
+                        this2.screenTime = $param2
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this3:Series)
+                    WHERE (this3.title = $param3 OR this3:Movie)
+                    CREATE (this0)-[this4:ACTED_IN]->(this3)
+                    SET
+                        this4.screenTime = $param4
+                }
+                RETURN this0 AS this
             }
-            CALL(*) {
-            		WITH this0
-            	OPTIONAL MATCH (this0_actedIn_connect1_node:Series)
-            	WHERE (this0_actedIn_connect1_node.title = $this0_actedIn_connect1_node_param0 OR this0_actedIn_connect1_node:Movie)
-            	CALL(*) {
-            		WITH collect(this0_actedIn_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_actedIn_connect1_node
-            			CREATE (this0)-[this0_actedIn_connect1_relationship:ACTED_IN]->(this0_actedIn_connect1_node)
-            			SET this0_actedIn_connect1_relationship.screenTime = $this0_actedIn_connect1_relationship_screenTime
-            		}
-            	}
-            WITH this0, this0_actedIn_connect1_node
-            	RETURN count(*) AS connect_this0_actedIn_connect_Series1
+            WITH this
+            CALL (this) {
+                RETURN this { .name } AS var5
             }
-            RETURN this0
-            }
-            CALL (this0) {
-                RETURN this0 { .name } AS create_var0
-            }
-            RETURN [create_var0] AS data"
+            RETURN collect(var5) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_name\\": \\"My Actor\\",
-                \\"this0_actedIn_connect0_node_param0\\": \\"movieTitle\\",
-                \\"this0_actedIn_connect0_relationship_screenTime\\": {
+                \\"param0\\": \\"My Actor\\",
+                \\"param1\\": \\"movieTitle\\",
+                \\"param2\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"this0_actedIn_connect1_node_param0\\": \\"movieTitle\\",
-                \\"this0_actedIn_connect1_relationship_screenTime\\": {
+                \\"param3\\": \\"movieTitle\\",
+                \\"param4\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });
@@ -273,106 +241,72 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Actor)
-            SET this0.name = $this0_name
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_actedIn_connect0_node:Movie)
-            	WHERE (this0_actedIn_connect0_node.title = $this0_actedIn_connect0_node_param0 AND this0_actedIn_connect0_node:Movie)
-            	CALL(*) {
-            		WITH collect(this0_actedIn_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_actedIn_connect0_node
-            			CREATE (this0)-[this0_actedIn_connect0_relationship:ACTED_IN]->(this0_actedIn_connect0_node)
-            			SET this0_actedIn_connect0_relationship.screenTime = $this0_actedIn_connect0_relationship_screenTime
-            		}
-            	}
-            WITH this0, this0_actedIn_connect0_node
-            CALL(*) {
-            	WITH this0, this0_actedIn_connect0_node
-            	OPTIONAL MATCH (this0_actedIn_connect0_node_actors0_node:Actor)
-            	WHERE this0_actedIn_connect0_node_actors0_node.name = $this0_actedIn_connect0_node_actors0_node_param0
-            	CALL(*) {
-            		WITH this0, collect(this0_actedIn_connect0_node_actors0_node) as connectedNodes, collect(this0_actedIn_connect0_node) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0_actedIn_connect0_node
-            			UNWIND connectedNodes as this0_actedIn_connect0_node_actors0_node
-            			CREATE (this0_actedIn_connect0_node)<-[this0_actedIn_connect0_node_actors0_relationship:ACTED_IN]-(this0_actedIn_connect0_node_actors0_node)
-            			SET this0_actedIn_connect0_node_actors0_relationship.screenTime = $this0_actedIn_connect0_node_actors0_relationship_ActedIn_screenTime
-            		}
-            	}
-            WITH this0, this0_actedIn_connect0_node, this0_actedIn_connect0_node_actors0_node
-            	RETURN count(*) AS connect_this0_actedIn_connect0_node_actors_Actor0
+            CALL {
+                CREATE (this0:Actor)
+                SET
+                    this0.name = $param0
+                WITH *
+                CALL (this0) {
+                    MATCH (this1:Movie)
+                    WHERE (this1.title = $param1 AND this1:Movie)
+                    CALL (this1) {
+                        MATCH (this2:Actor)
+                        WHERE this2.name = $param2
+                        CREATE (this1)<-[this3:ACTED_IN]-(this2)
+                        SET
+                            this3.screenTime = $param3
+                    }
+                    CREATE (this0)-[this4:ACTED_IN]->(this1)
+                    SET
+                        this4.screenTime = $param4
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this5:Series)
+                    WHERE (this5.title = $param5 AND this5:Movie)
+                    CALL (this5) {
+                        MATCH (this6:Actor)
+                        WHERE this6.name = $param6
+                        CREATE (this5)<-[this7:ACTED_IN]-(this6)
+                        SET
+                            this7.episodeNr = $param7
+                    }
+                    CREATE (this0)-[this8:ACTED_IN]->(this5)
+                    SET
+                        this8.screenTime = $param8
+                }
+                RETURN this0 AS this
             }
-            	RETURN count(*) AS connect_this0_actedIn_connect_Movie0
+            WITH this
+            CALL (this) {
+                RETURN this { .name } AS var9
             }
-            CALL(*) {
-            		WITH this0
-            	OPTIONAL MATCH (this0_actedIn_connect1_node:Series)
-            	WHERE (this0_actedIn_connect1_node.title = $this0_actedIn_connect1_node_param0 AND this0_actedIn_connect1_node:Movie)
-            	CALL(*) {
-            		WITH collect(this0_actedIn_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_actedIn_connect1_node
-            			CREATE (this0)-[this0_actedIn_connect1_relationship:ACTED_IN]->(this0_actedIn_connect1_node)
-            			SET this0_actedIn_connect1_relationship.screenTime = $this0_actedIn_connect1_relationship_screenTime
-            		}
-            	}
-            WITH this0, this0_actedIn_connect1_node
-            CALL(*) {
-            	WITH this0, this0_actedIn_connect1_node
-            	OPTIONAL MATCH (this0_actedIn_connect1_node_actors0_node:Actor)
-            	WHERE this0_actedIn_connect1_node_actors0_node.name = $this0_actedIn_connect1_node_actors0_node_param0
-            	CALL(*) {
-            		WITH this0, collect(this0_actedIn_connect1_node_actors0_node) as connectedNodes, collect(this0_actedIn_connect1_node) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0_actedIn_connect1_node
-            			UNWIND connectedNodes as this0_actedIn_connect1_node_actors0_node
-            			CREATE (this0_actedIn_connect1_node)<-[this0_actedIn_connect1_node_actors0_relationship:ACTED_IN]-(this0_actedIn_connect1_node_actors0_node)
-            			SET this0_actedIn_connect1_node_actors0_relationship.episodeNr = $this0_actedIn_connect1_node_actors0_relationship_StarredIn_episodeNr
-            		}
-            	}
-            WITH this0, this0_actedIn_connect1_node, this0_actedIn_connect1_node_actors0_node
-            	RETURN count(*) AS connect_this0_actedIn_connect1_node_actors_Actor0
-            }
-            	RETURN count(*) AS connect_this0_actedIn_connect_Series1
-            }
-            RETURN this0
-            }
-            CALL (this0) {
-                RETURN this0 { .name } AS create_var0
-            }
-            RETURN [create_var0] AS data"
+            RETURN collect(var9) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_name\\": \\"My Actor\\",
-                \\"this0_actedIn_connect0_node_param0\\": \\"movieTitle\\",
-                \\"this0_actedIn_connect0_relationship_screenTime\\": {
-                    \\"low\\": 10,
-                    \\"high\\": 0
-                },
-                \\"this0_actedIn_connect0_node_actors0_node_param0\\": \\"Second Actor\\",
-                \\"this0_actedIn_connect0_node_actors0_relationship_ActedIn_screenTime\\": {
+                \\"param0\\": \\"My Actor\\",
+                \\"param1\\": \\"movieTitle\\",
+                \\"param2\\": \\"Second Actor\\",
+                \\"param3\\": {
                     \\"low\\": 25,
                     \\"high\\": 0
                 },
-                \\"this0_actedIn_connect1_node_param0\\": \\"movieTitle\\",
-                \\"this0_actedIn_connect1_relationship_screenTime\\": {
+                \\"param4\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"this0_actedIn_connect1_node_actors0_node_param0\\": \\"Second Actor\\",
-                \\"this0_actedIn_connect1_node_actors0_relationship_StarredIn_episodeNr\\": {
+                \\"param5\\": \\"movieTitle\\",
+                \\"param6\\": \\"Second Actor\\",
+                \\"param7\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"resolvedCallbacks\\": {}
+                \\"param8\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
             }"
         `);
     });

@@ -78,62 +78,51 @@ describe("cypher directive filtering", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            WITH *
-            CREATE (this0_actors0_node:Actor)
-            SET this0_actors0_node.name = $this0_actors0_node_name
-            MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-            CALL (this0_actors_connect0_node) {
-                CALL (this0_actors_connect0_node) {
-                    WITH this0_actors_connect0_node AS this
-                    RETURN \\"hello world!\\" AS s
-                }
-                WITH s AS this0_actors_connect0_node_this0
-                RETURN this0_actors_connect0_node_this0 AS this0_actors_connect0_node_var1
-            }
-            WITH *, CASE (this0_actors_connect0_node.name = $this0_actors_connect0_node_param0 AND this0_actors_connect0_node_var1 = $this0_actors_connect0_node_param1)
-                WHEN true THEN [this0_actors_connect0_node]
-                ELSE [NULL]
-            END AS aggregateWhereFiltervar0
-            WITH *, aggregateWhereFiltervar0[0] AS this0_actors_connect0_node
-            	CALL(*) {
-            		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_actors_connect0_node
-            			CREATE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
-            		}
-            	}
-            WITH this0, this0_actors_connect0_node
-            	RETURN count(*) AS connect_this0_actors_connect_Actor0
-            }
-            RETURN this0
-            }
-            CALL (this0) {
+            CALL {
+                CREATE (this0:Movie)
+                SET
+                    this0.title = $param0
+                WITH *
+                CREATE (this1:Actor)
+                MERGE (this0)<-[this2:ACTED_IN]-(this1)
+                SET
+                    this1.name = $param1
+                WITH *
                 CALL (this0) {
-                    MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
-                    WITH DISTINCT create_this1
-                    WITH create_this1 { .name } AS create_this1
-                    RETURN collect(create_this1) AS create_var2
+                    MATCH (this3:Actor)
+                    CALL (this3) {
+                        CALL (this3) {
+                            WITH this3 AS this
+                            RETURN \\"hello world!\\" AS s
+                        }
+                        WITH s AS this4
+                        RETURN this4 AS var5
+                    }
+                    WITH *
+                    WHERE (this3.name = $param2 AND var5 = $param3)
+                    CREATE (this0)<-[this6:ACTED_IN]-(this3)
                 }
-                RETURN this0 { .title, actors: create_var2 } AS create_var3
+                RETURN this0 AS this
             }
-            RETURN [create_var3] AS data"
+            WITH this
+            CALL (this) {
+                CALL (this) {
+                    MATCH (this)<-[this7:ACTED_IN]-(this8:Actor)
+                    WITH DISTINCT this8
+                    WITH this8 { .name } AS this8
+                    RETURN collect(this8) AS var9
+                }
+                RETURN this { .title, actors: var9 } AS var10
+            }
+            RETURN collect(var10) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_title\\": \\"The Matrix Reloaded\\",
-                \\"this0_actors0_node_name\\": \\"Jada Pinkett Smith\\",
-                \\"this0_actors_connect0_node_param0\\": \\"Keanu Reeves\\",
-                \\"this0_actors_connect0_node_param1\\": \\"hello world!\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"The Matrix Reloaded\\",
+                \\"param1\\": \\"Jada Pinkett Smith\\",
+                \\"param2\\": \\"Keanu Reeves\\",
+                \\"param3\\": \\"hello world!\\"
             }"
         `);
     });

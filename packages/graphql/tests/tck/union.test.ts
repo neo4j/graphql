@@ -247,26 +247,28 @@ describe("Cypher Union", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            WITH *
-            CREATE (this0_search_Genre0_node:Genre)
-            SET this0_search_Genre0_node.name = $this0_search_Genre0_node_name
-            MERGE (this0)-[:SEARCH]->(this0_search_Genre0_node)
-            RETURN this0
+            CALL {
+                CREATE (this0:Movie)
+                SET
+                    this0.title = $param0
+                WITH *
+                CREATE (this1:Genre)
+                MERGE (this0)-[this2:SEARCH]->(this1)
+                SET
+                    this1.name = $param1
+                RETURN this0 AS this
             }
-            CALL (this0) {
-                RETURN this0 { .title } AS create_var0
+            WITH this
+            CALL (this) {
+                RETURN this { .title } AS var3
             }
-            RETURN [create_var0] AS data"
+            RETURN collect(var3) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_title\\": \\"some movie\\",
-                \\"this0_search_Genre0_node_name\\": \\"some genre\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"some movie\\",
+                \\"param1\\": \\"some genre\\"
             }"
         `);
     });
@@ -326,38 +328,27 @@ describe("Cypher Union", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_search_Genre_connect0_node:Genre)
-            	WHERE this0_search_Genre_connect0_node.name = $this0_search_Genre_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_search_Genre_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_search_Genre_connect0_node
-            			CREATE (this0)-[:SEARCH]->(this0_search_Genre_connect0_node)
-            		}
-            	}
-            WITH this0, this0_search_Genre_connect0_node
-            	RETURN count(*) AS connect_this0_search_Genre_connect_Genre0
+            CALL {
+                CREATE (this0:Movie)
+                SET
+                    this0.title = $param0
+                WITH *
+                CALL (this0) {
+                    MATCH (this1:Genre)
+                    CREATE (this0)-[this2:SEARCH]->(this1)
+                }
+                RETURN this0 AS this
             }
-            RETURN this0
+            WITH this
+            CALL (this) {
+                RETURN this { .title } AS var3
             }
-            CALL (this0) {
-                RETURN this0 { .title } AS create_var0
-            }
-            RETURN [create_var0] AS data"
+            RETURN collect(var3) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_title\\": \\"some movie\\",
-                \\"this0_search_Genre_connect0_node_param0\\": \\"some genre\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"some movie\\"
             }"
         `);
     });

@@ -107,112 +107,100 @@ describe("Cypher Create Pringles", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Product)
-            SET this0.id = $this0_id
-            SET this0.name = $this0_name
-            WITH *
-            CREATE (this0_sizes0_node:Size)
-            SET this0_sizes0_node.id = $this0_sizes0_node_id
-            SET this0_sizes0_node.name = $this0_sizes0_node_name
-            MERGE (this0)-[:HAS_SIZE]->(this0_sizes0_node)
-            WITH *
-            CREATE (this0_sizes1_node:Size)
-            SET this0_sizes1_node.id = $this0_sizes1_node_id
-            SET this0_sizes1_node.name = $this0_sizes1_node_name
-            MERGE (this0)-[:HAS_SIZE]->(this0_sizes1_node)
-            WITH *
-            CREATE (this0_colors0_node:Color)
-            SET this0_colors0_node.id = $this0_colors0_node_id
-            SET this0_colors0_node.name = $this0_colors0_node_name
-            MERGE (this0)-[:HAS_COLOR]->(this0_colors0_node)
-            WITH *
-            CREATE (this0_colors1_node:Color)
-            SET this0_colors1_node.id = $this0_colors1_node_id
-            SET this0_colors1_node.name = $this0_colors1_node_name
-            MERGE (this0)-[:HAS_COLOR]->(this0_colors1_node)
-            WITH *
-            CREATE (this0_photos0_node:Photo)
-            SET this0_photos0_node.id = $this0_photos0_node_id
-            SET this0_photos0_node.description = $this0_photos0_node_description
-            SET this0_photos0_node.url = $this0_photos0_node_url
-            MERGE (this0)-[:HAS_PHOTO]->(this0_photos0_node)
-            WITH *
-            CREATE (this0_photos1_node:Photo)
-            SET this0_photos1_node.id = $this0_photos1_node_id
-            SET this0_photos1_node.description = $this0_photos1_node_description
-            SET this0_photos1_node.url = $this0_photos1_node_url
-            WITH *
-            CALL(*) {
-            	WITH this0, this0_photos1_node
-            	OPTIONAL MATCH (this0_photos1_node_color_connect0_node:Color)
-            	WHERE this0_photos1_node_color_connect0_node.id = $this0_photos1_node_color_connect0_node_param0
-            	CALL(*) {
-            		WITH this0, collect(this0_photos1_node_color_connect0_node) as connectedNodes, collect(this0_photos1_node) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0_photos1_node
-            			UNWIND connectedNodes as this0_photos1_node_color_connect0_node
-            			CREATE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
-            		}
-            	}
-            WITH this0, this0_photos1_node, this0_photos1_node_color_connect0_node
-            	RETURN count(*) AS connect_this0_photos1_node_color_connect_Color0
+            CALL {
+                CREATE (this0:Product)
+                SET
+                    this0.id = $param0,
+                    this0.name = $param1
+                WITH *
+                CREATE (this1:Size)
+                MERGE (this0)-[this2:HAS_SIZE]->(this1)
+                SET
+                    this1.id = $param2,
+                    this1.name = $param3
+                WITH *
+                CREATE (this3:Size)
+                MERGE (this0)-[this4:HAS_SIZE]->(this3)
+                SET
+                    this3.id = $param4,
+                    this3.name = $param5
+                WITH *
+                CREATE (this5:Color)
+                MERGE (this0)-[this6:HAS_COLOR]->(this5)
+                SET
+                    this5.id = $param6,
+                    this5.name = $param7
+                WITH *
+                CREATE (this7:Color)
+                MERGE (this0)-[this8:HAS_COLOR]->(this7)
+                SET
+                    this7.id = $param8,
+                    this7.name = $param9
+                WITH *
+                CREATE (this9:Photo)
+                MERGE (this0)-[this10:HAS_PHOTO]->(this9)
+                SET
+                    this9.id = $param10,
+                    this9.description = $param11,
+                    this9.url = $param12
+                WITH *
+                CREATE (this11:Photo)
+                WITH *
+                CALL (this11) {
+                    MATCH (this12:Color)
+                    WHERE this12.id = $param13
+                    CREATE (this11)-[this13:OF_COLOR]->(this12)
+                }
+                MERGE (this0)-[this14:HAS_PHOTO]->(this11)
+                SET
+                    this11.id = $param14,
+                    this11.description = $param15,
+                    this11.url = $param16
+                WITH *
+                CREATE (this15:Photo)
+                WITH *
+                CALL (this15) {
+                    MATCH (this16:Color)
+                    WHERE this16.id = $param17
+                    CREATE (this15)-[this17:OF_COLOR]->(this16)
+                }
+                MERGE (this0)-[this18:HAS_PHOTO]->(this15)
+                SET
+                    this15.id = $param18,
+                    this15.description = $param19,
+                    this15.url = $param20
+                RETURN this0 AS this
             }
-            MERGE (this0)-[:HAS_PHOTO]->(this0_photos1_node)
-            WITH *
-            CREATE (this0_photos2_node:Photo)
-            SET this0_photos2_node.id = $this0_photos2_node_id
-            SET this0_photos2_node.description = $this0_photos2_node_description
-            SET this0_photos2_node.url = $this0_photos2_node_url
-            WITH *
-            CALL(*) {
-            	WITH this0, this0_photos2_node
-            	OPTIONAL MATCH (this0_photos2_node_color_connect0_node:Color)
-            	WHERE this0_photos2_node_color_connect0_node.id = $this0_photos2_node_color_connect0_node_param0
-            	CALL(*) {
-            		WITH this0, collect(this0_photos2_node_color_connect0_node) as connectedNodes, collect(this0_photos2_node) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0_photos2_node
-            			UNWIND connectedNodes as this0_photos2_node_color_connect0_node
-            			CREATE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
-            		}
-            	}
-            WITH this0, this0_photos2_node, this0_photos2_node_color_connect0_node
-            	RETURN count(*) AS connect_this0_photos2_node_color_connect_Color0
+            WITH this
+            CALL (this) {
+                RETURN this { .id } AS var19
             }
-            MERGE (this0)-[:HAS_PHOTO]->(this0_photos2_node)
-            RETURN this0
-            }
-            CALL (this0) {
-                RETURN this0 { .id } AS create_var0
-            }
-            RETURN [create_var0] AS data"
+            RETURN collect(var19) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\",
-                \\"this0_name\\": \\"Pringles\\",
-                \\"this0_sizes0_node_id\\": \\"103\\",
-                \\"this0_sizes0_node_name\\": \\"Small\\",
-                \\"this0_sizes1_node_id\\": \\"104\\",
-                \\"this0_sizes1_node_name\\": \\"Large\\",
-                \\"this0_colors0_node_id\\": \\"100\\",
-                \\"this0_colors0_node_name\\": \\"Red\\",
-                \\"this0_colors1_node_id\\": \\"102\\",
-                \\"this0_colors1_node_name\\": \\"Green\\",
-                \\"this0_photos0_node_id\\": \\"105\\",
-                \\"this0_photos0_node_description\\": \\"Outdoor photo\\",
-                \\"this0_photos0_node_url\\": \\"outdoor.png\\",
-                \\"this0_photos1_node_id\\": \\"106\\",
-                \\"this0_photos1_node_description\\": \\"Green photo\\",
-                \\"this0_photos1_node_url\\": \\"g.png\\",
-                \\"this0_photos1_node_color_connect0_node_param0\\": \\"102\\",
-                \\"this0_photos2_node_id\\": \\"107\\",
-                \\"this0_photos2_node_description\\": \\"Red photo\\",
-                \\"this0_photos2_node_url\\": \\"r.png\\",
-                \\"this0_photos2_node_color_connect0_node_param0\\": \\"100\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"1\\",
+                \\"param1\\": \\"Pringles\\",
+                \\"param2\\": \\"103\\",
+                \\"param3\\": \\"Small\\",
+                \\"param4\\": \\"104\\",
+                \\"param5\\": \\"Large\\",
+                \\"param6\\": \\"100\\",
+                \\"param7\\": \\"Red\\",
+                \\"param8\\": \\"102\\",
+                \\"param9\\": \\"Green\\",
+                \\"param10\\": \\"105\\",
+                \\"param11\\": \\"Outdoor photo\\",
+                \\"param12\\": \\"outdoor.png\\",
+                \\"param13\\": \\"102\\",
+                \\"param14\\": \\"106\\",
+                \\"param15\\": \\"Green photo\\",
+                \\"param16\\": \\"g.png\\",
+                \\"param17\\": \\"100\\",
+                \\"param18\\": \\"107\\",
+                \\"param19\\": \\"Red photo\\",
+                \\"param20\\": \\"r.png\\"
             }"
         `);
     });
