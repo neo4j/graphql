@@ -31,8 +31,6 @@ import {
 } from "../../../graphql/scalars";
 import type { AttributeType } from "../../../schema-model/attribute/AttributeType";
 import { ListType } from "../../../schema-model/attribute/AttributeType";
-import type { Neo4jGraphQLCallbacks } from "../../../types";
-import type { Neo4jGraphQLContext } from "../../../types/neo4j-graphql-context";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 interface Callback {
@@ -73,18 +71,16 @@ export class CallbackBucket {
         this.callbacks.push(callback);
     }
 
+    /** Executes the callbacks and updates the values of the Cypher parameters attached to these callbacks */
     public async resolveCallbacks(): Promise<void> {
+        const callbacksList = this.context.features.populatedBy?.callbacks ?? {};
         await Promise.all(
             this.callbacks.map(async (cb) => {
-                const callbackFunction = (this.context.features.populatedBy?.callbacks as Neo4jGraphQLCallbacks)[
-                    cb.functionName
-                ] as (
-                    parent?: Record<string, unknown>,
-                    args?: Record<string, never>,
-                    context?: Neo4jGraphQLContext
-                ) => Promise<any>;
-                const paramValue = await callbackFunction(cb.parent, {}, this.context);
-                cb.param.value = this.parseCallbackResult(paramValue, cb.type);
+                const callbackFunction = callbacksList[cb.functionName];
+                if (callbackFunction) {
+                    const paramValue = await callbackFunction(cb.parent, {}, this.context);
+                    cb.param.value = this.parseCallbackResult(paramValue, cb.type);
+                }
             })
         );
     }

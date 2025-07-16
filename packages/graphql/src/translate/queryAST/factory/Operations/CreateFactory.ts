@@ -66,7 +66,7 @@ export class CreateFactory {
 
         const rawInput = resolveTree.args.input as Record<string, any>[];
         const input = rawInput ?? [];
-        const mutationOperationFields: CreateOperation[] = input.map((inputItem) => {
+        const createOperations: CreateOperation[] = input.map((inputItem) => {
             const createOperation = new CreateOperation({
                 target: entity,
                 selectionPattern: new NodeSelectionPattern({
@@ -83,7 +83,6 @@ export class CreateFactory {
             });
 
             return createOperation;
-            // return new MutationOperationField(entity.plural, createOperation);
         });
 
         const projectionOperations = responseFields
@@ -100,13 +99,10 @@ export class CreateFactory {
                     alias: field.alias,
                 });
                 return fieldOperation;
-            }); // TODO, just a temporary fix.
-        if (!projectionOperations) {
-            throw new Error("TODO: Not implemented fix later");
-        }
+            });
+
         const topLevelMutation = new TopLevelCreateMutationOperation({
-            target: entity,
-            mutationOperationFields,
+            createOperations,
             projectionOperations,
         });
         return topLevelMutation;

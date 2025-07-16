@@ -392,7 +392,7 @@ export default async function translateUpdate({
         resolveTree,
         entityAdapter,
         context,
-        callbackBucket: new CallbackBucket(context), // TODO: unused for now
+        callbackBucket: new CallbackBucket(context),
     });
     const queryASTEnv = new QueryASTEnv();
 

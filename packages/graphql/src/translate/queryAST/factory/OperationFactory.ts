@@ -167,19 +167,6 @@ export class OperationsFactory {
                     context,
                 });
             }
-            // case "UPDATE": {
-            //     assertIsConcreteEntity(entity);
-            //     return this.updateFactory.createUpdateOperation(entity, resolveTree, context);
-            // }
-            // case "DELETE": {
-            //     assertIsConcreteEntity(entity);
-            //     return this.deleteFactory.createTopLevelDeleteOperation({
-            //         entity,
-            //         resolveTree,
-            //         context,
-            //         varName,
-            //     });
-            // }
             case "CUSTOM_CYPHER": {
                 return this.customCypherFactory.createTopLevelCustomCypherOperation({ entity, resolveTree, context });
             }

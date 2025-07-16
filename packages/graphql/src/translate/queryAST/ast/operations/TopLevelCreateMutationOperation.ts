@@ -18,7 +18,6 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { filterTruthy } from "../../../../utils/utils";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
@@ -26,38 +25,36 @@ import type { OperationField } from "../fields/OperationField";
 import type { CreateOperation } from "./CreateOperation";
 import { Operation, type OperationTranspileResult } from "./operations";
 
-// This extends Operation because we don't need the mutationOperation API for top level
+/** Wrapper over createOperation for top level create, that support multiple create operations
+ * This extends Operation because we don't need the mutationOperation API for top level
+ */
 export class TopLevelCreateMutationOperation extends Operation {
-    private readonly target: ConcreteEntityAdapter;
     // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
     private readonly projectionOperations: OperationField[];
 
-    private readonly mutationOperationFields: CreateOperation[] = [];
+    private readonly createOperations: CreateOperation[] = [];
 
     constructor({
-        target,
-        mutationOperationFields,
+        createOperations,
         projectionOperations,
     }: {
-        target: ConcreteEntityAdapter;
-        mutationOperationFields: CreateOperation[];
+        createOperations: CreateOperation[];
         projectionOperations: OperationField[];
     }) {
         super();
-        this.target = target;
-        this.mutationOperationFields = mutationOperationFields;
+        this.createOperations = createOperations;
         this.projectionOperations = projectionOperations;
     }
 
     public getChildren(): QueryASTNode[] {
-        return filterTruthy([...this.mutationOperationFields, ...this.projectionOperations]);
+        return filterTruthy([...this.createOperations, ...this.projectionOperations]);
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.hasTarget()) {
             throw new Error("No parent node found!");
         }
-        const subqueries = this.mutationOperationFields.map((field) => {
+        const subqueries = this.createOperations.map((field) => {
             const { clauses, projectionExpr } = field.transpile(context);
 
             return Cypher.utils.concat(
@@ -76,15 +73,12 @@ export class TopLevelCreateMutationOperation extends Operation {
     }
 
     private getProjectionClause(context: QueryASTContext<Cypher.Node>): Cypher.Clause {
-        // TODO, refactor these cases and explicit castings when multiple projection are handled
-        if (this.projectionOperations.length === 0) {
-            const emptyProjection = new Cypher.Literal("Query cannot conclude with CALL");
-            return new Cypher.Return(emptyProjection);
+        const projectionOperation = this.projectionOperations[0]; // TODO: multiple projection operations not supported
+
+        if (!projectionOperation) {
+            return new Cypher.Finish();
         }
-        if (this.projectionOperations.length > 1) {
-            throw new Error("TODO: handle multiple projection fields in TopLevelCreateMutationOperation");
-        }
-        const projectionOperation = this.projectionOperations[0] as OperationField;
+
         const subqueries = projectionOperation
             .getSubqueries(context)
             .map((sq) => new Cypher.Call(sq, [context.target]));
@@ -99,11 +93,5 @@ export class TopLevelCreateMutationOperation extends Operation {
         }
 
         return Cypher.utils.concat(extraWith, ...subqueries, returnClause);
-    }
-
-    private getAuthorizationSubqueries(context: QueryASTContext) {
-        return this.mutationOperationFields.flatMap((operation) => {
-            return operation.getAuthorizationSubqueries(context);
-        });
     }
 }
