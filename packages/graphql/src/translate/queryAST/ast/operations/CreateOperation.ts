@@ -82,14 +82,10 @@ export class CreateOperation extends MutationOperation {
      * TODO: This logic should be handled in the factory.
      */
     public getField(_key: string, _attachedTo: "node" | "relationship") {
-        // return this.inputFields.get(`${attachedTo}_${key}`);
         return undefined;
     }
 
     public addField(field: InputField, _attachedTo: "node" | "relationship") {
-        // if (!this.inputFields.has(field.name)) {
-        //     this.inputFields.set(`${attachedTo}_${field.name}`, field);
-        // }
         this.inputFields.push(field);
     }
 
@@ -100,16 +96,6 @@ export class CreateOperation extends MutationOperation {
     public addProjectionOperations(operations: OperationField[]) {
         this.projectionOperations.push(...operations);
     }
-
-    // /** Subqueries (auth) for the nested operation */
-    // public getSubqueries(_context: QueryASTContext): Cypher.Clause[] {
-    //     if (!this.nestedContext) {
-    //         throw new Error(
-    //             "Error parsing query, nested context not available, need to call transpile first. Please contact support"
-    //         );
-    //     }
-    //     return this.getAuthorizationClauses(this.nestedContext);
-    // }
 
     public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
         const nestedContext = this.nestedContext;
@@ -183,9 +169,6 @@ export class CreateOperation extends MutationOperation {
         } else {
             createClause.set(...setParams);
         }
-
-        // TODO: this should be collected on the top level create
-        // const authorizationClauses = this.getAuthorizationClauses(nestedContext);
 
         const clauses = Cypher.utils.concat(
             createClause,

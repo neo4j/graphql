@@ -89,7 +89,6 @@ export class ConnectOperation extends MutationOperation {
         this.projectionOperations.push(...operations);
     }
 
-    // TODO
     public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
         return [];
     }
@@ -98,8 +97,6 @@ export class ConnectOperation extends MutationOperation {
         if (!context.hasTarget()) {
             throw new Error("No parent node found!");
         }
-        // context.env.topLevelOperationName = "CREATE";
-        // // TODO: implement the actual create / unwind create
 
         const { nestedContext } = this.selectionPattern.apply(context);
 

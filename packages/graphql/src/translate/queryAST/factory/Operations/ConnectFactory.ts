@@ -151,7 +151,6 @@ export class ConnectFactory {
                     const nestedEntity = nestedRelationship.target;
 
                     asArray(value).forEach((nestedConnectInputItem) => {
-                        // TODO: Can we ask directly to this.createConnectOperation?
                         const nestedConnectOperation = this.queryASTFactory.operationsFactory.createConnectOperation(
                             nestedEntity,
                             nestedRelationship,
