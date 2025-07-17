@@ -83,7 +83,11 @@ export class TopLevelCreateMutationOperation extends Operation {
             .getSubqueries(context)
             .map((sq) => new Cypher.Call(sq, [context.target]));
 
-        const projectionField = Object.values(projectionOperation.getProjectionField())[0] as Cypher.Expr;
+        const projectionField = Object.values(projectionOperation.getProjectionField())[0];
+
+        if (!projectionField) {
+            throw new Error("Fatal Error: Invalid projectionField, please contact support");
+        }
 
         const returnClause = new Cypher.Return([Cypher.collect(projectionField), "data"]);
 
