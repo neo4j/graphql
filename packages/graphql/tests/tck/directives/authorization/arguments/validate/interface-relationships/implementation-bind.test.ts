@@ -135,7 +135,6 @@ describe("Cypher Auth Allow", () => {
                     this1.id = $param3
                 WITH *
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH *
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                     MATCH (this1)<-[:HAS_CONTENT]-(this5:User)
@@ -222,7 +221,6 @@ describe("Cypher Auth Allow", () => {
                 SET
                     this1.id = $param3
                 WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH *
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])

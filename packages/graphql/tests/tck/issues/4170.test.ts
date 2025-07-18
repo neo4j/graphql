@@ -192,39 +192,35 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
                     MATCH (this0)<-[:ADMIN_IN]-(this9:User)
                     WHERE ($jwt.id IS NOT NULL AND this9.userId = $jwt.id)
                 }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this0)<-[:ADMIN_IN]-(this10:User)
-                    WHERE ($jwt.id IS NOT NULL AND this10.userId = $jwt.id)
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH *
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this1)<-[:HAS_SETTINGS]-(this11:Tenant)
+                    MATCH (this1)<-[:HAS_SETTINGS]-(this10:Tenant)
                     WHERE EXISTS {
-                        MATCH (this11)<-[:ADMIN_IN]-(this12:User)
-                        WHERE ($jwt.id IS NOT NULL AND this12.userId = $jwt.id)
+                        MATCH (this10)<-[:ADMIN_IN]-(this11:User)
+                        WHERE ($jwt.id IS NOT NULL AND this11.userId = $jwt.id)
                     }
                 }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH *
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this2)<-[:VALID_GARAGES]-(this13:Settings)
+                    MATCH (this2)<-[:VALID_GARAGES]-(this12:Settings)
                     WHERE EXISTS {
-                        MATCH (this13)<-[:HAS_SETTINGS]-(this14:Tenant)
+                        MATCH (this12)<-[:HAS_SETTINGS]-(this13:Tenant)
                         WHERE EXISTS {
-                            MATCH (this14)<-[:ADMIN_IN]-(this15:User)
-                            WHERE ($jwt.id IS NOT NULL AND this15.userId = $jwt.id)
+                            MATCH (this13)<-[:ADMIN_IN]-(this14:User)
+                            WHERE ($jwt.id IS NOT NULL AND this14.userId = $jwt.id)
                         }
                     }
                 }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH *
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this3)<-[:HAS_OPEN_INTERVALS]-(this16:OpeningDay)
+                    MATCH (this3)<-[:HAS_OPEN_INTERVALS]-(this15:OpeningDay)
                     WHERE EXISTS {
-                        MATCH (this16)<-[:VALID_GARAGES]-(this17:Settings)
+                        MATCH (this15)<-[:VALID_GARAGES]-(this16:Settings)
                         WHERE EXISTS {
-                            MATCH (this17)<-[:HAS_SETTINGS]-(this18:Tenant)
+                            MATCH (this16)<-[:HAS_SETTINGS]-(this17:Tenant)
                             WHERE EXISTS {
-                                MATCH (this18)<-[:ADMIN_IN]-(this19:User)
-                                WHERE ($jwt.id IS NOT NULL AND this19.userId = $jwt.id)
+                                MATCH (this17)<-[:ADMIN_IN]-(this18:User)
+                                WHERE ($jwt.id IS NOT NULL AND this18.userId = $jwt.id)
                             }
                         }
                     }
@@ -234,15 +230,15 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
             WITH this
             CALL (this) {
                 CALL (this) {
-                    MATCH (this)<-[this20:ADMIN_IN]-(this21:User)
-                    WITH DISTINCT this21
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.id IS NOT NULL AND this21.userId = $jwt.id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this21 { .userId } AS this21
-                    RETURN collect(this21) AS var22
+                    MATCH (this)<-[this19:ADMIN_IN]-(this20:User)
+                    WITH DISTINCT this20
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.id IS NOT NULL AND this20.userId = $jwt.id)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WITH this20 { .userId } AS this20
+                    RETURN collect(this20) AS var21
                 }
-                RETURN this { .id, admins: var22 } AS var23
+                RETURN this { .id, admins: var21 } AS var22
             }
-            RETURN collect(var23) AS data"
+            RETURN collect(var22) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
