@@ -12,13 +12,16 @@ describe("@populatedBy directive - Node properties", () => {
         test("Should use on CREATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
             const int1 = 123456;
+            const int2 = 654321;
 
             const callback = () => Promise.resolve(int1);
+            const callback2 = () => Promise.resolve(int2);
 
             const typeDefs = /* GraphQL */ `
                     type ${testMovie.name} @node {
                         id: ID
                         callback: Int! @populatedBy(operations: [CREATE], callback: "callback")
+                        callback2: Int! @populatedBy(operations: [CREATE], callback: "callback2")
                     }
                 `;
 
@@ -28,6 +31,7 @@ describe("@populatedBy directive - Node properties", () => {
                     populatedBy: {
                         callbacks: {
                             callback,
+                            callback2,
                         },
                     },
                 },
@@ -41,6 +45,7 @@ describe("@populatedBy directive - Node properties", () => {
                             ${testMovie.plural} {
                                 id
                                 callback
+                                callback2
                             }
                         }
                     }
@@ -55,6 +60,7 @@ describe("@populatedBy directive - Node properties", () => {
                         {
                             id: movieId,
                             callback: int1,
+                            callback2: int2,
                         },
                     ],
                 },

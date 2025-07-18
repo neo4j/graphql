@@ -703,7 +703,6 @@ describe("unwind-create", () => {
         });
 
         expect(result.errors).toBeFalsy();
-        console.log(JSON.stringify(result, null, 2));
         expect(result.data?.[Actor.operations.create]).toEqual({
             [Actor.plural]: expect.toIncludeSameMembers([
                 {

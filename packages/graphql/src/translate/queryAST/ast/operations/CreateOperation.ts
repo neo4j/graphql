@@ -36,15 +36,14 @@ export class CreateOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter;
     public readonly relationship: RelationshipAdapter | undefined;
 
-    private selectionPattern: SelectionPattern;
+    protected readonly authFilters: AuthorizationFilters[] = [];
+
+    private readonly selectionPattern: SelectionPattern;
 
     // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
-    private projectionOperations: OperationField[] = [];
+    private readonly projectionOperations: OperationField[] = [];
 
-    public readonly inputFields: InputField[] = [];
-
-    protected readonly authFilters: AuthorizationFilters[] = [];
-    private readonly variable: Cypher.Variable;
+    private readonly inputFields: InputField[] = [];
 
     private nestedContext: QueryASTContext | undefined;
 
@@ -61,7 +60,6 @@ export class CreateOperation extends MutationOperation {
         this.target = target;
         this.relationship = relationship;
         this.selectionPattern = selectionPattern;
-        this.variable = new Cypher.Variable();
     }
 
     public getChildren(): QueryASTNode[] {
@@ -77,20 +75,8 @@ export class CreateOperation extends MutationOperation {
         this.authFilters.push(...filter);
     }
 
-    /**
-     * Get and set field methods are utilities to remove duplicate fields between separate inputs
-     * TODO: This logic should be handled in the factory.
-     */
-    public getField(_key: string, _attachedTo: "node" | "relationship") {
-        return undefined;
-    }
-
-    public addField(field: InputField, _attachedTo: "node" | "relationship") {
+    public addField(field: InputField) {
         this.inputFields.push(field);
-    }
-
-    public getCypherVariable(): Cypher.Variable {
-        return this.variable;
     }
 
     public addProjectionOperations(operations: OperationField[]) {
