@@ -548,7 +548,7 @@ export class FilterFactory {
 
         // This is a bit hacky, basically skipping cypher fields and federation strings being passed to filterFactory
         if (!operator && !attribute.annotations.cypher?.targetEntity && typeof value === "object") {
-            return this.parseGenericFilters(entity, fieldName, value, relationship);
+            return this.parseGenericFilters(targetEntity ?? entity, fieldName, value, relationship);
         }
 
         return this.createPropertyFilter({
