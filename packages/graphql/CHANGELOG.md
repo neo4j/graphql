@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.2.4
+
+### Patch Changes
+
+- [#6506](https://github.com/neo4j/graphql/pull/6506) [`becd7af`](https://github.com/neo4j/graphql/commit/becd7af21db21d7f257e9d83692624a34867f72b) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix `@cypher` directive filters when using interfaces
+
 ## 7.2.3
 
 ### Patch Changes
