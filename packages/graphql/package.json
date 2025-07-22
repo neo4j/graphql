@@ -57,7 +57,7 @@
         "graphql-tag": "2.12.6",
         "graphql-ws": "5.16.2",
         "is-uuid": "1.0.2",
-        "jest": "30.0.4",
+        "jest": "30.0.5",
         "jest-extended": "6.0.0",
         "jsonwebtoken": "9.0.2",
         "jwks-rsa": "3.2.0",
