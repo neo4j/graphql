@@ -18,9 +18,9 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import { Filter } from "../Filter";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
+import { Filter } from "../Filter";
 
 export class AuthorizationRuleFilter extends Filter {
     public children: Filter[];

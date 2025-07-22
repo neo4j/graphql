@@ -80,6 +80,7 @@ export class ConnectFactory {
 
         return new CompositeConnectOperation({
             partials,
+            target: entity,
         });
     }
 
@@ -112,7 +113,6 @@ export class ConnectFactory {
         relationship,
         input,
         connect,
-        // callbackBucket,
         context,
     }: {
         target: ConcreteEntityAdapter;
@@ -121,6 +121,20 @@ export class ConnectFactory {
         connect: ConnectOperation;
         context: Neo4jGraphQLTranslationContext;
     }) {
+        this.addEntityAuthorization({
+            entity: target,
+            context,
+            operation: connect,
+        });
+
+        const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+            entity: target,
+            operations: ["CREATE_RELATIONSHIP"],
+            context,
+        });
+
+        connect.addFilters(...authFilters);
+
         asArray(input).forEach((inputItem) => {
             const { whereArg, connectArg } = this.parseConnectArgs(inputItem);
             const nodeFilters: Filter[] = [];
@@ -184,11 +198,26 @@ export class ConnectFactory {
         });
     }
 
-    private getInputNode(inputItem: Record<string, any>, isNested: boolean): Record<string, any> {
-        if (isNested) {
-            return inputItem.node ?? {};
+    private addEntityAuthorization({
+        entity,
+        context,
+        operation,
+    }: {
+        entity: ConcreteEntityAdapter;
+        context: Neo4jGraphQLTranslationContext;
+        operation: ConnectOperation;
+    }): void {
+        const authFilters = this.queryASTFactory.authorizationFactory.createAuthValidateRule({
+            entity,
+            authAnnotation: entity.annotations.authorization,
+            when: "AFTER",
+            operations: ["CREATE_RELATIONSHIP"],
+            context,
+        });
+
+        if (authFilters) {
+            operation.addAuthFilters(authFilters);
         }
-        return inputItem;
     }
 
     private getInputEdge(inputItem: Record<string, any>, relationship: RelationshipAdapter): Record<string, any> {

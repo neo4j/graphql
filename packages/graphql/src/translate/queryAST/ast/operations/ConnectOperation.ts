@@ -26,6 +26,7 @@ import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls"
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Filter } from "../filters/Filter";
+import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { InputField } from "../input-fields/InputField";
 import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
 import type { ReadOperation } from "./ReadOperation";
@@ -36,6 +37,7 @@ export class ConnectOperation extends MutationOperation {
     public readonly relationship: RelationshipAdapter;
 
     private selectionPattern: SelectionPattern;
+    protected readonly authFilters: AuthorizationFilters[] = [];
 
     // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
     public projectionOperations: ReadOperation[] = [];
@@ -62,9 +64,18 @@ export class ConnectOperation extends MutationOperation {
         return filterTruthy([
             this.selectionPattern,
             ...this.filters,
+            ...this.authFilters,
             ...this.inputFields.values(),
             ...this.projectionOperations,
         ]);
+    }
+
+    public print(): string {
+        return `${super.print()} <${this.target.name}>`;
+    }
+
+    public addAuthFilters(...filter: AuthorizationFilters[]) {
+        this.authFilters.push(...filter);
     }
 
     /**

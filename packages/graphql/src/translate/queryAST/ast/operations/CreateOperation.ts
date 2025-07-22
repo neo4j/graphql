@@ -62,6 +62,11 @@ export class CreateOperation extends MutationOperation {
         this.selectionPattern = selectionPattern;
     }
 
+    /** Prints the name of the Node */
+    public print(): string {
+        return `${super.print()} <${this.target.name}>`;
+    }
+
     public getChildren(): QueryASTNode[] {
         return filterTruthy([
             this.selectionPattern,

@@ -18,6 +18,8 @@
  */
 
 import type { Clause } from "@neo4j/cypher-builder";
+import type { InterfaceEntityAdapter } from "../../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
+import type { UnionEntityAdapter } from "../../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { filterTruthy } from "../../../../../utils/utils";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
@@ -27,10 +29,22 @@ import type { CompositeConnectPartial } from "./CompositeConnectPartial";
 
 export class CompositeConnectOperation extends MutationOperation {
     private partials: CompositeConnectPartial[] = [];
+    private target: InterfaceEntityAdapter | UnionEntityAdapter;
 
-    constructor({ partials }: { partials: CompositeConnectPartial[] }) {
+    constructor({
+        partials,
+        target,
+    }: {
+        partials: CompositeConnectPartial[];
+        target: InterfaceEntityAdapter | UnionEntityAdapter;
+    }) {
         super();
         this.partials = partials;
+        this.target = target;
+    }
+
+    public print(): string {
+        return `${super.print()} <${this.target.name}>`;
     }
 
     public getChildren(): QueryASTNode[] {

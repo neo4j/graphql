@@ -839,22 +839,33 @@ describe("Cypher Auth Where", () => {
                 WITH *
                 CALL (this0) {
                     MATCH (this1:Post)
-                    CREATE (this0)-[this2:HAS_POST]->(this1)
+                    WHERE ($isAuthenticated = true AND EXISTS {
+                        MATCH (this1)<-[:HAS_POST]-(this2:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+                    })
+                    CREATE (this0)-[this3:HAS_POST]->(this1)
                 }
                 RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .id } AS var3
+                RETURN this { .id } AS var4
             }
-            RETURN collect(var3) AS data"
+            RETURN collect(var4) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"123\\",
                 \\"param1\\": \\"Bob\\",
-                \\"param2\\": \\"password\\"
+                \\"param2\\": \\"password\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"id-01\\"
+                }
             }"
         `);
     });
@@ -895,16 +906,19 @@ describe("Cypher Auth Where", () => {
                 WITH *
                 CALL (this0) {
                     MATCH (this1:Post)
-                    WHERE this1.id = $param3
-                    CREATE (this0)-[this2:HAS_POST]->(this1)
+                    WHERE (($isAuthenticated = true AND EXISTS {
+                        MATCH (this1)<-[:HAS_POST]-(this2:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+                    }) AND this1.id = $param5)
+                    CREATE (this0)-[this3:HAS_POST]->(this1)
                 }
                 RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .id } AS var3
+                RETURN this { .id } AS var4
             }
-            RETURN collect(var3) AS data"
+            RETURN collect(var4) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -912,7 +926,14 @@ describe("Cypher Auth Where", () => {
                 \\"param0\\": \\"123\\",
                 \\"param1\\": \\"Bob\\",
                 \\"param2\\": \\"password\\",
-                \\"param3\\": \\"post-id\\"
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"id-01\\"
+                },
+                \\"param5\\": \\"post-id\\"
             }"
         `);
     });

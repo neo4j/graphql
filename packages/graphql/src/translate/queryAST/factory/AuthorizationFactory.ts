@@ -96,10 +96,7 @@ export class AuthorizationFactory {
         ]);
     }
 
-    public createAuthFilterRule({
-        authAnnotation,
-        ...params
-    }: AuthFilterParams): AuthorizationFilters | undefined {
+    public createAuthFilterRule({ authAnnotation, ...params }: AuthFilterParams): AuthorizationFilters | undefined {
         const filters = this.createAuthRuleFilter(params, authAnnotation?.filter ?? []);
         if (!filters.length) {
             return;
