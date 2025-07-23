@@ -73,9 +73,6 @@ type TransactionConfig = {
         app: string;
         // Possible values from https://neo4j.com/docs/operations-manual/current/monitoring/logging/#attach-metadata-tx (will only be user-transpiled for @neo4j/graphql)
         type: "system" | "user-direct" | "user-action" | "user-transpiled";
-        source?: {
-            query: string;
-        };
     };
 };
 
@@ -140,7 +137,6 @@ export class Executor {
                     parameters: params,
                     sessionMode,
                     session: this.executionContext,
-                    info,
                 });
             }
 
@@ -205,30 +201,14 @@ export class Executor {
         return "";
     }
 
-    private getTransactionConfig(info?: GraphQLResolveInfo): TransactionConfig {
-        const transactionConfig: TransactionConfig = {
+    private getTransactionConfig(): TransactionConfig {
+        return {
             metadata: {
                 ...this.transactionMetadata,
                 app: APP_ID,
                 type: "user-transpiled",
             },
         };
-
-        if (info) {
-            const source = {
-                // We avoid using print here, when possible, as it is a heavy process
-                query:
-                    info.operation.loc?.source.body ||
-                    // Print both fragments and operation, otherwise printed queries are invalid due to missing fragments
-                    [Object.values(info.fragments).map((fragment) => print(fragment)), print(info.operation)].join(
-                        "\n\n"
-                    ),
-            };
-
-            transactionConfig.metadata.source = source;
-        }
-
-        return transactionConfig;
     }
 
     private async driverRun({
@@ -253,7 +233,7 @@ export class Executor {
         });
 
         try {
-            const result = await this.sessionRun({ query, parameters, info, session, sessionMode });
+            const result = await this.sessionRun({ query, parameters, session, sessionMode });
             return result;
         } finally {
             await session.close();
@@ -265,13 +245,11 @@ export class Executor {
         parameters,
         session,
         sessionMode,
-        info,
     }: {
         query: string;
         parameters: Record<string, any>;
         session: Session;
         sessionMode: SessionMode;
-        info?: GraphQLResolveInfo;
     }): Promise<QueryResult> {
         let result: QueryResult | undefined;
 
@@ -279,12 +257,12 @@ export class Executor {
             case "READ":
                 result = await session.executeRead((tx: ManagedTransaction) => {
                     return this.transactionRun(query, parameters, tx);
-                }, this.getTransactionConfig(info));
+                }, this.getTransactionConfig());
                 break;
             case "WRITE":
                 result = await session.executeWrite((tx: ManagedTransaction) => {
                     return this.transactionRun(query, parameters, tx);
-                }, this.getTransactionConfig(info));
+                }, this.getTransactionConfig());
                 break;
         }
 
