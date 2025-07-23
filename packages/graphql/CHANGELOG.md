@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 6.6.4
+
+### Patch Changes
+
+- [#6513](https://github.com/neo4j/graphql/pull/6513) [`f867f63`](https://github.com/neo4j/graphql/commit/f867f6308e0416e1b28b3137db71870b53a06f1d) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Removed graphql query from driver transaction metadata
+
 ## 6.6.3
 
 ### Patch Changes
