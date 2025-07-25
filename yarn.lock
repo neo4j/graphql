@@ -1546,28 +1546,28 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/batch-execute@npm:^9.0.17":
-  version: 9.0.17
-  resolution: "@graphql-tools/batch-execute@npm:9.0.17"
+"@graphql-tools/batch-execute@npm:^9.0.18":
+  version: 9.0.18
+  resolution: "@graphql-tools/batch-execute@npm:9.0.18"
   dependencies:
-    "@graphql-tools/utils": "npm:^10.8.1"
+    "@graphql-tools/utils": "npm:^10.9.0"
     "@whatwg-node/promise-helpers": "npm:^1.3.0"
     dataloader: "npm:^2.2.3"
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/1fdb580dfd0c558d11e9624c66f5a921a7eaa7c10a624fcd23a61f295cf5203306b2a94384eef719d256d7c928a00f09e6721f1c0a80106b6bb8be1e65755682
+  checksum: 10c0/0f0ff30638e1baa7f1cb68a45722cce5476b53814def0ea7646c6c95ff72c17c50447bd745785ba2295422c0a1c9c89d057c019ec655e1bacc35d326512c7b23
   languageName: node
   linkType: hard
 
-"@graphql-tools/delegate@npm:^10.2.21":
-  version: 10.2.21
-  resolution: "@graphql-tools/delegate@npm:10.2.21"
+"@graphql-tools/delegate@npm:^10.2.22":
+  version: 10.2.22
+  resolution: "@graphql-tools/delegate@npm:10.2.22"
   dependencies:
-    "@graphql-tools/batch-execute": "npm:^9.0.17"
-    "@graphql-tools/executor": "npm:^1.4.7"
-    "@graphql-tools/schema": "npm:^10.0.11"
-    "@graphql-tools/utils": "npm:^10.8.1"
+    "@graphql-tools/batch-execute": "npm:^9.0.18"
+    "@graphql-tools/executor": "npm:^1.4.8"
+    "@graphql-tools/schema": "npm:^10.0.24"
+    "@graphql-tools/utils": "npm:^10.9.0"
     "@repeaterjs/repeater": "npm:^3.0.6"
     "@whatwg-node/promise-helpers": "npm:^1.3.0"
     dataloader: "npm:^2.2.3"
@@ -1575,7 +1575,7 @@ __metadata:
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/d5d078c3f35a0dffc43efc937d05520a52bdb9f4ede60602242d3e8ca3474219e3b73344e873b88cbd26c51dfc669be5b76040d282b87b23263011dffae06d0a
+  checksum: 10c0/8ec225244b10c50b99be48eb25bdbb533e558f6974d2597d648a9a53837f09b30a19c2717cefee3ac321c2c6178afa9d5a1660873dc5752611b70253b54819e4
   languageName: node
   linkType: hard
 
@@ -1610,11 +1610,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/executor@npm:^1.4.7":
-  version: 1.4.7
-  resolution: "@graphql-tools/executor@npm:1.4.7"
+"@graphql-tools/executor@npm:^1.4.8":
+  version: 1.4.9
+  resolution: "@graphql-tools/executor@npm:1.4.9"
   dependencies:
-    "@graphql-tools/utils": "npm:^10.8.6"
+    "@graphql-tools/utils": "npm:^10.9.1"
     "@graphql-typed-document-node/core": "npm:^3.2.0"
     "@repeaterjs/repeater": "npm:^3.0.4"
     "@whatwg-node/disposablestack": "npm:^0.0.6"
@@ -1622,7 +1622,7 @@ __metadata:
     tslib: "npm:^2.4.0"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/aea551a5e7e926078e9ff78fb2a3e6660367e5d12e0cb9971f69881ff40ad423e634b2f511b790766e7c58eaad27e6016af41caaf392e5c14a3662c8637b0b97
+  checksum: 10c0/71c8818915e62cdeaf5aec3ffbb6a98d158aacb809258059a0f7695c456a8457f9fd0a007924869f72cca4196cbe0076c5f520c7c7e493b85deba1d3610b1b93
   languageName: node
   linkType: hard
 
@@ -1690,7 +1690,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/schema@npm:^10.0.0, @graphql-tools/schema@npm:^10.0.11":
+"@graphql-tools/schema@npm:^10.0.0, @graphql-tools/schema@npm:^10.0.24":
   version: 10.0.25
   resolution: "@graphql-tools/schema@npm:10.0.25"
   dependencies:
@@ -1717,7 +1717,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/utils@npm:10.9.1, @graphql-tools/utils@npm:^10.9.1":
+"@graphql-tools/utils@npm:10.9.1, @graphql-tools/utils@npm:^10.9.0, @graphql-tools/utils@npm:^10.9.1":
   version: 10.9.1
   resolution: "@graphql-tools/utils@npm:10.9.1"
   dependencies:
@@ -1743,21 +1743,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/utils@npm:^10.8.1, @graphql-tools/utils@npm:^10.8.6":
-  version: 10.8.6
-  resolution: "@graphql-tools/utils@npm:10.8.6"
-  dependencies:
-    "@graphql-typed-document-node/core": "npm:^3.1.1"
-    "@whatwg-node/promise-helpers": "npm:^1.0.0"
-    cross-inspect: "npm:1.0.1"
-    dset: "npm:^3.1.4"
-    tslib: "npm:^2.4.0"
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/17f727eb85415c15c5920ab9ef4648e0d205e1ca8b7d8539ac84f55da04ed60464313792456ebbde30bb883c0abde8df81919fd22f2ed5096b873920e84bef4b
-  languageName: node
-  linkType: hard
-
 "@graphql-tools/utils@npm:^9.2.1":
   version: 9.2.1
   resolution: "@graphql-tools/utils@npm:9.2.1"
@@ -1771,17 +1756,17 @@ __metadata:
   linkType: hard
 
 "@graphql-tools/wrap@npm:^10.0.0":
-  version: 10.1.2
-  resolution: "@graphql-tools/wrap@npm:10.1.2"
+  version: 10.1.3
+  resolution: "@graphql-tools/wrap@npm:10.1.3"
   dependencies:
-    "@graphql-tools/delegate": "npm:^10.2.21"
-    "@graphql-tools/schema": "npm:^10.0.11"
-    "@graphql-tools/utils": "npm:^10.8.1"
+    "@graphql-tools/delegate": "npm:^10.2.22"
+    "@graphql-tools/schema": "npm:^10.0.24"
+    "@graphql-tools/utils": "npm:^10.9.0"
     "@whatwg-node/promise-helpers": "npm:^1.3.0"
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/cb75f67efe8086b14c9dd9d3518d72f981710479ac36c533054a37387dbeddf06264a0b07dc16eb1a284465ce87cc1d2b29d9d6cadc2f55e0d30f8c73a12ea72
+  checksum: 10c0/fdd63f52cacd819c0c9c47a0ac28a79ddba5dfc1f55a76eae41182c5f964e500567feaa227c19725c2132644dc8f8be13c5fd1b41c8b8872047ec8edbeb1dd36
   languageName: node
   linkType: hard
 
@@ -7278,10 +7263,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dotenv@npm:17.2.0":
-  version: 17.2.0
-  resolution: "dotenv@npm:17.2.0"
-  checksum: 10c0/d4cb5c2a09c288c921ef47a78f51c765a763266e23e84465cde6a87b28b9f7fc5a9d1fe349ed3c880b4c7297f82dd736dba5b08fe95ce53833ce4a7258d0fc43
+"dotenv@npm:17.2.1":
+  version: 17.2.1
+  resolution: "dotenv@npm:17.2.1"
+  checksum: 10c0/918dd2f9d8b8f86b0afabad9534793d51de3718c437f9e7b6525628cf68c1d4ae768cc37a5afff38c066f58a8ecf549f4ac6cd5617485bd328e826112cc2650a
   languageName: node
   linkType: hard
 
@@ -13477,7 +13462,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:8.38.0"
     "@typescript-eslint/parser": "npm:8.38.0"
     concurrently: "npm:9.2.0"
-    dotenv: "npm:17.2.0"
+    dotenv: "npm:17.2.1"
     eslint: "npm:8.57.1"
     eslint-config-prettier: "npm:10.1.8"
     eslint-formatter-summary: "npm:2.0.2"
