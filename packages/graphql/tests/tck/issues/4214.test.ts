@@ -184,19 +184,24 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                         MATCH (this1)-[:TRANSACTION]->(this2:Store)
                         WHERE ($jwt.store IS NOT NULL AND this2.id = $jwt.store)
                     })) AND this1.id = $param8)
-                    CREATE (this0)-[this3:ITEM_TRANSACTED]->(this1)
                     WITH *
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param9 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param10 IN $jwt.roles)) AND EXISTS {
-                        MATCH (this1)-[:TRANSACTION]->(this4:Store)
-                        WHERE ($jwt.store IS NOT NULL AND this4.id = $jwt.store)
+                        MATCH (this1)-[:TRANSACTION]->(this3:Store)
+                        WHERE ($jwt.store IS NOT NULL AND this3.id = $jwt.store)
+                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    CREATE (this0)-[this4:ITEM_TRANSACTED]->(this1)
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param11 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param12 IN $jwt.roles)) AND EXISTS {
+                        MATCH (this1)-[:TRANSACTION]->(this5:Store)
+                        WHERE ($jwt.store IS NOT NULL AND this5.id = $jwt.store)
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 }
                 WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param11 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param12 IN $jwt.roles)) AND EXISTS {
-                    MATCH (this0)-[:ITEM_TRANSACTED]->(this5:Transaction)
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param13 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param14 IN $jwt.roles)) AND EXISTS {
+                    MATCH (this0)-[:ITEM_TRANSACTED]->(this6:Transaction)
                     WHERE EXISTS {
-                        MATCH (this5)-[:TRANSACTION]->(this6:Store)
-                        WHERE ($jwt.store IS NOT NULL AND this6.id = $jwt.store)
+                        MATCH (this6)-[:TRANSACTION]->(this7:Store)
+                        WHERE ($jwt.store IS NOT NULL AND this7.id = $jwt.store)
                     }
                 }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN this0 AS this
@@ -204,24 +209,24 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
             WITH this
             CALL (this) {
                 CALL (this) {
-                    MATCH (this)-[this7:ITEM_TRANSACTED]->(this8:Transaction)
-                    WHERE (($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param13 IN $jwt.roles)) OR ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param14 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param15 IN $jwt.roles)) AND EXISTS {
-                        MATCH (this8)-[:TRANSACTION]->(this9:Store)
-                        WHERE ($jwt.store IS NOT NULL AND this9.id = $jwt.store)
+                    MATCH (this)-[this8:ITEM_TRANSACTED]->(this9:Transaction)
+                    WHERE (($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param15 IN $jwt.roles)) OR ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param16 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param17 IN $jwt.roles)) AND EXISTS {
+                        MATCH (this9)-[:TRANSACTION]->(this10:Store)
+                        WHERE ($jwt.store IS NOT NULL AND this10.id = $jwt.store)
                     }))
-                    WITH DISTINCT this8
-                    CALL (this8) {
-                        MATCH (this8)-[this10:TRANSACTION]->(this11:Store)
-                        WITH DISTINCT this11
-                        WITH this11 { .name } AS this11
-                        RETURN collect(this11) AS var12
+                    WITH DISTINCT this9
+                    CALL (this9) {
+                        MATCH (this9)-[this11:TRANSACTION]->(this12:Store)
+                        WITH DISTINCT this12
+                        WITH this12 { .name } AS this12
+                        RETURN collect(this12) AS var13
                     }
-                    WITH this8 { .id, store: var12 } AS this8
-                    RETURN collect(this8) AS var13
+                    WITH this9 { .id, store: var13 } AS this9
+                    RETURN collect(this9) AS var14
                 }
-                RETURN this { .name, transaction: var13 } AS var14
+                RETURN this { .name, transaction: var14 } AS var15
             }
-            RETURN collect(var14) AS data"
+            RETURN collect(var15) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -247,9 +252,11 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                 \\"param10\\": \\"employee\\",
                 \\"param11\\": \\"store-owner\\",
                 \\"param12\\": \\"employee\\",
-                \\"param13\\": \\"admin\\",
-                \\"param14\\": \\"store-owner\\",
-                \\"param15\\": \\"employee\\"
+                \\"param13\\": \\"store-owner\\",
+                \\"param14\\": \\"employee\\",
+                \\"param15\\": \\"admin\\",
+                \\"param16\\": \\"store-owner\\",
+                \\"param17\\": \\"employee\\"
             }"
         `);
     });

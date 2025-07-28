@@ -19,6 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { AUTH_FORBIDDEN_ERROR } from "../../../../../constants";
+import type { ValidateWhen } from "../../../../../schema-model/annotation/AuthorizationAnnotation";
 import type { QueryASTContext } from "../../QueryASTContext";
 import { QueryASTNode } from "../../QueryASTNode";
 import type { AuthorizationRuleFilter } from "./AuthorizationRuleFilter";
@@ -47,9 +48,9 @@ export class AuthorizationFilters extends QueryASTNode {
         return Cypher.or(...this.filters.map((f) => f.getPredicate(context)));
     }
 
-    public getValidation(context: QueryASTContext): Cypher.VoidProcedure | undefined {
+    public getValidation(context: QueryASTContext, when: ValidateWhen = "BEFORE"): Cypher.VoidProcedure | undefined {
         const validationPredicate = Cypher.or(
-            ...this.validations.flatMap((validationRule) => validationRule.getPredicate(context))
+            ...this.getValidations(when).flatMap((validationRule) => validationRule.getPredicate(context))
         );
         if (validationPredicate) {
             const predicate = this.conditionForEvaluation
@@ -71,5 +72,9 @@ export class AuthorizationFilters extends QueryASTNode {
 
     public getChildren(): QueryASTNode[] {
         return [...this.validations, ...this.filters];
+    }
+
+    private getValidations(when: ValidateWhen): AuthorizationRuleFilter[] {
+        return this.validations.filter((rule) => rule.when === when);
     }
 }

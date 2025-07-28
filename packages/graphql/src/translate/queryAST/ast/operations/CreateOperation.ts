@@ -88,6 +88,7 @@ export class CreateOperation extends MutationOperation {
         this.projectionOperations.push(...operations);
     }
 
+    /** Post subqueries */
     public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
         const nestedContext = this.nestedContext;
 
@@ -200,8 +201,7 @@ export class CreateOperation extends MutationOperation {
             const extraSelections = authFilter.getSelection(context);
             const authSubqueries = authFilter.getSubqueries(context);
             const authPredicate = authFilter.getPredicate(context);
-            const validation = authFilter.getValidation(context);
-
+            const validation = authFilter.getValidation(context, "AFTER"); // CREATE only has AFTER auth
             if (extraSelections) {
                 selections.push(...extraSelections);
             }

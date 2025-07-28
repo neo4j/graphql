@@ -247,7 +247,7 @@ export class UnwindCreateOperation extends MutationOperation {
             const extraSelections = authFilter.getSelection(context);
             const authSubqueries = authFilter.getSubqueries(context);
             const authPredicate = authFilter.getPredicate(context);
-            const validation = authFilter.getValidation(context);
+            const validation = authFilter.getValidation(context, "AFTER");
 
             if (extraSelections) {
                 selections.push(...extraSelections);

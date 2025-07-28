@@ -50,15 +50,6 @@ describe("create with authorization", () => {
 
             extend type ${User}
                 @authorization(validate: [{ operations: [CREATE, CREATE_RELATIONSHIP], where: { node: { id: { eq: "$jwt.sub" } } } }])
-
-            # extend type Post {
-            #     secretKey: String!
-            #         @authorization(
-            #             filter: [
-            #                 { operations: [READ], where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } } }
-            #             ]
-            #         )
-            # }
         `;
 
         await testHelper.initNeo4jGraphQL({

@@ -102,9 +102,7 @@ export class ConnectOperation extends MutationOperation {
         this.projectionOperations.push(...operations);
     }
 
-    // NOTE: Duplicate from createOperation, this is probably not correct for filters here
     public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
-        // return [];
         const nestedContext = this.nestedContext;
 
         if (!nestedContext) {
@@ -114,7 +112,6 @@ export class ConnectOperation extends MutationOperation {
         }
 
         return [
-            // ...this.getAuthorizationClauses(nestedContext),
             ...this.inputFields.values().flatMap((inputField) => {
                 return inputField.getAuthorizationSubqueries(nestedContext);
             }),
@@ -158,7 +155,6 @@ export class ConnectOperation extends MutationOperation {
             .related(relVar, { direction: relDirection, type: this.relationship.type })
             .to(nestedContext.target);
 
-        // TODO: find a better way to do this pls
         const connectContext = context.push({ target: nestedContext.target, relationship: relVar });
 
         const connectClause = new Cypher.Create(connectPattern);
@@ -174,10 +170,10 @@ export class ConnectOperation extends MutationOperation {
 
         const clauses = Cypher.utils.concat(
             matchClause,
+            ...this.getAuthorizationClauses(nestedContext), // THESE ARE "BEFORE" AUTH
             ...mutationSubqueries,
             connectClause,
-            ...this.getAuthorizationClauses(nestedContext),
-            // new Cypher.Return(nestedContext.target)
+            ...this.getAuthorizationClausesAfter(nestedContext), // THESE ARE "AFTER" AUTH
             ...this.getProjectionClause(nestedContext)
         );
 
@@ -208,6 +204,21 @@ export class ConnectOperation extends MutationOperation {
         }
     }
 
+    private getAuthorizationClausesAfter(context: QueryASTContext): Cypher.Clause[] {
+        const validationsAfter: Cypher.VoidProcedure[] = [];
+        for (const authFilter of this.authFilters) {
+            const validationAfter = authFilter.getValidation(context, "AFTER");
+            if (validationAfter) {
+                validationsAfter.push(validationAfter);
+            }
+        }
+
+        if (validationsAfter.length > 0) {
+            return [new Cypher.With("*"), ...validationsAfter];
+        }
+        return [];
+    }
+
     private transpileAuthClauses(context: QueryASTContext): {
         selections: (Cypher.With | Cypher.Match)[];
         subqueries: Cypher.Clause[];
@@ -221,8 +232,7 @@ export class ConnectOperation extends MutationOperation {
         for (const authFilter of this.authFilters) {
             const extraSelections = authFilter.getSelection(context);
             const authSubqueries = authFilter.getSubqueries(context);
-            // const authPredicate = authFilter.getPredicate(context);
-            const validation = authFilter.getValidation(context);
+            const validation = authFilter.getValidation(context, "BEFORE");
 
             if (extraSelections) {
                 selections.push(...extraSelections);
@@ -230,9 +240,7 @@ export class ConnectOperation extends MutationOperation {
             if (authSubqueries) {
                 subqueries.push(...authSubqueries);
             }
-            // if (authPredicate) {
-            //     predicates.push(authPredicate);
-            // }
+
             if (validation) {
                 validations.push(validation);
             }

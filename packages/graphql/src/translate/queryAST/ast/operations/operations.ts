@@ -36,5 +36,7 @@ export abstract class Operation extends QueryASTNode {
  */
 export abstract class MutationOperation extends QueryASTNode {
     abstract transpile(context: QueryASTContext): OperationTranspileResult;
+
+    /** Used for "AFTER" Auth subqueries, BEFORE subqueries should be part of transpile */
     abstract getAuthorizationSubqueries(context: QueryASTContext): Cypher.Clause[];
 }

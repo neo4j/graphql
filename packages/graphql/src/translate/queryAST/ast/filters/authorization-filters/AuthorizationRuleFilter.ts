@@ -18,6 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { ValidateWhen } from "../../../../../schema-model/annotation/AuthorizationAnnotation";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { Filter } from "../Filter";
@@ -26,20 +27,28 @@ export class AuthorizationRuleFilter extends Filter {
     public children: Filter[];
     private requireAuthentication: boolean;
     private isAuthenticatedParam: Cypher.Param;
+    public when: ValidateWhen;
 
     constructor({
         requireAuthentication,
         filters,
         isAuthenticatedParam,
+        when = "BEFORE",
     }: {
         requireAuthentication: boolean;
         filters: Filter[];
         isAuthenticatedParam: Cypher.Param;
+        when?: ValidateWhen;
     }) {
         super();
         this.requireAuthentication = requireAuthentication;
         this.children = filters;
         this.isAuthenticatedParam = isAuthenticatedParam;
+        this.when = when;
+    }
+
+    public print(): string {
+        return `${super.print()} <${this.when}>`;
     }
 
     public getPredicate(context: QueryASTContext): Cypher.Predicate | undefined {

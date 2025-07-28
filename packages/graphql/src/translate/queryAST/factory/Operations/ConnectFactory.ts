@@ -203,6 +203,7 @@ export class ConnectFactory {
             entity,
             operations: ["CREATE_RELATIONSHIP"],
             context,
+            afterValidation: true,
         });
 
         operation.addAuthFilters(...authFilters);
