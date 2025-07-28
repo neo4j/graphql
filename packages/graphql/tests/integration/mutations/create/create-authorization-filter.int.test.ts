@@ -22,34 +22,36 @@ import { TestHelper } from "../../../utils/tests-helper";
 
 describe("create with authorization", () => {
     const testHelper = new TestHelper();
-    let Actor: UniqueType;
-    let Movie: UniqueType;
+    let User: UniqueType;
+    let Comment: UniqueType;
+    let Post: UniqueType;
     const secret = "secret";
 
     beforeEach(async () => {
-        Actor = testHelper.createUniqueType("Actor");
-        Movie = testHelper.createUniqueType("Movie");
+        User = testHelper.createUniqueType("User");
+        Comment = testHelper.createUniqueType("Comment");
+        Post = testHelper.createUniqueType("Post");
 
         const typeDefs = /* GraphQL */ `
             interface Content {
                 id: ID
                 content: String
-                creator: [User!]! @declareRelationship
+                creator: [${User}!]! @declareRelationship
             }
 
-            type User @node {
+            type ${User} @node {
                 id: ID
                 name: String
                 content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }
 
-            type Comment implements Content @node {
+            type ${Comment} implements Content @node {
                 id: ID
                 content: String
-                creator: [User!]! @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: [${User}!]! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
-            type Post implements Content
+            type ${Post} implements Content
                 @node
                 @authorization(
                     filter: [
@@ -61,10 +63,10 @@ describe("create with authorization", () => {
                 ) {
                 id: ID
                 content: String
-                creator: [User!]! @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: [${User}!]! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
-            extend type User
+            extend type ${User}
                 @authorization(
                     filter: [
                         {
@@ -74,12 +76,12 @@ describe("create with authorization", () => {
                     ]
                 )
 
-            extend type User {
+            extend type ${User} {
                 password: String!
                     @authorization(filter: [{ operations: [READ], where: { node: { id: { eq: "$jwt.sub" } } } }])
             }
 
-            extend type Post {
+            extend type ${Post} {
                 secretKey: String!
                     @authorization(
                         filter: [
@@ -109,12 +111,12 @@ describe("create with authorization", () => {
         // TODO: add something with filters
         const query = /* GraphQL */ `
             mutation ($id: ID!) {
-                createUsers(
+                ${User.operations.create}(
                     input: [
                         { id: $id, name: "Bob", password: "password", content: { connect: { where: { node: {} } } } }
                     ]
                 ) {
-                    users {
+                    ${User.plural} {
                         id
                     }
                 }
@@ -128,12 +130,15 @@ describe("create with authorization", () => {
         });
 
         expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult?.data?.["createUsers"]).toEqual({ ["users"]: [{ id }] });
+        expect(gqlResult.data).toEqual({
+            [User.operations.create]: {
+                [User.plural]: [{ id }],
+            },
+        });
 
         const reFind = await testHelper.executeCypher(
             `
-              MATCH (m:User {id: $id})
+              MATCH (m:${User} {id: $id})
               RETURN m
             `,
             { id }

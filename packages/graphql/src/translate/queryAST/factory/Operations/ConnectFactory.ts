@@ -127,14 +127,6 @@ export class ConnectFactory {
             operation: connect,
         });
 
-        const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
-            entity: target,
-            operations: ["CREATE_RELATIONSHIP"],
-            context,
-        });
-
-        connect.addFilters(...authFilters);
-
         asArray(input).forEach((inputItem) => {
             const { whereArg, connectArg } = this.parseConnectArgs(inputItem);
             const nodeFilters: Filter[] = [];
@@ -207,17 +199,25 @@ export class ConnectFactory {
         context: Neo4jGraphQLTranslationContext;
         operation: ConnectOperation;
     }): void {
-        const authFilters = this.queryASTFactory.authorizationFactory.createAuthValidateRule({
+        const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
             entity,
-            authAnnotation: entity.annotations.authorization,
-            when: "AFTER",
             operations: ["CREATE_RELATIONSHIP"],
             context,
         });
 
-        if (authFilters) {
-            operation.addAuthFilters(authFilters);
-        }
+        operation.addAuthFilters(...authFilters);
+
+        // const authFilters = this.queryASTFactory.authorizationFactory.createAuthValidateRule({
+        //     entity,
+        //     authAnnotation: entity.annotations.authorization,
+        //     when: "AFTER",
+        //     operations: ["CREATE_RELATIONSHIP"],
+        //     context,
+        // });
+
+        // if (authFilters) {
+        //     operation.addAuthFilters(authFilters);
+        // }
     }
 
     private getInputEdge(inputItem: Record<string, any>, relationship: RelationshipAdapter): Record<string, any> {

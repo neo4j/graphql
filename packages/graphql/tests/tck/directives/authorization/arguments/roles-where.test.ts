@@ -894,16 +894,21 @@ describe("Cypher Auth Where with Roles", () => {
                 CALL (this0) {
                     MATCH (this1:Post)
                     CREATE (this0)-[this2:HAS_POST]->(this1)
+                    WITH *
+                    CALL apoc.util.validate(NOT (($isAuthenticated = true AND EXISTS {
+                        MATCH (this1)<-[:HAS_POST]-(this3:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
+                    } AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 }
                 WITH *
-                CALL apoc.util.validate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $param7 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param8 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .id } AS var3
+                RETURN this { .id } AS var4
             }
-            RETURN collect(var3) AS data"
+            RETURN collect(var4) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -919,7 +924,9 @@ describe("Cypher Auth Where with Roles", () => {
                     \\"sub\\": \\"id-01\\"
                 },
                 \\"param5\\": \\"user\\",
-                \\"param6\\": \\"admin\\"
+                \\"param6\\": \\"admin\\",
+                \\"param7\\": \\"user\\",
+                \\"param8\\": \\"admin\\"
             }"
         `);
     });
@@ -962,16 +969,21 @@ describe("Cypher Auth Where with Roles", () => {
                     MATCH (this1:Post)
                     WHERE this1.id = $param3
                     CREATE (this0)-[this2:HAS_POST]->(this1)
+                    WITH *
+                    CALL apoc.util.validate(NOT (($isAuthenticated = true AND EXISTS {
+                        MATCH (this1)<-[:HAS_POST]-(this3:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
+                    } AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param7 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 }
                 WITH *
-                CALL apoc.util.validate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param7 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $param8 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param9 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .id } AS var3
+                RETURN this { .id } AS var4
             }
-            RETURN collect(var3) AS data"
+            RETURN collect(var4) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -988,7 +1000,9 @@ describe("Cypher Auth Where with Roles", () => {
                     \\"sub\\": \\"id-01\\"
                 },
                 \\"param6\\": \\"user\\",
-                \\"param7\\": \\"admin\\"
+                \\"param7\\": \\"admin\\",
+                \\"param8\\": \\"user\\",
+                \\"param9\\": \\"admin\\"
             }"
         `);
     });

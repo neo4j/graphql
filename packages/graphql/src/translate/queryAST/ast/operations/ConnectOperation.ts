@@ -45,6 +45,8 @@ export class ConnectOperation extends MutationOperation {
     public readonly inputFields: Map<string, InputField> = new Map();
     private filters: Filter[] = [];
 
+    private nestedContext: QueryASTContext | undefined;
+
     constructor({
         target,
         relationship,
@@ -100,8 +102,23 @@ export class ConnectOperation extends MutationOperation {
         this.projectionOperations.push(...operations);
     }
 
+    // NOTE: Duplicate from createOperation, this is probably not correct for filters here
     public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
-        return [];
+        // return [];
+        const nestedContext = this.nestedContext;
+
+        if (!nestedContext) {
+            throw new Error(
+                "Error parsing query, nested context not available, need to call transpile first. Please contact support"
+            );
+        }
+
+        return [
+            // ...this.getAuthorizationClauses(nestedContext),
+            ...this.inputFields.values().flatMap((inputField) => {
+                return inputField.getAuthorizationSubqueries(nestedContext);
+            }),
+        ];
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -110,22 +127,26 @@ export class ConnectOperation extends MutationOperation {
         }
 
         const { nestedContext } = this.selectionPattern.apply(context);
+        this.nestedContext = nestedContext;
 
         const matchPattern = new Cypher.Pattern(nestedContext.target, {
             labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
         });
-        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
+
+        const allFilters = [...this.authFilters, ...this.filters];
+
+        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, allFilters, [nestedContext.target]);
 
         let matchClause: Cypher.Clause;
         if (filterSubqueries.length > 0) {
-            const predicate = Cypher.and(...this.filters.map((f) => f.getPredicate(nestedContext)));
+            const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
             matchClause = Cypher.utils.concat(
                 new Cypher.Match(matchPattern),
                 ...filterSubqueries,
                 new Cypher.With("*").where(predicate)
             );
         } else {
-            const predicate = Cypher.and(...this.filters.map((f) => f.getPredicate(nestedContext)));
+            const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
             matchClause = new Cypher.Match(matchPattern).where(predicate);
         }
 
@@ -155,17 +176,67 @@ export class ConnectOperation extends MutationOperation {
             matchClause,
             ...mutationSubqueries,
             connectClause,
+            ...this.getAuthorizationClauses(nestedContext),
+            // new Cypher.Return(nestedContext.target)
             ...this.getProjectionClause(nestedContext)
         );
 
-        new Cypher.Call(clauses, [context.target]);
+        const callClause = new Cypher.Call(clauses, [context.target]);
 
-        return { projectionExpr: context.returnVariable, clauses: [clauses] };
+        return { projectionExpr: context.returnVariable, clauses: [callClause] };
     }
 
     private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {
         return this.projectionOperations.map((operationField) => {
             return Cypher.utils.concat(...operationField.transpile(context).clauses);
         });
+    }
+
+    private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
+        const { selections, subqueries, predicates, validations } = this.transpileAuthClauses(context);
+        const predicate = Cypher.and(...predicates);
+        const lastSelection = selections[selections.length - 1];
+
+        if (!predicates.length && !validations.length) {
+            return [];
+        } else {
+            if (lastSelection) {
+                lastSelection.where(predicate);
+                return [...subqueries, new Cypher.With("*"), ...selections, ...validations];
+            }
+            return [...subqueries, new Cypher.With("*").where(predicate), ...selections, ...validations];
+        }
+    }
+
+    private transpileAuthClauses(context: QueryASTContext): {
+        selections: (Cypher.With | Cypher.Match)[];
+        subqueries: Cypher.Clause[];
+        predicates: Cypher.Predicate[];
+        validations: Cypher.VoidProcedure[];
+    } {
+        const selections: (Cypher.With | Cypher.Match)[] = [];
+        const subqueries: Cypher.Clause[] = [];
+        const predicates: Cypher.Predicate[] = [];
+        const validations: Cypher.VoidProcedure[] = [];
+        for (const authFilter of this.authFilters) {
+            const extraSelections = authFilter.getSelection(context);
+            const authSubqueries = authFilter.getSubqueries(context);
+            // const authPredicate = authFilter.getPredicate(context);
+            const validation = authFilter.getValidation(context);
+
+            if (extraSelections) {
+                selections.push(...extraSelections);
+            }
+            if (authSubqueries) {
+                subqueries.push(...authSubqueries);
+            }
+            // if (authPredicate) {
+            //     predicates.push(authPredicate);
+            // }
+            if (validation) {
+                validations.push(validation);
+            }
+        }
+        return { selections, subqueries, predicates, validations };
     }
 }
