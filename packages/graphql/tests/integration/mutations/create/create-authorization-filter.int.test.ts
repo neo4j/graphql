@@ -105,7 +105,7 @@ describe("create with authorization", () => {
         await testHelper.close();
     });
 
-    test("create and connect with authorization filters", async () => {
+    test("create and connect with authorization filters pass", async () => {
         const id = "123";
 
         // TODO: add something with filters

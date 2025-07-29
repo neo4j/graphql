@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { asArray } from "@graphql-tools/utils";
 import type Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
 import type { ResolveTree } from "graphql-parse-resolve-info";
@@ -25,6 +24,7 @@ import type { Node } from "../classes";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+import { asArray } from "../utils/utils";
 import { isUnwindCreateSupported } from "./queryAST/factory/parsers/is-unwind-create-supported";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 import { CallbackBucket } from "./queryAST/utils/callback-bucket";

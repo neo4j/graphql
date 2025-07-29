@@ -207,18 +207,6 @@ export class ConnectFactory {
         });
 
         operation.addAuthFilters(...authFilters);
-
-        // const authFilters = this.queryASTFactory.authorizationFactory.createAuthValidateRule({
-        //     entity,
-        //     authAnnotation: entity.annotations.authorization,
-        //     when: "AFTER",
-        //     operations: ["CREATE_RELATIONSHIP"],
-        //     context,
-        // });
-
-        // if (authFilters) {
-        //     operation.addAuthFilters(authFilters);
-        // }
     }
 
     private getInputEdge(inputItem: Record<string, any>, relationship: RelationshipAdapter): Record<string, any> {
