@@ -18,8 +18,8 @@
  */
 
 import { GraphQLError } from "graphql";
-import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../../utils/tests-helper";
+import type { UniqueType } from "../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../../utils/tests-helper";
 
 describe("create interface with authorization validate", () => {
     const testHelper = new TestHelper();
@@ -34,15 +34,17 @@ describe("create interface with authorization validate", () => {
         Comment = testHelper.createUniqueType("Comment");
 
         const typeDefs = /* GraphQL */ `
-            union Content = ${Post} | ${Comment}
+            interface Content {
+                title: String!
+            }
 
-            type ${Post} @node {
+            type ${Post} implements Content @node {
                 title: String!
                 creatorId: ID!
                 creator: [${User}!]! @relationship(type: "HAS_CONTENT", direction: IN, properties: "CreatedAt")
             }
 
-            type ${Comment} @node {
+            type ${Comment} implements Content @node {
                 title: String!
                 episodes: Int
                 creator: [${User}!]! @relationship(type: "HAS_CONTENT", direction: IN, properties: "CreatedAt")
@@ -92,7 +94,7 @@ describe("create interface with authorization validate", () => {
                         {
                             id: $id
                             name: "Marvin"
-                            content: { ${Post}: {create: { node: { title: "Doors are evil", creatorId: $id } } } }
+                            content: { create: [{ node: { ${Post}: { title: "Doors are evil", creatorId: $id } } }] }
                         }
                     ]
                 ) {
@@ -144,7 +146,7 @@ describe("create interface with authorization validate", () => {
                         {
                             id: $id
                             name: "Marvin"
-                            content: { ${Post}: { create: [{ node: { title: "Doors are evil", creatorId: "another-id" }  }]} }
+                            content: { create: [{ node: { ${Post}: { title: "Doors are evil", creatorId: "another-id" } } }] }
                         }
                     ]
                 ) {
@@ -175,7 +177,7 @@ describe("create interface with authorization validate", () => {
                         {
                             id: $id
                             name: "Marvin"
-                            content: { ${Post}: { connect: { where: { node: { title: { eq: "Doors are evil" } } }} } }
+                            content: { connect: { where: { node: { title: { eq: "Doors are evil" } } }} }
                         }
                     ]
                 ) {
@@ -229,7 +231,7 @@ describe("create interface with authorization validate", () => {
                         {
                             id: $id
                             name: "Marvin"
-                            content: { ${Post}: { connect: { where: { node: { title: { eq: "Doors are evil" } } }} } }
+                            content: { connect: { where: { node: { title: { eq: "Doors are evil" } } }} }
                         }
                     ]
                 ) {
@@ -262,7 +264,7 @@ describe("create interface with authorization validate", () => {
                         {
                             id: $id
                             name: "Marvin"
-                            content: { ${Comment}: { connect: { where: { node: { title: { eq: "Doors are evil" } } }} } }
+                            content: { connect: { where: { node: { title: { eq: "Doors are evil" } } }} }
                         }
                     ]
                 ) {
