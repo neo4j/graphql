@@ -50,12 +50,6 @@ export class NeoExpectRelationship extends NeoExpect {
         expect(result).toEqual(expectation);
     }
 
-    /** Uses jest.toIncludeSameMembers matcher over the result of the type query. This checks the results are the same, regardless of order */
-    public async toIncludeSameMembers(expectation: any[]): Promise<void> {
-        const result = await this.getAll();
-        expect(result).toIncludeSameMembers(expectation);
-    }
-
     public async count(expected: number): Promise<void> {
         const count = await this.getCount();
         if (count !== expected) {
