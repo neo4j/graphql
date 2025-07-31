@@ -20,75 +20,35 @@
 import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe("create with authorization filter", () => {
+describe("create with authorization validate", () => {
     const testHelper = new TestHelper();
     let User: UniqueType;
-    let Comment: UniqueType;
     let Post: UniqueType;
     const secret = "secret";
 
     beforeEach(async () => {
         User = testHelper.createUniqueType("User");
-        Comment = testHelper.createUniqueType("Comment");
         Post = testHelper.createUniqueType("Post");
 
         const typeDefs = /* GraphQL */ `
-            interface Content {
-                id: ID
-                content: String
-                creator: [${User}!]! @declareRelationship
-            }
-
             type ${User} @node {
                 id: ID
                 name: String
-                content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
+                content: [${Post}!]! @relationship(type: "HAS_CONTENT", direction: OUT)
             }
 
-            type ${Comment} implements Content @node {
-                id: ID
-                content: String
-                creator: [${User}!]! @relationship(type: "HAS_CONTENT", direction: IN)
-            }
-
-            type ${Post} implements Content
+            type ${Post}
                 @node
                 @authorization(
-                    filter: [
-                        {
-                            operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } }
-                        }
-                    ]
+                    filter: [{ operations: [CREATE_RELATIONSHIP], where: { node: { creatorId: { eq: "$jwt.sub" } } } }]
                 ) {
-                id: ID
+                creatorId: ID
                 content: String
                 creator: [${User}!]! @relationship(type: "HAS_CONTENT", direction: IN)
             }
 
             extend type ${User}
-                @authorization(
-                    filter: [
-                        {
-                            operations: [READ, UPDATE, DELETE, CREATE_RELATIONSHIP, DELETE_RELATIONSHIP]
-                            where: { node: { id: { eq: "$jwt.sub" } } }
-                        }
-                    ]
-                )
-
-            extend type ${User} {
-                password: String!
-                    @authorization(filter: [{ operations: [READ], where: { node: { id: { eq: "$jwt.sub" } } } }])
-            }
-
-            extend type ${Post} {
-                secretKey: String!
-                    @authorization(
-                        filter: [
-                            { operations: [READ], where: { node: { creator: { some: { id: { eq: "$jwt.sub" } } } } } }
-                        ]
-                    )
-            }
+                @authorization(filter: [{ operations: [CREATE_RELATIONSHIP], where: { node: { id: { eq: "$jwt.sub" } } } }])
         `;
 
         await testHelper.initNeo4jGraphQL({
@@ -105,19 +65,23 @@ describe("create with authorization filter", () => {
         await testHelper.close();
     });
 
-    test("create and connect with authorization filters pass", async () => {
+    test("create and connect with authorization filter", async () => {
         const id = "123";
-
-        // TODO: add something with filters
         const query = /* GraphQL */ `
             mutation ($id: ID!) {
-                ${User.operations.create}(
-                    input: [
-                        { id: $id, name: "Bob", password: "password", content: { connect: { where: { node: {} } } } }
-                    ]
-                ) {
+                ${User.operations.create}(input: [{ id: $id, name: "Bob", content: {connect: {
+                    where: {
+                        node: {
+                            content: {eq: "dont panic"}
+                        }
+                    }
+                }} }]) {
                     ${User.plural} {
                         id
+                        content {
+                            creatorId,
+                            content
+                        }
                     }
                 }
             }
@@ -125,25 +89,44 @@ describe("create with authorization filter", () => {
 
         const token = testHelper.createBearerToken(secret, { sub: id });
 
+        await testHelper.executeCypher(`
+            CREATE(:${Post} {creatorId: "${id}", content: "dont panic"})
+            CREATE(:${Post} {creatorId: "another-id", content: "dont panic"})
+            `);
         const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
             variableValues: { id },
         });
 
         expect(gqlResult.errors).toBeFalsy();
+
         expect(gqlResult.data).toEqual({
             [User.operations.create]: {
-                [User.plural]: [{ id }],
+                [User.plural]: [
+                    {
+                        id,
+                        content: [
+                            {
+                                creatorId: id,
+                                content: "dont panic",
+                            },
+                        ],
+                    },
+                ],
             },
         });
 
-        const reFind = await testHelper.executeCypher(
-            `
-              MATCH (m:${User} {id: $id})
-              RETURN m
-            `,
-            { id }
-        );
-
-        expect(reFind.records[0]?.toObject().m.properties).toMatchObject({ id });
+        await testHelper.expectRelationship(User, Post, "HAS_CONTENT").toEqual([
+            {
+                from: {
+                    id,
+                    name: "Bob",
+                },
+                to: {
+                    creatorId: id,
+                    content: "dont panic",
+                },
+                relationship: {},
+            },
+        ]);
     });
 });
