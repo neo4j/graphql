@@ -18,10 +18,10 @@
  */
 
 import { GraphQLError } from "graphql";
-import type { UniqueType } from "../../../utils/graphql-types";
-import { TestHelper } from "../../../utils/tests-helper";
+import type { UniqueType } from "../../../../../utils/graphql-types";
+import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe("create with authorization", () => {
+describe("create with authorization validate", () => {
     const testHelper = new TestHelper();
     let User: UniqueType;
     let Post: UniqueType;
@@ -95,7 +95,7 @@ describe("create with authorization", () => {
             },
         });
 
-        await testHelper.expect(User).toEqual([{ id, name: "Bob" }]);
+        await testHelper.expectNode(User).toEqual([{ id, name: "Bob" }]);
     });
 
     test("create with authorization validation fails", async () => {
@@ -119,7 +119,7 @@ describe("create with authorization", () => {
         expect(gqlResult.errors?.[0]?.message).toBe("Forbidden");
         expect(gqlResult.errors?.[0]).toBeInstanceOf(GraphQLError);
 
-        await testHelper.expect(User).toNotExist();
+        await testHelper.expectNode(User).toNotExist();
     });
 
     test("nested create with authorization validation pass", async () => {
@@ -128,7 +128,7 @@ describe("create with authorization", () => {
             mutation ($id: ID!) {
                 ${User.operations.create}(input: [{ id: $id, name: "Bob", content: {create: {
                     node: {
-                        creatorId: ${id},
+                        creatorId: $id,
                         content: "my post"
                     }
                 }} }]) {
@@ -156,8 +156,19 @@ describe("create with authorization", () => {
             },
         });
 
-        await testHelper.expect(User).toEqual([{ id, name: "Bob" }]);
-        await testHelper.expect(Post).toEqual([{ creatorId: id, content: "my post" }]);
+        await testHelper.expectRelationship(User, Post, "HAS_CONTENT").toEqual([
+            {
+                from: {
+                    id: "123",
+                    name: "Bob",
+                },
+                to: {
+                    content: "my post",
+                    creatorId: "123",
+                },
+                relationship: {},
+            },
+        ]);
     });
 
     test("nested create with authorization validation fails", async () => {
@@ -186,8 +197,8 @@ describe("create with authorization", () => {
         expect(gqlResult.errors?.[0]?.message).toBe("Forbidden");
         expect(gqlResult.errors?.[0]).toBeInstanceOf(GraphQLError);
 
-        await testHelper.expect(User).toNotExist();
-        await testHelper.expect(Post).toNotExist();
+        await testHelper.expectNode(User).toNotExist();
+        await testHelper.expectNode(Post).toNotExist();
     });
 
     test("create and connect with authorization validation pass", async () => {
@@ -237,17 +248,7 @@ describe("create with authorization", () => {
             },
         });
 
-        await testHelper
-            .expectCypher(
-                `MATCH(:${User} {id: "123"})-[:HAS_CONTENT]->(:${Post} {content: "Existing content"})
-                RETURN COUNT(*) as count
-                `
-            )
-            .toEqual([
-                {
-                    count: 1,
-                },
-            ]);
+        await testHelper.expectRelationship(User, Post, "HAS_CONTENT").count(1);
     });
 
     test("create and connect with authorization validation fails", async () => {
@@ -282,6 +283,6 @@ describe("create with authorization", () => {
         expect(gqlResult.errors?.[0]?.message).toBe("Forbidden");
         expect(gqlResult.errors?.[0]).toBeInstanceOf(GraphQLError);
 
-        await testHelper.expect(User).toNotExist();
+        await testHelper.expectNode(User).toNotExist();
     });
 });
