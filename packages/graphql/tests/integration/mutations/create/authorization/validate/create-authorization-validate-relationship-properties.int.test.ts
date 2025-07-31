@@ -21,7 +21,7 @@ import { GraphQLError } from "graphql";
 import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../../utils/tests-helper";
 
-describe("create with authorization validate", () => {
+describe("create with authorization validate on relationship properties", () => {
     const testHelper = new TestHelper();
     let User: UniqueType;
     let Post: UniqueType;
@@ -33,23 +33,22 @@ describe("create with authorization validate", () => {
 
         const typeDefs = /* GraphQL */ `
             type ${User} @node {
-                id: ID
                 name: String
-                content: [${Post}!]! @relationship(type: "HAS_CONTENT", direction: OUT)
+                content: [${Post}!]! @relationship(type: "HAS_CONTENT", direction: OUT, properties: "HasContent")
             }
 
             type ${Post}
                 @node
                 @authorization(
-                    validate: [{ operations: [CREATE, CREATE_RELATIONSHIP], where: { node: { creatorId: { eq: "$jwt.sub" } } } }]
+                    validate: [{ operations: [CREATE, CREATE_RELATIONSHIP], where: { node: { creatorConnection: { all: { edge: { creatorId: { eq: "$jwt.sub" } } } } } }, when: [AFTER]}]
                 ) {
-                creatorId: ID
                 content: String
-                creator: [${User}!]! @relationship(type: "HAS_CONTENT", direction: IN)
+                creator: [${User}!]! @relationship(type: "HAS_CONTENT", direction: IN, properties: "HasContent")
             }
 
-            extend type ${User}
-                @authorization(validate: [{ operations: [CREATE, CREATE_RELATIONSHIP], where: { node: { id: { eq: "$jwt.sub" } } } }])
+            type HasContent @relationshipProperties {
+                creatorId: ID
+            }
         `;
 
         await testHelper.initNeo4jGraphQL({
@@ -66,74 +65,20 @@ describe("create with authorization validate", () => {
         await testHelper.close();
     });
 
-    test("create with authorization validation pass", async () => {
+    test("nested create with authorization validation pass on relationship properties", async () => {
         const id = "123";
         const query = /* GraphQL */ `
             mutation ($id: ID!) {
-                ${User.operations.create}(input: [{ id: $id, name: "Bob" }]) {
-                    ${User.plural} {
-                        id
-                    }
-                }
-            }
-        `;
-
-        const token = testHelper.createBearerToken(secret, { sub: id });
-
-        const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
-            variableValues: { id },
-        });
-        expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult.data).toEqual({
-            [User.operations.create]: {
-                [User.plural]: [
-                    {
-                        id,
-                    },
-                ],
-            },
-        });
-
-        await testHelper.expectNode(User).toEqual([{ id, name: "Bob" }]);
-    });
-
-    test("create with authorization validation fails", async () => {
-        const id = "123";
-        const query = /* GraphQL */ `
-            mutation {
-                ${User.operations.create}(input: [{ id: "another-id", name: "Bob" }]) {
-                        ${User.plural} {
-                        id
-                    }
-                }
-            }
-        `;
-
-        const token = testHelper.createBearerToken(secret, { sub: id });
-
-        const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
-            variableValues: { id },
-        });
-
-        expect(gqlResult.errors?.[0]?.message).toBe("Forbidden");
-        expect(gqlResult.errors?.[0]).toBeInstanceOf(GraphQLError);
-
-        await testHelper.expectNode(User).toNotExist();
-    });
-
-    test("nested create with authorization validation pass", async () => {
-        const id = "123";
-        const query = /* GraphQL */ `
-            mutation ($id: ID!) {
-                ${User.operations.create}(input: [{ id: $id, name: "Bob", content: {create: {
+                ${User.operations.create}(input: [{  name: "Bob", content: {create: {
                     node: {
-                        creatorId: $id,
                         content: "my post"
+                    },
+                    edge: {
+                        creatorId: $id
                     }
                 }} }]) {
                     ${User.plural} {
-                        id
+                        name
                     }
                 }
             }
@@ -150,7 +95,7 @@ describe("create with authorization validate", () => {
             [User.operations.create]: {
                 [User.plural]: [
                     {
-                        id,
+                        name: "Bob",
                     },
                 ],
             },
@@ -159,30 +104,32 @@ describe("create with authorization validate", () => {
         await testHelper.expectRelationship(User, Post, "HAS_CONTENT").toEqual([
             {
                 from: {
-                    id: "123",
                     name: "Bob",
                 },
                 to: {
                     content: "my post",
+                },
+                relationship: {
                     creatorId: "123",
                 },
-                relationship: {},
             },
         ]);
     });
 
-    test("nested create with authorization validation fails", async () => {
+    test("nested create with authorization validation fails on relationship properties", async () => {
         const id = "123";
         const query = /* GraphQL */ `
-            mutation ($id: ID!) {
-                ${User.operations.create}(input: [{ id: $id, name: "Bob", content: {create: {
+            mutation {
+                ${User.operations.create}(input: [{ name: "Bob", content: {create: {
                     node: {
-                        creatorId: "another-id",
                         content: "my post"
+                    },
+                    edge: {
+                        creatorId: "another-id"
                     }
                 }} }]) {
                     ${User.plural} {
-                        id
+                        name
                     }
                 }
             }
@@ -190,9 +137,7 @@ describe("create with authorization validate", () => {
 
         const token = testHelper.createBearerToken(secret, { sub: id });
 
-        const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
-            variableValues: { id },
-        });
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
         expect(gqlResult.errors?.[0]?.message).toBe("Forbidden");
         expect(gqlResult.errors?.[0]).toBeInstanceOf(GraphQLError);
@@ -205,17 +150,19 @@ describe("create with authorization validate", () => {
         const id = "123";
         const query = /* GraphQL */ `
             mutation ($id: ID!) {
-                ${User.operations.create}(input: [{ id: $id, name: "Bob", content: {connect: {
+                ${User.operations.create}(input: [{ name: "Bob", content: {connect: {
                     where: {
                         node: {
-                            creatorId: {eq: "123"},
+                            content: { eq: "Existing content" }
                         }
+                    },
+                    edge: {
+                        creatorId: $id
                     }
                 }} }]) {
                     ${User.plural} {
-                        id
+                        name
                         content {
-                            creatorId,
                             content
                         }
                     }
@@ -225,7 +172,7 @@ describe("create with authorization validate", () => {
 
         const token = testHelper.createBearerToken(secret, { sub: id });
 
-        await testHelper.executeCypher(`CREATE(:${Post} {creatorId: "123", content: "Existing content"})`);
+        await testHelper.executeCypher(`CREATE(:${Post} {content: "Existing content"})`);
         const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
             variableValues: { id },
         });
@@ -236,10 +183,9 @@ describe("create with authorization validate", () => {
             [User.operations.create]: {
                 [User.plural]: [
                     {
-                        id,
+                        name: "Bob",
                         content: [
                             {
-                                creatorId: "123",
                                 content: "Existing content",
                             },
                         ],
@@ -255,17 +201,19 @@ describe("create with authorization validate", () => {
         const id = "123";
         const query = /* GraphQL */ `
             mutation ($id: ID!) {
-                ${User.operations.create}(input: [{ id: $id, name: "Bob", content: {connect: {
+                ${User.operations.create}(input: [{  name: "Bob", content: {connect: {
                     where: {
                         node: {
-                            content: {eq: "Existing content"},
+                            content: {eq: "Existing content"}
                         }
+                    },
+                    edge: {
+                        creatorId: $id
                     }
                 }} }]) {
                     ${User.plural} {
-                        id
+                        name
                         content {
-                            creatorId,
                             content
                         }
                     }
@@ -275,9 +223,9 @@ describe("create with authorization validate", () => {
 
         const token = testHelper.createBearerToken(secret, { sub: id });
 
-        await testHelper.executeCypher(`CREATE(:${Post} {creatorId: "anotherId", content: "Existing content"})`);
+        await testHelper.executeCypher(`CREATE(:${Post} { content: "Existing content"})`);
         const gqlResult = await testHelper.executeGraphQLWithToken(query, token, {
-            variableValues: { id },
+            variableValues: { id: "another-id" },
         });
 
         expect(gqlResult.errors?.[0]?.message).toBe("Forbidden");
