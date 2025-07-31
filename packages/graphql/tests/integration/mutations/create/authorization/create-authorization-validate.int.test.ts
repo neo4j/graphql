@@ -21,7 +21,7 @@ import { GraphQLError } from "graphql";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("create with authorization", () => {
+describe("create with authorization validate", () => {
     const testHelper = new TestHelper();
     let User: UniqueType;
     let Post: UniqueType;

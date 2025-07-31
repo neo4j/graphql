@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("create with authorization", () => {
+describe("create with authorization filter", () => {
     const testHelper = new TestHelper();
     let User: UniqueType;
     let Comment: UniqueType;
