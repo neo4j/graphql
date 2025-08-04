@@ -18,7 +18,7 @@
  */
 
 import type * as Cypher from "@neo4j/cypher-builder";
-import type * as neo4j from "neo4j-driver";
+import * as neo4j from "neo4j-driver";
 import { isNeoInt } from "../../../src/utils/utils";
 
 export type CypherExecute = (query: string, params: Record<string, unknown>) => Promise<neo4j.QueryResult>;
@@ -79,6 +79,21 @@ export abstract class NeoExpect {
                 throw new Error("Big Int not supported in neo-expect");
             }
             return value.toNumber();
+        }
+
+        if (
+            neo4j.isLocalDateTime(value) ||
+            neo4j.isDate(value) ||
+            neo4j.isDateTime(value) ||
+            neo4j.isDuration(value) ||
+            neo4j.isLocalTime(value) ||
+            neo4j.isPoint(value) ||
+            neo4j.isNode(value) ||
+            neo4j.isRelationship(value) ||
+            neo4j.isPath(value) ||
+            neo4j.isTime(value)
+        ) {
+            throw new Error("Type not supported in neo-expect");
         }
 
         const isObject = typeof value === "object" && !Array.isArray(value) && value !== null;
