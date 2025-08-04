@@ -29,6 +29,9 @@ import type { Neo4jEdition } from "../../src/classes/Neo4jDatabaseInfo";
 import { ADD_CYPHER_VERSION_PREFIX } from "./constants";
 import { createBearerToken } from "./create-bearer-token";
 import { UniqueType } from "./graphql-types";
+import { NeoExpectCypher } from "./neo-expect/expect-cypher";
+import { NeoExpectNode } from "./neo-expect/expect-node";
+import { NeoExpectRelationship } from "./neo-expect/expect-relationship";
 
 const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
 const DEFAULT_DB = "neo4j";
@@ -61,6 +64,23 @@ export class TestHelper {
 
     public get database(): string {
         return this.customDB ?? this._database;
+    }
+
+    /** Expectations over a Node label */
+    public expectNode(type: UniqueType): NeoExpectNode {
+        const executeFn = this.executeCypher.bind(this);
+        return new NeoExpectNode(executeFn, type);
+    }
+
+    /** Expectations over a Relationship */
+    public expectRelationship(from: UniqueType, to: UniqueType, type?: string): NeoExpectRelationship {
+        const executeFn = this.executeCypher.bind(this);
+        return new NeoExpectRelationship(executeFn, from, to, type);
+    }
+
+    public expectCypher(cypher: string, params: Record<string, unknown> = {}): NeoExpectCypher {
+        const executeFn = this.executeCypher.bind(this);
+        return new NeoExpectCypher(executeFn, cypher, params);
     }
 
     public createBearerToken(secret: string, extraData?: Record<string, any>) {
