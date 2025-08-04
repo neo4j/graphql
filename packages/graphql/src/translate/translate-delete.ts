@@ -25,6 +25,7 @@ import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-tran
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import { CallbackBucket } from "./queryAST/utils/callback-bucket";
 import { buildClause } from "./utils/build-clause";
 
 const debug = Debug(DEBUG_TRANSLATE);
@@ -45,11 +46,12 @@ function translateUsingQueryAST({
     if (!entityAdapter) {
         throw new Error("Entity not found");
     }
-    const operationsTree = operationsTreeFactory.createQueryAST({
+    const operationsTree = operationsTreeFactory.createMutationAST({
         resolveTree,
         entityAdapter,
         context,
         varName,
+        callbackBucket: new CallbackBucket(context), // Unusued, delete doesn't need callbacks
     });
     debug(operationsTree.print());
     const clause = operationsTree.build(context, varName);

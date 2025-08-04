@@ -20,7 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
 import type { Node, Relationship } from "../classes";
-import { CallbackBucket } from "../classes/CallbackBucket";
+import { CallbackBucketDeprecated } from "../classes/CallbackBucketDeprecated";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { GraphQLWhereArg, RelationField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
@@ -34,6 +34,7 @@ import { createSetRelationshipProperties } from "./create-set-relationship-prope
 import createUpdateAndParams from "./create-update-and-params";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
+import { CallbackBucket } from "./queryAST/utils/callback-bucket";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import { buildClause } from "./utils/build-clause";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
@@ -54,7 +55,7 @@ export default async function translateUpdate({
     const createInput = resolveTree.args.create;
     const deleteInput = resolveTree.args.delete;
     const varName = "this";
-    const callbackBucket: CallbackBucket = new CallbackBucket(context);
+    const callbackBucket: CallbackBucketDeprecated = new CallbackBucketDeprecated(context);
     const withVars = [varName];
 
     let matchAndWhereStr = "";
@@ -387,10 +388,11 @@ export default async function translateUpdate({
         throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
     }
 
-    const queryAST = new QueryASTFactory(context.schemaModel).createQueryAST({
+    const queryAST = new QueryASTFactory(context.schemaModel).createMutationAST({
         resolveTree,
         entityAdapter,
         context,
+        callbackBucket: new CallbackBucket(context),
     });
     const queryASTEnv = new QueryASTEnv();
 

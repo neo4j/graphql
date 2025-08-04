@@ -22,21 +22,33 @@ import type { AttributeAdapter } from "../../../../schema-model/attribute/model-
 import type { QueryASTContext } from "../QueryASTContext";
 import { InputField } from "./InputField";
 
-/** Input field from a property,
- * given an inputVariable it will generate a set operation from a property of that variable
+// TODO: this should be the default case (PropertyInputField)
+/** Input field from a parameter
+ * it will generate a set operation from param, if a Cypher.Variable or Param is passed, it will be used
+ * otherwise, the value will be wrapped in a param
  *
  * ```cypher
  * CREATE (var0:Movie)
  * SET
- *   this.id = var0.id
+ *   this.id = $param0
  * ```
  */
-export class PropertyInputField extends InputField {
-    private attribute: AttributeAdapter;
+export class ParamInputField extends InputField {
+    protected attribute: AttributeAdapter;
+    protected inputValue: unknown;
 
-    constructor({ attribute, attachedTo }: { attribute: AttributeAdapter; attachedTo: "node" | "relationship" }) {
+    constructor({
+        attribute,
+        attachedTo,
+        inputValue,
+    }: {
+        attribute: AttributeAdapter;
+        attachedTo: "node" | "relationship";
+        inputValue: unknown;
+    }) {
         super(attribute.name, attachedTo);
         this.attribute = attribute;
+        this.inputValue = inputValue;
     }
 
     public getChildren() {
@@ -45,31 +57,22 @@ export class PropertyInputField extends InputField {
 
     public getSetParams(
         queryASTContext: QueryASTContext<Cypher.Node>,
-        inputVariable?: Cypher.Variable
+        _inputVariable?: Cypher.Variable
     ): Cypher.SetParam[] {
         const target = this.getTarget(queryASTContext);
 
-        if (!inputVariable) {
-            throw new Error("Transpile Error: No input variable found");
+        let rightVariable: Cypher.Expr;
+        if (this.inputValue instanceof Cypher.Variable) {
+            rightVariable = this.inputValue;
+        } else {
+            rightVariable = new Cypher.Param(this.inputValue);
         }
-        const rightVariable = this.getVariablePath(queryASTContext, inputVariable);
 
         const leftExpr = target.property(this.attribute.databaseName);
         const rightExpr = this.coerceReference(rightVariable);
 
         const setField: Cypher.SetParam = [leftExpr, rightExpr];
         return [setField];
-    }
-
-    private getVariablePath(
-        queryASTContext: QueryASTContext<Cypher.Node>,
-        variable: Cypher.Property | Cypher.Variable
-    ): Cypher.Property | Cypher.Variable {
-        const path = this.attachedTo === "node" ? "node" : "edge";
-        if (queryASTContext.relationship) {
-            return variable.property(path).property(this.attribute.name);
-        }
-        return variable.property(this.attribute.name);
     }
 
     private coerceReference(

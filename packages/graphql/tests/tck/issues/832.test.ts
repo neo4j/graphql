@@ -84,184 +84,106 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Interaction)
-            SET this0.id = randomUUID()
-            SET this0.kind = $this0_kind
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
-            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_subjects_connect0_node
-            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
-            		}
-            	}
-            WITH this0, this0_subjects_connect0_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Person0
+            CALL {
+                CREATE (this0:Interaction)
+                SET
+                    this0.id = randomUUID(),
+                    this0.kind = $param0
+                WITH *
+                CALL (this0) {
+                    MATCH (this1:Person)
+                    WHERE this1.id IN $param1
+                    CREATE (this0)<-[this2:ACTED_IN]-(this1)
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this3:Place)
+                    WHERE this3.id IN $param2
+                    CREATE (this0)<-[this4:ACTED_IN]-(this3)
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this5:Person)
+                    WHERE this5.id IN $param3
+                    CREATE (this0)-[this6:ACTED_IN]->(this5)
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this7:Place)
+                    WHERE this7.id IN $param4
+                    CREATE (this0)-[this8:ACTED_IN]->(this7)
+                }
+                RETURN this0 AS this
+                UNION
+                CREATE (this9:Interaction)
+                SET
+                    this9.id = randomUUID(),
+                    this9.kind = $param5
+                WITH *
+                CALL (this9) {
+                    MATCH (this10:Person)
+                    WHERE this10.id IN $param6
+                    CREATE (this9)<-[this11:ACTED_IN]-(this10)
+                }
+                WITH *
+                CALL (this9) {
+                    MATCH (this12:Place)
+                    WHERE this12.id IN $param7
+                    CREATE (this9)<-[this13:ACTED_IN]-(this12)
+                }
+                WITH *
+                CALL (this9) {
+                    MATCH (this14:Person)
+                    WHERE this14.id IN $param8
+                    CREATE (this9)-[this15:ACTED_IN]->(this14)
+                }
+                WITH *
+                CALL (this9) {
+                    MATCH (this16:Place)
+                    WHERE this16.id IN $param9
+                    CREATE (this9)-[this17:ACTED_IN]->(this16)
+                }
+                RETURN this9 AS this
             }
-            CALL(*) {
-            		WITH this0
-            	OPTIONAL MATCH (this0_subjects_connect1_node:Place)
-            	WHERE this0_subjects_connect1_node.id IN $this0_subjects_connect1_node_param0
-            	CALL(*) {
-            		WITH collect(this0_subjects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_subjects_connect1_node
-            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
-            		}
-            	}
-            WITH this0, this0_subjects_connect1_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Place1
+            WITH this
+            CALL (this) {
+                RETURN this { .id } AS var18
             }
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_objects_connect0_node:Person)
-            	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_objects_connect0_node
-            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
-            		}
-            	}
-            WITH this0, this0_objects_connect0_node
-            	RETURN count(*) AS connect_this0_objects_connect_Person0
-            }
-            CALL(*) {
-            		WITH this0
-            	OPTIONAL MATCH (this0_objects_connect1_node:Place)
-            	WHERE this0_objects_connect1_node.id IN $this0_objects_connect1_node_param0
-            	CALL(*) {
-            		WITH collect(this0_objects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_objects_connect1_node
-            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
-            		}
-            	}
-            WITH this0, this0_objects_connect1_node
-            	RETURN count(*) AS connect_this0_objects_connect_Place1
-            }
-            RETURN this0
-            }
-            CALL(*) {
-            CREATE (this1:Interaction)
-            SET this1.id = randomUUID()
-            SET this1.kind = $this1_kind
-            WITH *
-            CALL(*) {
-            	WITH this1
-            	OPTIONAL MATCH (this1_subjects_connect0_node:Person)
-            	WHERE this1_subjects_connect0_node.id IN $this1_subjects_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this1_subjects_connect0_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this1
-            			UNWIND connectedNodes as this1_subjects_connect0_node
-            			CREATE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
-            		}
-            	}
-            WITH this1, this1_subjects_connect0_node
-            	RETURN count(*) AS connect_this1_subjects_connect_Person0
-            }
-            CALL(*) {
-            		WITH this1
-            	OPTIONAL MATCH (this1_subjects_connect1_node:Place)
-            	WHERE this1_subjects_connect1_node.id IN $this1_subjects_connect1_node_param0
-            	CALL(*) {
-            		WITH collect(this1_subjects_connect1_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this1
-            			UNWIND connectedNodes as this1_subjects_connect1_node
-            			CREATE (this1)<-[:ACTED_IN]-(this1_subjects_connect1_node)
-            		}
-            	}
-            WITH this1, this1_subjects_connect1_node
-            	RETURN count(*) AS connect_this1_subjects_connect_Place1
-            }
-            WITH *
-            CALL(*) {
-            	WITH this1
-            	OPTIONAL MATCH (this1_objects_connect0_node:Person)
-            	WHERE this1_objects_connect0_node.id IN $this1_objects_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this1_objects_connect0_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this1
-            			UNWIND connectedNodes as this1_objects_connect0_node
-            			CREATE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
-            		}
-            	}
-            WITH this1, this1_objects_connect0_node
-            	RETURN count(*) AS connect_this1_objects_connect_Person0
-            }
-            CALL(*) {
-            		WITH this1
-            	OPTIONAL MATCH (this1_objects_connect1_node:Place)
-            	WHERE this1_objects_connect1_node.id IN $this1_objects_connect1_node_param0
-            	CALL(*) {
-            		WITH collect(this1_objects_connect1_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this1
-            			UNWIND connectedNodes as this1_objects_connect1_node
-            			CREATE (this1)-[:ACTED_IN]->(this1_objects_connect1_node)
-            		}
-            	}
-            WITH this1, this1_objects_connect1_node
-            	RETURN count(*) AS connect_this1_objects_connect_Place1
-            }
-            RETURN this1
-            }
-            CALL (this0) {
-                RETURN this0 { .id } AS create_var0
-            }
-            CALL (this1) {
-                RETURN this1 { .id } AS create_var1
-            }
-            RETURN [create_var0, create_var1] AS data"
+            RETURN collect(var18) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_kind\\": \\"PARENT_OF\\",
-                \\"this0_subjects_connect0_node_param0\\": [
+                \\"param0\\": \\"PARENT_OF\\",
+                \\"param1\\": [
                     \\"adam\\",
                     \\"eve\\"
                 ],
-                \\"this0_subjects_connect1_node_param0\\": [
+                \\"param2\\": [
                     \\"adam\\",
                     \\"eve\\"
                 ],
-                \\"this0_objects_connect0_node_param0\\": [
+                \\"param3\\": [
                     \\"cain\\"
                 ],
-                \\"this0_objects_connect1_node_param0\\": [
+                \\"param4\\": [
                     \\"cain\\"
                 ],
-                \\"this1_kind\\": \\"PARENT_OF\\",
-                \\"this1_subjects_connect0_node_param0\\": [
+                \\"param5\\": \\"PARENT_OF\\",
+                \\"param6\\": [
                     \\"adam\\",
                     \\"eve\\"
                 ],
-                \\"this1_subjects_connect1_node_param0\\": [
+                \\"param7\\": [
                     \\"adam\\",
                     \\"eve\\"
                 ],
-                \\"this1_objects_connect0_node_param0\\": [
+                \\"param8\\": [
                     \\"abel\\"
                 ],
-                \\"this1_objects_connect1_node_param0\\": [
+                \\"param9\\": [
                     \\"abel\\"
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -292,98 +214,61 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Interaction)
-            SET this0.id = randomUUID()
-            SET this0.kind = $this0_kind
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
-            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_subjects_connect0_node
-            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
-            		}
-            	}
-            WITH this0, this0_subjects_connect0_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Person0
+            CALL {
+                CREATE (this0:Interaction)
+                SET
+                    this0.id = randomUUID(),
+                    this0.kind = $param0
+                WITH *
+                CALL (this0) {
+                    MATCH (this1:Person)
+                    WHERE this1.id IN $param1
+                    CREATE (this0)<-[this2:ACTED_IN]-(this1)
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this3:Place)
+                    WHERE this3.id IN $param2
+                    CREATE (this0)<-[this4:ACTED_IN]-(this3)
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this5:Person)
+                    WHERE this5.id IN $param3
+                    CREATE (this0)-[this6:ACTED_IN]->(this5)
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this7:Place)
+                    WHERE this7.id IN $param4
+                    CREATE (this0)-[this8:ACTED_IN]->(this7)
+                }
+                RETURN this0 AS this
             }
-            CALL(*) {
-            		WITH this0
-            	OPTIONAL MATCH (this0_subjects_connect1_node:Place)
-            	WHERE this0_subjects_connect1_node.id IN $this0_subjects_connect1_node_param0
-            	CALL(*) {
-            		WITH collect(this0_subjects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_subjects_connect1_node
-            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
-            		}
-            	}
-            WITH this0, this0_subjects_connect1_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Place1
+            WITH this
+            CALL (this) {
+                RETURN this { .id } AS var9
             }
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_objects_connect0_node:Person)
-            	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_objects_connect0_node
-            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
-            		}
-            	}
-            WITH this0, this0_objects_connect0_node
-            	RETURN count(*) AS connect_this0_objects_connect_Person0
-            }
-            CALL(*) {
-            		WITH this0
-            	OPTIONAL MATCH (this0_objects_connect1_node:Place)
-            	WHERE this0_objects_connect1_node.id IN $this0_objects_connect1_node_param0
-            	CALL(*) {
-            		WITH collect(this0_objects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_objects_connect1_node
-            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
-            		}
-            	}
-            WITH this0, this0_objects_connect1_node
-            	RETURN count(*) AS connect_this0_objects_connect_Place1
-            }
-            RETURN this0
-            }
-            CALL (this0) {
-                RETURN this0 { .id } AS create_var0
-            }
-            RETURN [create_var0] AS data"
+            RETURN collect(var9) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_kind\\": \\"PARENT_OF\\",
-                \\"this0_subjects_connect0_node_param0\\": [
+                \\"param0\\": \\"PARENT_OF\\",
+                \\"param1\\": [
                     \\"adam\\",
                     \\"eve\\"
                 ],
-                \\"this0_subjects_connect1_node_param0\\": [
+                \\"param2\\": [
                     \\"adam\\",
                     \\"eve\\"
                 ],
-                \\"this0_objects_connect0_node_param0\\": [
+                \\"param3\\": [
                     \\"cain\\"
                 ],
-                \\"this0_objects_connect1_node_param0\\": [
+                \\"param4\\": [
                     \\"cain\\"
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -414,98 +299,61 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Interaction)
-            SET this0.id = randomUUID()
-            SET this0.kind = $this0_kind
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
-            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_subjects_connect0_node
-            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
-            		}
-            	}
-            WITH this0, this0_subjects_connect0_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Person0
+            CALL {
+                CREATE (this0:Interaction)
+                SET
+                    this0.id = randomUUID(),
+                    this0.kind = $param0
+                WITH *
+                CALL (this0) {
+                    MATCH (this1:Person)
+                    WHERE this1.id IN $param1
+                    CREATE (this0)<-[this2:ACTED_IN]-(this1)
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this3:Place)
+                    WHERE this3.id IN $param2
+                    CREATE (this0)<-[this4:ACTED_IN]-(this3)
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this5:Person)
+                    WHERE this5.id IN $param3
+                    CREATE (this0)-[this6:ACTED_IN]->(this5)
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this7:Place)
+                    WHERE this7.id IN $param4
+                    CREATE (this0)-[this8:ACTED_IN]->(this7)
+                }
+                RETURN this0 AS this
             }
-            CALL(*) {
-            		WITH this0
-            	OPTIONAL MATCH (this0_subjects_connect1_node:Place)
-            	WHERE this0_subjects_connect1_node.id IN $this0_subjects_connect1_node_param0
-            	CALL(*) {
-            		WITH collect(this0_subjects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_subjects_connect1_node
-            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
-            		}
-            	}
-            WITH this0, this0_subjects_connect1_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Place1
+            WITH this
+            CALL (this) {
+                RETURN this { .id } AS var9
             }
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_objects_connect0_node:Person)
-            	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_objects_connect0_node
-            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
-            		}
-            	}
-            WITH this0, this0_objects_connect0_node
-            	RETURN count(*) AS connect_this0_objects_connect_Person0
-            }
-            CALL(*) {
-            		WITH this0
-            	OPTIONAL MATCH (this0_objects_connect1_node:Place)
-            	WHERE this0_objects_connect1_node.id IN $this0_objects_connect1_node_param0
-            	CALL(*) {
-            		WITH collect(this0_objects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_objects_connect1_node
-            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
-            		}
-            	}
-            WITH this0, this0_objects_connect1_node
-            	RETURN count(*) AS connect_this0_objects_connect_Place1
-            }
-            RETURN this0
-            }
-            CALL (this0) {
-                RETURN this0 { .id } AS create_var0
-            }
-            RETURN [create_var0] AS data"
+            RETURN collect(var9) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_kind\\": \\"PARENT_OF\\",
-                \\"this0_subjects_connect0_node_param0\\": [
+                \\"param0\\": \\"PARENT_OF\\",
+                \\"param1\\": [
                     \\"adam\\",
                     \\"eve\\"
                 ],
-                \\"this0_subjects_connect1_node_param0\\": [
+                \\"param2\\": [
                     \\"adam\\",
                     \\"eve\\"
                 ],
-                \\"this0_objects_connect0_node_param0\\": [
+                \\"param3\\": [
                     \\"abel\\"
                 ],
-                \\"this0_objects_connect1_node_param0\\": [
+                \\"param4\\": [
                     \\"abel\\"
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -547,244 +395,136 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Interaction)
-            SET this0.id = randomUUID()
-            SET this0.kind = $this0_kind
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
-            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_subjects_connect0_node
-            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
-            		}
-            	}
-            WITH this0, this0_subjects_connect0_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Person0
-            }
-            CALL(*) {
-            		WITH this0
-            	OPTIONAL MATCH (this0_subjects_connect1_node:Place)
-            	WHERE this0_subjects_connect1_node.id IN $this0_subjects_connect1_node_param0
-            	CALL(*) {
-            		WITH collect(this0_subjects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_subjects_connect1_node
-            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
-            		}
-            	}
-            WITH this0, this0_subjects_connect1_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Place1
-            }
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_objects_connect0_node:Person)
-            	WHERE this0_objects_connect0_node.id IN $this0_objects_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_objects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_objects_connect0_node
-            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect0_node)
-            		}
-            	}
-            WITH this0, this0_objects_connect0_node
-            	RETURN count(*) AS connect_this0_objects_connect_Person0
-            }
-            CALL(*) {
-            		WITH this0
-            	OPTIONAL MATCH (this0_objects_connect1_node:Place)
-            	WHERE this0_objects_connect1_node.id IN $this0_objects_connect1_node_param0
-            	CALL(*) {
-            		WITH collect(this0_objects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_objects_connect1_node
-            			CREATE (this0)-[:ACTED_IN]->(this0_objects_connect1_node)
-            		}
-            	}
-            WITH this0, this0_objects_connect1_node
-            	RETURN count(*) AS connect_this0_objects_connect_Place1
-            }
-            RETURN this0
-            }
-            CALL(*) {
-            CREATE (this1:Interaction)
-            SET this1.id = randomUUID()
-            SET this1.kind = $this1_kind
-            WITH *
-            CALL(*) {
-            	WITH this1
-            	OPTIONAL MATCH (this1_subjects_connect0_node:Person)
-            	WHERE this1_subjects_connect0_node.id IN $this1_subjects_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this1_subjects_connect0_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this1
-            			UNWIND connectedNodes as this1_subjects_connect0_node
-            			CREATE (this1)<-[:ACTED_IN]-(this1_subjects_connect0_node)
-            		}
-            	}
-            WITH this1, this1_subjects_connect0_node
-            	RETURN count(*) AS connect_this1_subjects_connect_Person0
-            }
-            CALL(*) {
-            		WITH this1
-            	OPTIONAL MATCH (this1_subjects_connect1_node:Place)
-            	WHERE this1_subjects_connect1_node.id IN $this1_subjects_connect1_node_param0
-            	CALL(*) {
-            		WITH collect(this1_subjects_connect1_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this1
-            			UNWIND connectedNodes as this1_subjects_connect1_node
-            			CREATE (this1)<-[:ACTED_IN]-(this1_subjects_connect1_node)
-            		}
-            	}
-            WITH this1, this1_subjects_connect1_node
-            	RETURN count(*) AS connect_this1_subjects_connect_Place1
-            }
-            WITH *
-            CALL(*) {
-            	WITH this1
-            	OPTIONAL MATCH (this1_objects_connect0_node:Person)
-            	WHERE this1_objects_connect0_node.id IN $this1_objects_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this1_objects_connect0_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this1
-            			UNWIND connectedNodes as this1_objects_connect0_node
-            			CREATE (this1)-[:ACTED_IN]->(this1_objects_connect0_node)
-            		}
-            	}
-            WITH this1, this1_objects_connect0_node
-            	RETURN count(*) AS connect_this1_objects_connect_Person0
-            }
-            CALL(*) {
-            		WITH this1
-            	OPTIONAL MATCH (this1_objects_connect1_node:Place)
-            	WHERE this1_objects_connect1_node.id IN $this1_objects_connect1_node_param0
-            	CALL(*) {
-            		WITH collect(this1_objects_connect1_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this1
-            			UNWIND connectedNodes as this1_objects_connect1_node
-            			CREATE (this1)-[:ACTED_IN]->(this1_objects_connect1_node)
-            		}
-            	}
-            WITH this1, this1_objects_connect1_node
-            	RETURN count(*) AS connect_this1_objects_connect_Place1
-            }
-            RETURN this1
-            }
-            CALL (this0) {
+            CALL {
+                CREATE (this0:Interaction)
+                SET
+                    this0.id = randomUUID(),
+                    this0.kind = $param0
+                WITH *
                 CALL (this0) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Person)
-                        WITH create_this1 { .id, __resolveType: \\"Person\\", __id: id(create_this1) } AS create_var2
-                        RETURN create_var2
-                        UNION
-                        WITH *
-                        MATCH (this0)<-[create_this3:ACTED_IN]-(create_this4:Place)
-                        WITH create_this4 { .id, __resolveType: \\"Place\\", __id: id(create_this4) } AS create_var2
-                        RETURN create_var2
-                    }
-                    WITH create_var2
-                    RETURN collect(create_var2) AS create_var2
+                    MATCH (this1:Person)
+                    WHERE this1.id IN $param1
+                    CREATE (this0)<-[this2:ACTED_IN]-(this1)
                 }
+                WITH *
                 CALL (this0) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this0)-[create_this5:ACTED_IN]->(create_this6:Person)
-                        WITH create_this6 { .id, __resolveType: \\"Person\\", __id: id(create_this6) } AS create_var7
-                        RETURN create_var7
-                        UNION
-                        WITH *
-                        MATCH (this0)-[create_this8:ACTED_IN]->(create_this9:Place)
-                        WITH create_this9 { .id, __resolveType: \\"Place\\", __id: id(create_this9) } AS create_var7
-                        RETURN create_var7
-                    }
-                    WITH create_var7
-                    RETURN collect(create_var7) AS create_var7
+                    MATCH (this3:Place)
+                    WHERE this3.id IN $param2
+                    CREATE (this0)<-[this4:ACTED_IN]-(this3)
                 }
-                RETURN this0 { .id, subjects: create_var2, objects: create_var7 } AS create_var10
+                WITH *
+                CALL (this0) {
+                    MATCH (this5:Person)
+                    WHERE this5.id IN $param3
+                    CREATE (this0)-[this6:ACTED_IN]->(this5)
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this7:Place)
+                    WHERE this7.id IN $param4
+                    CREATE (this0)-[this8:ACTED_IN]->(this7)
+                }
+                RETURN this0 AS this
+                UNION
+                CREATE (this9:Interaction)
+                SET
+                    this9.id = randomUUID(),
+                    this9.kind = $param5
+                WITH *
+                CALL (this9) {
+                    MATCH (this10:Person)
+                    WHERE this10.id IN $param6
+                    CREATE (this9)<-[this11:ACTED_IN]-(this10)
+                }
+                WITH *
+                CALL (this9) {
+                    MATCH (this12:Place)
+                    WHERE this12.id IN $param7
+                    CREATE (this9)<-[this13:ACTED_IN]-(this12)
+                }
+                WITH *
+                CALL (this9) {
+                    MATCH (this14:Person)
+                    WHERE this14.id IN $param8
+                    CREATE (this9)-[this15:ACTED_IN]->(this14)
+                }
+                WITH *
+                CALL (this9) {
+                    MATCH (this16:Place)
+                    WHERE this16.id IN $param9
+                    CREATE (this9)-[this17:ACTED_IN]->(this16)
+                }
+                RETURN this9 AS this
             }
-            CALL (this1) {
-                CALL (this1) {
+            WITH this
+            CALL (this) {
+                CALL (this) {
                     CALL (*) {
                         WITH *
-                        MATCH (this1)<-[create_this11:ACTED_IN]-(create_this12:Person)
-                        WITH create_this12 { .id, __resolveType: \\"Person\\", __id: id(create_this12) } AS create_var13
-                        RETURN create_var13
+                        MATCH (this)<-[this18:ACTED_IN]-(this19:Person)
+                        WITH this19 { .id, __resolveType: \\"Person\\", __id: id(this19) } AS var20
+                        RETURN var20
                         UNION
                         WITH *
-                        MATCH (this1)<-[create_this14:ACTED_IN]-(create_this15:Place)
-                        WITH create_this15 { .id, __resolveType: \\"Place\\", __id: id(create_this15) } AS create_var13
-                        RETURN create_var13
+                        MATCH (this)<-[this21:ACTED_IN]-(this22:Place)
+                        WITH this22 { .id, __resolveType: \\"Place\\", __id: id(this22) } AS var20
+                        RETURN var20
                     }
-                    WITH create_var13
-                    RETURN collect(create_var13) AS create_var13
+                    WITH var20
+                    RETURN collect(var20) AS var20
                 }
-                CALL (this1) {
+                CALL (this) {
                     CALL (*) {
                         WITH *
-                        MATCH (this1)-[create_this16:ACTED_IN]->(create_this17:Person)
-                        WITH create_this17 { .id, __resolveType: \\"Person\\", __id: id(create_this17) } AS create_var18
-                        RETURN create_var18
+                        MATCH (this)-[this23:ACTED_IN]->(this24:Person)
+                        WITH this24 { .id, __resolveType: \\"Person\\", __id: id(this24) } AS var25
+                        RETURN var25
                         UNION
                         WITH *
-                        MATCH (this1)-[create_this19:ACTED_IN]->(create_this20:Place)
-                        WITH create_this20 { .id, __resolveType: \\"Place\\", __id: id(create_this20) } AS create_var18
-                        RETURN create_var18
+                        MATCH (this)-[this26:ACTED_IN]->(this27:Place)
+                        WITH this27 { .id, __resolveType: \\"Place\\", __id: id(this27) } AS var25
+                        RETURN var25
                     }
-                    WITH create_var18
-                    RETURN collect(create_var18) AS create_var18
+                    WITH var25
+                    RETURN collect(var25) AS var25
                 }
-                RETURN this1 { .id, subjects: create_var13, objects: create_var18 } AS create_var21
+                RETURN this { .id, subjects: var20, objects: var25 } AS var28
             }
-            RETURN [create_var10, create_var21] AS data"
+            RETURN collect(var28) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_kind\\": \\"PARENT_OF\\",
-                \\"this0_subjects_connect0_node_param0\\": [
+                \\"param0\\": \\"PARENT_OF\\",
+                \\"param1\\": [
                     \\"adam\\",
                     \\"eve\\"
                 ],
-                \\"this0_subjects_connect1_node_param0\\": [
+                \\"param2\\": [
                     \\"adam\\",
                     \\"eve\\"
                 ],
-                \\"this0_objects_connect0_node_param0\\": [
+                \\"param3\\": [
                     \\"cain\\"
                 ],
-                \\"this0_objects_connect1_node_param0\\": [
+                \\"param4\\": [
                     \\"cain\\"
                 ],
-                \\"this1_kind\\": \\"PARENT_OF\\",
-                \\"this1_subjects_connect0_node_param0\\": [
+                \\"param5\\": \\"PARENT_OF\\",
+                \\"param6\\": [
                     \\"adam\\",
                     \\"eve\\"
                 ],
-                \\"this1_subjects_connect1_node_param0\\": [
+                \\"param7\\": [
                     \\"adam\\",
                     \\"eve\\"
                 ],
-                \\"this1_objects_connect0_node_param0\\": [
+                \\"param8\\": [
                     \\"abel\\"
                 ],
-                \\"this1_objects_connect1_node_param0\\": [
+                \\"param9\\": [
                     \\"abel\\"
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -815,71 +555,50 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Interaction)
-            SET this0.id = randomUUID()
-            SET this0.kind = $this0_kind
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_subjects_connect0_node:Person)
-            	WHERE this0_subjects_connect0_node.id IN $this0_subjects_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_subjects_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_subjects_connect0_node
-            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect0_node)
-            		}
-            	}
-            WITH this0, this0_subjects_connect0_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Person0
+            CALL {
+                CREATE (this0:Interaction)
+                SET
+                    this0.id = randomUUID(),
+                    this0.kind = $param0
+                WITH *
+                CALL (this0) {
+                    MATCH (this1:Person)
+                    WHERE this1.id IN $param1
+                    CREATE (this0)<-[this2:ACTED_IN]-(this1)
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this3:Place)
+                    WHERE this3.id IN $param2
+                    CREATE (this0)<-[this4:ACTED_IN]-(this3)
+                }
+                RETURN this0 AS this
+                UNION
+                CREATE (this5:Interaction)
+                SET
+                    this5.id = randomUUID(),
+                    this5.kind = $param3
+                RETURN this5 AS this
             }
-            CALL(*) {
-            		WITH this0
-            	OPTIONAL MATCH (this0_subjects_connect1_node:Place)
-            	WHERE this0_subjects_connect1_node.id IN $this0_subjects_connect1_node_param0
-            	CALL(*) {
-            		WITH collect(this0_subjects_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_subjects_connect1_node
-            			CREATE (this0)<-[:ACTED_IN]-(this0_subjects_connect1_node)
-            		}
-            	}
-            WITH this0, this0_subjects_connect1_node
-            	RETURN count(*) AS connect_this0_subjects_connect_Place1
+            WITH this
+            CALL (this) {
+                RETURN this { .id } AS var6
             }
-            RETURN this0
-            }
-            CALL(*) {
-            CREATE (this1:Interaction)
-            SET this1.id = randomUUID()
-            SET this1.kind = $this1_kind
-            RETURN this1
-            }
-            CALL (this0) {
-                RETURN this0 { .id } AS create_var0
-            }
-            CALL (this1) {
-                RETURN this1 { .id } AS create_var1
-            }
-            RETURN [create_var0, create_var1] AS data"
+            RETURN collect(var6) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_kind\\": \\"PARENT_OF\\",
-                \\"this0_subjects_connect0_node_param0\\": [
+                \\"param0\\": \\"PARENT_OF\\",
+                \\"param1\\": [
                     \\"adam\\",
                     \\"eve\\"
                 ],
-                \\"this0_subjects_connect1_node_param0\\": [
+                \\"param2\\": [
                     \\"adam\\",
                     \\"eve\\"
                 ],
-                \\"this1_kind\\": \\"PARENT_OF\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param3\\": \\"PARENT_OF\\"
             }"
         `);
     });

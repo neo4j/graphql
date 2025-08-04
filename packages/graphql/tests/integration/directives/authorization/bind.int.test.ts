@@ -41,10 +41,10 @@ describe("auth/bind", () => {
         test("should throw forbidden when creating a node with invalid bind", async () => {
             const typeDefs = `
                 type ${User} @node {
-                    id: ID
+                    id: ID 
                 }
 
-                extend type ${User} @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { id_EQ: "$jwt.sub" } } }])
+                extend type ${User}  @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { id_EQ: "$jwt.sub" } } }])
             `;
 
             const userId = generate({
@@ -248,7 +248,7 @@ describe("auth/bind", () => {
         test("should throw forbidden when creating a node when rule is not satisfied", async () => {
             const typeDefs = `
                 type ${User} @node {
-                    id: ID 
+                    id: ID
                     name: String
                 }
 

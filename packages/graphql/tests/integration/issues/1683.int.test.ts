@@ -26,7 +26,7 @@ describe("https://github.com/neo4j/graphql/issues/1683", () => {
 
     const testHelper = new TestHelper();
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         systemType = testHelper.createUniqueType("System");
         governedDataTest = testHelper.createUniqueType("GovernedData");
 
@@ -45,12 +45,12 @@ describe("https://github.com/neo4j/graphql/issues/1683", () => {
         });
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         await testHelper.close();
     });
 
     test("should return top level entity, even if no connections exist", async () => {
-        const query = `
+        const query = /* GraphQL */ `
             {
                 ${systemType.plural} {
                     code
@@ -68,7 +68,6 @@ describe("https://github.com/neo4j/graphql/issues/1683", () => {
         const cypher = `
             CREATE (s:${systemType} { code: "arthur" });
         `;
-
         await testHelper.executeCypher(cypher);
 
         const result = await testHelper.executeGraphQL(query);

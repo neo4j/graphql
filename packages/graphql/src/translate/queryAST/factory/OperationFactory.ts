@@ -42,6 +42,7 @@ import type { CompositeReadOperation } from "../ast/operations/composite/Composi
 import type { Operation } from "../ast/operations/operations";
 import type { FulltextSelection } from "../ast/selection/FulltextSelection";
 import type { VectorSelection } from "../ast/selection/VectorSelection";
+import type { CallbackBucket } from "../utils/callback-bucket";
 import { assertIsConcreteEntity, isConcreteEntity } from "../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../utils/is-interface-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
@@ -49,6 +50,7 @@ import type { AuthorizationFactory } from "./AuthorizationFactory";
 import type { FieldFactory } from "./FieldFactory";
 import type { FilterFactory } from "./FilterFactory";
 import { AggregateFactory } from "./Operations/AggregateFactory";
+import { ConnectFactory } from "./Operations/ConnectFactory";
 import { ConnectionFactory } from "./Operations/ConnectionFactory";
 import { CreateFactory } from "./Operations/CreateFactory";
 import { CustomCypherFactory } from "./Operations/CustomCypherFactory";
@@ -69,6 +71,7 @@ export class OperationsFactory {
     private sortAndPaginationFactory: SortAndPaginationFactory;
     private authorizationFactory: AuthorizationFactory;
     private createFactory: CreateFactory;
+    private connectFactory: ConnectFactory;
     private updateFactory: UpdateFactory;
     private deleteFactory: DeleteFactory;
     private fulltextFactory: FulltextFactory;
@@ -84,6 +87,7 @@ export class OperationsFactory {
         this.sortAndPaginationFactory = queryASTFactory.sortAndPaginationFactory;
         this.authorizationFactory = queryASTFactory.authorizationFactory;
         this.createFactory = new CreateFactory(queryASTFactory);
+        this.connectFactory = new ConnectFactory(queryASTFactory);
         this.updateFactory = new UpdateFactory(queryASTFactory);
         this.deleteFactory = new DeleteFactory(queryASTFactory);
         this.fulltextFactory = new FulltextFactory(queryASTFactory);
@@ -100,14 +104,12 @@ export class OperationsFactory {
         context,
         varName,
         reference,
-        resolveAsUnwind = false,
     }: {
         entity?: EntityAdapter;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         varName?: string;
         reference?: any;
-        resolveAsUnwind?: boolean;
     }): Operation {
         const operationMatch = parseTopLevelOperationField(resolveTree.name, context, entity);
         switch (operationMatch) {
@@ -165,12 +167,39 @@ export class OperationsFactory {
                     context,
                 });
             }
+            case "CUSTOM_CYPHER": {
+                return this.customCypherFactory.createTopLevelCustomCypherOperation({ entity, resolveTree, context });
+            }
+            default: {
+                throw new Error(`Unsupported top level operation: ${resolveTree.name}`);
+            }
+        }
+    }
+
+    public createTopLevelMutationOperation({
+        entity,
+        resolveTree,
+        context,
+        varName,
+        callbackBucket,
+        resolveAsUnwind = false,
+    }: {
+        entity?: EntityAdapter;
+        resolveTree: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        varName?: string;
+        callbackBucket: CallbackBucket;
+        resolveAsUnwind?: boolean;
+    }): Operation {
+        const operationMatch = parseTopLevelOperationField(resolveTree.name, context, entity);
+        switch (operationMatch) {
             case "CREATE": {
                 assertIsConcreteEntity(entity);
                 if (resolveAsUnwind) {
                     return this.createFactory.createUnwindCreateOperation(entity, resolveTree, context);
                 }
-                return this.createFactory.createCreateOperation(entity, resolveTree, context);
+
+                return this.createFactory.createCreateOperation({ entity, resolveTree, callbackBucket, context });
             }
             case "UPDATE": {
                 assertIsConcreteEntity(entity);
@@ -185,9 +214,7 @@ export class OperationsFactory {
                     varName,
                 });
             }
-            case "CUSTOM_CYPHER": {
-                return this.customCypherFactory.createTopLevelCustomCypherOperation({ entity, resolveTree, context });
-            }
+
             default: {
                 throw new Error(`Unsupported top level operation: ${resolveTree.name}`);
             }
@@ -197,6 +224,20 @@ export class OperationsFactory {
      *  Proxy methods to specialized operations factories.
      *  TODO: Refactor the following to use a generic dispatcher as done in createTopLevelOperation
      **/
+
+    public createConnectOperation(
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
+        relationship: RelationshipAdapter,
+        input: Record<string, any>[],
+        context: Neo4jGraphQLTranslationContext
+    ) {
+        if (isConcreteEntity(entity)) {
+            return this.connectFactory.createConnectOperation(entity, relationship, input, context);
+        } else {
+            return this.connectFactory.createCompositeConnectOperation(entity, relationship, input, context);
+        }
+    }
+
     public createReadOperation(arg: {
         entityOrRel: EntityAdapter | RelationshipAdapter;
         resolveTree: ResolveTree;

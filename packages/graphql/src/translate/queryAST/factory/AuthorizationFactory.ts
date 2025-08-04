@@ -52,10 +52,13 @@ type AuthValidateParams = AuthParams & {
 export class AuthorizationFactory {
     constructor(private filterFactory: AuthFilterFactory) {}
     // TODO: rename this to getProjectionAuthFilters
+    /** @param afterValidation Use it to add "AFTER" validate filters */
     public getAuthFilters({
         attributes,
+        afterValidation = false,
         ...params
     }: AuthParams & {
+        afterValidation?: boolean;
         attributes?: AttributeAdapter[];
     }): AuthorizationFilters[] {
         const authorizationFilters = this.createAuthFilterRule({
@@ -67,6 +70,16 @@ export class AuthorizationFactory {
             authAnnotation: params.entity.annotations.authorization,
             when: "BEFORE",
         });
+
+        let authorizationValidateAfter: AuthorizationFilters | undefined;
+
+        if (afterValidation) {
+            authorizationValidateAfter = this.createAuthValidateRule({
+                ...params,
+                authAnnotation: params.entity.annotations.authorization,
+                when: "AFTER",
+            });
+        }
 
         const attributeAuthFilters: (AuthorizationFilters | undefined)[] = [];
         const attributeAuthValidate: (AuthorizationFilters | undefined)[] = [];
@@ -85,6 +98,15 @@ export class AuthorizationFactory {
                         authAnnotation: attribute.annotations.authorization,
                     })
                 );
+                if (afterValidation) {
+                    attributeAuthValidate.push(
+                        this.createAuthValidateRule({
+                            ...params,
+                            when: "AFTER",
+                            authAnnotation: attribute.annotations.authorization,
+                        })
+                    );
+                }
             }
         }
 
@@ -92,15 +114,13 @@ export class AuthorizationFactory {
             authorizationFilters,
             ...attributeAuthFilters,
             authorizationValidate,
+            authorizationValidateAfter,
             ...attributeAuthValidate,
         ]);
     }
 
-    public createAuthFilterRule({
-        authAnnotation,
-        ...params
-    }: AuthFilterParams): AuthorizationFilters | undefined {
-        const filters = this.createAuthRuleFilter(params, authAnnotation?.filter ?? []);
+    public createAuthFilterRule({ authAnnotation, ...params }: AuthFilterParams): AuthorizationFilters | undefined {
+        const filters = this.createAuthRuleFilter(params, authAnnotation?.filter ?? [], "BEFORE"); // FILTERS ONLY APPLY BEFORE
         if (!filters.length) {
             return;
         }
@@ -114,7 +134,7 @@ export class AuthorizationFactory {
         ...params
     }: AuthValidateParams): AuthorizationFilters | undefined {
         const rules = authAnnotation?.validate?.filter((rule) => rule.when.includes(when));
-        const validations = this.createAuthRuleFilter(params, rules ?? []);
+        const validations = this.createAuthRuleFilter(params, rules ?? [], when);
         if (!validations.length) {
             return;
         }
@@ -123,7 +143,8 @@ export class AuthorizationFactory {
 
     private createAuthRuleFilter(
         params: AuthParams,
-        rules: BaseAuthorizationRule<AuthorizationOperation>[]
+        rules: BaseAuthorizationRule<AuthorizationOperation>[],
+        when: ValidateWhen
     ): AuthorizationRuleFilter[] {
         return rules
             .filter((rule) => rule.operations.some((operation) => params.operations.includes(operation)))
@@ -134,6 +155,7 @@ export class AuthorizationFactory {
                     requireAuthentication: rule.requireAuthentication,
                     filters: nestedFilters,
                     isAuthenticatedParam: params.context.authorization.isAuthenticatedParam,
+                    when,
                 });
             });
     }

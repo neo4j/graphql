@@ -42,8 +42,4 @@ export class IdField extends InputField {
         const setParam: Cypher.SetParam = [target.property(this.attribute.databaseName), Cypher.randomUUID()];
         return [setParam];
     }
-
-    public getSetClause(): Cypher.Clause[] {
-        return [];
-    }
 }

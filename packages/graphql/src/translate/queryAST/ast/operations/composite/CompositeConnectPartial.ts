@@ -17,5 +17,6 @@
  * limitations under the License.
  */
 
-/** Explicitly define if the Cypher version prefix should be added in the tests */
-export const ADD_CYPHER_VERSION_PREFIX = true;
+import { ConnectOperation } from "../ConnectOperation";
+
+export class CompositeConnectPartial extends ConnectOperation {}

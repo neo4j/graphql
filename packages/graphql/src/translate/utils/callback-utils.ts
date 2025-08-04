@@ -18,7 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { CallbackBucket } from "../../classes/CallbackBucket";
+import type { CallbackBucketDeprecated } from "../../classes/CallbackBucketDeprecated";
 import type { PrimitiveField } from "../../types";
 import { compileCypher } from "../../utils/compile-cypher";
 
@@ -26,7 +26,7 @@ export const addCallbackAndSetParam = (
     field: PrimitiveField,
     varName: string,
     parent: any,
-    callbackBucket: CallbackBucket,
+    callbackBucket: CallbackBucketDeprecated,
     strs: string[],
     operation: "CREATE" | "UPDATE"
 ): void => {
@@ -50,7 +50,7 @@ export const addCallbackAndSetParamCypher = (
     field: PrimitiveField,
     variable: Cypher.Variable,
     parent: any,
-    callbackBucket: CallbackBucket,
+    callbackBucket: CallbackBucketDeprecated,
     operation: "CREATE" | "UPDATE",
     node: Cypher.Node
 ): [Cypher.Property, Cypher.Raw] | [] => {

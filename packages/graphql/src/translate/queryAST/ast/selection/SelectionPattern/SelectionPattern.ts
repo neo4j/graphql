@@ -17,5 +17,19 @@
  * limitations under the License.
  */
 
-/** Explicitly define if the Cypher version prefix should be added in the tests */
-export const ADD_CYPHER_VERSION_PREFIX = true;
+import type Cypher from "@neo4j/cypher-builder";
+import type { QueryASTContext } from "../../QueryASTContext";
+import { QueryASTNode } from "../../QueryASTNode";
+
+export abstract class SelectionPattern extends QueryASTNode {
+    public getChildren(): QueryASTNode[] {
+        return [];
+    }
+
+    /** Apply selection over the given context, returns the updated context and the selection clause
+     * TODO: Improve naming */
+    public abstract apply(context: QueryASTContext): {
+        nestedContext: QueryASTContext<Cypher.Node>;
+        pattern: Cypher.Pattern;
+    };
+}

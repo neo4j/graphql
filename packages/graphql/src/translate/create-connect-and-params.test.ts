@@ -22,7 +22,7 @@ import type { Node } from "../../src/classes";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { NodeBuilder } from "../../tests/utils/builders/node-builder";
 import { SchemaModelBuilder } from "../../tests/utils/builders/schema-model-builder";
-import { CallbackBucket } from "../classes/CallbackBucket";
+import { CallbackBucketDeprecated } from "../classes/CallbackBucketDeprecated";
 import { Neo4jDatabaseInfo } from "../classes/Neo4jDatabaseInfo";
 import { RelationshipQueryDirectionOption } from "../constants";
 import { defaultNestedOperations } from "../graphql/directives/relationship";
@@ -121,7 +121,7 @@ describe("createConnectAndParams", () => {
             context,
             refNodes: [node],
             parentNode: node,
-            callbackBucket: new CallbackBucket(context),
+            callbackBucket: new CallbackBucketDeprecated(context),
             source: "CONNECT",
         });
 

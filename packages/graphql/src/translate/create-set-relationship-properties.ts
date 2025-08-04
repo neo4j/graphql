@@ -18,7 +18,7 @@
  */
 
 import { type Relationship } from "../classes";
-import type { CallbackBucket } from "../classes/CallbackBucket";
+import type { CallbackBucketDeprecated } from "../classes/CallbackBucketDeprecated";
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { assertNonAmbiguousUpdate } from "./utils/assert-non-ambiguous-update";
 import { addCallbackAndSetParam } from "./utils/callback-utils";
@@ -42,7 +42,7 @@ export function createSetRelationshipProperties({
     relationship: Relationship;
     relationshipAdapter?: RelationshipAdapter;
     operation: "CREATE" | "UPDATE";
-    callbackBucket: CallbackBucket;
+    callbackBucket: CallbackBucketDeprecated;
     parameterPrefix: string;
     parameterNotation: "." | "_";
     isUpdateOperation?: boolean;
@@ -95,7 +95,7 @@ function createSetRelationshipPropertiesForProperties({
     withVars: string[];
     relationship: Relationship;
     operation: "CREATE" | "UPDATE";
-    callbackBucket: CallbackBucket;
+    callbackBucket: CallbackBucketDeprecated;
     parameterPrefix: string;
     parameterNotation: "." | "_";
     isUpdateOperation: boolean;

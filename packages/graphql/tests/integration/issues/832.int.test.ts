@@ -32,7 +32,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         Place = testHelper.createUniqueType("Place");
         Interaction = testHelper.createUniqueType("Interaction");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             interface Entity {
                 id: String!
             }
@@ -70,7 +70,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
     });
 
     test("should not create duplicate nodes when creating multiple interactions in separate mutations", async () => {
-        const mutation0 = `
+        const mutation0 = /* GraphQL */ `
             mutation {
                 ${Interaction.operations.create}(
                     input: [
@@ -93,10 +93,11 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         `;
 
         const mutation0Result = await testHelper.executeGraphQL(mutation0);
+        expect(mutation0Result.errors).toBeFalsy();
         expect((mutation0Result.data as any)?.[Interaction.operations.create].info.nodesCreated).toBe(1);
         expect((mutation0Result.data as any)?.[Interaction.operations.create].info.relationshipsCreated).toBe(3);
 
-        const mutation1 = `
+        const mutation1 = /* GraphQL */ `
             mutation {
                 ${Interaction.operations.create}(
                     input: [
@@ -119,12 +120,13 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         `;
 
         const mutation1Result = await testHelper.executeGraphQL(mutation1);
+        expect(mutation1Result.errors).toBeFalsy();
         expect((mutation1Result.data as any)?.[Interaction.operations.create].info.nodesCreated).toBe(1);
         expect((mutation1Result.data as any)?.[Interaction.operations.create].info.relationshipsCreated).toBe(3);
     });
 
     test("should not create duplicate nodes when creating multiple interactions in one", async () => {
-        const mutation = `
+        const mutation = /* GraphQL */ `
             mutation {
                 ${Interaction.operations.create}(
                     input: [
@@ -157,7 +159,7 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
     });
 
     test("should not create duplicate nodes with no relationships following interface relationship creation", async () => {
-        const mutation = `
+        const mutation = /* GraphQL */ `
             mutation {
                 ${Interaction.operations.create}(
                     input: [

@@ -21,29 +21,29 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
-import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
-import type { OperationField } from "../fields/OperationField";
+import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { InputField } from "../input-fields/InputField";
-import { ParamInputField } from "../input-fields/ParamInputField";
 import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
+import type { ReadOperation } from "./ReadOperation";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
 
-export class CreateOperation extends MutationOperation {
+export class ConnectOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter;
-    public readonly relationship: RelationshipAdapter | undefined;
+    public readonly relationship: RelationshipAdapter;
 
+    private selectionPattern: SelectionPattern;
     protected readonly authFilters: AuthorizationFilters[] = [];
 
-    private readonly selectionPattern: SelectionPattern;
-
     // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
-    private readonly projectionOperations: OperationField[] = [];
+    public projectionOperations: ReadOperation[] = [];
 
-    private readonly inputFields: InputField[] = [];
+    public readonly inputFields: Map<string, InputField> = new Map();
+    private filters: Filter[] = [];
 
     private nestedContext: QueryASTContext | undefined;
 
@@ -53,8 +53,8 @@ export class CreateOperation extends MutationOperation {
         selectionPattern,
     }: {
         target: ConcreteEntityAdapter;
-        relationship?: RelationshipAdapter;
         selectionPattern: SelectionPattern;
+        relationship: RelationshipAdapter;
     }) {
         super();
         this.target = target;
@@ -62,33 +62,46 @@ export class CreateOperation extends MutationOperation {
         this.selectionPattern = selectionPattern;
     }
 
-    /** Prints the name of the Node */
-    public print(): string {
-        return `${super.print()} <${this.target.name}>`;
-    }
-
     public getChildren(): QueryASTNode[] {
         return filterTruthy([
             this.selectionPattern,
-            ...this.inputFields,
+            ...this.filters,
             ...this.authFilters,
+            ...this.inputFields.values(),
             ...this.projectionOperations,
         ]);
+    }
+
+    public print(): string {
+        return `${super.print()} <${this.target.name}>`;
     }
 
     public addAuthFilters(...filter: AuthorizationFilters[]) {
         this.authFilters.push(...filter);
     }
 
-    public addField(field: InputField) {
-        this.inputFields.push(field);
+    /**
+     * Get and set field methods are utilities to remove duplicate fields between separate inputs
+     * TODO: This logic should be handled in the factory.
+     */
+    public getField(key: string, attachedTo: "node" | "relationship") {
+        return this.inputFields.get(`${attachedTo}_${key}`);
     }
 
-    public addProjectionOperations(operations: OperationField[]) {
+    public addField(field: InputField, attachedTo: "node" | "relationship") {
+        if (!this.inputFields.has(field.name)) {
+            this.inputFields.set(`${attachedTo}_${field.name}`, field);
+        }
+    }
+
+    public addFilters(...filters: Filter[]): void {
+        this.filters.push(...filters);
+    }
+
+    public addProjectionOperations(operations: ReadOperation[]) {
         this.projectionOperations.push(...operations);
     }
 
-    /** Post subqueries */
     public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
         const nestedContext = this.nestedContext;
 
@@ -99,8 +112,7 @@ export class CreateOperation extends MutationOperation {
         }
 
         return [
-            ...this.getAuthorizationClauses(nestedContext),
-            ...this.inputFields.flatMap((inputField) => {
+            ...this.inputFields.values().flatMap((inputField) => {
                 return inputField.getAuthorizationSubqueries(nestedContext);
             }),
         ];
@@ -110,65 +122,70 @@ export class CreateOperation extends MutationOperation {
         if (!context.hasTarget()) {
             throw new Error("No parent node found!");
         }
-        context.env.topLevelOperationName = "CREATE";
 
         const { nestedContext } = this.selectionPattern.apply(context);
         this.nestedContext = nestedContext;
-        checkEntityAuthentication({
-            context: nestedContext.neo4jGraphQLContext,
-            entity: this.target.entity,
-            targetOperations: ["CREATE"],
-        });
-        this.inputFields.forEach((field) => {
-            if (field.attachedTo === "node" && field instanceof ParamInputField) {
-                checkEntityAuthentication({
-                    context: nestedContext.neo4jGraphQLContext,
-                    entity: this.target.entity,
-                    targetOperations: ["CREATE"],
-                    field: field.name,
-                });
-            }
-        });
 
-        const createPattern = new Cypher.Pattern(nestedContext.target, {
+        const matchPattern = new Cypher.Pattern(nestedContext.target, {
             labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
         });
 
-        const createClause = new Cypher.Create(createPattern);
+        const allFilters = [...this.authFilters, ...this.filters];
 
-        const setParams = Array.from(this.inputFields.values()).flatMap((input) => {
-            return input.getSetParams(nestedContext);
-        });
+        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, allFilters, [nestedContext.target]);
 
-        const mutationSubqueries = Array.from(this.inputFields.values()).flatMap((input) => {
-            return input.getSubqueries(nestedContext);
-        });
-
-        let mergeClause: Cypher.Merge | undefined;
-        if (this.relationship) {
-            const relVar = nestedContext.relationship;
-            if (!relVar) {
-                throw new Error(
-                    "GraphQL Error: Transpilation Error, relationship variable not available. Please contact support"
-                );
-            }
-            const relDirection = this.relationship.getCypherDirection();
-
-            const mergePattern = new Cypher.Pattern(context.target)
-                .related(relVar, { direction: relDirection, type: this.relationship.type })
-                .to(nestedContext.target);
-            mergeClause = new Cypher.Merge(mergePattern).set(...setParams);
+        let matchClause: Cypher.Clause;
+        if (filterSubqueries.length > 0) {
+            const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
+            matchClause = Cypher.utils.concat(
+                new Cypher.Match(matchPattern),
+                ...filterSubqueries,
+                new Cypher.With("*").where(predicate)
+            );
         } else {
-            createClause.set(...setParams);
+            const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
+            matchClause = new Cypher.Match(matchPattern).where(predicate);
         }
 
+        const relVar = new Cypher.Relationship();
+
+        const relDirection = this.relationship.getCypherDirection();
+
+        const connectPattern = new Cypher.Pattern(context.target)
+            .related(relVar, { direction: relDirection, type: this.relationship.type })
+            .to(nestedContext.target);
+
+        const connectContext = context.push({ target: nestedContext.target, relationship: relVar });
+
+        const connectClause = new Cypher.Create(connectPattern);
+
+        const setParams = Array.from(this.inputFields.values()).flatMap((input) => {
+            return input.getSetParams(connectContext);
+        });
+        connectClause.set(...setParams);
+
+        const mutationSubqueries = Array.from(this.inputFields.values()).flatMap((input) => {
+            return input.getSubqueries(connectContext);
+        });
+
         const clauses = Cypher.utils.concat(
-            createClause,
-            ...mutationSubqueries.map((sq) => Cypher.utils.concat(new Cypher.With("*"), sq)),
-            mergeClause
+            matchClause,
+            ...this.getAuthorizationClauses(nestedContext), // THESE ARE "BEFORE" AUTH
+            ...mutationSubqueries,
+            connectClause,
+            ...this.getAuthorizationClausesAfter(nestedContext), // THESE ARE "AFTER" AUTH
+            ...this.getProjectionClause(nestedContext)
         );
 
-        return { projectionExpr: nestedContext.target, clauses: [clauses] };
+        const callClause = new Cypher.Call(clauses, [context.target]);
+
+        return { projectionExpr: context.returnVariable, clauses: [callClause] };
+    }
+
+    private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {
+        return this.projectionOperations.map((operationField) => {
+            return Cypher.utils.concat(...operationField.transpile(context).clauses);
+        });
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
@@ -187,6 +204,21 @@ export class CreateOperation extends MutationOperation {
         }
     }
 
+    private getAuthorizationClausesAfter(context: QueryASTContext): Cypher.Clause[] {
+        const validationsAfter: Cypher.VoidProcedure[] = [];
+        for (const authFilter of this.authFilters) {
+            const validationAfter = authFilter.getValidation(context, "AFTER");
+            if (validationAfter) {
+                validationsAfter.push(validationAfter);
+            }
+        }
+
+        if (validationsAfter.length > 0) {
+            return [new Cypher.With("*"), ...validationsAfter];
+        }
+        return [];
+    }
+
     private transpileAuthClauses(context: QueryASTContext): {
         selections: (Cypher.With | Cypher.Match)[];
         subqueries: Cypher.Clause[];
@@ -200,17 +232,15 @@ export class CreateOperation extends MutationOperation {
         for (const authFilter of this.authFilters) {
             const extraSelections = authFilter.getSelection(context);
             const authSubqueries = authFilter.getSubqueries(context);
-            const authPredicate = authFilter.getPredicate(context);
-            const validation = authFilter.getValidation(context, "AFTER"); // CREATE only has AFTER auth
+            const validation = authFilter.getValidation(context, "BEFORE");
+
             if (extraSelections) {
                 selections.push(...extraSelections);
             }
             if (authSubqueries) {
                 subqueries.push(...authSubqueries);
             }
-            if (authPredicate) {
-                predicates.push(authPredicate);
-            }
+
             if (validation) {
                 validations.push(validation);
             }

@@ -22,6 +22,7 @@ import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQL
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { QueryAST } from "../ast/QueryAST";
+import type { CallbackBucket } from "../utils/callback-bucket";
 import { AuthFilterFactory } from "./AuthFilterFactory";
 import { AuthorizationFactory } from "./AuthorizationFactory";
 import { AuthorizationFactoryDeprecated } from "./AuthorizationFactoryDeprecated";
@@ -57,7 +58,6 @@ export class QueryASTFactory {
         context,
         reference,
         varName,
-        resolveAsUnwind = false,
     }: {
         resolveTree: ResolveTree;
         entityAdapter?: EntityAdapter;
@@ -67,7 +67,6 @@ export class QueryASTFactory {
         // TODO: remove this flag, the only reason exist in the first place is because the check for unwind create is done in the create resolver
         // the method isUnwindCreateSupported should be moved to the QueryASTFactory,
         // but as the normal create is still not migrated that is not possible and as this checks are expensive we need to keep this flag
-        resolveAsUnwind?: boolean;
     }): QueryAST {
         const operation = this.operationsFactory.createTopLevelOperation({
             entity: entityAdapter,
@@ -75,7 +74,35 @@ export class QueryASTFactory {
             context,
             varName,
             reference,
+        });
+        return new QueryAST(operation);
+    }
+
+    public createMutationAST({
+        resolveTree,
+        entityAdapter,
+        context,
+        varName,
+        resolveAsUnwind = false,
+        callbackBucket,
+    }: {
+        resolveTree: ResolveTree;
+        entityAdapter?: EntityAdapter;
+        context: Neo4jGraphQLTranslationContext;
+        varName?: string;
+        // TODO: remove this flag, the only reason exist in the first place is because the check for unwind create is done in the create resolver
+        // the method isUnwindCreateSupported should be moved to the QueryASTFactory,
+        // but as the normal create is still not migrated that is not possible and as this checks are expensive we need to keep this flag
+        resolveAsUnwind?: boolean;
+        callbackBucket: CallbackBucket;
+    }): QueryAST {
+        const operation = this.operationsFactory.createTopLevelMutationOperation({
+            entity: entityAdapter,
+            resolveTree,
+            context,
+            varName,
             resolveAsUnwind,
+            callbackBucket,
         });
         return new QueryAST(operation);
     }

@@ -71,52 +71,44 @@ describe("Relationship Properties Connect Cypher", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-            	CALL(*) {
-            		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_actors_connect0_node
-            			CREATE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
-            			SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
-            		}
-            	}
-            WITH this0, this0_actors_connect0_node
-            	RETURN count(*) AS connect_this0_actors_connect_Actor0
-            }
-            RETURN this0
-            }
-            CALL (this0) {
+            CALL {
+                CREATE (this0:Movie)
+                SET
+                    this0.title = $param0
+                WITH *
                 CALL (this0) {
-                    MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
-                    WITH collect({ node: create_this1, relationship: create_this0 }) AS edges
+                    MATCH (this1:Actor)
+                    CREATE (this0)<-[this2:ACTED_IN]-(this1)
+                    SET
+                        this2.screenTime = $param1
+                }
+                RETURN this0 AS this
+            }
+            WITH this
+            CALL (this) {
+                CALL (this) {
+                    MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
+                    WITH collect({ node: this4, relationship: this3 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL (edges) {
                         UNWIND edges AS edge
-                        WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        RETURN collect({ properties: { screenTime: create_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this1.name, __resolveType: \\"Actor\\" } }) AS create_var2
+                        WITH edge.node AS this4, edge.relationship AS this3
+                        RETURN collect({ properties: { screenTime: this3.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this4.name, __resolveType: \\"Actor\\" } }) AS var5
                     }
-                    RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
+                    RETURN { edges: var5, totalCount: totalCount } AS var6
                 }
-                RETURN this0 { .title, actorsConnection: create_var3 } AS create_var4
+                RETURN this { .title, actorsConnection: var6 } AS var7
             }
-            RETURN [create_var4] AS data"
+            RETURN collect(var7) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_title\\": \\"Forrest Gump\\",
-                \\"this0_actors_connect0_relationship_screenTime\\": {
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"param1\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });
@@ -155,54 +147,46 @@ describe("Relationship Properties Connect Cypher", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Movie)
-            SET this0.title = $this0_title
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-            	WHERE this0_actors_connect0_node.name = $this0_actors_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_actors_connect0_node
-            			CREATE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
-            			SET this0_actors_connect0_relationship.screenTime = $this0_actors_connect0_relationship_screenTime
-            		}
-            	}
-            WITH this0, this0_actors_connect0_node
-            	RETURN count(*) AS connect_this0_actors_connect_Actor0
-            }
-            RETURN this0
-            }
-            CALL (this0) {
+            CALL {
+                CREATE (this0:Movie)
+                SET
+                    this0.title = $param0
+                WITH *
                 CALL (this0) {
-                    MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
-                    WITH collect({ node: create_this1, relationship: create_this0 }) AS edges
+                    MATCH (this1:Actor)
+                    WHERE this1.name = $param1
+                    CREATE (this0)<-[this2:ACTED_IN]-(this1)
+                    SET
+                        this2.screenTime = $param2
+                }
+                RETURN this0 AS this
+            }
+            WITH this
+            CALL (this) {
+                CALL (this) {
+                    MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
+                    WITH collect({ node: this4, relationship: this3 }) AS edges
                     WITH edges, size(edges) AS totalCount
                     CALL (edges) {
                         UNWIND edges AS edge
-                        WITH edge.node AS create_this1, edge.relationship AS create_this0
-                        RETURN collect({ properties: { screenTime: create_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this1.name, __resolveType: \\"Actor\\" } }) AS create_var2
+                        WITH edge.node AS this4, edge.relationship AS this3
+                        RETURN collect({ properties: { screenTime: this3.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this4.name, __resolveType: \\"Actor\\" } }) AS var5
                     }
-                    RETURN { edges: create_var2, totalCount: totalCount } AS create_var3
+                    RETURN { edges: var5, totalCount: totalCount } AS var6
                 }
-                RETURN this0 { .title, actorsConnection: create_var3 } AS create_var4
+                RETURN this { .title, actorsConnection: var6 } AS var7
             }
-            RETURN [create_var4] AS data"
+            RETURN collect(var7) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_title\\": \\"Forrest Gump\\",
-                \\"this0_actors_connect0_node_param0\\": \\"Tom Hanks\\",
-                \\"this0_actors_connect0_relationship_screenTime\\": {
+                \\"param0\\": \\"Forrest Gump\\",
+                \\"param1\\": \\"Tom Hanks\\",
+                \\"param2\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });

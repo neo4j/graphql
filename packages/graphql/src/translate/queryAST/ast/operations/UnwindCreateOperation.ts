@@ -36,7 +36,7 @@ import { MutationOperation } from "./operations";
 export class UnwindCreateOperation extends MutationOperation {
     public readonly inputFields: Map<string, InputField>;
     public readonly target: ConcreteEntityAdapter | RelationshipAdapter;
-    public readonly projectionOperations: ReadOperation[] = [];
+    public readonly projectionOperations: ReadOperation[] = []; // This array is always length 1 or 0
     protected readonly authFilters: AuthorizationFilters[] = [];
     private readonly argumentToUnwind: Cypher.Param | Cypher.Property;
     private readonly unwindVariable: Cypher.Variable;
@@ -77,12 +77,16 @@ export class UnwindCreateOperation extends MutationOperation {
         }
     }
 
-    public getUnwindVariable(): Cypher.Variable {
+    public getCypherVariable(): Cypher.Variable {
         return this.unwindVariable;
     }
 
     public addProjectionOperations(operations: ReadOperation[]) {
         this.projectionOperations.push(...operations);
+    }
+
+    public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
+        return [];
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -99,13 +103,14 @@ export class UnwindCreateOperation extends MutationOperation {
             targetOperations: ["CREATE"],
         });
         this.inputFields.forEach((field) => {
-            if (field.attachedTo === "node" && field instanceof PropertyInputField)
+            if (field.attachedTo === "node" && field instanceof PropertyInputField) {
                 checkEntityAuthentication({
                     context: nestedContext.neo4jGraphQLContext,
                     entity: target.entity,
                     targetOperations: ["CREATE"],
                     field: field.name,
                 });
+            }
         });
         const unwindClause = new Cypher.Unwind([this.argumentToUnwind, this.unwindVariable]);
 
@@ -242,7 +247,7 @@ export class UnwindCreateOperation extends MutationOperation {
             const extraSelections = authFilter.getSelection(context);
             const authSubqueries = authFilter.getSubqueries(context);
             const authPredicate = authFilter.getPredicate(context);
-            const validation = authFilter.getValidation(context);
+            const validation = authFilter.getValidation(context, "AFTER");
 
             if (extraSelections) {
                 selections.push(...extraSelections);

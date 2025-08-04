@@ -171,78 +171,72 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:TransactionItem)
-            SET this0.name = $this0_name
-            SET this0.price = $this0_price
-            SET this0.quantity = $this0_quantity
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_transaction_connect0_node:Transaction)
-            	WHERE this0_transaction_connect0_node.id = $this0_transaction_connect0_node_param0 AND ((($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization_0_before_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $authorization_0_before_param3 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_before_param4 IN $jwt.roles)) AND EXISTS {
-                MATCH (this0_transaction_connect0_node)-[:TRANSACTION]->(authorization_0_before_this0:Store)
-                WHERE ($jwt.store IS NOT NULL AND authorization_0_before_this0.id = $jwt.store)
-            })) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $authorization_0_before_param5 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_before_param6 IN $jwt.roles)) AND EXISTS {
-                MATCH (this0_transaction_connect0_node)-[:TRANSACTION]->(authorization_0_before_this1:Store)
-                WHERE ($jwt.store IS NOT NULL AND authorization_0_before_this1.id = $jwt.store)
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            	CALL(*) {
-            		WITH collect(this0_transaction_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_transaction_connect0_node
-            			CREATE (this0)-[:ITEM_TRANSACTED]->(this0_transaction_connect0_node)
-            		}
-            	}
-            WITH this0, this0_transaction_connect0_node
-            WITH this0, this0_transaction_connect0_node
-            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $authorization_0_after_param2 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_after_param3 IN $jwt.roles)) AND EXISTS {
-                MATCH (this0)-[:ITEM_TRANSACTED]->(authorization_0_after_this0:Transaction)
-                WHERE EXISTS {
-                    MATCH (authorization_0_after_this0)-[:TRANSACTION]->(authorization_0_after_this1:Store)
-                    WHERE ($jwt.store IS NOT NULL AND authorization_0_after_this1.id = $jwt.store)
-                }
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $authorization_0_after_param4 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_after_param5 IN $jwt.roles)) AND EXISTS {
-                MATCH (this0_transaction_connect0_node)-[:TRANSACTION]->(authorization_0_after_this2:Store)
-                WHERE ($jwt.store IS NOT NULL AND authorization_0_after_this2.id = $jwt.store)
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            	RETURN count(*) AS connect_this0_transaction_connect_Transaction0
-            }
-            WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $authorization_0_after_param2 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $authorization_0_after_param3 IN $jwt.roles)) AND EXISTS {
-                MATCH (this0)-[:ITEM_TRANSACTED]->(authorization_0_after_this0:Transaction)
-                WHERE EXISTS {
-                    MATCH (authorization_0_after_this0)-[:TRANSACTION]->(authorization_0_after_this1:Store)
-                    WHERE ($jwt.store IS NOT NULL AND authorization_0_after_this1.id = $jwt.store)
-                }
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN this0
-            }
-            CALL (this0) {
+            CALL {
+                CREATE (this0:TransactionItem)
+                SET
+                    this0.name = $param0,
+                    this0.price = $param1,
+                    this0.quantity = $param2
+                WITH *
                 CALL (this0) {
-                    MATCH (this0)-[create_this0:ITEM_TRANSACTED]->(create_this1:Transaction)
-                    WHERE (($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $create_param4 IN $jwt.roles)) AND EXISTS {
-                        MATCH (create_this1)-[:TRANSACTION]->(create_this2:Store)
-                        WHERE ($jwt.store IS NOT NULL AND create_this2.id = $jwt.store)
-                    }))
-                    WITH DISTINCT create_this1
-                    CALL (create_this1) {
-                        MATCH (create_this1)-[create_this3:TRANSACTION]->(create_this4:Store)
-                        WITH DISTINCT create_this4
-                        WITH create_this4 { .name } AS create_this4
-                        RETURN collect(create_this4) AS create_var5
-                    }
-                    WITH create_this1 { .id, store: create_var5 } AS create_this1
-                    RETURN collect(create_this1) AS create_var6
+                    MATCH (this1:Transaction)
+                    WHERE ((($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)) OR ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param7 IN $jwt.roles)) AND EXISTS {
+                        MATCH (this1)-[:TRANSACTION]->(this2:Store)
+                        WHERE ($jwt.store IS NOT NULL AND this2.id = $jwt.store)
+                    })) AND this1.id = $param8)
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param9 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param10 IN $jwt.roles)) AND EXISTS {
+                        MATCH (this1)-[:TRANSACTION]->(this3:Store)
+                        WHERE ($jwt.store IS NOT NULL AND this3.id = $jwt.store)
+                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    CREATE (this0)-[this4:ITEM_TRANSACTED]->(this1)
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param11 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param12 IN $jwt.roles)) AND EXISTS {
+                        MATCH (this1)-[:TRANSACTION]->(this5:Store)
+                        WHERE ($jwt.store IS NOT NULL AND this5.id = $jwt.store)
+                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 }
-                RETURN this0 { .name, transaction: create_var6 } AS create_var7
+                WITH *
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param13 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param14 IN $jwt.roles)) AND EXISTS {
+                    MATCH (this0)-[:ITEM_TRANSACTED]->(this6:Transaction)
+                    WHERE EXISTS {
+                        MATCH (this6)-[:TRANSACTION]->(this7:Store)
+                        WHERE ($jwt.store IS NOT NULL AND this7.id = $jwt.store)
+                    }
+                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                RETURN this0 AS this
             }
-            RETURN [create_var7] AS data"
+            WITH this
+            CALL (this) {
+                CALL (this) {
+                    MATCH (this)-[this8:ITEM_TRANSACTED]->(this9:Transaction)
+                    WHERE (($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param15 IN $jwt.roles)) OR ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param16 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param17 IN $jwt.roles)) AND EXISTS {
+                        MATCH (this9)-[:TRANSACTION]->(this10:Store)
+                        WHERE ($jwt.store IS NOT NULL AND this10.id = $jwt.store)
+                    }))
+                    WITH DISTINCT this9
+                    CALL (this9) {
+                        MATCH (this9)-[this11:TRANSACTION]->(this12:Store)
+                        WITH DISTINCT this12
+                        WITH this12 { .name } AS this12
+                        RETURN collect(this12) AS var13
+                    }
+                    WITH this9 { .id, store: var13 } AS this9
+                    RETURN collect(this9) AS var14
+                }
+                RETURN this { .name, transaction: var14 } AS var15
+            }
+            RETURN collect(var15) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": \\"Milk\\",
+                \\"param1\\": 5,
+                \\"param2\\": {
+                    \\"low\\": 1,
+                    \\"high\\": 0
+                },
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -250,26 +244,19 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                     ],
                     \\"sub\\": \\"michel\\"
                 },
-                \\"create_param2\\": \\"admin\\",
-                \\"create_param3\\": \\"store-owner\\",
-                \\"create_param4\\": \\"employee\\",
-                \\"this0_name\\": \\"Milk\\",
-                \\"this0_price\\": 5,
-                \\"this0_quantity\\": {
-                    \\"low\\": 1,
-                    \\"high\\": 0
-                },
-                \\"this0_transaction_connect0_node_param0\\": \\"transactionid\\",
-                \\"authorization_0_before_param2\\": \\"admin\\",
-                \\"authorization_0_before_param3\\": \\"store-owner\\",
-                \\"authorization_0_before_param4\\": \\"employee\\",
-                \\"authorization_0_before_param5\\": \\"store-owner\\",
-                \\"authorization_0_before_param6\\": \\"employee\\",
-                \\"authorization_0_after_param2\\": \\"store-owner\\",
-                \\"authorization_0_after_param3\\": \\"employee\\",
-                \\"authorization_0_after_param4\\": \\"store-owner\\",
-                \\"authorization_0_after_param5\\": \\"employee\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param5\\": \\"admin\\",
+                \\"param6\\": \\"store-owner\\",
+                \\"param7\\": \\"employee\\",
+                \\"param8\\": \\"transactionid\\",
+                \\"param9\\": \\"store-owner\\",
+                \\"param10\\": \\"employee\\",
+                \\"param11\\": \\"store-owner\\",
+                \\"param12\\": \\"employee\\",
+                \\"param13\\": \\"store-owner\\",
+                \\"param14\\": \\"employee\\",
+                \\"param15\\": \\"admin\\",
+                \\"param16\\": \\"store-owner\\",
+                \\"param17\\": \\"employee\\"
             }"
         `);
     });

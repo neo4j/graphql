@@ -661,65 +661,47 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:User)
-            SET this0.id = $this0_id
-            SET this0.name = $this0_name
-            SET this0.password = $this0_password
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_content_connect0_node:Comment)
-            	CALL(*) {
-            		WITH collect(this0_content_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_content_connect0_node
-            			CREATE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
-            		}
-            	}
-            WITH this0, this0_content_connect0_node
-            	RETURN count(*) AS connect_this0_content_connect_Comment0
+            CALL {
+                CREATE (this0:User)
+                SET
+                    this0.id = $param0,
+                    this0.name = $param1,
+                    this0.password = $param2
+                WITH *
+                CALL (this0) {
+                    MATCH (this1:Comment)
+                    CREATE (this0)-[this2:HAS_CONTENT]->(this1)
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this3:Post)
+                    WHERE ($isAuthenticated = true AND EXISTS {
+                        MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                    })
+                    CREATE (this0)-[this5:HAS_CONTENT]->(this3)
+                }
+                RETURN this0 AS this
             }
-            CALL(*) {
-            		WITH this0
-            	OPTIONAL MATCH (this0_content_connect1_node:Post)
-            	WHERE ($isAuthenticated = true AND EXISTS {
-                MATCH (this0_content_connect1_node)<-[:HAS_CONTENT]-(authorization__before_this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
-            })
-            	CALL(*) {
-            		WITH collect(this0_content_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_content_connect1_node
-            			CREATE (this0)-[:HAS_CONTENT]->(this0_content_connect1_node)
-            		}
-            	}
-            WITH this0, this0_content_connect1_node
-            	RETURN count(*) AS connect_this0_content_connect_Post1
+            WITH this
+            CALL (this) {
+                RETURN this { .id } AS var6
             }
-            RETURN this0
-            }
-            CALL (this0) {
-                RETURN this0 { .id } AS create_var0
-            }
-            RETURN [create_var0] AS data"
+            RETURN collect(var6) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"123\\",
-                \\"this0_name\\": \\"Bob\\",
-                \\"this0_password\\": \\"password\\",
+                \\"param0\\": \\"123\\",
+                \\"param1\\": \\"Bob\\",
+                \\"param2\\": \\"password\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"id-01\\"
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });
@@ -749,60 +731,42 @@ describe("Cypher Auth Where", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:User)
-            SET this0.id = $this0_id
-            SET this0.name = $this0_name
-            SET this0.password = $this0_password
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_content_connect0_node:Comment)
-            	WHERE this0_content_connect0_node.id = $this0_content_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_content_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_content_connect0_node
-            			CREATE (this0)-[:HAS_CONTENT]->(this0_content_connect0_node)
-            		}
-            	}
-            WITH this0, this0_content_connect0_node
-            	RETURN count(*) AS connect_this0_content_connect_Comment0
+            CALL {
+                CREATE (this0:User)
+                SET
+                    this0.id = $param0,
+                    this0.name = $param1,
+                    this0.password = $param2
+                WITH *
+                CALL (this0) {
+                    MATCH (this1:Comment)
+                    WHERE this1.id = $param3
+                    CREATE (this0)-[this2:HAS_CONTENT]->(this1)
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this3:Post)
+                    WHERE (($isAuthenticated = true AND EXISTS {
+                        MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                    }) AND this3.id = $param6)
+                    CREATE (this0)-[this5:HAS_CONTENT]->(this3)
+                }
+                RETURN this0 AS this
             }
-            CALL(*) {
-            		WITH this0
-            	OPTIONAL MATCH (this0_content_connect1_node:Post)
-            	WHERE this0_content_connect1_node.id = $this0_content_connect1_node_param0 AND ($isAuthenticated = true AND EXISTS {
-                MATCH (this0_content_connect1_node)<-[:HAS_CONTENT]-(authorization__before_this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
-            })
-            	CALL(*) {
-            		WITH collect(this0_content_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_content_connect1_node
-            			CREATE (this0)-[:HAS_CONTENT]->(this0_content_connect1_node)
-            		}
-            	}
-            WITH this0, this0_content_connect1_node
-            	RETURN count(*) AS connect_this0_content_connect_Post1
+            WITH this
+            CALL (this) {
+                RETURN this { .id } AS var6
             }
-            RETURN this0
-            }
-            CALL (this0) {
-                RETURN this0 { .id } AS create_var0
-            }
-            RETURN [create_var0] AS data"
+            RETURN collect(var6) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"123\\",
-                \\"this0_name\\": \\"Bob\\",
-                \\"this0_password\\": \\"password\\",
-                \\"this0_content_connect0_node_param0\\": \\"post-id\\",
-                \\"this0_content_connect1_node_param0\\": \\"post-id\\",
+                \\"param0\\": \\"123\\",
+                \\"param1\\": \\"Bob\\",
+                \\"param2\\": \\"password\\",
+                \\"param3\\": \\"post-id\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -810,7 +774,7 @@ describe("Cypher Auth Where", () => {
                     ],
                     \\"sub\\": \\"id-01\\"
                 },
-                \\"resolvedCallbacks\\": {}
+                \\"param6\\": \\"post-id\\"
             }"
         `);
     });

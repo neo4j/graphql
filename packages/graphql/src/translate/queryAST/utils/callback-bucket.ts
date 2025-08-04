@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type Cypher from "@neo4j/cypher-builder";
 import { GraphQLBoolean, GraphQLError, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
 import type { DateTime, Duration, Integer, LocalDateTime, LocalTime, Date as Neo4jDate, Time } from "neo4j-driver";
 import {
@@ -27,16 +28,16 @@ import {
     GraphQLLocalDateTime,
     GraphQLLocalTime,
     GraphQLTime,
-} from "../graphql/scalars";
-import type { Neo4jGraphQLCallbacks, TypeMeta } from "../types";
-import type { Neo4jGraphQLContext } from "../types/neo4j-graphql-context";
-import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
+} from "../../../graphql/scalars";
+import type { AttributeType } from "../../../schema-model/attribute/AttributeType";
+import { ListType } from "../../../schema-model/attribute/AttributeType";
+import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
 interface Callback {
     functionName: string;
-    paramName: string;
+    param: Cypher.Param;
     parent?: Record<string, unknown>;
-    type: TypeMeta;
+    type: AttributeType;
 }
 
 type CallbackResult =
@@ -70,46 +71,27 @@ export class CallbackBucket {
         this.callbacks.push(callback);
     }
 
-    public async resolveCallbacksAndFilterCypher(options: {
-        cypher: string;
-    }): Promise<{ cypher: string; params: Record<string, unknown> }> {
-        const params: Record<string, unknown> = {};
-        let cypher = options.cypher;
-
+    /** Executes the callbacks and updates the values of the Cypher parameters attached to these callbacks */
+    public async resolveCallbacks(): Promise<void> {
+        const callbacksList = this.context.features.populatedBy?.callbacks ?? {};
         await Promise.all(
             this.callbacks.map(async (cb) => {
-                const callbackFunction = (this.context.features.populatedBy?.callbacks as Neo4jGraphQLCallbacks)[
-                    cb.functionName
-                ] as (
-                    parent?: Record<string, unknown>,
-                    args?: Record<string, never>,
-                    context?: Neo4jGraphQLContext
-                ) => Promise<any>;
-                const param = await callbackFunction(cb.parent, {}, this.context);
-
-                if (param === undefined) {
-                    cypher = cypher
-                        .split("\n")
-                        .filter((line) => !line.includes(`$resolvedCallbacks.${cb.paramName}`))
-                        .join("\n");
-                } else if (param === null) {
-                    params[cb.paramName] = null;
-                } else {
-                    params[cb.paramName] = this.parseCallbackResult(param, cb.type);
+                const callbackFunction = callbacksList[cb.functionName];
+                if (callbackFunction) {
+                    const paramValue = await callbackFunction(cb.parent, {}, this.context);
+                    cb.param.value = this.parseCallbackResult(paramValue, cb.type);
                 }
             })
         );
-
-        return { cypher, params };
     }
 
-    private parseCallbackResult(result: unknown, type: TypeMeta): CallbackResult {
-        if (type.array) {
+    private parseCallbackResult(result: unknown, type: AttributeType): CallbackResult {
+        if (type instanceof ListType) {
             if (!Array.isArray(result)) {
                 throw new GraphQLError("Expected list as callback result but did not.");
             }
 
-            return result.map((r) => this.parseCallbackResult(r, { ...type, array: false }));
+            return result.map((r) => this.parseCallbackResult(r, type.ofType));
         }
 
         switch (type.name) {

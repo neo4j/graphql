@@ -260,6 +260,21 @@ export class RelationshipAdapter {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.typeHelper.isTemporal());
     }
 
+    public getPopulatedByFields(operation: "CREATE" | "UPDATE"): AttributeAdapter[] {
+        switch (operation) {
+            case "CREATE":
+                return Array.from(this.attributes.values()).filter((attribute) =>
+                    attribute.populatedByCreateIsGenerated()
+                );
+            case "UPDATE":
+                return Array.from(this.attributes.values()).filter((attribute) =>
+                    attribute.populatedByUpdateIsGenerated()
+                );
+            default:
+                throw new Error("Invalid operation");
+        }
+    }
+
     public get subscriptionConnectedRelationshipFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) =>
             attribute.isSubscriptionConnectedRelationshipField()

@@ -107,138 +107,69 @@ describe("Cypher Connect", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Product)
-            SET this0.id = $this0_id
-            SET this0.name = $this0_name
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_colors_connect0_node:Color)
-            	WHERE this0_colors_connect0_node.name = $this0_colors_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_colors_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_colors_connect0_node
-            			CREATE (this0)-[:HAS_COLOR]->(this0_colors_connect0_node)
-            		}
-            	}
-            WITH this0, this0_colors_connect0_node
-            CALL(*) {
-            	WITH this0, this0_colors_connect0_node
-            	OPTIONAL MATCH (this0_colors_connect0_node_photos0_node:Photo)
-            	WHERE this0_colors_connect0_node_photos0_node.id = $this0_colors_connect0_node_photos0_node_param0
-            	CALL(*) {
-            		WITH this0, collect(this0_colors_connect0_node_photos0_node) as connectedNodes, collect(this0_colors_connect0_node) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0_colors_connect0_node
-            			UNWIND connectedNodes as this0_colors_connect0_node_photos0_node
-            			CREATE (this0_colors_connect0_node)<-[:OF_COLOR]-(this0_colors_connect0_node_photos0_node)
-            		}
-            	}
-            WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node
-            CALL(*) {
-            	WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node
-            	OPTIONAL MATCH (this0_colors_connect0_node_photos0_node_color0_node:Color)
-            	WHERE this0_colors_connect0_node_photos0_node_color0_node.id = $this0_colors_connect0_node_photos0_node_color0_node_param0
-            	CALL(*) {
-            		WITH this0, this0_colors_connect0_node, collect(this0_colors_connect0_node_photos0_node_color0_node) as connectedNodes, collect(this0_colors_connect0_node_photos0_node) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0_colors_connect0_node_photos0_node
-            			UNWIND connectedNodes as this0_colors_connect0_node_photos0_node_color0_node
-            			CREATE (this0_colors_connect0_node_photos0_node)-[:OF_COLOR]->(this0_colors_connect0_node_photos0_node_color0_node)
-            		}
-            	}
-            WITH this0, this0_colors_connect0_node, this0_colors_connect0_node_photos0_node, this0_colors_connect0_node_photos0_node_color0_node
-            	RETURN count(*) AS connect_this0_colors_connect0_node_photos0_node_color_Color0
+            CALL {
+                CREATE (this0:Product)
+                SET
+                    this0.id = $param0,
+                    this0.name = $param1
+                WITH *
+                CALL (this0) {
+                    MATCH (this1:Color)
+                    WHERE this1.name = $param2
+                    CALL (this1) {
+                        MATCH (this2:Photo)
+                        WHERE this2.id = $param3
+                        CALL (this2) {
+                            MATCH (this3:Color)
+                            WHERE this3.id = $param4
+                            CREATE (this2)-[this4:OF_COLOR]->(this3)
+                        }
+                        CREATE (this1)<-[this5:OF_COLOR]-(this2)
+                    }
+                    CREATE (this0)-[this6:HAS_COLOR]->(this1)
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this7:Photo)
+                    WHERE this7.id = $param5
+                    CALL (this7) {
+                        MATCH (this8:Color)
+                        WHERE this8.name = $param6
+                        CREATE (this7)-[this9:OF_COLOR]->(this8)
+                    }
+                    CREATE (this0)-[this10:HAS_PHOTO]->(this7)
+                }
+                WITH *
+                CALL (this0) {
+                    MATCH (this11:Photo)
+                    WHERE this11.id = $param7
+                    CALL (this11) {
+                        MATCH (this12:Color)
+                        WHERE this12.name = $param8
+                        CREATE (this11)-[this13:OF_COLOR]->(this12)
+                    }
+                    CREATE (this0)-[this14:HAS_PHOTO]->(this11)
+                }
+                RETURN this0 AS this
             }
-            	RETURN count(*) AS connect_this0_colors_connect0_node_photos_Photo0
+            WITH this
+            CALL (this) {
+                RETURN this { .id } AS var15
             }
-            	RETURN count(*) AS connect_this0_colors_connect_Color0
-            }
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_photos_connect0_node:Photo)
-            	WHERE this0_photos_connect0_node.id = $this0_photos_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_photos_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_photos_connect0_node
-            			CREATE (this0)-[:HAS_PHOTO]->(this0_photos_connect0_node)
-            		}
-            	}
-            WITH this0, this0_photos_connect0_node
-            CALL(*) {
-            	WITH this0, this0_photos_connect0_node
-            	OPTIONAL MATCH (this0_photos_connect0_node_color0_node:Color)
-            	WHERE this0_photos_connect0_node_color0_node.name = $this0_photos_connect0_node_color0_node_param0
-            	CALL(*) {
-            		WITH this0, collect(this0_photos_connect0_node_color0_node) as connectedNodes, collect(this0_photos_connect0_node) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0_photos_connect0_node
-            			UNWIND connectedNodes as this0_photos_connect0_node_color0_node
-            			CREATE (this0_photos_connect0_node)-[:OF_COLOR]->(this0_photos_connect0_node_color0_node)
-            		}
-            	}
-            WITH this0, this0_photos_connect0_node, this0_photos_connect0_node_color0_node
-            	RETURN count(*) AS connect_this0_photos_connect0_node_color_Color0
-            }
-            	RETURN count(*) AS connect_this0_photos_connect_Photo0
-            }
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_photos_connect1_node:Photo)
-            	WHERE this0_photos_connect1_node.id = $this0_photos_connect1_node_param0
-            	CALL(*) {
-            		WITH collect(this0_photos_connect1_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_photos_connect1_node
-            			CREATE (this0)-[:HAS_PHOTO]->(this0_photos_connect1_node)
-            		}
-            	}
-            WITH this0, this0_photos_connect1_node
-            CALL(*) {
-            	WITH this0, this0_photos_connect1_node
-            	OPTIONAL MATCH (this0_photos_connect1_node_color0_node:Color)
-            	WHERE this0_photos_connect1_node_color0_node.name = $this0_photos_connect1_node_color0_node_param0
-            	CALL(*) {
-            		WITH this0, collect(this0_photos_connect1_node_color0_node) as connectedNodes, collect(this0_photos_connect1_node) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0_photos_connect1_node
-            			UNWIND connectedNodes as this0_photos_connect1_node_color0_node
-            			CREATE (this0_photos_connect1_node)-[:OF_COLOR]->(this0_photos_connect1_node_color0_node)
-            		}
-            	}
-            WITH this0, this0_photos_connect1_node, this0_photos_connect1_node_color0_node
-            	RETURN count(*) AS connect_this0_photos_connect1_node_color_Color0
-            }
-            	RETURN count(*) AS connect_this0_photos_connect_Photo1
-            }
-            RETURN this0
-            }
-            CALL (this0) {
-                RETURN this0 { .id } AS create_var0
-            }
-            RETURN [create_var0] AS data"
+            RETURN collect(var15) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"123\\",
-                \\"this0_name\\": \\"Nested Connect\\",
-                \\"this0_colors_connect0_node_param0\\": \\"Red\\",
-                \\"this0_colors_connect0_node_photos0_node_param0\\": \\"123\\",
-                \\"this0_colors_connect0_node_photos0_node_color0_node_param0\\": \\"134\\",
-                \\"this0_photos_connect0_node_param0\\": \\"321\\",
-                \\"this0_photos_connect0_node_color0_node_param0\\": \\"Green\\",
-                \\"this0_photos_connect1_node_param0\\": \\"33211\\",
-                \\"this0_photos_connect1_node_color0_node_param0\\": \\"Red\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"123\\",
+                \\"param1\\": \\"Nested Connect\\",
+                \\"param2\\": \\"Red\\",
+                \\"param3\\": \\"123\\",
+                \\"param4\\": \\"134\\",
+                \\"param5\\": \\"321\\",
+                \\"param6\\": \\"Green\\",
+                \\"param7\\": \\"33211\\",
+                \\"param8\\": \\"Red\\"
             }"
         `);
     });

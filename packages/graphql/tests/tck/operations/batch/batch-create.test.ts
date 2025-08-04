@@ -330,76 +330,48 @@ describe("Batch Create", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL(*) {
-            CREATE (this0:Movie)
-            SET this0.id = $this0_id
-            WITH *
-            CALL(*) {
-            	WITH this0
-            	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
-            	WHERE this0_actors_connect0_node.id = $this0_actors_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this0
-            			UNWIND connectedNodes as this0_actors_connect0_node
-            			CREATE (this0)<-[this0_actors_connect0_relationship:ACTED_IN]-(this0_actors_connect0_node)
-            		}
-            	}
-            WITH this0, this0_actors_connect0_node
-            	RETURN count(*) AS connect_this0_actors_connect_Actor0
-            }
-            RETURN this0
-            }
-            CALL(*) {
-            CREATE (this1:Movie)
-            SET this1.id = $this1_id
-            WITH *
-            CALL(*) {
-            	WITH this1
-            	OPTIONAL MATCH (this1_actors_connect0_node:Actor)
-            	WHERE this1_actors_connect0_node.id = $this1_actors_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this1_actors_connect0_node) as connectedNodes, collect(this1) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this1
-            			UNWIND connectedNodes as this1_actors_connect0_node
-            			CREATE (this1)<-[this1_actors_connect0_relationship:ACTED_IN]-(this1_actors_connect0_node)
-            		}
-            	}
-            WITH this1, this1_actors_connect0_node
-            	RETURN count(*) AS connect_this1_actors_connect_Actor0
-            }
-            RETURN this1
-            }
-            CALL (this0) {
+            CALL {
+                CREATE (this0:Movie)
+                SET
+                    this0.id = $param0
+                WITH *
                 CALL (this0) {
-                    MATCH (this0)<-[create_this0:ACTED_IN]-(create_this1:Actor)
-                    WITH DISTINCT create_this1
-                    WITH create_this1 { .name } AS create_this1
-                    RETURN collect(create_this1) AS create_var2
+                    MATCH (this1:Actor)
+                    WHERE this1.id = $param1
+                    CREATE (this0)<-[this2:ACTED_IN]-(this1)
                 }
-                RETURN this0 { .id, actors: create_var2 } AS create_var3
-            }
-            CALL (this1) {
-                CALL (this1) {
-                    MATCH (this1)<-[create_this4:ACTED_IN]-(create_this5:Actor)
-                    WITH DISTINCT create_this5
-                    WITH create_this5 { .name } AS create_this5
-                    RETURN collect(create_this5) AS create_var6
+                RETURN this0 AS this
+                UNION
+                CREATE (this3:Movie)
+                SET
+                    this3.id = $param2
+                WITH *
+                CALL (this3) {
+                    MATCH (this4:Actor)
+                    WHERE this4.id = $param3
+                    CREATE (this3)<-[this5:ACTED_IN]-(this4)
                 }
-                RETURN this1 { .id, actors: create_var6 } AS create_var7
+                RETURN this3 AS this
             }
-            RETURN [create_var3, create_var7] AS data"
+            WITH this
+            CALL (this) {
+                CALL (this) {
+                    MATCH (this)<-[this6:ACTED_IN]-(this7:Actor)
+                    WITH DISTINCT this7
+                    WITH this7 { .name } AS this7
+                    RETURN collect(this7) AS var8
+                }
+                RETURN this { .id, actors: var8 } AS var9
+            }
+            RETURN collect(var9) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this0_id\\": \\"1\\",
-                \\"this0_actors_connect0_node_param0\\": \\"3\\",
-                \\"this1_id\\": \\"2\\",
-                \\"this1_actors_connect0_node_param0\\": \\"4\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"1\\",
+                \\"param1\\": \\"3\\",
+                \\"param2\\": \\"2\\",
+                \\"param3\\": \\"4\\"
             }"
         `);
     });

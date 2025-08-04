@@ -371,7 +371,7 @@ export interface Neo4jGraphQLSubscriptionsEngine {
 export type CallbackReturnValue = string | number | boolean | undefined | null | Array<CallbackReturnValue>;
 
 export type Neo4jGraphQLCallback = (
-    parent: Record<string, unknown>,
+    parent: Record<string, unknown> | undefined,
     args: Record<string, never>,
     context: Neo4jGraphQLContext
 ) => CallbackReturnValue | Promise<CallbackReturnValue>;

@@ -704,7 +704,7 @@ describe("unwind-create", () => {
 
         expect(result.errors).toBeFalsy();
         expect(result.data?.[Actor.operations.create]).toEqual({
-            [Actor.plural]: expect.arrayContaining([
+            [Actor.plural]: expect.toIncludeSameMembers([
                 {
                     name: actorName,
                     movies: [
