@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.2.6
+
+### Patch Changes
+
+- [#6488](https://github.com/neo4j/graphql/pull/6488) [`0ba23dd`](https://github.com/neo4j/graphql/commit/0ba23dd997366d7569a4493452ad69018827ad39) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix format of Time and spatial input types
+
 ## 7.2.5
 
 ### Patch Changes
