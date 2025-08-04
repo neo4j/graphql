@@ -75,6 +75,9 @@ export abstract class NeoExpect {
 
     private parseRawValue(value: unknown): any {
         if (isNeoInt(value)) {
+            if (!value.inSafeRange()) {
+                throw new Error("Big Int not supported in neo-expect");
+            }
             return value.toNumber();
         }
 
