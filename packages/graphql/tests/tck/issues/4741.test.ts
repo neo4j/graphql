@@ -80,16 +80,11 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
                     MATCH (this0)-[this4:HAS_LIST]->(this5:ListOli)
                     WITH collect({ node: this5, relationship: this4 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL (edges) {
-                        UNWIND edges AS edge
-                        WITH edge.node AS this5, edge.relationship AS this4
-                        RETURN collect({ node: { __id: id(this5), __resolveType: \\"ListOli\\" } }) AS var6
-                    }
-                    RETURN { edges: var6, totalCount: totalCount } AS var7
+                    RETURN { totalCount: totalCount } AS var6
                 }
-                RETURN collect({ node: { country: this0.country, listsOlisConnection: var7, __resolveType: \\"Opportunity\\" } }) AS var8
+                RETURN collect({ node: { country: this0.country, listsOlisConnection: var6, __resolveType: \\"Opportunity\\" } }) AS var7
             }
-            RETURN { edges: var8, totalCount: totalCount } AS this"
+            RETURN { edges: var7, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

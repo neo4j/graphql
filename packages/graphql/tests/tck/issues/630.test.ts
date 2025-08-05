@@ -79,17 +79,12 @@ describe("Cypher directive", () => {
                     MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
                     WITH collect({ node: this2, relationship: this1 }) AS edges
                     WITH edges, size(edges) AS totalCount
-                    CALL (edges) {
-                        UNWIND edges AS edge
-                        WITH edge.node AS this2, edge.relationship AS this1
-                        RETURN collect({ node: { __id: id(this2), __resolveType: \\"Actor\\" } }) AS var3
-                    }
-                    RETURN { edges: var3, totalCount: totalCount } AS var4
+                    RETURN { totalCount: totalCount } AS var3
                 }
-                WITH this0 { actorsConnection: var4 } AS this0
-                RETURN collect(this0) AS var5
+                WITH this0 { actorsConnection: var3 } AS this0
+                RETURN collect(this0) AS var4
             }
-            RETURN this { movies: var5 } AS this"
+            RETURN this { movies: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

@@ -66,14 +66,9 @@ describe("Connections Alias", () => {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
                 WITH edges, size(edges) AS totalCount
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Actor\\" } }) AS var2
-                }
-                RETURN { edges: var2, totalCount: totalCount } AS var3
+                RETURN { totalCount: totalCount } AS var2
             }
-            RETURN this { actors: var3 } AS this"
+            RETURN this { actors: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
