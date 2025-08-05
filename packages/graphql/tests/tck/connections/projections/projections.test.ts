@@ -49,6 +49,70 @@ describe("Relay Cursor Connection projections", () => {
         });
     });
 
+    test("top level totalCount", async () => {
+        const query = /* GraphQL */ `
+            query {
+                moviesConnection(where: { title: { eq: "Forrest Gump" } }) {
+                    totalCount
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            MATCH (this0:Movie)
+            WHERE this0.title = $param0
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                RETURN collect({ node: { __id: id(this0), __resolveType: \\"Movie\\" } }) AS var1
+            }
+            RETURN { edges: var1, totalCount: totalCount } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"Forrest Gump\\"
+            }"
+        `);
+    });
+
+    test("top level totalCount with resolveType and id", async () => {
+        const query = /* GraphQL */ `
+            query {
+                moviesConnection(where: { title: { eq: "Forrest Gump" } }) {
+                    totalCount
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            MATCH (this0:Movie)
+            WHERE this0.title = $param0
+            WITH collect({ node: this0 }) AS edges
+            WITH edges, size(edges) AS totalCount
+            CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                RETURN collect({ node: { __id: id(this0), __resolveType: \\"Movie\\" } }) AS var1
+            }
+            RETURN { edges: var1, totalCount: totalCount } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"Forrest Gump\\"
+            }"
+        `);
+    });
+
     test("edges not returned if not asked for", async () => {
         const query = /* GraphQL */ `
             query {

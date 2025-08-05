@@ -198,11 +198,15 @@ export class ConnectionReadOperation extends Operation {
             };
         }
 
-        const unwindAndProjectionSubquery = this.createUnwindAndProjectionSubquery(
-            nestedContext,
-            edgesVar,
-            edgesProjectionVar
-        );
+        const hasProjectionFields = this.hasEdgesProjection();
+        let unwindAndProjectionSubquery: Cypher.Call | undefined;
+        if (hasProjectionFields) {
+            unwindAndProjectionSubquery = this.createUnwindAndProjectionSubquery(
+                nestedContext,
+                edgesVar,
+                edgesProjectionVar
+            );
+        }
 
         let withWhere: Cypher.With | undefined;
 
@@ -218,14 +222,18 @@ export class ConnectionReadOperation extends Operation {
             totalCount
         );
 
-        const returnClause = new Cypher.Return([
-            new Cypher.Map({
-                edges: edgesProjectionVar,
-                totalCount: totalCount,
-                ...aggregationProjection,
-            }),
-            context.returnVariable,
-        ]);
+        const projectionMap = new Cypher.Map();
+
+        if (hasProjectionFields) {
+            projectionMap.set("edges", edgesProjectionVar);
+        }
+
+        projectionMap.set({
+            totalCount: totalCount,
+            ...aggregationProjection,
+        });
+
+        const returnClause = new Cypher.Return([projectionMap, context.returnVariable]);
         const validations = this.getValidations(nestedContext);
         let connectionClauses: Cypher.Clause = Cypher.utils.concat(
             ...extraMatches,
@@ -248,6 +256,13 @@ export class ConnectionReadOperation extends Operation {
             clauses: [Cypher.utils.concat(...aggregationSubqueries, connectionClauses, returnClause)],
             projectionExpr: context.returnVariable,
         };
+    }
+
+    /** Defines if the query should project edges */
+    protected hasEdgesProjection(): boolean {
+        const hasPagination = Boolean(this.pagination);
+        const hasFields = this.nodeFields.length + this.edgeFields.length > 0;
+        return hasPagination || hasFields;
     }
 
     protected getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
