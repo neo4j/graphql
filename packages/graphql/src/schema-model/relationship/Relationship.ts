@@ -19,7 +19,6 @@
 
 import { Neo4jGraphQLSchemaValidationError } from "../../classes";
 import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../../constants";
-import { upperFirst } from "../../utils/upper-first";
 import type { Annotations } from "../annotation/Annotation";
 import type { Argument } from "../argument/Argument";
 import type { Attribute } from "../attribute/Attribute";
@@ -116,38 +115,11 @@ export class Relationship {
         }
     }
 
-    public clone(): Relationship {
-        return new Relationship({
-            name: this.name,
-            type: this.type,
-            args: this.args,
-            attributes: Array.from(this.attributes.values()).map((a) => a.clone()),
-            source: this.source,
-            target: this.target,
-            direction: this.direction,
-            isList: this.isList,
-            queryDirection: this.queryDirection,
-            nestedOperations: this.nestedOperations,
-            aggregate: this.aggregate,
-            isNullable: this.isNullable,
-            description: this.description,
-            annotations: this.annotations,
-            propertiesTypeName: this.propertiesTypeName,
-            firstDeclaredInTypeName: this.firstDeclaredInTypeName,
-            originalTarget: this.originalTarget,
-            siblings: this.siblings,
-        });
-    }
-
     private addAttribute(attribute: Attribute): void {
         if (this.attributes.has(attribute.name)) {
             throw new Neo4jGraphQLSchemaValidationError(`Attribute ${attribute.name} already exists in ${this.name}.`);
         }
         this.attributes.set(attribute.name, attribute);
-    }
-
-    public findAttribute(name: string): Attribute | undefined {
-        return this.attributes.get(name);
     }
 
     public setSiblings(siblingPropertiesTypeNames: string[]) {
@@ -156,16 +128,5 @@ export class Relationship {
 
     public getSiblings(): string[] | undefined {
         return this.siblings;
-    }
-
-    // TODO: Remove  connectionFieldTypename and relationshipFieldTypename and delegate to the adapter
-    /**Note: Required for now to infer the types without ResolveTree */
-    public get connectionFieldTypename(): string {
-        return `${this.source.name}${upperFirst(this.name)}Connection`;
-    }
-
-    /**Note: Required for now to infer the types without ResolveTree */
-    public get relationshipFieldTypename(): string {
-        return `${this.source.name}${upperFirst(this.name)}Relationship`;
     }
 }
