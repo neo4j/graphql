@@ -135,12 +135,10 @@ export class ConnectionReadOperation extends Operation {
             nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
         }
 
-        const extraColumnsVariables = extraColumns.map((c) => c[1]);
-
         const withClause = new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar], ...extraColumns);
 
         if (this.hasTotalCount) {
-            return withClause.with(edgesVar, [Cypher.size(edgesVar), totalCount], ...extraColumnsVariables);
+            withClause.addColumns([Cypher.count(nestedContext.target), totalCount]);
         }
         return withClause;
     }
