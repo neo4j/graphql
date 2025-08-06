@@ -70,13 +70,12 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
                     WHERE this2.title = $param0
                 }
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var3
                 }
-                RETURN { edges: var3, totalCount: totalCount } AS var4
+                RETURN { edges: var3 } AS var4
             }
             RETURN this { .title, actorsConnection: var4 } AS this"
         `);

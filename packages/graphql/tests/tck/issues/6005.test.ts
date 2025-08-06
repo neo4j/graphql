@@ -147,13 +147,12 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
             WITH *
             WHERE var3 = true
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
             }
-            RETURN { edges: var4, totalCount: totalCount } AS this"
+            RETURN { edges: var4 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
@@ -192,7 +191,6 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
             "CYPHER 5
             MATCH (this0:Actor)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -206,17 +204,16 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
                     WITH *
                     WHERE var5 = true
                     WITH collect({ node: this2, relationship: this1 }) AS edges
-                    WITH edges, size(edges) AS totalCount
                     CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
                         RETURN collect({ node: { title: this2.title, __resolveType: \\"Movie\\" } }) AS var6
                     }
-                    RETURN { edges: var6, totalCount: totalCount } AS var7
+                    RETURN { edges: var6 } AS var7
                 }
                 RETURN collect({ node: { moviesConnection: var7, __resolveType: \\"Actor\\" } }) AS var8
             }
-            RETURN { edges: var8, totalCount: totalCount } AS this"
+            RETURN { edges: var8 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{

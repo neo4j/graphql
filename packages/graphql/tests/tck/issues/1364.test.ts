@@ -94,7 +94,6 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -111,7 +110,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                 }
                 RETURN collect({ node: { title: this0.title, totalGenres: var2, __resolveType: \\"Movie\\" } }) AS var3
             }
-            RETURN { edges: var3, totalCount: totalCount } AS this"
+            RETURN { edges: var3 } AS this"
         `);
     });
 
@@ -135,7 +134,6 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -152,7 +150,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                 ORDER BY var2 ASC
                 RETURN collect({ node: { title: this0.title, totalGenres: var2, __resolveType: \\"Movie\\" } }) AS var3
             }
-            RETURN { edges: var3, totalCount: totalCount } AS this"
+            RETURN { edges: var3 } AS this"
         `);
     });
 
@@ -177,7 +175,6 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -203,7 +200,7 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                 }
                 RETURN collect({ node: { title: this0.title, totalGenres: var2, totalActors: var4, __resolveType: \\"Movie\\" } }) AS var5
             }
-            RETURN { edges: var5, totalCount: totalCount } AS this"
+            RETURN { edges: var5 } AS this"
         `);
     });
 });

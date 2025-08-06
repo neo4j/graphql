@@ -108,7 +108,6 @@ describe("Cypher Connection pagination", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -125,7 +124,7 @@ describe("Cypher Connection pagination", () => {
                 ORDER BY var2 DESC
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var3
             }
-            RETURN { edges: var3, totalCount: totalCount } AS this"
+            RETURN { edges: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -150,7 +149,6 @@ describe("Cypher Connection pagination", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -167,7 +165,7 @@ describe("Cypher Connection pagination", () => {
                 ORDER BY var2 DESC
                 RETURN collect({ node: { totalGenres: var2, __resolveType: \\"Movie\\" } }) AS var3
             }
-            RETURN { edges: var3, totalCount: totalCount } AS this"
+            RETURN { edges: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -193,7 +191,6 @@ describe("Cypher Connection pagination", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -218,7 +215,7 @@ describe("Cypher Connection pagination", () => {
                 ORDER BY var2 DESC, var4 ASC
                 RETURN collect({ node: { numberOfActors: var2, totalGenres: var4, __resolveType: \\"Movie\\" } }) AS var5
             }
-            RETURN { edges: var5, totalCount: totalCount } AS this"
+            RETURN { edges: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -251,7 +248,6 @@ describe("Cypher Connection pagination", () => {
             MATCH (this0:Movie)
             WHERE this0.title = $param0
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -269,7 +265,7 @@ describe("Cypher Connection pagination", () => {
                 LIMIT $param2
                 RETURN collect({ node: { id: this0.id, title: this0.title, __resolveType: \\"Movie\\" } }) AS var3
             }
-            RETURN { edges: var3, totalCount: totalCount } AS this"
+            RETURN { edges: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -312,14 +308,12 @@ describe("Cypher Connection pagination", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 CALL (this0) {
                     MATCH (this0)-[this1:HAS_GENRE]->(this2:Genre)
                     WITH collect({ node: this2, relationship: this1 }) AS edges
-                    WITH edges, size(edges) AS totalCount
                     CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
@@ -336,11 +330,11 @@ describe("Cypher Connection pagination", () => {
                         ORDER BY var4 ASC
                         RETURN collect({ node: { name: this2.name, __resolveType: \\"Genre\\" } }) AS var5
                     }
-                    RETURN { edges: var5, totalCount: totalCount } AS var6
+                    RETURN { edges: var5 } AS var6
                 }
                 RETURN collect({ node: { genresConnection: var6, __resolveType: \\"Movie\\" } }) AS var7
             }
-            RETURN { edges: var7, totalCount: totalCount } AS this"
+            RETURN { edges: var7 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -376,14 +370,12 @@ describe("Cypher Connection pagination", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 CALL (this0) {
                     MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
                     WITH collect({ node: this2, relationship: this1 }) AS edges
-                    WITH edges, size(edges) AS totalCount
                     CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
@@ -400,11 +392,11 @@ describe("Cypher Connection pagination", () => {
                         ORDER BY this1.screenTime DESC, var4 ASC
                         RETURN collect({ properties: { screenTime: this1.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this2.name, __resolveType: \\"Actor\\" } }) AS var5
                     }
-                    RETURN { edges: var5, totalCount: totalCount } AS var6
+                    RETURN { edges: var5 } AS var6
                 }
                 RETURN collect({ node: { actorsConnection: var6, __resolveType: \\"Movie\\" } }) AS var7
             }
-            RETURN { edges: var7, totalCount: totalCount } AS this"
+            RETURN { edges: var7 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

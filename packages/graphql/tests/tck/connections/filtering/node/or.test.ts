@@ -78,13 +78,12 @@ describe("Cypher -> Connections -> Filtering -> Node -> OR", () => {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE (this1.firstName = $param0 OR this1.lastName = $param1)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { firstName: this1.firstName, lastName: this1.lastName, __resolveType: \\"Actor\\" } }) AS var2
                 }
-                RETURN { edges: var2, totalCount: totalCount } AS var3
+                RETURN { edges: var2 } AS var3
             }
             RETURN this { .title, actorsConnection: var3 } AS this"
         `);

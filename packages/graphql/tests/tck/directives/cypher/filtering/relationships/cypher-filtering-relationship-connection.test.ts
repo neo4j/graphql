@@ -81,13 +81,12 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             WITH *
             WHERE NOT (any(this3 IN this2 WHERE this3.name = $param0))
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
             }
-            RETURN { edges: var4, totalCount: totalCount } AS this"
+            RETURN { edges: var4 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -156,13 +155,12 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             WITH *
             WHERE all(this3 IN this2 WHERE this3.name = $param0)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
             }
-            RETURN { edges: var4, totalCount: totalCount } AS this"
+            RETURN { edges: var4 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -231,13 +229,12 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             WITH *
             WHERE single(this3 IN this2 WHERE this3.name = $param0)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
             }
-            RETURN { edges: var4, totalCount: totalCount } AS this"
+            RETURN { edges: var4 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -306,13 +303,12 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             WITH *
             WHERE any(this3 IN this2 WHERE this3.name = $param0)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
             }
-            RETURN { edges: var4, totalCount: totalCount } AS this"
+            RETURN { edges: var4 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -381,7 +377,6 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             WITH *
             WHERE any(this3 IN this2 WHERE this3.name = $param0)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -389,7 +384,7 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
                 ORDER BY this0.title DESC
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
             }
-            RETURN { edges: var4, totalCount: totalCount } AS this"
+            RETURN { edges: var4 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -458,13 +453,12 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             WITH *
             WHERE none(this3 IN this2 WHERE this3.name = $param0)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
             }
-            RETURN { edges: var4, totalCount: totalCount } AS this"
+            RETURN { edges: var4 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -569,13 +563,12 @@ describe("Connection API - cypher directive filtering - Relationship", () => {
             WITH *
             WHERE (any(this5 IN this2 WHERE this5.name = $param0) OR any(this6 IN this4 WHERE this6.name = $param1))
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var7
             }
-            RETURN { edges: var7, totalCount: totalCount } AS this"
+            RETURN { edges: var7 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

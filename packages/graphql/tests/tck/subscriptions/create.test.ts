@@ -123,13 +123,12 @@ describe("Subscriptions metadata on create", () => {
             CALL (create_this1) {
                 MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
                 WITH collect({ node: create_this7, relationship: create_this6 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS create_this7, edge.relationship AS create_this6
                     RETURN collect({ properties: { screenTime: create_this6.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this7.name, __resolveType: \\"Actor\\" } }) AS create_var8
                 }
-                RETURN { edges: create_var8, totalCount: totalCount } AS create_var9
+                RETURN { edges: create_var8 } AS create_var9
             }
             RETURN collect(create_this1 { .title, actorsConnection: create_var9 }) AS data"
         `);
@@ -222,13 +221,12 @@ describe("Subscriptions metadata on create", () => {
             CALL (create_this1) {
                 MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
                 WITH collect({ node: create_this7, relationship: create_this6 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS create_this7, edge.relationship AS create_this6
                     RETURN collect({ node: { name: create_this7.name, __resolveType: \\"Actor\\" } }) AS create_var8
                 }
-                RETURN { edges: create_var8, totalCount: totalCount } AS create_var9
+                RETURN { edges: create_var8 } AS create_var9
             }
             RETURN collect(create_this1 { .title, actorsConnection: create_var9 }) AS data"
         `);
@@ -352,13 +350,12 @@ describe("Subscriptions metadata on create", () => {
             CALL (create_this1) {
                 MATCH (create_this1)<-[create_this10:ACTED_IN]-(create_this11:Actor)
                 WITH collect({ node: create_this11, relationship: create_this10 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS create_this11, edge.relationship AS create_this10
                     RETURN collect({ properties: { screenTime: create_this10.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this11.name, __resolveType: \\"Actor\\" } }) AS create_var12
                 }
-                RETURN { edges: create_var12, totalCount: totalCount } AS create_var13
+                RETURN { edges: create_var12 } AS create_var13
             }
             RETURN collect(create_this1 { .title, actorsConnection: create_var13 }) AS data"
         `);

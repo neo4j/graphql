@@ -121,7 +121,6 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
             "CYPHER 5
             MATCH (this0:Actor)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -148,7 +147,7 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
                 }
                 RETURN collect({ node: { name: this0.name, productionsConnection: var5, __resolveType: \\"Actor\\" } }) AS var6
             }
-            RETURN { edges: var6, totalCount: totalCount } AS this"
+            RETURN { edges: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

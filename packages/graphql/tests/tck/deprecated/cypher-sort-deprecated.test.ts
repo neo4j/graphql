@@ -469,7 +469,6 @@ describe("Cypher sort deprecated", () => {
                 CALL (this0) {
                     MATCH (this0)<-[this3:ACTED_IN]-(this4:Actor)
                     WITH collect({ node: this4, relationship: this3 }) AS edges
-                    WITH edges, size(edges) AS totalCount
                     CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this4, edge.relationship AS this3
@@ -484,7 +483,7 @@ describe("Cypher sort deprecated", () => {
                         }
                         RETURN collect({ node: { name: this4.name, totalScreenTime: var6, __resolveType: \\"Actor\\" } }) AS var7
                     }
-                    RETURN { edges: var7, totalCount: totalCount } AS var8
+                    RETURN { edges: var7 } AS var8
                 }
                 RETURN collect({ node: { title: this0.title, actorsConnection: var8, __resolveType: \\"Movie\\" } }) AS var9
             }
@@ -555,7 +554,6 @@ describe("Cypher sort deprecated", () => {
                     CALL (this1) {
                         MATCH (this1)<-[this4:ACTED_IN]-(this5:Actor)
                         WITH collect({ node: this5, relationship: this4 }) AS edges
-                        WITH edges, size(edges) AS totalCount
                         CALL (edges) {
                             UNWIND edges AS edge
                             WITH edge.node AS this5, edge.relationship AS this4
@@ -570,7 +568,7 @@ describe("Cypher sort deprecated", () => {
                             }
                             RETURN collect({ node: { name: this5.name, totalScreenTime: var7, __resolveType: \\"Actor\\" } }) AS var8
                         }
-                        RETURN { edges: var8, totalCount: totalCount } AS var9
+                        RETURN { edges: var8 } AS var9
                     }
                     RETURN collect({ node: { title: this1.title, actorsConnection: var9, __resolveType: \\"Movie\\" } }) AS var10
                 }

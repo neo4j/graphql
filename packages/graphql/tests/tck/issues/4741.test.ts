@@ -70,7 +70,6 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
             WITH *
             WHERE var3 = true
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -84,7 +83,7 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
                 }
                 RETURN collect({ node: { country: this0.country, listsOlisConnection: var6, __resolveType: \\"Opportunity\\" } }) AS var7
             }
-            RETURN { edges: var7, totalCount: totalCount } AS this"
+            RETURN { edges: var7 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

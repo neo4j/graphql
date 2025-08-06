@@ -117,7 +117,6 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
                 "CYPHER 5
                 MATCH (this0:Product)
                 WITH collect({ node: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this0
@@ -125,7 +124,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
                     ORDER BY this0.fg_item DESC
                     RETURN collect({ node: { id: this0.fg_item_id, partNumber: this0.fg_item, description: this0.description, __resolveType: \\"Product\\" } }) AS var1
                 }
-                RETURN { edges: var1, totalCount: totalCount } AS this"
+                RETURN { edges: var1 } AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -156,7 +155,6 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
                 CALL (this) {
                     MATCH (this)-[this0:CAN_ACCESS]->(this1:Product)
                     WITH collect({ node: this1, relationship: this0 }) AS edges
-                    WITH edges, size(edges) AS totalCount
                     CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this1, edge.relationship AS this0
@@ -164,7 +162,7 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
                         ORDER BY this1.fg_item DESC
                         RETURN collect({ node: { id: this1.fg_item_id, partNumber: this1.fg_item, description: this1.description, __resolveType: \\"Product\\" } }) AS var2
                     }
-                    RETURN { edges: var2, totalCount: totalCount } AS var3
+                    RETURN { edges: var2 } AS var3
                 }
                 RETURN this { productsConnection: var3 } AS this"
             `);
