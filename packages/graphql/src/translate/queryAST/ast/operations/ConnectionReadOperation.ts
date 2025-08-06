@@ -54,6 +54,8 @@ export class ConnectionReadOperation extends Operation {
 
     protected selection: EntitySelection;
 
+    private hasTotalCount = false;
+
     constructor({
         relationship,
         target,
@@ -67,6 +69,10 @@ export class ConnectionReadOperation extends Operation {
         this.relationship = relationship;
         this.target = target;
         this.selection = selection;
+    }
+
+    public setHasTotalCount(value: boolean): void {
+        this.hasTotalCount = value;
     }
 
     public setNodeFields(fields: Field[]) {
@@ -131,11 +137,12 @@ export class ConnectionReadOperation extends Operation {
 
         const extraColumnsVariables = extraColumns.map((c) => c[1]);
 
-        return new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar], ...extraColumns).with(
-            edgesVar,
-            [Cypher.size(edgesVar), totalCount],
-            ...extraColumnsVariables
-        );
+        const withClause = new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar], ...extraColumns);
+
+        if (this.hasTotalCount) {
+            return withClause.with(edgesVar, [Cypher.size(edgesVar), totalCount], ...extraColumnsVariables);
+        }
+        return withClause;
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -228,8 +235,11 @@ export class ConnectionReadOperation extends Operation {
             projectionMap.set("edges", edgesProjectionVar);
         }
 
+        if (this.hasTotalCount) {
+            projectionMap.set("totalCount", totalCount);
+        }
+
         projectionMap.set({
-            totalCount: totalCount,
             ...aggregationProjection,
         });
 
@@ -246,10 +256,12 @@ export class ConnectionReadOperation extends Operation {
         );
 
         if (aggregationSubqueries.length > 0) {
-            connectionClauses = new Cypher.Call( // NOTE: this call is only needed when aggregate is used
-                Cypher.utils.concat(connectionClauses, new Cypher.Return(edgesProjectionVar, totalCount)),
-                "*"
-            );
+            const returnClause = new Cypher.Return(edgesProjectionVar);
+            if (this.hasTotalCount) {
+                returnClause.addColumns(totalCount);
+            }
+
+            connectionClauses = new Cypher.Call(Cypher.utils.concat(connectionClauses, returnClause), "*"); // NOTE: this call is only needed when aggregate is used
         }
 
         return {
