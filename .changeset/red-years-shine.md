@@ -2,7 +2,7 @@
 "@neo4j/graphql": patch
 ---
 
-Cypher optimisation on queries with only `totalCount`. For example:
+Improved performance for Connection queries for cases when only `totalCount` is requested.
 
 ```graphql
 query {
