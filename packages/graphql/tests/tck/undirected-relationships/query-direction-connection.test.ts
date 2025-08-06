@@ -52,8 +52,7 @@ describe("QueryDirection in relationships connection", () => {
             MATCH (this:User)
             CALL (this) {
                 MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
+                WITH count(this1) AS totalCount
                 RETURN { totalCount: totalCount } AS var2
             }
             RETURN this { friendsConnection: var2 } AS this"
@@ -90,8 +89,7 @@ describe("QueryDirection in relationships connection", () => {
             MATCH (this:User)
             CALL (this) {
                 MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
+                WITH count(this1) AS totalCount
                 RETURN { totalCount: totalCount } AS var2
             }
             RETURN this { friendsConnection: var2 } AS this"

@@ -64,8 +64,7 @@ describe("Connections Alias", () => {
             MATCH (this:Movie)
             CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
+                WITH count(this1) AS totalCount
                 RETURN { totalCount: totalCount } AS var2
             }
             RETURN this { actors: var2 } AS this"

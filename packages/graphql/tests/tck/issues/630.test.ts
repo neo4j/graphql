@@ -77,8 +77,7 @@ describe("Cypher directive", () => {
                 WITH m AS this0
                 CALL (this0) {
                     MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
-                    WITH collect({ node: this2, relationship: this1 }) AS edges
-                    WITH edges, size(edges) AS totalCount
+                    WITH count(this2) AS totalCount
                     RETURN { totalCount: totalCount } AS var3
                 }
                 WITH this0 { actorsConnection: var3 } AS this0

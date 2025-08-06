@@ -77,8 +77,7 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
                 LIMIT $param1
                 CALL (this0) {
                     MATCH (this0)-[this4:HAS_LIST]->(this5:ListOli)
-                    WITH collect({ node: this5, relationship: this4 }) AS edges
-                    WITH edges, size(edges) AS totalCount
+                    WITH count(this5) AS totalCount
                     RETURN { totalCount: totalCount } AS var6
                 }
                 RETURN collect({ node: { country: this0.country, listsOlisConnection: var6, __resolveType: \\"Opportunity\\" } }) AS var7

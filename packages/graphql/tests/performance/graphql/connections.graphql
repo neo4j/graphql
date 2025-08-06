@@ -28,3 +28,9 @@ query NestedConnection {
         }
     }
 }
+
+query totalCount {
+    moviesConnection {
+        totalCount
+    }
+}

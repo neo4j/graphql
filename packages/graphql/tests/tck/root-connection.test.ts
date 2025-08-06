@@ -63,8 +63,7 @@ describe("Root Connection Query tests", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             WHERE this0.title = $param0
-            WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
+            WITH collect({ node: this0 }) AS edges, count(this0) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -190,8 +189,7 @@ describe("Root Connection Query tests", () => {
                 LIMIT $param0
                 CALL (this0) {
                     MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
-                    WITH collect({ node: this2, relationship: this1 }) AS edges
-                    WITH edges, size(edges) AS totalCount
+                    WITH collect({ node: this2, relationship: this1 }) AS edges, count(this2) AS totalCount
                     CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1

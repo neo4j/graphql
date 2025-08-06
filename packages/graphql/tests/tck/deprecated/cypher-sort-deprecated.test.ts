@@ -450,8 +450,7 @@ describe("Cypher sort deprecated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:Movie)
-            WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
+            WITH collect({ node: this0 }) AS edges, count(this0) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -535,8 +534,7 @@ describe("Cypher sort deprecated", () => {
             MATCH (this:Actor)
             CALL (this) {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
+                WITH collect({ node: this1, relationship: this0 }) AS edges, count(this1) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0

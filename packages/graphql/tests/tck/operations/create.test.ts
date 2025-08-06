@@ -491,8 +491,7 @@ describe("Cypher Create", () => {
                     CALL (this4) {
                         MATCH (this4)<-[this5:ACTED_IN]-(this6:Actor)
                         WHERE this6.name = $param2
-                        WITH collect({ node: this6, relationship: this5 }) AS edges
-                        WITH edges, size(edges) AS totalCount
+                        WITH collect({ node: this6, relationship: this5 }) AS edges, count(this6) AS totalCount
                         CALL (edges) {
                             UNWIND edges AS edge
                             WITH edge.node AS this6, edge.relationship AS this5

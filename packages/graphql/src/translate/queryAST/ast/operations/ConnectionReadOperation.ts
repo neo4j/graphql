@@ -135,7 +135,11 @@ export class ConnectionReadOperation extends Operation {
             nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
         }
 
-        const withClause = new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar], ...extraColumns);
+        const withClause = new Cypher.With();
+        if (this.shouldProjectEdges()) {
+            withClause.addColumns([Cypher.collect(nodeAndRelationshipMap), edgesVar]);
+        }
+        withClause.addColumns(...extraColumns);
 
         if (this.hasTotalCount) {
             withClause.addColumns([Cypher.count(nestedContext.target), totalCount]);
@@ -203,13 +207,26 @@ export class ConnectionReadOperation extends Operation {
             };
         }
 
-        const hasProjectionFields = this.hasEdgesProjection();
+        const hasProjectionFields = this.shouldProjectEdges();
         let unwindAndProjectionSubquery: Cypher.Call | undefined;
         if (hasProjectionFields) {
-            unwindAndProjectionSubquery = this.createUnwindAndProjectionSubquery(
-                nestedContext,
-                edgesVar,
-                edgesProjectionVar
+            const edgeVar = new Cypher.NamedVariable("edge");
+            const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(nestedContext);
+
+            const unwindClause = this.getUnwindClause(nestedContext, edgeVar, edgesVar);
+
+            const edgeProjectionMap = this.createProjectionMapForEdge(nestedContext);
+            const paginationWith = this.generateSortAndPaginationClause(nestedContext);
+
+            unwindAndProjectionSubquery = new Cypher.Call(
+                Cypher.utils.concat(
+                    unwindClause,
+                    ...prePaginationSubqueries,
+                    paginationWith,
+                    ...postPaginationSubqueries,
+                    new Cypher.Return([Cypher.collect(edgeProjectionMap), edgesProjectionVar])
+                ),
+                [edgesVar]
             );
         }
 
@@ -269,7 +286,7 @@ export class ConnectionReadOperation extends Operation {
     }
 
     /** Defines if the query should project edges */
-    protected hasEdgesProjection(): boolean {
+    protected shouldProjectEdges(): boolean {
         const hasPagination = Boolean(this.pagination);
         const hasFields = this.nodeFields.length + this.edgeFields.length > 0;
         return hasPagination || hasFields;
