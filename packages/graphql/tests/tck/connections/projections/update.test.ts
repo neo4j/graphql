@@ -77,13 +77,12 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
             CALL (this) {
                 MATCH (this)<-[update_this0:ACTED_IN]-(update_this1:Actor)
                 WITH collect({ node: update_this1, relationship: update_this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS update_this1, edge.relationship AS update_this0
                     RETURN collect({ properties: { screenTime: update_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: update_this1.name, __resolveType: \\"Actor\\" } }) AS update_var2
                 }
-                RETURN { edges: update_var2, totalCount: totalCount } AS update_var3
+                RETURN { edges: update_var2 } AS update_var3
             }
             RETURN collect(DISTINCT this { .title, actorsConnection: update_var3 }) AS data"
         `);

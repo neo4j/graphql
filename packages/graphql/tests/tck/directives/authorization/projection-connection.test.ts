@@ -89,13 +89,12 @@ describe("Cypher Auth Projection On Connections", () => {
                     WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
                 }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ node: { content: this1.content, __resolveType: \\"Post\\" } }) AS var3
                 }
-                RETURN { edges: var3, totalCount: totalCount } AS var4
+                RETURN { edges: var3 } AS var4
             }
             RETURN this { .name, postsConnection: var4 } AS this"
         `);
@@ -151,7 +150,6 @@ describe("Cypher Auth Projection On Connections", () => {
                     WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
                 }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
@@ -159,17 +157,16 @@ describe("Cypher Auth Projection On Connections", () => {
                         MATCH (this1)<-[this3:HAS_POST]-(this4:User)
                         CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                         WITH collect({ node: this4, relationship: this3 }) AS edges
-                        WITH edges, size(edges) AS totalCount
                         CALL (edges) {
                             UNWIND edges AS edge
                             WITH edge.node AS this4, edge.relationship AS this3
                             RETURN collect({ node: { name: this4.name, __resolveType: \\"User\\" } }) AS var5
                         }
-                        RETURN { edges: var5, totalCount: totalCount } AS var6
+                        RETURN { edges: var5 } AS var6
                     }
                     RETURN collect({ node: { content: this1.content, creatorConnection: var6, __resolveType: \\"Post\\" } }) AS var7
                 }
-                RETURN { edges: var7, totalCount: totalCount } AS var8
+                RETURN { edges: var7 } AS var8
             }
             RETURN this { .name, postsConnection: var8 } AS this"
         `);
@@ -251,7 +248,6 @@ describe("Cypher Auth Projection On top-level connections", () => {
             MATCH (this0:User)
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -262,17 +258,16 @@ describe("Cypher Auth Projection On top-level connections", () => {
                         WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH collect({ node: this2, relationship: this1 }) AS edges
-                    WITH edges, size(edges) AS totalCount
                     CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
                         RETURN collect({ node: { content: this2.content, __resolveType: \\"Post\\" } }) AS var4
                     }
-                    RETURN { edges: var4, totalCount: totalCount } AS var5
+                    RETURN { edges: var4 } AS var5
                 }
                 RETURN collect({ node: { name: this0.name, postsConnection: var5, __resolveType: \\"User\\" } }) AS var6
             }
-            RETURN { edges: var6, totalCount: totalCount } AS this"
+            RETURN { edges: var6 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -323,7 +318,6 @@ describe("Cypher Auth Projection On top-level connections", () => {
             MATCH (this0:User)
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -334,7 +328,6 @@ describe("Cypher Auth Projection On top-level connections", () => {
                         WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH collect({ node: this2, relationship: this1 }) AS edges
-                    WITH edges, size(edges) AS totalCount
                     CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
@@ -342,21 +335,20 @@ describe("Cypher Auth Projection On top-level connections", () => {
                             MATCH (this2)<-[this4:HAS_POST]-(this5:User)
                             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                             WITH collect({ node: this5, relationship: this4 }) AS edges
-                            WITH edges, size(edges) AS totalCount
                             CALL (edges) {
                                 UNWIND edges AS edge
                                 WITH edge.node AS this5, edge.relationship AS this4
                                 RETURN collect({ node: { name: this5.name, __resolveType: \\"User\\" } }) AS var6
                             }
-                            RETURN { edges: var6, totalCount: totalCount } AS var7
+                            RETURN { edges: var6 } AS var7
                         }
                         RETURN collect({ node: { content: this2.content, creatorConnection: var7, __resolveType: \\"Post\\" } }) AS var8
                     }
-                    RETURN { edges: var8, totalCount: totalCount } AS var9
+                    RETURN { edges: var8 } AS var9
                 }
                 RETURN collect({ node: { name: this0.name, postsConnection: var9, __resolveType: \\"User\\" } }) AS var10
             }
-            RETURN { edges: var10, totalCount: totalCount } AS this"
+            RETURN { edges: var10 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

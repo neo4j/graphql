@@ -78,7 +78,6 @@ describe("Mixed nesting", () => {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.name = $param1
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
@@ -91,7 +90,7 @@ describe("Mixed nesting", () => {
                     }
                     RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, movies: var4, __resolveType: \\"Actor\\" } }) AS var5
                 }
-                RETURN { edges: var5, totalCount: totalCount } AS var6
+                RETURN { edges: var5 } AS var6
             }
             RETURN this { .title, actorsConnection: var6 } AS this"
         `);
@@ -144,7 +143,6 @@ describe("Mixed nesting", () => {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.name = $param1
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
@@ -152,7 +150,6 @@ describe("Mixed nesting", () => {
                         MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
                         WHERE NOT (this3.title = $param2)
                         WITH collect({ node: this3, relationship: this2 }) AS edges
-                        WITH edges, size(edges) AS totalCount
                         CALL (edges) {
                             UNWIND edges AS edge
                             WITH edge.node AS this3, edge.relationship AS this2
@@ -165,11 +162,11 @@ describe("Mixed nesting", () => {
                             }
                             RETURN collect({ node: { title: this3.title, actors: var6, __resolveType: \\"Movie\\" } }) AS var7
                         }
-                        RETURN { edges: var7, totalCount: totalCount } AS var8
+                        RETURN { edges: var7 } AS var8
                     }
                     RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, moviesConnection: var8, __resolveType: \\"Actor\\" } }) AS var9
                 }
-                RETURN { edges: var9, totalCount: totalCount } AS var10
+                RETURN { edges: var9 } AS var10
             }
             RETURN this { .title, actorsConnection: var10 } AS this"
         `);
@@ -220,13 +217,12 @@ describe("Mixed nesting", () => {
                     MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
                     WHERE NOT (this3.title = $param2)
                     WITH collect({ node: this3, relationship: this2 }) AS edges
-                    WITH edges, size(edges) AS totalCount
                     CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this3, edge.relationship AS this2
                         RETURN collect({ properties: { screenTime: this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { title: this3.title, __resolveType: \\"Movie\\" } }) AS var4
                     }
-                    RETURN { edges: var4, totalCount: totalCount } AS var5
+                    RETURN { edges: var4 } AS var5
                 }
                 WITH this1 { .name, moviesConnection: var5 } AS this1
                 RETURN collect(this1) AS var6

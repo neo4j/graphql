@@ -85,13 +85,12 @@ describe("Cypher -> fulltext -> Auth", () => {
                 WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
             }))
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var3
             }
-            RETURN { edges: var3, totalCount: totalCount } AS this"
+            RETURN { edges: var3 } AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
@@ -158,13 +157,12 @@ describe("Cypher -> fulltext -> Auth", () => {
                 WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var3
             }
-            RETURN { edges: var3, totalCount: totalCount } AS this"
+            RETURN { edges: var3 } AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
@@ -234,13 +232,12 @@ describe("Cypher -> fulltext -> Auth", () => {
                 WHERE NOT ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
             }))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var3
             }
-            RETURN { edges: var3, totalCount: totalCount } AS this"
+            RETURN { edges: var3 } AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
@@ -312,13 +309,12 @@ describe("Cypher -> fulltext -> Auth", () => {
                 WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
             }
-            RETURN { edges: var4, totalCount: totalCount } AS this"
+            RETURN { edges: var4 } AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
@@ -393,13 +389,12 @@ describe("Cypher -> fulltext -> Auth", () => {
                 WHERE NOT ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
             }))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
             }
-            RETURN { edges: var4, totalCount: totalCount } AS this"
+            RETURN { edges: var4 } AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
@@ -475,13 +470,12 @@ describe("Cypher -> fulltext -> Auth", () => {
                 WHERE ($param3 IS NOT NULL AND this2.year = $param3)
             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
             }
-            RETURN { edges: var4, totalCount: totalCount } AS this"
+            RETURN { edges: var4 } AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
@@ -557,13 +551,12 @@ describe("Cypher -> fulltext -> Auth", () => {
                 WHERE NOT ($param3 IS NOT NULL AND this2.year = $param3)
             }))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
             }
-            RETURN { edges: var4, totalCount: totalCount } AS this"
+            RETURN { edges: var4 } AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`

@@ -219,7 +219,11 @@ export class ConnectionFactory {
             totalCountEdgeField = totalCount;
             pageInfoEdgeField = pageInfo;
         }
-        const operation = new ConnectionReadOperation({ relationship, target, selection });
+        const operation = new ConnectionReadOperation({
+            relationship,
+            target,
+            selection,
+        });
 
         if (Object.keys(resolveTreeEdgeFields).length === 0 && !totalCountEdgeField && !pageInfoEdgeField) {
             operation.skipConnection = true;
@@ -452,6 +456,15 @@ export class ConnectionFactory {
 
         const nodeFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "node");
         const propertiesFieldsRaw = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "properties");
+
+        const { totalCount, pageInfo } = this.parseConnectionFields({
+            entityOrRel,
+            target,
+            resolveTree,
+        });
+
+        operation.setHasTotalCount(Boolean(totalCount || pageInfo));
+
         this.hydrateConnectionOperationsASTWithSort({
             entityOrRel,
             resolveTree,

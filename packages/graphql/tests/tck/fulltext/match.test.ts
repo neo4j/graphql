@@ -58,13 +58,12 @@ describe("Cypher -> fulltext -> Match", () => {
             CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var2
             }
-            RETURN { edges: var2, totalCount: totalCount } AS this"
+            RETURN { edges: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -95,13 +94,12 @@ describe("Cypher -> fulltext -> Match", () => {
             CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND this0.title = $param2)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var2
             }
-            RETURN { edges: var2, totalCount: totalCount } AS this"
+            RETURN { edges: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

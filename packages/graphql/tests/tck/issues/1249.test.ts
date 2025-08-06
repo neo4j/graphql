@@ -89,13 +89,12 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
                 CALL (this1) {
                     MATCH (this1)-[this2:MATERIAL_SUPPLIER]->(this3:Supplier)
                     WITH collect({ node: this3, relationship: this2 }) AS edges
-                    WITH edges, size(edges) AS totalCount
                     CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this3, edge.relationship AS this2
                         RETURN collect({ properties: { supplierMaterialNumber: this2.supplierMaterialNumber, __resolveType: \\"RelationMaterialSupplier\\" }, node: { supplierId: this3.supplierId, __resolveType: \\"Supplier\\" } }) AS var4
                     }
-                    RETURN { edges: var4, totalCount: totalCount } AS var5
+                    RETURN { edges: var4 } AS var5
                 }
                 WITH this1 { .id, suppliersConnection: var5 } AS this1
                 RETURN collect(this1) AS var6

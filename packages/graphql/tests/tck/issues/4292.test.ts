@@ -276,13 +276,12 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
                         }
                     })), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH collect({ node: this12, relationship: this11 }) AS edges
-                    WITH edges, size(edges) AS totalCount
                     CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this12, edge.relationship AS this11
                         RETURN collect({ properties: { active: this11.active, firstDay: this11.firstDay, lastDay: this11.lastDay, __resolveType: \\"PartnerOf\\" }, node: { __id: id(this12), __resolveType: \\"Person\\" } }) AS var22
                     }
-                    RETURN { edges: var22, totalCount: totalCount } AS var23
+                    RETURN { edges: var22 } AS var23
                 }
                 WITH this1 { .id, .name, partnersConnection: var23 } AS this1
                 RETURN collect(this1) AS var24
