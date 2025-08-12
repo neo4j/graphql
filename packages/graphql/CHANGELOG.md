@@ -1,5 +1,35 @@
 # @neo4j/graphql
 
+## 7.2.7
+
+### Patch Changes
+
+- [#6555](https://github.com/neo4j/graphql/pull/6555) [`95fe716`](https://github.com/neo4j/graphql/commit/95fe716c982a936aec379f1b2a937e84a74c2219) Thanks [@angrykoala](https://github.com/angrykoala)! - Optimize connection queries without `totalCount` or `pageInfo` such as:
+
+    ```graphql
+    query {
+        moviesConnection(first: 20, sort: [{ title: ASC }]) {
+            edges {
+                node {
+                    title
+                }
+            }
+        }
+    }
+    ```
+
+    Will no longer calculate `totalCount` in the generated Cypher
+
+- [#6554](https://github.com/neo4j/graphql/pull/6554) [`d3b7b59`](https://github.com/neo4j/graphql/commit/d3b7b599a31ffa0ceeacb86ab34a6a2a1967d256) Thanks [@angrykoala](https://github.com/angrykoala)! - Improved performance for Connection queries for cases when only `totalCount` is requested.
+
+    ```graphql
+    query {
+        moviesConnection(where: { title: { eq: "Forrest Gump" } }) {
+            totalCount
+        }
+    }
+    ```
+
 ## 7.2.6
 
 ### Patch Changes
