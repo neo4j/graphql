@@ -5073,13 +5073,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@urql/core@npm:^5.0.3":
-  version: 5.2.0
-  resolution: "@urql/core@npm:5.2.0"
+"@urql/core@npm:^6.0.0":
+  version: 6.0.1
+  resolution: "@urql/core@npm:6.0.1"
   dependencies:
     "@0no-co/graphql.web": "npm:^1.0.13"
     wonka: "npm:^6.3.2"
-  checksum: 10c0/1893a7417c6e5e3604fc3bd27e8b63b748d1817fb906fa95beba52be103d18e015d20ca740a9be570bca2bd11e98d34f605e108a4d3428678d9a1e3368ab2275
+  checksum: 10c0/44ff0d12dcef1e47338a9ff1217759d1124fa66eec1eec21ff9622e44c179b9d66fa78f462f195bfd8b790b04609abbe5a0674cbfcb0bc6d9c6fe6223d7d7b5b
   languageName: node
   linkType: hard
 
@@ -14609,7 +14609,7 @@ __metadata:
     "@apollo/server": "npm:^4.7.0"
     "@neo4j/graphql": "npm:^5.4.0"
     "@neo4j/graphql-amqp-subscriptions-engine": "npm:^2.0.0"
-    "@urql/core": "npm:^5.0.3"
+    "@urql/core": "npm:^6.0.0"
     concurrently: "npm:9.2.0"
     dotenv: "npm:^17.0.0"
     express: "npm:^5.0.0"

@@ -38,7 +38,7 @@
         "@apollo/server": "^4.7.0",
         "@neo4j/graphql": "^5.4.0",
         "@neo4j/graphql-amqp-subscriptions-engine": "^2.0.0",
-        "@urql/core": "^5.0.3",
+        "@urql/core": "^6.0.0",
         "dotenv": "^17.0.0",
         "express": "^5.0.0",
         "graphql": "^16.6.0",
