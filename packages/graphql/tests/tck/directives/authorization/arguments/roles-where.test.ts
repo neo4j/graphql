@@ -251,13 +251,12 @@ describe("Cypher Auth Where with Roles", () => {
                     WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
                 } AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ node: { content: this1.content, __resolveType: \\"Post\\" } }) AS var3
                 }
-                RETURN { edges: var3, totalCount: totalCount } AS var4
+                RETURN { edges: var3 } AS var4
             }
             RETURN this { .id, postsConnection: var4 } AS this"
         `);
@@ -313,13 +312,12 @@ describe("Cypher Auth Where with Roles", () => {
                     WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
                 } AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ node: { content: this1.content, __resolveType: \\"Post\\" } }) AS var3
                 }
-                RETURN { edges: var3, totalCount: totalCount } AS var4
+                RETURN { edges: var3 } AS var4
             }
             RETURN this { .id, postsConnection: var4 } AS this"
         `);

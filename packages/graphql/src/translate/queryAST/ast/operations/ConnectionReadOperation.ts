@@ -54,6 +54,8 @@ export class ConnectionReadOperation extends Operation {
 
     protected selection: EntitySelection;
 
+    private hasTotalCount = false;
+
     constructor({
         relationship,
         target,
@@ -67,6 +69,10 @@ export class ConnectionReadOperation extends Operation {
         this.relationship = relationship;
         this.target = target;
         this.selection = selection;
+    }
+
+    public setHasTotalCount(value: boolean): void {
+        this.hasTotalCount = value;
     }
 
     public setNodeFields(fields: Field[]) {
@@ -129,13 +135,16 @@ export class ConnectionReadOperation extends Operation {
             nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
         }
 
-        const extraColumnsVariables = extraColumns.map((c) => c[1]);
+        const withClause = new Cypher.With();
+        if (this.shouldProjectEdges()) {
+            withClause.addColumns([Cypher.collect(nodeAndRelationshipMap), edgesVar]);
+        }
+        withClause.addColumns(...extraColumns);
 
-        return new Cypher.With([Cypher.collect(nodeAndRelationshipMap), edgesVar], ...extraColumns).with(
-            edgesVar,
-            [Cypher.size(edgesVar), totalCount],
-            ...extraColumnsVariables
-        );
+        if (this.hasTotalCount) {
+            withClause.addColumns([Cypher.count(nestedContext.target), totalCount]);
+        }
+        return withClause;
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -198,11 +207,28 @@ export class ConnectionReadOperation extends Operation {
             };
         }
 
-        const unwindAndProjectionSubquery = this.createUnwindAndProjectionSubquery(
-            nestedContext,
-            edgesVar,
-            edgesProjectionVar
-        );
+        const hasProjectionFields = this.shouldProjectEdges();
+        let unwindAndProjectionSubquery: Cypher.Call | undefined;
+        if (hasProjectionFields) {
+            const edgeVar = new Cypher.NamedVariable("edge");
+            const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(nestedContext);
+
+            const unwindClause = this.getUnwindClause(nestedContext, edgeVar, edgesVar);
+
+            const edgeProjectionMap = this.createProjectionMapForEdge(nestedContext);
+            const paginationWith = this.generateSortAndPaginationClause(nestedContext);
+
+            unwindAndProjectionSubquery = new Cypher.Call(
+                Cypher.utils.concat(
+                    unwindClause,
+                    ...prePaginationSubqueries,
+                    paginationWith,
+                    ...postPaginationSubqueries,
+                    new Cypher.Return([Cypher.collect(edgeProjectionMap), edgesProjectionVar])
+                ),
+                [edgesVar]
+            );
+        }
 
         let withWhere: Cypher.With | undefined;
 
@@ -218,14 +244,21 @@ export class ConnectionReadOperation extends Operation {
             totalCount
         );
 
-        const returnClause = new Cypher.Return([
-            new Cypher.Map({
-                edges: edgesProjectionVar,
-                totalCount: totalCount,
-                ...aggregationProjection,
-            }),
-            context.returnVariable,
-        ]);
+        const projectionMap = new Cypher.Map();
+
+        if (hasProjectionFields) {
+            projectionMap.set("edges", edgesProjectionVar);
+        }
+
+        if (this.hasTotalCount) {
+            projectionMap.set("totalCount", totalCount);
+        }
+
+        projectionMap.set({
+            ...aggregationProjection,
+        });
+
+        const returnClause = new Cypher.Return([projectionMap, context.returnVariable]);
         const validations = this.getValidations(nestedContext);
         let connectionClauses: Cypher.Clause = Cypher.utils.concat(
             ...extraMatches,
@@ -238,16 +271,25 @@ export class ConnectionReadOperation extends Operation {
         );
 
         if (aggregationSubqueries.length > 0) {
-            connectionClauses = new Cypher.Call( // NOTE: this call is only needed when aggregate is used
-                Cypher.utils.concat(connectionClauses, new Cypher.Return(edgesProjectionVar, totalCount)),
-                "*"
-            );
+            const returnClause = new Cypher.Return(edgesProjectionVar);
+            if (this.hasTotalCount) {
+                returnClause.addColumns(totalCount);
+            }
+
+            connectionClauses = new Cypher.Call(Cypher.utils.concat(connectionClauses, returnClause), "*"); // NOTE: this call is only needed when aggregate is used
         }
 
         return {
             clauses: [Cypher.utils.concat(...aggregationSubqueries, connectionClauses, returnClause)],
             projectionExpr: context.returnVariable,
         };
+    }
+
+    /** Defines if the query should project edges */
+    protected shouldProjectEdges(): boolean {
+        const hasPagination = Boolean(this.pagination);
+        const hasFields = this.nodeFields.length + this.edgeFields.length > 0;
+        return hasPagination || hasFields;
     }
 
     protected getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {

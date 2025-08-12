@@ -1496,8 +1496,7 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             WHERE (this.title ENDS WITH $param0 AND this1.name = $param1)
             CALL (this) {
                 MATCH (this)<-[this2:ACTED_IN]-(this3:Person)
-                WITH collect({ node: this3, relationship: this2 }) AS edges
-                WITH edges, size(edges) AS totalCount
+                WITH collect({ node: this3, relationship: this2 }) AS edges, count(this3) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this3, edge.relationship AS this2

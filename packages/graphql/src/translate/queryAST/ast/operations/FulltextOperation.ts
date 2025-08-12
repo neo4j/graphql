@@ -62,6 +62,10 @@ export class FulltextOperation extends ConnectionReadOperation {
         return filterTruthy([...super.getChildren(), this.scoreField]);
     }
 
+    protected shouldProjectEdges(): boolean {
+        return super.shouldProjectEdges() || Boolean(this.scoreField);
+    }
+
     protected createProjectionMapForEdge(context: QueryASTContext<Cypher.Node>): Cypher.Map {
         const edgeProjectionMap = new Cypher.Map();
 

@@ -75,14 +75,12 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
             CALL (this) {
                 MATCH (this)<-[this0:OUTPUT]-(this1:Process)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     CALL (this1) {
                         MATCH (this1)<-[this2:INPUT]-(this3:Component)
                         WITH collect({ node: this3, relationship: this2 }) AS edges
-                        WITH edges, size(edges) AS totalCount
                         CALL (edges) {
                             UNWIND edges AS edge
                             WITH edge.node AS this3, edge.relationship AS this2
@@ -90,11 +88,11 @@ describe("https://github.com/neo4j/graphql/issues/2262", () => {
                             ORDER BY this3.uuid DESC
                             RETURN collect({ node: { uuid: this3.uuid, __resolveType: \\"Component\\" } }) AS var4
                         }
-                        RETURN { edges: var4, totalCount: totalCount } AS var5
+                        RETURN { edges: var4 } AS var5
                     }
                     RETURN collect({ node: { uuid: this1.uuid, componentInputsConnection: var5, __resolveType: \\"Process\\" } }) AS var6
                 }
-                RETURN { edges: var6, totalCount: totalCount } AS var7
+                RETURN { edges: var6 } AS var7
             }
             RETURN this { .uuid, upstreamProcessConnection: var7 } AS this"
         `);

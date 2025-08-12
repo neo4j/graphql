@@ -85,13 +85,12 @@ describe("Cypher Auth Projection On Connections", () => {
                     WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
                 }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ node: { content: this1.content, __resolveType: \\"Post\\" } }) AS var3
                 }
-                RETURN { edges: var3, totalCount: totalCount } AS var4
+                RETURN { edges: var3 } AS var4
             }
             RETURN this { .name, postsConnection: var4 } AS this"
         `);

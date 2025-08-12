@@ -514,13 +514,12 @@ describe("Arrays Methods", () => {
             CALL (this) {
                 MATCH (this)-[update_this3:ACTED_IN]->(update_this4:Movie)
                 WITH collect({ node: update_this4, relationship: update_this3 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS update_this4, edge.relationship AS update_this3
                     RETURN collect({ properties: { pay: update_this3.pay, __resolveType: \\"ActedIn\\" }, node: { __id: id(update_this4), __resolveType: \\"Movie\\" } }) AS update_var5
                 }
-                RETURN { edges: update_var5, totalCount: totalCount } AS update_var6
+                RETURN { edges: update_var5 } AS update_var6
             }
             RETURN collect(DISTINCT this { .name, actedIn: update_var2, actedInConnection: update_var6 }) AS data"
         `);
@@ -615,13 +614,12 @@ describe("Arrays Methods", () => {
             CALL (this) {
                 MATCH (this)-[update_this3:ACTED_IN]->(update_this4:Movie)
                 WITH collect({ node: update_this4, relationship: update_this3 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS update_this4, edge.relationship AS update_this3
                     RETURN collect({ properties: { pay: update_this3.pay, __resolveType: \\"ActedIn\\" }, node: { __id: id(update_this4), __resolveType: \\"Movie\\" } }) AS update_var5
                 }
-                RETURN { edges: update_var5, totalCount: totalCount } AS update_var6
+                RETURN { edges: update_var5 } AS update_var6
             }
             RETURN collect(DISTINCT this { .name, actedIn: update_var2, actedInConnection: update_var6 }) AS data"
         `);

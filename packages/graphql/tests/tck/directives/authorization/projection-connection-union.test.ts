@@ -105,13 +105,12 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
                             MATCH (this1)<-[this3:HAS_POST]-(this4:User)
                             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                             WITH collect({ node: this4, relationship: this3 }) AS edges
-                            WITH edges, size(edges) AS totalCount
                             CALL (edges) {
                                 UNWIND edges AS edge
                                 WITH edge.node AS this4, edge.relationship AS this3
                                 RETURN collect({ node: { name: this4.name, __resolveType: \\"User\\" } }) AS var5
                             }
-                            RETURN { edges: var5, totalCount: totalCount } AS var6
+                            RETURN { edges: var5 } AS var6
                         }
                         WITH { node: { __resolveType: \\"Post\\", __id: id(this1), content: this1.content, creatorConnection: var6 } } AS edge
                         RETURN edge

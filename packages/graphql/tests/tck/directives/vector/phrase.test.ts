@@ -96,7 +96,7 @@ describe("phrase input - genAI plugin", () => {
                 WITH edge.node AS this1, edge.score AS var2
                 RETURN collect({ node: { title: this1.title, __resolveType: \\"Movie\\" }, score: var2 }) AS var3
             }
-            RETURN { edges: var3, totalCount: totalCount } AS this"
+            RETURN { edges: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

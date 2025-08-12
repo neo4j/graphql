@@ -115,7 +115,6 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                 MATCH (this)-[this0:CONSISTS_OF]->(this1:DriveComposition)
                 WHERE this0.current = $param1
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
@@ -143,7 +142,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                     }
                     RETURN collect({ node: { driveComponentConnection: var6, __resolveType: \\"DriveComposition\\" } }) AS var7
                 }
-                RETURN { edges: var7, totalCount: totalCount } AS var8
+                RETURN { edges: var7 } AS var8
             }
             RETURN this { .current, driveCompositionsConnection: var8 } AS this"
         `);

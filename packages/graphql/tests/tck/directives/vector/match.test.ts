@@ -85,7 +85,7 @@ describe("Vector index match", () => {
                 WITH edge.node AS this0, edge.score AS var1
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
             }
-            RETURN { edges: var2, totalCount: totalCount } AS this"
+            RETURN { edges: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -258,7 +258,7 @@ describe("Vector index match", () => {
                 WITH edge.node AS this0, edge.score AS var1
                 RETURN collect({ node: { title: this0.title, released: this0.released, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
             }
-            RETURN { edges: var2, totalCount: totalCount } AS this"
+            RETURN { edges: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -435,7 +435,7 @@ describe("Vector index match", () => {
                 ORDER BY this0.title DESC
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" }, score: var1 }) AS var2
             }
-            RETURN { edges: var2, totalCount: totalCount } AS this"
+            RETURN { edges: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

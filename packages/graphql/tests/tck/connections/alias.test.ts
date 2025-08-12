@@ -64,16 +64,10 @@ describe("Connections Alias", () => {
             MATCH (this:Movie)
             CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Actor\\" } }) AS var2
-                }
-                RETURN { edges: var2, totalCount: totalCount } AS var3
+                WITH count(this1) AS totalCount
+                RETURN { totalCount: totalCount } AS var2
             }
-            RETURN this { actors: var3 } AS this"
+            RETURN this { actors: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -118,25 +112,23 @@ describe("Connections Alias", () => {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.name = $param1
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
                 }
-                RETURN { edges: var2, totalCount: totalCount } AS var3
+                RETURN { edges: var2 } AS var3
             }
             CALL (this) {
                 MATCH (this)<-[this4:ACTED_IN]-(this5:Actor)
                 WHERE this5.name = $param2
                 WITH collect({ node: this5, relationship: this4 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this5, edge.relationship AS this4
                     RETURN collect({ properties: { screenTime: this4.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this5.name, __resolveType: \\"Actor\\" } }) AS var6
                 }
-                RETURN { edges: var6, totalCount: totalCount } AS var7
+                RETURN { edges: var6 } AS var7
             }
             RETURN this { .title, hanks: var3, jenny: var7 } AS this"
         `);

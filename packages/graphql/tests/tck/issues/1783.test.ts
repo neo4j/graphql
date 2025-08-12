@@ -139,19 +139,17 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                 MATCH (this)-[this6:HAS_NAME]->(this7:NameDetails)
                 WHERE this6.current = $param6
                 WITH collect({ node: this7, relationship: this6 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this7, edge.relationship AS this6
                     RETURN collect({ node: { fullName: this7.fullName, __resolveType: \\"NameDetails\\" } }) AS var8
                 }
-                RETURN { edges: var8, totalCount: totalCount } AS var9
+                RETURN { edges: var8 } AS var9
             }
             CALL (this) {
                 MATCH (this)-[this10:ARCHITECTURE]->(this11:MasterData)
                 WHERE this10.current = $param7
                 WITH collect({ node: this11, relationship: this10 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this11, edge.relationship AS this10
@@ -159,17 +157,16 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
                         MATCH (this11)-[this12:HAS_NAME]->(this13:NameDetails)
                         WHERE this12.current = $param8
                         WITH collect({ node: this13, relationship: this12 }) AS edges
-                        WITH edges, size(edges) AS totalCount
                         CALL (edges) {
                             UNWIND edges AS edge
                             WITH edge.node AS this13, edge.relationship AS this12
                             RETURN collect({ node: { fullName: this13.fullName, __resolveType: \\"NameDetails\\" } }) AS var14
                         }
-                        RETURN { edges: var14, totalCount: totalCount } AS var15
+                        RETURN { edges: var14 } AS var15
                     }
                     RETURN collect({ node: { nameDetailsConnection: var15, __resolveType: \\"MasterData\\" } }) AS var16
                 }
-                RETURN { edges: var16, totalCount: totalCount } AS var17
+                RETURN { edges: var16 } AS var17
             }
             RETURN this { .id, nameDetailsConnection: var9, architectureConnection: var17 } AS this"
         `);

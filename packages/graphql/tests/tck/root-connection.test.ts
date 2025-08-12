@@ -63,8 +63,7 @@ describe("Root Connection Query tests", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             WHERE this0.title = $param0
-            WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
+            WITH collect({ node: this0 }) AS edges, count(this0) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -99,7 +98,6 @@ describe("Root Connection Query tests", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -108,7 +106,7 @@ describe("Root Connection Query tests", () => {
                 LIMIT $param0
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var1
             }
-            RETURN { edges: var1, totalCount: totalCount } AS this"
+            RETURN { edges: var1 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -138,7 +136,6 @@ describe("Root Connection Query tests", () => {
             MATCH (this0:Movie)
             WHERE this0.title CONTAINS $param0
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -147,7 +144,7 @@ describe("Root Connection Query tests", () => {
                 LIMIT $param1
                 RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var1
             }
-            RETURN { edges: var1, totalCount: totalCount } AS this"
+            RETURN { edges: var1 } AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -184,7 +181,6 @@ describe("Root Connection Query tests", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             WITH collect({ node: this0 }) AS edges
-            WITH edges, size(edges) AS totalCount
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
@@ -193,8 +189,7 @@ describe("Root Connection Query tests", () => {
                 LIMIT $param0
                 CALL (this0) {
                     MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
-                    WITH collect({ node: this2, relationship: this1 }) AS edges
-                    WITH edges, size(edges) AS totalCount
+                    WITH collect({ node: this2, relationship: this1 }) AS edges, count(this2) AS totalCount
                     CALL (edges) {
                         UNWIND edges AS edge
                         WITH edge.node AS this2, edge.relationship AS this1
@@ -204,7 +199,7 @@ describe("Root Connection Query tests", () => {
                 }
                 RETURN collect({ node: { title: this0.title, actorsConnection: var4, __resolveType: \\"Movie\\" } }) AS var5
             }
-            RETURN { edges: var5, totalCount: totalCount } AS this"
+            RETURN { edges: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

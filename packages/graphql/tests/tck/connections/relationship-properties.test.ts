@@ -75,13 +75,12 @@ describe("Relationship Properties Cypher", () => {
             CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
                 }
-                RETURN { edges: var2, totalCount: totalCount } AS var3
+                RETURN { edges: var2 } AS var3
             }
             RETURN this { .title, actorsConnection: var3 } AS this"
         `);
@@ -122,13 +121,12 @@ describe("Relationship Properties Cypher", () => {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WHERE this1.name = $param1
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
                 }
-                RETURN { edges: var2, totalCount: totalCount } AS var3
+                RETURN { edges: var2 } AS var3
             }
             RETURN this { .title, actorsConnection: var3 } AS this"
         `);
@@ -169,7 +167,6 @@ describe("Relationship Properties Cypher", () => {
             CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
@@ -177,7 +174,7 @@ describe("Relationship Properties Cypher", () => {
                     ORDER BY this0.screenTime DESC
                     RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
                 }
-                RETURN { edges: var2, totalCount: totalCount } AS var3
+                RETURN { edges: var2 } AS var3
             }
             RETURN this { .title, actorsConnection: var3 } AS this"
         `);
@@ -215,7 +212,6 @@ describe("Relationship Properties Cypher", () => {
             CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
@@ -223,7 +219,7 @@ describe("Relationship Properties Cypher", () => {
                     ORDER BY this0.year DESC, this1.name ASC
                     RETURN collect({ properties: { year: this0.year, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
                 }
-                RETURN { edges: var2, totalCount: totalCount } AS var3
+                RETURN { edges: var2 } AS var3
             }
             RETURN this { actorsConnection: var3 } AS this"
         `);
@@ -256,7 +252,6 @@ describe("Relationship Properties Cypher", () => {
             CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
@@ -264,7 +259,7 @@ describe("Relationship Properties Cypher", () => {
                     ORDER BY this1.name ASC, this0.year DESC
                     RETURN collect({ properties: { year: this0.year, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
                 }
-                RETURN { edges: var2, totalCount: totalCount } AS var3
+                RETURN { edges: var2 } AS var3
             }
             RETURN this { actorsConnection: var3 } AS this"
         `);
@@ -310,24 +305,22 @@ describe("Relationship Properties Cypher", () => {
             CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     CALL (this1) {
                         MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
                         WITH collect({ node: this3, relationship: this2 }) AS edges
-                        WITH edges, size(edges) AS totalCount
                         CALL (edges) {
                             UNWIND edges AS edge
                             WITH edge.node AS this3, edge.relationship AS this2
                             RETURN collect({ properties: { screenTime: this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { title: this3.title, __resolveType: \\"Movie\\" } }) AS var4
                         }
-                        RETURN { edges: var4, totalCount: totalCount } AS var5
+                        RETURN { edges: var4 } AS var5
                     }
                     RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, moviesConnection: var5, __resolveType: \\"Actor\\" } }) AS var6
                 }
-                RETURN { edges: var6, totalCount: totalCount } AS var7
+                RETURN { edges: var6 } AS var7
             }
             RETURN this { .title, actorsConnection: var7 } AS this"
         `);
@@ -387,35 +380,32 @@ describe("Relationship Properties Cypher", () => {
             CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                 WITH collect({ node: this1, relationship: this0 }) AS edges
-                WITH edges, size(edges) AS totalCount
                 CALL (edges) {
                     UNWIND edges AS edge
                     WITH edge.node AS this1, edge.relationship AS this0
                     CALL (this1) {
                         MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
                         WITH collect({ node: this3, relationship: this2 }) AS edges
-                        WITH edges, size(edges) AS totalCount
                         CALL (edges) {
                             UNWIND edges AS edge
                             WITH edge.node AS this3, edge.relationship AS this2
                             CALL (this3) {
                                 MATCH (this3)<-[this4:ACTED_IN]-(this5:Actor)
                                 WITH collect({ node: this5, relationship: this4 }) AS edges
-                                WITH edges, size(edges) AS totalCount
                                 CALL (edges) {
                                     UNWIND edges AS edge
                                     WITH edge.node AS this5, edge.relationship AS this4
                                     RETURN collect({ properties: { screenTime: this4.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this5.name, __resolveType: \\"Actor\\" } }) AS var6
                                 }
-                                RETURN { edges: var6, totalCount: totalCount } AS var7
+                                RETURN { edges: var6 } AS var7
                             }
                             RETURN collect({ properties: { screenTime: this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { title: this3.title, actorsConnection: var7, __resolveType: \\"Movie\\" } }) AS var8
                         }
-                        RETURN { edges: var8, totalCount: totalCount } AS var9
+                        RETURN { edges: var8 } AS var9
                     }
                     RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, moviesConnection: var9, __resolveType: \\"Actor\\" } }) AS var10
                 }
-                RETURN { edges: var10, totalCount: totalCount } AS var11
+                RETURN { edges: var10 } AS var11
             }
             RETURN this { .title, actorsConnection: var11 } AS this"
         `);

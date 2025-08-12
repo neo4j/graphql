@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import { GraphQLError } from "graphql";
 import { type Driver } from "neo4j-driver";
 import { generate } from "randomstring";
 import type { Neo4jGraphQL } from "../../../../src/classes";
@@ -26,7 +27,6 @@ import { createBearerToken } from "../../../utils/create-bearer-token";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
 import { TestHelper } from "../../../utils/tests-helper";
-import { GraphQLError } from "graphql";
 
 function generatedTypeDefs(personType: UniqueType, movieType: UniqueType): string {
     return `
@@ -1287,8 +1287,10 @@ describe("@fulltext directive", () => {
 
             expect(gqlResult.errors).toHaveLength(1);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "${queryType}" argument "first" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "${queryType}" argument "first" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
 
         test("Limit not provided on nested field", async () => {
@@ -1317,9 +1319,10 @@ describe("@fulltext directive", () => {
 
             expect(gqlResult.errors).toHaveLength(1);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "actedInMovies" argument "limit" of type "Int!" is required, but it was not provided.`),
-             ]);
-         
+                new GraphQLError(
+                    `Field "actedInMovies" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
     });
     describe("Query tests with auth", () => {
