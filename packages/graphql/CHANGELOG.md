@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.2.8
+
+### Patch Changes
+
+- [#6573](https://github.com/neo4j/graphql/pull/6573) [`33f906d`](https://github.com/neo4j/graphql/commit/33f906d1e6b99c86b449c17c9069670c0ff8e2b2) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix populatedBy directive used in connect operations
+
 ## 7.2.7
 
 ### Patch Changes
