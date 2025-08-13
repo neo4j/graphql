@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
@@ -30,6 +31,7 @@ import { CompositeConnectOperation } from "../../ast/operations/composite/Compos
 import { CompositeConnectPartial } from "../../ast/operations/composite/CompositeConnectPartial";
 import { ConnectOperation } from "../../ast/operations/ConnectOperation";
 import { NodeSelectionPattern } from "../../ast/selection/SelectionPattern/NodeSelectionPattern";
+import type { CallbackBucket } from "../../utils/callback-bucket";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
 import { raiseAttributeAmbiguity } from "../../utils/raise-attribute-ambiguity";
@@ -46,7 +48,8 @@ export class ConnectFactory {
         entity: ConcreteEntityAdapter,
         relationship: RelationshipAdapter,
         input: Record<string, any>[],
-        context: Neo4jGraphQLTranslationContext
+        context: Neo4jGraphQLTranslationContext,
+        callbackBucket: CallbackBucket
     ): ConnectOperation {
         const connectOP = new ConnectOperation({
             target: entity,
@@ -62,6 +65,7 @@ export class ConnectFactory {
             input,
             connect: connectOP,
             context,
+            callbackBucket,
         });
         return connectOP;
     }
@@ -70,11 +74,18 @@ export class ConnectFactory {
         entity: InterfaceEntityAdapter | UnionEntityAdapter,
         relationship: RelationshipAdapter,
         input: Record<string, any>[],
-        context: Neo4jGraphQLTranslationContext
+        context: Neo4jGraphQLTranslationContext,
+        callbackBucket: CallbackBucket
     ): CompositeConnectOperation {
         const partials: CompositeConnectPartial[] = [];
         for (const concreteEntity of entity.concreteEntities) {
-            const partial = this.createCompositeConnectPartial(concreteEntity, relationship, input, context);
+            const partial = this.createCompositeConnectPartial(
+                concreteEntity,
+                relationship,
+                input,
+                context,
+                callbackBucket
+            );
             partials.push(partial);
         }
 
@@ -88,7 +99,8 @@ export class ConnectFactory {
         entity: ConcreteEntityAdapter,
         relationship: RelationshipAdapter,
         input: Record<string, any>[],
-        context: Neo4jGraphQLTranslationContext
+        context: Neo4jGraphQLTranslationContext,
+        callbackBucket: CallbackBucket
     ): CompositeConnectPartial {
         const connectOP = new CompositeConnectPartial({
             target: entity,
@@ -104,6 +116,7 @@ export class ConnectFactory {
             input,
             connect: connectOP,
             context,
+            callbackBucket,
         });
         return connectOP;
     }
@@ -114,12 +127,14 @@ export class ConnectFactory {
         input,
         connect,
         context,
+        callbackBucket,
     }: {
         target: ConcreteEntityAdapter;
         relationship: RelationshipAdapter;
         input: Record<string, any>[];
         connect: ConnectOperation;
         context: Neo4jGraphQLTranslationContext;
+        callbackBucket: CallbackBucket;
     }) {
         this.addEntityAuthorization({
             entity: target,
@@ -161,7 +176,8 @@ export class ConnectFactory {
                             nestedEntity,
                             nestedRelationship,
                             nestedConnectInputItem,
-                            context
+                            context,
+                            callbackBucket
                         );
 
                         const mutationOperationField = new MutationOperationField(nestedConnectOperation, key);
@@ -187,6 +203,50 @@ export class ConnectFactory {
                     connect.addField(paramInputField, attachedTo);
                 }
             }
+        });
+
+        this.addPopulatedByFieldToConnect({
+            connect,
+            input,
+            callbackBucket,
+            relationship,
+        });
+    }
+
+    private addPopulatedByFieldToConnect({
+        connect,
+        input,
+        callbackBucket,
+        relationship,
+    }: {
+        connect: ConnectOperation;
+        input: Record<string, any>;
+        callbackBucket: CallbackBucket;
+        relationship?: RelationshipAdapter;
+    }) {
+        // Using create here because the relationship is created on connect
+        relationship?.getPopulatedByFields("CREATE").forEach((attribute) => {
+            const attachedTo = "relationship";
+            // the param value it's irrelevant as it will be overwritten by the callback function
+            const relCallbackParam = new Cypher.Param("");
+            const relField = new ParamInputField({
+                attribute,
+                attachedTo,
+                inputValue: relCallbackParam,
+            });
+            connect.addField(relField, "relationship");
+
+            const callbackFunctionName = attribute.annotations.populatedBy?.callback;
+            if (!callbackFunctionName) {
+                throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
+            }
+
+            callbackBucket.addCallback({
+                functionName: callbackFunctionName,
+                param: relCallbackParam,
+                parent: input.edge,
+                type: attribute.type,
+            });
         });
     }
 
