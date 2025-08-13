@@ -229,12 +229,19 @@ export class OperationsFactory {
         entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
         relationship: RelationshipAdapter,
         input: Record<string, any>[],
-        context: Neo4jGraphQLTranslationContext
+        context: Neo4jGraphQLTranslationContext,
+        callbackBucket: CallbackBucket
     ) {
         if (isConcreteEntity(entity)) {
-            return this.connectFactory.createConnectOperation(entity, relationship, input, context);
+            return this.connectFactory.createConnectOperation(entity, relationship, input, context, callbackBucket);
         } else {
-            return this.connectFactory.createCompositeConnectOperation(entity, relationship, input, context);
+            return this.connectFactory.createCompositeConnectOperation(
+                entity,
+                relationship,
+                input,
+                context,
+                callbackBucket
+            );
         }
     }
 

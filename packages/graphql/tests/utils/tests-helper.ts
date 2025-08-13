@@ -67,13 +67,17 @@ export class TestHelper {
     }
 
     /** Expectations over a Node label */
-    public expectNode(type: UniqueType): NeoExpectNode {
+    public expectNode(type: UniqueType | string): NeoExpectNode {
         const executeFn = this.executeCypher.bind(this);
         return new NeoExpectNode(executeFn, type);
     }
 
     /** Expectations over a Relationship */
-    public expectRelationship(from: UniqueType, to: UniqueType, type?: string): NeoExpectRelationship {
+    public expectRelationship(
+        from: UniqueType | string,
+        to: UniqueType | string,
+        type?: string
+    ): NeoExpectRelationship {
         const executeFn = this.executeCypher.bind(this);
         return new NeoExpectRelationship(executeFn, from, to, type);
     }

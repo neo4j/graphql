@@ -81,10 +81,11 @@ export abstract class NeoExpect {
             return value.toNumber();
         }
 
+        if (neo4j.isDateTime(value) || neo4j.isLocalDateTime(value) || neo4j.isDate(value)) {
+            return value.toStandardDate();
+        }
+
         if (
-            neo4j.isLocalDateTime(value) ||
-            neo4j.isDate(value) ||
-            neo4j.isDateTime(value) ||
             neo4j.isDuration(value) ||
             neo4j.isLocalTime(value) ||
             neo4j.isPoint(value) ||

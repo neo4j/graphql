@@ -354,7 +354,8 @@ export class CreateFactory {
                                         nestedEntity,
                                         nestedRelationship,
                                         nestedConnectInputItem,
-                                        context
+                                        context,
+                                        callbackBucket
                                     );
 
                                 const mutationOperationField = new MutationOperationField(nestedConnectOperation, key);
@@ -497,7 +498,7 @@ export class CreateFactory {
             relationship?.getPopulatedByFields("CREATE").forEach((attribute) => {
                 const attachedTo = "relationship";
                 // the param value it's irrelevant as it will be overwritten by the callback function
-                const relCallbackParam = new Cypher.Param("5678");
+                const relCallbackParam = new Cypher.Param("foo");
                 const relField = new ParamInputField({
                     attribute,
                     attachedTo,
