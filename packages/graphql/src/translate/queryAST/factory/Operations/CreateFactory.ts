@@ -498,7 +498,7 @@ export class CreateFactory {
             relationship?.getPopulatedByFields("CREATE").forEach((attribute) => {
                 const attachedTo = "relationship";
                 // the param value it's irrelevant as it will be overwritten by the callback function
-                const relCallbackParam = new Cypher.Param("foo");
+                const relCallbackParam = new Cypher.Param("");
                 const relField = new ParamInputField({
                     attribute,
                     attachedTo,

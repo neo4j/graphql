@@ -206,7 +206,6 @@ export class ConnectFactory {
         });
 
         this.addPopulatedByFieldToConnect({
-            // entity: target,
             connect,
             input,
             callbackBucket,
@@ -215,13 +214,11 @@ export class ConnectFactory {
     }
 
     private addPopulatedByFieldToConnect({
-        // entity,
         connect,
         input,
         callbackBucket,
         relationship,
     }: {
-        // entity: ConcreteEntityAdapter;
         connect: ConnectOperation;
         input: Record<string, any>;
         callbackBucket: CallbackBucket;
@@ -231,7 +228,7 @@ export class ConnectFactory {
         relationship?.getPopulatedByFields("CREATE").forEach((attribute) => {
             const attachedTo = "relationship";
             // the param value it's irrelevant as it will be overwritten by the callback function
-            const relCallbackParam = new Cypher.Param("foo");
+            const relCallbackParam = new Cypher.Param("");
             const relField = new ParamInputField({
                 attribute,
                 attachedTo,
