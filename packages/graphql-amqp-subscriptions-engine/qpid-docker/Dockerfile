@@ -1,4 +1,4 @@
-FROM ibmjava:8-jre@sha256:ee46960b7a90bb22f4ef03ec3411b68dea163208be4edba192837754cb765243
+FROM ibmjava:8-jre@sha256:9626481da11b946704196b63dc021c686cf95027e392f545805c0522a4428eef
 WORKDIR /usr/local/qpid
 RUN apt-get update && apt-get install -y curl \
     && curl https://dlcdn.apache.org/qpid/broker-j/8.0.6/binaries/apache-qpid-broker-j-8.0.6-bin.tar.gz \
