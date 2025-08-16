@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@08eba0b27e820071cde6df949e0beb9ba4906955 # v4
+      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
       - uses: reviewdog/action-actionlint@50b75b9513baa71e6a1899a1ebaa9ac9851cf16c # v1.66.0
         with:
           reporter: github-check
