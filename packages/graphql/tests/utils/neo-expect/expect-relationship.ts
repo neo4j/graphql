@@ -47,7 +47,13 @@ export class NeoExpectRelationship extends NeoExpect {
     /** Uses jest.toEqual matcher over the result of the type query */
     public async toEqual(expectation: any[]): Promise<void> {
         const result = await this.getAll();
-        expect(result).toEqual(expectation);
+        try {
+            expect(result).toEqual(expectation);
+        } catch (err: any) {
+            const typeStr = this.type ? `[${this.type}]` : "-";
+            err.message = `Error on ${this.from} ${typeStr} ${this.to}\n\n ${err.message}`;
+            throw err;
+        }
     }
 
     public async count(expected: number): Promise<void> {
