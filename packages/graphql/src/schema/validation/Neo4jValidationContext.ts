@@ -59,13 +59,14 @@ export class Neo4jValidationContext extends SDLValidationContext {
         super(ast, schema, onError);
         this.callbacks = callbacks;
         this.typeMapWithExtensions = buildTypeMapWithExtensions(ast.definitions);
+
         this.interfacesMap = buildInterfacesMap(ast.definitions, this.typeMapWithExtensions);
     }
 }
 
 // build a type map to access specific types and their extensions
 function buildTypeMapWithExtensions(definitions: Readonly<DefinitionNode[]>): TypeMapWithExtensions {
-    return definitions.reduce((acc, def): TypeMapWithExtensions => {
+    return definitions.reduce((acc, def) => {
         if (
             def.kind === Kind.OBJECT_TYPE_DEFINITION ||
             def.kind === Kind.INTERFACE_TYPE_DEFINITION ||
@@ -77,6 +78,7 @@ function buildTypeMapWithExtensions(definitions: Readonly<DefinitionNode[]>): Ty
         ) {
             const typeName = def.name.value;
             if (!acc[typeName]) {
+                // definition is undefined whilst building the TypeMapWithExtensions, but will eventually be populated
                 acc[typeName] = { extensions: [], definition: undefined };
             }
             if (
@@ -101,7 +103,7 @@ function buildInterfacesMap(
     definitions: Readonly<DefinitionNode[]>,
     typeMapWithExtensions: TypeMapWithExtensions
 ): Record<string, Array<ObjectTypeDefinitionNode>> {
-    return definitions.reduce((acc, def): TypeMapWithExtensions => {
+    return definitions.reduce((acc, def): Record<string, Array<ObjectTypeDefinitionNode>> => {
         if (def.kind === Kind.OBJECT_TYPE_DEFINITION || def.kind === Kind.OBJECT_TYPE_EXTENSION) {
             const typeName = def.name.value;
             for (const defInterface of def.interfaces ?? []) {
@@ -111,7 +113,9 @@ function buildInterfacesMap(
                 }
 
                 const concreteDefinition = typeMapWithExtensions[typeName]?.definition;
-                acc[interfaceName].push(concreteDefinition);
+                if (concreteDefinition && concreteDefinition.kind === Kind.OBJECT_TYPE_DEFINITION) {
+                    acc[interfaceName].push(concreteDefinition);
+                }
             }
         }
         return acc;
