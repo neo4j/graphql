@@ -388,7 +388,6 @@ export class CreateFactory {
             create,
             input,
             callbackBucket,
-            isNested,
             relationship,
         });
     }
@@ -460,14 +459,12 @@ export class CreateFactory {
         create,
         input,
         callbackBucket,
-        isNested,
         relationship,
     }: {
         entity: ConcreteEntityAdapter;
         create: CreateOperation;
         input: Record<string, any>;
         callbackBucket: CallbackBucket;
-        isNested: boolean;
         relationship?: RelationshipAdapter;
     }) {
         entity.getPopulatedByFields("CREATE").forEach((attribute) => {
@@ -494,8 +491,8 @@ export class CreateFactory {
             });
         });
 
-        if (isNested) {
-            relationship?.getPopulatedByFields("CREATE").forEach((attribute) => {
+        if (relationship) {
+            relationship.getPopulatedByFields("CREATE").forEach((attribute) => {
                 const attachedTo = "relationship";
                 // the param value it's irrelevant as it will be overwritten by the callback function
                 const relCallbackParam = new Cypher.Param("");
