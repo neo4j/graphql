@@ -203,7 +203,8 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
                 CREATE (this3:OpeningHoursInterval)
                 MERGE (this2)-[this4:HAS_OPEN_INTERVALS]->(this3)
                 SET
-                    this3.name = $param0
+                    this3.name = $param0,
+                    this3.updatedBy = $param1
                 MERGE (this1)-[this5:VALID_OPENING_DAYS]->(this2)
                 SET
                     this2.id = randomUUID()
@@ -211,7 +212,8 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
                 CREATE (this6:MyWorkspace)
                 MERGE (this1)-[this7:HAS_WORKSPACE_SETTINGS]->(this6)
                 SET
-                    this6.workspace = $param1
+                    this6.workspace = $param2,
+                    this6.updatedBy = $param3
                 MERGE (this0)<-[this8:VEHICLECARD_OWNER]-(this1)
                 SET
                     this1.id = randomUUID()
@@ -219,7 +221,7 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
                 CREATE (this9:User)
                 MERGE (this0)<-[this10:ADMIN_IN]-(this9)
                 SET
-                    this9.userId = $param2
+                    this9.userId = $param4
                 WITH *
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                     MATCH (this0)<-[:ADMIN_IN]-(this11:User)
@@ -288,8 +290,10 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"lambo\\",
-                \\"param1\\": \\"myWorkspace\\",
-                \\"param2\\": \\"123\\",
+                \\"param1\\": \\"hi\\",
+                \\"param2\\": \\"myWorkspace\\",
+                \\"param3\\": \\"hi\\",
+                \\"param4\\": \\"123\\",
                 \\"isAuthenticated\\": false,
                 \\"jwt\\": {}
             }"

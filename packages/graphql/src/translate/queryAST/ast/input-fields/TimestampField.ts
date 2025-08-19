@@ -30,12 +30,9 @@ export class TimestampField extends InputField {
         super(name, attachedTo);
         this.attribute = attribute;
     }
+
     public getChildren() {
         return [];
-    }
-
-    public print(): string {
-        return `${super.print()} <${this.name}>`;
     }
 
     public getSetParams(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.SetParam[] {

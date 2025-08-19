@@ -175,7 +175,8 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
                 CREATE (this3:OpeningHoursInterval)
                 MERGE (this2)-[this4:HAS_OPEN_INTERVALS]->(this3)
                 SET
-                    this3.name = $param0
+                    this3.name = $param0,
+                    this3.updatedBy = $param1
                 MERGE (this1)-[this5:VALID_OPENING_DAYS]->(this2)
                 SET
                     this2.id = randomUUID()
@@ -186,7 +187,7 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
                 CREATE (this7:User)
                 MERGE (this0)<-[this8:ADMIN_IN]-(this7)
                 SET
-                    this7.userId = $param1
+                    this7.userId = $param2
                 WITH *
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                     MATCH (this0)<-[:ADMIN_IN]-(this9:User)
@@ -244,7 +245,8 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"lambo\\",
-                \\"param1\\": \\"123\\",
+                \\"param1\\": \\"hi\\",
+                \\"param2\\": \\"123\\",
                 \\"isAuthenticated\\": false,
                 \\"jwt\\": {}
             }"

@@ -470,31 +470,31 @@ export class CreateFactory {
         isNested: boolean;
         relationship?: RelationshipAdapter;
     }) {
-        if (!isNested) {
-            entity.getPopulatedByFields("CREATE").forEach((attribute) => {
-                const attachedTo = "node";
-                // the param value it's irrelevant as it will be overwritten by the callback function
-                const callbackParam = new Cypher.Param("1234");
-                const field = new ParamInputField({
-                    attribute,
-                    attachedTo,
-                    inputValue: callbackParam,
-                });
-                create.addField(field);
-
-                const callbackFunctionName = attribute.annotations.populatedBy?.callback;
-                if (!callbackFunctionName) {
-                    throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
-                }
-
-                callbackBucket.addCallback({
-                    functionName: callbackFunctionName,
-                    param: callbackParam,
-                    parent: input,
-                    type: attribute.type,
-                });
+        entity.getPopulatedByFields("CREATE").forEach((attribute) => {
+            const attachedTo = "node";
+            // the param value it's irrelevant as it will be overwritten by the callback function
+            const callbackParam = new Cypher.Param("1234");
+            const field = new ParamInputField({
+                attribute,
+                attachedTo,
+                inputValue: callbackParam,
             });
-        } else {
+            create.addField(field);
+
+            const callbackFunctionName = attribute.annotations.populatedBy?.callback;
+            if (!callbackFunctionName) {
+                throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
+            }
+
+            callbackBucket.addCallback({
+                functionName: callbackFunctionName,
+                param: callbackParam,
+                parent: input,
+                type: attribute.type,
+            });
+        });
+
+        if (isNested) {
             relationship?.getPopulatedByFields("CREATE").forEach((attribute) => {
                 const attachedTo = "relationship";
                 // the param value it's irrelevant as it will be overwritten by the callback function
