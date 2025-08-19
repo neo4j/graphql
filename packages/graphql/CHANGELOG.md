@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.2.9
+
+### Patch Changes
+
+- [#6589](https://github.com/neo4j/graphql/pull/6589) [`8e25ca9`](https://github.com/neo4j/graphql/commit/8e25ca900b32355648879cbbc991b96ed2a8dac2) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix regression on `@populatedBy` where nested create operations don't trigger callbacks
+
 ## 7.2.8
 
 ### Patch Changes
