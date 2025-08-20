@@ -486,6 +486,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@as-integrations/express4@npm:^1.1.2":
+  version: 1.1.2
+  resolution: "@as-integrations/express4@npm:1.1.2"
+  peerDependencies:
+    "@apollo/server": ^4.0.0 || ^5.0.0
+    express: ^4.0.0
+  checksum: 10c0/6934b4b878f71894f85dc0003eb404a4b701468693bf6cf686b4adf56709532f75f118b63abccc5daaf5ba3e961e541430664e21b9bfb84d7a28e6e248052e92
+  languageName: node
+  linkType: hard
+
 "@assemblyscript/loader@npm:^0.19.21":
   version: 0.19.23
   resolution: "@assemblyscript/loader@npm:0.19.23"
@@ -2740,6 +2750,7 @@ __metadata:
     "@apollo/gateway": "npm:2.11.2"
     "@apollo/server": "npm:5.0.0"
     "@apollo/subgraph": "npm:^2.2.3"
+    "@as-integrations/express4": "npm:^1.1.2"
     "@graphql-tools/merge": "npm:^9.0.0"
     "@graphql-tools/resolvers-composition": "npm:^7.0.0"
     "@graphql-tools/schema": "npm:^10.0.0"
