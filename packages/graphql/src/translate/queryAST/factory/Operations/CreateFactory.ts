@@ -470,7 +470,7 @@ export class CreateFactory {
         entity.getPopulatedByFields("CREATE").forEach((attribute) => {
             const attachedTo = "node";
             // the param value it's irrelevant as it will be overwritten by the callback function
-            const callbackParam = new Cypher.Param("1234");
+            const callbackParam = new Cypher.Param("");
             const field = new ParamInputField({
                 attribute,
                 attachedTo,
@@ -483,10 +483,12 @@ export class CreateFactory {
                 throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
             }
 
+            const callbackParent = relationship ? input.node : input;
+
             callbackBucket.addCallback({
                 functionName: callbackFunctionName,
                 param: callbackParam,
-                parent: input,
+                parent: callbackParent,
                 type: attribute.type,
             });
         });
