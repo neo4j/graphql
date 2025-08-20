@@ -35,7 +35,7 @@
     },
     "homepage": "https://github.com/neo4j/graphql#readme",
     "dependencies": {
-        "@apollo/server": "^4.7.0",
+        "@apollo/server": "^5.0.0",
         "@neo4j/graphql": "^5.4.0",
         "@neo4j/graphql-amqp-subscriptions-engine": "^2.0.0",
         "@urql/core": "^6.0.0",

@@ -18,9 +18,9 @@
  */
 
 import { ApolloServer } from "@apollo/server";
-import type { ExpressMiddlewareOptions } from "@apollo/server/express4";
-import { expressMiddleware } from "@apollo/server/express4";
 import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
+import type { ExpressMiddlewareOptions } from "@as-integrations/express4";
+import { expressMiddleware } from "@as-integrations/express4";
 import bodyParser from "body-parser";
 import cors from "cors";
 import express from "express";
