@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.2.10
+
+### Patch Changes
+
+- [#6594](https://github.com/neo4j/graphql/pull/6594) [`3825c8d`](https://github.com/neo4j/graphql/commit/3825c8dd5eeb3a5f1c7555c8894a64018252fb3f) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix arguments on populatedBy callbacks
+
 ## 7.2.9
 
 ### Patch Changes
