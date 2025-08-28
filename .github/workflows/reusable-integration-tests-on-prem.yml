@@ -16,30 +16,23 @@ jobs:
         packages:
           [
             { package: "introspector", shard: 1/1, coverage_name: 2 },
-            { package: "graphql", shard: 1/4, coverage_name: 3 }, 
+            { package: "graphql", shard: 1/4, coverage_name: 3 },
             { package: "graphql", shard: 2/4, coverage_name: 4 },
             { package: "graphql", shard: 3/4, coverage_name: 5 },
             { package: "graphql", shard: 4/4, coverage_name: 6 },
           ]
-        neo4j-version:
-          #   - 5-community
-          - 5-enterprise
-        graphql-version: [
-          {
-            version: "^15.0.0",
-            coverage_path: 15
-          },
-          {
-            version: "^16.0.0",
-            coverage_path: 16
-          }
-        ]
+        version:
+          [
+            { neo4j: "5-enterprise", graphql: "^15.0.0", coverage_path: 15 },
+            { neo4j: "5-enterprise", graphql: "^16.0.0", coverage_path: 16 },
+            { neo4j: "2025-enterprise", graphql: "^16.0.0", coverage_path: 16 },
+          ]
 
     runs-on: ubuntu-latest
 
     services:
       neo4j:
-        image: neo4j:${{ matrix.neo4j-version }}
+        image: neo4j:${{ matrix.version.neo4j }}
         env:
           NEO4J_AUTH: neo4j/password
           NEO4J_PLUGINS: '["apoc"]'
@@ -57,11 +50,11 @@ jobs:
       - name: Install dependencies
         run: yarn --immutable
       - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version.version }}
+        run: yarn up --exact graphql@${{ matrix.version.graphql }}
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --shard=${{ matrix.packages.shard }} --coverage
-          mv coverage coverage-${{ matrix.neo4j-version }}-${{ matrix.graphql-version.coverage_path }}
+          mv coverage coverage-${{ matrix.version.neo4j }}-${{ matrix.version.coverage_path }}
         working-directory: packages/${{ matrix.packages.package }}
         env:
           NEO_USER: neo4j
@@ -72,8 +65,8 @@ jobs:
         name: Archive coverage report
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
-          name: integration-coverage-${{ matrix.packages.package }}-${{ matrix.neo4j-version }}-${{ matrix.graphql-version.coverage_path }}-${{ matrix.packages.coverage_name }}
-          path: packages/${{ matrix.packages.package }}/coverage-${{ matrix.neo4j-version }}-${{ matrix.graphql-version.coverage_path }}/
+          name: integration-coverage-${{ matrix.packages.package }}-${{ matrix.version.neo4j }}-${{ matrix.version.coverage_path }}-${{ matrix.packages.coverage_name }}
+          path: packages/${{ matrix.packages.package }}/coverage-${{ matrix.version.neo4j }}-${{ matrix.version.coverage_path }}/
 
   merge-integration-tests-results:
     runs-on: ubuntu-latest
