@@ -225,11 +225,15 @@ export class UnwindCreateOperation extends MutationOperation {
         if (!predicates.length && !validations.length) {
             return [];
         } else {
+            const wrappedSubqueries = subqueries.map((sq) => {
+                return new Cypher.With("*").call(sq, [context.target!]);
+            });
+
             if (lastSelection) {
                 lastSelection.where(predicate);
-                return [...subqueries, new Cypher.With("*"), ...selections, ...validations];
+                return [...wrappedSubqueries, new Cypher.With("*"), ...selections, ...validations];
             }
-            return [...subqueries, new Cypher.With("*").where(predicate), ...selections, ...validations];
+            return [...wrappedSubqueries, new Cypher.With("*").where(predicate), ...selections, ...validations];
         }
     }
 
