@@ -213,15 +213,21 @@ export class UnwindCreateOperation extends MutationOperation {
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
         const { selections, subqueries, predicates } = this.getAuthFilters(context);
+
+        const wrappedSubqueries = subqueries.map((sq) => {
+            return new Cypher.With("*").call(sq).importWith(context.target!);
+        });
+
         const lastSelection = selections[selections.length - 1];
         if (lastSelection) {
             lastSelection.where(Cypher.and(...predicates));
-            return [...subqueries, new Cypher.With("*"), ...selections];
+            return [...wrappedSubqueries, new Cypher.With("*"), ...selections];
         }
         if (predicates.length) {
-            return [...subqueries, new Cypher.With("*").where(Cypher.and(...predicates))];
+            return [...wrappedSubqueries, new Cypher.With("*").where(Cypher.and(...predicates))];
         }
-        return [...subqueries];
+
+        return wrappedSubqueries;
     }
 
     private getAuthFilters(context: QueryASTContext): {
