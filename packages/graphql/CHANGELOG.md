@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.12.9
+
+### Patch Changes
+
+-   [#6621](https://github.com/neo4j/graphql/pull/6621) [`130722c`](https://github.com/neo4j/graphql/commit/130722ca90c7f86a3d0ea7c9685bb197154f93e2) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix incorrect Cypher with authorization filters combined with authorization directive in a create operation
+
 ## 5.12.8
 
 ### Patch Changes
