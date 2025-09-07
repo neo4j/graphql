@@ -9,7 +9,7 @@
     },
     "dependencies": {
         "@apollo/server": "^5.0.0",
-        "@graphql-tools/wrap": "^10.0.0",
+        "@graphql-tools/wrap": "^11.0.0",
         "@neo4j/graphql": "^5.12.9",
         "graphql": "16.11.0",
         "graphql-tag": "^2.12.6",
