@@ -153,7 +153,7 @@ export class ConnectionReadOperation extends Operation {
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.hasTarget()) {
             throw new Error(
-                "Error generating query: contxt has no target in ConnectionReadOperation. This is likely a bug with the @neo4j/graphql library"
+                "Error generating query: context has no target in ConnectionReadOperation. This is likely a bug with the @neo4j/graphql library"
             );
         }
 
