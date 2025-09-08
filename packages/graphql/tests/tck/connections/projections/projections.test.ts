@@ -192,26 +192,15 @@ describe("Relay Cursor Connection projections", () => {
             WHERE this.title = $param0
             CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH collect({ node: this1, relationship: this0 }) AS edges, count(this1) AS totalCount
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1, edge.relationship AS this0
-                    WITH *
-                    LIMIT $param1
-                    RETURN collect({ node: { __id: id(this1), __resolveType: \\"Actor\\" } }) AS var2
-                }
-                RETURN { edges: var2, totalCount: totalCount } AS var3
+                WITH count(this1) AS totalCount
+                RETURN { totalCount: totalCount } AS var2
             }
-            RETURN this { .title, actorsConnection: var3 } AS this"
+            RETURN this { .title, actorsConnection: var2 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Forrest Gump\\",
-                \\"param1\\": {
-                    \\"low\\": 5,
-                    \\"high\\": 0
-                }
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });
