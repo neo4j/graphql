@@ -465,6 +465,11 @@ export class ConnectionFactory {
 
         operation.setHasTotalCount(Boolean(totalCount || pageInfo));
 
+        // If the client requested pageInfo, the operation needs to project edges so page cursors can be computed. Otherwise, avoid projecting edges.
+        if (pageInfo) {
+            operation.setNeedsPageInfo(true);
+        }
+
         this.hydrateConnectionOperationsASTWithSort({
             entityOrRel,
             resolveTree,

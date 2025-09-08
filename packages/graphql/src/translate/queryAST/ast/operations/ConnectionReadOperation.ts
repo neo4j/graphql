@@ -43,18 +43,17 @@ export class ConnectionReadOperation extends Operation {
 
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = []; // TODO: merge with attachedTo?
-
-    private aggregationField: ConnectionAggregationField | undefined;
-
     public filters: Filter[] = [];
     public skipConnection: boolean = false; // If set to true, skips the connection (use for aggregation only queries optimisation)
+
     protected pagination: Pagination | undefined;
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
     protected authFilters: AuthorizationFilters[] = [];
-
+    protected needsPageInfo: boolean = false;
     protected selection: EntitySelection;
 
     private hasTotalCount = false;
+    private aggregationField: ConnectionAggregationField | undefined;
 
     constructor({
         relationship,
@@ -73,6 +72,10 @@ export class ConnectionReadOperation extends Operation {
 
     public setHasTotalCount(value: boolean): void {
         this.hasTotalCount = value;
+    }
+
+    public setNeedsPageInfo(value: boolean): void {
+        this.needsPageInfo = value;
     }
 
     public setNodeFields(fields: Field[]) {
@@ -287,9 +290,18 @@ export class ConnectionReadOperation extends Operation {
 
     /** Defines if the query should project edges */
     protected shouldProjectEdges(): boolean {
-        const hasPagination = Boolean(this.pagination);
         const hasFields = this.nodeFields.length + this.edgeFields.length > 0;
-        return hasPagination || hasFields;
+
+        // Project edges when there are explicit node/edge projection fields or when pageInfo is requested.
+        if (hasFields) {
+            return true;
+        }
+
+        if (this.needsPageInfo) {
+            return true;
+        }
+
+        return false;
     }
 
     protected getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
