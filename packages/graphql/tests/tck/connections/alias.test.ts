@@ -227,4 +227,50 @@ describe("Connections Alias", () => {
             }"
         `);
     });
+
+    test("should alias cursor when another property is also selected", async () => {
+        const query = /* GraphQL */ `
+            {
+                movies {
+                    actorsConnection(first: 1) {
+                        edges {
+                            c: cursor
+                            properties {
+                                screenTime
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            MATCH (this:Movie)
+            CALL (this) {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH collect({ node: this1, relationship: this0 }) AS edges
+                CALL (edges) {
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH *
+                    LIMIT $param0
+                    RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { __id: id(this1), __resolveType: \\"Actor\\" } }) AS var2
+                }
+                RETURN { edges: var2 } AS var3
+            }
+            RETURN this { actorsConnection: var3 } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 1,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
 });

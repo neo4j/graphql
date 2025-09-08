@@ -293,15 +293,7 @@ export class ConnectionReadOperation extends Operation {
         const hasFields = this.nodeFields.length + this.edgeFields.length > 0;
 
         // Project edges when there are explicit node/edge projection fields or when pageInfo is requested.
-        if (hasFields) {
-            return true;
-        }
-
-        if (this.needsPageInfo) {
-            return true;
-        }
-
-        return false;
+        return hasFields || this.needsPageInfo;
     }
 
     protected getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
