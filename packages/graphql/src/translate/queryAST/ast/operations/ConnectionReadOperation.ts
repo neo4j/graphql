@@ -325,31 +325,6 @@ export class ConnectionReadOperation extends Operation {
         return unwindClause;
     }
 
-    private createUnwindAndProjectionSubquery(
-        context: QueryASTContext<Cypher.Node>,
-        edgesVar: Cypher.Variable,
-        returnVar: Cypher.Variable
-    ) {
-        const edgeVar = new Cypher.NamedVariable("edge");
-        const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(context);
-
-        const unwindClause = this.getUnwindClause(context, edgeVar, edgesVar);
-
-        const edgeProjectionMap = this.createProjectionMapForEdge(context);
-        const paginationWith = this.generateSortAndPaginationClause(context);
-
-        return new Cypher.Call(
-            Cypher.utils.concat(
-                unwindClause,
-                ...prePaginationSubqueries,
-                paginationWith,
-                ...postPaginationSubqueries,
-                new Cypher.Return([Cypher.collect(edgeProjectionMap), returnVar])
-            ),
-            [edgesVar]
-        );
-    }
-
     protected createProjectionMapForNode(context: QueryASTContext<Cypher.Node>): Cypher.Map {
         const projectionMap = this.generateProjectionMapForFields(this.nodeFields, context.target);
         if (projectionMap.size === 0) {
