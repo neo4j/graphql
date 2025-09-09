@@ -1648,9 +1648,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/batch-execute@npm:^9.0.19":
-  version: 9.0.19
-  resolution: "@graphql-tools/batch-execute@npm:9.0.19"
+"@graphql-tools/batch-execute@npm:^10.0.0":
+  version: 10.0.0
+  resolution: "@graphql-tools/batch-execute@npm:10.0.0"
   dependencies:
     "@graphql-tools/utils": "npm:^10.9.1"
     "@whatwg-node/promise-helpers": "npm:^1.3.0"
@@ -1658,15 +1658,15 @@ __metadata:
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/1e3598896492113572d6e586f89bb8856ccc21e3a915e75bd67b1d02e7deaf33e011a21b9ceaacb3abbe63c83ea3d982e106e71e5c7c84f965c114dfe46d10bd
+  checksum: 10c0/b77956ced3f31388be542f8ddf768b7529f9667da7675f7834b47b364408bce753320bbda3cddd93f06bf2bf32ff3036d1dd91eeed5fece6d749c5b3350eb3e7
   languageName: node
   linkType: hard
 
-"@graphql-tools/delegate@npm:^10.2.23":
-  version: 10.2.23
-  resolution: "@graphql-tools/delegate@npm:10.2.23"
+"@graphql-tools/delegate@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@graphql-tools/delegate@npm:11.0.0"
   dependencies:
-    "@graphql-tools/batch-execute": "npm:^9.0.19"
+    "@graphql-tools/batch-execute": "npm:^10.0.0"
     "@graphql-tools/executor": "npm:^1.4.9"
     "@graphql-tools/schema": "npm:^10.0.25"
     "@graphql-tools/utils": "npm:^10.9.1"
@@ -1677,7 +1677,7 @@ __metadata:
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/bcc917cad5f8d21c593ca3382e1808b19c75ed3161ab42b2b69cb43eb53183408d27d1c77d9bf9c6f71971cd9c48109eb78183d2451ab28834a63f7fe855e788
+  checksum: 10c0/45da1e096c30bf4aa3869521b3dab4054420f281e6e8ee8745d091c32f23a54f655bfb442082e555b9b34d9b9a2e71ca59cce2d09e670303ac1b35f9ca1be2b1
   languageName: node
   linkType: hard
 
@@ -1857,18 +1857,18 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/wrap@npm:^10.0.0":
-  version: 10.1.4
-  resolution: "@graphql-tools/wrap@npm:10.1.4"
+"@graphql-tools/wrap@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@graphql-tools/wrap@npm:11.0.0"
   dependencies:
-    "@graphql-tools/delegate": "npm:^10.2.23"
+    "@graphql-tools/delegate": "npm:^11.0.0"
     "@graphql-tools/schema": "npm:^10.0.25"
     "@graphql-tools/utils": "npm:^10.9.1"
     "@whatwg-node/promise-helpers": "npm:^1.3.0"
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/a89d92930b243683b4a7ae5a0104d75ae9b9e3e4cf030f9a25daa04760c7ff05861c108d1e50199091ce036e96cd85bf253a891aa2a87ef737a946b6bb99fd63
+  checksum: 10c0/d63ca1cc6c06b90273410d842657bb691531c9fed1a33155bf41fca0d5121f59e64b9ba4691cab2e73f1ce78e84afd520266c910b99b1de827aa35a05c3c28cd
   languageName: node
   linkType: hard
 
@@ -4721,7 +4721,7 @@ __metadata:
   dependencies:
     "@apollo/federation-subgraph-compatibility": "npm:2.2.1"
     "@apollo/server": "npm:^5.0.0"
-    "@graphql-tools/wrap": "npm:^10.0.0"
+    "@graphql-tools/wrap": "npm:^11.0.0"
     "@neo4j/graphql": "npm:^7.2.11"
     fork-ts-checker-webpack-plugin: "npm:9.1.0"
     graphql: "npm:16.11.0"
