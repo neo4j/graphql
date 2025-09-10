@@ -59,7 +59,7 @@ export function validateDefaultDirective(context: Neo4jValidationContext): ASTVi
             const { isValid, errorMsg, errorPath } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${defaultDirective.name}" requires in a type with "@node" or within the "@relationshipProperties" directive`,
+                        `Directive "${defaultDirective.name}" must be in a type with "@node" or within the "@relationshipProperties" directive`,
                         []
                     );
                 }

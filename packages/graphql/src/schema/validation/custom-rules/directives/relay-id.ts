@@ -40,7 +40,7 @@ export function validateRelayIdDirective(context: Neo4jValidationContext): ASTVi
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${relayIdDirective.name}" requires in a type with "@node"`,
+                        `Directive "${relayIdDirective.name}" must be in a type with "@node"`,
                         []
                     );
                 }

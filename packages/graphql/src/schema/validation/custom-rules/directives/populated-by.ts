@@ -70,7 +70,7 @@ export function validatePopulatedByDirective(context: Neo4jValidationContext): A
             const { isValid, errorMsg, errorPath } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${populatedByDirective.name}" requires in a type with "@node" or within the "@relationshipProperties" directive`,
+                        `Directive "${populatedByDirective.name}" must be in a type with "@node" or within the "@relationshipProperties" directive`,
                         []
                     );
                 }
