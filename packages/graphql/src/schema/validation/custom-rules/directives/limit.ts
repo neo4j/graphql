@@ -82,7 +82,7 @@ export function validateLimitDirective(context: Neo4jValidationContext): ASTVisi
                 const isValidLocation = typeIsANodeType({ objectTypeDefinitionNode, typeMapWithExtensions });
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${limitDirective.name}" requires in a type with "@node" or in an interface type`,
+                        `Directive "${limitDirective.name}" must be in a type with "@node" or in an interface type`,
                         []
                     );
                 }

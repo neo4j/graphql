@@ -47,7 +47,7 @@ export function validateCypherDirective(context: Neo4jValidationContext): ASTVis
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${cypherDirective.name}" requires in a type with "@node" or on root types: Query, and Mutation`,
+                        `Directive "${cypherDirective.name}" must be in a type with "@node" or on root types: Query, and Mutation`,
                         []
                     );
                 }
