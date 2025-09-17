@@ -49,7 +49,7 @@ describe("Cypher directive with limit", () => {
                     WHERE ANY(name IN $tagNames
                         WHERE t.displayName = toLower(name))
                     RETURN t
-                    LIMIT $limit
+                    LIMIT coalesce($limit, 10)
                     """
                     columnName: "t"
                 )
@@ -77,7 +77,7 @@ describe("Cypher directive with limit", () => {
                 WHERE ANY(name IN $param0
                     WHERE t.displayName = toLower(name))
                 RETURN t
-                LIMIT $param1
+                LIMIT coalesce($param1, 10)
             }
             WITH t AS this0
             WITH this0 { .id, .name } AS this0
@@ -122,7 +122,7 @@ describe("Cypher directive with limit", () => {
                 WHERE ANY(name IN $param0
                     WHERE t.displayName = toLower(name))
                 RETURN t
-                LIMIT NULL
+                LIMIT coalesce(NULL, 10)
             }
             WITH t AS this0
             WITH this0 { .id, .name } AS this0
