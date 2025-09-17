@@ -32,7 +32,7 @@ import { filterTruthy, isRecord } from "../../../utils/utils";
 import type { Filter } from "../ast/filters/Filter";
 import type { AggregationOperation } from "../ast/operations/AggregationOperation";
 import type { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
-import type { CypherOperation } from "../ast/operations/CypherOperation";
+import { CypherOperation } from "../ast/operations/CypherOperation";
 import type { CypherScalarOperation } from "../ast/operations/CypherScalarOperation";
 import type { ReadOperation } from "../ast/operations/ReadOperation";
 import type { CompositeAggregationOperation } from "../ast/operations/composite/CompositeAggregationOperation";
@@ -350,6 +350,11 @@ export class OperationsFactory {
             if (sortOptions) {
                 const sort = this.sortAndPaginationFactory.createSortFields(sortOptions, entity, context);
                 operation.addSort(...sort);
+
+                // We don't want to generate the limit operation on custom cypher fields if the flag "ignoreGeneratedLimit" is set
+                if (operation instanceof CypherOperation && context.features.cypherDirective?.ignoreGeneratedLimit) {
+                    return operation;
+                }
 
                 const pagination = this.sortAndPaginationFactory.createPagination(sortOptions);
                 if (pagination) {
