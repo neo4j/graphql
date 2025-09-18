@@ -24,11 +24,6 @@ jobs:
           - 7687:7687
 
     steps:
-      - name: Setup Node.js
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
-        with:
-          node-version: lts/*
-
       - name: Target Branch - Check out
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
         with:
@@ -37,6 +32,11 @@ jobs:
 
       - name: Target Branch - Install dependencies
         run: yarn --immutable
+
+      - name: Setup Node.js
+        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: lts/*
 
       - run: mkdir ./performance
         working-directory: packages/graphql

@@ -17,6 +17,7 @@ jobs:
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: lts/*
+          package-manager-cache: false
       - name: Install markdownlint
         run: npm install -g markdownlint-cli
       - uses: dorny/paths-filter@de90cc6fb38fc0963ad72b210f1f284cd68cea36 # v3.0.2
