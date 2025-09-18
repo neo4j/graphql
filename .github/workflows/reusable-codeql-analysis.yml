@@ -13,6 +13,7 @@ jobs:
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: lts/*
+          package-manager-cache: false
       - name: Initialize CodeQL
         uses: github/codeql-action/init@192325c86100d080feab897ff886c34abd4c83a3 # v3
         with:

@@ -39,12 +39,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - name: Install dependencies
+        run: yarn
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: lts/*
           cache: yarn
-      - name: Install dependencies
-        run: yarn
       - name: Overwrite GraphQL version
         run: yarn up --exact graphql@${{ matrix.version.graphql }}
       - name: Run TCK tests
@@ -68,12 +68,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - name: Install dependencies
+        run: yarn
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: lts/*
           cache: yarn
-      - name: Install dependencies
-        run: yarn
       - name: Run E2E tests
         run: yarn --cwd packages/graphql run test e2e --coverage
 
@@ -82,12 +82,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - name: Install dependencies
+        run: yarn
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: lts/*
           cache: yarn
-      - name: Install dependencies
-        run: yarn
       - name: Run Schema tests
         run: yarn --cwd packages/graphql run test:schema --coverage
       - if: ${{ !inputs.disable-coverage-archival }}
