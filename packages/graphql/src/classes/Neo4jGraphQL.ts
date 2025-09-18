@@ -23,7 +23,7 @@ import type { IExecutableSchemaDefinition } from "@graphql-tools/schema";
 import { addResolversToSchema, makeExecutableSchema } from "@graphql-tools/schema";
 import { forEachField, getResolversFromSchema } from "@graphql-tools/utils";
 import Debug from "debug";
-import { type DocumentNode, type GraphQLSchema } from "graphql";
+import { GraphQLNonNull, GraphQLScalarType, type DocumentNode, type GraphQLSchema } from "graphql";
 import type { Driver, SessionConfig } from "neo4j-driver";
 import { DEBUG_ALL } from "../constants";
 import { makeAugmentedSchema } from "../schema";
@@ -35,6 +35,7 @@ import type { WrapResolverArguments } from "../schema/resolvers/composition/wrap
 import { wrapQueryAndMutation } from "../schema/resolvers/composition/wrap-query-and-mutation";
 import { wrapSubscription, type WrapSubscriptionArgs } from "../schema/resolvers/composition/wrap-subscription";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
+import { numericalResolver } from "../schema/resolvers/field/numerical";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
 import type { ContextFeatures, Neo4jFeaturesSettings, Neo4jGraphQLSubscriptionsEngine } from "../types";
@@ -251,6 +252,20 @@ class Neo4jGraphQL {
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
         forEachField(schema, (field) => {
             if (!field.resolve) {
+                if (field.type instanceof GraphQLScalarType) {
+                    if (field.type.name === "Int" || field.type.name === "Float") {
+                        field.resolve = numericalResolver;
+                        return;
+                    }
+                }
+                if (field.type instanceof GraphQLNonNull) {
+                    if (field.type.ofType instanceof GraphQLScalarType) {
+                        if (field.type.ofType.name === "Int" || field.type.ofType.name === "Float") {
+                            field.resolve = numericalResolver;
+                            return;
+                        }
+                    }
+                }
                 field.resolve = defaultFieldResolver;
             }
         });
