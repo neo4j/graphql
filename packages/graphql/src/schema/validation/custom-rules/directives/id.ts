@@ -43,7 +43,7 @@ export function validateIdDirective(context: Neo4jValidationContext): ASTVisitor
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${idDirective.name}" requires in a type with "@node" or within the "@${relationshipPropertiesDirective.name}" directive`,
+                        `Directive "${idDirective.name}" must be in a type with "@node" or within the "@${relationshipPropertiesDirective.name}" directive`,
                         []
                     );
                 }

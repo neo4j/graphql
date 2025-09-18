@@ -46,7 +46,7 @@ export function validateTimestampDirective(context: Neo4jValidationContext): AST
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${timestampDirective.name}" requires in a type with "@node" or within the "@relationshipProperties" directive`,
+                        `Directive "${timestampDirective.name}" must be in a type with "@node" or within the "@relationshipProperties" directive`,
                         []
                     );
                 }

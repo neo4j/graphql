@@ -57,7 +57,7 @@ export function validateFulltextDirective(context: Neo4jValidationContext): ASTV
             const { isValid, errorMsg, errorPath } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${fulltextDirective.name}" requires in a type with "@node"`,
+                        `Directive "${fulltextDirective.name}" must be in a type with "@node"`,
                         []
                     );
                 }

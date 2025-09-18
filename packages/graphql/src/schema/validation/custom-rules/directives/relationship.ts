@@ -118,7 +118,7 @@ export function validateRelationshipDirective(context: Neo4jValidationContext): 
                         );
                     }
                     throw new DocumentValidationError(
-                        `Directive "${relationshipDirective.name}" requires in a type with "@node"`,
+                        `Directive "${relationshipDirective.name}" must be in a type with "@node"`,
                         []
                     );
                 }

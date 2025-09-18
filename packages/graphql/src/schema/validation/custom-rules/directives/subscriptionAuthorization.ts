@@ -46,7 +46,7 @@ export function validateSubscriptionAuthorizationDirective(context: Neo4jValidat
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${subscriptionsAuthorizationDirectiveScaffold.name}" requires in a type with "@node"`,
+                        `Directive "${subscriptionsAuthorizationDirectiveScaffold.name}" must be in a type with "@node"`,
                         []
                     );
                 }
@@ -80,7 +80,7 @@ export function validateSubscriptionAuthorizationDirective(context: Neo4jValidat
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${subscriptionsAuthorizationDirectiveScaffold.name}" requires in a type with "@node"`,
+                        `Directive "${subscriptionsAuthorizationDirectiveScaffold.name}" must be in a type with "@node"`,
                         []
                     );
                 }

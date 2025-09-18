@@ -52,7 +52,7 @@ export function validateAuthenticationDirective(context: Neo4jValidationContext)
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${authenticationDirectiveScaffold.name}" requires in a type with "@node" or in root types: Query, and Mutation`,
+                        `Directive "${authenticationDirectiveScaffold.name}" must be in a type with "@node" or in root types: Query, and Mutation`,
                         []
                     );
                 }
@@ -86,7 +86,7 @@ export function validateAuthenticationDirective(context: Neo4jValidationContext)
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive "${authenticationDirectiveScaffold.name}" requires in a type with "@node" or in root types: Query, and Mutation`,
+                        `Directive "${authenticationDirectiveScaffold.name}" must be in a type with "@node" or in root types: Query, and Mutation`,
                         []
                     );
                 }

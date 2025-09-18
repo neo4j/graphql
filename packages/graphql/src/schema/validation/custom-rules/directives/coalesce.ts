@@ -56,7 +56,7 @@ export function validateCoalesceDirective(context: Neo4jValidationContext): ASTV
             const { isValid, errorMsg, errorPath } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
-                        `Directive @"${coalesceDirective.name}" requires in a type with "@node" or within the "@relationshipProperties" directive`,
+                        `Directive @"${coalesceDirective.name}" must be in a type with "@node" or within the "@relationshipProperties" directive`,
                         []
                     );
                 }
