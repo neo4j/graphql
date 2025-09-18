@@ -25,10 +25,10 @@
     },
     "devDependencies": {
         "@tsconfig/node22": "22.0.2",
-        "@typescript-eslint/eslint-plugin": "8.41.0",
-        "@typescript-eslint/parser": "8.41.0",
+        "@typescript-eslint/eslint-plugin": "8.44.0",
+        "@typescript-eslint/parser": "8.44.0",
         "concurrently": "9.2.1",
-        "dotenv": "17.2.1",
+        "dotenv": "17.2.2",
         "eslint": "8.57.1",
         "eslint-config-prettier": "10.1.8",
         "eslint-formatter-summary": "2.0.2",
@@ -38,15 +38,15 @@
         "eslint-plugin-jest": "28.14.0",
         "graphql": "16.11.0",
         "jest": "29.7.0",
-        "neo4j-driver": "5.28.1",
+        "neo4j-driver": "5.28.2",
         "prettier": "2.8.8",
         "set-tz": "0.2.0",
-        "ts-jest": "29.4.1",
+        "ts-jest": "29.4.2",
         "typescript": "5.9.2"
     },
     "packageManager": "yarn@4.9.4",
     "dependencies": {
         "@changesets/changelog-github": "0.5.1",
-        "@changesets/cli": "2.29.6"
+        "@changesets/cli": "2.29.7"
     }
 }
