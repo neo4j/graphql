@@ -2767,7 +2767,7 @@ __metadata:
     "@types/is-uuid": "npm:1.0.2"
     "@types/jest": "npm:30.0.0"
     "@types/jsonwebtoken": "npm:9.0.10"
-    "@types/node": "npm:22.18.4"
+    "@types/node": "npm:22.18.6"
     "@types/pluralize": "npm:0.0.33"
     "@types/randomstring": "npm:1.3.0"
     "@types/semver": "npm:7.7.1"
@@ -2799,7 +2799,7 @@ __metadata:
     rimraf: "npm:6.0.1"
     semver: "npm:^7.5.4"
     supertest: "npm:7.1.4"
-    ts-jest: "npm:29.4.2"
+    ts-jest: "npm:29.4.3"
     ts-node: "npm:10.9.2"
     typescript: "npm:5.9.2"
     typescript-memoize: "npm:^1.1.1"
@@ -2816,13 +2816,13 @@ __metadata:
   dependencies:
     "@neo4j/graphql": "npm:^7.0.0"
     "@types/jest": "npm:30.0.0"
-    "@types/node": "npm:22.18.4"
+    "@types/node": "npm:22.18.6"
     "@types/pluralize": "npm:0.0.33"
     camelcase: "npm:^6.3.0"
     debug: "npm:^4.3.4"
     jest: "npm:30.1.3"
     pluralize: "npm:^8.0.0"
-    ts-jest: "npm:29.4.2"
+    ts-jest: "npm:29.4.3"
     typescript: "npm:5.9.2"
   peerDependencies:
     neo4j-driver: ^5.8.0
@@ -3585,12 +3585,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:22.18.4":
-  version: 22.18.4
-  resolution: "@types/node@npm:22.18.4"
+"@types/node@npm:22.18.6":
+  version: 22.18.6
+  resolution: "@types/node@npm:22.18.6"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10c0/3869c65f8c79029bf6a692fbe03aac412d01b7e6e544a3670a32963591d885e0d139b0ccca996e22ef98645713f018e47ac6f8d6840cfe4761adde5612286eb9
+  checksum: 10c0/7ba190da2e64e56c59270661af8cd682c830a1375b6f965ab153be90baabfdaa867aa1d63f87b42de80956996d46dfe1cf93ecefe982d9a16e485b6756949f9a
   languageName: node
   linkType: hard
 
@@ -13592,32 +13592,32 @@ __metadata:
   languageName: node
   linkType: hard
 
-"neo4j-driver-bolt-connection@npm:5.28.1":
-  version: 5.28.1
-  resolution: "neo4j-driver-bolt-connection@npm:5.28.1"
+"neo4j-driver-bolt-connection@npm:5.28.2":
+  version: 5.28.2
+  resolution: "neo4j-driver-bolt-connection@npm:5.28.2"
   dependencies:
     buffer: "npm:^6.0.3"
-    neo4j-driver-core: "npm:5.28.1"
+    neo4j-driver-core: "npm:5.28.2"
     string_decoder: "npm:^1.3.0"
-  checksum: 10c0/443c85a9008ef2ada27b377c0f1f8afa757134cd4e89fa5402eb9538019a72fdc1f0c2d70928b29053c81b07480d8e18808e8ecea5dcac66ae371cab6948d565
+  checksum: 10c0/2f3723baad379480b4223fbd298204ac4cf1fedc92d25e636fda29b85d85c8464b10802d68b0552d1bfc05426835a1742676e13c16d52b0bc626d4e62533b164
   languageName: node
   linkType: hard
 
-"neo4j-driver-core@npm:5.28.1":
-  version: 5.28.1
-  resolution: "neo4j-driver-core@npm:5.28.1"
-  checksum: 10c0/20d8ad335373d60d2c49e64b22496cde1c56b359220b0ca180b9297cf13fb2b8a4437a6c775d0b1a5705f0e425e667b74cb31b582065d9874d74d15068d942db
+"neo4j-driver-core@npm:5.28.2":
+  version: 5.28.2
+  resolution: "neo4j-driver-core@npm:5.28.2"
+  checksum: 10c0/841892cd2e7ee0d7b2e727df48bac52bc3bbccf9d7b20eaed05bf5491115db87e192f99f5574e7873e09b2721595dc289d49d65692e98775fd3f8effe5e903eb
   languageName: node
   linkType: hard
 
-"neo4j-driver@npm:5.28.1, neo4j-driver@npm:^5.8.0":
-  version: 5.28.1
-  resolution: "neo4j-driver@npm:5.28.1"
+"neo4j-driver@npm:5.28.2, neo4j-driver@npm:^5.8.0":
+  version: 5.28.2
+  resolution: "neo4j-driver@npm:5.28.2"
   dependencies:
-    neo4j-driver-bolt-connection: "npm:5.28.1"
-    neo4j-driver-core: "npm:5.28.1"
-    rxjs: "npm:^7.8.1"
-  checksum: 10c0/e340122f5b1393332b3089a949a899c1d6b46bba2b0afc6007a447ed86281eb6bdbb346b7c5a0369560f04b60874a9c8e6844dbafef9b52aaf2ecf30c297382b
+    neo4j-driver-bolt-connection: "npm:5.28.2"
+    neo4j-driver-core: "npm:5.28.2"
+    rxjs: "npm:^7.8.2"
+  checksum: 10c0/9aa69277aa5cb0a8de9b0ee1b9584b78d8d160eef79a5176a9333b69c0d9cb8cd8f10611d24531768241b17049174efa5d31233be3ed2cdb09f1bfe1afce91aa
   languageName: node
   linkType: hard
 
@@ -13641,11 +13641,11 @@ __metadata:
     eslint-plugin-jest: "npm:29.0.1"
     graphql: "npm:16.11.0"
     jest: "npm:30.1.3"
-    neo4j-driver: "npm:5.28.1"
+    neo4j-driver: "npm:5.28.2"
     prettier: "npm:3.6.2"
     prettier-2: "npm:prettier@2.8.8"
     set-tz: "npm:0.2.0"
-    ts-jest: "npm:29.4.2"
+    ts-jest: "npm:29.4.3"
     typescript: "npm:5.9.2"
   languageName: unknown
   linkType: soft
@@ -15610,7 +15610,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rxjs@npm:7.8.2, rxjs@npm:^7.8.1":
+"rxjs@npm:7.8.2, rxjs@npm:^7.8.2":
   version: 7.8.2
   resolution: "rxjs@npm:7.8.2"
   dependencies:
@@ -17117,9 +17117,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:29.4.2":
-  version: 29.4.2
-  resolution: "ts-jest@npm:29.4.2"
+"ts-jest@npm:29.4.3":
+  version: 29.4.3
+  resolution: "ts-jest@npm:29.4.3"
   dependencies:
     bs-logger: "npm:^0.2.6"
     fast-json-stable-stringify: "npm:^2.1.0"
@@ -17153,7 +17153,7 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: 10c0/3db699d4e89735af4a2543478e9c34a086532b48698bf0c50fc01daa3b4e6232dafcc3d20abc22e4b21fd1db3ca4f75169d146319fedc38e3130abf5f35c65e6
+  checksum: 10c0/c86ef3482521d6f90a783da9a01f6116702058fb3a3b75df89f33e9b4cf79dd57f1287be8963c06abc3994055515201e49b3a515b766cb1de21b293cd7cdd43e
   languageName: node
   linkType: hard
 
