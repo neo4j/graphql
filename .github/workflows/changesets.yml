@@ -29,13 +29,14 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Install Dependencies
-        run: yarn
-
       - name: Setup Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: lts/*
+          package-manager-cache: false
+
+      - name: Install Dependencies
+        run: yarn
 
       - name: Configure git
         run: |
