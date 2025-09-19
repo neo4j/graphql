@@ -30,13 +30,14 @@ jobs:
           ref: ${{ github.base_ref }}
           fetch-depth: 0
 
-      - name: Target Branch - Install dependencies
-        run: yarn --immutable
-
       - name: Setup Node.js
         uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: lts/*
+          package-manager-cache: false
+
+      - name: Target Branch - Install dependencies
+        run: yarn --immutable
 
       - run: mkdir ./performance
         working-directory: packages/graphql
