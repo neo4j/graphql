@@ -491,6 +491,64 @@ describe("Connections Alias", () => {
         expect((result.data as any)[typeMovie.plural][0].actorsConnection.edges[0].c).toBeDefined();
     });
 
+    test("should alias cursor when another property is selected", async () => {
+        const typeDefs = gql`
+            type ${typeMovie.name} @node {
+                title: String!
+                actors: [${typeActor.name}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            }
+
+            type ${typeActor.name} @node {
+                name: String!
+                movies: [${typeMovie.name}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+            }
+
+            type ActedIn @relationshipProperties {
+                screenTime: Int!
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
+        const movieTitle = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            {
+                ${typeMovie.plural}(where: { title_EQ: "${movieTitle}" }) {
+                    actorsConnection(first: 1) {
+                        edges {
+                            c:cursor
+                            properties {
+                                screenTime
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        await testHelper.executeCypher(
+            `
+                    CREATE (m:${typeMovie.name} {title: $movieTitle})
+                    CREATE (m)<-[:ACTED_IN { screenTime: 1 }]-(:${typeActor.name} {name: randomUUID()})
+                    CREATE (m)<-[:ACTED_IN { screenTime: 2 }]-(:${typeActor.name} {name: randomUUID()})
+                    CREATE (m)<-[:ACTED_IN { screenTime: 3 }]-(:${typeActor.name} {name: randomUUID()})
+                `,
+            {
+                movieTitle,
+            }
+        );
+
+        const result = await testHelper.executeGraphQL(query);
+
+        expect(result.errors).toBeUndefined();
+
+        expect((result.data as any)[typeMovie.plural][0].actorsConnection.edges[0].c).toBeDefined();
+        expect((result.data as any)[typeMovie.plural][0].actorsConnection.edges[0].properties.screenTime).toBeDefined();
+    });
+
     test("should alias the top level node key", async () => {
         const typeDefs = gql`
             type ${typeMovie.name} @node {
