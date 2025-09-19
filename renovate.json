@@ -18,11 +18,8 @@
         "**/__fixtures__/**"
     ],
     "ignoreDeps": ["neo4j"],
+    "minimumReleaseAge": "3 days",
     "packageRules": [
-        {
-            "matchDatasources": ["npm"],
-            "minimumReleaseAge": "3 days"
-        },
         {
             "matchFileNames": ["packages/package-tests/graphql-15/package.json"],
             "allowedVersions": "15",
