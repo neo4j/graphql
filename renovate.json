@@ -20,6 +20,10 @@
     "ignoreDeps": ["neo4j"],
     "packageRules": [
         {
+            "matchDatasources": ["npm"],
+            "minimumReleaseAge": "3 days"
+        },
+        {
             "matchFileNames": ["packages/package-tests/graphql-15/package.json"],
             "allowedVersions": "15",
             "matchPackageNames": ["/graphql/"]
