@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("Cypher directive with limit ignoreGeneratedLimit flag", () => {
+describe("Cypher directive with limit disableGeneratedLimit flag", () => {
     const testHelper = new TestHelper();
     let typeDefs: string;
 
@@ -69,7 +69,7 @@ describe("Cypher directive with limit ignoreGeneratedLimit flag", () => {
             typeDefs,
             features: {
                 cypherDirective: {
-                    ignoreGeneratedLimit: true,
+                    disableGeneratedLimit: true,
                 },
             },
         });

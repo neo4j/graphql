@@ -351,8 +351,8 @@ export class OperationsFactory {
                 const sort = this.sortAndPaginationFactory.createSortFields(sortOptions, entity, context);
                 operation.addSort(...sort);
 
-                // We don't want to generate the limit operation on custom cypher fields if the flag "ignoreGeneratedLimit" is set
-                if (operation instanceof CypherOperation && context.features.cypherDirective?.ignoreGeneratedLimit) {
+                // We don't want to generate the limit operation on custom cypher fields if the flag "disableGeneratedLimit" is set
+                if (operation instanceof CypherOperation && context.features.cypherDirective?.disableGeneratedLimit) {
                     return operation;
                 }
 

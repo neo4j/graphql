@@ -20,7 +20,7 @@
 import { Neo4jGraphQL } from "../../../../../src";
 import { formatCypher, formatParams, translateQuery } from "../../../utils/tck-test-utils";
 
-describe("Cypher directive with limit and ignoreGeneratedLimit flag", () => {
+describe("Cypher directive with limit and disableGeneratedLimit flag", () => {
     const typeDefs = /* GraphQL */ `
         type Tag @limit(default: 10, max: 100) @node {
             id: Int
@@ -59,7 +59,7 @@ describe("Cypher directive with limit and ignoreGeneratedLimit flag", () => {
         typeDefs,
         features: {
             cypherDirective: {
-                ignoreGeneratedLimit: true,
+                disableGeneratedLimit: true,
             },
         },
     });
