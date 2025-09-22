@@ -252,6 +252,8 @@ class Neo4jGraphQL {
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
         forEachField(schema, (field) => {
             if (!field.resolve) {
+                // TODO: cleanup this and check date and other types
+                // TODO: ID
                 if (field.type instanceof GraphQLScalarType) {
                     if (field.type.name === "Int" || field.type.name === "Float") {
                         field.resolve = numericalResolver;
