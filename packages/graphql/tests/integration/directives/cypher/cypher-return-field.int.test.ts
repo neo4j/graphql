@@ -37,7 +37,14 @@ describe("Return different types with @cypher directive", () => {
                         UNWIND [{
                             value: 12,
                             country: 'Italy',
-                            date: date('2024-09-22')
+                            date: date('2024-09-22'),
+                            id: 12,
+                            bigInt: '123',
+                            value2: 12,
+                            country2: 'Italy',
+                            date2: date('2024-09-22'),
+                            id2: 12,
+                            bigInt2: '123'
                         }] as result
                         RETURN result
                         """
@@ -48,7 +55,14 @@ describe("Return different types with @cypher directive", () => {
                         RETURN {
                             value: 10,
                             country: 'Spain',
-                            date: date('2025-09-22')
+                            date: date('2025-09-22'),
+                            id: 12,
+                            bigInt: '123',
+                            value2: 10,
+                            country2: 'Spain',
+                            date2: date('2025-09-22'),
+                            id2: 12,
+                            bigInt2: '123'
                         } as result
                         """
                         columnName: "result"
@@ -59,6 +73,13 @@ describe("Return different types with @cypher directive", () => {
                 value: Int
                 country: String
                 date: Date
+                bigInt: BigInt
+                id: ID
+                value2: Int!
+                country2: String!
+                date2: Date!
+                bigInt2: BigInt!
+                id2: ID!
             }
 
             type Query {
@@ -68,7 +89,14 @@ describe("Return different types with @cypher directive", () => {
                         RETURN {
                             value: 10,
                             country: 'Spain',
-                            date: date('2025-09-22')
+                            date: date('2025-09-22'),
+                            id: 12,
+                            bigInt: '123',
+                            value2: 10,
+                            country2: 'Spain',
+                            date2: date('2025-09-22'),
+                            id2: 12,
+                            bigInt2: '123'
                         } as result
                         """
                         columnName: "result"
@@ -79,7 +107,14 @@ describe("Return different types with @cypher directive", () => {
                         UNWIND [{
                             value: 12,
                             country: 'Italy',
-                            date: date('2024-09-22')
+                            date: date('2024-09-22'),
+                            id: 12,
+                            bigInt: '123',
+                            value2: 12,
+                            country2: 'Italy',
+                            date2: date('2024-09-22'),
+                            id2: 12,
+                            bigInt2: '123'
                         }] as result
                         RETURN result
                         """
@@ -109,11 +144,25 @@ describe("Return different types with @cypher directive", () => {
                         value
                         country
                         date
+                        id
+                        bigInt
+                        value2
+                        country2
+                        date2
+                        bigInt2
+                        id2
                     }
                     nestedObjectArray {
                         value
                         country
                         date
+                        id
+                        bigInt
+                        value2
+                        country2
+                        date2
+                        bigInt2
+                        id2
                     }
                 }
             }
@@ -129,12 +178,26 @@ describe("Return different types with @cypher directive", () => {
                         value: 10,
                         country: "Spain",
                         date: "2025-09-22",
+                        id: "12",
+                        bigInt: "123",
+                        value2: 10,
+                        country2: "Spain",
+                        date2: "2025-09-22",
+                        id2: "12",
+                        bigInt2: "123",
                     },
                     nestedObjectArray: [
                         {
                             value: 12,
                             country: "Italy",
                             date: "2024-09-22",
+                            id: "12",
+                            bigInt: "123",
+                            value2: 12,
+                            country2: "Italy",
+                            date2: "2024-09-22",
+                            id2: "12",
+                            bigInt2: "123",
                         },
                     ],
                 },
@@ -149,11 +212,25 @@ describe("Return different types with @cypher directive", () => {
                     value
                     country
                     date
+                    id
+                    bigInt
+                    value2
+                    country2
+                    date2
+                    bigInt2
+                    id2
                 }
                 topLevelObjectArray {
                     value
                     country
                     date
+                    id
+                    bigInt
+                    value2
+                    country2
+                    date2
+                    bigInt2
+                    id2
                 }
             }
         `;
@@ -166,12 +243,26 @@ describe("Return different types with @cypher directive", () => {
                 value: 10,
                 country: "Spain",
                 date: "2025-09-22",
+                id: "12",
+                bigInt: "123",
+                value2: 10,
+                country2: "Spain",
+                date2: "2025-09-22",
+                id2: "12",
+                bigInt2: "123",
             },
             topLevelObjectArray: [
                 {
                     value: 12,
                     country: "Italy",
                     date: "2024-09-22",
+                    bigInt: "123",
+                    id: "12",
+                    value2: 12,
+                    country2: "Italy",
+                    date2: "2024-09-22",
+                    id2: "12",
+                    bigInt2: "123",
                 },
             ],
         });

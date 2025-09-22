@@ -35,6 +35,7 @@ import type { WrapResolverArguments } from "../schema/resolvers/composition/wrap
 import { wrapQueryAndMutation } from "../schema/resolvers/composition/wrap-query-and-mutation";
 import { wrapSubscription, type WrapSubscriptionArgs } from "../schema/resolvers/composition/wrap-subscription";
 import { defaultFieldResolver } from "../schema/resolvers/field/defaultField";
+import { idResolver } from "../schema/resolvers/field/id";
 import { numericalResolver } from "../schema/resolvers/field/numerical";
 import { validateDocument } from "../schema/validation";
 import { validateUserDefinition } from "../schema/validation/schema-validation";
@@ -252,18 +253,25 @@ class Neo4jGraphQL {
     private addDefaultFieldResolvers(schema: GraphQLSchema): GraphQLSchema {
         forEachField(schema, (field) => {
             if (!field.resolve) {
-                // TODO: cleanup this and check date and other types
-                // TODO: ID
+                // These fields are not being updated because they are not nodes. Maybe these should be updated in make-augmented-schema instead
+                // TODO: Consider adding objects to the schema model to handle this case in schema generation
                 if (field.type instanceof GraphQLScalarType) {
                     if (field.type.name === "Int" || field.type.name === "Float") {
                         field.resolve = numericalResolver;
                         return;
+                    } else if (field.type.name === "ID") {
+                        field.resolve = idResolver;
+                        return;
                     }
                 }
+
                 if (field.type instanceof GraphQLNonNull) {
                     if (field.type.ofType instanceof GraphQLScalarType) {
                         if (field.type.ofType.name === "Int" || field.type.ofType.name === "Float") {
                             field.resolve = numericalResolver;
+                            return;
+                        } else if (field.type.ofType.name === "ID") {
+                            field.resolve = idResolver;
                             return;
                         }
                     }
