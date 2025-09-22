@@ -54,6 +54,8 @@ describe("https://github.com/neo4j/graphql/issues/6618", () => {
             WITH count(this0) AS totalCount
             RETURN { totalCount: totalCount } AS this"
         `);
+
+        expect(formatCypher(result.cypher)).not.toContain("collect");
     });
 
     test("Connection totalCount for non-@limit type does not collect nodes", async () => {
