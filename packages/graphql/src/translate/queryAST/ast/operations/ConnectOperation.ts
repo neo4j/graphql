@@ -112,7 +112,7 @@ export class ConnectOperation extends MutationOperation {
         }
 
         return [
-            ...this.inputFields.values().flatMap((inputField) => {
+            ...[...this.inputFields.values()].flatMap((inputField) => {
                 return inputField.getAuthorizationSubqueries(nestedContext);
             }),
         ];
