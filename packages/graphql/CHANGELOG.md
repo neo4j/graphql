@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.12.10
+
+### Patch Changes
+
+-   [#6675](https://github.com/neo4j/graphql/pull/6675) [`84b884a`](https://github.com/neo4j/graphql/commit/84b884aeef47ede9a96f63a75161193d2e2b492d) Thanks [@angrykoala](https://github.com/angrykoala)! - Adds feature flag `cypherDirective.disableGeneratedLimit` to disable default limits to be applied on queries using `@cypher` directive
+
 ## 5.12.9
 
 ### Patch Changes
