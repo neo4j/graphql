@@ -47,6 +47,7 @@ jobs:
         with:
           node-version: lts/*
           cache: yarn
+          package-manager-cache: false
       - name: Install dependencies
         run: yarn --immutable
       - name: Overwrite GraphQL version

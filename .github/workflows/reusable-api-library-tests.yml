@@ -43,6 +43,7 @@ jobs:
         with:
           node-version: lts/*
           cache: yarn
+          package-manager-cache: false
       - name: Install dependencies
         run: yarn
       - name: Overwrite GraphQL version
@@ -72,6 +73,7 @@ jobs:
         with:
           node-version: lts/*
           cache: yarn
+          package-manager-cache: false
       - name: Install dependencies
         run: yarn
       - name: Run E2E tests
@@ -86,6 +88,7 @@ jobs:
         with:
           node-version: lts/*
           cache: yarn
+          package-manager-cache: false
       - name: Install dependencies
         run: yarn
       - name: Run Schema tests

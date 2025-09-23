@@ -33,6 +33,7 @@ jobs:
         with:
           node-version: lts/*
           cache: yarn
+          package-manager-cache: false
       - name: Install dependencies
         run: yarn --immutable
       - name: Install ts-node and typescript
@@ -66,6 +67,7 @@ jobs:
         with:
           node-version: lts/*
           cache: yarn
+          package-manager-cache: false
       - name: Install dependencies
         run: yarn --immutable
       - name: Run @neo4j/graphql integration tests

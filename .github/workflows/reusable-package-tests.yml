@@ -13,6 +13,7 @@ jobs:
         with:
           node-version: 18.20.8
           cache: yarn
+          package-manager-cache: false
       - name: Install dependencies
         run: yarn
       - name: Build graphql

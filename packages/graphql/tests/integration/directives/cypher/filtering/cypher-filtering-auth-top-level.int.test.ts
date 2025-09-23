@@ -20,7 +20,7 @@
 import { createBearerToken } from "../../../../utils/create-bearer-token";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("cypher directive filtering - Auth", () => {
+describe("cypher directive filtering top level - Auth", () => {
     const testHelper = new TestHelper();
 
     afterEach(async () => {
@@ -32,6 +32,10 @@ describe("cypher directive filtering - Auth", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
+            type Query {
+                getMovies: [${Movie}!]! @cypher(statement: "MATCH (m:${Movie}) RETURN m", columnName: "m")
+            }
+
             type ${Movie} @node @authorization(filter: [{ where: { node: { custom_field: { eq: "$jwt.custom_value" } } } }]) {
                 title: String
                 custom_field: String
@@ -75,7 +79,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural} {
+                getMovies {
                     title
                     custom_field
                 }
@@ -86,7 +90,7 @@ describe("cypher directive filtering - Auth", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.plural]: [
+            getMovies: [
                 {
                     title: "The Matrix",
                     custom_field: "hello",
@@ -100,6 +104,10 @@ describe("cypher directive filtering - Auth", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
+            type Query {
+                getMovies: [${Movie}!]! @cypher(statement: "MATCH (m:${Movie}) RETURN m", columnName: "m")
+            }
+
             type ${Movie} @node {
                 title: String
                 custom_field: String
@@ -144,7 +152,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural} {
+                getMovies {
                     custom_field
                 }
             }
@@ -154,7 +162,7 @@ describe("cypher directive filtering - Auth", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.plural]: [
+            getMovies: [
                 {
                     custom_field: "hello",
                 },
@@ -167,6 +175,10 @@ describe("cypher directive filtering - Auth", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
+            type Query {
+                getMovies: [${Movie}!]! @cypher(statement: "MATCH (m:${Movie}) RETURN m", columnName: "m")
+            }
+
             type ${Movie} @node {
                 title: String
                 custom_field: String
@@ -211,7 +223,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural} {
+                getMovies {
                     title
                 }
             }
@@ -221,7 +233,7 @@ describe("cypher directive filtering - Auth", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.plural]: expect.toIncludeSameMembers([
+            getMovies: expect.toIncludeSameMembers([
                 {
                     title: "The Matrix",
                 },
@@ -237,6 +249,10 @@ describe("cypher directive filtering - Auth", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
+            type Query {
+                getActors: [${Actor}!]! @cypher(statement: "MATCH (a:${Actor}) RETURN a", columnName: "a")
+            }
+
             type ${Movie} @node {
                 title: String
                 custom_field: String
@@ -282,7 +298,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Actor.plural} {
+                getActors {
                     name
                 }
             }
@@ -292,7 +308,7 @@ describe("cypher directive filtering - Auth", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Actor.plural]: [
+            getActors: [
                 {
                     name: "Keanu Reeves",
                 },
@@ -305,6 +321,10 @@ describe("cypher directive filtering - Auth", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
+            type Query {
+                getMovies: [${Movie}!]! @cypher(statement: "MATCH (m:${Movie}) RETURN m", columnName: "m")
+            }
+
             type ${Movie} @node {
                 title: String @authorization(filter: [{ where: { node: { custom_field: { eq: "$jwt.custom_value" } } } }])
                 custom_field: String
@@ -348,7 +368,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural} {
+                getMovies {
                     title
                 }
             }
@@ -358,7 +378,7 @@ describe("cypher directive filtering - Auth", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.plural]: expect.toIncludeSameMembers([
+            getMovies: expect.toIncludeSameMembers([
                 {
                     title: "The Matrix",
                 },
@@ -374,6 +394,10 @@ describe("cypher directive filtering - Auth", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
+            type Query {
+                getMovies: [${Movie}!]! @cypher(statement: "MATCH (m:${Movie}) RETURN m", columnName: "m")
+            }
+
             type ${Movie} @node @authorization(validate: [{ where: { node: { custom_field: { eq: "$jwt.custom_value" } } } }]) {
                 title: String
                 custom_field: String
@@ -417,7 +441,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural} {
+                getMovies {
                     title
                 }
             }
@@ -434,6 +458,10 @@ describe("cypher directive filtering - Auth", () => {
         const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
+            type Query {
+                getMovies: [${Movie}!]! @cypher(statement: "MATCH (m:${Movie}) RETURN m", columnName: "m")
+            }
+
             type ${Movie} @node @authorization(validate: [{ where: { node: { custom_field: { eq: "$jwt.custom_value" } } } }]) {
                 title: String
                 custom_field: String
@@ -477,7 +505,7 @@ describe("cypher directive filtering - Auth", () => {
 
         const query = /* GraphQL */ `
             query {
-                ${Movie.plural} {
+                getMovies {
                     title
                 }
             }
@@ -487,7 +515,7 @@ describe("cypher directive filtering - Auth", () => {
 
         expect(gqlResult.errors).toBeFalsy();
         expect(gqlResult?.data).toEqual({
-            [Movie.plural]: expect.toIncludeSameMembers([
+            getMovies: expect.toIncludeSameMembers([
                 {
                     title: "The Matrix",
                 },

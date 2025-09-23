@@ -60,6 +60,7 @@ jobs:
         with:
           node-version: ${{ matrix.node.name }}
           cache: yarn
+          package-manager-cache: false
       - name: Login to ECR
         uses: docker/login-action@184bdaa0721073962dff0199f1fb9940f07167d1 # v3
         with:
