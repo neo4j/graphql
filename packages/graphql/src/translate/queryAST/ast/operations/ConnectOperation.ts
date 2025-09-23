@@ -111,11 +111,9 @@ export class ConnectOperation extends MutationOperation {
             );
         }
 
-        return [
-            ...[...this.inputFields.values()].flatMap((inputField) => {
-                return inputField.getAuthorizationSubqueries(nestedContext);
-            }),
-        ];
+        return [...this.inputFields.values()].flatMap((inputField) => {
+            return inputField.getAuthorizationSubqueries(nestedContext);
+        });
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
