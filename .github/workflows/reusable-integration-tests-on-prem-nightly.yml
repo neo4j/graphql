@@ -39,7 +39,7 @@ jobs:
 
     strategy:
       matrix:
-        node: [{ name: "lts/*", coverage_name: "lts" }, { name: "latest", coverage_name: "latest" }]
+        node: [{ name: "20", coverage_name: "20" }, { name: "lts/*", coverage_name: "lts" }]
         packages:
           [
             { package: "introspector", shard: 1/1, coverage_name: 2 },
