@@ -31,15 +31,15 @@ describe("https://github.com/neo4j/graphql/issues/6615", () => {
 
         typeDefs = /* GraphQL */ `
             type ${Product} @node {
-                planningConceptOrder_i18n: [I18nCountryIntMapping!]!
+                pco_i18n: [I18nCountryIntMapping!]!
                     @cypher(
                         statement: """
-                        WITH [x IN keys(this) WHERE x STARTS WITH 'planningConceptOrder_' | {country:split(x, '_')[1],value:this[x]}] AS list UNWIND list AS x RETURN x AS result
+                        WITH [x IN keys(this) WHERE x STARTS WITH 'pco_' | {country:split(x, '_')[1],value:this[x]}] AS list UNWIND list AS x RETURN x AS result
                         """
                         columnName: "result"
                     )
-                planningConceptOrder_AT: Int
-                planningConceptOrder_AU: Int
+                pco_AT: Int
+                pco_AU: Int
             }
 
             type I18nCountryIntMapping {
@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/6615", () => {
                     @cypher(
                         statement: """
                         MATCH(this:${Product})
-                        WITH [x IN keys(this) WHERE x STARTS WITH 'planningConceptOrder_' | {country:split(x, '_')[1],value:this[x]}] AS list UNWIND list AS x RETURN x AS result
+                        WITH [x IN keys(this) WHERE x STARTS WITH 'pco_' | {country:split(x, '_')[1],value:this[x]}] AS list UNWIND list AS x RETURN x AS result
                         """
                         columnName: "result"
                     )
@@ -60,7 +60,7 @@ describe("https://github.com/neo4j/graphql/issues/6615", () => {
         `;
 
         await testHelper.executeCypher(`
-            CREATE (p:${Product}{planningConceptOrder_AT:4, planningConceptOrder_AU:3})
+            CREATE (p:${Product}{pco_AT:4, pco_AU:3})
         `);
 
         await testHelper.initNeo4jGraphQL({
@@ -76,8 +76,8 @@ describe("https://github.com/neo4j/graphql/issues/6615", () => {
         const query = /* GraphQL */ `
             query {
                 ${Product.plural} {
-                    planningConceptOrder_AT
-                    planningConceptOrder_i18n {
+                    pco_AT
+                    pco_i18n {
                         value
                         country
                     }
@@ -90,8 +90,8 @@ describe("https://github.com/neo4j/graphql/issues/6615", () => {
         expect(queryResult.data).toEqual({
             [Product.plural]: [
                 {
-                    planningConceptOrder_AT: 4,
-                    planningConceptOrder_i18n: [
+                    pco_AT: 4,
+                    pco_i18n: expect.toIncludeSameMembers([
                         {
                             value: 4,
                             country: "AT",
@@ -100,7 +100,7 @@ describe("https://github.com/neo4j/graphql/issues/6615", () => {
                             value: 3,
                             country: "AU",
                         },
-                    ],
+                    ]),
                 },
             ],
         });
@@ -119,7 +119,7 @@ describe("https://github.com/neo4j/graphql/issues/6615", () => {
         const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
         expect(queryResult.data).toEqual({
-            topLevel_i18n: [
+            topLevel_i18n: expect.toIncludeSameMembers([
                 {
                     value: 4,
                     country: "AT",
@@ -128,7 +128,7 @@ describe("https://github.com/neo4j/graphql/issues/6615", () => {
                     value: 3,
                     country: "AU",
                 },
-            ],
+            ]),
         });
     });
 });
