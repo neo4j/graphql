@@ -43,18 +43,17 @@ export class ConnectionReadOperation extends Operation {
 
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = []; // TODO: merge with attachedTo?
-
-    private aggregationField: ConnectionAggregationField | undefined;
-
     public filters: Filter[] = [];
     public skipConnection: boolean = false; // If set to true, skips the connection (use for aggregation only queries optimisation)
+
     protected pagination: Pagination | undefined;
     protected sortFields: Array<{ node: Sort[]; edge: Sort[] }> = [];
     protected authFilters: AuthorizationFilters[] = [];
-
+    protected needsPageInfo: boolean = false;
     protected selection: EntitySelection;
 
     private hasTotalCount = false;
+    private aggregationField: ConnectionAggregationField | undefined;
 
     constructor({
         relationship,
@@ -73,6 +72,10 @@ export class ConnectionReadOperation extends Operation {
 
     public setHasTotalCount(value: boolean): void {
         this.hasTotalCount = value;
+    }
+
+    public setNeedsPageInfo(value: boolean): void {
+        this.needsPageInfo = value;
     }
 
     public setNodeFields(fields: Field[]) {
@@ -150,7 +153,7 @@ export class ConnectionReadOperation extends Operation {
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.hasTarget()) {
             throw new Error(
-                "Error generating query: contxt has no target in ConnectionReadOperation. This is likely a bug with the @neo4j/graphql library"
+                "Error generating query: context has no target in ConnectionReadOperation. This is likely a bug with the @neo4j/graphql library"
             );
         }
 
@@ -287,9 +290,10 @@ export class ConnectionReadOperation extends Operation {
 
     /** Defines if the query should project edges */
     protected shouldProjectEdges(): boolean {
-        const hasPagination = Boolean(this.pagination);
         const hasFields = this.nodeFields.length + this.edgeFields.length > 0;
-        return hasPagination || hasFields;
+
+        // Project edges when there are explicit node/edge projection fields or when pageInfo is requested.
+        return hasFields || this.needsPageInfo;
     }
 
     protected getAuthFilterSubqueries(context: QueryASTContext): Cypher.Clause[] {
@@ -323,31 +327,6 @@ export class ConnectionReadOperation extends Operation {
             unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with([edgeVar.property("node"), context.target]);
         }
         return unwindClause;
-    }
-
-    private createUnwindAndProjectionSubquery(
-        context: QueryASTContext<Cypher.Node>,
-        edgesVar: Cypher.Variable,
-        returnVar: Cypher.Variable
-    ) {
-        const edgeVar = new Cypher.NamedVariable("edge");
-        const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(context);
-
-        const unwindClause = this.getUnwindClause(context, edgeVar, edgesVar);
-
-        const edgeProjectionMap = this.createProjectionMapForEdge(context);
-        const paginationWith = this.generateSortAndPaginationClause(context);
-
-        return new Cypher.Call(
-            Cypher.utils.concat(
-                unwindClause,
-                ...prePaginationSubqueries,
-                paginationWith,
-                ...postPaginationSubqueries,
-                new Cypher.Return([Cypher.collect(edgeProjectionMap), returnVar])
-            ),
-            [edgesVar]
-        );
     }
 
     protected createProjectionMapForNode(context: QueryASTContext<Cypher.Node>): Cypher.Map {

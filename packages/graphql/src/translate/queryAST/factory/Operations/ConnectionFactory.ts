@@ -465,6 +465,14 @@ export class ConnectionFactory {
 
         operation.setHasTotalCount(Boolean(totalCount || pageInfo));
 
+        // This is an edge-case where the client requests only the cursor field on the edge
+        const selectedEdgeCursor = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "cursor").length > 0;
+
+        // If the client requested pageInfo or edge cursor, the operation needs to project edges so page cursors can be computed. Otherwise, avoid projecting edges.
+        if (pageInfo || selectedEdgeCursor) {
+            operation.setNeedsPageInfo(true);
+        }
+
         this.hydrateConnectionOperationsASTWithSort({
             entityOrRel,
             resolveTree,
