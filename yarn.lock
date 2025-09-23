@@ -2799,7 +2799,7 @@ __metadata:
     rimraf: "npm:6.0.1"
     semver: "npm:^7.5.4"
     supertest: "npm:7.1.4"
-    ts-jest: "npm:29.4.3"
+    ts-jest: "npm:29.4.4"
     ts-node: "npm:10.9.2"
     typescript: "npm:5.9.2"
     typescript-memoize: "npm:^1.1.1"
@@ -2822,7 +2822,7 @@ __metadata:
     debug: "npm:^4.3.4"
     jest: "npm:30.1.3"
     pluralize: "npm:^8.0.0"
-    ts-jest: "npm:29.4.3"
+    ts-jest: "npm:29.4.4"
     typescript: "npm:5.9.2"
   peerDependencies:
     neo4j-driver: ^5.8.0
@@ -13645,7 +13645,7 @@ __metadata:
     prettier: "npm:3.6.2"
     prettier-2: "npm:prettier@2.8.8"
     set-tz: "npm:0.2.0"
-    ts-jest: "npm:29.4.3"
+    ts-jest: "npm:29.4.4"
     typescript: "npm:5.9.2"
   languageName: unknown
   linkType: soft
@@ -17117,9 +17117,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:29.4.3":
-  version: 29.4.3
-  resolution: "ts-jest@npm:29.4.3"
+"ts-jest@npm:29.4.4":
+  version: 29.4.4
+  resolution: "ts-jest@npm:29.4.4"
   dependencies:
     bs-logger: "npm:^0.2.6"
     fast-json-stable-stringify: "npm:^2.1.0"
@@ -17153,7 +17153,7 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: 10c0/c86ef3482521d6f90a783da9a01f6116702058fb3a3b75df89f33e9b4cf79dd57f1287be8963c06abc3994055515201e49b3a515b766cb1de21b293cd7cdd43e
+  checksum: 10c0/f99d612704cda98369f4a54d3db771bad5edd1390fded4f1691f3182f0c8ce8b7f827e5846952bd8bcd26df26c9fb18f11089de760956bdf357875a5f1d49fcc
   languageName: node
   linkType: hard
 
