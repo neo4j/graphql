@@ -19,7 +19,6 @@
 
 import Debug from "debug";
 import type { GraphQLResolveInfo } from "graphql";
-import { print } from "graphql";
 import type {
     Driver,
     ManagedTransaction,

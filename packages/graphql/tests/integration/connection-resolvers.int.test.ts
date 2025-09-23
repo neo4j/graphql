@@ -345,4 +345,43 @@ describe("Connection Resolvers", () => {
             },
         ]);
     });
+
+    test("should return correct pageInfo if no edges", async () => {
+        const movieId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            query GetMovie($movieId: ID) {
+                ${Movie.plural}(where: { id_EQ: $movieId }) {
+                    id
+                    actorsConnection {
+                        pageInfo {
+                            startCursor
+                            endCursor
+                            hasNextPage
+                            hasPreviousPage
+                        }
+                    }
+                }
+            }
+        `;
+
+        await testHelper.executeCypher(`CREATE (:${Movie} { id: $movieId })`, { movieId });
+
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            variableValues: { movieId },
+        });
+
+        expect(gqlResult.errors).toBeUndefined();
+
+        expect((gqlResult.data as any)[Movie.plural]).toEqual([
+            {
+                id: movieId,
+                actorsConnection: {
+                    pageInfo: { startCursor: null, endCursor: null, hasNextPage: false, hasPreviousPage: false },
+                },
+            },
+        ]);
+    });
 });

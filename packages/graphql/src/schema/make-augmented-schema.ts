@@ -41,7 +41,6 @@ import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import getCustomResolvers from "./get-custom-resolvers";
 import type { ObjectFields } from "./get-obj-field-meta";
 import { getObjFieldMeta } from "./get-obj-field-meta";
-import { cypherResolver } from "./resolvers/field/cypher";
 import { createResolver } from "./resolvers/mutation/create";
 import { deleteResolver } from "./resolvers/mutation/delete";
 import { updateResolver } from "./resolvers/mutation/update";
@@ -87,6 +86,7 @@ import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
 import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
+import { cypherResolver } from "./resolvers/query/cypher";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
