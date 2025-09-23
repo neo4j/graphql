@@ -1,5 +1,19 @@
 # @neo4j/graphql
 
+## 7.2.12
+
+### Patch Changes
+
+- [`e1e4dac`](https://github.com/neo4j/graphql/commit/e1e4dacd875be149b1d60d07a6dab6f9d0acd5a5) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Fix a case where we were using .flatMap on an Iterable which works in node 22 but not in node 20. We currently support node 20.
+
+- [#6679](https://github.com/neo4j/graphql/pull/6679) [`8fc6629`](https://github.com/neo4j/graphql/commit/8fc6629e37c31cfd05291415d807d338757576a0) Thanks [@angrykoala](https://github.com/angrykoala)! - Adds numeric and id resolvers to default fields, fixing nested int fields in `@cypher` fields
+
+- [#6647](https://github.com/neo4j/graphql/pull/6647) [`c931a40`](https://github.com/neo4j/graphql/commit/c931a40143bf2f56764e23cfbdca891b1ccfeb2f) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Fixes the case where Connection queries with `@limit` in the type would generate unnecessary cypher with extra node/edge projection.
+
+- [`45ee01f`](https://github.com/neo4j/graphql/commit/45ee01f0863879f64dc166457e698fe8770d4a78) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Fixed a case where selecting pageInfo on a connection would only return totalCount. It now correctly returns the full pageInfo object.
+
+- [#6651](https://github.com/neo4j/graphql/pull/6651) [`005d83a`](https://github.com/neo4j/graphql/commit/005d83aa0cc6f47dbf37c883b92214276d5238c7) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Update error messages where wording was grammatically incorrect
+
 ## 7.2.11
 
 ### Patch Changes
