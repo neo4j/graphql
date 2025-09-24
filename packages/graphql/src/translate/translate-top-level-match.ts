@@ -34,7 +34,7 @@ export function translateTopLevelMatch({
     context,
     operation,
     where,
-    areNodePropertiesBeingUpdated = true,
+    ignoreOperationAuthorization = true,
 }: {
     matchNode: Cypher.Node;
     matchPattern: Cypher.Pattern;
@@ -42,7 +42,7 @@ export function translateTopLevelMatch({
     node: Node;
     operation: AuthorizationOperation;
     where: GraphQLWhereArg | undefined;
-    areNodePropertiesBeingUpdated: boolean;
+    ignoreOperationAuthorization: boolean;
 }): Cypher.CypherResult {
     const { matchClause, preComputedWhereFieldSubqueries, whereClause } = createMatchClause({
         matchNode,
@@ -51,7 +51,7 @@ export function translateTopLevelMatch({
         context,
         operation,
         where,
-        areNodePropertiesBeingUpdated,
+        ignoreOperationAuthorization,
     });
 
     return buildClause(Cypher.utils.concat(matchClause, preComputedWhereFieldSubqueries, whereClause), { context });
@@ -69,7 +69,7 @@ function createMatchClause({
     node,
     context,
     operation,
-    areNodePropertiesBeingUpdated,
+    ignoreOperationAuthorization,
     where,
 }: {
     matchNode: Cypher.Node;
@@ -78,7 +78,7 @@ function createMatchClause({
     node: Node;
     operation: AuthorizationOperation;
     where: GraphQLWhereArg | undefined;
-    areNodePropertiesBeingUpdated: boolean;
+    ignoreOperationAuthorization: boolean;
 }): CreateMatchClauseReturn {
     const matchClause: Cypher.Match | Cypher.Yield = new Cypher.Match(matchPattern);
     const whereOperators: Cypher.Predicate[] = [];
@@ -86,7 +86,7 @@ function createMatchClause({
     let whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined;
 
     let authorizationPredicateReturn: PredicateReturn | undefined;
-    if (operation === "UPDATE" && !areNodePropertiesBeingUpdated) {
+    if (operation === "UPDATE" && !ignoreOperationAuthorization) {
         whereClause = matchClause;
         authorizationPredicateReturn = undefined;
     } else {
