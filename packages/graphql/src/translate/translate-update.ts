@@ -178,6 +178,7 @@ export default async function translateUpdate({
             parentVar: varName,
             withVars,
             parameterPrefix: `${resolveTree.name}.args.update`,
+            ignoreOperationAuthorization,
         });
         [updateStr] = updateAndParams;
         cypherParams = {

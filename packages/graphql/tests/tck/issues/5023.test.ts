@@ -171,21 +171,8 @@ describe("https://github.com/neo4j/graphql/issues/5023", () => {
             		DETACH DELETE x
             	}
             	}
-            	WITH this, this_settings0
-            	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
-            	    MATCH (this_settings0)<-[:HAS_SETTINGS]-(authorization__after_this0:Tenant)
-            	    WHERE EXISTS {
-            	        MATCH (authorization__after_this0)<-[:ADMIN_IN]-(authorization__after_this1:User)
-            	        WHERE ($jwt.id IS NOT NULL AND authorization__after_this1.userId = $jwt.id)
-            	    }
-            	}), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	RETURN count(*) AS update_this_settings0
             }
-            WITH this
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:ADMIN_IN]-(authorization__after_this0:User)
-                WHERE ($jwt.id IS NOT NULL AND authorization__after_this0.userId = $jwt.id)
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                 MATCH (this)<-[:ADMIN_IN]-(update_this0:User)

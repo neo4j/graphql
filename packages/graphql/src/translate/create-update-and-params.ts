@@ -27,6 +27,7 @@ import { caseWhere } from "../utils/case-where";
 import { getRelationshipType } from "../utils/get-relationship-type";
 import { wrapStringInApostrophes } from "../utils/wrap-string-in-apostrophes";
 import { checkAuthentication } from "./authorization/check-authentication";
+import type { AuthorizationAfterAndParams } from "./authorization/compatibility/create-authorization-after-and-params";
 import {
     createAuthorizationAfterAndParams,
     createAuthorizationAfterAndParamsField,
@@ -74,6 +75,7 @@ export default function createUpdateAndParams({
     context,
     callbackBucket,
     parameterPrefix,
+    ignoreOperationAuthorization,
 }: {
     parentVar: string;
     updateInput: any;
@@ -84,6 +86,7 @@ export default function createUpdateAndParams({
     context: Neo4jGraphQLTranslationContext;
     callbackBucket: CallbackBucketDeprecated;
     parameterPrefix: string;
+    ignoreOperationAuthorization: boolean;
 }): [string, any] {
     let hasAppliedTimeStamps = false;
 
@@ -312,6 +315,7 @@ export default function createUpdateAndParams({
                                 parameterPrefix: `${parameterPrefix}.${key}${
                                     relationField.union ? `.${refNode.name}` : ""
                                 }${relationField.typeMeta.array ? `[${index}]` : ``}.update.node`,
+                                ignoreOperationAuthorization,
                             });
                             res.params = { ...res.params, ...updateAndParams[1] };
                             innerUpdate.push(updateAndParams[0]);
@@ -599,23 +603,28 @@ export default function createUpdateAndParams({
     const authorizationAfterSubqueries = meta.authorizationAfterSubqueries;
 
     const withStr = `WITH ${withVars.join(", ")}`;
+    let authorizationAfterAndParams: AuthorizationAfterAndParams | undefined;
 
-    const authorizationAfterAndParams = createAuthorizationAfterAndParams({
-        context,
-        nodes: [{ node, variable: varName }],
-        operations: ["UPDATE"],
-    });
+    if (!ignoreOperationAuthorization) {
+        authorizationAfterAndParams = undefined;
+    } else {
+        authorizationAfterAndParams = createAuthorizationAfterAndParams({
+            context,
+            nodes: [{ node, variable: varName }],
+            operations: ["UPDATE"],
+        });
 
-    if (authorizationAfterAndParams) {
-        const { cypher, params: authWhereParams, subqueries } = authorizationAfterAndParams;
+        if (authorizationAfterAndParams) {
+            const { cypher, params: authWhereParams, subqueries } = authorizationAfterAndParams;
 
-        if (cypher) {
-            if (subqueries) {
-                authorizationAfterSubqueries.push(subqueries);
+            if (cypher) {
+                if (subqueries) {
+                    authorizationAfterSubqueries.push(subqueries);
+                }
+
+                authorizationAfterStrs.push(cypher);
+                params = { ...params, ...authWhereParams };
             }
-
-            authorizationAfterStrs.push(cypher);
-            params = { ...params, ...authWhereParams };
         }
     }
 

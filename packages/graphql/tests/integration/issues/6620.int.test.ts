@@ -309,6 +309,21 @@ describe("https://github.com/neo4j/graphql/issues/6620 validate", () => {
         carManufacturerType = testHelper.createUniqueType("CarManufacturer");
 
         const typeDefs = `
+            type JWT @jwt {
+                permission_Car_node_READ: [String!]!
+                permission_Car_node_AGGREGATE: [String!]!
+                permission_Car_node_UPDATE: [String!]!
+                permission_Car_node_DELETE: [String!]!
+                permission_Car_node_CREATE_RELATIONSHIP: [String!]!
+                permission_Car_node_DELETE_RELATIONSHIP: [String!]!
+                permission_CarManufacturer_node_READ: [String!]!
+                permission_CarManufacturer_node_AGGREGATE: [String!]!
+                permission_CarManufacturer_node_UPDATE: [String!]!
+                permission_CarManufacturer_node_DELETE: [String!]!
+                permission_CarManufacturer_node_CREATE_RELATIONSHIP: [String!]!
+                permission_CarManufacturer_node_DELETE_RELATIONSHIP: [String!]!
+            }
+
             type ${carType}
                 @authorization(
                     validate: [
