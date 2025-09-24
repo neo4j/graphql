@@ -34,7 +34,7 @@ export function translateTopLevelMatch({
     context,
     operation,
     where,
-    ignoreOperationAuthorization = true,
+    ignoreOperationAuthorization = false,
 }: {
     matchNode: Cypher.Node;
     matchPattern: Cypher.Pattern;
@@ -86,7 +86,7 @@ function createMatchClause({
     let whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined;
 
     let authorizationPredicateReturn: PredicateReturn | undefined;
-    if (operation === "UPDATE" && !ignoreOperationAuthorization) {
+    if (operation === "UPDATE" && ignoreOperationAuthorization) {
         whereClause = matchClause;
         authorizationPredicateReturn = undefined;
     } else {

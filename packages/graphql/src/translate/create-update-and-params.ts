@@ -605,7 +605,7 @@ export default function createUpdateAndParams({
     const withStr = `WITH ${withVars.join(", ")}`;
     let authorizationAfterAndParams: AuthorizationAfterAndParams | undefined;
 
-    if (!ignoreOperationAuthorization) {
+    if (ignoreOperationAuthorization) {
         authorizationAfterAndParams = undefined;
     } else {
         authorizationAfterAndParams = createAuthorizationAfterAndParams({
