@@ -67,6 +67,10 @@ export default async function translateUpdate({
     const matchNode = new Cypher.NamedNode(varName);
     const where = resolveTree.args.where as GraphQLWhereArg | undefined;
     const matchPattern = new Cypher.Pattern(matchNode, { labels: node.getLabels(context) });
+    // bypass auth rules if there's no actual update of properties (connect and disconnect have their own auth rules)
+    const areNodePropertiesBeingUpdated = updateInput
+        ? Object.keys(updateInput).filter((x) => !node.relationFields.some((field) => field.fieldName === x)).length > 0
+        : false;
     const topLevelMatch = translateTopLevelMatch({
         matchNode,
         matchPattern,
@@ -74,6 +78,7 @@ export default async function translateUpdate({
         context,
         operation: "UPDATE",
         where,
+        areNodePropertiesBeingUpdated,
     });
     matchAndWhereStr = topLevelMatch.cypher;
     let cypherParams = topLevelMatch.params;

@@ -20,7 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { Node } from "../classes";
 import type { AuthorizationOperation } from "../schema-model/annotation/AuthorizationAnnotation";
-import type { GraphQLWhereArg } from "../types";
+import type { GraphQLWhereArg, PredicateReturn } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { getEntityAdapterFromNode } from "../utils/get-entity-adapter-from-node";
 import { createAuthorizationBeforePredicate } from "./authorization/create-authorization-before-predicate";
@@ -34,6 +34,7 @@ export function translateTopLevelMatch({
     context,
     operation,
     where,
+    areNodePropertiesBeingUpdated = true,
 }: {
     matchNode: Cypher.Node;
     matchPattern: Cypher.Pattern;
@@ -41,6 +42,7 @@ export function translateTopLevelMatch({
     node: Node;
     operation: AuthorizationOperation;
     where: GraphQLWhereArg | undefined;
+    areNodePropertiesBeingUpdated: boolean;
 }): Cypher.CypherResult {
     const { matchClause, preComputedWhereFieldSubqueries, whereClause } = createMatchClause({
         matchNode,
@@ -49,6 +51,7 @@ export function translateTopLevelMatch({
         context,
         operation,
         where,
+        areNodePropertiesBeingUpdated,
     });
 
     return buildClause(Cypher.utils.concat(matchClause, preComputedWhereFieldSubqueries, whereClause), { context });
@@ -66,6 +69,7 @@ function createMatchClause({
     node,
     context,
     operation,
+    areNodePropertiesBeingUpdated,
     where,
 }: {
     matchNode: Cypher.Node;
@@ -74,26 +78,33 @@ function createMatchClause({
     node: Node;
     operation: AuthorizationOperation;
     where: GraphQLWhereArg | undefined;
+    areNodePropertiesBeingUpdated: boolean;
 }): CreateMatchClauseReturn {
     const matchClause: Cypher.Match | Cypher.Yield = new Cypher.Match(matchPattern);
     const whereOperators: Cypher.Predicate[] = [];
 
     let whereClause: Cypher.Match | Cypher.Yield | Cypher.With | undefined;
 
-    const authorizationPredicateReturn = createAuthorizationBeforePredicate({
-        context,
-        nodes: [
-            {
-                variable: matchNode,
-                node,
-            },
-        ],
-        operations: [operation],
-    });
-    if (authorizationPredicateReturn?.predicate) {
-        whereClause = new Cypher.With("*");
-    } else {
+    let authorizationPredicateReturn: PredicateReturn | undefined;
+    if (operation === "UPDATE" && !areNodePropertiesBeingUpdated) {
         whereClause = matchClause;
+        authorizationPredicateReturn = undefined;
+    } else {
+        authorizationPredicateReturn = createAuthorizationBeforePredicate({
+            context,
+            nodes: [
+                {
+                    variable: matchNode,
+                    node,
+                },
+            ],
+            operations: [operation],
+        });
+        if (authorizationPredicateReturn?.predicate) {
+            whereClause = new Cypher.With("*");
+        } else {
+            whereClause = matchClause;
+        }
     }
 
     let preComputedWhereFieldSubqueries: Cypher.CompositeClause | undefined;
