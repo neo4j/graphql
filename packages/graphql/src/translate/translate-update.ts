@@ -69,7 +69,7 @@ export default async function translateUpdate({
     const matchPattern = new Cypher.Pattern(matchNode, { labels: node.getLabels(context) });
     // bypass auth rules if there's no actual update of properties (connect and disconnect have their own auth rules)
     const ignoreOperationAuthorization = updateInput
-        ? !Object.keys(updateInput).some((x) => !node.relationFields.some((field) => field.fieldName === x))
+        ? Object.keys(updateInput).every((x) => node.relationFields.some((field) => field.fieldName === x))
         : false;
     const topLevelMatch = translateTopLevelMatch({
         matchNode,
