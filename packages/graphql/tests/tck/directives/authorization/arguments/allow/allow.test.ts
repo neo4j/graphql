@@ -452,11 +452,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            WITH *
-            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_POST]-(this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE this.id = $param0
             WITH this
             CALL(*) {
             	WITH this
@@ -511,11 +507,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
-            WITH *
-            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_POST]-(this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE this.id = $param0
             WITH this
             CALL(*) {
             	WITH this
@@ -664,8 +656,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            WITH *
-            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE this.id = $param0
             WITH this
             CALL(*) {
             WITH this
@@ -749,11 +740,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Comment)
-            WITH *
-            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_COMMENT]-(this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE this.id = $param0
             WITH this
             CALL(*) {
             WITH this
@@ -859,8 +846,7 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            WITH *
-            WHERE (this.id = $param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
+            WHERE this.id = $param0
             WITH *
             CALL(*) {
             	WITH this

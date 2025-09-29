@@ -307,14 +307,10 @@ describe("Cypher Auth Allow", () => {
             		WITH this, this_posts0
             		MATCH (this_posts0)<-[this_posts0_has_post0_relationship:HAS_POST]-(this_posts0_creator0:User)
             		SET this_posts0_creator0.id = $this_update_posts0_creator0_id_SET
-            		WITH this, this_posts0, this_posts0_creator0
-            		WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this_posts0_creator0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             		RETURN count(*) AS update_this_posts0_creator0
             	}
             	RETURN count(*) AS update_this_posts0
             }
-            WITH this
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
         `);
 
@@ -323,13 +319,6 @@ describe("Cypher Auth Allow", () => {
                 \\"param0\\": \\"id-01\\",
                 \\"updateUsers_args_update_posts0_where_this_posts0param0\\": \\"post-id\\",
                 \\"this_update_posts0_creator0_id_SET\\": \\"not bound\\",
-                \\"isAuthenticated\\": true,
-                \\"jwt\\": {
-                    \\"roles\\": [
-                        \\"admin\\"
-                    ],
-                    \\"sub\\": \\"id-01\\"
-                },
                 \\"updateUsers\\": {
                     \\"args\\": {
                         \\"update\\": {

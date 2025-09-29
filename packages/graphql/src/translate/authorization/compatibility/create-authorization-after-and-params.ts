@@ -28,7 +28,7 @@ import {
 import type { NodeMap } from "../types/node-map";
 import { compilePredicateReturn } from "./compile-predicate-return";
 
-type AuthorizationAfterAndParams = {
+export type AuthorizationAfterAndParams = {
     cypher: string;
     params: Record<string, any>;
     subqueries?: string;

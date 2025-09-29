@@ -104,6 +104,7 @@ describe("createUpdateAndParams", () => {
             withVars: ["this"],
             parameterPrefix: "this",
             callbackBucket: new CallbackBucketDeprecated(context),
+            ignoreOperationAuthorization: false,
         });
 
         expect(trimmer(result[0])).toEqual(

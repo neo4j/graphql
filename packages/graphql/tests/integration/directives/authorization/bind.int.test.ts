@@ -497,6 +497,7 @@ describe("auth/bind", () => {
                     ${User.operations.update}(
                         where: { id_EQ: "${userId}" },
                         update: {
+                            id_SET: "${userId}",
                             posts: {
                                 update: {
                                     where: { node: { id_EQ: "${postId}" } },

@@ -710,8 +710,6 @@ describe("Cypher Auth Where with Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            WITH *
-            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
             CALL(*) {
             	WITH this
@@ -721,15 +719,8 @@ describe("Cypher Auth Where with Roles", () => {
             	    WHERE ($jwt.sub IS NOT NULL AND authorization_updatebefore_this0.id = $jwt.sub)
             	} AND ($jwt.roles IS NOT NULL AND $authorization_updatebefore_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization_updatebefore_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	SET this_posts0.id = $this_update_posts0_id_SET
-            	WITH this, this_posts0
-            	WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND EXISTS {
-            	    MATCH (this_posts0)<-[:HAS_POST]-(authorization__after_this0:User)
-            	    WHERE ($jwt.sub IS NOT NULL AND authorization__after_this0.id = $jwt.sub)
-            	} AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             	RETURN count(*) AS update_this_posts0
             }
-            WITH this
-            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             CALL apoc.util.validate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $update_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $update_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL (this) {
@@ -759,13 +750,9 @@ describe("Cypher Auth Where with Roles", () => {
                 \\"update_param3\\": \\"admin\\",
                 \\"update_param4\\": \\"user\\",
                 \\"update_param5\\": \\"admin\\",
-                \\"param2\\": \\"user\\",
-                \\"param3\\": \\"admin\\",
                 \\"authorization_updatebefore_param2\\": \\"user\\",
                 \\"authorization_updatebefore_param3\\": \\"admin\\",
                 \\"this_update_posts0_id_SET\\": \\"new-id\\",
-                \\"authorization__after_param2\\": \\"user\\",
-                \\"authorization__after_param3\\": \\"admin\\",
                 \\"resolvedCallbacks\\": {}
             }"
         `);
@@ -1039,8 +1026,6 @@ describe("Cypher Auth Where with Roles", () => {
             "CYPHER 5
             MATCH (this:User)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH *
             CALL(*) {
             	WITH this
             	OPTIONAL MATCH (this_posts0_connect0_node:Post)
@@ -1064,8 +1049,6 @@ describe("Cypher Auth Where with Roles", () => {
             } AND ($jwt.roles IS NOT NULL AND $authorization__after_param4 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param5 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             	RETURN count(*) AS connect_this_posts0_connect_Post0
             }
-            WITH this
-            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             CALL apoc.util.validate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $update_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $update_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -1082,8 +1065,6 @@ describe("Cypher Auth Where with Roles", () => {
                 },
                 \\"update_param2\\": \\"user\\",
                 \\"update_param3\\": \\"admin\\",
-                \\"param2\\": \\"user\\",
-                \\"param3\\": \\"admin\\",
                 \\"authorization__before_param2\\": \\"user\\",
                 \\"authorization__before_param3\\": \\"admin\\",
                 \\"authorization__before_param4\\": \\"user\\",
@@ -1117,8 +1098,6 @@ describe("Cypher Auth Where with Roles", () => {
             "CYPHER 5
             MATCH (this:User)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH *
             CALL(*) {
             	WITH this
             	OPTIONAL MATCH (this_posts0_connect0_node:Post)
@@ -1142,8 +1121,6 @@ describe("Cypher Auth Where with Roles", () => {
             } AND ($jwt.roles IS NOT NULL AND $authorization__after_param4 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param5 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             	RETURN count(*) AS connect_this_posts0_connect_Post0
             }
-            WITH this
-            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             CALL apoc.util.validate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $update_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $update_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -1160,8 +1137,6 @@ describe("Cypher Auth Where with Roles", () => {
                 },
                 \\"update_param2\\": \\"user\\",
                 \\"update_param3\\": \\"admin\\",
-                \\"param2\\": \\"user\\",
-                \\"param3\\": \\"admin\\",
                 \\"this_posts0_connect0_node_param0\\": \\"new-id\\",
                 \\"authorization__before_param2\\": \\"user\\",
                 \\"authorization__before_param3\\": \\"admin\\",
@@ -1195,8 +1170,6 @@ describe("Cypher Auth Where with Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            WITH *
-            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
             CALL(*) {
             WITH this
@@ -1217,8 +1190,6 @@ describe("Cypher Auth Where with Roles", () => {
             } AND ($jwt.roles IS NOT NULL AND $authorization__after_param4 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param5 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             RETURN count(*) AS disconnect_this_posts0_disconnect_Post
             }
-            WITH this
-            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             CALL apoc.util.validate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $update_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $update_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -1235,8 +1206,6 @@ describe("Cypher Auth Where with Roles", () => {
                 },
                 \\"update_param2\\": \\"user\\",
                 \\"update_param3\\": \\"admin\\",
-                \\"param2\\": \\"user\\",
-                \\"param3\\": \\"admin\\",
                 \\"authorization__before_param2\\": \\"user\\",
                 \\"authorization__before_param3\\": \\"admin\\",
                 \\"authorization__before_param4\\": \\"user\\",
@@ -1269,8 +1238,6 @@ describe("Cypher Auth Where with Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            WITH *
-            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
             CALL(*) {
             WITH this
@@ -1291,8 +1258,6 @@ describe("Cypher Auth Where with Roles", () => {
             } AND ($jwt.roles IS NOT NULL AND $authorization__after_param4 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param5 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
             RETURN count(*) AS disconnect_this_posts0_disconnect_Post
             }
-            WITH this
-            WHERE apoc.util.validatePredicate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             CALL apoc.util.validate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $update_param2 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $update_param3 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             RETURN collect(DISTINCT this { .id }) AS data"
@@ -1309,8 +1274,6 @@ describe("Cypher Auth Where with Roles", () => {
                 },
                 \\"update_param2\\": \\"user\\",
                 \\"update_param3\\": \\"admin\\",
-                \\"param2\\": \\"user\\",
-                \\"param3\\": \\"admin\\",
                 \\"updateUsers_args_update_posts0_disconnect0_where_Post_this_posts0_disconnect0param0\\": \\"new-id\\",
                 \\"authorization__before_param2\\": \\"user\\",
                 \\"authorization__before_param3\\": \\"admin\\",
