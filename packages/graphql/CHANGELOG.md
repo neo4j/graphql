@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.2.13
+
+### Patch Changes
+
+- [#6696](https://github.com/neo4j/graphql/pull/6696) [`858a98f`](https://github.com/neo4j/graphql/commit/858a98f93668599578c41acd542ca033c101f0dc) Thanks [@a-alle](https://github.com/a-alle)! - Fix update rules incorrectly applied on relationship creation and deletion
+
 ## 7.2.12
 
 ### Patch Changes
