@@ -25,10 +25,10 @@
     },
     "devDependencies": {
         "@tsconfig/node20": "20.1.6",
-        "@typescript-eslint/eslint-plugin": "8.44.1",
-        "@typescript-eslint/parser": "8.44.1",
+        "@typescript-eslint/eslint-plugin": "8.45.0",
+        "@typescript-eslint/parser": "8.45.0",
         "concurrently": "9.2.1",
-        "dotenv": "17.2.2",
+        "dotenv": "17.2.3",
         "eslint": "8.57.1",
         "eslint-config-prettier": "10.1.8",
         "eslint-formatter-summary": "2.0.2",
