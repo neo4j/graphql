@@ -96,6 +96,6 @@
     },
     "peerDependencies": {
         "graphql": "^16.0.0",
-        "neo4j-driver": "^5.8.0"
+        "neo4j-driver": "^5.8.0 || ^6.0.0"
     }
 }

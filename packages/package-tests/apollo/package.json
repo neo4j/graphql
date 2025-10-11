@@ -15,6 +15,6 @@
         "@apollo/server": "^5.0.0",
         "cross-fetch": "^4.0.0",
         "graphql": "^16.6.0",
-        "neo4j-driver": "^5.8.0"
+        "neo4j-driver": "^6.0.0"
     }
 }
