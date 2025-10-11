@@ -48,6 +48,6 @@
         "pluralize": "^8.0.0"
     },
     "peerDependencies": {
-        "neo4j-driver": "^5.8.0"
+        "neo4j-driver": "^5.8.0 || ^6.0.0"
     }
 }
