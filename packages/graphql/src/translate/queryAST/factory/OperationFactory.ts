@@ -203,7 +203,7 @@ export class OperationsFactory {
             }
             case "UPDATE": {
                 assertIsConcreteEntity(entity);
-                return this.updateFactory.createUpdateOperation(entity, resolveTree, context);
+                return this.updateFactory.createUpdateOperation(entity, resolveTree, context, callbackBucket);
             }
             case "DELETE": {
                 assertIsConcreteEntity(entity);

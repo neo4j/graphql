@@ -38,6 +38,8 @@ import { CallbackBucket } from "./queryAST/utils/callback-bucket";
 import { translateTopLevelMatch } from "./translate-top-level-match";
 import { buildClause } from "./utils/build-clause";
 import { getAuthorizationStatements } from "./utils/get-authorization-statements";
+import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
+import type { ResolveTree } from "graphql-parse-resolve-info";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -466,4 +468,55 @@ function isFollowedByASubquery(clause): boolean {
         }
     }
     return false;
+}
+
+async function translateUsingQueryAST({
+    context,
+    entityAdapter,
+    resolveTree,
+    varName,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    entityAdapter: EntityAdapter;
+    resolveTree: ResolveTree;
+    varName: string;
+}): Promise<Cypher.CypherResult> {
+    const operationsTreeFactory = new QueryASTFactory(context.schemaModel);
+
+    if (!entityAdapter) {
+        throw new Error("Entity not found");
+    }
+
+    const callbackBucket = new CallbackBucket(context);
+
+    const operationsTree = operationsTreeFactory.createMutationAST({
+        resolveTree,
+        entityAdapter,
+        context,
+        varName,
+        callbackBucket,
+    });
+    debug(operationsTree.print());
+    await callbackBucket.resolveCallbacks();
+    const clause = operationsTree.build(context, varName);
+    return buildClause(clause, { context });
+}
+
+export async function translateUpdate2({
+    context,
+    node,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    node: Node;
+}): Promise<{ cypher: string; params: Record<string, any> }> {
+    const { resolveTree } = context;
+    const entityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
+    if (!entityAdapter) {
+        throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
+    }
+
+    const varName = "this";
+    const result = await translateUsingQueryAST({ context, entityAdapter, resolveTree, varName });
+
+    return result;
 }
