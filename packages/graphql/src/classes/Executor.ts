@@ -38,7 +38,7 @@ import {
     RELATIONSHIP_REQUIREMENT_PREFIX,
 } from "../constants";
 import { debugCypherAndParams } from "../debug/debug-cypher-and-params";
-import type { CypherQueryOptions } from "../types";
+import type { CypherQueryOptions, TransactionConfig } from "../types";
 import { isInArray } from "../utils/is-in-array";
 import {
     Neo4jGraphQLAuthenticationError,
@@ -67,14 +67,6 @@ function isSessionLike(executionContext: any): executionContext is SessionLike {
     return typeof executionContext.beginTransaction === "function";
 }
 
-type TransactionConfig = {
-    metadata: {
-        app: string;
-        // Possible values from https://neo4j.com/docs/operations-manual/current/monitoring/logging/#attach-metadata-tx (will only be user-transpiled for @neo4j/graphql)
-        type: "system" | "user-direct" | "user-action" | "user-transpiled";
-    };
-};
-
 export type ExecutionContext = Driver | Session | Transaction;
 
 export type ExecutorConstructorParam = {
@@ -83,6 +75,7 @@ export type ExecutorConstructorParam = {
     sessionConfig?: SessionConfig;
     cypherParams?: Record<string, unknown>;
     transactionMetadata?: Record<string, unknown>;
+    transaction?: TransactionConfig;
 };
 
 export type Neo4jGraphQLSessionConfig = Pick<SessionConfig, "database" | "impersonatedUser" | "auth">;
@@ -96,6 +89,7 @@ export class Executor {
 
     private cypherParams: Record<string, unknown>;
     private transactionMetadata: Record<string, unknown>;
+    private transaction: TransactionConfig;
 
     constructor({
         executionContext,
@@ -103,12 +97,14 @@ export class Executor {
         sessionConfig,
         cypherParams = {},
         transactionMetadata = {},
+        transaction = {},
     }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.cypherQueryOptions = cypherQueryOptions;
         this.sessionConfig = sessionConfig;
         this.cypherParams = cypherParams;
         this.transactionMetadata = transactionMetadata;
+        this.transaction = transaction;
     }
 
     public async execute(
@@ -118,7 +114,6 @@ export class Executor {
         info?: GraphQLResolveInfo
     ): Promise<QueryResult> {
         const params = { ...parameters, ...this.cypherParams };
-
         try {
             if (isDriverLike(this.executionContext)) {
                 return await this.driverRun({
@@ -205,9 +200,11 @@ export class Executor {
         return {
             metadata: {
                 app: APP_ID,
+                ...this.transaction.metadata,
                 ...this.transactionMetadata,
                 type: "user-transpiled",
             },
+            timeout: this.transaction.timeout,
         };
     }
 
@@ -252,7 +249,6 @@ export class Executor {
         sessionMode: SessionMode;
     }): Promise<QueryResult> {
         let result: QueryResult | undefined;
-
         switch (sessionMode) {
             case "READ":
                 result = await session.executeRead((tx: ManagedTransaction) => {

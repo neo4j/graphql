@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type { CypherQueryOptions } from ".";
+import type { CypherQueryOptions, TransactionConfig } from ".";
 import type { ExecutionContext, Neo4jGraphQLSessionConfig } from "../classes/Executor";
 import type { Neo4jGraphQLContextInterface } from "./neo4j-graphql-context-interface";
 
@@ -51,6 +51,15 @@ export interface Neo4jGraphQLContext extends Neo4jGraphQLContextInterface {
      * Attach metadata to the database transaction.
      * This can be used to output information to the query log not related to the query itself.
      * Will be ignored if {@link executionContext} is an instance of a transaction.
+     * 
+     * @deprecated This method will be removed in later version. Please, use {@link transaction} instead.
+     *
+     * @see {@link #transaction}
      */
     transactionMetadata?: Record<string, unknown>;
+
+    /**
+     * Transaction object which has both the metadata object and the timeout period inside
+     */
+    transaction?: TransactionConfig;
 }
