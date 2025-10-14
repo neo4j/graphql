@@ -22,6 +22,9 @@ import { trimmer } from ".";
 import { ContextBuilder } from "../../tests/utils/builders/context-builder";
 import { Executor } from "../classes/Executor";
 import execute from "./execute";
+import {
+    APP_ID,
+} from "../constants";
 
 describe("execute", () => {
     test("should execute return records.toObject", async () => {
@@ -269,6 +272,193 @@ describe("execute", () => {
             });
 
             expect(executeResult.records).toEqual([{ title }]);
+        });
+    });
+
+    describe("should set transaction config", () => {
+        test("user described transaction config", async () => {
+            const defaultAccessMode = "READ";
+
+            const cypher = trimmer(`
+                CREATE (u:User {title: $title})
+                RETURN u { .title } as u
+            `);
+
+            const title = "some title";
+            const params = { title };
+            const records = [{ toObject: () => ({ title }) }];
+            const database = "neo4j";
+            const bookmarks = ["test"];
+            let transactionConfig: any; // transaction config that is used in the actual driver class.
+
+            // @ts-ignore
+            const driver: Driver = {
+                // @ts-ignore
+                session: (options) => {
+                    expect(options).toMatchObject({ defaultAccessMode, database, bookmarks });
+
+                    const tx = {
+                        run: (paramCypher: string, paramParams) => {
+                            expect(trimmer(paramCypher)).toBe(`CYPHER 5 ${cypher}`);
+                            expect(paramParams).toEqual(params);
+
+                            return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
+                        },
+                        commit: () => true,
+                    };
+
+                    return {
+                        beginTransaction: () => tx,
+                        readTransaction: (fn, config) => {
+                            transactionConfig = config;
+                            // @ts-ignore
+                            return fn(tx);
+                        },
+                        writeTransaction: (fn, config) => {
+                            transactionConfig = config;
+                            // @ts-ignore
+                            return fn(tx);
+                        },
+                        executeRead: (fn, config) => {
+                            transactionConfig = config;
+                            // @ts-ignore
+                            return fn(tx);
+                        },
+                        executeWrite: (fn, config) => {
+                            transactionConfig = config;
+                            // @ts-ignore
+                            return fn(tx);
+                        },
+                        close: () => true,
+                        lastBookmark: () => [],
+                        lastBookmarks: () => [],
+                    };
+                },
+                // @ts-ignore
+                _config: {},
+            };
+
+            const executeResult = await execute({
+                cypher,
+                params,
+                defaultAccessMode,
+                context: new ContextBuilder({
+                    executor: new Executor({
+                        executionContext: driver,
+                        sessionConfig: {
+                            database,
+                            bookmarks,
+                        },
+                        transaction: {
+                            timeout: 100,
+                            metadata: {
+                                app: "my-app-name",
+                                type: "system",
+                            },
+                        },
+                        cypherQueryOptions: {},
+                    }),
+                }).instance(),
+            });
+            // console.log(executeResult)
+
+            expect(executeResult.records).toEqual([{ title }]);
+            expect(transactionConfig).toEqual({
+                timeout: 100,
+                metadata: {
+                    app: "my-app-name",
+                    type: "user-transpiled",
+                },
+            });
+        });
+
+        test("empty transaction config", async () => {
+            const defaultAccessMode = "READ";
+
+            const cypher = trimmer(`
+                CREATE (u:User {title: $title})
+                RETURN u { .title } as u
+            `);
+
+            const title = "some title";
+            const params = { title };
+            const records = [{ toObject: () => ({ title }) }];
+            const database = "neo4j";
+            const bookmarks = ["test"];
+            let transactionConfig: any; // transaction config that is used in the actual driver class.
+
+            // @ts-ignore
+            const driver: Driver = {
+                // @ts-ignore
+                session: (options) => {
+                    expect(options).toMatchObject({ defaultAccessMode, database, bookmarks });
+
+                    const tx = {
+                        run: (paramCypher: string, paramParams) => {
+                            expect(trimmer(paramCypher)).toBe(`CYPHER 5 ${cypher}`);
+                            expect(paramParams).toEqual(params);
+
+                            return { records, summary: { counters: { updates: () => ({ test: 1 }) } } };
+                        },
+                        commit: () => true,
+                    };
+
+                    return {
+                        beginTransaction: () => tx,
+                        readTransaction: (fn, config) => {
+                            transactionConfig = config;
+                            // @ts-ignore
+                            return fn(tx);
+                        },
+                        writeTransaction: (fn, config) => {
+                            transactionConfig = config;
+                            // @ts-ignore
+                            return fn(tx);
+                        },
+                        executeRead: (fn, config) => {
+                            transactionConfig = config;
+                            // @ts-ignore
+                            return fn(tx);
+                        },
+                        executeWrite: (fn, config) => {
+                            transactionConfig = config;
+                            // @ts-ignore
+                            return fn(tx);
+                        },
+                        close: () => true,
+                        lastBookmark: () => [],
+                        lastBookmarks: () => [],
+                    };
+                },
+                // @ts-ignore
+                _config: {},
+            };
+
+            const executeResult = await execute({
+                cypher,
+                params,
+                defaultAccessMode,
+                context: new ContextBuilder({
+                    executor: new Executor({
+                        executionContext: driver,
+                        sessionConfig: {
+                            database,
+                            bookmarks,
+                        },
+                        cypherQueryOptions: {},
+                    }),
+                }).instance(),
+            });
+            // console.log(executeResult)
+
+            expect(executeResult.records).toEqual([{ title }]);
+            expect(transactionConfig).toEqual({
+                timeout: undefined,
+                metadata: {
+                    app: APP_ID,
+                    type: "user-transpiled",
+                },
+            });
         });
     });
 });

@@ -52,7 +52,7 @@ export interface Neo4jGraphQLContext extends Neo4jGraphQLContextInterface {
      * This can be used to output information to the query log not related to the query itself.
      * Will be ignored if {@link executionContext} is an instance of a transaction.
      * 
-     * @deprecated This method will be removed in later version. Please, use {@link transaction} instead.
+     * @deprecated This method will be removed in a future version. Please, use {@link transaction} instead.
      *
      * @see {@link #transaction}
      */

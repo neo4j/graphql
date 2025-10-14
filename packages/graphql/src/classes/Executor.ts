@@ -249,6 +249,7 @@ export class Executor {
         sessionMode: SessionMode;
     }): Promise<QueryResult> {
         let result: QueryResult | undefined;
+
         switch (sessionMode) {
             case "READ":
                 result = await session.executeRead((tx: ManagedTransaction) => {
