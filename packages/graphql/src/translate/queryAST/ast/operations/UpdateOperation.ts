@@ -24,6 +24,13 @@ import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { ReadOperation } from "./ReadOperation";
 import { Operation, type OperationTranspileResult } from "./operations";
+import type { InputField } from "../input-fields/InputField";
+import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
+import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
+import { checkEntityAuthentication } from "../../../authorization/check-authentication";
+
+import { ParamInputField } from "../input-fields/ParamInputField";
+import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 
 /**
  * This is currently just a dummy tree node,
@@ -31,32 +38,192 @@ import { Operation, type OperationTranspileResult } from "./operations";
  **/
 export class UpdateOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;
+    public readonly relationship: RelationshipAdapter | undefined;
+
+    protected readonly authFilters: AuthorizationFilters[] = [];
+
+    private readonly selectionPattern: SelectionPattern;
+    private readonly inputFields: InputField[] = [];
     // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
     public projectionOperations: ReadOperation[] = [];
+    private nestedContext: QueryASTContext | undefined;
 
-    constructor({ target }: { target: ConcreteEntityAdapter }) {
+    constructor({
+        target,
+        relationship,
+        selectionPattern,
+    }: {
+        target: ConcreteEntityAdapter;
+        relationship?: RelationshipAdapter;
+        selectionPattern: SelectionPattern;
+    }) {
         super();
         this.target = target;
+        this.relationship = relationship;
+        this.selectionPattern = selectionPattern;
+    }
+    /** Prints the name of the Node */
+    public print(): string {
+        return `${super.print()} <${this.target.name}>`;
     }
 
     public getChildren(): QueryASTNode[] {
-        return filterTruthy(this.projectionOperations);
+        return filterTruthy([
+            this.selectionPattern,
+            ...this.inputFields,
+            ...this.authFilters,
+            ...this.projectionOperations,
+        ]);
     }
 
     public addProjectionOperations(operations: ReadOperation[]) {
         this.projectionOperations.push(...operations);
     }
 
+    public addAuthFilters(...filter: AuthorizationFilters[]) {
+        this.authFilters.push(...filter);
+    }
+
+    public addField(field: InputField) {
+        this.inputFields.push(field);
+    }
+
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.target) throw new Error("No parent node found!");
         context.env.topLevelOperationName = "UPDATE";
-        const clauses = this.getProjectionClause(context);
-        return { projectionExpr: context.returnVariable, clauses };
+
+        const { nestedContext } = this.selectionPattern.apply(context);
+        this.nestedContext = nestedContext;
+        checkEntityAuthentication({
+            context: nestedContext.neo4jGraphQLContext,
+            entity: this.target.entity,
+            targetOperations: ["UPDATE"],
+        });
+        this.inputFields.forEach((field) => {
+            if (field.attachedTo === "node" && field instanceof ParamInputField) {
+                checkEntityAuthentication({
+                    context: nestedContext.neo4jGraphQLContext,
+                    entity: this.target.entity,
+                    targetOperations: ["UPDATE"],
+                    field: field.name,
+                });
+            }
+        });
+
+        // const createPattern = new Cypher.Pattern(nestedContext.target, {
+        //     labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
+        // });
+
+        // const createClause = new Cypher.Create(createPattern);
+
+        const setParams = Array.from(this.inputFields.values()).flatMap((input) => {
+            return input.getSetParams(nestedContext);
+        });
+
+        const mutationSubqueries = Array.from(this.inputFields.values()).flatMap((input) => {
+            return input.getSubqueries(nestedContext);
+        });
+
+        let mergeClause: Cypher.Merge | undefined;
+        if (this.relationship) {
+            const relVar = nestedContext.relationship;
+            if (!relVar) {
+                throw new Error(
+                    "GraphQL Error: Transpilation Error, relationship variable not available. Please contact support"
+                );
+            }
+            const relDirection = this.relationship.getCypherDirection();
+
+            const mergePattern = new Cypher.Pattern(context.target)
+                .related(relVar, { direction: relDirection, type: this.relationship.type })
+                .to(nestedContext.target);
+            mergeClause = new Cypher.Merge(mergePattern).set(...setParams);
+        } else {
+            // createClause.set(...setParams);
+        }
+
+        const clauses = Cypher.utils.concat(
+            // createClause,
+            ...mutationSubqueries.map((sq) => Cypher.utils.concat(new Cypher.With("*"), sq)),
+            mergeClause
+        );
+
+        return { projectionExpr: nestedContext.target, clauses: [clauses] };
+
+        // OLD
+        // const clauses = this.getProjectionClause(context);
+        // return { projectionExpr: context.returnVariable, clauses };
     }
 
-    private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {
-        return this.projectionOperations.map((operationField) => {
-            return Cypher.utils.concat(...operationField.transpile(context).clauses);
-        });
+    // OLD
+    // private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {
+    //     return this.projectionOperations.map((operationField) => {
+    //         return Cypher.utils.concat(...operationField.transpile(context).clauses);
+    //     });
+    // }
+
+    /** Post subqueries */
+    public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
+        const nestedContext = this.nestedContext;
+
+        if (!nestedContext) {
+            throw new Error(
+                "Error parsing query, nested context not available, need to call transpile first. Please contact support"
+            );
+        }
+
+        return [
+            ...this.getAuthorizationClauses(nestedContext),
+            ...this.inputFields.flatMap((inputField) => {
+                return inputField.getAuthorizationSubqueries(nestedContext);
+            }),
+        ];
+    }
+
+    private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
+        const { selections, subqueries, predicates, validations } = this.transpileAuthClauses(context);
+        const predicate = Cypher.and(...predicates);
+        const lastSelection = selections[selections.length - 1];
+
+        if (!predicates.length && !validations.length) {
+            return [];
+        } else {
+            if (lastSelection) {
+                lastSelection.where(predicate);
+                return [...subqueries, new Cypher.With("*"), ...selections, ...validations];
+            }
+            return [...subqueries, new Cypher.With("*").where(predicate), ...selections, ...validations];
+        }
+    }
+
+    private transpileAuthClauses(context: QueryASTContext): {
+        selections: (Cypher.With | Cypher.Match)[];
+        subqueries: Cypher.Clause[];
+        predicates: Cypher.Predicate[];
+        validations: Cypher.VoidProcedure[];
+    } {
+        const selections: (Cypher.With | Cypher.Match)[] = [];
+        const subqueries: Cypher.Clause[] = [];
+        const predicates: Cypher.Predicate[] = [];
+        const validations: Cypher.VoidProcedure[] = [];
+        for (const authFilter of this.authFilters) {
+            const extraSelections = authFilter.getSelection(context);
+            const authSubqueries = authFilter.getSubqueries(context);
+            const authPredicate = authFilter.getPredicate(context);
+            const validation = authFilter.getValidation(context, "AFTER"); // CREATE only has AFTER auth
+            if (extraSelections) {
+                selections.push(...extraSelections);
+            }
+            if (authSubqueries) {
+                subqueries.push(...authSubqueries);
+            }
+            if (authPredicate) {
+                predicates.push(authPredicate);
+            }
+            if (validation) {
+                validations.push(validation);
+            }
+        }
+        return { selections, subqueries, predicates, validations };
     }
 }
