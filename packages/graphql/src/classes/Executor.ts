@@ -21,6 +21,7 @@ import Debug from "debug";
 import type { GraphQLResolveInfo } from "graphql";
 import type {
     Driver,
+    Integer,
     ManagedTransaction,
     QueryResult,
     Result,
@@ -38,7 +39,7 @@ import {
     RELATIONSHIP_REQUIREMENT_PREFIX,
 } from "../constants";
 import { debugCypherAndParams } from "../debug/debug-cypher-and-params";
-import type { CypherQueryOptions, TransactionConfig } from "../types";
+import type { CypherQueryOptions } from "../types";
 import { isInArray } from "../utils/is-in-array";
 import {
     Neo4jGraphQLAuthenticationError,
@@ -67,6 +68,15 @@ function isSessionLike(executionContext: any): executionContext is SessionLike {
     return typeof executionContext.beginTransaction === "function";
 }
 
+type TransactionConfig = {
+    metadata: {
+        app: string;
+        // Possible values from https://neo4j.com/docs/operations-manual/current/monitoring/logging/#attach-metadata-tx (will only be user-transpiled for @neo4j/graphql)
+        type: "system" | "user-direct" | "user-action" | "user-transpiled";
+    };
+    timeout?: number | Integer | undefined;
+};
+
 export type ExecutionContext = Driver | Session | Transaction;
 
 export type ExecutorConstructorParam = {
@@ -74,9 +84,13 @@ export type ExecutorConstructorParam = {
     cypherQueryOptions?: CypherQueryOptions;
     sessionConfig?: SessionConfig;
     cypherParams?: Record<string, unknown>;
-    transactionMetadata?: Record<string, unknown>;
-    transaction?: TransactionConfig;
+    transaction?: UserTransactionConfig;
 };
+
+export type UserTransactionConfig = {
+    timeout?: number | Integer | undefined;
+    metadata?: Record<string, unknown> | undefined;
+}
 
 export type Neo4jGraphQLSessionConfig = Pick<SessionConfig, "database" | "impersonatedUser" | "auth">;
 
@@ -88,22 +102,22 @@ export class Executor {
     private sessionConfig: SessionConfig | undefined;
 
     private cypherParams: Record<string, unknown>;
-    private transactionMetadata: Record<string, unknown>;
-    private transaction: TransactionConfig;
+    private transaction: UserTransactionConfig;
 
     constructor({
         executionContext,
         cypherQueryOptions,
         sessionConfig,
         cypherParams = {},
-        transactionMetadata = {},
-        transaction = {},
+        transaction = {
+            timeout: undefined,
+            metadata: undefined,
+        },
     }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.cypherQueryOptions = cypherQueryOptions;
         this.sessionConfig = sessionConfig;
         this.cypherParams = cypherParams;
-        this.transactionMetadata = transactionMetadata;
         this.transaction = transaction;
     }
 
@@ -201,7 +215,6 @@ export class Executor {
             metadata: {
                 app: APP_ID,
                 ...this.transaction.metadata,
-                ...this.transactionMetadata,
                 type: "user-transpiled",
             },
             timeout: this.transaction.timeout,

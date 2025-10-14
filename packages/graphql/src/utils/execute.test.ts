@@ -354,6 +354,7 @@ describe("execute", () => {
                             metadata: {
                                 app: "my-app-name",
                                 type: "system",
+                                someOtherUserDefinedField: "test",
                             },
                         },
                         cypherQueryOptions: {},
@@ -368,6 +369,7 @@ describe("execute", () => {
                 metadata: {
                     app: "my-app-name",
                     type: "user-transpiled",
+                    someOtherUserDefinedField: "test",
                 },
             });
         });

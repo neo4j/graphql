@@ -51,15 +51,6 @@ export type FulltextContext = {
     scoreVariable: Cypher.Variable;
 };
 
-export type TransactionConfig = {
-    metadata?: {
-        app: string;
-        // Possible values from https://neo4j.com/docs/operations-manual/current/monitoring/logging/#attach-metadata-tx (will only be user-transpiled for @neo4j/graphql)
-        type: "system" | "user-direct" | "user-action" | "user-transpiled";
-    };
-    timeout?: number | Integer;
-};
-
 export type VectorContext = {
     index: VectorField;
     queryName: string;

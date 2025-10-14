@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
-import type { CypherQueryOptions, TransactionConfig } from ".";
-import type { ExecutionContext, Neo4jGraphQLSessionConfig } from "../classes/Executor";
+import { Integer } from "neo4j-driver";
+import type { CypherQueryOptions } from ".";
+import type { ExecutionContext, Neo4jGraphQLSessionConfig, UserTransactionConfig } from "../classes/Executor";
 import type { Neo4jGraphQLContextInterface } from "./neo4j-graphql-context-interface";
 
 export interface Neo4jGraphQLContext extends Neo4jGraphQLContextInterface {
@@ -59,7 +60,7 @@ export interface Neo4jGraphQLContext extends Neo4jGraphQLContextInterface {
     transactionMetadata?: Record<string, unknown>;
 
     /**
-     * Transaction object which has both the metadata object and the timeout period inside
+     * User transaction object which has both the metadata object and the timeout period inside
      */
-    transaction?: TransactionConfig;
+    transaction?: UserTransactionConfig;
 }
