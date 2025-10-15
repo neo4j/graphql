@@ -42,8 +42,7 @@ jobs:
           package-manager-cache: false
 
       - name: Update npm # Need at least 11.5.1 for OIDC publishing
-        run: |
-          npm install -g npm@latest
+        run: npm install -g npm@latest
 
       - name: Install Dependencies
         run: yarn
