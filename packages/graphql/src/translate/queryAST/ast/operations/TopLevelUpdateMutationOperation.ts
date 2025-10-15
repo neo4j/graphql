@@ -97,6 +97,7 @@ export class TopLevelUpdateMutationOperation extends Operation {
         // }
         // return Cypher.utils.concat(extraWith, ...subqueries);
 
-        return Cypher.utils.concat(...result.clauses);
+        const extraWith = new Cypher.With(context.target);
+        return Cypher.utils.concat(extraWith, ...result.clauses);
     }
 }

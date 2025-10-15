@@ -63,6 +63,8 @@ import type { QueryASTFactory } from "./QueryASTFactory";
 import type { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
+import { type CreateOperation } from "../ast/operations/CreateOperation";
+import { UpdateOperation } from "../ast/operations/UpdateOperation";
 
 export class OperationsFactory {
     // specialized operations factories
@@ -244,6 +246,34 @@ export class OperationsFactory {
                 callbackBucket
             );
         }
+    }
+
+    public createNestedCreateOperation({
+        relationship,
+        targetEntity,
+        input,
+        callbackBucket,
+        context,
+        operation,
+        key,
+    }: {
+        input: Record<string, any> | Record<string, any>[];
+        targetEntity: ConcreteEntityAdapter | InterfaceEntityAdapter;
+        relationship: RelationshipAdapter;
+        callbackBucket: CallbackBucket;
+        context: Neo4jGraphQLTranslationContext;
+        operation: CreateOperation | UpdateOperation;
+        key: string;
+    }) {
+        return this.createFactory.createNestedCreateOperation({
+            relationship,
+            targetEntity,
+            input,
+            callbackBucket,
+            context,
+            operation,
+            key,
+        });
     }
 
     public createReadOperation(arg: {
