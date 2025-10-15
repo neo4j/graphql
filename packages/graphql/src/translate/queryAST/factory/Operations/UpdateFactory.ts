@@ -38,6 +38,7 @@ import { parseMutationField } from "../parsers/parse-mutation-field";
 import { TopLevelUpdateMutationOperation } from "../../ast/operations/TopLevelUpdateMutationOperation";
 import { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { isUnionEntity } from "../../utils/is-union-entity";
+import { MutationOperationField } from "../../ast/input-fields/MutationOperationField";
 
 export class UpdateFactory {
     private queryASTFactory: QueryASTFactory;
@@ -255,49 +256,44 @@ export class UpdateFactory {
                             }
                             const nestedCreateInput = operationInput.create;
                             if (nestedCreateInput) {
-                                console.log(
-                                    "Nested creates",
-                                    nestedEntity,
-                                    nestedCreateInput,
-                                    callbackBucket.callbacks.length
-                                );
-                                if (nestedCreateInput) {
-                                    asArray(nestedCreateInput).forEach((nestedCreateInputItem) => {
-                                        this.queryASTFactory.operationsFactory.createNestedCreateOperation({
-                                            targetEntity: nestedEntity,
-                                            relationship: nestedRelationship,
-                                            input: nestedCreateInputItem,
-                                            context,
-                                            callbackBucket,
-                                            key,
-                                            operation: update,
-                                        });
-
-                                        // const mutationOperationField = new MutationOperationField(
-                                        //     nestedUpdateOperation,
-                                        //     key
-                                        // );
-                                        // update.addField(mutationOperationField);
+                                asArray(nestedCreateInput).forEach((nestedCreateInputItem) => {
+                                    this.queryASTFactory.operationsFactory.createNestedCreateOperation({
+                                        targetEntity: nestedEntity,
+                                        relationship: nestedRelationship,
+                                        input: nestedCreateInputItem,
+                                        context,
+                                        callbackBucket,
+                                        key,
+                                        operation: update,
                                     });
-                                }
-                            }
-                            // TODO:
-                            // const nestedConnectInput = operationInput.connect;
-                            // if (nestedConnectInput) {
-                            //     asArray(nestedConnectInput).forEach((nestedConnectInputItem) => {
-                            //         const nestedConnectOperation =
-                            //             this.queryASTFactory.operationsFactory.createConnectOperation(
-                            //                 nestedEntity,
-                            //                 nestedRelationship,
-                            //                 nestedConnectInputItem,
-                            //                 context,
-                            //                 callbackBucket
-                            //             );
 
-                            //         const mutationOperationField = new MutationOperationField(nestedConnectOperation, key);
-                            //         create.addField(mutationOperationField);
-                            //     });
-                            // }}
+                                    // TODO: maybe do this here instead of in createNestedCreateOperation
+                                    // const mutationOperationField = new MutationOperationField(
+                                    //     nestedUpdateOperation,
+                                    //     key
+                                    // );
+                                    // update.addField(mutationOperationField);
+                                });
+                            }
+                            const nestedConnectInput = operationInput.connect;
+                            if (nestedConnectInput) {
+                                asArray(nestedConnectInput).forEach((nestedConnectInputItem) => {
+                                    const nestedConnectOperation =
+                                        this.queryASTFactory.operationsFactory.createConnectOperation(
+                                            nestedEntity,
+                                            nestedRelationship,
+                                            nestedConnectInputItem,
+                                            context,
+                                            callbackBucket
+                                        );
+
+                                    const mutationOperationField = new MutationOperationField(
+                                        nestedConnectOperation,
+                                        key
+                                    );
+                                    update.addField(mutationOperationField);
+                                });
+                            }
                         });
                     });
                 }
