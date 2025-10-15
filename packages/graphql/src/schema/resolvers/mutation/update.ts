@@ -29,6 +29,7 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
+import { translateUpdate2 } from "../../../translate/translate-update";
 
 export function updateResolver({
     node,
@@ -42,7 +43,8 @@ export function updateResolver({
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
-        const [cypher, params] = await translateUpdate({ context: context as Neo4jGraphQLTranslationContext, node });
+        // const [cypher, params] = await translateUpdate({ context: context as Neo4jGraphQLTranslationContext, node });
+        const { cypher, params } = await translateUpdate2({ context: context as Neo4jGraphQLTranslationContext, node });
         const executeResult = await execute({
             cypher,
             params,
@@ -64,7 +66,8 @@ export function updateResolver({
 
         if (nodeProjection) {
             const nodeKey = nodeProjection.alias ? nodeProjection.alias.value : nodeProjection.name.value;
-            resolveResult[nodeKey] = executeResult.records[0]?.data || [];
+            // resolveResult[nodeKey] = executeResult.records[0]?.data || [];
+            resolveResult[nodeKey] = executeResult.records.map((x) => x.this);
         }
 
         return resolveResult;

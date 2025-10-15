@@ -31,6 +31,9 @@ import { checkEntityAuthentication } from "../../../authorization/check-authenti
 
 import { ParamInputField } from "../input-fields/ParamInputField";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { getEntityLabels } from "../../utils/create-node-from-entity";
+import type { Filter } from "../filters/Filter";
+import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 
 /**
  * This is currently just a dummy tree node,
@@ -41,6 +44,7 @@ export class UpdateOperation extends Operation {
     public readonly relationship: RelationshipAdapter | undefined;
 
     protected readonly authFilters: AuthorizationFilters[] = [];
+    protected filters: Filter[] = [];
 
     private readonly selectionPattern: SelectionPattern;
     private readonly inputFields: InputField[] = [];
@@ -71,6 +75,7 @@ export class UpdateOperation extends Operation {
         return filterTruthy([
             this.selectionPattern,
             ...this.inputFields,
+            ...this.filters,
             ...this.authFilters,
             ...this.projectionOperations,
         ]);
@@ -88,21 +93,33 @@ export class UpdateOperation extends Operation {
         this.inputFields.push(field);
     }
 
+    public addFilters(...filters: Filter[]) {
+        this.filters.push(...filters);
+    }
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.target) throw new Error("No parent node found!");
         context.env.topLevelOperationName = "UPDATE";
 
         const { nestedContext } = this.selectionPattern.apply(context);
         this.nestedContext = nestedContext;
+
+        const predicate = this.getPredicate(context);
+
+        const filterSubqueries = wrapSubqueriesInCypherCalls(context, this.filters, [context.target]);
+        let filterSubqueriesClause: Cypher.Clause | undefined;
+        if (filterSubqueries.length > 0) {
+            filterSubqueriesClause = Cypher.utils.concat(...filterSubqueries);
+        }
+
         checkEntityAuthentication({
-            context: nestedContext.neo4jGraphQLContext,
+            context: context.neo4jGraphQLContext,
             entity: this.target.entity,
             targetOperations: ["UPDATE"],
         });
         this.inputFields.forEach((field) => {
             if (field.attachedTo === "node" && field instanceof ParamInputField) {
                 checkEntityAuthentication({
-                    context: nestedContext.neo4jGraphQLContext,
+                    context: context.neo4jGraphQLContext,
                     entity: this.target.entity,
                     targetOperations: ["UPDATE"],
                     field: field.name,
@@ -116,17 +133,23 @@ export class UpdateOperation extends Operation {
 
         // const createClause = new Cypher.Create(createPattern);
 
+        const matchPattern = new Cypher.Pattern(context.target, {
+            labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
+        });
+
+        const matchClause = new Cypher.Match(matchPattern).where(predicate);
+
         const setParams = Array.from(this.inputFields.values()).flatMap((input) => {
-            return input.getSetParams(nestedContext);
+            return input.getSetParams(context);
         });
 
         const mutationSubqueries = Array.from(this.inputFields.values()).flatMap((input) => {
-            return input.getSubqueries(nestedContext);
+            return input.getSubqueries(context);
         });
 
         let mergeClause: Cypher.Merge | undefined;
         if (this.relationship) {
-            const relVar = nestedContext.relationship;
+            const relVar = context.relationship;
             if (!relVar) {
                 throw new Error(
                     "GraphQL Error: Transpilation Error, relationship variable not available. Please contact support"
@@ -136,19 +159,22 @@ export class UpdateOperation extends Operation {
 
             const mergePattern = new Cypher.Pattern(context.target)
                 .related(relVar, { direction: relDirection, type: this.relationship.type })
-                .to(nestedContext.target);
+                .to(context.target);
             mergeClause = new Cypher.Merge(mergePattern).set(...setParams);
         } else {
             // createClause.set(...setParams);
+            matchClause.set(...setParams);
         }
 
         const clauses = Cypher.utils.concat(
             // createClause,
+            matchClause,
+            filterSubqueriesClause,
             ...mutationSubqueries.map((sq) => Cypher.utils.concat(new Cypher.With("*"), sq)),
             mergeClause
         );
 
-        return { projectionExpr: nestedContext.target, clauses: [clauses] };
+        return { projectionExpr: context.target, clauses: [clauses] };
 
         // OLD
         // const clauses = this.getProjectionClause(context);
@@ -225,5 +251,14 @@ export class UpdateOperation extends Operation {
             }
         }
         return { selections, subqueries, predicates, validations };
+    }
+
+    private getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        const authBeforePredicates = this.getAuthFilterPredicate(queryASTContext);
+        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authBeforePredicates);
+    }
+
+    private getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
+        return filterTruthy(this.authFilters.map((f) => f.getPredicate(context)));
     }
 }

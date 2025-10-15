@@ -29,6 +29,7 @@ import { ReadOperation } from "./operations/ReadOperation";
 import { TopLevelCreateMutationOperation } from "./operations/TopLevelCreateMutationOperation";
 import { UnwindCreateOperation } from "./operations/UnwindCreateOperation";
 import type { Operation, OperationTranspileResult } from "./operations/operations";
+import { TopLevelUpdateMutationOperation } from "./operations/TopLevelUpdateMutationOperation";
 
 export class QueryAST {
     private operation: Operation;
@@ -87,7 +88,8 @@ export class QueryAST {
             this.operation instanceof DeleteOperation ||
             this.operation instanceof AggregationOperation ||
             this.operation instanceof UnwindCreateOperation ||
-            this.operation instanceof TopLevelCreateMutationOperation
+            this.operation instanceof TopLevelCreateMutationOperation ||
+            this.operation instanceof TopLevelUpdateMutationOperation
         ) {
             return createNode(varName);
         }

@@ -51,26 +51,25 @@ export class TopLevelUpdateMutationOperation extends Operation {
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
+        context.env.topLevelOperationName = "UPDATE";
         if (!context.hasTarget()) {
             throw new Error("No parent node found!");
         }
-        console.log("updateOperations:", this.updateOperations);
-        // const subqueries = this.updateOperations.map((field) => {
-        //     console.log("ALE: operation", field);
-        //     const { clauses, projectionExpr } = field.transpile(context);
+        const subqueries = this.updateOperations.map((field) => {
+            const { clauses, projectionExpr } = field.transpile(context);
 
-        //     return Cypher.utils.concat(
-        //         ...clauses,
-        //         ...field.getAuthorizationSubqueries(context),
-        //         new Cypher.Return([projectionExpr, context.returnVariable])
-        //     );
-        // });
+            return Cypher.utils.concat(
+                ...clauses,
+                ...field.getAuthorizationSubqueries(context)
+                // new Cypher.Return([projectionExpr, context.returnVariable])
+            );
+        });
 
         // const unionStatement = new Cypher.Call(new Cypher.Union(...subqueries));
         const projection: Cypher.Clause = this.getProjectionClause(context);
         return {
             projectionExpr: context.returnVariable,
-            clauses: [projection],
+            clauses: [...subqueries, projection],
         };
     }
 
@@ -81,23 +80,23 @@ export class TopLevelUpdateMutationOperation extends Operation {
             return new Cypher.Finish();
         }
 
-        const subqueries = projectionOperation
-            .getSubqueries(context)
-            .map((sq) => new Cypher.Call(sq, [context.target]));
+        // const subqueries = projectionOperation.getSubqueries(context);
+        // .map((sq) => new Cypher.Call(sq, [context.target]));
+        const result = projectionOperation.operation.transpile(context);
 
-        const projectionField = Object.values(projectionOperation.getProjectionField())[0];
+        // const projectionField = Object.values(projectionOperation.getProjectionField())[0];
+        // if (!projectionField) {
+        //     throw new Error("Fatal Error: Invalid projectionField, please contact support");
+        // }
 
-        if (!projectionField) {
-            throw new Error("Fatal Error: Invalid projectionField, please contact support");
-        }
+        // const returnClause = new Cypher.Return([projectionField, "data"]);
 
-        const returnClause = new Cypher.Return([Cypher.collect(projectionField), "data"]);
+        // let extraWith: Cypher.With | undefined;
+        // if (subqueries.length > 0) {
+        //     extraWith = new Cypher.With(context.target);
+        // }
+        // return Cypher.utils.concat(extraWith, ...subqueries);
 
-        let extraWith: Cypher.With | undefined;
-        if (subqueries.length > 0) {
-            extraWith = new Cypher.With(context.target);
-        }
-
-        return Cypher.utils.concat(extraWith, ...subqueries, returnClause);
+        return Cypher.utils.concat(...result.clauses);
     }
 }

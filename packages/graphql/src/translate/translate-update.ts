@@ -502,10 +502,25 @@ async function translateUsingQueryAST({
         varName,
         callbackBucket,
     });
+
+    // const queryASTEnv = new QueryASTEnv();
+
+    // const queryASTContext = new QueryASTContext({
+    //     target: new Cypher.NamedNode(varName),
+    //     env: queryASTEnv,
+    //     neo4jGraphQLContext: context,
+    //     returnVariable: new Cypher.NamedVariable("data"),
+    //     shouldCollect: true,
+    //     shouldDistinct: true,
+    // });
+
     debug(operationsTree.print());
     await callbackBucket.resolveCallbacks();
+
     const clause = operationsTree.build(context, varName);
     return buildClause(clause, { context });
+
+    // return buildClause(Cypher.utils.concat(...operationsTree.transpile(queryASTContext).clauses), { context });
 }
 
 export async function translateUpdate2({

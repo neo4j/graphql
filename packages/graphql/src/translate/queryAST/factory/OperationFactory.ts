@@ -192,6 +192,7 @@ export class OperationsFactory {
         resolveAsUnwind?: boolean;
     }): Operation {
         const operationMatch = parseTopLevelOperationField(resolveTree.name, context, entity);
+        console.log(1, operationMatch);
         switch (operationMatch) {
             case "CREATE": {
                 assertIsConcreteEntity(entity);
