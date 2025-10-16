@@ -11,6 +11,10 @@
     "bugs": {
         "url": "https://github.com/neo4j/graphql/issues"
     },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/neo4j/graphql.git"
+    },
     "homepage": "https://github.com/neo4j/graphql/tree/dev/packages/graphql",
     "exports": "./dist/index.js",
     "main": "./dist/index.js",
