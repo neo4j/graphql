@@ -135,8 +135,7 @@ describe("update", () => {
         expect(gqlResult?.data?.[Movie.operations.update]).toEqual({ [Movie.plural]: [{ id, name: updatedName }] });
     });
 
-    // TEST ME LAST
-    test.skip("should connect through interface relationship", async () => {
+    test("should connect through interface relationship", async () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} implements Production @subscription(events: []) @node {
                 title: String!
@@ -349,7 +348,7 @@ describe("update", () => {
     });
 
     // TODO nested update
-    test.only("should update nested actors from a movie", async () => {
+    test("should update nested actors from a movie", async () => {
         const typeDefs = /* GraphQL */ `
             type ${Actor} @node {
                 name: String
@@ -364,17 +363,11 @@ describe("update", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        const movieId = generate({
-            charset: "alphabetic",
-        });
+        const movieId = "movieId";
 
-        const initialName = generate({
-            charset: "alphabetic",
-        });
+        const initialName = "Original Name";
 
-        const updatedName = generate({
-            charset: "alphabetic",
-        });
+        const updatedName = "New Fancy Name";
 
         const query = /* GraphQL */ `
         mutation($movieId: ID, $initialName: String, $updatedName: String) {

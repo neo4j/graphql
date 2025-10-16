@@ -20,20 +20,20 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { filterTruthy } from "../../../../utils/utils";
+import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
+import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
+import type { InputField } from "../input-fields/InputField";
+import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
 import type { ReadOperation } from "./ReadOperation";
 import { Operation, type OperationTranspileResult } from "./operations";
-import type { InputField } from "../input-fields/InputField";
-import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
-import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
-import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 
-import { ParamInputField } from "../input-fields/ParamInputField";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
-import type { Filter } from "../filters/Filter";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
+import type { Filter } from "../filters/Filter";
+import { ParamInputField } from "../input-fields/ParamInputField";
 
 /**
  * This is currently just a dummy tree node,
@@ -103,9 +103,9 @@ export class UpdateOperation extends Operation {
         const { nestedContext } = this.selectionPattern.apply(context);
         this.nestedContext = nestedContext;
 
-        const predicate = this.getPredicate(context);
+        const predicate = this.getPredicate(nestedContext);
 
-        const filterSubqueries = wrapSubqueriesInCypherCalls(context, this.filters, [context.target]);
+        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
         let filterSubqueriesClause: Cypher.Clause | undefined;
         if (filterSubqueries.length > 0) {
             filterSubqueriesClause = Cypher.utils.concat(...filterSubqueries);
@@ -133,23 +133,9 @@ export class UpdateOperation extends Operation {
 
         // const createClause = new Cypher.Create(createPattern);
 
-        const matchPattern = new Cypher.Pattern(context.target, {
-            labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
-        });
-
-        const matchClause = new Cypher.Match(matchPattern).where(predicate);
-
-        const setParams = Array.from(this.inputFields.values()).flatMap((input) => {
-            return input.getSetParams(context);
-        });
-
-        const mutationSubqueries = Array.from(this.inputFields.values()).flatMap((input) => {
-            return input.getSubqueries(context);
-        });
-
-        let mergeClause: Cypher.Merge | undefined;
+        let matchClause: Cypher.Match;
         if (this.relationship) {
-            const relVar = context.relationship;
+            const relVar = nestedContext.relationship;
             if (!relVar) {
                 throw new Error(
                     "GraphQL Error: Transpilation Error, relationship variable not available. Please contact support"
@@ -157,26 +143,46 @@ export class UpdateOperation extends Operation {
             }
             const relDirection = this.relationship.getCypherDirection();
 
-            const mergePattern = new Cypher.Pattern(context.target)
+            const matchPattern = new Cypher.Pattern(context.target)
                 .related(relVar, { direction: relDirection, type: this.relationship.type })
-                .to(context.target);
-            mergeClause = new Cypher.Merge(mergePattern).set(...setParams);
+                .to(nestedContext.target, {
+                    labels: getEntityLabels(this.relationship.target, context.neo4jGraphQLContext),
+                });
+            matchClause = new Cypher.Match(matchPattern).where(predicate);
         } else {
-            // createClause.set(...setParams);
-            matchClause.set(...setParams);
+            const matchPattern = new Cypher.Pattern(context.target, {
+                labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
+            });
+            matchClause = new Cypher.Match(matchPattern).where(predicate);
         }
+
+        const setParams = Array.from(this.inputFields.values()).flatMap((input) => {
+            return input.getSetParams(nestedContext);
+        });
+
+        const mutationSubqueries = Array.from(this.inputFields.values()).flatMap((input) => {
+            return input.getSubqueries(nestedContext);
+        });
+
+        // let mergeClause: Cypher.Merge | undefined;
+        // if (this.relationship) {
+
+        //     mergeClause = new Cypher.Merge(mergePattern).set(...setParams);
+        // } else {
+        //     // createClause.set(...setParams);
+        // }
+        matchClause.set(...setParams);
 
         const clauses = Cypher.utils.concat(
             // createClause,
             matchClause,
             filterSubqueriesClause,
             ...mutationSubqueries.map((sq) =>
-                Cypher.utils.concat(new Cypher.With(context.target!), new Cypher.Call(sq, [context.target!]))
-            ),
-            mergeClause
+                Cypher.utils.concat(new Cypher.With(nestedContext.target), new Cypher.Call(sq, [nestedContext.target]))
+            )
         );
 
-        return { projectionExpr: context.target, clauses: [clauses] };
+        return { projectionExpr: nestedContext.target, clauses: [clauses] };
 
         // OLD
         // const clauses = this.getProjectionClause(context);

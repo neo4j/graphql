@@ -32,9 +32,11 @@ import { filterTruthy, isRecord } from "../../../utils/utils";
 import type { Filter } from "../ast/filters/Filter";
 import type { AggregationOperation } from "../ast/operations/AggregationOperation";
 import type { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
+import { type CreateOperation } from "../ast/operations/CreateOperation";
 import type { CypherAttributeOperation } from "../ast/operations/CypherAttributeOperation";
 import type { CypherEntityOperation } from "../ast/operations/CypherEntityOperation";
 import type { ReadOperation } from "../ast/operations/ReadOperation";
+import { type UpdateOperation } from "../ast/operations/UpdateOperation";
 import type { CompositeAggregationOperation } from "../ast/operations/composite/CompositeAggregationOperation";
 import type { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
 import type { CompositeCypherOperation } from "../ast/operations/composite/CompositeCypherOperation";
@@ -55,6 +57,7 @@ import { ConnectionFactory } from "./Operations/ConnectionFactory";
 import { CreateFactory } from "./Operations/CreateFactory";
 import { CustomCypherFactory } from "./Operations/CustomCypherFactory";
 import { DeleteFactory } from "./Operations/DeleteFactory";
+import { DisconnectFactory } from "./Operations/DisconnectFactory";
 import { FulltextFactory } from "./Operations/FulltextFactory";
 import { ReadFactory } from "./Operations/ReadFactory";
 import { UpdateFactory } from "./Operations/UpdateFactory";
@@ -63,9 +66,6 @@ import type { QueryASTFactory } from "./QueryASTFactory";
 import type { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
-import { type CreateOperation } from "../ast/operations/CreateOperation";
-import { type UpdateOperation } from "../ast/operations/UpdateOperation";
-import { DisconnectFactory } from "./Operations/DisconnectFactory";
 
 export class OperationsFactory {
     // specialized operations factories
@@ -197,7 +197,6 @@ export class OperationsFactory {
         resolveAsUnwind?: boolean;
     }): Operation {
         const operationMatch = parseTopLevelOperationField(resolveTree.name, context, entity);
-        console.log(1, operationMatch);
         switch (operationMatch) {
             case "CREATE": {
                 assertIsConcreteEntity(entity);
