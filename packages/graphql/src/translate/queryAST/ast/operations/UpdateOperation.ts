@@ -170,7 +170,9 @@ export class UpdateOperation extends Operation {
             // createClause,
             matchClause,
             filterSubqueriesClause,
-            ...mutationSubqueries.map((sq) => Cypher.utils.concat(new Cypher.With("*"), sq)),
+            ...mutationSubqueries.map((sq) =>
+                Cypher.utils.concat(new Cypher.With(context.target!), new Cypher.Call(sq, [context.target!]))
+            ),
             mergeClause
         );
 

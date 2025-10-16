@@ -294,6 +294,24 @@ export class UpdateFactory {
                                     update.addField(mutationOperationField);
                                 });
                             }
+                            const nestedDeleteInput = operationInput.delete;
+                            if (nestedDeleteInput) {
+                                asArray(nestedDeleteInput).forEach((nestedDeleteInputItem) => {
+                                    const nestedDeleteOperations =
+                                        this.queryASTFactory.operationsFactory.createNestedDeleteOperationsForUpdate(
+                                            nestedDeleteInputItem,
+                                            nestedRelationship,
+                                            context
+                                        );
+                                    for (const nestedDeleteOperation of nestedDeleteOperations) {
+                                        const mutationOperationField = new MutationOperationField(
+                                            nestedDeleteOperation,
+                                            key
+                                        );
+                                        update.addField(mutationOperationField);
+                                    }
+                                });
+                            }
                         });
                     });
                 }

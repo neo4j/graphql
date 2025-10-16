@@ -276,6 +276,14 @@ export class OperationsFactory {
         });
     }
 
+    public createNestedDeleteOperationsForUpdate(
+        deleteArg: Record<string, any>,
+        relationship: RelationshipAdapter,
+        context: Neo4jGraphQLTranslationContext
+    ) {
+        return this.deleteFactory.createNestedDeleteOperationsForUpdate(deleteArg, relationship, context);
+    }
+
     public createReadOperation(arg: {
         entityOrRel: EntityAdapter | RelationshipAdapter;
         resolveTree: ResolveTree;
