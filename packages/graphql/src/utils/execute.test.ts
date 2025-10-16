@@ -361,7 +361,6 @@ describe("execute", () => {
                     }),
                 }).instance(),
             });
-            // console.log(executeResult)
 
             expect(executeResult.records).toEqual([{ title }]);
             expect(transactionConfig).toEqual({
