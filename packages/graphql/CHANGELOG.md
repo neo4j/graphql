@@ -1,5 +1,30 @@
 # @neo4j/graphql
 
+## 7.3.0
+
+### Minor Changes
+
+- [#6740](https://github.com/neo4j/graphql/pull/6740) [`5cdb2eb`](https://github.com/neo4j/graphql/commit/5cdb2eb6de4799a48feb26bd11f1bce171996dbf) Thanks [@luffy1727](https://github.com/luffy1727)! - Add the ability to specify transaction configuration. e.g. timeout
+
+    ```js
+    const transactionConfig = {
+        timeout: 60 * 1000,
+        metadata: {
+            "my-very-own-metadata": "is very good!",
+        },
+    };
+
+    const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+    const server = new ApolloServer({
+        schema: await neoSchema.getSchema(),
+    });
+
+    await startStandaloneServer(server, {
+        context: async ({ req }) => ({ req, transaction: transactionConfig }),
+    });
+    ```
+
 ## 7.2.13
 
 ### Patch Changes
