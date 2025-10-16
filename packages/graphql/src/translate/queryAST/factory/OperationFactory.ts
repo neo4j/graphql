@@ -64,7 +64,8 @@ import type { SortAndPaginationFactory } from "./SortAndPaginationFactory";
 import { parseTopLevelOperationField } from "./parsers/parse-operation-fields";
 import { parseSelectionSetField } from "./parsers/parse-selection-set-fields";
 import { type CreateOperation } from "../ast/operations/CreateOperation";
-import { UpdateOperation } from "../ast/operations/UpdateOperation";
+import { type UpdateOperation } from "../ast/operations/UpdateOperation";
+import { DisconnectFactory } from "./Operations/DisconnectFactory";
 
 export class OperationsFactory {
     // specialized operations factories
@@ -74,6 +75,7 @@ export class OperationsFactory {
     private authorizationFactory: AuthorizationFactory;
     private createFactory: CreateFactory;
     private connectFactory: ConnectFactory;
+    private disconnectFactory: DisconnectFactory;
     private updateFactory: UpdateFactory;
     private deleteFactory: DeleteFactory;
     private fulltextFactory: FulltextFactory;
@@ -90,6 +92,7 @@ export class OperationsFactory {
         this.authorizationFactory = queryASTFactory.authorizationFactory;
         this.createFactory = new CreateFactory(queryASTFactory);
         this.connectFactory = new ConnectFactory(queryASTFactory);
+        this.disconnectFactory = new DisconnectFactory(queryASTFactory);
         this.updateFactory = new UpdateFactory(queryASTFactory);
         this.deleteFactory = new DeleteFactory(queryASTFactory);
         this.fulltextFactory = new FulltextFactory(queryASTFactory);
@@ -239,6 +242,31 @@ export class OperationsFactory {
             return this.connectFactory.createConnectOperation(entity, relationship, input, context, callbackBucket);
         } else {
             return this.connectFactory.createCompositeConnectOperation(
+                entity,
+                relationship,
+                input,
+                context,
+                callbackBucket
+            );
+        }
+    }
+    public createDisconnectOperation(
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
+        relationship: RelationshipAdapter,
+        input: Record<string, any>[],
+        context: Neo4jGraphQLTranslationContext,
+        callbackBucket: CallbackBucket
+    ) {
+        if (isConcreteEntity(entity)) {
+            return this.disconnectFactory.createDisconnectOperation(
+                entity,
+                relationship,
+                input,
+                context,
+                callbackBucket
+            );
+        } else {
+            return this.disconnectFactory.createCompositeDisconnectOperation(
                 entity,
                 relationship,
                 input,

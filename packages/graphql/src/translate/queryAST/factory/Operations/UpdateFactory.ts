@@ -312,6 +312,25 @@ export class UpdateFactory {
                                     }
                                 });
                             }
+                            const nestedDisconnectInput = operationInput.disconnect;
+                            if (nestedDisconnectInput) {
+                                asArray(nestedDisconnectInput).forEach((nestedDisconnectInputItem) => {
+                                    const nestedDisconnectOperation =
+                                        this.queryASTFactory.operationsFactory.createDisconnectOperation(
+                                            nestedEntity,
+                                            nestedRelationship,
+                                            nestedDisconnectInputItem,
+                                            context,
+                                            callbackBucket
+                                        );
+
+                                    const mutationOperationField = new MutationOperationField(
+                                        nestedDisconnectOperation,
+                                        key
+                                    );
+                                    update.addField(mutationOperationField);
+                                });
+                            }
                         });
                     });
                 }

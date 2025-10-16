@@ -29,9 +29,10 @@ import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { InputField } from "../input-fields/InputField";
 import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
+import type { ReadOperation } from "./ReadOperation";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
 
-export class ConnectOperation extends MutationOperation {
+export class DisconnectOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter;
     public readonly relationship: RelationshipAdapter;
 
@@ -140,28 +141,23 @@ export class ConnectOperation extends MutationOperation {
 
         const relDirection = this.relationship.getCypherDirection();
 
-        const connectPattern = new Cypher.Pattern(context.target)
+        const disconnectPattern = new Cypher.Pattern(context.target)
             .related(relVar, { direction: relDirection, type: this.relationship.type })
             .to(nestedContext.target);
 
-        const connectContext = context.push({ target: nestedContext.target, relationship: relVar });
+        const disconnectContext = context.push({ target: nestedContext.target, relationship: relVar });
 
-        const connectClause = new Cypher.Create(connectPattern);
-
-        const setParams = Array.from(this.inputFields.values()).flatMap((input) => {
-            return input.getSetParams(connectContext);
-        });
-        connectClause.set(...setParams);
+        const disconnectClause = new Cypher.Match(disconnectPattern).detachDelete(nestedContext.target);
 
         const mutationSubqueries = Array.from(this.inputFields.values()).flatMap((input) => {
-            return input.getSubqueries(connectContext);
+            return input.getSubqueries(disconnectContext);
         });
 
         const clauses = Cypher.utils.concat(
             matchClause,
             ...this.getAuthorizationClauses(nestedContext), // THESE ARE "BEFORE" AUTH
             ...mutationSubqueries,
-            connectClause,
+            disconnectClause,
             ...this.getAuthorizationClausesAfter(nestedContext) // THESE ARE "AFTER" AUTH
         );
 
