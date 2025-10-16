@@ -21,6 +21,7 @@ import Debug from "debug";
 import type { GraphQLResolveInfo } from "graphql";
 import type {
     Driver,
+    Integer,
     ManagedTransaction,
     QueryResult,
     Result,
@@ -73,6 +74,7 @@ type TransactionConfig = {
         // Possible values from https://neo4j.com/docs/operations-manual/current/monitoring/logging/#attach-metadata-tx (will only be user-transpiled for @neo4j/graphql)
         type: "system" | "user-direct" | "user-action" | "user-transpiled";
     };
+    timeout?: number | Integer | undefined;
 };
 
 export type ExecutionContext = Driver | Session | Transaction;
@@ -82,8 +84,13 @@ export type ExecutorConstructorParam = {
     cypherQueryOptions?: CypherQueryOptions;
     sessionConfig?: SessionConfig;
     cypherParams?: Record<string, unknown>;
-    transactionMetadata?: Record<string, unknown>;
+    transaction?: UserTransactionConfig;
 };
+
+export type UserTransactionConfig = {
+    timeout?: number | Integer | undefined;
+    metadata?: Record<string, unknown> | undefined;
+}
 
 export type Neo4jGraphQLSessionConfig = Pick<SessionConfig, "database" | "impersonatedUser" | "auth">;
 
@@ -95,20 +102,23 @@ export class Executor {
     private sessionConfig: SessionConfig | undefined;
 
     private cypherParams: Record<string, unknown>;
-    private transactionMetadata: Record<string, unknown>;
+    private transaction: UserTransactionConfig;
 
     constructor({
         executionContext,
         cypherQueryOptions,
         sessionConfig,
         cypherParams = {},
-        transactionMetadata = {},
+        transaction = {
+            timeout: undefined,
+            metadata: undefined,
+        },
     }: ExecutorConstructorParam) {
         this.executionContext = executionContext;
         this.cypherQueryOptions = cypherQueryOptions;
         this.sessionConfig = sessionConfig;
         this.cypherParams = cypherParams;
-        this.transactionMetadata = transactionMetadata;
+        this.transaction = transaction;
     }
 
     public async execute(
@@ -118,7 +128,6 @@ export class Executor {
         info?: GraphQLResolveInfo
     ): Promise<QueryResult> {
         const params = { ...parameters, ...this.cypherParams };
-
         try {
             if (isDriverLike(this.executionContext)) {
                 return await this.driverRun({
@@ -205,9 +214,10 @@ export class Executor {
         return {
             metadata: {
                 app: APP_ID,
-                ...this.transactionMetadata,
+                ...this.transaction.metadata,
                 type: "user-transpiled",
             },
+            timeout: this.transaction.timeout,
         };
     }
 
