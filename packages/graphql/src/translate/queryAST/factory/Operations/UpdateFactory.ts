@@ -39,6 +39,8 @@ import { TopLevelUpdateMutationOperation } from "../../ast/operations/TopLevelUp
 import { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { isUnionEntity } from "../../utils/is-union-entity";
 import { MutationOperationField } from "../../ast/input-fields/MutationOperationField";
+import { isConcreteEntity } from "../../utils/is-concrete-entity";
+import { RelationshipSelectionPattern } from "../../ast/selection/SelectionPattern/RelationshipSelectionPattern";
 
 export class UpdateFactory {
     private queryASTFactory: QueryASTFactory;
@@ -219,40 +221,18 @@ export class UpdateFactory {
                         operations.forEach((operationInput: Record<string, any>) => {
                             const nestedUpdateInput = operationInput.update;
                             if (nestedUpdateInput) {
-                                console.log(
-                                    "Nested updates",
-                                    nestedEntity,
-                                    nestedUpdateInput,
-                                    callbackBucket.callbacks.length
-                                );
-                                // if (nestedUpdateInput) {
-                                //     asArray(nestedUpdateInput).forEach((nestedUpdateInputItem) => {
-                                //         const nestedUpdateOperation =
-                                //             this.queryASTFactory.operationsFactory.createUpdateOperation(
-                                //                 nestedEntity,
-                                //                 nestedRelationship,
-                                //                 nestedUpdateInputItem,
-                                //                 context,
-                                //                 callbackBucket
-                                //             );
-
-                                //         const mutationOperationField = new MutationOperationField(
-                                //             nestedUpdateOperation,
-                                //             key
-                                //         );
-                                //         update.addField(mutationOperationField);
-                                //     });
-                                // }
-
-                                // this.createNestedUpdateOperation({
-                                //     targetEntity: nestedEntity,
-                                //     relationship: nestedRelationship,
-                                //     input: nestedCreateInput,
-                                //     callbackBucket,
-                                //     context,
-                                //     operation: create,
-                                //     key,
-                                // });
+                                asArray(nestedUpdateInput).forEach((nestedUpdateInputItem) => {
+                                    this.createNestedUpdateOperation({
+                                        nestedEntity,
+                                        nestedRelationship,
+                                        nestedUpdateInputItem,
+                                        context,
+                                        callbackBucket,
+                                        operation: update,
+                                        key,
+                                        resolveTree,
+                                    });
+                                });
                             }
                             const nestedCreateInput = operationInput.create;
                             if (nestedCreateInput) {
@@ -464,5 +444,67 @@ export class UpdateFactory {
             default:
                 throw new Error(`Unsupported update operator ${operator} on field ${attribute.name} `);
         }
+    }
+
+    private createNestedUpdateOperation({
+        nestedEntity,
+        nestedRelationship,
+        nestedUpdateInputItem,
+        context,
+        callbackBucket,
+        operation,
+        key,
+        resolveTree,
+    }: {
+        nestedEntity: ConcreteEntityAdapter | InterfaceEntityAdapter;
+        nestedRelationship: RelationshipAdapter;
+        nestedUpdateInputItem: Record<string, any>;
+        context: Neo4jGraphQLTranslationContext;
+        callbackBucket: CallbackBucket;
+        operation: UpdateOperation;
+        key: string;
+        resolveTree: ResolveTree;
+    }) {
+        asArray(nestedUpdateInputItem).forEach((input) => {
+            const edgeFields = input.edge ?? {};
+            const nodeInputFields = input.node ?? {};
+
+            const entityAndNodeInput: Array<[ConcreteEntityAdapter, Record<string, any>]> = [];
+
+            if (isConcreteEntity(nestedEntity)) {
+                entityAndNodeInput.push([nestedEntity, nodeInputFields]);
+            } else {
+                Object.entries(nodeInputFields).forEach(([concreteTypename, nodeInputFields]) => {
+                    const concreteEntity = nestedEntity.concreteEntities.find((e) => e.name === concreteTypename);
+                    if (!concreteEntity) {
+                        throw new Error("Concrete entity not found in create, please contact support");
+                    }
+                    entityAndNodeInput.push([concreteEntity, nodeInputFields as Record<string, any>]);
+                });
+            }
+
+            entityAndNodeInput.forEach(([concreteEntity, nodeInputFields]) => {
+                const nestedUpdateOperation = new UpdateOperation({
+                    target: concreteEntity,
+                    relationship: nestedRelationship,
+                    selectionPattern: new RelationshipSelectionPattern({
+                        relationship: nestedRelationship,
+                    }),
+                });
+
+                this.hydrateUpdateOperation({
+                    target: concreteEntity,
+                    relationship: nestedRelationship,
+                    input: { node: nodeInputFields, edge: edgeFields },
+                    update: nestedUpdateOperation,
+                    callbackBucket,
+                    context,
+                    resolveTree,
+                });
+
+                const mutationOperationField = new MutationOperationField(nestedUpdateOperation, key);
+                operation.addField(mutationOperationField);
+            });
+        });
     }
 }

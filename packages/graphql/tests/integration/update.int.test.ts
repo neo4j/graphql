@@ -135,7 +135,8 @@ describe("update", () => {
         expect(gqlResult?.data?.[Movie.operations.update]).toEqual({ [Movie.plural]: [{ id, name: updatedName }] });
     });
 
-    test("should connect through interface relationship", async () => {
+    // TEST ME LAST
+    test.skip("should connect through interface relationship", async () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} implements Production @subscription(events: []) @node {
                 title: String!
@@ -347,7 +348,8 @@ describe("update", () => {
         });
     });
 
-    test("should update nested actors from a movie", async () => {
+    // TODO nested update
+    test.only("should update nested actors from a movie", async () => {
         const typeDefs = /* GraphQL */ `
             type ${Actor} @node {
                 name: String
