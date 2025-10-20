@@ -667,17 +667,17 @@ describe("Advanced Filtering - deprecated", () => {
             let property: number;
 
             if (type === "Int") {
-                property = Math.floor(Math.random() * 9999);
+                property = 39102;
             } else {
-                property = Math.floor(Math.random() * 9999) + 0.5;
+                property = 39102 + 0.5;
             }
 
             let notProperty: number;
 
             if (type === "Int") {
-                notProperty = Math.floor(Math.random() * 9999);
+                notProperty = 100;
             } else {
-                notProperty = Math.floor(Math.random() * 9999) + 0.5;
+                notProperty = 100 + 0.5;
             }
 
             await testHelper.executeCypher(
@@ -718,25 +718,25 @@ describe("Advanced Filtering - deprecated", () => {
             let value: number;
 
             if (type === "Int") {
-                value = Math.floor(Math.random() * 9999);
+                value = 39102;
             } else {
-                value = Math.floor(Math.random() * 9999) + 0.5;
+                value = 39102 + 0.5;
             }
 
             let randomValue1: number;
 
             if (type === "Int") {
-                randomValue1 = Math.floor(Math.random() * 9999);
+                randomValue1 = 39102;
             } else {
-                randomValue1 = Math.floor(Math.random() * 9999) + 0.5;
+                randomValue1 = 39102 + 0.5;
             }
 
             let randomValue2: number;
 
             if (type === "Int") {
-                randomValue2 = Math.floor(Math.random() * 9999);
+                randomValue2 = 39102;
             } else {
-                randomValue2 = Math.floor(Math.random() * 9999) + 0.5;
+                randomValue2 = 39102 + 0.5;
             }
 
             await testHelper.executeCypher(
@@ -776,9 +776,9 @@ describe("Advanced Filtering - deprecated", () => {
             let value: number;
 
             if (type === "Int") {
-                value = Math.floor(Math.random() * 9999);
+                value = 39102;
             } else {
-                value = Math.floor(Math.random() * 9999) + 0.5;
+                value = 39102 + 0.5;
             }
 
             const lessThanValue = value - (value + 1);
@@ -821,9 +821,9 @@ describe("Advanced Filtering - deprecated", () => {
             let value: number;
 
             if (type === "Int") {
-                value = Math.floor(Math.random() * 9999);
+                value = 39102;
             } else {
-                value = Math.floor(Math.random() * 9999) + 0.5;
+                value = 39102 + 0.5;
             }
 
             const lessThanValue = value - (value + 1);
@@ -865,9 +865,9 @@ describe("Advanced Filtering - deprecated", () => {
             let value: number;
 
             if (type === "Int") {
-                value = Math.floor(Math.random() * 9999);
+                value = 39102;
             } else {
-                value = Math.floor(Math.random() * 9999) + 0.5;
+                value = 39102 + 0.5;
             }
 
             const graterThanValue = value + 1;
@@ -910,9 +910,9 @@ describe("Advanced Filtering - deprecated", () => {
             let value: number;
 
             if (type === "Int") {
-                value = Math.floor(Math.random() * 9999);
+                value = 39102;
             } else {
-                value = Math.floor(Math.random() * 9999) + 0.5;
+                value = 39102 + 0.5;
             }
 
             const greaterThan = value + 1;

@@ -55,7 +55,7 @@ describe("cypher targeting interface", () => {
             charset: "alphabetic",
         });
 
-        episodes = +(Math.random() * 1000);
+        episodes = 123;
 
         actorName = generate({
             charset: "alphabetic",

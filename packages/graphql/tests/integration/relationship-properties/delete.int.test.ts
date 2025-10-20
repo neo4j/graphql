@@ -59,7 +59,7 @@ describe("Relationship properties - delete", () => {
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName1 = generate({ charset: "alphabetic" });
         const actorName2 = generate({ charset: "alphabetic" });
-        const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
+        const screenTime = 123980;
 
         const source = /* GraphQL */ `
             mutation ($movieTitle: String!, $actorName1: String!) {
@@ -131,7 +131,7 @@ describe("Relationship properties - delete", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
-        const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
+        const screenTime = 123980;
 
         const source = /* GraphQL */ `
             mutation ($screenTime: Int!, $actorName: String!) {

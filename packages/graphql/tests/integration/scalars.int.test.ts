@@ -112,7 +112,7 @@ describe("scalars", () => {
             typeDefs,
         });
 
-        const id = Math.floor(Math.random() * 1000);
+        const id = 123980;
 
         const query = `
             {
