@@ -18,6 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import type { EntityAdapter } from "../../../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { hasTarget } from "../../../utils/context-has-target";
@@ -47,6 +48,10 @@ export class RelationshipSelectionPattern extends SelectionPattern {
         this.targetOverride = targetOverride;
     }
 
+    public print(): string {
+        return `${super.print()} <${this.relationship.name} -> ${this.target.name}>`;
+    }
+
     public apply(context: QueryASTContext<Cypher.Node>): {
         nestedContext: QueryASTContext<Cypher.Node>;
         pattern: Cypher.Pattern;
@@ -54,7 +59,7 @@ export class RelationshipSelectionPattern extends SelectionPattern {
         if (!hasTarget(context)) throw new Error("No parent node over a nested relationship match!");
         const relVar = new Cypher.Relationship();
 
-        const relationshipTarget = this.targetOverride ?? this.relationship.target;
+        const relationshipTarget = this.target;
         const targetNode = createNode(this.alias);
         const labels = getEntityLabels(relationshipTarget, context.neo4jGraphQLContext);
         const relDirection = this.relationship.getCypherDirection();
@@ -70,5 +75,9 @@ export class RelationshipSelectionPattern extends SelectionPattern {
             nestedContext: nestedContext,
             pattern: pattern,
         };
+    }
+
+    private get target(): EntityAdapter {
+        return this.targetOverride ?? this.relationship.target;
     }
 }

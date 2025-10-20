@@ -347,7 +347,6 @@ describe("update", () => {
         });
     });
 
-    // TODO nested update
     test("should update nested actors from a movie", async () => {
         const typeDefs = /* GraphQL */ `
             type ${Actor} @node {

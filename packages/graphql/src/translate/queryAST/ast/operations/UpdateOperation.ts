@@ -30,7 +30,6 @@ import type { ReadOperation } from "./ReadOperation";
 import { Operation, type OperationTranspileResult } from "./operations";
 
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
-import { getEntityLabels } from "../../utils/create-node-from-entity";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { Filter } from "../filters/Filter";
 import { ParamInputField } from "../input-fields/ParamInputField";
@@ -100,7 +99,7 @@ export class UpdateOperation extends Operation {
         if (!context.target) throw new Error("No parent node found!");
         context.env.topLevelOperationName = "UPDATE";
 
-        const { nestedContext } = this.selectionPattern.apply(context);
+        const { nestedContext, pattern } = this.selectionPattern.apply(context);
         this.nestedContext = nestedContext;
 
         const predicate = this.getPredicate(nestedContext);
@@ -127,34 +126,7 @@ export class UpdateOperation extends Operation {
             }
         });
 
-        // const createPattern = new Cypher.Pattern(nestedContext.target, {
-        //     labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
-        // });
-
-        // const createClause = new Cypher.Create(createPattern);
-
-        let matchClause: Cypher.Match;
-        if (this.relationship) {
-            const relVar = nestedContext.relationship;
-            if (!relVar) {
-                throw new Error(
-                    "GraphQL Error: Transpilation Error, relationship variable not available. Please contact support"
-                );
-            }
-            const relDirection = this.relationship.getCypherDirection();
-
-            const matchPattern = new Cypher.Pattern(context.target)
-                .related(relVar, { direction: relDirection, type: this.relationship.type })
-                .to(nestedContext.target, {
-                    labels: getEntityLabels(this.relationship.target, context.neo4jGraphQLContext),
-                });
-            matchClause = new Cypher.Match(matchPattern).where(predicate);
-        } else {
-            const matchPattern = new Cypher.Pattern(context.target, {
-                labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
-            });
-            matchClause = new Cypher.Match(matchPattern).where(predicate);
-        }
+        const matchClause = new Cypher.Match(pattern).where(predicate);
 
         const setParams = Array.from(this.inputFields.values()).flatMap((input) => {
             return input.getSetParams(nestedContext);
@@ -164,17 +136,9 @@ export class UpdateOperation extends Operation {
             return input.getSubqueries(nestedContext);
         });
 
-        // let mergeClause: Cypher.Merge | undefined;
-        // if (this.relationship) {
-
-        //     mergeClause = new Cypher.Merge(mergePattern).set(...setParams);
-        // } else {
-        //     // createClause.set(...setParams);
-        // }
         matchClause.set(...setParams);
 
         const clauses = Cypher.utils.concat(
-            // createClause,
             matchClause,
             filterSubqueriesClause,
             ...mutationSubqueries.map((sq) =>
@@ -183,18 +147,7 @@ export class UpdateOperation extends Operation {
         );
 
         return { projectionExpr: nestedContext.target, clauses: [clauses] };
-
-        // OLD
-        // const clauses = this.getProjectionClause(context);
-        // return { projectionExpr: context.returnVariable, clauses };
     }
-
-    // OLD
-    // private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {
-    //     return this.projectionOperations.map((operationField) => {
-    //         return Cypher.utils.concat(...operationField.transpile(context).clauses);
-    //     });
-    // }
 
     /** Post subqueries */
     public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {

@@ -44,6 +44,10 @@ export class NodeSelectionPattern extends SelectionPattern {
         this.useContextTarget = useContextTarget;
     }
 
+    public print(): string {
+        return `${super.print()} <${this.target.name}>`;
+    }
+
     public apply(context: QueryASTContext): {
         nestedContext: QueryASTContext<Cypher.Node>;
         pattern: Cypher.Pattern;
