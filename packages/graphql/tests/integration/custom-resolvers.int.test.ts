@@ -256,8 +256,8 @@ describe("Custom Resolvers", () => {
                     charset: "alphabetic",
                 });
 
-                const int = Math.floor(Math.random() * 100000);
-                const float = Math.floor(Math.random() * 100000) - 0.5;
+                const int = 200;
+                const float = 150.3
                 const bool = false;
 
                 if (type === "ID") {

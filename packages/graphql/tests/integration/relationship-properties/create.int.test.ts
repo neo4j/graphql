@@ -57,7 +57,7 @@ describe("Relationship properties - create", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
-        const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
+        const screenTime = 123980;
 
         const source = /* GraphQL */ `
             mutation ($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
@@ -128,7 +128,7 @@ describe("Relationship properties - create", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
-        const words = Math.floor((Math.random() * 1e3) / Math.random());
+        const words = 123980;
 
         const source = /* GraphQL */ `
             mutation ($actorName: String!, $words: Int!, $movieTitle: String!) {
