@@ -136,8 +136,12 @@ export class UpdateOperation extends Operation {
             return input.getSubqueries(nestedContext);
         });
 
-        if (setParams.length === 0 && mutationSubqueries.length === 0) {
-            return { projectionExpr: nestedContext.target, clauses: [] };
+        // This is a small optimisation, to avoid subqueries with no changes
+        // Top level should still be generated for projection
+        if (this.relationship) {
+            if (setParams.length === 0 && mutationSubqueries.length === 0) {
+                return { projectionExpr: nestedContext.target, clauses: [] };
+            }
         }
 
         matchClause.set(...setParams);

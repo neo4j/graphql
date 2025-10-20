@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -374,14 +374,80 @@ export class UpdateFactory {
             }
         });
 
-        // TODO:
-        // this.addPopulatedByFieldToCreate({
-        //     entity: target,
-        //     create,
-        //     input,
-        //     callbackBucket,
-        //     relationship,
-        // });
+        // TODO: handle operations
+        this.addPopulatedByFieldToUpdate({
+            entity: target,
+            update,
+            input,
+            callbackBucket,
+            relationship,
+        });
+    }
+
+    private addPopulatedByFieldToUpdate({
+        entity,
+        update,
+        input,
+        callbackBucket,
+        relationship,
+    }: {
+        entity: ConcreteEntityAdapter;
+        update: UpdateOperation;
+        input: Record<string, any>;
+        callbackBucket: CallbackBucket;
+        relationship?: RelationshipAdapter;
+    }) {
+        entity.getPopulatedByFields("UPDATE").forEach((attribute) => {
+            const attachedTo = "node";
+            // the param value it's irrelevant as it will be overwritten by the callback function
+            const callbackParam = new Cypher.Param("");
+            const field = new ParamInputField({
+                attribute,
+                attachedTo,
+                inputValue: callbackParam,
+            });
+            update.addField(field);
+
+            const callbackFunctionName = attribute.annotations.populatedBy?.callback;
+            if (!callbackFunctionName) {
+                throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
+            }
+
+            const callbackParent = relationship ? input.node : input;
+
+            callbackBucket.addCallback({
+                functionName: callbackFunctionName,
+                param: callbackParam,
+                parent: callbackParent,
+                type: attribute.type,
+            });
+        });
+
+        if (relationship) {
+            relationship.getPopulatedByFields("UPDATE").forEach((attribute) => {
+                const attachedTo = "relationship";
+                // the param value it's irrelevant as it will be overwritten by the callback function
+                const relCallbackParam = new Cypher.Param("");
+                const relField = new ParamInputField({
+                    attribute,
+                    attachedTo,
+                    inputValue: relCallbackParam,
+                });
+                update.addField(relField);
+
+                const callbackFunctionName = attribute.annotations.populatedBy?.callback;
+                if (!callbackFunctionName) {
+                    throw new Error(`PopulatedBy callback not found for attribute ${attribute.name}`);
+                }
+
+                callbackBucket.addCallback({
+                    functionName: callbackFunctionName,
+                    param: relCallbackParam,
+                    parent: input.edge,
+                    type: attribute.type,
+                });
+            });
+        }
     }
 
     private addEntityAuthorization({
