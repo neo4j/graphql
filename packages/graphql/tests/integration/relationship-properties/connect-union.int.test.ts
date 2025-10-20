@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { generate } from "randomstring";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
@@ -27,7 +26,7 @@ describe("Relationship properties - connect on union", () => {
     let Show: UniqueType;
     let testHelper: TestHelper;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         testHelper = new TestHelper();
         Movie = testHelper.createUniqueType("Movie");
         Actor = testHelper.createUniqueType("Actor");
@@ -57,14 +56,14 @@ describe("Relationship properties - connect on union", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         await testHelper.close();
     });
 
     test("should create an actor while connecting a relationship that has properties", async () => {
-        const movieTitle = generate({ charset: "alphabetic" });
-        const actorName = generate({ charset: "alphabetic" });
-        const screenTime = 3000;
+        const movieTitle = "Scent of a Koala";
+        const actorName = "Mofli";
+        const screenTime = 560;
 
         const source = /* GraphQL */ `
             mutation ($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
@@ -118,9 +117,9 @@ describe("Relationship properties - connect on union", () => {
     });
 
     test("should update an actor while connecting a relationship that has properties(with Union)", async () => {
-        const movieTitle = generate({ charset: "alphabetic" });
-        const actorName = generate({ charset: "alphabetic" });
-        const screenTime = 123980;
+        const movieTitle = "Scent of a Robot";
+        const actorName = "Marvin";
+        const screenTime = 60;
 
         const source = /* GraphQL */ `
             mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
@@ -172,9 +171,9 @@ describe("Relationship properties - connect on union", () => {
     });
 
     test("should update an actor while connecting an existing relationship that has properties(with Union)", async () => {
-        const movieTitle = generate({ charset: "alphabetic" });
-        const actorName = generate({ charset: "alphabetic" });
-        const screenTime = 123980;
+        const movieTitle = "The Woman in Purple";
+        const actorName = "Dan Rad";
+        const screenTime = 190;
 
         const source = /* GraphQL */ `
             mutation($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
