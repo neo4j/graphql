@@ -2737,10 +2737,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@neo4j/cypher-builder@npm:2.8.1":
-  version: 2.8.1
-  resolution: "@neo4j/cypher-builder@npm:2.8.1"
-  checksum: 10c0/9924277b222ff1610836565145ec3a82e5294883b57580ed4d1bfd1b37b02414d46c75195796853d280243ed26ce576c151099766d66bacae37337d4f9fadcb6
+"@neo4j/cypher-builder@npm:2.9.0":
+  version: 2.9.0
+  resolution: "@neo4j/cypher-builder@npm:2.9.0"
+  checksum: 10c0/e2c71a045b20197a9257fb93abc4c1989b226430cb6d9c0a4926ddf2c55566ddc7d66094a796d099684e366c43555fa9dc258c582ee8ffc0e820908abad19f3e
   languageName: node
   linkType: hard
 
@@ -2762,12 +2762,12 @@ __metadata:
     "@graphql-tools/resolvers-composition": "npm:^7.0.0"
     "@graphql-tools/schema": "npm:^10.0.0"
     "@graphql-tools/utils": "npm:10.9.1"
-    "@neo4j/cypher-builder": "npm:2.8.1"
+    "@neo4j/cypher-builder": "npm:2.9.0"
     "@types/deep-equal": "npm:1.0.4"
     "@types/is-uuid": "npm:1.0.2"
     "@types/jest": "npm:30.0.0"
     "@types/jsonwebtoken": "npm:9.0.10"
-    "@types/node": "npm:22.18.10"
+    "@types/node": "npm:22.18.11"
     "@types/pluralize": "npm:0.0.33"
     "@types/randomstring": "npm:1.3.0"
     "@types/semver": "npm:7.7.1"
@@ -2816,7 +2816,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": "npm:^7.0.0"
     "@types/jest": "npm:30.0.0"
-    "@types/node": "npm:22.18.10"
+    "@types/node": "npm:22.18.11"
     "@types/pluralize": "npm:0.0.33"
     camelcase: "npm:^6.3.0"
     debug: "npm:^4.3.4"
@@ -3593,12 +3593,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:22.18.10":
-  version: 22.18.10
-  resolution: "@types/node@npm:22.18.10"
+"@types/node@npm:22.18.11":
+  version: 22.18.11
+  resolution: "@types/node@npm:22.18.11"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10c0/37b34553f1953ab8fc25b7467d44701446400f62547adb62c842cebac091350985470aeed87acd60f5295778c370d9721d477310e643677a7eab03a8dc6ed74f
+  checksum: 10c0/3802f598608638e13ca350fbe2db0db5dde9a0b6704295fa1b6cec6defe24f9baf6a891eee6eaecd016bcd5ea18edecdaf71679d87079fe468913701adb61387
   languageName: node
   linkType: hard
 
