@@ -53,8 +53,8 @@ export class UpdateFactory {
         entity: ConcreteEntityAdapter,
         resolveTree: ResolveTree,
         context: Neo4jGraphQLTranslationContext,
-        callbackBucket: CallbackBucket
-        // ): UpdateOperation {
+        callbackBucket: CallbackBucket,
+        varName: string | undefined
     ): TopLevelUpdateMutationOperation {
         const rawInput = resolveTree.args.update as Record<string, any>[];
         const input = asArray(rawInput) ?? [];
@@ -64,7 +64,7 @@ export class UpdateFactory {
                 target: entity,
                 selectionPattern: new NodeSelectionPattern({
                     target: entity,
-                    useContextTarget: true,
+                    alias: varName,
                 }),
             });
 

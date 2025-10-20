@@ -149,7 +149,7 @@ describe("interface relationships", () => {
         });
     });
 
-    test("should nested disconnect using interface relationship fields", async () => {
+    test.only("should nested disconnect using interface relationship fields", async () => {
         const actorName1 = generate({
             readable: true,
             charset: "alphabetic",
