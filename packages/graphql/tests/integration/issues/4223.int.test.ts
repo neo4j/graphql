@@ -143,7 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
             }
         `;
 
-        myUserId = Math.random().toString(36).slice(2, 7);
+        myUserId = "myUserId-1";
         tenantVariables = {
             input: {
                 admins: {
