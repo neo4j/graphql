@@ -75,7 +75,7 @@ export class UpdateFactory {
                 callbackBucket,
                 context,
                 whereArgs: {
-                    node: resolveTree.args.where as Record<string, any>,
+                    node: (resolveTree.args.where as Record<string, any>) ?? {},
                 },
             });
 
@@ -175,7 +175,12 @@ export class UpdateFactory {
                 }
                 if (attribute) {
                     if (operator) {
-                        const paramInputField = this.getInputFieldDeprecated(operator, attribute, targetInput[key]);
+                        const paramInputField = this.getInputFieldDeprecated(
+                            "node",
+                            operator,
+                            attribute,
+                            targetInput[key]
+                        );
                         update.addField(paramInputField);
 
                         this.addAttributeAuthorization({
@@ -315,19 +320,54 @@ export class UpdateFactory {
                         });
                     });
                 }
-                if (relationship) {
-                    const targetInputEdge = this.getInputEdge(inputItem);
-                    for (const key of Object.keys(targetInputEdge)) {
-                        const attribute = relationship.attributes.get(key);
-                        if (attribute) {
-                            const attachedTo = "relationship";
+                // if (relationship) {
+                //     const targetInputEdge = this.getInputEdge(inputItem);
+                //     for (const key of Object.keys(targetInputEdge)) {
+                //         const attribute = relationship.attributes.get(key);
+                //         if (attribute) {
+                //             const attachedTo = "relationship";
 
-                            const paramInputField = new ParamInputField({
-                                attachedTo,
-                                attribute,
-                                inputValue: targetInputEdge[key],
-                            });
-                            update.addField(paramInputField);
+                //             const paramInputField = new ParamInputField({
+                //                 attachedTo,
+                //                 attribute,
+                //                 inputValue: targetInputEdge[key],
+                //             });
+                //             update.addField(paramInputField);
+                //         }
+                //     }
+                // }
+            }
+
+            if (relationship) {
+                console.log("inputITem", inputItem, relationship.propertiesTypeName);
+                const targetInputEdge = this.getInputEdge(inputItem);
+                for (const key of Object.keys(targetInputEdge)) {
+                    const { fieldName, operator } = parseMutationField(key);
+                    const attribute = relationship.attributes.get(fieldName);
+                    if (attribute) {
+                        const paramInputField = this.getInputFieldDeprecated(
+                            "relationship",
+                            operator,
+                            attribute,
+                            targetInputEdge[fieldName]
+                        );
+                        update.addField(paramInputField);
+                    } else if (key === relationship.propertiesTypeName) {
+                        const edgeInput = targetInputEdge[key]; // ActedIn: {..}
+                        console.log("edgeInput", edgeInput);
+
+                        for (const k of Object.keys(edgeInput)) {
+                            const { fieldName, operator } = parseMutationField(k);
+                            const attribute = relationship.attributes.get(fieldName);
+                            if (attribute) {
+                                const paramInputField = this.getInputFieldDeprecated(
+                                    "relationship",
+                                    operator,
+                                    attribute,
+                                    edgeInput[k]
+                                );
+                                update.addField(paramInputField);
+                            }
                         }
                     }
                 }
@@ -403,6 +443,7 @@ export class UpdateFactory {
     }
 
     private getInputFieldDeprecated(
+        attachedTo: "node" | "relationship",
         operator: MutationOperator | undefined,
         attribute: AttributeAdapter,
         value: unknown
@@ -410,7 +451,7 @@ export class UpdateFactory {
         switch (operator) {
             case "SET":
                 return new ParamInputField({
-                    attachedTo: "node",
+                    attachedTo,
                     attribute,
                     inputValue: value,
                 });

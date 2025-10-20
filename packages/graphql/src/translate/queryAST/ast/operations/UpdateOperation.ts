@@ -136,6 +136,10 @@ export class UpdateOperation extends Operation {
             return input.getSubqueries(nestedContext);
         });
 
+        if (setParams.length === 0 && mutationSubqueries.length === 0) {
+            return { projectionExpr: nestedContext.target, clauses: [] };
+        }
+
         matchClause.set(...setParams);
 
         const clauses = Cypher.utils.concat(
