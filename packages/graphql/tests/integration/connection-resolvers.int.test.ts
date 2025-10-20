@@ -172,7 +172,7 @@ describe("Connection Resolvers", () => {
                 name: String.fromCharCode(x + 1 + 64) + generate({ charset: "alphabetic" }),
             },
             edge: {
-                screenTime: Math.floor(Math.random() * 200),
+                screenTime: 200,
             },
         }));
 

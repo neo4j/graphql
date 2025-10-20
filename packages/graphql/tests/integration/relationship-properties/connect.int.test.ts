@@ -56,7 +56,7 @@ describe("Relationship properties - connect", () => {
     test("should create a movie while connecting a relationship that has properties", async () => {
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
-        const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
+        const screenTime = 123980;
 
         const source = /* GraphQL */ `
             mutation ($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
@@ -113,7 +113,7 @@ describe("Relationship properties - connect", () => {
     test("should update a movie while connecting a relationship that has properties", async () => {
         const movieTitle = generate({ charset: "alphabetic" });
         const actorName = generate({ charset: "alphabetic" });
-        const screenTime = Math.floor((Math.random() * 1e3) / Math.random());
+        const screenTime = 123980;
 
         const source = /* GraphQL */ `
             mutation ($movieTitle: String!, $screenTime: Int!, $actorName: String!) {
