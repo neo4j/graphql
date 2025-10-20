@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
+import Cypher, { e } from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
@@ -34,6 +34,7 @@ import type { QueryASTFactory } from "../QueryASTFactory";
 import { DisconnectOperation } from "../../ast/operations/DisconnectOperation";
 import { CompositeDisconnectPartial } from "../../ast/operations/composite/CompositeDisconnectPartial";
 import { CompositeDisconnectOperation } from "../../ast/operations/composite/CompositeDisconnectOperation";
+import { RelationshipSelectionPattern } from "../../ast/selection/SelectionPattern/RelationshipSelectionPattern";
 
 export class DisconnectFactory {
     private queryASTFactory: QueryASTFactory;
@@ -51,8 +52,8 @@ export class DisconnectFactory {
     ): DisconnectOperation {
         const disconnectOP = new DisconnectOperation({
             target: entity,
-            selectionPattern: new NodeSelectionPattern({
-                target: entity,
+            selectionPattern: new RelationshipSelectionPattern({
+                relationship,
             }),
             relationship,
         });
@@ -102,8 +103,9 @@ export class DisconnectFactory {
     ): CompositeDisconnectPartial {
         const disconnectOp = new CompositeDisconnectPartial({
             target: entity,
-            selectionPattern: new NodeSelectionPattern({
-                target: entity,
+            selectionPattern: new RelationshipSelectionPattern({
+                relationship,
+                targetOverride: entity,
             }),
             relationship,
         });

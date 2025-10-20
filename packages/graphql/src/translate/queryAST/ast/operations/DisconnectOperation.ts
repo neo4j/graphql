@@ -113,12 +113,8 @@ export class DisconnectOperation extends MutationOperation {
             throw new Error("No parent node found!");
         }
 
-        const { nestedContext } = this.selectionPattern.apply(context);
+        const { nestedContext, pattern: matchPattern } = this.selectionPattern.apply(context);
         this.nestedContext = nestedContext;
-
-        const matchPattern = new Cypher.Pattern(nestedContext.target, {
-            labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
-        });
 
         const allFilters = [...this.authFilters, ...this.filters];
 
@@ -139,31 +135,25 @@ export class DisconnectOperation extends MutationOperation {
 
         const relVar = new Cypher.Relationship();
 
-        const relDirection = this.relationship.getCypherDirection();
-
-        const disconnectPattern = new Cypher.Pattern(context.target)
-            .related(relVar, { direction: relDirection, type: this.relationship.type })
-            .to(nestedContext.target);
-
         const disconnectContext = context.push({ target: nestedContext.target, relationship: relVar });
 
-        const disconnectClause = new Cypher.Match(disconnectPattern).detachDelete(nestedContext.target);
+        const mutationSubqueries = Array.from(this.inputFields.values())
+            .flatMap((input) => {
+                return input.getSubqueries(disconnectContext);
+            })
+            .map((sq) => new Cypher.Call(sq, [disconnectContext.target]));
 
-        const mutationSubqueries = Array.from(this.inputFields.values()).flatMap((input) => {
-            return input.getSubqueries(disconnectContext);
-        });
+        const deleteClause = new Cypher.With(nestedContext.relationship!).delete(nestedContext.relationship!);
 
         const clauses = Cypher.utils.concat(
             matchClause,
             ...this.getAuthorizationClauses(nestedContext), // THESE ARE "BEFORE" AUTH
             ...mutationSubqueries,
-            disconnectClause,
+            deleteClause,
             ...this.getAuthorizationClausesAfter(nestedContext) // THESE ARE "AFTER" AUTH
         );
 
-        const callClause = new Cypher.Call(clauses, [context.target]);
-
-        return { projectionExpr: context.returnVariable, clauses: [callClause] };
+        return { projectionExpr: context.returnVariable, clauses: [clauses] };
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
