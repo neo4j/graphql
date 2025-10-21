@@ -59,23 +59,30 @@ export class ParamInputField extends InputField {
         queryASTContext: QueryASTContext<Cypher.Node>,
         _inputVariable?: Cypher.Variable
     ): Cypher.SetParam[] {
-        const target = this.getTarget(queryASTContext);
+        const leftExpr = this.getLeftExpression(queryASTContext);
+        const rightExpr = this.getRightExpression(queryASTContext);
 
+        const setField: Cypher.SetParam = [leftExpr, rightExpr];
+        return [setField];
+    }
+
+    protected getLeftExpression(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.Property {
+        return this.getTarget(queryASTContext).property(this.attribute.databaseName);
+    }
+
+    protected getRightExpression(
+        _: QueryASTContext<Cypher.Node>
+    ): Exclude<Cypher.Expr, Cypher.Map | Cypher.MapProjection> {
         let rightVariable: Cypher.Expr;
         if (this.inputValue instanceof Cypher.Variable) {
             rightVariable = this.inputValue;
         } else {
             rightVariable = new Cypher.Param(this.inputValue);
         }
-
-        const leftExpr = target.property(this.attribute.databaseName);
-        const rightExpr = this.coerceReference(rightVariable);
-
-        const setField: Cypher.SetParam = [leftExpr, rightExpr];
-        return [setField];
+        return this.coerceReference(rightVariable);
     }
 
-    private coerceReference(
+    protected coerceReference(
         variable: Cypher.Variable | Cypher.Property
     ): Exclude<Cypher.Expr, Cypher.Map | Cypher.MapProjection> {
         if (this.attribute.typeHelper.isSpatial()) {
@@ -104,7 +111,6 @@ export class ParamInputField extends InputField {
             const mapTime = Cypher.time(comprehensionVar);
             return new Cypher.ListComprehension(comprehensionVar, variable).map(mapTime);
         }
-
         return variable;
     }
 }
