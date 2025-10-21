@@ -15,7 +15,15 @@
     "bugs": {
         "url": "https://github.com/neo4j/graphql/issues"
     },
+<<<<<<< HEAD:packages/plugins/graphql-plugin-subscriptions-amqp/package.json
     "homepage": "https://github.com/neo4j/graphql/tree/dev/packages/plugins/graphql-plugin-subscriptions-amqp",
+=======
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/neo4j/graphql.git"
+    },
+    "homepage": "https://github.com/neo4j/graphql/tree/dev/packages/graphql-amqp-subscriptions-engine",
+>>>>>>> 0c442e893 (Add repository to amqp plugin and graphql ogm):packages/graphql-amqp-subscriptions-engine/package.json
     "exports": "./dist/index.js",
     "main": "./dist/index.js",
     "types": "./dist/index.d.ts",
