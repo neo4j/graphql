@@ -42,6 +42,7 @@ import type { MutationOperator } from "../parsers/parse-mutation-field";
 import { parseMutationField } from "../parsers/parse-mutation-field";
 import type { QueryASTFactory } from "../QueryASTFactory";
 import { PushInputField } from "../../ast/input-fields/operators/PushInputField";
+import { PopInputField } from "../../ast/input-fields/operators/PopInputField";
 
 export class UpdateFactory {
     private queryASTFactory: QueryASTFactory;
@@ -333,13 +334,39 @@ export class UpdateFactory {
                     const { fieldName, operator } = parseMutationField(key);
                     const attribute = relationship.attributes.get(fieldName);
                     if (attribute) {
-                        const paramInputField = this.getInputFieldDeprecated(
-                            "relationship",
-                            operator,
-                            attribute,
-                            targetInputEdge[key]
-                        );
-                        update.addField(paramInputField);
+                        if (operator) {
+                            const paramInputField = this.getInputFieldDeprecated(
+                                "relationship",
+                                operator,
+                                attribute,
+                                targetInputEdge[key]
+                            );
+                            update.addField(paramInputField);
+
+                            this.addAttributeAuthorization({
+                                attribute,
+                                context,
+                                update,
+                                entity: target,
+                            });
+                        } else {
+                            for (const op of Object.keys(targetInputEdge[fieldName])) {
+                                const paramInputField = this.getInputField(
+                                    "relationship",
+                                    op,
+                                    attribute,
+                                    targetInputEdge[fieldName][op]
+                                );
+                                update.addField(paramInputField);
+
+                                this.addAttributeAuthorization({
+                                    attribute,
+                                    context,
+                                    update,
+                                    entity: target,
+                                });
+                            }
+                        }
                     } else if (key === relationship.propertiesTypeName) {
                         const edgeInput = targetInputEdge[key]; // ActedIn: {..}
 
@@ -347,13 +374,39 @@ export class UpdateFactory {
                             const { fieldName, operator } = parseMutationField(k);
                             const attribute = relationship.attributes.get(fieldName);
                             if (attribute) {
-                                const paramInputField = this.getInputFieldDeprecated(
-                                    "relationship",
-                                    operator,
-                                    attribute,
-                                    edgeInput[k]
-                                );
-                                update.addField(paramInputField);
+                                if (operator) {
+                                    const paramInputField = this.getInputFieldDeprecated(
+                                        "relationship",
+                                        operator,
+                                        attribute,
+                                        edgeInput[k]
+                                    );
+                                    update.addField(paramInputField);
+
+                                    this.addAttributeAuthorization({
+                                        attribute,
+                                        context,
+                                        update,
+                                        entity: target,
+                                    });
+                                } else {
+                                    for (const op of Object.keys(edgeInput[k][fieldName])) {
+                                        const paramInputField = this.getInputField(
+                                            "relationship",
+                                            op,
+                                            attribute,
+                                            edgeInput[fieldName][op]
+                                        );
+                                        update.addField(paramInputField);
+
+                                        this.addAttributeAuthorization({
+                                            attribute,
+                                            context,
+                                            update,
+                                            entity: target,
+                                        });
+                                    }
+                                }
                             }
                         }
                     }
@@ -521,6 +574,11 @@ export class UpdateFactory {
                     inputValue: value,
                 });
             case "POP":
+                return new PopInputField({
+                    attachedTo,
+                    attribute,
+                    inputValue: value,
+                });
             default:
                 throw new Error(`Unsupported update operator ${operator} on field ${attribute.name} `);
         }
@@ -551,6 +609,11 @@ export class UpdateFactory {
                     inputValue: value,
                 });
             case "pop":
+                return new PopInputField({
+                    attachedTo,
+                    attribute,
+                    inputValue: value,
+                });
             default:
                 throw new Error(`Unsupported update operator ${operator} on field ${attribute.name} `);
         }
