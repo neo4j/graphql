@@ -152,7 +152,7 @@ export class FilterFactory {
                 }
 
                 if (rel && key === "edge") {
-                    return this.createEdgeFilters(rel, value);
+                    return this.createEdgeFilters(rel, value ?? {});
                 }
 
                 if (key === "node") {

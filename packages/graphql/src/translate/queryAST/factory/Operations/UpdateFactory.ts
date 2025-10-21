@@ -164,7 +164,12 @@ export class UpdateFactory {
             // raiseAttributeAmbiguity(Object.keys(targetInput), target);
             // raiseAttributeAmbiguity(Object.keys(this.getInputEdge(inputItem)), relationship);
 
-            const filters = this.queryASTFactory.filterFactory.createNodeFilters(target, whereArgs.node);
+            const filters = this.queryASTFactory.filterFactory.createConnectionPredicates({
+                rel: relationship,
+                entity: target,
+                where: whereArgs,
+            });
+            // const filters = this.queryASTFactory.filterFactory.createNodeFilters(target, whereArgs.node);
             update.addFilters(...filters);
             for (const key of Object.keys(targetInput)) {
                 const { fieldName, operator } = parseMutationField(key);
@@ -243,22 +248,31 @@ export class UpdateFactory {
                             const nestedCreateInput = operationInput.create;
                             if (nestedCreateInput) {
                                 asArray(nestedCreateInput).forEach((nestedCreateInputItem) => {
+                                    let edgeField = nestedCreateInputItem.edge ?? {};
+
+                                    // This is to parse the create input for a declareRelationship
+                                    // We are checking the relationship target, because for nestedRelationship is
+                                    // already disambiguated into concrete entity
+                                    if (relationship?.target && !isConcreteEntity(relationship?.target)) {
+                                        if (nestedRelationship.propertiesTypeName) {
+                                            edgeField = edgeField[nestedRelationship.propertiesTypeName] ?? {};
+                                        }
+                                    }
+
+                                    const concreteNestedCreateInput = {
+                                        node: nestedCreateInputItem.node ?? {},
+                                        edge: edgeField,
+                                    };
+
                                     this.queryASTFactory.operationsFactory.createNestedCreateOperation({
                                         targetEntity: nestedEntity,
                                         relationship: nestedRelationship,
-                                        input: nestedCreateInputItem,
+                                        input: concreteNestedCreateInput,
                                         context,
                                         callbackBucket,
                                         key,
                                         operation: update,
                                     });
-
-                                    // TODO: maybe do this here instead of in createNestedCreateOperation
-                                    // const mutationOperationField = new MutationOperationField(
-                                    //     nestedUpdateOperation,
-                                    //     key
-                                    // );
-                                    // update.addField(mutationOperationField);
                                 });
                             }
                             const nestedConnectInput = operationInput.connect;
@@ -339,7 +353,6 @@ export class UpdateFactory {
             }
 
             if (relationship) {
-                console.log("inputITem", inputItem, relationship.propertiesTypeName);
                 const targetInputEdge = this.getInputEdge(inputItem);
                 for (const key of Object.keys(targetInputEdge)) {
                     const { fieldName, operator } = parseMutationField(key);
@@ -354,7 +367,6 @@ export class UpdateFactory {
                         update.addField(paramInputField);
                     } else if (key === relationship.propertiesTypeName) {
                         const edgeInput = targetInputEdge[key]; // ActedIn: {..}
-                        console.log("edgeInput", edgeInput);
 
                         for (const k of Object.keys(edgeInput)) {
                             const { fieldName, operator } = parseMutationField(k);
@@ -602,10 +614,7 @@ export class UpdateFactory {
                     update: nestedUpdateOperation,
                     callbackBucket,
                     context,
-                    whereArgs: {
-                        node: input.where?.node ?? {},
-                        edge: input.where?.edge,
-                    },
+                    whereArgs: input.where,
                 });
 
                 const mutationOperationField = new MutationOperationField(nestedUpdateOperation, key);
