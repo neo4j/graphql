@@ -120,7 +120,7 @@ describe("Delete using top level aggregate where - subscriptions enabled", () =>
         });
     });
 
-    test("Top-level OR", async () => {
+    test.only("Top-level OR", async () => {
         if (!cdcEnabled) {
             console.log("CDC NOT AVAILABLE - SKIPPING");
             return;

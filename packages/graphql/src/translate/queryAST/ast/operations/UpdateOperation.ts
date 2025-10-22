@@ -102,12 +102,20 @@ export class UpdateOperation extends Operation {
         const { nestedContext, pattern } = this.selectionPattern.apply(context);
         this.nestedContext = nestedContext;
 
-        const predicate = this.getPredicate(nestedContext);
-
+        // We need to call the filter subqueries before predicate to handle aggregate filters
         const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
-        let filterSubqueriesClause: Cypher.Clause | undefined;
-        if (filterSubqueries.length > 0) {
-            filterSubqueriesClause = Cypher.utils.concat(...filterSubqueries);
+
+        const predicate = this.getPredicate(nestedContext);
+        // const matchClause = new Cypher.Match(pattern).where(predicate);
+
+        const matchClause = new Cypher.Match(pattern);
+        let filtersWith: Cypher.With | undefined;
+
+        const hasFilterSubqueries = filterSubqueries.length > 0;
+        if (hasFilterSubqueries) {
+            filtersWith = new Cypher.With("*").where(predicate);
+        } else {
+            matchClause.where(predicate);
         }
 
         checkEntityAuthentication({
@@ -126,8 +134,6 @@ export class UpdateOperation extends Operation {
             }
         });
 
-        const matchClause = new Cypher.Match(pattern).where(predicate);
-
         const setParams = Array.from(this.inputFields.values()).flatMap((input) => {
             return input.getSetParams(nestedContext);
         });
@@ -144,11 +150,16 @@ export class UpdateOperation extends Operation {
             }
         }
 
-        matchClause.set(...setParams);
+        if (filtersWith) {
+            filtersWith.set(...setParams);
+        } else {
+            matchClause.set(...setParams);
+        }
 
         const clauses = Cypher.utils.concat(
             matchClause,
-            filterSubqueriesClause,
+            ...filterSubqueries,
+            filtersWith,
             ...mutationSubqueries.map((sq) =>
                 Cypher.utils.concat(new Cypher.With(nestedContext.target), new Cypher.Call(sq, [nestedContext.target]))
             )
