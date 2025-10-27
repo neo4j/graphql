@@ -42,14 +42,7 @@ export class PushInputField extends ParamInputField {
     protected getRightExpression(
         queryASTContext: QueryASTContext<Cypher.Node>
     ): Exclude<Cypher.Expr, Cypher.Map | Cypher.MapProjection> {
-        let rightVariable: Cypher.Expr;
-        if (this.inputValue instanceof Cypher.Variable) {
-            rightVariable = this.inputValue;
-        } else {
-            rightVariable = new Cypher.Param(this.inputValue);
-        }
-        const pushedValue = this.coerceReference(rightVariable);
-        // const pushedValue = super.getRightExpression(queryASTContext);
+        const pushedValue = super.getRightExpression(queryASTContext);
         return Cypher.plus(this.getLeftExpression(queryASTContext), pushedValue);
     }
 }

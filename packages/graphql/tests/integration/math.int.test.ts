@@ -493,7 +493,7 @@ describe("Mathematical operations tests", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes(`Cannot _INCREMENT ${increment} to Nan`)
+                el.message.includes(`Cannot increment ${increment} to Nan`)
             )
         ).toBeTruthy();
         const storedValue = await testHelper.executeCypher(

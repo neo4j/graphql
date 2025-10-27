@@ -37,6 +37,8 @@ export class ParamInputField extends InputField {
     protected attribute: AttributeAdapter;
     protected inputValue: unknown;
 
+    private memoizedParam: Cypher.Param | undefined;
+
     constructor({
         attribute,
         attachedTo,
@@ -70,15 +72,21 @@ export class ParamInputField extends InputField {
         return this.getTarget(queryASTContext).property(this.attribute.databaseName);
     }
 
+    protected getParam(): Cypher.Variable {
+        if (this.inputValue instanceof Cypher.Variable) {
+            return this.inputValue;
+        } else {
+            if (!this.memoizedParam) {
+                this.memoizedParam = new Cypher.Param(this.inputValue);
+            }
+            return this.memoizedParam;
+        }
+    }
+
     protected getRightExpression(
         _: QueryASTContext<Cypher.Node>
     ): Exclude<Cypher.Expr, Cypher.Map | Cypher.MapProjection> {
-        let rightVariable: Cypher.Expr;
-        if (this.inputValue instanceof Cypher.Variable) {
-            rightVariable = this.inputValue;
-        } else {
-            rightVariable = new Cypher.Param(this.inputValue);
-        }
+        const rightVariable = this.getParam();
         return this.coerceReference(rightVariable);
     }
 

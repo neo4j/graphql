@@ -40,15 +40,41 @@ export class MathInputField extends ParamInputField {
     }) {
         super({ attribute, attachedTo, inputValue });
         this.operation = operation;
+        if (operation == "divide" && inputValue === 0) {
+            throw new Error("Division by zero is not supported");
+        }
     }
 
     public getChildren() {
         return [];
     }
 
-    // Should this be subquery maybe? (apoc.validate)
-    public getPredicate(_queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        return undefined;
+    public getSubqueries(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.Clause[] {
+        const prop = this.getLeftExpression(queryASTContext);
+
+        const bitSize = this.attribute.typeHelper.isInt() ? 32 : 64;
+        const rightExpr = this.getRightExpression(queryASTContext);
+        // Avoid overflows, for 64 bit overflows, a long overflow is raised anyway by Neo4j
+
+        const maxBit = Cypher.minus(
+            Cypher.pow(new Cypher.Literal(2), new Cypher.Literal(bitSize - 1)),
+            new Cypher.Literal(1)
+        );
+
+        return [
+            Cypher.utils.concat(
+                Cypher.apoc.util.validate(
+                    Cypher.isNull(prop),
+                    "Cannot %s %s to Nan",
+                    new Cypher.List([new Cypher.Literal(this.operation), this.getParam()])
+                ),
+                Cypher.apoc.util.validate(
+                    Cypher.gt(rightExpr, maxBit),
+                    "Overflow: Value returned from operator %s is larger than %s bit",
+                    new Cypher.List([new Cypher.Literal(this.operation), new Cypher.Literal(bitSize)])
+                )
+            ),
+        ];
     }
 
     protected getRightExpression(

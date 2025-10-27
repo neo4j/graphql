@@ -160,9 +160,7 @@ export class UpdateOperation extends Operation {
             matchClause,
             ...filterSubqueries,
             filtersWith,
-            ...mutationSubqueries.map((sq) =>
-                Cypher.utils.concat(new Cypher.With(nestedContext.target), new Cypher.Call(sq, [nestedContext.target]))
-            )
+            ...mutationSubqueries.map((sq) => Cypher.utils.concat(new Cypher.With("*"), new Cypher.Call(sq, "*")))
         );
 
         return { projectionExpr: nestedContext.target, clauses: [clauses] };

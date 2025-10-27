@@ -42,13 +42,7 @@ export class PopInputField extends ParamInputField {
     protected getRightExpression(
         queryASTContext: QueryASTContext<Cypher.Node>
     ): Exclude<Cypher.Expr, Cypher.Map | Cypher.MapProjection> {
-        let rightVariable: Cypher.Expr;
-        if (this.inputValue instanceof Cypher.Variable) {
-            rightVariable = this.inputValue;
-        } else {
-            rightVariable = new Cypher.Param(this.inputValue);
-        }
-        // const rightVariable = super.getRightExpression(queryASTContext);
+        const rightVariable = super.getParam();
         const rightExpr = Cypher.minus(rightVariable);
         const leftExpr = this.getLeftExpression(queryASTContext);
         return new Cypher.Raw((context) => {
