@@ -22,39 +22,55 @@ import type { AttributeAdapter } from "../../../../../schema-model/attribute/mod
 import { type QueryASTContext } from "../../QueryASTContext";
 import { ParamInputField } from "../ParamInputField";
 
-export class PopInputField extends ParamInputField {
+type MathOperator = "increment" | "decrement" | "add" | "subtract" | "divide" | "multiply";
+
+export class MathInputField extends ParamInputField {
+    private operation: MathOperator;
+
     constructor({
         attribute,
         attachedTo,
         inputValue,
+        operation,
     }: {
         attribute: AttributeAdapter;
         attachedTo: "node" | "relationship";
         inputValue: unknown;
+        operation: MathOperator;
     }) {
         super({ attribute, attachedTo, inputValue });
+        this.operation = operation;
     }
 
     public getChildren() {
         return [];
     }
 
+    // Should this be subquery maybe? (apoc.validate)
+    public getPredicate(_queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        return undefined;
+    }
+
     protected getRightExpression(
         queryASTContext: QueryASTContext<Cypher.Node>
     ): Exclude<Cypher.Expr, Cypher.Map | Cypher.MapProjection> {
-        let rightVariable: Cypher.Expr;
-        if (this.inputValue instanceof Cypher.Variable) {
-            rightVariable = this.inputValue;
-        } else {
-            rightVariable = new Cypher.Param(this.inputValue);
+        const rightVariable = super.getRightExpression(queryASTContext);
+        const targetProperty = this.getLeftExpression(queryASTContext);
+
+        switch (this.operation) {
+            case "add":
+            case "increment":
+                return Cypher.plus(targetProperty, rightVariable);
+            case "decrement":
+            case "subtract":
+                return Cypher.minus(targetProperty, rightVariable);
+            case "divide":
+                return Cypher.divide(targetProperty, rightVariable);
+            case "multiply":
+                return Cypher.multiply(targetProperty, rightVariable);
+
+            default:
+                throw new Error(`Unknown operation ${this.operation}`);
         }
-        // const rightVariable = super.getRightExpression(queryASTContext);
-        const rightExpr = Cypher.minus(rightVariable);
-        const leftExpr = this.getLeftExpression(queryASTContext);
-        return new Cypher.Raw((context) => {
-            const leftExprCompiled = context.compile(leftExpr);
-            const poppedValueCompiled = context.compile(rightExpr);
-            return `${leftExprCompiled}[0..${poppedValueCompiled}]`;
-        });
     }
 }

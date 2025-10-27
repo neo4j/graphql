@@ -19,8 +19,8 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import { ParamInputField } from "../ParamInputField";
 import { type QueryASTContext } from "../../QueryASTContext";
+import { ParamInputField } from "../ParamInputField";
 
 export class PushInputField extends ParamInputField {
     constructor({
@@ -49,6 +49,7 @@ export class PushInputField extends ParamInputField {
             rightVariable = new Cypher.Param(this.inputValue);
         }
         const pushedValue = this.coerceReference(rightVariable);
+        // const pushedValue = super.getRightExpression(queryASTContext);
         return Cypher.plus(this.getLeftExpression(queryASTContext), pushedValue);
     }
 }

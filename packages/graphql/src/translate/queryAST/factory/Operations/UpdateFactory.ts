@@ -28,6 +28,7 @@ import { asArray } from "../../../../utils/utils";
 import { OperationField } from "../../ast/fields/OperationField";
 import { type InputField } from "../../ast/input-fields/InputField";
 import { MutationOperationField } from "../../ast/input-fields/MutationOperationField";
+import { MathInputField } from "../../ast/input-fields/operators/MathInputField";
 import { PopInputField } from "../../ast/input-fields/operators/PopInputField";
 import { PushInputField } from "../../ast/input-fields/operators/PushInputField";
 import { ParamInputField } from "../../ast/input-fields/ParamInputField";
@@ -569,6 +570,12 @@ export class UpdateFactory {
             case "SUBTRACT":
             case "DIVIDE":
             case "MULTIPLY":
+                return new MathInputField({
+                    attachedTo,
+                    attribute,
+                    inputValue: value,
+                    operation: operator.toLowerCase() as any,
+                });
             case "PUSH":
                 return new PushInputField({
                     attachedTo,
@@ -604,6 +611,15 @@ export class UpdateFactory {
             case "subtract":
             case "divide":
             case "multiply":
+                // TODO: check divide by 0
+                // add apoc checks in buildMathStatements
+
+                return new MathInputField({
+                    attachedTo,
+                    attribute,
+                    inputValue: value,
+                    operation: operator,
+                });
             case "push":
                 return new PushInputField({
                     attachedTo,
