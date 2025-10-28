@@ -18,14 +18,14 @@
  */
 
 import type {
-    CypherField,
-    PrimitiveField,
-    CustomEnumField,
-    CustomScalarField,
-    TemporalField,
-    PointField,
-    CustomResolverField,
     BaseField,
+    CustomEnumField,
+    CustomResolverField,
+    CustomScalarField,
+    CypherField,
+    PointField,
+    PrimitiveField,
+    TemporalField,
 } from "../types";
 
 export interface GraphElementConstructor {
@@ -40,6 +40,7 @@ export interface GraphElementConstructor {
     customResolverFields: CustomResolverField[];
 }
 
+/** @deprecated */
 export abstract class GraphElement {
     public name: string;
     public description?: string;

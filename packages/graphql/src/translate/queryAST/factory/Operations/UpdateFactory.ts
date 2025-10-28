@@ -18,6 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import { GraphQLError } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -40,6 +41,7 @@ import { RelationshipSelectionPattern } from "../../ast/selection/SelectionPatte
 import type { CallbackBucket } from "../../utils/callback-bucket";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { isUnionEntity } from "../../utils/is-union-entity";
+import { raiseAttributeAmbiguityForUpdate } from "../../utils/raise-attribute-ambiguity";
 import type { MutationOperator } from "../parsers/parse-mutation-field";
 import { parseMutationField } from "../parsers/parse-mutation-field";
 import type { QueryASTFactory } from "../QueryASTFactory";
@@ -149,8 +151,8 @@ export class UpdateFactory {
 
         asArray(input).forEach((inputItem) => {
             const targetInput = this.getInputNode(inputItem, isNested);
-            // raiseAttributeAmbiguity(Object.keys(targetInput), target);
-            // raiseAttributeAmbiguity(Object.keys(this.getInputEdge(inputItem)), relationship);
+            raiseAttributeAmbiguityForUpdate(Object.keys(targetInput), target);
+            raiseAttributeAmbiguityForUpdate(Object.keys(this.getInputEdge(inputItem)), relationship);
 
             const filters = this.queryASTFactory.filterFactory.createConnectionPredicates({
                 rel: relationship,
@@ -184,6 +186,13 @@ export class UpdateFactory {
                         });
                     } else {
                         for (const op of Object.keys(targetInput[fieldName])) {
+                            const operations = Object.keys(targetInput[fieldName]);
+                            if (operations.length > 1) {
+                                const conflictingOperations = operations.map((op) => `[[${op}]]`);
+                                throw new GraphQLError(
+                                    `Conflicting modification of field ${fieldName}: ${conflictingOperations.join(", ")} on type ${target.name}`
+                                );
+                            }
                             const paramInputField = this.getInputField(
                                 "node",
                                 op,
@@ -353,7 +362,14 @@ export class UpdateFactory {
                                 entity: target,
                             });
                         } else {
-                            for (const op of Object.keys(targetInputEdge[fieldName])) {
+                            const operations = Object.keys(targetInputEdge[fieldName]);
+                            if (operations.length > 1) {
+                                const conflictingOperations = operations.map((op) => `[[${op}]]`);
+                                throw new GraphQLError(
+                                    `Conflicting modification of field ${fieldName}: ${conflictingOperations.join(", ")} on relationship ${target.name}.${relationship.name}`
+                                );
+                            }
+                            for (const op of operations) {
                                 const paramInputField = this.getInputField(
                                     "relationship",
                                     op,
@@ -372,7 +388,6 @@ export class UpdateFactory {
                         }
                     } else if (key === relationship.propertiesTypeName) {
                         const edgeInput = targetInputEdge[key]; // ActedIn: {..}
-
                         for (const k of Object.keys(edgeInput)) {
                             const { fieldName, operator } = parseMutationField(k);
                             const attribute = relationship.attributes.get(fieldName);

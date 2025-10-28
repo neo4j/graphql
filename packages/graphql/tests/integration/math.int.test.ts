@@ -217,7 +217,7 @@ describe("Mathematical operations tests", () => {
         });
 
         expect(gqlResult.errors).toEqual([
-            new GraphQLError(`Conflicting modification of [[viewers_SET]], [[viewers_INCREMENT]] on type ${movie}`),
+            new GraphQLError(`Conflicting modification of [[viewers]] on type ${movie}`),
         ]);
 
         const storedValue = await testHelper.executeCypher(
@@ -669,9 +669,10 @@ describe("Mathematical operations tests", () => {
 
         expect(gqlResult.errors).toBeDefined();
 
-        const relationshipType = `${movie.name}ActorsRelationship`;
         expect(gqlResult.errors).toEqual([
-            new GraphQLError(`Conflicting modification of field pay: [[set]], [[add]] on type ${relationshipType}`),
+            new GraphQLError(
+                `Conflicting modification of field pay: [[set]], [[add]] on relationship ${movie.name}.actedIn`
+            ),
         ]);
         const storedValue = await testHelper.executeCypher(
             `

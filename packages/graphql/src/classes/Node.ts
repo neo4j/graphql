@@ -109,6 +109,7 @@ export type SubscriptionEvents = {
     delete_relationship: string;
 };
 
+/** @deprecated */
 class Node extends GraphElement {
     public relationFields: RelationField[];
     public connectionFields: ConnectionField[];

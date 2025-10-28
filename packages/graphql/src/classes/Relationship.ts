@@ -45,7 +45,7 @@ interface RelationshipConstructor {
     pointFields?: PointField[];
     customResolverFields?: CustomResolverField[];
 }
-
+/** @deprecated */
 class Relationship extends GraphElement {
     public properties?: string;
     public source: string;
