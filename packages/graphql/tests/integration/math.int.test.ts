@@ -217,7 +217,7 @@ describe("Mathematical operations tests", () => {
         });
 
         expect(gqlResult.errors).toEqual([
-            new GraphQLError(`Conflicting modification of [[viewers]] on type ${movie}`),
+            new GraphQLError(`Conflicting modification of [[viewers_SET]], [[viewers_INCREMENT]] on type ${movie}`),
         ]);
 
         const storedValue = await testHelper.executeCypher(

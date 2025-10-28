@@ -64,16 +64,24 @@ export function findConflictingAttributes(
     fields: string[],
     entityOrRel: ConcreteEntityAdapter | RelationshipAdapter
 ): Set<string> {
-    const existingAttributes = new Set<string>();
-    const conflictingAttributes = new Set<string>();
+    const fieldsByDbName = new Map<string, string[]>();
+
     for (const rawField of fields) {
         const { fieldName } = parseMutationField(rawField);
         const dbName = entityOrRel.findAttribute(fieldName)?.databaseName;
         if (dbName) {
-            if (existingAttributes.has(dbName)) {
+            const fields = fieldsByDbName.get(dbName) ?? [];
+            fields.push(rawField);
+            fieldsByDbName.set(dbName, fields);
+        }
+    }
+
+    const conflictingAttributes = new Set<string>();
+    for (const dedupedProps of fieldsByDbName.values()) {
+        if (dedupedProps.length > 1) {
+            for (const fieldName of dedupedProps) {
                 conflictingAttributes.add(fieldName);
             }
-            existingAttributes.add(dbName);
         }
     }
     return conflictingAttributes;

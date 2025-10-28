@@ -64,9 +64,10 @@ export function raiseAttributeAmbiguityForUpdate(
 
     const conflictingAttributes = findConflictingAttributes(properties, entityOrRel);
     if (conflictingAttributes.size > 0) {
+        const conflictingAttributesString = Array.from(conflictingAttributes).map((attribute) => `[[${attribute}]]`);
         //This will only throw on the first conflicting attribute through
-        for (const attribute of conflictingAttributes.keys()) {
-            throw new Neo4jGraphQLError(`Conflicting modification of [[${attribute}]] on type ${entityOrRel.name}`);
-        }
+        throw new Neo4jGraphQLError(
+            `Conflicting modification of ${conflictingAttributesString.join(", ")} on type ${entityOrRel.name}`
+        );
     }
 }
