@@ -170,12 +170,11 @@ export class UpdateFactory {
                 }
                 if (attribute) {
                     if (operator) {
-                        const paramInputField = this.getInputFieldDeprecated(
-                            "node",
-                            operator,
-                            attribute,
-                            targetInput[key]
-                        );
+                        const value = targetInput[key];
+                        if (attribute.typeHelper.isRequired() && value === null && operator === "SET") {
+                            throw new Error(`Cannot set non-nullable field ${target.name}.${attribute.name} to null`);
+                        }
+                        const paramInputField = this.getInputFieldDeprecated("node", operator, attribute, value);
                         update.addField(paramInputField);
 
                         this.addAttributeAuthorization({
@@ -193,12 +192,14 @@ export class UpdateFactory {
                                     `Conflicting modification of field ${fieldName}: ${conflictingOperations.join(", ")} on type ${target.name}`
                                 );
                             }
-                            const paramInputField = this.getInputField(
-                                "node",
-                                op,
-                                attribute,
-                                targetInput[fieldName][op]
-                            );
+
+                            const value = targetInput[fieldName][op];
+                            if (attribute.typeHelper.isRequired() && value === null && op === "set") {
+                                throw new Error(
+                                    `Cannot set non-nullable field ${target.name}.${attribute.name} to null`
+                                );
+                            }
+                            const paramInputField = this.getInputField("node", op, attribute, value);
                             update.addField(paramInputField);
 
                             this.addAttributeAuthorization({
