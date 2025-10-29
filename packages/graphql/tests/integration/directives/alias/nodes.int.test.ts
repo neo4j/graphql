@@ -335,7 +335,9 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors).toEqual([
-            new GraphQLError(`Conflicting modification of [[name_SET]], [[nameAgain_SET]] on type ${typeDirector.name}`),
+            new GraphQLError(
+                `Conflicting modification of [[name_SET]], [[nameAgain_SET]] on type ${typeDirector.name}`
+            ),
         ]);
 
         expect(gqlResult?.data?.[typeDirector.operations.update]?.[typeDirector.plural]).toBeUndefined();
@@ -389,7 +391,9 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors).toEqual([
-            new GraphQLError(`Conflicting modification of [[name_SET]], [[nameAgain_SET]] on type ${typeDirector.name}`),
+            new GraphQLError(
+                `Conflicting modification of [[name_SET]], [[nameAgain_SET]] on type ${typeDirector.name}`
+            ),
         ]);
 
         expect(gqlResult?.data?.[typeDirector.operations.update]?.[typeDirector.plural]).toBeUndefined();
@@ -594,7 +598,9 @@ describe("@alias directive", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors).toEqual([
-            new GraphQLError(`Conflicting modification of [[name_SET]], [[nameAgain_SET]] on type ${typeDirector.name}`),
+            new GraphQLError(
+                `Conflicting modification of [[name_SET]], [[nameAgain_SET]] on type ${typeDirector.name}`
+            ),
         ]);
 
         expect(gqlResult?.data?.[typeDirector.operations.update]?.[typeDirector.plural]).toBeUndefined();

@@ -186,19 +186,11 @@ export class DeleteFactory {
     public createNestedDeleteOperationsForUpdate(
         deleteArg: Record<string, any>,
         relationship: RelationshipAdapter,
-        context: Neo4jGraphQLTranslationContext
+        context: Neo4jGraphQLTranslationContext,
+        target: ConcreteEntityAdapter | InterfaceEntityAdapter
     ): DeleteOperation[] {
-        const target = relationship.target;
         if (isInterfaceEntity(target)) {
             return this.createNestedDeleteOperationsForInterface({
-                deleteArg,
-                relationship,
-                target,
-                context,
-            });
-        }
-        if (isUnionEntity(target)) {
-            return this.createNestedDeleteOperationsForUnion({
                 deleteArg,
                 relationship,
                 target,

@@ -20,6 +20,7 @@
 import { Neo4jGraphQLError } from "../../../classes";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { findConflictingAttributes } from "../../../utils/find-conflicting-properties";
 import { isConcreteEntity } from "./is-concrete-entity";
 
 // Schema Model version of findConflictingProperties
@@ -50,4 +51,23 @@ export function raiseAttributeAmbiguity(
         }
         hash[dbName] = property;
     });
+}
+
+// Schema Model version of assertNonAmbiguousUpdate
+export function raiseAttributeAmbiguityForUpdate(
+    properties: Array<string>,
+    entityOrRel?: ConcreteEntityAdapter | RelationshipAdapter
+): void {
+    if (!entityOrRel) {
+        return;
+    }
+
+    const conflictingAttributes = findConflictingAttributes(properties, entityOrRel);
+    if (conflictingAttributes.size > 0) {
+        const conflictingAttributesString = Array.from(conflictingAttributes).map((attribute) => `[[${attribute}]]`);
+        //This will only throw on the first conflicting attribute through
+        throw new Neo4jGraphQLError(
+            `Conflicting modification of ${conflictingAttributesString.join(", ")} on type ${entityOrRel.name}`
+        );
+    }
 }

@@ -306,9 +306,10 @@ export class OperationsFactory {
     public createNestedDeleteOperationsForUpdate(
         deleteArg: Record<string, any>,
         relationship: RelationshipAdapter,
-        context: Neo4jGraphQLTranslationContext
+        context: Neo4jGraphQLTranslationContext,
+        target: ConcreteEntityAdapter | InterfaceEntityAdapter
     ) {
-        return this.deleteFactory.createNestedDeleteOperationsForUpdate(deleteArg, relationship, context);
+        return this.deleteFactory.createNestedDeleteOperationsForUpdate(deleteArg, relationship, context, target);
     }
 
     public createReadOperation(arg: {
