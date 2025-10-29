@@ -3206,10 +3206,7 @@ describe("@populatedBy directive - Relationship properties", () => {
         test("should have access to parent in callback function for UPDATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
             const testGenre = testHelper.createUniqueType("Genre");
-            const callback = (parent) => {
-                return `${parent.title_SET}-slug`;
-            };
-
+            const callback = (parent) => `${parent.title_SET}-slug`;
             const typeDefs = /* GraphQL */ `
                     type ${testMovie.name} @node {
                         id: ID
