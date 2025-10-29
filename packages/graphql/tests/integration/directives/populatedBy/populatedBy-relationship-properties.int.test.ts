@@ -2441,7 +2441,6 @@ describe("@populatedBy directive - Relationship properties", () => {
             type: "Time",
             callback: () => Promise.resolve(`${date.toISOString().split("T")[1]}`),
             expectedValue: `${date.toISOString().split("T")[1]?.split("Z")[0]}000000Z`,
-            expectedValueTemp: `${date.toISOString().split("T")[1]?.split("Z")[0]}Z`, // TODO: this is a due to a bug with custom input objects, only used for Update until this is moved to QueryAST
         },
         {
             description: "@populatedBy - LocalDateTime",
@@ -3207,7 +3206,9 @@ describe("@populatedBy directive - Relationship properties", () => {
         test("should have access to parent in callback function for UPDATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
             const testGenre = testHelper.createUniqueType("Genre");
-            const callback = (parent) => `${parent.title_SET}-slug`;
+            const callback = (parent) => {
+                return `${parent.title_SET}-slug`;
+            };
 
             const typeDefs = /* GraphQL */ `
                     type ${testMovie.name} @node {
@@ -3286,7 +3287,6 @@ describe("@populatedBy directive - Relationship properties", () => {
                 `);
 
             const result = await testHelper.executeGraphQL(mutation);
-
             expect(result.errors).toBeUndefined();
             expect(result.data as any).toMatchObject({
                 [testMovie.operations.update]: {

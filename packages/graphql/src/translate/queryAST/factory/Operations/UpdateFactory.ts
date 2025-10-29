@@ -148,7 +148,6 @@ export class UpdateFactory {
         // });
 
         this.addEntityAuthorization({ entity: target, context, operation: update });
-
         asArray(input).forEach((inputItem) => {
             const targetInput = this.getInputNode(inputItem, isNested);
             raiseAttributeAmbiguityForUpdate(Object.keys(targetInput), target);
@@ -430,16 +429,22 @@ export class UpdateFactory {
                         }
                     }
                 }
+                if (Object.keys(targetInputEdge).length > 0) {
+                    this.addPopulatedByFieldToUpdate({
+                        entity: target,
+                        update,
+                        input: targetInputEdge,
+                        callbackBucket,
+                        relationship,
+                    });
+                }
             }
-        });
-
-        // TODO: handle operations
-        this.addPopulatedByFieldToUpdate({
-            entity: target,
-            update,
-            input,
-            callbackBucket,
-            relationship,
+            this.addPopulatedByFieldToUpdate({
+                entity: target,
+                update,
+                input: targetInput,
+                callbackBucket,
+            });
         });
     }
 
@@ -502,7 +507,7 @@ export class UpdateFactory {
                 callbackBucket.addCallback({
                     functionName: callbackFunctionName,
                     param: relCallbackParam,
-                    parent: input.edge,
+                    parent: input,
                     type: attribute.type,
                 });
             });
