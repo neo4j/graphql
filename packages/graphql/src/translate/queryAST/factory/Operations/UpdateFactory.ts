@@ -148,7 +148,6 @@ export class UpdateFactory {
         // });
 
         this.addEntityAuthorization({ entity: target, context, operation: update });
-
         asArray(input).forEach((inputItem) => {
             const targetInput = this.getInputNode(inputItem, isNested);
             raiseAttributeAmbiguityForUpdate(Object.keys(targetInput), target);
@@ -170,12 +169,11 @@ export class UpdateFactory {
                 }
                 if (attribute) {
                     if (operator) {
-                        const paramInputField = this.getInputFieldDeprecated(
-                            "node",
-                            operator,
-                            attribute,
-                            targetInput[key]
-                        );
+                        const value = targetInput[key];
+                        if (attribute.typeHelper.isRequired() && value === null && operator === "SET") {
+                            throw new Error(`Cannot set non-nullable field ${target.name}.${attribute.name} to null`);
+                        }
+                        const paramInputField = this.getInputFieldDeprecated("node", operator, attribute, value);
                         update.addField(paramInputField);
 
                         this.addAttributeAuthorization({
@@ -193,12 +191,13 @@ export class UpdateFactory {
                             );
                         }
                         for (const op of Object.keys(targetInput[fieldName])) {
-                            const paramInputField = this.getInputField(
-                                "node",
-                                op,
-                                attribute,
-                                targetInput[fieldName][op]
-                            );
+                            const value = targetInput[fieldName][op];
+                            if (attribute.typeHelper.isRequired() && value === null && op === "set") {
+                                throw new Error(
+                                    `Cannot set non-nullable field ${target.name}.${attribute.name} to null`
+                                );
+                            }
+                            const paramInputField = this.getInputField("node", op, attribute, value);
                             update.addField(paramInputField);
 
                             this.addAttributeAuthorization({
@@ -429,16 +428,22 @@ export class UpdateFactory {
                         }
                     }
                 }
+                if (Object.keys(targetInputEdge).length > 0) {
+                    this.addPopulatedByFieldToUpdate({
+                        entity: target,
+                        update,
+                        input: targetInputEdge,
+                        callbackBucket,
+                        relationship,
+                    });
+                }
             }
-        });
-
-        // TODO: handle operations
-        this.addPopulatedByFieldToUpdate({
-            entity: target,
-            update,
-            input,
-            callbackBucket,
-            relationship,
+            this.addPopulatedByFieldToUpdate({
+                entity: target,
+                update,
+                input: targetInput,
+                callbackBucket,
+            });
         });
     }
 
@@ -501,7 +506,7 @@ export class UpdateFactory {
                 callbackBucket.addCallback({
                     functionName: callbackFunctionName,
                     param: relCallbackParam,
-                    parent: input.edge,
+                    parent: input,
                     type: attribute.type,
                 });
             });

@@ -79,7 +79,13 @@ export class CallbackBucket {
                 const callbackFunction = callbacksList[cb.functionName];
                 if (callbackFunction) {
                     const paramValue = await callbackFunction(cb.parent, {}, this.context);
-                    cb.param.value = this.parseCallbackResult(paramValue, cb.type);
+                    if (paramValue === undefined) {
+                        cb.param.value = undefined;
+                    } else if (paramValue === null) {
+                        cb.param.value = null;
+                    } else {
+                        cb.param.value = this.parseCallbackResult(paramValue, cb.type);
+                    }
                 }
             })
         );
