@@ -185,14 +185,14 @@ export class UpdateFactory {
                             entity: target,
                         });
                     } else {
+                        const operations = Object.keys(targetInput[fieldName]);
+                        if (operations.length > 1) {
+                            const conflictingOperations = operations.map((op) => `[[${op}]]`);
+                            throw new GraphQLError(
+                                `Conflicting modification of field ${fieldName}: ${conflictingOperations.join(", ")} on type ${target.name}`
+                            );
+                        }
                         for (const op of Object.keys(targetInput[fieldName])) {
-                            const operations = Object.keys(targetInput[fieldName]);
-                            if (operations.length > 1) {
-                                const conflictingOperations = operations.map((op) => `[[${op}]]`);
-                                throw new GraphQLError(
-                                    `Conflicting modification of field ${fieldName}: ${conflictingOperations.join(", ")} on type ${target.name}`
-                                );
-                            }
                             const paramInputField = this.getInputField(
                                 "node",
                                 op,
