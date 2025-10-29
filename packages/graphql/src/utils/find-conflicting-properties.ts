@@ -70,9 +70,9 @@ export function findConflictingAttributes(
         const { fieldName } = parseMutationField(rawField);
         const dbName = entityOrRel.findAttribute(fieldName)?.databaseName;
         if (dbName) {
-            const fields = fieldsByDbName.get(dbName) ?? [];
-            fields.push(rawField);
-            fieldsByDbName.set(dbName, fields);
+            const duplicateFields = fieldsByDbName.get(dbName) ?? [];
+            duplicateFields.push(rawField);
+            fieldsByDbName.set(dbName, duplicateFields);
         }
     }
 
