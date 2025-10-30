@@ -59,8 +59,8 @@ export class TopLevelUpdateMutationOperation extends Operation {
             const { clauses, projectionExpr } = field.transpile(context);
 
             return Cypher.utils.concat(
-                ...clauses,
-                ...field.getAuthorizationSubqueries(context)
+                ...clauses
+                // ...field.getAuthorizationSubqueries(context)
                 // new Cypher.Return([projectionExpr, context.returnVariable])
             );
         });

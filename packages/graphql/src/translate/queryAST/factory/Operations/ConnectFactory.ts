@@ -141,6 +141,13 @@ export class ConnectFactory {
             context,
             operation: connect,
         });
+        if (isConcreteEntity(relationship.source)) {
+            this.addSourceEntityAuthorization({
+                entity: relationship.source,
+                context,
+                operation: connect,
+            });
+        }
 
         asArray(input).forEach((inputItem) => {
             const { whereArg, connectArg } = this.parseConnectArgs(inputItem);
@@ -267,6 +274,25 @@ export class ConnectFactory {
         });
 
         operation.addAuthFilters(...authFilters);
+    }
+
+    private addSourceEntityAuthorization({
+        entity,
+        context,
+        operation,
+    }: {
+        entity: ConcreteEntityAdapter;
+        context: Neo4jGraphQLTranslationContext;
+        operation: ConnectOperation;
+    }): void {
+        const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+            entity,
+            operations: ["CREATE_RELATIONSHIP"],
+            context,
+            afterValidation: true,
+        });
+
+        operation.addSourceAuthFilters(...authFilters);
     }
 
     private getInputEdge(inputItem: Record<string, any>, relationship: RelationshipAdapter): Record<string, any> {

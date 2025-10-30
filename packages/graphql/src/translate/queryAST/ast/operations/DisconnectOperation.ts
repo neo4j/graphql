@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
+import Cypher, { With } from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
@@ -31,6 +31,9 @@ import type { InputField } from "../input-fields/InputField";
 import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
 import type { ReadOperation } from "./ReadOperation";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
+import { checkEntityAuthentication } from "../../../authorization/check-authentication";
+import { ParamInputField } from "../input-fields/ParamInputField";
+import { isConcreteEntity } from "../../utils/is-concrete-entity";
 
 export class DisconnectOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter;
@@ -38,6 +41,7 @@ export class DisconnectOperation extends MutationOperation {
 
     private selectionPattern: SelectionPattern;
     protected readonly authFilters: AuthorizationFilters[] = [];
+    protected readonly sourceAuthFilters: AuthorizationFilters[] = [];
 
     public readonly inputFields: Map<string, InputField> = new Map();
     private filters: Filter[] = [];
@@ -74,6 +78,9 @@ export class DisconnectOperation extends MutationOperation {
 
     public addAuthFilters(...filter: AuthorizationFilters[]) {
         this.authFilters.push(...filter);
+    }
+    public addSourceAuthFilters(...filter: AuthorizationFilters[]) {
+        this.sourceAuthFilters.push(...filter);
     }
 
     /**
@@ -116,6 +123,29 @@ export class DisconnectOperation extends MutationOperation {
         const { nestedContext, pattern: matchPattern } = this.selectionPattern.apply(context);
         this.nestedContext = nestedContext;
 
+        checkEntityAuthentication({
+            context: nestedContext.neo4jGraphQLContext,
+            entity: this.target.entity,
+            targetOperations: ["DELETE_RELATIONSHIP"],
+        });
+        if (isConcreteEntity(this.relationship.source)) {
+            checkEntityAuthentication({
+                context: nestedContext.neo4jGraphQLContext,
+                entity: this.relationship.source.entity,
+                targetOperations: ["DELETE_RELATIONSHIP"],
+            });
+        }
+        this.inputFields.forEach((field) => {
+            if (field.attachedTo === "node" && field instanceof ParamInputField) {
+                checkEntityAuthentication({
+                    context: nestedContext.neo4jGraphQLContext,
+                    entity: this.target.entity,
+                    targetOperations: ["DELETE_RELATIONSHIP"],
+                    field: field.name,
+                });
+            }
+        });
+
         const allFilters = [...this.authFilters, ...this.filters];
 
         const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, allFilters, [nestedContext.target]);
@@ -124,13 +154,13 @@ export class DisconnectOperation extends MutationOperation {
         if (filterSubqueries.length > 0) {
             const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
             matchClause = Cypher.utils.concat(
-                new Cypher.Match(matchPattern),
+                new Cypher.OptionalMatch(matchPattern),
                 ...filterSubqueries,
                 new Cypher.With("*").where(predicate)
             );
         } else {
             const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
-            matchClause = new Cypher.Match(matchPattern).where(predicate);
+            matchClause = new Cypher.OptionalMatch(matchPattern).where(predicate);
         }
 
         const relVar = new Cypher.Relationship();
@@ -145,15 +175,40 @@ export class DisconnectOperation extends MutationOperation {
 
         const deleteClause = new Cypher.With(nestedContext.relationship!).delete(nestedContext.relationship!);
 
+        const authClausesBefore = this.getAuthorizationClauses(nestedContext);
+        const sourceAuthClausesBefore = this.getSourceAuthorizationClausesBefore(context);
+
+        const bothAuthClausesBefore: Cypher.Clause[] = [];
+        if (authClausesBefore.length === 0 && sourceAuthClausesBefore.length > 0) {
+            bothAuthClausesBefore.push(new Cypher.With("*"), ...sourceAuthClausesBefore);
+        } else {
+            bothAuthClausesBefore.push(Cypher.utils.concat(...authClausesBefore, ...sourceAuthClausesBefore));
+        }
+
         const clauses = Cypher.utils.concat(
             matchClause,
-            ...this.getAuthorizationClauses(nestedContext), // THESE ARE "BEFORE" AUTH
+            ...bothAuthClausesBefore,
             ...mutationSubqueries,
-            deleteClause,
-            ...this.getAuthorizationClausesAfter(nestedContext) // THESE ARE "AFTER" AUTH
+            deleteClause
+            // ...this.getAuthorizationClausesAfter(nestedContext) // THESE ARE "AFTER" AUTH
         );
 
-        return { projectionExpr: context.returnVariable, clauses: [clauses] };
+        const authClausesAfter = this.getAuthorizationClausesAfter(nestedContext);
+        const sourceAuthClausesAfter = this.getSourceAuthorizationClausesAfter(context);
+
+        const callClause = new Cypher.Call(clauses, [context.target]);
+        const authClauses: Cypher.Clause[] = [];
+        if (authClausesAfter.length > 0 || sourceAuthClausesAfter.length > 0) {
+            authClauses.push(Cypher.utils.concat(...authClausesAfter, ...sourceAuthClausesAfter));
+        }
+        console.log("authClauses", authClauses);
+
+        return {
+            projectionExpr: context.returnVariable,
+            clauses: [callClause, ...authClauses],
+        };
+
+        // return { projectionExpr: context.returnVariable, clauses: [clauses] };
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
@@ -176,6 +231,35 @@ export class DisconnectOperation extends MutationOperation {
         const validationsAfter: Cypher.VoidProcedure[] = [];
         for (const authFilter of this.authFilters) {
             const validationAfter = authFilter.getValidation(context, "AFTER");
+            if (validationAfter) {
+                validationsAfter.push(validationAfter);
+            }
+        }
+
+        if (validationsAfter.length > 0) {
+            return [new Cypher.With("*"), ...validationsAfter];
+        }
+        return [];
+    }
+
+    private getSourceAuthorizationClausesAfter(context: QueryASTContext): Cypher.Clause[] {
+        const validationsAfter: Cypher.VoidProcedure[] = [];
+        for (const authFilter of this.sourceAuthFilters) {
+            const validationAfter = authFilter.getValidation(context, "AFTER");
+            if (validationAfter) {
+                validationsAfter.push(validationAfter);
+            }
+        }
+
+        if (validationsAfter.length > 0) {
+            return [new Cypher.With("*"), ...validationsAfter];
+        }
+        return [];
+    }
+    private getSourceAuthorizationClausesBefore(context: QueryASTContext): Cypher.Clause[] {
+        const validationsAfter: Cypher.VoidProcedure[] = [];
+        for (const authFilter of this.sourceAuthFilters) {
+            const validationAfter = authFilter.getValidation(context, "BEFORE");
             if (validationAfter) {
                 validationsAfter.push(validationAfter);
             }
