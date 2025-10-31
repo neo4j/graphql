@@ -1,5 +1,11 @@
 # @neo4j/introspector
 
+## 5.0.1
+
+### Patch Changes
+
+- [#6782](https://github.com/neo4j/graphql/pull/6782) [`51ae6ed`](https://github.com/neo4j/graphql/commit/51ae6ed4675343269a23811ad4563b09d0e21d39) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Replaces usage of readTransaction with executeRead in introspector to pave the way for a future upgrade to neo4j-driver v6.
+
 ## 5.0.0
 
 ### Major Changes
