@@ -61,6 +61,13 @@ export class ParamInputField extends InputField {
         queryASTContext: QueryASTContext<Cypher.Node>,
         _inputVariable?: Cypher.Variable
     ): Cypher.SetParam[] {
+        // This check is needed for populatedBy callbacks
+        const param = this.getParam();
+        if (param instanceof Cypher.Param) {
+            if (param.value === undefined) {
+                return [];
+            }
+        }
         const leftExpr = this.getLeftExpression(queryASTContext);
         const rightExpr = this.getRightExpression(queryASTContext);
 
