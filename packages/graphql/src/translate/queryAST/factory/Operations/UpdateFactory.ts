@@ -153,7 +153,6 @@ export class UpdateFactory {
         //     });
         // });
 
-        console.log("Relationship", relationship?.name);
         this.addEntityAuthorization({ entity: target, context, operation: update });
 
         asArray(input).forEach((inputItem) => {

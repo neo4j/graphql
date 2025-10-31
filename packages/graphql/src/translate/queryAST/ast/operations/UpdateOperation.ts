@@ -102,59 +102,6 @@ export class UpdateOperation extends Operation {
         const { nestedContext, pattern } = this.selectionPattern.apply(context);
         this.nestedContext = nestedContext;
 
-        const beforeAuthFilters = this.authFilters.filter((af) => {
-            return af.getValidation(nestedContext!, "BEFORE");
-        });
-
-        // console.log("beforeAuthFilters", beforeAuthFilters);
-
-        const afterAuthFilters = this.authFilters.filter((af) => {
-            return af.getValidation(nestedContext!, "AFTER");
-        });
-
-        const beforeAuthValidations = this.authFilters
-            .map((af) => {
-                return af.getValidation(nestedContext!, "BEFORE");
-            })
-            .filter((v) => v !== undefined);
-
-        // console.log("beforeAuthValidations", beforeAuthValidations);
-
-        const afterAuthValidations = this.authFilters
-            .map((af) => {
-                return af.getValidation(nestedContext!, "AFTER");
-            })
-            .filter((v) => v !== undefined);
-
-        console.log("afterAuthValidations", afterAuthValidations);
-
-        const allFilters = [...beforeAuthFilters, ...this.filters];
-        // const allFilters = this.filters;
-        // console.log("this.authFilters", this.authFilters, beforeAuthFilters);
-        // We need to call the filter subqueries before predicate to handle aggregate filters
-        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, allFilters, [nestedContext.target]);
-        const afterFilterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, afterAuthFilters, [
-            nestedContext.target,
-        ]);
-        console.log("afterFilterSubqueries", afterFilterSubqueries);
-
-        const predicate = this.getPredicate(nestedContext);
-
-        const { selections, predicates: authBeforePredicates, validations } = this.transpileAuthClauses(context);
-        const allPredicates = Cypher.and(predicate, ...authBeforePredicates);
-        // console.log("validations", validations);
-
-        const matchClause = new Cypher.Match(pattern);
-        let filtersWith: Cypher.With | undefined;
-
-        const hasFilterSubqueries = filterSubqueries.length > 0;
-        if (hasFilterSubqueries) {
-            filtersWith = new Cypher.With("*").where(allPredicates);
-        } else {
-            // matchClause.where(allPredicates);
-            filtersWith = new Cypher.With("*").where(allPredicates);
-        }
-
         checkEntityAuthentication({
             context: context.neo4jGraphQLContext,
             entity: this.target.entity,
@@ -194,28 +141,37 @@ export class UpdateOperation extends Operation {
             }
         }
 
+        const afterAuthFilters = this.authFilters.filter((af) => {
+            return af.getValidation(nestedContext!, "AFTER");
+        });
+
+        // We need to call the filter subqueries before predicate to handle aggregate filters
+        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
+        const afterFilterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, afterAuthFilters, [
+            nestedContext.target,
+        ]);
+
+        const predicate = this.getPredicate(nestedContext);
+
+        const matchClause = new Cypher.Match(pattern);
+        const filtersWith = new Cypher.With("*").where(predicate);
         if (filtersWith) {
             filtersWith.set(...setParams);
-            if (mutationSubqueries.length || afterFilterSubqueries.length || afterAuthValidations.length) {
-                // if (mutationSubqueries.length || afterAuthValidations.length) {
+            if (mutationSubqueries.length || afterFilterSubqueries.length) {
                 filtersWith.with("*");
             }
         } else {
             matchClause.set(...setParams);
         }
 
-        // console.log("mutationSubqueries", mutationSubqueries);
-
         const clauses = Cypher.utils.concat(
             matchClause,
-            // ...this.getAuthorizationClauses(nestedContext), // THESE ARE "BEFORE" AUTH
             ...filterSubqueries,
-            ...beforeAuthValidations,
+            ...this.getAuthorizationClauses(nestedContext), // THESE ARE "BEFORE" AUTH
             filtersWith,
             ...mutationSubqueries.map((sq) => Cypher.utils.concat(new Cypher.With("*"), new Cypher.Call(sq, "*"))),
-            // ...this.getAuthorizationClausesAfter(nestedContext) // THESE ARE "AFTER" AUTH
             ...afterFilterSubqueries,
-            ...afterAuthValidations
+            ...this.getAuthorizationClausesAfter(nestedContext) // THESE ARE "AFTER" AUTH
         );
 
         return { projectionExpr: nestedContext.target, clauses: [clauses] };
@@ -247,6 +203,7 @@ export class UpdateOperation extends Operation {
         const authSubqueries = subqueries.map((sq) => {
             return new Cypher.Call(sq, "*");
         });
+        // console.log("here", authSubqueries, validations);
         if (!predicates.length && !validations.length) {
             return [];
         } else {
@@ -285,7 +242,7 @@ export class UpdateOperation extends Operation {
         const validations: Cypher.VoidProcedure[] = [];
         for (const authFilter of this.authFilters) {
             const extraSelections = authFilter.getSelection(context);
-            const authSubqueries = authFilter.getSubqueries(context);
+            const authSubqueries = authFilter.getSubqueriesBefore(context);
             const authPredicate = authFilter.getPredicate(context);
             const validationBefore = authFilter.getValidation(context, "BEFORE");
             if (extraSelections) {
