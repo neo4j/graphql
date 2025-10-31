@@ -51,7 +51,7 @@ async function introspectNodes(sessionFactory: () => Session): Promise<NodeMap> 
     const nodes: NodeMap = {};
     // Label properties
     const session = sessionFactory();
-    const labelPropsRes = await session.readTransaction((tx) =>
+    const labelPropsRes = await session.executeRead((tx) =>
         tx.run(`CALL db.schema.nodeTypeProperties()
     YIELD nodeType, nodeLabels, propertyName, propertyTypes, mandatory
     RETURN *`)
@@ -85,7 +85,7 @@ async function introspectRelationships(sessionFactory: () => Session): Promise<R
     const rels: RelationshipMap = {};
 
     // Find all relationship types and their properties (if any)
-    const typePropsRes = await relSession.readTransaction((tx) =>
+    const typePropsRes = await relSession.executeRead((tx) =>
         tx.run(`CALL db.schema.relTypeProperties()
     YIELD relType, propertyName, propertyTypes, mandatory
     RETURN *`)
@@ -114,7 +114,7 @@ async function introspectRelationships(sessionFactory: () => Session): Promise<R
             });
 
             const escapedType = escapeLabel(cleanTypeName(relType));
-            const relationshipsRes = await conSession.readTransaction((tx) =>
+            const relationshipsRes = await conSession.executeRead((tx) =>
                 tx.run(`
             MATCH (n)-[r:${escapedType}]->(m)
             WITH DISTINCT labels(n) AS from, labels(m) AS to
