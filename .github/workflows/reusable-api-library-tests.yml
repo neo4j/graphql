@@ -20,18 +20,18 @@ jobs:
           - 2/4
           - 3/4
           - 4/4
-        graphql-version:
-          - "^15.0.0"
-          - "^16.0.0"
-        neo4j-version:
-          - 4.4-community
-          - 4.4-enterprise
-          - 5-community
-          - 5-enterprise
+        version:
+          [
+            { graphql: "^15.0.0", neo4j: "5-enterprise" },
+            { graphql: "^16.0.0", neo4j: "5-community" },
+            { graphql: "^16.0.0", neo4j: "5-enterprise" },
+            { graphql: "^16.0.0", neo4j: "4.4-community" },
+            { graphql: "^16.0.0", neo4j: "4.4-enterprise" },
+          ]
 
     services:
       neo4j:
-        image: neo4j:${{ matrix.neo4j-version }}
+        image: neo4j:${{ matrix.version.neo4j }}
         env:
           NEO4J_AUTH: neo4j/password
           NEO4J_PLUGINS: '["apoc"]'
@@ -40,15 +40,15 @@ jobs:
           - 7687:7687
 
     steps:
-      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
-      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
         with:
           node-version: lts/*
           cache: yarn
       - name: Install dependencies
         run: yarn
       - name: Overwrite GraphQL version
-        run: yarn up --exact graphql@${{ matrix.graphql-version }}
+        run: yarn up --exact graphql@${{ matrix.version.graphql }}
       - name: Run TCK tests
         run: yarn --cwd packages/graphql run test:tck --shard=${{ matrix.shard }} --coverage
         env:
@@ -69,8 +69,8 @@ jobs:
           - 7687:7687
 
     steps:
-      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
-      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
         with:
           node-version: lts/*
           cache: yarn
@@ -83,8 +83,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
-      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
         with:
           node-version: lts/*
           cache: yarn
@@ -94,7 +94,7 @@ jobs:
         run: yarn --cwd packages/graphql run test:schema --coverage
       - if: ${{ !inputs.disable-coverage-archival }}
         name: Archive coverage report
-        uses: actions/upload-artifact@604373da6381bf24206979c74d06a550515601b9 # v4
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
         with:
           name: api-library-coverage-graphql
           path: packages/graphql/coverage/

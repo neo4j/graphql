@@ -2,6 +2,9 @@
 
 💡 Welcome to the Monorepo for [Neo4j](https://neo4j.com/) + [GraphQL](https://graphql.org/).
 
+> [!IMPORTANT]  
+> This branch contains the source code the Long Term Support version of the Neo4j GraphQL Library. 
+
 ___
 
 **GraphQL API for Aura**  
@@ -57,7 +60,7 @@ visit the [Contributing Guide](./CONTRIBUTING.md).
 * [`@neo4j/graphql-ogm`](./packages/ogm) - Use GraphQL Type Definitions to drive
    interactions with the database
 * [`@neo4j/introspector`](./packages/introspector) - Introspect schema from an existing Neo4j database
-* [`@neo4j/graphql-toolbox`](https://www.github.com/neo4j/graphql-toolbox) - Experiment with your Neo4j GraphQL API on Neo4j Desktop.
+* [`@neo4j/graphql-toolbox`](https://www.github.com/neo4j/graphql-toolbox) - Experiment with your Neo4j GraphQL API on Neo4j.
 
 ## Media
 

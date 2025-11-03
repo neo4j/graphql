@@ -1,5 +1,17 @@
 # @neo4j/graphql
 
+## 5.9.2
+
+### Patch Changes
+
+-   [#5699](https://github.com/neo4j/graphql/pull/5699) [`2a69218`](https://github.com/neo4j/graphql/commit/2a692188fa6fb52a65b1e216c71af5b4d01ff099) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix generated filters when comparing a relationship to `null`
+
+## 5.9.1
+
+### Patch Changes
+
+-   [#5458](https://github.com/neo4j/graphql/pull/5458) [`4104217`](https://github.com/neo4j/graphql/commit/410421763e5aadb86546f72e2181a784e73f02c5) Thanks [@renovate](https://github.com/apps/renovate)! - Added a fix in document validation for type definitions using `@customResolver` and authentication/authorization rules
+
 ## 5.9.0
 
 ### Minor Changes

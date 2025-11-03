@@ -26,7 +26,7 @@ jobs:
         ports:
           - 7687:7687
       rabbitmq:
-        image: rabbitmq@sha256:19c74e015260e0a9a6a269a620af57a7108aa95f55ad3d114ea29f3be3dfd2bd
+        image: rabbitmq@sha256:29d08b0b96a51ec9f4c2ce76e636538dfb5e09a5ee62369d3f9ba9ce8b77f285
         env:
           RABBITMQ_DEFAULT_USER: guest
           RABBITMQ_DEFAULT_PASS: guest
@@ -36,8 +36,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4
-      - uses: actions/setup-node@0a44ba7841725637a19e28fa30b79a866c81b0a6 # v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4
+      - uses: actions/setup-node@39370e3970a6d050c480ffad4ff0ed4d3fdee5af # v4
         with:
           node-version: lts/*
           cache: yarn
@@ -56,7 +56,7 @@ jobs:
           RABBITMQ_USER: guest
           RABBITMQ_PASSWORD: guest
       - name: Archive coverage report
-        uses: actions/upload-artifact@604373da6381bf24206979c74d06a550515601b9 # v4
+        uses: actions/upload-artifact@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
         with:
           name: e2e-coverage-graphql-amqp-subscriptions-engine-${{ matrix.graphql-version }}-${{ matrix.neo4j-version }}
           path: packages/graphql-amqp-subscriptions-engine/coverage/
@@ -66,7 +66,7 @@ jobs:
     needs: e2e-tests
     steps:
       - name: Merge Artifacts
-        uses: actions/upload-artifact/merge@604373da6381bf24206979c74d06a550515601b9 # v4
+        uses: actions/upload-artifact/merge@b4b15b8c7c6ac21ea08fcf65892d2ee8f75cf882 # v4
         with:
           name: e2e-coverage-graphql-amqp-subscriptions-engine
           pattern: e2e-coverage-graphql-amqp-subscriptions-engine-*
