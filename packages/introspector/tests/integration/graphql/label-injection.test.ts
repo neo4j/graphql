@@ -17,8 +17,8 @@
  * limitations under the License.
  */
 
-import * as neo4j from "neo4j-driver";
 import { Neo4jGraphQL } from "@neo4j/graphql";
+import * as neo4j from "neo4j-driver";
 import { toGraphQLTypeDefs } from "../../../src/index";
 import createDriver from "../neo4j";
 
@@ -34,7 +34,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
         driver = await createDriver();
         const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
         try {
-            await cSession.writeTransaction((tx) => tx.run(`CREATE DATABASE ${dbName} WAIT`));
+            await cSession.executeWrite((tx) => tx.run(`CREATE DATABASE ${dbName} WAIT`));
         } catch (e) {
             if (e instanceof Error) {
                 if (
@@ -53,7 +53,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
         const waitSession = driver.session({
             defaultAccessMode: neo4j.session.READ,
             database: dbName,
-            bookmarks: cSession.lastBookmark(),
+            bookmarks: cSession.lastBookmarks(),
         });
         await cSession.close();
         await waitSession.close();
@@ -69,7 +69,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
         if (MULTIDB_SUPPORT) {
             const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
             try {
-                await cSession.writeTransaction((tx) => tx.run(`DROP DATABASE ${dbName}`));
+                await cSession.executeWrite((tx) => tx.run(`DROP DATABASE ${dbName}`));
             } catch (e) {
                 // ignore
             }
@@ -85,10 +85,10 @@ describe("GraphQL - Infer Schema on graphs", () => {
         }
 
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run("CREATE (a:Wurst) -[:```MATCH (n) DETACH DELETE n //`] -> (:Salat)")
         );
-        const bm = wSession.lastBookmark();
+        const bm = wSession.lastBookmarks();
         await wSession.close();
 
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
