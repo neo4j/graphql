@@ -17,8 +17,9 @@
  * limitations under the License.
  */
 
+import { Function as CypherFunction } from "@neo4j/cypher-builder";
 import Cypher from "@neo4j/cypher-builder";
-import type { CypherFunction } from "@neo4j/cypher-builder/dist/expressions/functions/CypherFunctions";
+
 import { Neo4jGraphQLTemporalType } from "../../../../schema-model/attribute/AttributeType";
 import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { QueryASTContext } from "../QueryASTContext";

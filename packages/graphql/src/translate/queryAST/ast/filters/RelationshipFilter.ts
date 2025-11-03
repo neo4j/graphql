@@ -313,7 +313,11 @@ export class RelationshipFilter extends Filter {
         if (this.shouldCreateOptionalMatch()) {
             const predicates = this.targetNodeFilters.map((c) => c.getPredicate(nestedContext));
             const innerPredicate = Cypher.and(...predicates);
-            return Cypher.and(Cypher.neq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
+            if (this.isNot) {
+                return Cypher.and(Cypher.eq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
+            } else {
+                return Cypher.and(Cypher.neq(this.countVariable, new Cypher.Literal(0)), innerPredicate);
+            }
         }
 
         const pattern = new Cypher.Pattern(nestedContext.source as Cypher.Node)

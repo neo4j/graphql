@@ -51,6 +51,7 @@ import type { AssertIndexesAndConstraintsOptions } from "./utils/asserts-indexes
 import { assertIndexesAndConstraints } from "./utils/asserts-indexes-and-constraints";
 import { generateResolverComposition } from "./utils/generate-resolvers-composition";
 import checkNeo4jCompat from "./utils/verify-database";
+import { Subgraph } from "./Subgraph";
 
 type TypeDefinitions = string | DocumentNode | TypeDefinitions[] | (() => TypeDefinitions);
 
@@ -409,7 +410,7 @@ class Neo4jGraphQL {
 
     private async generateSubgraphSchema(): Promise<GraphQLSchema> {
         // Import only when needed to avoid issues if GraphQL 15 being used
-        const { Subgraph } = await import("./Subgraph");
+        // const { Subgraph } = await import("./Subgraph");
 
         const initialDocument = this.normalizeTypeDefinitions(this.typeDefs);
         const subgraph = new Subgraph(this.typeDefs);

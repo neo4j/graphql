@@ -18,7 +18,7 @@
  */
 
 import { inspect } from "@graphql-tools/utils";
-import type { Maybe } from "@graphql-tools/utils/typings/types";
+import type { Maybe } from "@graphql-tools/utils";
 import type { DirectiveNode, FieldNode, GraphQLDirective, GraphQLField } from "graphql";
 import { Kind, isNonNullType, print, valueFromAST } from "graphql";
 import type { ObjMap } from "graphql/jsutils/ObjMap";

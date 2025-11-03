@@ -44,6 +44,14 @@ export class TypenameFilter extends Filter {
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate {
         if (!hasTarget(queryASTContext)) throw new Error("No parent node found!");
         const labelPredicate = this.acceptedEntities.map((e) => {
+            // Split entity name if it contains "Instance" or "Template"
+            const name = e.name;
+            const suffix = name.includes("Instance") ? "Instance" : name.includes("Template") ? "Template" : null;
+
+            if (suffix) {
+                const baseName = name.replace(suffix, "");
+                return queryASTContext.target.hasLabels(baseName, suffix);
+            }
             return queryASTContext.target.hasLabels(e.name);
         });
         return Cypher.or(...labelPredicate);
