@@ -60,14 +60,8 @@ describe("Cypher Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -96,14 +90,8 @@ describe("Cypher Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 40,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -141,14 +129,8 @@ describe("Cypher Duration", () => {
                         \\"duration\\": {
                             \\"months\\": 24,
                             \\"days\\": 0,
-                            \\"seconds\\": {
-                                \\"low\\": 0,
-                                \\"high\\": 0
-                            },
-                            \\"nanoseconds\\": {
-                                \\"low\\": 0,
-                                \\"high\\": 0
-                            }
+                            \\"seconds\\": 0,
+                            \\"nanoseconds\\": 0
                         }
                     }
                 ]
@@ -182,14 +164,8 @@ describe("Cypher Duration", () => {
                 \\"this_update_duration_SET\\": {
                     \\"months\\": 0,
                     \\"days\\": 4,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 },
                 \\"resolvedCallbacks\\": {}
             }"
