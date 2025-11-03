@@ -1,0 +1,28 @@
+name: "ReleaseOps Aura Tests"
+
+on:
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+  pull_request_target:
+    branches:
+      - dev
+    paths:
+      - "**/CHANGELOG.md"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}-aura
+  cancel-in-progress: true
+
+jobs:
+  aura-professional-5-tests:
+    if: |
+      github.event_name != 'pull_request_target' ||
+      github.event.pull_request.user.login == 'neo4j-team-graphql' &&
+      startsWith(github.head_ref, 'changeset-release/')
+    uses: ./.github/workflows/reusable-aura-tests.yml
+    with:
+      BRANCH: ${{ github.head_ref || github.ref }}
+    secrets:
+      URI: ${{ secrets.RELEASEOPS_AURA_PROFESSIONAL_5_URI }}
+      PASSWORD: ${{ secrets.RELEASEOPS_AURA_PROFESSIONAL_5_PASSWORD }}
+    concurrency: aura-professional-5
