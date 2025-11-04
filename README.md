@@ -1,30 +1,9 @@
-# Neo4j GraphQL Library
-
-💡 Welcome to the Monorepo for [Neo4j](https://neo4j.com/) + [GraphQL](https://graphql.org/).
-
-> [!IMPORTANT]  
-> This branch contains the source code the Long Term Support version of the Neo4j GraphQL Library. 
-
-___
-
-**GraphQL API for Aura**  
-We’ve been working to make GraphQL natively available in [Aura](https://neo4j.com/cloud/platform/aura-graph-database/), Neo4j's Cloud based Graph Database service,  and we are now ready to let people try it in an Early Access Program that will run from April to the end of May.  There will be at least one more iteration with additional features before a full release later this year.
-
-This will offer
-
-* Use of GraphQL API with an Aura instance in GCP
-* Use of Aura CLI to configure the GraphQL API
-* Authentication to the GraphQL API using an API Key or a 3rd party Identity Provider that supports OpenID Connect 2.0 with a JWKS endpoint for JWT validation
-* A Discord based community to post feedback and questions that you have
-
-Using the GraphQL API during the EAP with AuraDB instances being charged as normal will be at no cost.
-
-Would you be interested in taking part? Or want to know more? Then register here:-  [GraphQL API EAP](https://forms.gle/gr8n8sx8S8yXFZzj8) and you'll be contacted nearer the date.
-___
-
-![Neo4j + GraphQL](./images/banner.png)
+# @neo4j/graphql
 
 <p align="center">
+  <a href="https://badge.fury.io/js/%40neo4j%2Fgraphql">
+    <img alt="npm package" src="https://badge.fury.io/js/%40neo4j%2Fgraphql.svg">
+  </a>
   <a href="https://discord.gg/neo4j">
     <img alt="Discord" src="https://img.shields.io/discord/787399249741479977?logo=discord&logoColor=white">
   </a>
@@ -33,49 +12,182 @@ ___
   </a>
 </p>
 
-## Contributing
+A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations.
 
-The default branch for this repository is `dev`, which contains changes for the next
-release. This is what you should base your work on if you want to make changes.
+1. [Documentation](https://neo4j.com/docs/graphql-manual/current/)
 
-Want to contribute to `@neo4j/graphql`? See our [contributing guide](./CONTRIBUTING.md)
-and [development guide](./docs/contributing/DEVELOPING.md) to get started!
+## Installation
 
-## Links
+```
+npm install @neo4j/graphql
+```
 
-* [Documentation](https://neo4j.com/docs/graphql-manual/current/)
-* [Discord](https://discord.gg/neo4j)
-* [Examples](./examples)
-* [Hands-on Course](https://graphacademy.neo4j.com/courses/graphql-basics/?ref=graphql)
-* [Neo4j Community](https://community.neo4j.com/c/drivers-stacks/graphql/33)
+⚠ `graphql` & `neo4j-driver` are **peerDependency**(s)
 
-## Navigating
+```
+npm install graphql neo4j-driver
+```
 
-This is a TypeScript Monorepo managed with [Yarn Workspaces](https://classic.yarnpkg.com/en/docs/workspaces/).
-To learn more on how to; setup, test and contribute to Neo4j GraphQL then please
-visit the [Contributing Guide](./CONTRIBUTING.md).
+## Importing
 
-* [`@neo4j/graphql`](./packages/graphql) - Familiar GraphQL generation, for usage
-   with an API such as [Apollo Server](https://www.apollographql.com/docs/apollo-server/)
-* [`@neo4j/graphql-ogm`](./packages/ogm) - Use GraphQL Type Definitions to drive
-   interactions with the database
-* [`@neo4j/introspector`](./packages/introspector) - Introspect schema from an existing Neo4j database
-* [`@neo4j/graphql-toolbox`](https://www.github.com/neo4j/graphql-toolbox) - Experiment with your Neo4j GraphQL API on Neo4j.
+Our TypeScript source is transpiled into Common JS, this means you can use the `require` syntax;
 
-## Media
+```js
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+```
 
-Blogs, talks and other content surrounding Neo4j GraphQL. Sign up for
-[NODES 2023](https://dev.neo4j.com/44xcEfm) to view even more Neo4j
-GraphQL content.
+## Quick Start
 
-* [Neo4j and GraphQL The Past, Present and Future](https://youtu.be/sZ-eBznM71M)
-* [Securing Your Graph With Neo4j GraphQL](https://medium.com/neo4j/securing-your-graph-with-neo4j-graphql-91a2d7b08631)
-* [Best Practices For Using Cypher With GraphQL](https://youtu.be/YceBpk01Gxs)
-* [Migrating To The Official Neo4j GraphQL Library](https://youtu.be/4_rp1ikvFKc)
-* [Announcing the Stable Release of the Official Neo4j GraphQL Library 1.0.0](https://medium.com/neo4j/announcing-the-stable-release-of-the-official-neo4j-graphql-library-1-0-0-6cdd30cd40b)
-* [Announcing the Neo4j GraphQL Library Beta Release](https://medium.com/neo4j/announcing-the-neo4j-graphql-library-beta-99ae8541bbe7)
-* [Working with Graphs and GraphQL](https://youtu.be/qXQDG2GAs5w)
+Create schema and serve over port 4000 using Apollo Server:
 
-## Learn with GraphAcademy
+```js
+const { Neo4jGraphQL } = require("@neo4j/graphql");
+const neo4j = require("neo4j-driver");
+const { ApolloServer } = require("apollo-server");
 
-Learn the fundamentals of GraphQL and how to use the Neo4j GraphQL Toolbox and the Neo4j GraphQL Library to create Neo4j-backed GraphQL APIs with the [Introduction to Neo4j & GraphQL on GraphAcademy](https://graphacademy.neo4j.com/courses/graphql-basics/?ref=graphql).
+const typeDefs = `
+    type Movie {
+        title: String
+        year: Int
+        imdbRating: Float
+        genres: [Genre!]! @relationship(type: "IN_GENRE", direction: OUT)
+    }
+
+    type Genre {
+        name: String
+        movies: [Movie!]! @relationship(type: "IN_GENRE", direction: IN)
+    }
+`;
+
+const driver = neo4j.driver("bolt://localhost:7687", neo4j.auth.basic("neo4j", "letmein"));
+
+const neoSchema = new Neo4jGraphQL({ typeDefs, driver });
+
+async function main() {
+    const schema = await neoSchema.getSchema();
+
+    const server = new ApolloServer({
+        schema,
+        context: ({ req }) => ({ req }),
+    });
+
+    await server.listen(4000);
+
+    console.log("Online");
+}
+```
+
+## Example Queries
+
+### Create Movie
+
+```graphql
+mutation {
+    createMovies(input: [{ title: "The Matrix", year: 1999, imdbRating: 8.7 }]) {
+        movies {
+            title
+        }
+    }
+}
+```
+
+### Connect to Genre
+
+```graphql
+mutation {
+    updateMovies(
+        where: { title: "The Matrix" }
+        connect: { genres: { where: { node: { OR: [{ name: "Sci-fi" }, { name: "Action" }] } } } }
+    ) {
+        movies {
+            title
+        }
+    }
+}
+```
+
+### Create Movie and connect Genre
+
+```graphql
+mutation {
+    createMovies(
+        input: [
+            {
+                title: "The Matrix"
+                year: 1999
+                imdbRating: 8.7
+                genres: { connect: { where: { node: { AND: [{ name: "Sci-fi" }, { name: "Action" }] } } } }
+            }
+        ]
+    ) {
+        movies {
+            title
+        }
+    }
+}
+```
+
+### Find Movies with Genres
+
+```graphql
+query {
+    movies {
+        title
+        genres {
+            name
+        }
+    }
+}
+```
+
+## Auth
+
+Define, nested & related, authorization rules such as; “grant update access to all moderators of a post”;
+
+```graphql
+type User {
+    id: ID!
+    username: String!
+}
+
+type Post {
+    id: ID!
+    title: String!
+    moderator: User @relationship(type: "MODERATES_POST", direction: IN)
+}
+
+extend type Post @auth(rules: [{ allow: [{ moderator: { id: "$jwt.sub" } }], operations: [UPDATE] }])
+```
+
+Specify rules on fields;
+
+```graphql
+type User {
+    id: ID!
+    username: String!
+}
+
+extend type User {
+    password: String! @auth(rules: [{ OR: [{ allow: { id: "$jwt.sub" } }, { roles: ["admin"] }] }])
+}
+```
+
+Use RBAC;
+
+```graphql
+type Customer @auth(rules: [{ operations: [READ], roles: ["read:customer"] }]) {
+    id: ID
+    name: String
+    password: String @auth(rules: [{ operations: [READ], roles: ["admin"] }])
+}
+
+type Invoice @auth(rules: [{ operations: [READ], roles: ["read:invoice"] }]) {
+    id: ID
+    csv: String
+    total: Int
+}
+```
+
+## Licence
+
+[Apache 2.0](https://github.com/neo4j/graphql/blob/dev/packages/graphql/LICENSE.txt)

@@ -1,8 +1,13 @@
 {
-    "files": [],
-    "references": [
-        { "path": "./packages/graphql/tsconfig.json" },
-        { "path": "./packages/ogm/tsconfig.json" },
-        { "path": "./packages/introspector/tsconfig.json" }
-    ]
+    "extends": "../../tsconfig.base.json",
+    "compilerOptions": {
+        "rootDir": ".",
+        "baseUrl": ".",
+        "outDir": "dist",
+        "noUncheckedIndexedAccess": true
+    },
+    "include": ["global.d.ts", "package.json", "src/**/*", "tests/**/*"],
+    "ts-node": {
+        "require": ["tsconfig-paths/register"]
+    }
 }
