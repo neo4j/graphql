@@ -1,6 +1,6 @@
 {
-    "name": "@neo4j/graphql",
-    "version": "5.9.2",
+    "name": "@click2deploy/neo4j-graphql",
+    "version": "5.9.2.1",
     "description": "A GraphQL to Cypher query execution layer for Neo4j and JavaScript GraphQL implementations",
     "keywords": [
         "neo4j",
@@ -22,7 +22,7 @@
         "dist/**/*.js.map"
     ],
     "engines": {
-        "node": ">=16.0.0"
+        "node": ">=22.0.0"
     },
     "scripts": {
         "build": "tsc --build src/tsconfig.production.json",
