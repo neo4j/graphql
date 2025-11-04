@@ -1,7 +1,7 @@
 name: "ReleaseOps Aura Tests"
-
+# Executes graphql tests in the ReleaseOps Aura environment as part of the Neo4j ReleaseOps pipeline. 
+# Triggered by ReleaseOps from TeamCity, to validate the new database version, before a release.
 on:
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
 concurrency:
