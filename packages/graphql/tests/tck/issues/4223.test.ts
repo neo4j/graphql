@@ -223,54 +223,65 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
                 SET
                     this9.userId = $param4
                 WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this0)<-[:ADMIN_IN]-(this11:User)
-                    WHERE ($jwt.id IS NOT NULL AND this11.userId = $jwt.id)
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this1)<-[:HAS_SETTINGS]-(this12:Tenant)
-                    WHERE EXISTS {
-                        MATCH (this12)<-[:ADMIN_IN]-(this13:User)
-                        WHERE ($jwt.id IS NOT NULL AND this13.userId = $jwt.id)
-                    }
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this2)<-[:VALID_GARAGES]-(this14:Settings)
-                    WHERE EXISTS {
-                        MATCH (this14)<-[:HAS_SETTINGS]-(this15:Tenant)
+                CALL (*) {
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                        MATCH (this0)<-[:ADMIN_IN]-(this11:User)
+                        WHERE ($jwt.id IS NOT NULL AND this11.userId = $jwt.id)
+                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                }
+                CALL (*) {
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                        MATCH (this1)<-[:HAS_SETTINGS]-(this12:Tenant)
                         WHERE EXISTS {
-                            MATCH (this15)<-[:ADMIN_IN]-(this16:User)
-                            WHERE ($jwt.id IS NOT NULL AND this16.userId = $jwt.id)
+                            MATCH (this12)<-[:ADMIN_IN]-(this13:User)
+                            WHERE ($jwt.id IS NOT NULL AND this13.userId = $jwt.id)
                         }
-                    }
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this3)<-[:HAS_OPEN_INTERVALS]-(this17:OpeningDay)
-                    WHERE EXISTS {
-                        MATCH (this17)<-[:VALID_GARAGES]-(this18:Settings)
+                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                }
+                CALL (*) {
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                        MATCH (this2)<-[:VALID_GARAGES]-(this14:Settings)
                         WHERE EXISTS {
-                            MATCH (this18)<-[:HAS_SETTINGS]-(this19:Tenant)
+                            MATCH (this14)<-[:HAS_SETTINGS]-(this15:Tenant)
                             WHERE EXISTS {
-                                MATCH (this19)<-[:ADMIN_IN]-(this20:User)
-                                WHERE ($jwt.id IS NOT NULL AND this20.userId = $jwt.id)
+                                MATCH (this15)<-[:ADMIN_IN]-(this16:User)
+                                WHERE ($jwt.id IS NOT NULL AND this16.userId = $jwt.id)
                             }
                         }
-                    }
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this6)<-[:HAS_WORKSPACE_SETTINGS]-(this21:Settings)
-                    WHERE EXISTS {
-                        MATCH (this21)<-[:HAS_SETTINGS]-(this22:Tenant)
+                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                }
+                CALL (*) {
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                        MATCH (this3)<-[:HAS_OPEN_INTERVALS]-(this17:OpeningDay)
                         WHERE EXISTS {
-                            MATCH (this22)<-[:ADMIN_IN]-(this23:User)
-                            WHERE ($jwt.id IS NOT NULL AND this23.userId = $jwt.id)
+                            MATCH (this17)<-[:VALID_GARAGES]-(this18:Settings)
+                            WHERE EXISTS {
+                                MATCH (this18)<-[:HAS_SETTINGS]-(this19:Tenant)
+                                WHERE EXISTS {
+                                    MATCH (this19)<-[:ADMIN_IN]-(this20:User)
+                                    WHERE ($jwt.id IS NOT NULL AND this20.userId = $jwt.id)
+                                }
+                            }
                         }
-                    }
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                }
+                CALL (*) {
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                        MATCH (this6)<-[:HAS_WORKSPACE_SETTINGS]-(this21:Settings)
+                        WHERE EXISTS {
+                            MATCH (this21)<-[:HAS_SETTINGS]-(this22:Tenant)
+                            WHERE EXISTS {
+                                MATCH (this22)<-[:ADMIN_IN]-(this23:User)
+                                WHERE ($jwt.id IS NOT NULL AND this23.userId = $jwt.id)
+                            }
+                        }
+                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                }
                 RETURN this0 AS this
             }
             WITH this

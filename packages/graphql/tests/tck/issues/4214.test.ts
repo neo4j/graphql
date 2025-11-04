@@ -197,13 +197,16 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 }
                 WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param13 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param14 IN $jwt.roles)) AND EXISTS {
-                    MATCH (this0)-[:ITEM_TRANSACTED]->(this6:Transaction)
-                    WHERE EXISTS {
-                        MATCH (this6)-[:TRANSACTION]->(this7:Store)
-                        WHERE ($jwt.store IS NOT NULL AND this7.id = $jwt.store)
-                    }
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL (*) {
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param13 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param14 IN $jwt.roles)) AND EXISTS {
+                        MATCH (this0)-[:ITEM_TRANSACTED]->(this6:Transaction)
+                        WHERE EXISTS {
+                            MATCH (this6)-[:TRANSACTION]->(this7:Store)
+                            WHERE ($jwt.store IS NOT NULL AND this7.id = $jwt.store)
+                        }
+                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                }
                 RETURN this0 AS this
             }
             WITH this

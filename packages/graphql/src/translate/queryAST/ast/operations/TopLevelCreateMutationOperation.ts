@@ -32,7 +32,7 @@ export class TopLevelCreateMutationOperation extends Operation {
     // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
     private readonly projectionOperations: OperationField[];
 
-    private readonly createOperations: CreateOperation[] = [];
+    private readonly topLevelCreateOperations: CreateOperation[] = [];
 
     constructor({
         createOperations,
@@ -42,34 +42,48 @@ export class TopLevelCreateMutationOperation extends Operation {
         projectionOperations: OperationField[];
     }) {
         super();
-        this.createOperations = createOperations;
+        this.topLevelCreateOperations = createOperations;
         this.projectionOperations = projectionOperations;
     }
 
     public getChildren(): QueryASTNode[] {
-        return filterTruthy([...this.createOperations, ...this.projectionOperations]);
+        return filterTruthy([...this.topLevelCreateOperations, ...this.projectionOperations]);
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.hasTarget()) {
             throw new Error("No parent node found!");
         }
-        const subqueries = this.createOperations.map((field) => {
-            const { clauses, projectionExpr } = field.transpile(context);
+        const oprationQueries = this.topLevelCreateOperations.map((createOperation) => {
+            const { clauses, projectionExpr } = createOperation.transpile(context);
+
+            const authSubqueries = this.getAuthorizationSubqueriesForCreateOperation(createOperation, context);
 
             return Cypher.utils.concat(
                 ...clauses,
-                ...field.getAuthorizationSubqueries(context),
+                ...authSubqueries,
                 new Cypher.Return([projectionExpr, context.returnVariable])
             );
         });
 
-        const unionStatement = new Cypher.Call(new Cypher.Union(...subqueries));
+        const unionStatement = new Cypher.Call(new Cypher.Union(...oprationQueries));
         const projection: Cypher.Clause = this.getProjectionClause(context);
         return {
             projectionExpr: context.returnVariable,
             clauses: [unionStatement, projection],
         };
+    }
+
+    private getAuthorizationSubqueriesForCreateOperation(
+        operation: CreateOperation,
+        context: QueryASTContext<Cypher.Node>
+    ): Cypher.Clause[] {
+        const authSubqueries = operation.getAuthorizationSubqueries(context).map((sq) => new Cypher.Call(sq, "*"));
+        if (authSubqueries.length > 0) {
+            return [new Cypher.With("*"), ...authSubqueries];
+        }
+
+        return [];
     }
 
     private getProjectionClause(context: QueryASTContext<Cypher.Node>): Cypher.Clause {

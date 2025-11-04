@@ -891,7 +891,10 @@ describe("Cypher Auth Where with Roles", () => {
                     } AND ($jwt.roles IS NOT NULL AND $param7 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param8 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 }
                 WITH *
-                CALL apoc.util.validate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $param9 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param10 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL (*) {
+                    WITH *
+                    CALL apoc.util.validate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $param9 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param10 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                }
                 RETURN this0 AS this
             }
             WITH this
@@ -973,7 +976,10 @@ describe("Cypher Auth Where with Roles", () => {
                     } AND ($jwt.roles IS NOT NULL AND $param8 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param9 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 }
                 WITH *
-                CALL apoc.util.validate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $param10 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param11 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL (*) {
+                    WITH *
+                    CALL apoc.util.validate(NOT (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub) AND ($jwt.roles IS NOT NULL AND $param10 IN $jwt.roles)) OR ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param11 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                }
                 RETURN this0 AS this
             }
             WITH this

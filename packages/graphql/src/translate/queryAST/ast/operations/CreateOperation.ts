@@ -88,11 +88,10 @@ export class CreateOperation extends MutationOperation {
         this.projectionOperations.push(...operations);
     }
 
-    /** Post subqueries */
     public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
         const nestedContext = this.nestedContext;
 
-        if (!nestedContext) {
+        if (!nestedContext || !nestedContext.hasTarget()) {
             throw new Error(
                 "Error parsing query, nested context not available, need to call transpile first. Please contact support"
             );
@@ -136,11 +135,11 @@ export class CreateOperation extends MutationOperation {
 
         const createClause = new Cypher.Create(createPattern);
 
-        const setParams = Array.from(this.inputFields.values()).flatMap((input) => {
+        const setParams = this.inputFields.flatMap((input) => {
             return input.getSetParams(nestedContext);
         });
 
-        const mutationSubqueries = Array.from(this.inputFields.values()).flatMap((input) => {
+        const mutationSubqueries = this.inputFields.flatMap((input) => {
             return input.getSubqueries(nestedContext);
         });
 
@@ -171,7 +170,7 @@ export class CreateOperation extends MutationOperation {
         return { projectionExpr: nestedContext.target, clauses: [clauses] };
     }
 
-    private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
+    private getAuthorizationClauses(context: QueryASTContext<Cypher.Node>): Cypher.Clause[] {
         const { selections, subqueries, predicates, validations } = this.transpileAuthClauses(context);
         const predicate = Cypher.and(...predicates);
         const lastSelection = selections[selections.length - 1];
@@ -181,9 +180,16 @@ export class CreateOperation extends MutationOperation {
         } else {
             if (lastSelection) {
                 lastSelection.where(predicate);
-                return [...subqueries, new Cypher.With("*"), ...selections, ...validations];
+                return [Cypher.utils.concat(...subqueries, new Cypher.With("*"), ...selections, ...validations)];
             }
-            return [...subqueries, new Cypher.With("*").where(predicate), ...selections, ...validations];
+            return [
+                Cypher.utils.concat(
+                    ...subqueries.map((sq) => new Cypher.Call(sq, "*")),
+                    new Cypher.With("*").where(predicate),
+                    ...selections,
+                    ...validations
+                ),
+            ];
         }
     }
 
