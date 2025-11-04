@@ -26,6 +26,9 @@ import * as scalars from "./graphql/scalars";
 import { Neo4jGraphQLCallback, Neo4jGraphQLSubscriptionsEngine, SubscriptionsEvent } from "./types";
 import { Neo4jGraphQLContext } from "./types/neo4j-graphql-context";
 
+
+//This is a new comment
+
 const objects = { Point, CartesianPoint };
 
 /**
