@@ -38,7 +38,7 @@ jobs:
       - ecr-login
 
     strategy:
-      matrix:
+      matrix: # This matrix tests the minimum supported version of Node.js as well as the current lts
         node: [{ name: "20", coverage_name: "20" }, { name: "lts/*", coverage_name: "lts" }]
         packages:
           [
