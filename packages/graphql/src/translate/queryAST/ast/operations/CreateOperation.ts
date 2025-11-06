@@ -171,24 +171,13 @@ export class CreateOperation extends MutationOperation {
     }
 
     private getAuthorizationClauses(context: QueryASTContext<Cypher.Node>): Cypher.Clause[] {
-        const { selections, subqueries, predicates, validations } = this.transpileAuthClauses(context);
-        const predicate = Cypher.and(...predicates);
-        const lastSelection = selections[selections.length - 1];
+        const { selections, subqueries, validations } = this.transpileAuthClauses(context);
 
-        if (!predicates.length && !validations.length) {
+        if (!validations.length) {
             return [];
         } else {
-            if (lastSelection) {
-                lastSelection.where(predicate);
-                return [Cypher.utils.concat(...subqueries, new Cypher.With("*"), ...selections, ...validations)];
-            }
             return [
-                Cypher.utils.concat(
-                    ...subqueries.map((sq) => new Cypher.Call(sq, "*")),
-                    new Cypher.With("*").where(predicate),
-                    ...selections,
-                    ...validations
-                ),
+                Cypher.utils.concat(...subqueries.map((sq) => new Cypher.Call(sq, "*")), ...selections, ...validations),
             ];
         }
     }

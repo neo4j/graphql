@@ -190,14 +190,12 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
                     this7.userId = $param2
                 WITH *
                 CALL (*) {
-                    WITH *
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this0)<-[:ADMIN_IN]-(this9:User)
                         WHERE ($jwt.id IS NOT NULL AND this9.userId = $jwt.id)
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 }
                 CALL (*) {
-                    WITH *
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this1)<-[:HAS_SETTINGS]-(this10:Tenant)
                         WHERE EXISTS {
@@ -207,7 +205,6 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 }
                 CALL (*) {
-                    WITH *
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this2)<-[:VALID_GARAGES]-(this12:Settings)
                         WHERE EXISTS {
@@ -220,7 +217,6 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 }
                 CALL (*) {
-                    WITH *
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this3)<-[:HAS_OPEN_INTERVALS]-(this15:OpeningDay)
                         WHERE EXISTS {

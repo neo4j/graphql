@@ -224,14 +224,12 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
                     this9.userId = $param4
                 WITH *
                 CALL (*) {
-                    WITH *
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this0)<-[:ADMIN_IN]-(this11:User)
                         WHERE ($jwt.id IS NOT NULL AND this11.userId = $jwt.id)
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 }
                 CALL (*) {
-                    WITH *
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this1)<-[:HAS_SETTINGS]-(this12:Tenant)
                         WHERE EXISTS {
@@ -241,7 +239,6 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 }
                 CALL (*) {
-                    WITH *
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this2)<-[:VALID_GARAGES]-(this14:Settings)
                         WHERE EXISTS {
@@ -254,7 +251,6 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 }
                 CALL (*) {
-                    WITH *
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this3)<-[:HAS_OPEN_INTERVALS]-(this17:OpeningDay)
                         WHERE EXISTS {
@@ -270,7 +266,6 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 }
                 CALL (*) {
-                    WITH *
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                         MATCH (this6)<-[:HAS_WORKSPACE_SETTINGS]-(this21:Settings)
                         WHERE EXISTS {

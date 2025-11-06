@@ -54,7 +54,7 @@ export class TopLevelCreateMutationOperation extends Operation {
         if (!context.hasTarget()) {
             throw new Error("No parent node found!");
         }
-        const oprationQueries = this.topLevelCreateOperations.map((createOperation) => {
+        const operationQueries = this.topLevelCreateOperations.map((createOperation) => {
             const { clauses, projectionExpr } = createOperation.transpile(context);
 
             const authSubqueries = this.getAuthorizationSubqueriesForCreateOperation(createOperation, context);
@@ -66,7 +66,7 @@ export class TopLevelCreateMutationOperation extends Operation {
             );
         });
 
-        const unionStatement = new Cypher.Call(new Cypher.Union(...oprationQueries));
+        const unionStatement = new Cypher.Call(new Cypher.Union(...operationQueries));
         const projection: Cypher.Clause = this.getProjectionClause(context);
         return {
             projectionExpr: context.returnVariable,
