@@ -29,7 +29,6 @@ import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { InputField } from "../input-fields/InputField";
 import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
-import type { ReadOperation } from "./ReadOperation";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
 
 export class ConnectOperation extends MutationOperation {
@@ -38,9 +37,6 @@ export class ConnectOperation extends MutationOperation {
 
     private selectionPattern: SelectionPattern;
     protected readonly authFilters: AuthorizationFilters[] = [];
-
-    // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
-    public projectionOperations: ReadOperation[] = [];
 
     public readonly inputFields: Map<string, InputField> = new Map();
     private filters: Filter[] = [];
@@ -68,7 +64,6 @@ export class ConnectOperation extends MutationOperation {
             ...this.filters,
             ...this.authFilters,
             ...this.inputFields.values(),
-            ...this.projectionOperations,
         ]);
     }
 
@@ -98,10 +93,6 @@ export class ConnectOperation extends MutationOperation {
         this.filters.push(...filters);
     }
 
-    public addProjectionOperations(operations: ReadOperation[]) {
-        this.projectionOperations.push(...operations);
-    }
-
     public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
         const nestedContext = this.nestedContext;
 
@@ -111,9 +102,11 @@ export class ConnectOperation extends MutationOperation {
             );
         }
 
-        return [...this.inputFields.values()].flatMap((inputField) => {
+        const inputFieldsClauses = [...this.inputFields.values()].flatMap((inputField) => {
             return inputField.getAuthorizationSubqueries(nestedContext);
         });
+
+        return [...inputFieldsClauses];
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -171,19 +164,12 @@ export class ConnectOperation extends MutationOperation {
             ...this.getAuthorizationClauses(nestedContext), // THESE ARE "BEFORE" AUTH
             ...mutationSubqueries,
             connectClause,
-            ...this.getAuthorizationClausesAfter(nestedContext), // THESE ARE "AFTER" AUTH
-            ...this.getProjectionClause(nestedContext)
+            ...this.getAuthorizationClausesAfter(nestedContext) // THESE ARE "AFTER" AUTH
         );
 
         const callClause = new Cypher.Call(clauses, [context.target]);
 
         return { projectionExpr: context.returnVariable, clauses: [callClause] };
-    }
-
-    private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {
-        return this.projectionOperations.map((operationField) => {
-            return Cypher.utils.concat(...operationField.transpile(context).clauses);
-        });
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
