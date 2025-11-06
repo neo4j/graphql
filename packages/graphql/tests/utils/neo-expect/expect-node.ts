@@ -35,7 +35,7 @@ export class NeoExpectNode extends NeoExpect {
     public async count(expected: number): Promise<void> {
         const count = await this.getCount();
         if (count !== expected) {
-            throw new NeoAssertionError("Incorrect count");
+            throw new NeoAssertionError(`Incorrect count, expected ${expected}, found ${count}`);
         }
     }
 
