@@ -102,6 +102,9 @@ describe("https://github.com/neo4j/graphql/issues/6797", () => {
                     ${Group.plural} {
                         invitees {
                             email
+                            group {
+                                id
+                            }
                         }
                     }
                 }
@@ -116,12 +119,24 @@ describe("https://github.com/neo4j/graphql/issues/6797", () => {
             [Group.operations.create]: {
                 [Group.plural]: [
                     {
-                        invitees: [{ email: "an email" }],
+                        invitees: [
+                            {
+                                email: "an email",
+                                group: expect.toIncludeSameMembers([
+                                    {
+                                        id: "an-id",
+                                    },
+                                    {
+                                        id: expect.toBeString(),
+                                    },
+                                ]),
+                            },
+                        ],
                     },
                 ],
             },
         });
 
-        testHelper.expectRelationship("Group", "Invitee", "INVITED_TO");
+        await testHelper.expectRelationship(Invitee, Group, "INVITED_TO").count(2);
     });
 });
