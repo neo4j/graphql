@@ -196,25 +196,27 @@ export class ConnectOperation extends MutationOperation {
             bothAuthClausesBefore.push(Cypher.utils.concat(...authClausesBefore, ...sourceAuthClausesBefore));
         }
 
-        const clauses = Cypher.utils.concat(
-            matchClause,
-            ...bothAuthClausesBefore, // THESE ARE "BEFORE" AUTH
-            ...mutationSubqueries,
-            connectClause
-        );
-
         const authClausesAfter = this.getAuthorizationClausesAfter(nestedContext);
         const sourceAuthClausesAfter = this.getSourceAuthorizationClausesAfter(context);
 
-        const callClause = new Cypher.Call(clauses, [context.target]);
         const authClauses: Cypher.Clause[] = [];
         if (authClausesAfter.length > 0 || sourceAuthClausesAfter.length > 0) {
             authClauses.push(Cypher.utils.concat(...authClausesAfter, ...sourceAuthClausesAfter));
         }
 
+        const clauses = Cypher.utils.concat(
+            matchClause,
+            ...bothAuthClausesBefore, // THESE ARE "BEFORE" AUTH
+            ...mutationSubqueries,
+            connectClause,
+            ...authClauses
+        );
+
+        const callClause = new Cypher.Call(clauses, [context.target]);
+
         return {
             projectionExpr: context.returnVariable,
-            clauses: [callClause, ...authClauses],
+            clauses: [callClause],
         };
     }
 
