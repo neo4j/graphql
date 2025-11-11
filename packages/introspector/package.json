@@ -1,6 +1,6 @@
 {
     "name": "@neo4j/introspector",
-    "version": "5.0.0",
+    "version": "5.0.1",
     "description": "Introspect a Neo4j database model/schema",
     "keywords": [
         "neo4j",
@@ -10,6 +10,10 @@
     "license": "Apache-2.0",
     "bugs": {
         "url": "https://github.com/neo4j/graphql/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/neo4j/graphql.git"
     },
     "homepage": "https://github.com/neo4j/graphql/tree/dev/packages/introspector",
     "exports": "./dist/index.js",
@@ -36,7 +40,7 @@
     "devDependencies": {
         "@neo4j/graphql": "^7.0.0",
         "@types/jest": "30.0.0",
-        "@types/node": "22.18.10",
+        "@types/node": "22.18.12",
         "@types/pluralize": "0.0.33",
         "jest": "30.2.0",
         "ts-jest": "29.4.5",

@@ -2185,7 +2185,7 @@ describe("@populatedBy directive - Node properties", () => {
         test("Should use on CREATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
 
-            const duration = `P14M3DT14700S`;
+            const duration = `P1Y2M3DT4H5M`;
 
             const callback = () => Promise.resolve(duration);
 
@@ -2238,7 +2238,7 @@ describe("@populatedBy directive - Node properties", () => {
         test("Should use on UPDATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
 
-            const duration = `P14M3DT14700S`;
+            const duration = `P1Y2M3DT4H5M`;
 
             const callback = () => Promise.resolve(duration);
 

@@ -129,14 +129,8 @@ describe("cypher directive filtering - Auth", () => {
                 \\"param0\\": {
                     \\"months\\": 0,
                     \\"days\\": 14,
-                    \\"seconds\\": {
-                        \\"low\\": 58320,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 58320,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);

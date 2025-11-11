@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import { parseDuration, MONTHS_PER_YEAR, DAYS_PER_WEEK, SECONDS_PER_HOUR, SECONDS_PER_MINUTE } from "./Duration";
+import { DAYS_PER_WEEK, MONTHS_PER_YEAR, parseDuration, SECONDS_PER_HOUR, SECONDS_PER_MINUTE } from "./Duration";
 
 type ParsedDuration = ReturnType<typeof parseDuration>;
 
@@ -56,6 +56,9 @@ describe("Duration Scalar", () => {
         ],
         ["P18870605T120000", { months: 1887 * MONTHS_PER_YEAR + 6, days: 5, seconds: 12 * 60 * 60, nanoseconds: 0 }],
         ["P1887-06-05T12:00:00", { months: 1887 * 12 + 6, days: 5, seconds: 12 * 60 * 60, nanoseconds: 0 }],
+        ["P-238DT", { months: 0, days: -238, seconds: 0, nanoseconds: 0 }],
+        ["P0M-238DT0S", { months: 0, days: -238, seconds: 0, nanoseconds: 0 }],
+        ["PT0S", { months: 0, days: 0, seconds: 0, nanoseconds: 0 }],
     ])("should match and parse %s correctly", (duration, parsed) =>
         expect(parseDuration(duration)).toStrictEqual(parsed)
     );

@@ -1,4 +1,6 @@
-name: changesets
+# NOTE: This filename must be called release.yml. If changed, update the Trusted Publisher settings in npm
+
+name: Release
 
 on:
   push:
@@ -8,6 +10,9 @@ on:
       - "*.x"
 
 concurrency: ${{ github.workflow }}-${{ github.ref }}
+
+permissions:
+  id-token: write # Required for OIDC
 
 jobs:
   release:
@@ -30,10 +35,14 @@ jobs:
           persist-credentials: false
 
       - name: Setup Node.js
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6
         with:
           node-version: lts/*
+          registry-url: https://registry.npmjs.org
           package-manager-cache: false
+
+      - name: Update npm # Need at least 11.5.1 for OIDC publishing
+        run: npm install -g npm@latest
 
       - name: Install Dependencies
         run: yarn
@@ -42,15 +51,6 @@ jobs:
         run: |
           git config --global user.name 'Neo4j Team GraphQL'
           git config --global user.email 'team-graphql@neotechnology.com'
-
-      - name: Creating .npmrc
-        run: |
-          cat << EOF > "$HOME/.npmrc"
-            @neo4j:registry https://registry.npmjs.org
-            //registry.npmjs.org/:_authToken=$NPM_TOKEN
-          EOF
-        env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Create release PR or release
         id: changesets
@@ -63,16 +63,13 @@ jobs:
           setupGitUser: false
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           YARN_ENABLE_IMMUTABLE_INSTALLS: false
           BRANCH: ${{ github.ref_name }}
 
   slack-notify:
     needs:
       - release
-
     if: ${{ needs.release.outputs.published == 'true' }}
-
     runs-on: ubuntu-latest
     strategy:
       matrix:

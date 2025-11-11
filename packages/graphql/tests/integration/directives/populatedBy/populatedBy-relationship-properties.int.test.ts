@@ -2457,8 +2457,8 @@ describe("@populatedBy directive - Relationship properties", () => {
         {
             description: "@populatedBy - Duration",
             type: "Duration",
-            callback: () => Promise.resolve(`P14M3DT14700S`),
-            expectedValue: `P14M3DT14700S`,
+            callback: () => Promise.resolve(`P1Y2M3DT4H5M`),
+            expectedValue: `P1Y2M3DT4H5M`,
         },
     ])("$description", ({ type, callback, expectedValue, expectedValueTemp }) => {
         test("Should use on CREATE", async () => {

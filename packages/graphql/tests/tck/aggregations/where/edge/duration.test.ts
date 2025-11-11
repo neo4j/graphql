@@ -74,14 +74,8 @@ describe("Cypher Aggregations where edge with Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -115,14 +109,8 @@ describe("Cypher Aggregations where edge with Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -156,14 +144,8 @@ describe("Cypher Aggregations where edge with Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -197,14 +179,8 @@ describe("Cypher Aggregations where edge with Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -238,14 +214,8 @@ describe("Cypher Aggregations where edge with Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -279,14 +249,8 @@ describe("Cypher Aggregations where edge with Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -320,14 +284,8 @@ describe("Cypher Aggregations where edge with Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -361,14 +319,8 @@ describe("Cypher Aggregations where edge with Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -402,14 +354,8 @@ describe("Cypher Aggregations where edge with Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -443,14 +389,8 @@ describe("Cypher Aggregations where edge with Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -484,14 +424,8 @@ describe("Cypher Aggregations where edge with Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -525,14 +459,8 @@ describe("Cypher Aggregations where edge with Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -566,14 +494,8 @@ describe("Cypher Aggregations where edge with Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -607,14 +529,8 @@ describe("Cypher Aggregations where edge with Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);
@@ -648,14 +564,8 @@ describe("Cypher Aggregations where edge with Duration", () => {
                 \\"param0\\": {
                     \\"months\\": 12,
                     \\"days\\": 0,
-                    \\"seconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    },
-                    \\"nanoseconds\\": {
-                        \\"low\\": 0,
-                        \\"high\\": 0
-                    }
+                    \\"seconds\\": 0,
+                    \\"nanoseconds\\": 0
                 }
             }"
         `);

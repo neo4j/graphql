@@ -99,14 +99,8 @@ describe("Batch Create, Scalar types", () => {
                         \\"runningTime\\": {
                             \\"months\\": 0,
                             \\"days\\": 14,
-                            \\"seconds\\": {
-                                \\"low\\": 58320,
-                                \\"high\\": 0
-                            },
-                            \\"nanoseconds\\": {
-                                \\"low\\": 0,
-                                \\"high\\": 0
-                            }
+                            \\"seconds\\": 58320,
+                            \\"nanoseconds\\": 0
                         },
                         \\"location\\": {
                             \\"longitude\\": 3,

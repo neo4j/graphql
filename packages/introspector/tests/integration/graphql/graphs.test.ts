@@ -34,7 +34,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
         driver = await createDriver();
         const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
         try {
-            await cSession.writeTransaction((tx) => tx.run(`CREATE DATABASE ${dbName} WAIT`));
+            await cSession.executeWrite((tx) => tx.run(`CREATE DATABASE ${dbName} WAIT`));
         } catch (e) {
             if (e instanceof Error) {
                 if (
@@ -53,7 +53,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
         const waitSession = driver.session({
             defaultAccessMode: neo4j.session.READ,
             database: dbName,
-            bookmarks: cSession.lastBookmark(),
+            bookmarks: cSession.lastBookmarks(),
         });
         await cSession.close();
         await waitSession.close();
@@ -69,7 +69,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
         if (MULTIDB_SUPPORT) {
             const cSession = driver.session({ defaultAccessMode: neo4j.session.WRITE });
             try {
-                await cSession.writeTransaction((tx) => tx.run(`DROP DATABASE ${dbName}`));
+                await cSession.executeWrite((tx) => tx.run(`DROP DATABASE ${dbName}`));
             } catch (e) {
                 // ignore
             }
@@ -86,7 +86,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
         const nodeProperties = { title: "Forrest Gump", name: "Glenn Hysén" };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run(
                 `CREATE (m:Movie {title: $props.title})
                 CREATE (a:Actor {name: $props.name})
@@ -95,7 +95,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
                 { props: nodeProperties }
             )
         );
-        const bm = wSession.lastBookmark();
+        const bm = wSession.lastBookmarks();
         await wSession.close();
 
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
@@ -125,7 +125,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
 
         const nodeProperties = { title: "Forrest Gump", name: "Glenn Hysén" };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run(
                 `CREATE (m:Movie {title: $props.title})
                 CREATE (p:Play:Theater {title: $props.title})
@@ -139,7 +139,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
                 { props: nodeProperties }
             )
         );
-        const bm = wSession.lastBookmark();
+        const bm = wSession.lastBookmarks();
         await wSession.close();
 
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
@@ -193,7 +193,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
             screenTime: new neo4j.Duration(0, 0, 3600, 0),
         };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run(
                 `CREATE (m:Movie {title: $props.title, screenTime: $props.screenTime})
                 CREATE (a:Actor {name: $props.name})
@@ -206,7 +206,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
                 { props: nodeProperties }
             )
         );
-        const bm = wSession.lastBookmark();
+        const bm = wSession.lastBookmarks();
         await wSession.close();
 
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));
@@ -253,7 +253,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
             roles: ["Footballer", "Drunken man on the street"],
         };
         const wSession = driver.session({ defaultAccessMode: neo4j.session.WRITE, database: dbName });
-        await wSession.writeTransaction((tx) =>
+        await wSession.executeWrite((tx) =>
             tx.run(
                 `CREATE (m:\`Movie-Label\` {title: $props.title})
                 CREATE (a:\`Actor-Label\` {name: $props.name})
@@ -263,7 +263,7 @@ describe("GraphQL - Infer Schema on graphs", () => {
                 { props: nodeProperties }
             )
         );
-        const bm = wSession.lastBookmark();
+        const bm = wSession.lastBookmarks();
         await wSession.close();
 
         const typeDefs = await toGraphQLTypeDefs(sessionFactory(bm));

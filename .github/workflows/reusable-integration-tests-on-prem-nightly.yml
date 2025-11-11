@@ -38,7 +38,7 @@ jobs:
       - ecr-login
 
     strategy:
-      matrix:
+      matrix: # This matrix tests the minimum supported version of Node.js as well as the current lts
         node: [{ name: "20", coverage_name: "20" }, { name: "lts/*", coverage_name: "lts" }]
         packages:
           [
@@ -56,7 +56,7 @@ jobs:
       - name: Check out repository code
         uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
       - name: Setting up Node.js with version ${{ matrix.node.name }}
-        uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6
         with:
           node-version: ${{ matrix.node.name }}
           cache: yarn
@@ -96,7 +96,7 @@ jobs:
           USE_RESTRICTED_USER: true
       - if: ${{ !inputs.disable-coverage-archival && matrix.packages.package == 'graphql' }}
         name: Archive coverage report
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: integration-nightly-coverage-${{ matrix.packages.package }}-${{ matrix.graphql-version.coverage_path }}-${{ matrix.packages.coverage_name }}-${{ matrix.node.coverage_name }}
           path: packages/${{ matrix.packages.package }}/coverage-nightly-${{ matrix.graphql-version.coverage_path }}/
@@ -112,7 +112,7 @@ jobs:
     steps:
       - if: ${{ !inputs.disable-coverage-archival }}
         name: Merge Artifacts
-        uses: actions/upload-artifact/merge@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact/merge@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
           name: integration-nightly-coverage
           pattern: integration-nightly-coverage-*

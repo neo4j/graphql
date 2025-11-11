@@ -26,7 +26,7 @@ import neo4j, { isDuration } from "neo4j-driver";
 // Similar constraint allows for only decimal seconds on date time based duration
 
 const DURATION_REGEX_ISO =
-    /^(?<negated>-?)?P(?!$)(?:(?<years>-?\d+(?:\.\d+(?=Y$))?)Y)?(?:(?<months>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<weeks>-?(5[0-3]|[1-4][0-9]|[1-9])(?:\.\d+(?=W$))?)W)?(?:(?<days>-?\d+(?:\.\d+(?=D$))?)D)?(?:T(?!$)(?:(?<hours>-?\d+(?:\.\d+(?=H$))?)H)?(?:(?<minutes>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<seconds>-?\d+(?:\.\d+(?=S$))?)S)?)?$/;
+    /^(?<negated>-?)?P(?!$)(?:(?<years>-?\d+(?:\.\d+(?=Y$))?)Y)?(?:(?<months>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<weeks>-?(5[0-3]|[1-4][0-9]|[1-9])(?:\.\d+(?=W$))?)W)?(?:(?<days>-?\d+(?:\.\d+(?=D$))?)D)?(?:T(?:(?<hours>-?\d+(?:\.\d+(?=H$))?)H)?(?:(?<minutes>-?\d+(?:\.\d+(?=M$))?)M)?(?:(?<seconds>-?\d+(?:\.\d+(?=S$))?)S)?)?$/;
 
 const DURATION_REGEX_WITH_DELIMITERS =
     /^(?<negated>-?)?P(?<years>\d{4})-(?<months>\d{2})-(?<days>\d{2})T(?<hours>\d{2}):(?<minutes>\d{2}):(?<seconds>\d{2})/;
@@ -58,7 +58,7 @@ export const parseDuration = (
     const matchNoDelimiter = DURATION_REGEX_NO_DELIMITERS.exec(value);
 
     const match = matchIso || matchDelimiter || matchNoDelimiter;
-    if (!match) {
+    if (!match || value === "PT") {
         throw new TypeError(`Value must be formatted as Duration: ${value}`);
     }
 
@@ -107,8 +107,6 @@ export const parseDuration = (
 
     // Whether total duration is negative
     const coefficient = negated ? -1 : 1;
-    // coefficient of duration and % may negate zero: converts -0 -> 0
-    const unsignZero = (a: number) => (Object.is(a, -0) ? 0 : a);
 
     return {
         months: unsignZero(coefficient * wholeMonths),
@@ -118,7 +116,12 @@ export const parseDuration = (
     };
 };
 
-const parse = (value: unknown) => {
+/** Converts -0 to 0, returns the number otherwise */
+function unsignZero(a: number): number {
+    return a || 0;
+}
+
+function parse(value: unknown) {
     if (typeof value === "string") {
         const { months, days, seconds, nanoseconds } = parseDuration(value);
 
@@ -130,7 +133,7 @@ const parse = (value: unknown) => {
     }
 
     throw new GraphQLError(`Only string or Duration can be validated as Duration, but received: ${value}`);
-};
+}
 
 export const GraphQLDuration = new GraphQLScalarType({
     name: "Duration",
