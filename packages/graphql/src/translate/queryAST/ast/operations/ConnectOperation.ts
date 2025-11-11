@@ -43,6 +43,8 @@ export class ConnectOperation extends MutationOperation {
 
     private nestedContext: QueryASTContext | undefined;
 
+    private connectedElement = new Cypher.Variable();
+
     constructor({
         target,
         relationship,
@@ -75,6 +77,19 @@ export class ConnectOperation extends MutationOperation {
         this.authFilters.push(...filter);
     }
 
+    public getProjectionFields(): Cypher.Expr[] {
+        const nestedFields = this.getNestedProjectionFields();
+
+        nestedFields.push(this.connectedElement);
+        return nestedFields;
+    }
+
+    private getNestedProjectionFields(): Cypher.Expr[] {
+        return [...this.inputFields.values()].flatMap((field) => {
+            return field.getProjectionFields();
+        });
+    }
+
     /**
      * Get and set field methods are utilities to remove duplicate fields between separate inputs
      * TODO: This logic should be handled in the factory.
@@ -96,17 +111,21 @@ export class ConnectOperation extends MutationOperation {
     public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
         const nestedContext = this.nestedContext;
 
-        if (!nestedContext) {
+        if (!nestedContext || !nestedContext.hasTarget()) {
             throw new Error(
                 "Error parsing query, nested context not available, need to call transpile first. Please contact support"
             );
         }
 
-        const inputFieldsClauses = [...this.inputFields.values()].flatMap((inputField) => {
+        const authSubqueries = [...this.inputFields.values()].flatMap((inputField) => {
             return inputField.getAuthorizationSubqueries(nestedContext);
         });
 
-        return [...inputFieldsClauses];
+        const afterAuthClauses = this.getAuthorizationClausesAfter(nestedContext);
+        if (afterAuthClauses.length > 0) {
+            authSubqueries.push(Cypher.utils.concat(...afterAuthClauses));
+        }
+        return authSubqueries;
     }
 
     public transpile(context: QueryASTContext): OperationTranspileResult {
@@ -159,12 +178,14 @@ export class ConnectOperation extends MutationOperation {
             return input.getSubqueries(connectContext);
         });
 
+        const nestedProjection = this.getNestedProjectionFields();
+
         const clauses = Cypher.utils.concat(
             matchClause,
             ...this.getAuthorizationClauses(nestedContext), // THESE ARE "BEFORE" AUTH
             ...mutationSubqueries,
             connectClause,
-            ...this.getAuthorizationClausesAfter(nestedContext) // THESE ARE "AFTER" AUTH
+            new Cypher.Return([Cypher.collect(nestedContext.target), this.connectedElement], ...nestedProjection) // This is not needed if there are no auth!!
         );
 
         const callClause = new Cypher.Call(clauses, [context.target]);
@@ -188,7 +209,7 @@ export class ConnectOperation extends MutationOperation {
         }
     }
 
-    private getAuthorizationClausesAfter(context: QueryASTContext): Cypher.Clause[] {
+    private getAuthorizationClausesAfter(context: QueryASTContext<Cypher.Node>): Cypher.Clause[] {
         const validationsAfter: Cypher.VoidProcedure[] = [];
         for (const authFilter of this.authFilters) {
             const validationAfter = authFilter.getValidation(context, "AFTER");
@@ -198,7 +219,7 @@ export class ConnectOperation extends MutationOperation {
         }
 
         if (validationsAfter.length > 0) {
-            return [new Cypher.With("*"), ...validationsAfter];
+            return [new Cypher.Unwind([this.connectedElement, context.target]), ...validationsAfter];
         }
         return [];
     }

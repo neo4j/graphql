@@ -47,6 +47,10 @@ export class MutationOperationField extends InputField {
         return [];
     }
 
+    public getProjectionFields(): Cypher.Expr[] {
+        return this.mutationOperation.getProjectionFields();
+    }
+
     public getAuthorizationSubqueries(queryASTContext: QueryASTContext): Cypher.Clause[] {
         return this.mutationOperation.getAuthorizationSubqueries(queryASTContext);
     }

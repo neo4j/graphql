@@ -28,7 +28,7 @@ describe("https://github.com/neo4j/graphql/issues/6805", () => {
     let Group: UniqueType;
     let Invitee: UniqueType;
 
-    beforeAll(async () => {
+    beforeEach(async () => {
         Group = testHelper.createUniqueType("Group");
         Invitee = testHelper.createUniqueType("Invitee");
 
@@ -62,7 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/6805", () => {
         });
     });
 
-    afterAll(async () => {
+    afterEach(async () => {
         await testHelper.close();
     });
 
@@ -113,7 +113,7 @@ describe("https://github.com/neo4j/graphql/issues/6805", () => {
             },
         });
 
-        await testHelper.expectRelationship("Group", "Invitee", "INVITED_TO").toExists();
+        await testHelper.expectRelationship(Invitee, Group, "INVITED_TO").count(2);
     });
 
     test("auth rules are applied and fail after the nested connection is made", async () => {

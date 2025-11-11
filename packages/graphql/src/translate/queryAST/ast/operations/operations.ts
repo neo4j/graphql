@@ -39,4 +39,11 @@ export abstract class MutationOperation extends QueryASTNode {
 
     /** Used for "AFTER" Auth subqueries, BEFORE subqueries should be part of transpile */
     abstract getAuthorizationSubqueries(context: QueryASTContext): Cypher.Clause[];
+
+    /** Projection fields returned by the inputField
+     * Use this to keep track of variables for authorization "AFTER"
+     */
+    public getProjectionFields(): Cypher.Expr[] {
+        return [];
+    }
 }
