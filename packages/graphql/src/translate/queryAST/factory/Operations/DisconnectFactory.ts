@@ -142,6 +142,14 @@ export class DisconnectFactory {
             operation: disconnect,
         });
 
+        if (isConcreteEntity(relationship.source)) {
+            this.addSourceEntityAuthorization({
+                entity: relationship.source,
+                context,
+                operation: disconnect,
+            });
+        }
+
         asArray(input).forEach((inputItem) => {
             const { whereArg, disconnectArg } = this.parseDisconnectArgs(inputItem);
             const nodeFilters: Filter[] = [];
@@ -224,6 +232,24 @@ export class DisconnectFactory {
         });
 
         operation.addAuthFilters(...authFilters);
+    }
+    private addSourceEntityAuthorization({
+        entity,
+        context,
+        operation,
+    }: {
+        entity: ConcreteEntityAdapter;
+        context: Neo4jGraphQLTranslationContext;
+        operation: DisconnectOperation;
+    }): void {
+        const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+            entity,
+            operations: ["DELETE_RELATIONSHIP"],
+            context,
+            afterValidation: true,
+        });
+
+        operation.addSourceAuthFilters(...authFilters);
     }
 
     private getInputEdge(inputItem: Record<string, any>, relationship: RelationshipAdapter): Record<string, any> {

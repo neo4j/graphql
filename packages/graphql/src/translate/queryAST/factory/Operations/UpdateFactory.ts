@@ -63,7 +63,14 @@ export class UpdateFactory {
         const rawInput = resolveTree.args.update as Record<string, any>[];
         const input = asArray(rawInput) ?? [];
 
-        const updateOperations: UpdateOperation[] = input.map((inputItem) => {
+        let updateOperations: UpdateOperation[];
+
+        if (!input.length) {
+            // dummy input to translate top level match for the projection to work
+            input.push({});
+        }
+
+        updateOperations = input.map((inputItem) => {
             const updateOperation = new UpdateOperation({
                 target: entity,
                 selectionPattern: new NodeSelectionPattern({
@@ -105,7 +112,6 @@ export class UpdateFactory {
                 });
                 return fieldOperation;
             });
-
         const topLevelMutation = new TopLevelUpdateMutationOperation({
             updateOperations,
             projectionOperations,
@@ -152,6 +158,12 @@ export class UpdateFactory {
             const targetInput = this.getInputNode(inputItem, isNested);
             raiseAttributeAmbiguityForUpdate(Object.keys(targetInput), target);
             raiseAttributeAmbiguityForUpdate(Object.keys(this.getInputEdge(inputItem)), relationship);
+
+            // this.addEntityAuthorization({
+            //     entity: target,
+            //     context,
+            //     operation: update,
+            // });
 
             const filters = this.queryASTFactory.filterFactory.createConnectionPredicates({
                 rel: relationship,
@@ -522,16 +534,14 @@ export class UpdateFactory {
         context: Neo4jGraphQLTranslationContext;
         operation: UpdateOperation;
     }): void {
-        const authFilters = this.queryASTFactory.authorizationFactory.createAuthValidateRule({
+        const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
             entity,
-            authAnnotation: entity.annotations.authorization,
-            when: "AFTER",
             operations: ["UPDATE"],
             context,
+            afterValidation: true,
         });
-        if (authFilters) {
-            operation.addAuthFilters(authFilters);
-        }
+
+        operation.addAuthFilters(...authFilters);
     }
 
     private addAttributeAuthorization({
@@ -547,6 +557,17 @@ export class UpdateFactory {
         entity: ConcreteEntityAdapter;
         conditionForEvaluation?: Cypher.Predicate;
     }): void {
+        const authBeforeFilters = this.queryASTFactory.authorizationFactory.createAuthValidateRule({
+            entity,
+            authAnnotation: attribute.annotations.authorization,
+            when: "BEFORE",
+            conditionForEvaluation,
+            operations: ["UPDATE"],
+            context,
+        });
+        if (authBeforeFilters) {
+            update.addAuthFilters(authBeforeFilters);
+        }
         const attributeAuthorization = this.queryASTFactory.authorizationFactory.createAuthValidateRule({
             entity,
             when: "AFTER",
