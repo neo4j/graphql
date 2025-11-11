@@ -17,23 +17,21 @@
  * limitations under the License.
  */
 
-import Cypher, { With } from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
-import { getEntityLabels } from "../../utils/create-node-from-entity";
+import { checkEntityAuthentication } from "../../../authorization/check-authentication";
+import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { InputField } from "../input-fields/InputField";
-import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
-import type { ReadOperation } from "./ReadOperation";
-import { MutationOperation, type OperationTranspileResult } from "./operations";
-import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import { ParamInputField } from "../input-fields/ParamInputField";
-import { isConcreteEntity } from "../../utils/is-concrete-entity";
+import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
+import { MutationOperation, type OperationTranspileResult } from "./operations";
 
 export class DisconnectOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter;
@@ -185,13 +183,7 @@ export class DisconnectOperation extends MutationOperation {
             bothAuthClausesBefore.push(Cypher.utils.concat(...authClausesBefore, ...sourceAuthClausesBefore));
         }
 
-        const clauses = Cypher.utils.concat(
-            matchClause,
-            ...bothAuthClausesBefore,
-            ...mutationSubqueries,
-            deleteClause
-            // ...this.getAuthorizationClausesAfter(nestedContext) // THESE ARE "AFTER" AUTH
-        );
+        const clauses = Cypher.utils.concat(matchClause, ...bothAuthClausesBefore, ...mutationSubqueries, deleteClause);
 
         const authClausesAfter = this.getAuthorizationClausesAfter(nestedContext);
         const sourceAuthClausesAfter = this.getSourceAuthorizationClausesAfter(context);
@@ -201,7 +193,6 @@ export class DisconnectOperation extends MutationOperation {
         if (authClausesAfter.length > 0 || sourceAuthClausesAfter.length > 0) {
             authClauses.push(Cypher.utils.concat(...authClausesAfter, ...sourceAuthClausesAfter));
         }
-        console.log("authClauses", authClauses);
 
         return {
             projectionExpr: context.returnVariable,

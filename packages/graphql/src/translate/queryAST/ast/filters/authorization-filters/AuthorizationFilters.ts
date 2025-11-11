@@ -82,6 +82,10 @@ export class AuthorizationFilters extends QueryASTNode {
         );
     }
 
+    public getSubqueriesAfter(context: QueryASTContext): Cypher.Clause[] {
+        return [...this.validations.filter((v) => v.when === "AFTER")].flatMap((c) => c.getSubqueries(context));
+    }
+
     public getSelection(context: QueryASTContext): Array<Cypher.Match | Cypher.With> {
         return [...this.validations, ...this.filters].flatMap((c) => c.getSelection(context));
     }

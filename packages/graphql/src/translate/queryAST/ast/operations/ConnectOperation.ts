@@ -21,18 +21,18 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
+import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
+import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { InputField } from "../input-fields/InputField";
+import { ParamInputField } from "../input-fields/ParamInputField";
 import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
-import { checkEntityAuthentication } from "../../../authorization/check-authentication";
-import { ParamInputField } from "../input-fields/ParamInputField";
-import { isConcreteEntity } from "../../utils/is-concrete-entity";
 
 export class ConnectOperation extends MutationOperation {
     public readonly target: ConcreteEntityAdapter;
@@ -201,7 +201,6 @@ export class ConnectOperation extends MutationOperation {
             ...bothAuthClausesBefore, // THESE ARE "BEFORE" AUTH
             ...mutationSubqueries,
             connectClause
-            // ...this.getAuthorizationClausesAfter(context) // THESE ARE "AFTER" AUTH
         );
 
         const authClausesAfter = this.getAuthorizationClausesAfter(nestedContext);

@@ -141,15 +141,14 @@ export class UpdateOperation extends Operation {
             }
         }
 
-        const afterAuthFilters = this.authFilters.filter((af) => {
-            return af.getValidation(nestedContext!, "AFTER");
-        });
-
         // We need to call the filter subqueries before predicate to handle aggregate filters
         const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
-        const afterFilterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, afterAuthFilters, [
-            nestedContext.target,
-        ]);
+
+        const afterFilterSubqueries = this.authFilters
+            .flatMap((af) => af.getSubqueriesAfter(nestedContext))
+            .map((sq) => {
+                return new Cypher.Call(sq, [nestedContext.target]);
+            });
 
         const predicate = this.getPredicate(nestedContext);
 
@@ -203,7 +202,6 @@ export class UpdateOperation extends Operation {
         const authSubqueries = subqueries.map((sq) => {
             return new Cypher.Call(sq, "*");
         });
-        // console.log("here", authSubqueries, validations);
         if (!predicates.length && !validations.length) {
             return [];
         } else {

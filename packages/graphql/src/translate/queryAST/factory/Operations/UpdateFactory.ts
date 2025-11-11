@@ -25,7 +25,7 @@ import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/mode
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
-import { asArray, filterTruthy } from "../../../../utils/utils";
+import { asArray } from "../../../../utils/utils";
 import { OperationField } from "../../ast/fields/OperationField";
 import { type InputField } from "../../ast/input-fields/InputField";
 import { MutationOperationField } from "../../ast/input-fields/MutationOperationField";
@@ -534,29 +534,6 @@ export class UpdateFactory {
         context: Neo4jGraphQLTranslationContext;
         operation: UpdateOperation;
     }): void {
-        // const authBeforeFilters = this.queryASTFactory.authorizationFactory.createAuthValidateRule({
-        //     entity,
-        //     authAnnotation: entity.annotations.authorization,
-        //     when: "BEFORE",
-        //     operations: ["UPDATE"],
-        //     context,
-        // });
-        // console.log("authBeforeFilters", authBeforeFilters);
-        // if (authBeforeFilters) {
-        //     operation.addAuthFilters(authBeforeFilters);
-        // }
-        // const authFilters = this.queryASTFactory.authorizationFactory.createAuthValidateRule({
-        //     entity,
-        //     authAnnotation: entity.annotations.authorization,
-        //     when: "AFTER",
-        //     operations: ["UPDATE"],
-        //     context,
-        // });
-        // if (authFilters) {
-        //     operation.addAuthFilters(authFilters);
-        // }
-
-        console.log("add entity auth for", entity.name);
         const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
             entity,
             operations: ["UPDATE"],
