@@ -117,9 +117,7 @@ describe("array-pop-errors", () => {
 
         expect(gqlResult.errors).toBeDefined();
         expect(
-            (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("Properties tags, otherTags cannot be NULL")
-            )
+            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Property tags cannot be NULL"))
         ).toBeTruthy();
 
         expect(gqlResult.data).toBeNull();
@@ -335,9 +333,8 @@ describe("array-pop-errors", () => {
 
         expect(gqlResult.errors).toBeDefined();
 
-        const relationshipType = `${movie.name}ActorsRelationship`;
         expect(gqlResult.errors).toEqual([
-            new GraphQLError(`Conflicting modification of [[pay_SET]], [[pay_POP]] on type ${relationshipType}`),
+            new GraphQLError(`Conflicting modification of [[pay_SET]], [[pay_POP]] on type ${actor}.actedIn`),
         ]);
         expect(gqlResult.data).toBeNull();
     });
