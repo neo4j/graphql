@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
+import Cypher from "@neo4j/cypher-builder";
 import type { QueryASTContext } from "../QueryASTContext";
 import { QueryASTNode } from "../QueryASTNode";
 
@@ -52,4 +52,26 @@ export function isRelationshipOperator(operator: string): operator is Relationsh
 
 export abstract class Filter extends QueryASTNode {
     public abstract getPredicate(context: QueryASTContext): Cypher.Predicate | undefined;
+
+    protected applyCaseInsensitive(
+        operator: FilterOperator,
+        property: Cypher.Expr,
+        param: Cypher.Expr
+    ): { operator: FilterOperator; property: Cypher.Expr; param: Cypher.Expr } {
+        if (operator === "IN") {
+            const x = new Cypher.Variable();
+            const lowercaseList = new Cypher.ListComprehension(x).in(param).map(Cypher.toLower(x));
+            return {
+                operator,
+                property: Cypher.toLower(property),
+                param: lowercaseList,
+            };
+        }
+
+        return {
+            operator,
+            property: Cypher.toLower(property),
+            param: Cypher.toLower(param),
+        };
+    }
 }
