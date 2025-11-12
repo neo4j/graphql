@@ -39,6 +39,7 @@ export class CypherFilter extends Filter {
     private operator: FilterOperator;
     protected comparisonValue: Cypher.Param | Cypher.Variable | Cypher.Property;
     private checkIsNotNull: boolean;
+    protected caseInsensitive: boolean;
 
     constructor({
         selection,
@@ -46,12 +47,14 @@ export class CypherFilter extends Filter {
         operator,
         comparisonValue,
         checkIsNotNull = false,
+        caseInsensitive = false,
     }: {
         selection: CustomCypherSelection;
         attribute: AttributeAdapter;
         operator: FilterOperator;
         comparisonValue: Cypher.Param | Cypher.Variable | Cypher.Property;
         checkIsNotNull?: boolean;
+        caseInsensitive?: boolean;
     }) {
         super();
         this.selection = selection;
@@ -59,6 +62,7 @@ export class CypherFilter extends Filter {
         this.operator = operator;
         this.comparisonValue = comparisonValue;
         this.checkIsNotNull = checkIsNotNull;
+        this.caseInsensitive = caseInsensitive;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -147,6 +151,10 @@ export class CypherFilter extends Filter {
             });
         }
 
-        return createComparisonOperation({ operator, property: coalesceProperty, param });
+        if (this.caseInsensitive) {
+            return createComparisonOperation({ ...this.applyCaseInsensitive(operator, coalesceProperty, param) });
+        } else {
+            return createComparisonOperation({ operator, property: coalesceProperty, param });
+        }
     }
 }
