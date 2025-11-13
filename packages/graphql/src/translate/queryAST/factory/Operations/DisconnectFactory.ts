@@ -26,7 +26,6 @@ import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-gra
 import { asArray } from "../../../../utils/utils";
 import type { Filter } from "../../ast/filters/Filter";
 import { MutationOperationField } from "../../ast/input-fields/MutationOperationField";
-import { NodeSelectionPattern } from "../../ast/selection/SelectionPattern/NodeSelectionPattern";
 import type { CallbackBucket } from "../../utils/callback-bucket";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
@@ -35,6 +34,8 @@ import { DisconnectOperation } from "../../ast/operations/DisconnectOperation";
 import { CompositeDisconnectPartial } from "../../ast/operations/composite/CompositeDisconnectPartial";
 import { CompositeDisconnectOperation } from "../../ast/operations/composite/CompositeDisconnectOperation";
 import { RelationshipSelectionPattern } from "../../ast/selection/SelectionPattern/RelationshipSelectionPattern";
+import { raiseAttributeAmbiguity } from "../../utils/raise-attribute-ambiguity";
+import { ParamInputField } from "../../ast/input-fields/ParamInputField";
 
 export class DisconnectFactory {
     private queryASTFactory: QueryASTFactory;
@@ -48,12 +49,14 @@ export class DisconnectFactory {
         relationship: RelationshipAdapter,
         input: Record<string, any>[],
         context: Neo4jGraphQLTranslationContext,
-        callbackBucket: CallbackBucket
+        callbackBucket: CallbackBucket,
+        targetOverride?: ConcreteEntityAdapter
     ): DisconnectOperation {
         const disconnectOP = new DisconnectOperation({
             target: entity,
             selectionPattern: new RelationshipSelectionPattern({
                 relationship,
+                targetOverride,
             }),
             relationship,
         });
@@ -153,6 +156,7 @@ export class DisconnectFactory {
         asArray(input).forEach((inputItem) => {
             const { whereArg, disconnectArg } = this.parseDisconnectArgs(inputItem);
             const nodeFilters: Filter[] = [];
+            const edgeFilters: Filter[] = [];
             if (whereArg.node) {
                 if (isConcreteEntity(relationship.target)) {
                     nodeFilters.push(...this.queryASTFactory.filterFactory.createNodeFilters(target, whereArg.node));
@@ -167,8 +171,11 @@ export class DisconnectFactory {
                     );
                 }
             }
+            if (whereArg.edge) {
+                edgeFilters.push(...this.queryASTFactory.filterFactory.createEdgeFilters(relationship, whereArg.edge));
+            }
 
-            disconnect.addFilters(...nodeFilters);
+            disconnect.addFilters(...nodeFilters, ...edgeFilters);
 
             asArray(disconnectArg).forEach((nestedDisconnectInputFields) => {
                 Object.entries(nestedDisconnectInputFields).forEach(([key, value]) => {
@@ -195,23 +202,23 @@ export class DisconnectFactory {
                 });
             });
 
-            // const targetInputEdge = this.getInputEdge(inputItem, relationship);
+            const targetInputEdge = this.getInputEdge(inputItem, relationship);
 
             /* Create the attributes for the edge */
-            // raiseAttributeAmbiguity(Object.keys(targetInputEdge), relationship);
-            // for (const key of Object.keys(targetInputEdge)) {
-            //     const attribute = relationship.attributes.get(key);
-            //     if (attribute) {
-            //         const attachedTo = "relationship";
+            raiseAttributeAmbiguity(Object.keys(targetInputEdge), relationship);
+            for (const key of Object.keys(targetInputEdge)) {
+                const attribute = relationship.attributes.get(key);
+                if (attribute) {
+                    const attachedTo = "relationship";
 
-            //         const paramInputField = new ParamInputField({
-            //             attachedTo,
-            //             attribute,
-            //             inputValue: targetInputEdge[key],
-            //         });
-            //         disconnect.addField(paramInputField, attachedTo);
-            //     }
-            // }
+                    const paramInputField = new ParamInputField({
+                        attachedTo,
+                        attribute,
+                        inputValue: targetInputEdge[key],
+                    });
+                    disconnect.addField(paramInputField, attachedTo);
+                }
+            }
         });
     }
 
@@ -269,7 +276,7 @@ export class DisconnectFactory {
     } {
         const rawWhere = args.where ?? {};
 
-        const whereArg = { node: rawWhere.node, edge: {} };
+        const whereArg = { node: rawWhere.node, edge: rawWhere.edge };
         const disconnectArg = args.disconnect ?? {};
         return { whereArg, disconnectArg };
     }

@@ -23,7 +23,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
 import { asArray } from "../../../../utils/utils";
 import { OperationField } from "../../ast/fields/OperationField";
@@ -153,7 +153,9 @@ export class UpdateFactory {
         //     });
         // });
 
-        this.addEntityAuthorization({ entity: target, context, operation: update });
+        if (this.shouldApplyUpdateAuthorization(input, target, isNested)) {
+            this.addEntityAuthorization({ entity: target, context, operation: update });
+        }
         asArray(input).forEach((inputItem) => {
             const targetInput = this.getInputNode(inputItem, isNested);
             raiseAttributeAmbiguityForUpdate(Object.keys(targetInput), target);
@@ -165,13 +167,15 @@ export class UpdateFactory {
             //     operation: update,
             // });
 
-            const filters = this.queryASTFactory.filterFactory.createConnectionPredicates({
-                rel: relationship,
-                entity: target,
-                where: whereArgs,
-            });
-            // const filters = this.queryASTFactory.filterFactory.createNodeFilters(target, whereArgs.node);
-            update.addFilters(...filters);
+            if (whereArgs) {
+                const filters = this.queryASTFactory.filterFactory.createConnectionPredicates({
+                    rel: relationship,
+                    entity: target,
+                    where: whereArgs,
+                });
+                // const filters = this.queryASTFactory.filterFactory.createNodeFilters(target, whereArgs.node);
+                update.addFilters(...filters);
+            }
             for (const key of Object.keys(targetInput)) {
                 const { fieldName, operator } = parseMutationField(key);
                 const nestedRelationship = target.relationships.get(fieldName);
@@ -244,6 +248,11 @@ export class UpdateFactory {
                     }
 
                     entityAndNodeInput.forEach(([nestedEntity, operations]) => {
+                        let targetOverride: ConcreteEntityAdapter | undefined;
+                        if (isConcreteEntity(nestedEntity)) {
+                            targetOverride = nestedEntity;
+                        }
+
                         operations.forEach((operationInput: Record<string, any>) => {
                             const nestedUpdateInput = operationInput.update;
                             if (nestedUpdateInput) {
@@ -336,7 +345,8 @@ export class UpdateFactory {
                                             nestedRelationship,
                                             nestedDisconnectInputItem,
                                             context,
-                                            callbackBucket
+                                            callbackBucket,
+                                            targetOverride
                                         );
 
                                     const mutationOperationField = new MutationOperationField(
@@ -579,6 +589,32 @@ export class UpdateFactory {
         if (attributeAuthorization) {
             update.addAuthFilters(attributeAuthorization);
         }
+    }
+
+    // returns true only if actual attributes are modified
+    // UPDATE rules should not be applied for (dis)connections
+    private shouldApplyUpdateAuthorization(
+        input: Record<string, any>,
+        entity: ConcreteEntityAdapter,
+        isNested: boolean
+    ): boolean {
+        const actualInput = this.getInputNode(input, isNested);
+        const affectedKeys = Object.keys(actualInput).map((key) => {
+            // old version compatibility (eg id_SET)
+            const { fieldName } = parseMutationField(key);
+            return fieldName;
+        });
+        const areAttributesAffected = affectedKeys.filter((k) => entity.attributes.has(k)).length > 0;
+        // TODO: not sure I agree with this but 'tis the case nonetheless
+        const isRelationshipUpdated =
+            isNested &&
+            affectedKeys
+                .filter((k) => entity.relationships.has(k))
+                .some((k) => {
+                    return asArray(actualInput[k]).filter((inputItem) => inputItem.update);
+                });
+
+        return areAttributesAffected || isRelationshipUpdated;
     }
 
     private getInputNode(inputItem: Record<string, any>, isNested: boolean): Record<string, any> {

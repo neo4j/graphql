@@ -254,7 +254,8 @@ export class OperationsFactory {
         relationship: RelationshipAdapter,
         input: Record<string, any>[],
         context: Neo4jGraphQLTranslationContext,
-        callbackBucket: CallbackBucket
+        callbackBucket: CallbackBucket,
+        targetOverride?: ConcreteEntityAdapter
     ) {
         if (isConcreteEntity(entity)) {
             return this.disconnectFactory.createDisconnectOperation(
@@ -262,7 +263,8 @@ export class OperationsFactory {
                 relationship,
                 input,
                 context,
-                callbackBucket
+                callbackBucket,
+                targetOverride
             );
         } else {
             return this.disconnectFactory.createCompositeDisconnectOperation(
