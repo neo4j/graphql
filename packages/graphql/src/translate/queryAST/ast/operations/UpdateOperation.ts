@@ -261,7 +261,11 @@ export class UpdateOperation extends Operation {
 
     private getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         const authBeforePredicates = this.getAuthFilterPredicate(queryASTContext);
-        return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authBeforePredicates);
+        return Cypher.and(
+            ...this.filters.map((f) => f.getPredicate(queryASTContext)),
+            ...this.inputFields.map((f) => f.getPredicate(queryASTContext)),
+            ...authBeforePredicates
+        );
     }
 
     private getAuthFilterPredicate(context: QueryASTContext): Cypher.Predicate[] {
