@@ -724,7 +724,7 @@ export class UpdateFactory {
                     update: nestedUpdateOperation,
                     callbackBucket,
                     context,
-                    whereArgs: input.where,
+                    whereArgs: input.where ?? {},
                 });
 
                 const mutationOperationField = new MutationOperationField(nestedUpdateOperation, key);
