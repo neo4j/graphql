@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import Cypher, { e } from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
@@ -26,15 +25,15 @@ import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-gra
 import { asArray } from "../../../../utils/utils";
 import type { Filter } from "../../ast/filters/Filter";
 import { MutationOperationField } from "../../ast/input-fields/MutationOperationField";
-import { NodeSelectionPattern } from "../../ast/selection/SelectionPattern/NodeSelectionPattern";
+import { DisconnectOperation } from "../../ast/operations/DisconnectOperation";
+import { CompositeDisconnectOperation } from "../../ast/operations/composite/CompositeDisconnectOperation";
+import { CompositeDisconnectPartial } from "../../ast/operations/composite/CompositeDisconnectPartial";
+import { RelationshipSelectionPattern } from "../../ast/selection/SelectionPattern/RelationshipSelectionPattern";
 import type { CallbackBucket } from "../../utils/callback-bucket";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
+import { isUnionEntity } from "../../utils/is-union-entity";
 import type { QueryASTFactory } from "../QueryASTFactory";
-import { DisconnectOperation } from "../../ast/operations/DisconnectOperation";
-import { CompositeDisconnectPartial } from "../../ast/operations/composite/CompositeDisconnectPartial";
-import { CompositeDisconnectOperation } from "../../ast/operations/composite/CompositeDisconnectOperation";
-import { RelationshipSelectionPattern } from "../../ast/selection/SelectionPattern/RelationshipSelectionPattern";
 
 export class DisconnectFactory {
     private queryASTFactory: QueryASTFactory;
@@ -54,6 +53,7 @@ export class DisconnectFactory {
             target: entity,
             selectionPattern: new RelationshipSelectionPattern({
                 relationship,
+                targetOverride: entity,
             }),
             relationship,
         });
@@ -154,7 +154,7 @@ export class DisconnectFactory {
             const { whereArg, disconnectArg } = this.parseDisconnectArgs(inputItem);
             const nodeFilters: Filter[] = [];
             if (whereArg.node) {
-                if (isConcreteEntity(relationship.target)) {
+                if (isConcreteEntity(relationship.target) || isUnionEntity(relationship.target)) {
                     nodeFilters.push(...this.queryASTFactory.filterFactory.createNodeFilters(target, whereArg.node));
                 } else if (isInterfaceEntity(relationship.target)) {
                     nodeFilters.push(
