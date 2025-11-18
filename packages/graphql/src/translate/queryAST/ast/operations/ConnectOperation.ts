@@ -188,13 +188,6 @@ export class ConnectOperation extends MutationOperation {
         });
 
         const authClausesBefore = this.getAuthorizationClauses(nestedContext);
-        const sourceAuthClausesBefore = this.getSourceAuthorizationClausesBefore(context);
-        const bothAuthClausesBefore: Cypher.Clause[] = [];
-        if (authClausesBefore.length === 0 && sourceAuthClausesBefore.length > 0) {
-            bothAuthClausesBefore.push(new Cypher.With("*"), ...sourceAuthClausesBefore);
-        } else {
-            bothAuthClausesBefore.push(Cypher.utils.concat(...authClausesBefore, ...sourceAuthClausesBefore));
-        }
 
         const authClausesAfter = this.getAuthorizationClausesAfter(nestedContext);
         const sourceAuthClausesAfter = this.getSourceAuthorizationClausesAfter(context);
@@ -205,11 +198,8 @@ export class ConnectOperation extends MutationOperation {
         }
 
         const clauses = Cypher.utils.concat(
-            // required in: packages/graphql/tests/integration/directives/authorization/roles.int.test.ts
-            // without when: AFTER adjustment failing in: packages/graphql/tests/integration/issues/3929.int.test.ts
-
             matchClause,
-            ...bothAuthClausesBefore, // THESE ARE "BEFORE" AUTH
+            ...authClausesBefore,
             ...mutationSubqueries,
             connectClause,
             ...authClauses
@@ -258,21 +248,6 @@ export class ConnectOperation extends MutationOperation {
         const validationsAfter: Cypher.VoidProcedure[] = [];
         for (const authFilter of this.sourceAuthFilters) {
             const validationAfter = authFilter.getValidation(context, "AFTER");
-            if (validationAfter) {
-                validationsAfter.push(validationAfter);
-            }
-        }
-
-        if (validationsAfter.length > 0) {
-            return [new Cypher.With("*"), ...validationsAfter];
-        }
-        return [];
-    }
-
-    private getSourceAuthorizationClausesBefore(context: QueryASTContext): Cypher.Clause[] {
-        const validationsAfter: Cypher.VoidProcedure[] = [];
-        for (const authFilter of this.sourceAuthFilters) {
-            const validationAfter = authFilter.getValidation(context, "BEFORE");
             if (validationAfter) {
                 validationsAfter.push(validationAfter);
             }

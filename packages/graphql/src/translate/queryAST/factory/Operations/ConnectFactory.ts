@@ -34,9 +34,9 @@ import { NodeSelectionPattern } from "../../ast/selection/SelectionPattern/NodeS
 import type { CallbackBucket } from "../../utils/callback-bucket";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
+import { isUnionEntity } from "../../utils/is-union-entity";
 import { raiseAttributeAmbiguity } from "../../utils/raise-attribute-ambiguity";
 import type { QueryASTFactory } from "../QueryASTFactory";
-import { isUnionEntity } from "../../utils/is-union-entity";
 
 export class ConnectFactory {
     private queryASTFactory: QueryASTFactory;
@@ -142,14 +142,13 @@ export class ConnectFactory {
             context,
             operation: connect,
         });
-        // this wasn't in the original code - but should it be?
-        // if (isConcreteEntity(relationship.source)) {
-        //     this.addSourceEntityAuthorization({
-        //         entity: relationship.source,
-        //         context,
-        //         operation: connect,
-        //     });
-        // }
+        if (isConcreteEntity(relationship.source)) {
+            this.addSourceEntityAuthorization({
+                entity: relationship.source,
+                context,
+                operation: connect,
+            });
+        }
 
         asArray(input).forEach((inputItem) => {
             const { whereArg, connectArg } = this.parseConnectArgs(inputItem);
