@@ -601,8 +601,10 @@ export class UpdateFactory {
         });
         const areAttributesAffected = affectedKeys.filter((k) => entity.attributes.has(k)).length > 0;
         // TODO: not sure I agree with this but 'tis the case nonetheless
+        // bind.int.test.ts: auth/bind -> update -> should throw forbidden when updating a nested node with invalid bind
         // In the example below Post authorization UPDATE rules should not be applied (in my opinion)
         // because only the relationship field is in the input (creator)
+        // I would expect only User UPDATE rules to be applied
         // User(update: { posts: { update: { node: { creator: { update: { node: { id_SET: "" } } }}} }}
         const isRelationshipUpdated =
             isNested &&
