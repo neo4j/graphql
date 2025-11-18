@@ -36,6 +36,7 @@ import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
 import { raiseAttributeAmbiguity } from "../../utils/raise-attribute-ambiguity";
 import type { QueryASTFactory } from "../QueryASTFactory";
+import { isUnionEntity } from "../../utils/is-union-entity";
 
 export class ConnectFactory {
     private queryASTFactory: QueryASTFactory;
@@ -154,7 +155,7 @@ export class ConnectFactory {
             const { whereArg, connectArg } = this.parseConnectArgs(inputItem);
             const nodeFilters: Filter[] = [];
             if (whereArg.node) {
-                if (isConcreteEntity(relationship.target)) {
+                if (isConcreteEntity(relationship.target) || isUnionEntity(relationship.target)) {
                     nodeFilters.push(...this.queryASTFactory.filterFactory.createNodeFilters(target, whereArg.node));
                 } else if (isInterfaceEntity(relationship.target)) {
                     nodeFilters.push(
