@@ -141,13 +141,14 @@ export class ConnectFactory {
             context,
             operation: connect,
         });
-        if (isConcreteEntity(relationship.source)) {
-            this.addSourceEntityAuthorization({
-                entity: relationship.source,
-                context,
-                operation: connect,
-            });
-        }
+        // this wasn't in the original code - but should it be?
+        // if (isConcreteEntity(relationship.source)) {
+        //     this.addSourceEntityAuthorization({
+        //         entity: relationship.source,
+        //         context,
+        //         operation: connect,
+        //     });
+        // }
 
         asArray(input).forEach((inputItem) => {
             const { whereArg, connectArg } = this.parseConnectArgs(inputItem);

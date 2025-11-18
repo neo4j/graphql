@@ -81,7 +81,6 @@ describe("https://github.com/neo4j/graphql/issues/4113", () => {
                                 jwt: { OR: [{ roles_INCLUDES: "store-owner" }, { roles_INCLUDES: "employee" }] }
                                 node: { store_SINGLE: { id_EQ: "$jwt.store" } }
                             }
-                            when: AFTER
                         }
                     ]
                 )
@@ -297,7 +296,6 @@ describe("replicates the test for relationship to interface so that multiple ref
                                 jwt: { OR: [{ roles_INCLUDES: "store-owner" }, { roles_INCLUDES: "employee" }] }
                                 node: { store_SINGLE: { id_EQ: "$jwt.store" } }
                             }
-                            when: AFTER
                         }
                     ]
                 )
