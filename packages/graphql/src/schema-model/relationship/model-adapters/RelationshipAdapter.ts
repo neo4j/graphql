@@ -138,12 +138,12 @@ export class RelationshipAdapter {
     public findAttribute(name: string): AttributeAdapter | undefined {
         return this.attributes.get(name);
     }
+
     /**
-     * @param directed should always return "left" or "right", never undirected. Use this for CREATE operations
      * @returns the direction to use in the CypherBuilder
      **/
-    public getCypherDirection(forceDirected = false): "left" | "right" | "undirected" {
-        if (this.queryDirection === "UNDIRECTED" && !forceDirected) {
+    public getCypherDirection(): "left" | "right" | "undirected" {
+        if (this.queryDirection === "UNDIRECTED") {
             return "undirected";
         }
         return this.cypherDirectionFromRelDirection();

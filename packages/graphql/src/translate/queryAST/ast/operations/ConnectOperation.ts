@@ -168,7 +168,7 @@ export class ConnectOperation extends MutationOperation {
 
         const relVar = new Cypher.Relationship();
 
-        const relDirection = this.relationship.getCypherDirection(true);
+        const relDirection = this.relationship.getCypherDirection();
 
         const connectPattern = new Cypher.Pattern(context.target)
             .related(relVar, { direction: relDirection, type: this.relationship.type })
