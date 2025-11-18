@@ -138,10 +138,8 @@ export class RelationshipAdapter {
     public findAttribute(name: string): AttributeAdapter | undefined {
         return this.attributes.get(name);
     }
+
     /**
-     * translation-only
-     *
-     * @param directed the direction asked during the query, for instance "friends(directed: true)"
      * @returns the direction to use in the CypherBuilder
      **/
     public getCypherDirection(): "left" | "right" | "undirected" {
