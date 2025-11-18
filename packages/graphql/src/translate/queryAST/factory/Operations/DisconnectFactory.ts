@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import Cypher, { e } from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { UnionEntityAdapter } from "../../../../schema-model/entity/model-adapters/UnionEntityAdapter";
@@ -26,16 +25,17 @@ import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-gra
 import { asArray } from "../../../../utils/utils";
 import type { Filter } from "../../ast/filters/Filter";
 import { MutationOperationField } from "../../ast/input-fields/MutationOperationField";
+import { ParamInputField } from "../../ast/input-fields/ParamInputField";
+import { DisconnectOperation } from "../../ast/operations/DisconnectOperation";
+import { CompositeDisconnectOperation } from "../../ast/operations/composite/CompositeDisconnectOperation";
+import { CompositeDisconnectPartial } from "../../ast/operations/composite/CompositeDisconnectPartial";
+import { RelationshipSelectionPattern } from "../../ast/selection/SelectionPattern/RelationshipSelectionPattern";
 import type { CallbackBucket } from "../../utils/callback-bucket";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
-import type { QueryASTFactory } from "../QueryASTFactory";
-import { DisconnectOperation } from "../../ast/operations/DisconnectOperation";
-import { CompositeDisconnectPartial } from "../../ast/operations/composite/CompositeDisconnectPartial";
-import { CompositeDisconnectOperation } from "../../ast/operations/composite/CompositeDisconnectOperation";
-import { RelationshipSelectionPattern } from "../../ast/selection/SelectionPattern/RelationshipSelectionPattern";
+import { isUnionEntity } from "../../utils/is-union-entity";
 import { raiseAttributeAmbiguity } from "../../utils/raise-attribute-ambiguity";
-import { ParamInputField } from "../../ast/input-fields/ParamInputField";
+import type { QueryASTFactory } from "../QueryASTFactory";
 
 export class DisconnectFactory {
     private queryASTFactory: QueryASTFactory;
@@ -49,14 +49,13 @@ export class DisconnectFactory {
         relationship: RelationshipAdapter,
         input: Record<string, any>[],
         context: Neo4jGraphQLTranslationContext,
-        callbackBucket: CallbackBucket,
-        targetOverride?: ConcreteEntityAdapter
+        callbackBucket: CallbackBucket
     ): DisconnectOperation {
         const disconnectOP = new DisconnectOperation({
             target: entity,
             selectionPattern: new RelationshipSelectionPattern({
                 relationship,
-                targetOverride,
+                targetOverride: entity,
             }),
             relationship,
         });
@@ -158,7 +157,7 @@ export class DisconnectFactory {
             const nodeFilters: Filter[] = [];
             const edgeFilters: Filter[] = [];
             if (whereArg.node) {
-                if (isConcreteEntity(relationship.target)) {
+                if (isConcreteEntity(relationship.target) || isUnionEntity(relationship.target)) {
                     nodeFilters.push(...this.queryASTFactory.filterFactory.createNodeFilters(target, whereArg.node));
                 } else if (isInterfaceEntity(relationship.target)) {
                     nodeFilters.push(

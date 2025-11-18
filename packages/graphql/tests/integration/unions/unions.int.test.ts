@@ -715,10 +715,12 @@ describe("unions", () => {
         const gqlResult = await testHelper.executeGraphQL(mutation);
 
         expect(gqlResult.errors).toBeFalsy();
-        expect((gqlResult.data as any)[MovieType.operations.update][MovieType.plural][0]).toMatchObject({
-            title: movieTitle,
-            search: [],
+        expect(gqlResult.data).toEqual({
+            [MovieType.operations.update]: {
+                [MovieType.plural]: [{ title: movieTitle, search: [] }],
+            },
         });
+        await testHelper.expectRelationship(MovieType, GenreType, "SEARCH").toNotExist();
     });
 
     describe("Unions with auth", () => {

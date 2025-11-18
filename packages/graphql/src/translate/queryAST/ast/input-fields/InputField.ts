@@ -42,6 +42,7 @@ export abstract class InputField extends QueryASTNode {
     public getPredicate(_queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         return undefined;
     }
+
     protected getTarget(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.Node | Cypher.Relationship {
         const target = this.attachedTo === "node" ? queryASTContext.target : queryASTContext.relationship;
         if (!target) {

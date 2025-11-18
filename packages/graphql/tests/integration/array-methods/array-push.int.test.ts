@@ -129,18 +129,21 @@ describe("array-push", () => {
             inputType: "Duration",
             inputValue: `"P2MT10S"`,
             expectedOutputValue: ["P2MT10S"],
+            initialArray: [],
         },
         {
             description: "a single Duration element in an array",
             inputType: "Duration",
             inputValue: `["P2MT10S"]`,
             expectedOutputValue: ["P2MT10S"],
+            initialArray: [],
         },
         {
             description: "multiple Duration elements",
             inputType: "Duration",
             inputValue: `["P2MT10S", "P2MT10S"]`,
             expectedOutputValue: ["P2MT10S", "P2MT10S"],
+            initialArray: [],
         },
         {
             description: "a single Date element",

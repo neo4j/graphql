@@ -35,8 +35,12 @@ export class PopInputField extends ParamInputField {
         super({ attribute, attachedTo, inputValue });
     }
 
-    public getChildren() {
-        return [];
+    public getPredicate(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.Predicate | undefined {
+        const expr = this.getLeftExpression(queryASTContext);
+        return Cypher.apoc.util.validatePredicate(
+            Cypher.isNull(expr),
+            `Property ${this.attribute.name} cannot be NULL`
+        );
     }
 
     protected getRightExpression(
