@@ -168,7 +168,7 @@ export class ConnectOperation extends MutationOperation {
 
         const relVar = new Cypher.Relationship();
 
-        const relDirection = this.relationship.getCypherDirection();
+        const relDirection = this.relationship.cypherDirectionFromRelDirection();
 
         const connectPattern = new Cypher.Pattern(context.target)
             .related(relVar, { direction: relDirection, type: this.relationship.type })
@@ -205,6 +205,9 @@ export class ConnectOperation extends MutationOperation {
         }
 
         const clauses = Cypher.utils.concat(
+            // required in: packages/graphql/tests/integration/directives/authorization/roles.int.test.ts
+            // without when: AFTER adjustment failing in: packages/graphql/tests/integration/issues/3929.int.test.ts
+
             matchClause,
             ...bothAuthClausesBefore, // THESE ARE "BEFORE" AUTH
             ...mutationSubqueries,

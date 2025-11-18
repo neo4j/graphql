@@ -33,7 +33,6 @@ import type { RelationshipAdapter } from "../../../../schema-model/relationship/
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { Filter } from "../filters/Filter";
 import { ParamInputField } from "../input-fields/ParamInputField";
-
 /**
  * This is currently just a dummy tree node,
  * The whole mutation part is still implemented in the old way, the current scope of this node is just to contains the nested fields.
@@ -126,10 +125,13 @@ export class UpdateOperation extends Operation {
             .flatMap((input) => {
                 const subqueries = input.getSubqueries(nestedContext);
                 const authSubqueries = input.getAuthorizationSubqueries(nestedContext);
-                if (authSubqueries.length > 0 || subqueries.length > 0) {
-                    return Cypher.utils.concat(...subqueries, ...authSubqueries);
+                if (!authSubqueries.length && !subqueries.length) {
+                    return undefined;
                 }
-                return undefined;
+                if (authSubqueries.length > 0) {
+                    return Cypher.utils.concat(...subqueries, new Cypher.With("*"), ...authSubqueries);
+                }
+                return Cypher.utils.concat(...subqueries);
             })
             .filter((s) => s !== undefined);
 

@@ -53,7 +53,7 @@ describe("https://github.com/neo4j/graphql/issues/3929", () => {
                 creator: [${User}!]! @relationship(type: "CREATOR_OF", direction: IN, nestedOperations: [CONNECT])
             }
 
-            type ${Person} @authorization(validate: [{ where: { node: { creator_SINGLE: { id_EQ: "$jwt.uid" }}}}]) @node {
+            type ${Person} @authorization(validate: [{  where: { node: { creator_SINGLE: { id_EQ: "$jwt.uid" }}}}]) @node {
                 id: ID! @id
                 name: String!
                 creator: [${User}!]! @relationship(type: "CREATOR_OF", direction: IN)

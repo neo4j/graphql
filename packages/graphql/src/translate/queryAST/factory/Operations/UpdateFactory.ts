@@ -154,7 +154,9 @@ export class UpdateFactory {
             });
         }
 
-        this.addEntityAuthorization({ entity: target, context, operation: update });
+        if (this.shouldApplyUpdateAuthorization(input, target, isNested)) {
+            this.addEntityAuthorization({ entity: target, context, operation: update });
+        }
         asArray(input).forEach((inputItem) => {
             const targetInput = this.getInputNode(inputItem, isNested);
             raiseAttributeAmbiguityForUpdate(Object.keys(targetInput), target);
@@ -166,13 +168,15 @@ export class UpdateFactory {
             //     operation: update,
             // });
 
-            const filters = this.queryASTFactory.filterFactory.createConnectionPredicates({
-                rel: relationship,
-                entity: target,
-                where: whereArgs,
-            });
-            // const filters = this.queryASTFactory.filterFactory.createNodeFilters(target, whereArgs.node);
-            update.addFilters(...filters);
+            if (whereArgs) {
+                const filters = this.queryASTFactory.filterFactory.createConnectionPredicates({
+                    rel: relationship,
+                    entity: target,
+                    where: whereArgs,
+                });
+                // const filters = this.queryASTFactory.filterFactory.createNodeFilters(target, whereArgs.node);
+                update.addFilters(...filters);
+            }
             for (const key of Object.keys(targetInput)) {
                 const { fieldName, operator } = parseMutationField(key);
                 const nestedRelationship = target.relationships.get(fieldName);
@@ -580,6 +584,35 @@ export class UpdateFactory {
         if (attributeAuthorization) {
             update.addAuthFilters(attributeAuthorization);
         }
+    }
+
+    // returns true only if actual attributes are modified
+    // UPDATE rules should not be applied for (dis)connections
+    private shouldApplyUpdateAuthorization(
+        input: Record<string, any>,
+        entity: ConcreteEntityAdapter,
+        isNested: boolean
+    ): boolean {
+        const actualInput = this.getInputNode(input, isNested);
+        const affectedKeys = Object.keys(actualInput).map((key) => {
+            // old version compatibility (eg id_SET)
+            const { fieldName } = parseMutationField(key);
+            return fieldName;
+        });
+        const areAttributesAffected = affectedKeys.filter((k) => entity.attributes.has(k)).length > 0;
+        // TODO: not sure I agree with this but 'tis the case nonetheless
+        // In the example below Post authorization UPDATE rules should not be applied (in my opinion)
+        // because only the relationship field is in the input (creator)
+        // User(update: { posts: { update: { node: { creator: { update: { node: { id_SET: "" } } }}} }}
+        const isRelationshipUpdated =
+            isNested &&
+            affectedKeys
+                .filter((k) => entity.relationships.has(k))
+                .some((k) => {
+                    return asArray(actualInput[k]).filter((inputItem) => inputItem.update);
+                });
+
+        return areAttributesAffected || isRelationshipUpdated;
     }
 
     private getInputNode(inputItem: Record<string, any>, isNested: boolean): Record<string, any> {
