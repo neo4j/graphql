@@ -208,4 +208,296 @@ describe("cypher directive filtering", () => {
             }"
         `);
     });
+
+    test("String cypher field: case insensitive eq", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie @node {
+                title: String
+                nickname: String
+                    @cypher(
+                        statement: """
+                        RETURN "Toyota" as s
+                        """
+                        columnName: "s"
+                    )
+            }
+        `;
+
+        const query = /* GraphQL */ `
+            query {
+                movies(where: { nickname: { caseInsensitive: { eq: "toyota" } } }) {
+                    title
+                }
+            }
+        `;
+
+        const neoSchema: Neo4jGraphQL = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                filters: {
+                    String: {
+                        CASE_INSENSITIVE: true,
+                    },
+                },
+            },
+        });
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            MATCH (this:Movie)
+            CALL (this) {
+                CALL (this) {
+                    WITH this AS this
+                    RETURN \\"Toyota\\" as s
+                }
+                WITH s AS this0
+                RETURN this0 AS var1
+            }
+            WITH *
+            WHERE toLower(var1) = toLower($param0)
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"toyota\\"
+            }"
+        `);
+    });
+
+    test("String cypher field: case insensitive contains", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie @node {
+                title: String
+                nickname: String
+                    @cypher(
+                        statement: """
+                        RETURN "Toyota" as s
+                        """
+                        columnName: "s"
+                    )
+            }
+        `;
+
+        const query = /* GraphQL */ `
+            query {
+                movies(where: { nickname: { caseInsensitive: { contains: "YO" } } }) {
+                    title
+                }
+            }
+        `;
+
+        const neoSchema: Neo4jGraphQL = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                filters: {
+                    String: {
+                        CASE_INSENSITIVE: true,
+                    },
+                },
+            },
+        });
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            MATCH (this:Movie)
+            CALL (this) {
+                CALL (this) {
+                    WITH this AS this
+                    RETURN \\"Toyota\\" as s
+                }
+                WITH s AS this0
+                RETURN this0 AS var1
+            }
+            WITH *
+            WHERE toLower(var1) CONTAINS toLower($param0)
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"YO\\"
+            }"
+        `);
+    });
+
+    test("String cypher field: case insensitive startsWith", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie @node {
+                title: String
+                nickname: String
+                    @cypher(
+                        statement: """
+                        RETURN "Toyota" as s
+                        """
+                        columnName: "s"
+                    )
+            }
+        `;
+
+        const query = /* GraphQL */ `
+            query {
+                movies(where: { nickname: { caseInsensitive: { startsWith: "to" } } }) {
+                    title
+                }
+            }
+        `;
+
+        const neoSchema: Neo4jGraphQL = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                filters: {
+                    String: {
+                        CASE_INSENSITIVE: true,
+                    },
+                },
+            },
+        });
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            MATCH (this:Movie)
+            CALL (this) {
+                CALL (this) {
+                    WITH this AS this
+                    RETURN \\"Toyota\\" as s
+                }
+                WITH s AS this0
+                RETURN this0 AS var1
+            }
+            WITH *
+            WHERE toLower(var1) STARTS WITH toLower($param0)
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"to\\"
+            }"
+        `);
+    });
+
+    test("String cypher field: case insensitive endsWith", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie @node {
+                title: String
+                nickname: String
+                    @cypher(
+                        statement: """
+                        RETURN "Toyota" as s
+                        """
+                        columnName: "s"
+                    )
+            }
+        `;
+
+        const query = /* GraphQL */ `
+            query {
+                movies(where: { nickname: { caseInsensitive: { endsWith: "tA" } } }) {
+                    title
+                }
+            }
+        `;
+
+        const neoSchema: Neo4jGraphQL = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                filters: {
+                    String: {
+                        CASE_INSENSITIVE: true,
+                    },
+                },
+            },
+        });
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            MATCH (this:Movie)
+            CALL (this) {
+                CALL (this) {
+                    WITH this AS this
+                    RETURN \\"Toyota\\" as s
+                }
+                WITH s AS this0
+                RETURN this0 AS var1
+            }
+            WITH *
+            WHERE toLower(var1) ENDS WITH toLower($param0)
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"tA\\"
+            }"
+        `);
+    });
+
+    test("String cypher field: case insensitive in", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Movie @node {
+                title: String
+                nickname: String
+                    @cypher(
+                        statement: """
+                        RETURN "Toyota" as s
+                        """
+                        columnName: "s"
+                    )
+            }
+        `;
+
+        const query = /* GraphQL */ `
+            query {
+                movies(where: { nickname: { caseInsensitive: { in: ["toyota"] } } }) {
+                    title
+                }
+            }
+        `;
+
+        const neoSchema: Neo4jGraphQL = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                filters: {
+                    String: {
+                        CASE_INSENSITIVE: true,
+                    },
+                },
+            },
+        });
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            MATCH (this:Movie)
+            CALL (this) {
+                CALL (this) {
+                    WITH this AS this
+                    RETURN \\"Toyota\\" as s
+                }
+                WITH s AS this0
+                RETURN this0 AS var1
+            }
+            WITH *
+            WHERE toLower(var1) IN [var2 IN $param0 | toLower(var2)]
+            RETURN this { .title } AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": [
+                    \\"toyota\\"
+                ]
+            }"
+        `);
+    });
 });

@@ -106,15 +106,15 @@ describe("cypher directive filtering - Scalar", () => {
         },
         {
             title: "String cypher field: ENDS_WITH",
-            filter: `special_word:{ endsWith: "est"}`,
+            filter: `special_word: { endsWith: "est"}`,
         },
         {
             title: "String cypher field: STARTS_WITH",
-            filter: `special_word:{ startsWith: "tes"}`,
+            filter: `special_word: { startsWith: "tes"}`,
         },
         {
             title: "String cypher field: IN",
-            filter: `special_word:{ in: ["test", "test2"]}`,
+            filter: `special_word: { in: ["test", "test2"]}`,
         },
     ] as const)("$title", async ({ filter }) => {
         const typeDefs = /* GraphQL */ `
@@ -280,6 +280,73 @@ describe("cypher directive filtering - Scalar", () => {
             [CustomType.plural]: [
                 {
                     title: "test",
+                },
+            ],
+        });
+    });
+
+    test.each([
+        {
+            title: "String cypher field: caseInsensitive eq",
+            filter: `special_word: { caseInsensitive: { eq: "toyota" } }`,
+        },
+        {
+            title: "String cypher field: caseInsensitive contains",
+            filter: `special_word: { caseInsensitive: { contains: "YO" } }`,
+        },
+        {
+            title: "String cypher field: caseInsensitive startsWith",
+            filter: `special_word: { caseInsensitive: { startsWith: "to" } }`,
+        },
+        {
+            title: "String cypher field: caseInsensitive endsWith",
+            filter: `special_word: { caseInsensitive: { endsWith: "tA" } }`,
+        },
+        {
+            title: "String cypher field: caseInsensitive in",
+            filter: `special_word: { caseInsensitive: { in: ["toyota"] } }`,
+        },
+    ] as const)("$title", async ({ filter }) => {
+        const typeDefs = /* GraphQL */ `
+            type ${CustomType} @node {
+                title: String
+                special_word: String
+                    @cypher(
+                        statement: """
+                        RETURN "Toyota" as s
+                        """
+                        columnName: "s"
+                    )
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                filters: {
+                    String: {
+                        CASE_INSENSITIVE: true,
+                    },
+                },
+            },
+        });
+        await testHelper.executeCypher(`CREATE (m:${CustomType} { title: "Toyota" })`, {});
+
+        const query = /* GraphQL */ `
+            query {
+                ${CustomType.plural}(where: { ${filter} }) {
+                    title
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toBeFalsy();
+        expect(gqlResult?.data).toEqual({
+            [CustomType.plural]: [
+                {
+                    title: "Toyota",
                 },
             ],
         });
