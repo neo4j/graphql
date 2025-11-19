@@ -19,9 +19,9 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { filterTruthy } from "../../../../utils/utils";
+import type { OperationField } from "../fields/OperationField";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
-import type { OperationField } from "../fields/OperationField";
 import { Operation, type OperationTranspileResult } from "./operations";
 import type { UpdateOperation } from "./UpdateOperation";
 
@@ -56,16 +56,11 @@ export class TopLevelUpdateMutationOperation extends Operation {
             throw new Error("No parent node found!");
         }
         const subqueries = this.updateOperations.map((field) => {
-            const { clauses, projectionExpr } = field.transpile(context);
+            const { clauses } = field.transpile(context);
 
-            return Cypher.utils.concat(
-                ...clauses,
-                ...field.getAuthorizationSubqueries(context)
-                // new Cypher.Return([projectionExpr, context.returnVariable])
-            );
+            return Cypher.utils.concat(...clauses, ...field.getAuthorizationSubqueries(context));
         });
 
-        // const unionStatement = new Cypher.Call(new Cypher.Union(...subqueries));
         const projection: Cypher.Clause = this.getProjectionClause(context);
         return {
             projectionExpr: context.returnVariable,
@@ -80,22 +75,7 @@ export class TopLevelUpdateMutationOperation extends Operation {
             return new Cypher.Finish();
         }
 
-        // const subqueries = projectionOperation.getSubqueries(context);
-        // .map((sq) => new Cypher.Call(sq, [context.target]));
         const result = projectionOperation.operation.transpile(context);
-
-        // const projectionField = Object.values(projectionOperation.getProjectionField())[0];
-        // if (!projectionField) {
-        //     throw new Error("Fatal Error: Invalid projectionField, please contact support");
-        // }
-
-        // const returnClause = new Cypher.Return([projectionField, "data"]);
-
-        // let extraWith: Cypher.With | undefined;
-        // if (subqueries.length > 0) {
-        //     extraWith = new Cypher.With(context.target);
-        // }
-        // return Cypher.utils.concat(extraWith, ...subqueries);
 
         const extraWith = new Cypher.With(context.target);
         return Cypher.utils.concat(extraWith, ...result.clauses);
