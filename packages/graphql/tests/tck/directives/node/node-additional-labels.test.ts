@@ -204,16 +204,18 @@ describe("Node directive with additionalLabels", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Film:Multimedia)
+            WITH *
             WHERE this.id = $param0
-            SET this.id = $this_update_id_SET
-            RETURN collect(DISTINCT this { .id }) AS data"
+            SET
+                this.id = $param1
+            WITH this
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"this_update_id_SET\\": \\"2\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": \\"2\\"
             }"
         `);
     });

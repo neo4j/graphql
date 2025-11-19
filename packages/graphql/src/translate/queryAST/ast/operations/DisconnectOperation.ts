@@ -170,7 +170,7 @@ export class DisconnectOperation extends MutationOperation {
             })
             .map((sq) => new Cypher.Call(sq, [disconnectContext.target]));
 
-        const deleteClause = new Cypher.With(nestedContext.relationship!).delete(nestedContext.relationship!);
+        const deleteClause = new Cypher.With("*").delete(nestedContext.relationship!);
 
         const clauses = Cypher.utils.concat(
             matchClause,

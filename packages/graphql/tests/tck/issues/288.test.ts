@@ -98,16 +98,18 @@ describe("#288", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:USER)
+            WITH *
             WHERE this.USERID = $param0
-            SET this.COMPANYID = $this_update_COMPANYID_SET
-            RETURN collect(DISTINCT this { .USERID, .COMPANYID }) AS data"
+            SET
+                this.COMPANYID = $param1
+            WITH this
+            RETURN this { .USERID, .COMPANYID } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"userid\\",
-                \\"this_update_COMPANYID_SET\\": \\"companyid2\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": \\"companyid2\\"
             }"
         `);
     });

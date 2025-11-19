@@ -67,78 +67,34 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
+            WITH *
             WHERE this.name = $param0
-            WITH this
-            CALL(*) {
-            WITH this
-            OPTIONAL MATCH (this)-[this_activeOrganization0_disconnect0_rel:ACTIVELY_MANAGING]->(this_activeOrganization0_disconnect0:Organization)
-            WHERE NOT (this_activeOrganization0_disconnect0._id = $updateUsers_args_update_activeOrganization0_disconnect0_where_Organization_this_activeOrganization0_disconnect0param0)
-            CALL (this_activeOrganization0_disconnect0, this_activeOrganization0_disconnect0_rel, this) {
-            	WITH collect(this_activeOrganization0_disconnect0) as this_activeOrganization0_disconnect0_x, this_activeOrganization0_disconnect0_rel, this
-            	UNWIND this_activeOrganization0_disconnect0_x as x
-            	DELETE this_activeOrganization0_disconnect0_rel
-            }
-            RETURN count(*) AS disconnect_this_activeOrganization0_disconnect_Organization
+            WITH *
+            CALL (*) {
+                CALL (this) {
+                    MATCH (this0:Organization)
+                    WHERE this0._id = $param1
+                    CREATE (this)-[this1:ACTIVELY_MANAGING]->(this0)
+                }
             }
             WITH *
-            CALL(*) {
-            	WITH this
-            	OPTIONAL MATCH (this_activeOrganization0_connect0_node:Organization)
-            	WHERE this_activeOrganization0_connect0_node._id = $this_activeOrganization0_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this_activeOrganization0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_activeOrganization0_connect0_node
-            			CREATE (this)-[:ACTIVELY_MANAGING]->(this_activeOrganization0_connect0_node)
-            		}
-            	}
-            WITH this, this_activeOrganization0_connect0_node
-            	RETURN count(*) AS connect_this_activeOrganization0_connect_Organization0
+            CALL (*) {
+                CALL (this) {
+                    OPTIONAL MATCH (this)-[this2:ACTIVELY_MANAGING]->(this3:Organization)
+                    WHERE NOT (this3._id = $param2)
+                    WITH *
+                    DELETE this2
+                }
             }
-            RETURN collect(DISTINCT this { id: this._id }) AS data"
+            WITH this
+            RETURN this { id: this._id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Luke Skywalker\\",
-                \\"updateUsers_args_update_activeOrganization0_disconnect0_where_Organization_this_activeOrganization0_disconnect0param0\\": \\"test-id\\",
-                \\"this_activeOrganization0_connect0_node_param0\\": \\"test-id\\",
-                \\"updateUsers\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"activeOrganization\\": [
-                                {
-                                    \\"connect\\": [
-                                        {
-                                            \\"where\\": {
-                                                \\"node\\": {
-                                                    \\"id\\": {
-                                                        \\"eq\\": \\"test-id\\"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ],
-                                    \\"disconnect\\": [
-                                        {
-                                            \\"where\\": {
-                                                \\"node\\": {
-                                                    \\"NOT\\": {
-                                                        \\"id\\": {
-                                                            \\"eq\\": \\"test-id\\"
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": \\"test-id\\",
+                \\"param2\\": \\"test-id\\"
             }"
         `);
     });

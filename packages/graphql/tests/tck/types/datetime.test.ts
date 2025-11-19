@@ -115,14 +115,16 @@ describe("Cypher DateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            SET this.datetime = datetime($this_update_datetime_SET)
-            RETURN collect(DISTINCT this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }) AS data"
+            WITH *
+            SET
+                this.datetime = datetime($param0)
+            WITH this
+            RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_datetime_SET\\": \\"1970-01-01T00:00:00.000Z\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"1970-01-01T00:00:00.000Z\\"
             }"
         `);
     });

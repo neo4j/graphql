@@ -155,19 +155,21 @@ describe("Cypher LocalTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            SET this.time = $this_update_time_SET
-            RETURN collect(DISTINCT this { .id, .time }) AS data"
+            WITH *
+            SET
+                this.time = $param0
+            WITH this
+            RETURN this { .id, .time } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_time_SET\\": {
+                \\"param0\\": {
                     \\"hour\\": 9,
                     \\"minute\\": 24,
                     \\"second\\": 40,
                     \\"nanosecond\\": 845512000
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });

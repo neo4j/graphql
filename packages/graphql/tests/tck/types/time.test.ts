@@ -140,14 +140,16 @@ describe("Cypher Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            SET this.time = time($this_update_time_SET)
-            RETURN collect(DISTINCT this { .id, .time }) AS data"
+            WITH *
+            SET
+                this.time = time($param0)
+            WITH this
+            RETURN this { .id, .time } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_time_SET\\": \\"09:24:40.845512+06:30\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"09:24:40.845512+06:30\\"
             }"
         `);
     });
