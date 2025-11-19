@@ -1075,7 +1075,7 @@ describe("Cypher Auth Where", () => {
                         MATCH (this1)<-[:HAS_POST]-(this2:User)
                         WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
                     })
-                    WITH this0
+                    WITH *
                     DELETE this0
                 }
             }
@@ -1126,7 +1126,7 @@ describe("Cypher Auth Where", () => {
                         MATCH (this1)<-[:HAS_POST]-(this2:User)
                         WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
                     }) AND this1.id = $param2)
-                    WITH this0
+                    WITH *
                     DELETE this0
                 }
             }

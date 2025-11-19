@@ -202,18 +202,18 @@ describe("Nested Unions", () => {
                     CALL (this1) {
                         CALL (this1) {
                             OPTIONAL MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
-                            WITH this2
+                            WITH *
                             DELETE this2
                         }
                     }
                     CALL (this1) {
                         CALL (this1) {
                             OPTIONAL MATCH (this1)-[this4:ACTED_IN]->(this5:Series)
-                            WITH this4
+                            WITH *
                             DELETE this4
                         }
                     }
-                    WITH this0
+                    WITH *
                     DELETE this0
                 }
             }

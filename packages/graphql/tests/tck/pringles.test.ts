@@ -261,7 +261,7 @@ describe("Cypher Create Pringles", () => {
                     CALL (this1) {
                         OPTIONAL MATCH (this1)-[this4:OF_COLOR]->(this5:Color)
                         WHERE this5.name = $param4
-                        WITH this4
+                        WITH *
                         DELETE this4
                     }
                 }

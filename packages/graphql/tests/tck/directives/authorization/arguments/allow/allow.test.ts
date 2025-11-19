@@ -673,7 +673,7 @@ describe("Cypher Auth Allow", () => {
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                     WITH *
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this0
+                    WITH *
                     DELETE this0
                 }
             }
@@ -749,11 +749,11 @@ describe("Cypher Auth Allow", () => {
                                 MATCH (this1)<-[:HAS_POST]-(this6:User)
                                 WHERE ($jwt.sub IS NOT NULL AND this6.id = $jwt.sub)
                             }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                            WITH this4
+                            WITH *
                             DELETE this4
                         }
                     }
-                    WITH this0
+                    WITH *
                     DELETE this0
                 }
             }

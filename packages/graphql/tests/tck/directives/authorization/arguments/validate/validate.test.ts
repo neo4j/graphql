@@ -422,7 +422,7 @@ describe("Cypher Auth Allow", () => {
                 CALL (this) {
                     OPTIONAL MATCH (this)<-[this0:HAS_POST]-(this1:User)
                     WHERE this1.id = $param1
-                    WITH this0
+                    WITH *
                     DELETE this0
                     WITH *
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])

@@ -386,7 +386,7 @@ describe("Label in Node directive", () => {
                 CALL (this) {
                     OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
                     WHERE this1.name = $param1
-                    WITH this0
+                    WITH *
                     DELETE this0
                 }
             }

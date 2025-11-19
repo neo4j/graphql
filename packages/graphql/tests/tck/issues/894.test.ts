@@ -82,7 +82,7 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
                 CALL (this) {
                     OPTIONAL MATCH (this)-[this2:ACTIVELY_MANAGING]->(this3:Organization)
                     WHERE NOT (this3._id = $param2)
-                    WITH this2
+                    WITH *
                     DELETE this2
                 }
             }

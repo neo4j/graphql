@@ -326,7 +326,7 @@ describe("Cypher Update", () => {
                 CALL (this) {
                     OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                     WHERE this1.name = $param1
-                    WITH this0
+                    WITH *
                     DELETE this0
                 }
             }
@@ -375,7 +375,7 @@ describe("Cypher Update", () => {
                 CALL (this) {
                     OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
                     WHERE this1.name = $param1
-                    WITH this0
+                    WITH *
                     DELETE this0
                 }
             }
@@ -384,7 +384,7 @@ describe("Cypher Update", () => {
                 CALL (this) {
                     OPTIONAL MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
                     WHERE this3.name = $param2
-                    WITH this2
+                    WITH *
                     DELETE this2
                 }
             }

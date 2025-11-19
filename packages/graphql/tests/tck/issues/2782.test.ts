@@ -114,15 +114,15 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
                                 CALL (this3) {
                                     OPTIONAL MATCH (this3)-[this4:OF_COLOR]->(this5:Color)
                                     WHERE this5.id = $param4
-                                    WITH this4
+                                    WITH *
                                     DELETE this4
                                 }
                             }
-                            WITH this2
+                            WITH *
                             DELETE this2
                         }
                     }
-                    WITH this0
+                    WITH *
                     DELETE this0
                 }
             }
@@ -135,11 +135,11 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
                         CALL (this7) {
                             OPTIONAL MATCH (this7)-[this8:OF_COLOR]->(this9:Color)
                             WHERE this9.name = $param6
-                            WITH this8
+                            WITH *
                             DELETE this8
                         }
                     }
-                    WITH this6
+                    WITH *
                     DELETE this6
                 }
             }
@@ -152,11 +152,11 @@ describe("https://github.com/neo4j/graphql/issues/2782", () => {
                         CALL (this11) {
                             OPTIONAL MATCH (this11)-[this12:OF_COLOR]->(this13:Color)
                             WHERE this13.name = $param8
-                            WITH this12
+                            WITH *
                             DELETE this12
                         }
                     }
-                    WITH this10
+                    WITH *
                     DELETE this10
                 }
             }

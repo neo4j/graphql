@@ -438,7 +438,7 @@ describe("Cypher Union", () => {
                 CALL (this) {
                     OPTIONAL MATCH (this)-[this0:SEARCH]->(this1:Genre)
                     WHERE this1.name = $param1
-                    WITH this0
+                    WITH *
                     DELETE this0
                 }
             }

@@ -918,7 +918,7 @@ describe("Cypher Auth Where", () => {
             CALL (*) {
                 CALL (this) {
                     OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                    WITH this0
+                    WITH *
                     DELETE this0
                 }
                 CALL (this) {
@@ -927,7 +927,7 @@ describe("Cypher Auth Where", () => {
                         MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
                         WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
                     })
-                    WITH this2
+                    WITH *
                     DELETE this2
                 }
             }
@@ -973,7 +973,7 @@ describe("Cypher Auth Where", () => {
                 CALL (this) {
                     OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
                     WHERE this1.id = $param0
-                    WITH this0
+                    WITH *
                     DELETE this0
                 }
                 CALL (this) {
@@ -982,7 +982,7 @@ describe("Cypher Auth Where", () => {
                         MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
                         WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
                     }) AND this3.id = $param3)
-                    WITH this2
+                    WITH *
                     DELETE this2
                 }
             }

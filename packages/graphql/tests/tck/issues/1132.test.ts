@@ -140,7 +140,7 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
                     WHERE this1.id = $param0
                     WITH *
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this0
+                    WITH *
                     DELETE this0
                 }
             }

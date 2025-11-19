@@ -135,7 +135,7 @@ describe("queryDirection in relationships", () => {
                     CALL (this) {
                         OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
                         WHERE this2.name = $param1
-                        WITH this1
+                        WITH *
                         DELETE this1
                     }
                 }
@@ -431,7 +431,7 @@ describe("queryDirection in relationships", () => {
                     CALL (this) {
                         OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
                         WHERE this2.name = $param1
-                        WITH this1
+                        WITH *
                         DELETE this1
                     }
                 }

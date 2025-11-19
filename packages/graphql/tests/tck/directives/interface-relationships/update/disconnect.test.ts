@@ -82,13 +82,13 @@ describe("Interface Relationships - Update disconnect", () => {
                 CALL (this) {
                     OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
                     WHERE this1.title STARTS WITH $param0
-                    WITH this0
+                    WITH *
                     DELETE this0
                 }
                 CALL (this) {
                     OPTIONAL MATCH (this)-[this2:ACTED_IN]->(this3:Series)
                     WHERE this3.title STARTS WITH $param1
-                    WITH this2
+                    WITH *
                     DELETE this2
                 }
             }
@@ -139,11 +139,11 @@ describe("Interface Relationships - Update disconnect", () => {
                         CALL (this1) {
                             OPTIONAL MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
                             WHERE this3.name = $param1
-                            WITH this2
+                            WITH *
                             DELETE this2
                         }
                     }
-                    WITH this0
+                    WITH *
                     DELETE this0
                 }
                 CALL (this) {
@@ -153,11 +153,11 @@ describe("Interface Relationships - Update disconnect", () => {
                         CALL (this5) {
                             OPTIONAL MATCH (this5)<-[this6:ACTED_IN]-(this7:Actor)
                             WHERE this7.name = $param3
-                            WITH this6
+                            WITH *
                             DELETE this6
                         }
                     }
-                    WITH this4
+                    WITH *
                     DELETE this4
                 }
             }
