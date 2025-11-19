@@ -2728,7 +2728,7 @@ __metadata:
     "@types/node": "npm:20.19.23"
     amqplib: "npm:0.10.9"
     body-parser: "npm:^2.0.0"
-    camelcase: "npm:6.3.0"
+    camelcase: "npm:9.0.0"
     cors: "npm:^2.8.5"
     graphql-ws: "npm:5.16.2"
     jest: "npm:29.7.0"
@@ -2755,7 +2755,7 @@ __metadata:
     "@neo4j/graphql": "npm:^5.12.10"
     "@types/jest": "npm:29.5.14"
     "@types/node": "npm:20.19.23"
-    camelcase: "npm:6.3.0"
+    camelcase: "npm:9.0.0"
     jest: "npm:29.7.0"
     jsonwebtoken: "npm:9.0.2"
     pluralize: "npm:8.0.0"
@@ -2799,7 +2799,7 @@ __metadata:
     "@types/semver": "npm:7.7.1"
     "@types/supertest": "npm:6.0.3"
     "@types/ws": "npm:8.18.1"
-    camelcase: "npm:^6.3.0"
+    camelcase: "npm:^9.0.0"
     debug: "npm:^4.3.4"
     dot-prop: "npm:^6.0.1"
     graphql-compose: "npm:^9.0.8"
@@ -2842,7 +2842,7 @@ __metadata:
     "@types/jest": "npm:29.5.14"
     "@types/node": "npm:20.19.23"
     "@types/pluralize": "npm:0.0.33"
-    camelcase: "npm:^6.3.0"
+    camelcase: "npm:^9.0.0"
     debug: "npm:^4.3.4"
     jest: "npm:29.7.0"
     pluralize: "npm:^8.0.0"
@@ -7028,10 +7028,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"camelcase@npm:6.3.0, camelcase@npm:^6.2.0, camelcase@npm:^6.3.0":
-  version: 6.3.0
-  resolution: "camelcase@npm:6.3.0"
-  checksum: 10c0/0d701658219bd3116d12da3eab31acddb3f9440790c0792e0d398f0a520a6a4058018e546862b6fba89d7ae990efaeb97da71e1913e9ebf5a8b5621a3d55c710
+"camelcase@npm:9.0.0, camelcase@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "camelcase@npm:9.0.0"
+  checksum: 10c0/7171e1540b9b227cab9d59b7afa05174d14c10268171c18bdf2240eb1485ad6851592f1253ddc291f7ae34caad42c18206d339538965c67fb17fc995c0bb509b
   languageName: node
   linkType: hard
 
@@ -7039,6 +7039,13 @@ __metadata:
   version: 5.3.1
   resolution: "camelcase@npm:5.3.1"
   checksum: 10c0/92ff9b443bfe8abb15f2b1513ca182d16126359ad4f955ebc83dc4ddcc4ef3fdd2c078bc223f2673dc223488e75c99b16cc4d056624374b799e6a1555cf61b23
+  languageName: node
+  linkType: hard
+
+"camelcase@npm:^6.2.0":
+  version: 6.3.0
+  resolution: "camelcase@npm:6.3.0"
+  checksum: 10c0/0d701658219bd3116d12da3eab31acddb3f9440790c0792e0d398f0a520a6a4058018e546862b6fba89d7ae990efaeb97da71e1913e9ebf5a8b5621a3d55c710
   languageName: node
   linkType: hard
 
