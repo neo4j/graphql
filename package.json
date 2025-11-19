@@ -45,7 +45,7 @@
         "ts-jest": "29.4.5",
         "typescript": "5.9.3"
     },
-    "packageManager": "yarn@4.10.3",
+    "packageManager": "yarn@4.11.0",
     "dependencies": {
         "@changesets/changelog-github": "0.5.1",
         "@changesets/cli": "2.29.7"
