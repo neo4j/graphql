@@ -153,16 +153,15 @@ export class ConnectOperation extends MutationOperation {
 
         const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, allFilters, [nestedContext.target]);
 
+        const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
         let matchClause: Cypher.Clause;
         if (filterSubqueries.length > 0) {
-            const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
             matchClause = Cypher.utils.concat(
                 new Cypher.Match(matchPattern),
                 ...filterSubqueries,
                 new Cypher.With("*").where(predicate)
             );
         } else {
-            const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
             matchClause = new Cypher.Match(matchPattern).where(predicate);
         }
 
@@ -187,22 +186,13 @@ export class ConnectOperation extends MutationOperation {
             return input.getSubqueries(connectContext);
         });
 
-        const authClausesBefore = this.getAuthorizationClauses(nestedContext);
-
-        const authClausesAfter = this.getAuthorizationClausesAfter(nestedContext);
-        const sourceAuthClausesAfter = this.getSourceAuthorizationClausesAfter(context);
-
-        const authClauses: Cypher.Clause[] = [];
-        if (authClausesAfter.length > 0 || sourceAuthClausesAfter.length > 0) {
-            authClauses.push(Cypher.utils.concat(...authClausesAfter, ...sourceAuthClausesAfter));
-        }
-
         const clauses = Cypher.utils.concat(
             matchClause,
-            ...authClausesBefore,
+            ...this.getAuthorizationClauses(nestedContext), // THESE ARE "BEFORE" AUTH
             ...mutationSubqueries,
             connectClause,
-            ...authClauses
+            ...this.getAuthorizationClausesAfter(nestedContext), // THESE ARE "AFTER" AUTH
+            ...this.getSourceAuthorizationClausesAfter(context) // ONLY RUN "AFTER" AUTH ON THE SOURCE NODE
         );
 
         const callClause = new Cypher.Call(clauses, [context.target]);
@@ -214,19 +204,16 @@ export class ConnectOperation extends MutationOperation {
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
-        const { selections, subqueries, predicates, validations } = this.transpileAuthClauses(context);
-        const predicate = Cypher.and(...predicates);
-        const lastSelection = selections[selections.length - 1];
-
-        if (!predicates.length && !validations.length) {
-            return [];
-        } else {
-            if (lastSelection) {
-                lastSelection.where(predicate);
-                return [...subqueries, new Cypher.With("*"), ...selections, ...validations];
+        const { subqueries, predicates, validations } = this.transpileAuthClauses(context);
+        if (!predicates.length) {
+            if (!validations.length) {
+                return [];
             }
-            return [...subqueries, new Cypher.With("*").where(predicate), ...selections, ...validations];
+            return [...subqueries, ...validations];
         }
+
+        const predicate = Cypher.and(...predicates);
+        return [...subqueries, new Cypher.With("*").where(predicate), ...validations];
     }
 
     private getAuthorizationClausesAfter(context: QueryASTContext): Cypher.Clause[] {
