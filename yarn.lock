@@ -2773,7 +2773,7 @@ __metadata:
     "@types/semver": "npm:7.7.1"
     "@types/supertest": "npm:6.0.3"
     "@types/ws": "npm:8.18.1"
-    camelcase: "npm:^6.3.0"
+    camelcase: "npm:^9.0.0"
     debug: "npm:^4.3.4"
     dot-prop: "npm:^6.0.1"
     graphql-compose: "npm:^9.0.8"
@@ -2818,7 +2818,7 @@ __metadata:
     "@types/jest": "npm:30.0.0"
     "@types/node": "npm:22.18.12"
     "@types/pluralize": "npm:0.0.33"
-    camelcase: "npm:^6.3.0"
+    camelcase: "npm:^9.0.0"
     debug: "npm:^4.3.4"
     jest: "npm:30.2.0"
     pluralize: "npm:^8.0.0"
@@ -5883,6 +5883,13 @@ __metadata:
   version: 6.3.0
   resolution: "camelcase@npm:6.3.0"
   checksum: 10c0/0d701658219bd3116d12da3eab31acddb3f9440790c0792e0d398f0a520a6a4058018e546862b6fba89d7ae990efaeb97da71e1913e9ebf5a8b5621a3d55c710
+  languageName: node
+  linkType: hard
+
+"camelcase@npm:^9.0.0":
+  version: 9.0.0
+  resolution: "camelcase@npm:9.0.0"
+  checksum: 10c0/7171e1540b9b227cab9d59b7afa05174d14c10268171c18bdf2240eb1485ad6851592f1253ddc291f7ae34caad42c18206d339538965c67fb17fc995c0bb509b
   languageName: node
   linkType: hard
 
