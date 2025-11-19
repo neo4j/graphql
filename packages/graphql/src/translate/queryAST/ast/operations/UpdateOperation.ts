@@ -33,10 +33,7 @@ import type { RelationshipAdapter } from "../../../../schema-model/relationship/
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { Filter } from "../filters/Filter";
 import { ParamInputField } from "../input-fields/ParamInputField";
-/**
- * This is currently just a dummy tree node,
- * The whole mutation part is still implemented in the old way, the current scope of this node is just to contains the nested fields.
- **/
+
 export class UpdateOperation extends Operation {
     public readonly target: ConcreteEntityAdapter;
     public readonly relationship: RelationshipAdapter | undefined;
@@ -128,14 +125,14 @@ export class UpdateOperation extends Operation {
                 if (!authSubqueries.length && !subqueries.length) {
                     return undefined;
                 }
-                if (authSubqueries.length > 0) {
+                if (authSubqueries.length && subqueries.length) {
                     return Cypher.utils.concat(...subqueries, new Cypher.With("*"), ...authSubqueries);
                 }
-                return Cypher.utils.concat(...subqueries);
+                return Cypher.utils.concat(...subqueries, ...authSubqueries);
             })
             .filter((s) => s !== undefined);
 
-        // This is a small optimisation, to avoid subqueries with no changes
+        // This is a small optimization, to avoid subqueries with no changes
         // Top level should still be generated for projection
         if (this.relationship) {
             if (setParams.length === 0 && mutationSubqueries.length === 0) {
@@ -155,14 +152,9 @@ export class UpdateOperation extends Operation {
         const predicate = this.getPredicate(nestedContext);
 
         const matchClause = new Cypher.Match(pattern);
-        const filtersWith = new Cypher.With("*").where(predicate);
-        if (filtersWith) {
-            filtersWith.set(...setParams);
-            if (mutationSubqueries.length || afterFilterSubqueries.length) {
-                filtersWith.with("*");
-            }
-        } else {
-            matchClause.set(...setParams);
+        const filtersWith = new Cypher.With("*").where(predicate).set(...setParams);
+        if (afterFilterSubqueries.length) {
+            filtersWith.with("*");
         }
 
         const clauses = Cypher.utils.concat(
@@ -188,31 +180,23 @@ export class UpdateOperation extends Operation {
             );
         }
 
-        return [
-            // ...this.getAuthorizationClauses(nestedContext),
-            // ...this.inputFields.flatMap((inputField) => {
-            //     return inputField.getAuthorizationSubqueries(nestedContext);
-            // }),
-        ];
+        return [];
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
-        const { selections, subqueries, predicates, validations } = this.transpileAuthClauses(context);
-        const predicate = Cypher.and(...predicates);
-        const lastSelection = selections[selections.length - 1];
-
+        const { subqueries, predicates, validations } = this.transpileAuthClauses(context);
         const authSubqueries = subqueries.map((sq) => {
             return new Cypher.Call(sq, "*");
         });
-        if (!predicates.length && !validations.length) {
-            return [];
-        } else {
-            if (lastSelection) {
-                lastSelection.where(predicate);
-                return [...authSubqueries, new Cypher.With("*"), ...selections, ...validations];
+        if (!predicates.length) {
+            if (!validations.length) {
+                return [];
             }
-            return [...authSubqueries, new Cypher.With("*").where(predicate), ...selections, ...validations];
+            return [...authSubqueries, ...validations];
         }
+
+        const predicate = Cypher.and(...predicates);
+        return [...authSubqueries, new Cypher.With("*").where(predicate), ...validations];
     }
 
     private getAuthorizationClausesAfter(context: QueryASTContext): Cypher.Clause[] {

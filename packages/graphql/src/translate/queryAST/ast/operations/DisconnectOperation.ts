@@ -148,16 +148,15 @@ export class DisconnectOperation extends MutationOperation {
 
         const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, allFilters, [nestedContext.target]);
 
+        const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
         let matchClause: Cypher.Clause;
         if (filterSubqueries.length > 0) {
-            const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
             matchClause = Cypher.utils.concat(
                 new Cypher.OptionalMatch(matchPattern),
                 ...filterSubqueries,
                 new Cypher.With("*").where(predicate)
             );
         } else {
-            const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
             matchClause = new Cypher.OptionalMatch(matchPattern).where(predicate);
         }
 
@@ -173,30 +172,14 @@ export class DisconnectOperation extends MutationOperation {
 
         const deleteClause = new Cypher.With(nestedContext.relationship!).delete(nestedContext.relationship!);
 
-        const authClausesBefore = this.getAuthorizationClauses(nestedContext);
-        const sourceAuthClausesBefore = this.getSourceAuthorizationClausesBefore(context);
-
-        const bothAuthClausesBefore: Cypher.Clause[] = [];
-        if (authClausesBefore.length === 0 && sourceAuthClausesBefore.length > 0) {
-            bothAuthClausesBefore.push(new Cypher.With("*"), ...sourceAuthClausesBefore);
-        } else {
-            bothAuthClausesBefore.push(Cypher.utils.concat(...authClausesBefore, ...sourceAuthClausesBefore));
-        }
-
-        const authClausesAfter = this.getAuthorizationClausesAfter(nestedContext);
-        const sourceAuthClausesAfter = this.getSourceAuthorizationClausesAfter(context);
-
-        const authClauses: Cypher.Clause[] = [];
-        if (authClausesAfter.length > 0 || sourceAuthClausesAfter.length > 0) {
-            authClauses.push(Cypher.utils.concat(...authClausesAfter, ...sourceAuthClausesAfter));
-        }
-
         const clauses = Cypher.utils.concat(
             matchClause,
-            ...bothAuthClausesBefore,
+            ...this.getAuthorizationClauses(nestedContext),
+            ...this.getSourceAuthorizationClauses(context, "BEFORE"),
             ...mutationSubqueries,
             deleteClause,
-            ...authClauses
+            ...this.getAuthorizationClausesAfter(nestedContext),
+            ...this.getSourceAuthorizationClauses(context, "AFTER")
         );
 
         const callClause = new Cypher.Call(clauses, [context.target]);
@@ -205,24 +188,19 @@ export class DisconnectOperation extends MutationOperation {
             projectionExpr: context.returnVariable,
             clauses: [callClause],
         };
-
-        // return { projectionExpr: context.returnVariable, clauses: [clauses] };
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
-        const { selections, subqueries, predicates, validations } = this.transpileAuthClauses(context);
-        const predicate = Cypher.and(...predicates);
-        const lastSelection = selections[selections.length - 1];
-
-        if (!predicates.length && !validations.length) {
-            return [];
-        } else {
-            if (lastSelection) {
-                lastSelection.where(predicate);
-                return [...subqueries, new Cypher.With("*"), ...selections, ...validations];
+        const { subqueries, predicates, validations } = this.transpileAuthClauses(context);
+        if (!predicates.length) {
+            if (!validations.length) {
+                return [];
             }
-            return [...subqueries, new Cypher.With("*").where(predicate), ...selections, ...validations];
+            return [...subqueries, ...validations];
         }
+
+        const predicate = Cypher.and(...predicates);
+        return [...subqueries, new Cypher.With("*").where(predicate), ...validations];
     }
 
     private getAuthorizationClausesAfter(context: QueryASTContext): Cypher.Clause[] {
@@ -240,31 +218,17 @@ export class DisconnectOperation extends MutationOperation {
         return [];
     }
 
-    private getSourceAuthorizationClausesAfter(context: QueryASTContext): Cypher.Clause[] {
-        const validationsAfter: Cypher.VoidProcedure[] = [];
+    private getSourceAuthorizationClauses(context: QueryASTContext, when: "BEFORE" | "AFTER"): Cypher.Clause[] {
+        const validations: Cypher.VoidProcedure[] = [];
         for (const authFilter of this.sourceAuthFilters) {
-            const validationAfter = authFilter.getValidation(context, "AFTER");
-            if (validationAfter) {
-                validationsAfter.push(validationAfter);
+            const validation = authFilter.getValidation(context, when);
+            if (validation) {
+                validations.push(validation);
             }
         }
 
-        if (validationsAfter.length > 0) {
-            return [new Cypher.With("*"), ...validationsAfter];
-        }
-        return [];
-    }
-    private getSourceAuthorizationClausesBefore(context: QueryASTContext): Cypher.Clause[] {
-        const validationsAfter: Cypher.VoidProcedure[] = [];
-        for (const authFilter of this.sourceAuthFilters) {
-            const validationAfter = authFilter.getValidation(context, "BEFORE");
-            if (validationAfter) {
-                validationsAfter.push(validationAfter);
-            }
-        }
-
-        if (validationsAfter.length > 0) {
-            return [new Cypher.With("*"), ...validationsAfter];
+        if (validations.length > 0) {
+            return [new Cypher.With("*"), ...validations];
         }
         return [];
     }
