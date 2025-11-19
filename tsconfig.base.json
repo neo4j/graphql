@@ -1,6 +1,7 @@
 {
     "extends": "@tsconfig/node20/tsconfig.json",
     "compilerOptions": {
+        "esModuleInterop": true,
         "composite": true,
         "declarationMap": true,
         "sourceMap": true,
