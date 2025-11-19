@@ -2806,7 +2806,7 @@ __metadata:
     ws: "npm:8.18.3"
   peerDependencies:
     graphql: ^16.0.0
-    neo4j-driver: ^5.8.0
+    neo4j-driver: ^5.8.0 || ^6.0.0
   languageName: unknown
   linkType: soft
 
@@ -2825,7 +2825,7 @@ __metadata:
     ts-jest: "npm:29.4.5"
     typescript: "npm:5.9.3"
   peerDependencies:
-    neo4j-driver: ^5.8.0
+    neo4j-driver: ^5.8.0 || ^6.0.0
   languageName: unknown
   linkType: soft
 
