@@ -20,7 +20,7 @@
 import { Kind, type FieldNode, type GraphQLResolveInfo } from "graphql";
 import type { Node } from "../../../classes";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { translateCreate } from "../../../translate";
+import { translateCreate } from "../../../translate/translate-create";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";

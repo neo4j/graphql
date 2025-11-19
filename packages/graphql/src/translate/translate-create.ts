@@ -65,7 +65,7 @@ async function translateUsingQueryAST({
     return buildClause(clause, { context });
 }
 
-export default async function translateCreate({
+export async function translateCreate({
     context,
     node,
 }: {

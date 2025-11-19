@@ -21,7 +21,7 @@ import type { GraphQLResolveInfo } from "graphql";
 import type { FieldsByTypeName } from "graphql-parse-resolve-info";
 import { parseResolveInfo } from "graphql-parse-resolve-info";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { translateRead } from "../../../translate";
+import { translateRead } from "../../../translate/translate-read";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";

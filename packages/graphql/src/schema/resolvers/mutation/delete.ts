@@ -20,7 +20,7 @@
 import type { GraphQLResolveInfo } from "graphql";
 import type { SchemaComposer } from "graphql-compose";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { translateDelete } from "../../../translate";
+import { translateDelete } from "../../../translate/translate-delete";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";

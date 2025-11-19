@@ -19,7 +19,7 @@
 
 import type { GraphQLResolveInfo } from "graphql";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
-import { translateTopLevelCypher } from "../../../translate";
+import { translateTopLevelCypher } from "../../../translate/translate-top-level-cypher";
 import type { CypherField } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
