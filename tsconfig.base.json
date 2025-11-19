@@ -9,6 +9,7 @@
         "noImplicitAny": false, // TODO: Refactor so that this can be true for monorepo,
         "module": "commonjs",
         "target": "es2021",
-        "moduleResolution": "node10"
+        "moduleResolution": "node10",
+        "esModuleInterop": true
     }
 }
