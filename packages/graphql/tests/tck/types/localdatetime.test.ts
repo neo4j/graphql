@@ -164,13 +164,16 @@ describe("Cypher LocalDateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            SET this.localDT = $this_update_localDT_SET
-            RETURN collect(DISTINCT this { .id, .localDT }) AS data"
+            WITH *
+            SET
+                this.localDT = $param0
+            WITH this
+            RETURN this { .id, .localDT } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_localDT_SET\\": {
+                \\"param0\\": {
                     \\"year\\": 1881,
                     \\"month\\": 7,
                     \\"day\\": 13,
@@ -178,8 +181,7 @@ describe("Cypher LocalDateTime", () => {
                     \\"minute\\": 24,
                     \\"second\\": 40,
                     \\"nanosecond\\": 845512000
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });

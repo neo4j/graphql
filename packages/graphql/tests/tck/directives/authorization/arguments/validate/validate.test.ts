@@ -244,25 +244,27 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
+            WITH *
             WHERE this.id = $param0
-            SET this.id = $this_update_id_SET
+            SET
+                this.id = $param1
+            WITH *
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN collect(DISTINCT this { .id }) AS data"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"id-01\\",
-                \\"this_update_id_SET\\": \\"not bound\\",
+                \\"param1\\": \\"not bound\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"id-01\\"
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });
@@ -296,60 +298,39 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
+            WITH *
             WHERE this.id = $param0
-            WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)-[this_has_post0_relationship:HAS_POST]->(this_posts0:Post)
-            	WHERE this_posts0.id = $updateUsers_args_update_posts0_where_this_posts0param0
-            	WITH this, this_posts0
-            	CALL(*) {
-            		WITH this, this_posts0
-            		MATCH (this_posts0)<-[this_posts0_has_post0_relationship:HAS_POST]-(this_posts0_creator0:User)
-            		SET this_posts0_creator0.id = $this_update_posts0_creator0_id_SET
-            		RETURN count(*) AS update_this_posts0_creator0
-            	}
-            	RETURN count(*) AS update_this_posts0
+            WITH *
+            CALL (*) {
+                MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                WITH *
+                WHERE this1.id = $param1
+                WITH *
+                CALL (*) {
+                    MATCH (this1)<-[this2:HAS_POST]-(this3:User)
+                    WITH *
+                    SET
+                        this3.id = $param2
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                }
             }
-            RETURN collect(DISTINCT this { .id }) AS data"
+            WITH this
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"id-01\\",
-                \\"updateUsers_args_update_posts0_where_this_posts0param0\\": \\"post-id\\",
-                \\"this_update_posts0_creator0_id_SET\\": \\"not bound\\",
-                \\"updateUsers\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"posts\\": [
-                                {
-                                    \\"update\\": {
-                                        \\"node\\": {
-                                            \\"creator\\": [
-                                                {
-                                                    \\"update\\": {
-                                                        \\"node\\": {
-                                                            \\"id_SET\\": \\"not bound\\"
-                                                        }
-                                                    }
-                                                }
-                                            ]
-                                        },
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"id\\": {
-                                                    \\"eq\\": \\"post-id\\"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": \\"post-id\\",
+                \\"param2\\": \\"not bound\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"id-01\\"
+                }
             }"
         `);
     });
@@ -376,43 +357,38 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
+            WITH *
             WHERE this.id = $param0
             WITH *
-            CALL(*) {
-            	WITH this
-            	OPTIONAL MATCH (this_creator0_connect0_node:User)
-            	WHERE this_creator0_connect0_node.id = $this_creator0_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this_creator0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_creator0_connect0_node
-            			CREATE (this)<-[:HAS_POST]-(this_creator0_connect0_node)
-            		}
-            	}
-            WITH this, this_creator0_connect0_node
-            WITH this, this_creator0_connect0_node
-            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_POST]-(authorization__after_this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND authorization__after_this0.id = $jwt.sub)
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this_creator0_connect0_node.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            	RETURN count(*) AS connect_this_creator0_connect_User0
+            CALL (*) {
+                CALL (this) {
+                    MATCH (this0:User)
+                    WHERE this0.id = $param1
+                    CREATE (this)<-[this1:HAS_POST]-(this0)
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                        MATCH (this)<-[:HAS_POST]-(this2:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                }
             }
-            RETURN collect(DISTINCT this { .id }) AS data"
+            WITH this
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"post-id\\",
-                \\"this_creator0_connect0_node_param0\\": \\"user-id\\",
+                \\"param1\\": \\"user-id\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"id-01\\"
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });
@@ -439,60 +415,39 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Post)
+            WITH *
             WHERE this.id = $param0
-            WITH this
-            CALL(*) {
-            WITH this
-            OPTIONAL MATCH (this)<-[this_creator0_disconnect0_rel:HAS_POST]-(this_creator0_disconnect0:User)
-            WHERE this_creator0_disconnect0.id = $updatePosts_args_update_creator0_disconnect0_where_User_this_creator0_disconnect0param0
-            CALL (this_creator0_disconnect0, this_creator0_disconnect0_rel, this) {
-            	WITH collect(this_creator0_disconnect0) as this_creator0_disconnect0_x, this_creator0_disconnect0_rel, this
-            	UNWIND this_creator0_disconnect0_x as x
-            	DELETE this_creator0_disconnect0_rel
+            WITH *
+            CALL (*) {
+                CALL (this) {
+                    OPTIONAL MATCH (this)<-[this0:HAS_POST]-(this1:User)
+                    WHERE this1.id = $param1
+                    WITH this0
+                    DELETE this0
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                        MATCH (this)<-[:HAS_POST]-(this2:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                }
             }
-            WITH this, this_creator0_disconnect0
-            WHERE (apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_POST]-(authorization__after_this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND authorization__after_this0.id = $jwt.sub)
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this_creator0_disconnect0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0]))
-            RETURN count(*) AS disconnect_this_creator0_disconnect_User
-            }
-            RETURN collect(DISTINCT this { .id }) AS data"
+            WITH this
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"post-id\\",
-                \\"updatePosts_args_update_creator0_disconnect0_where_User_this_creator0_disconnect0param0\\": \\"user-id\\",
+                \\"param1\\": \\"user-id\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"id-01\\"
-                },
-                \\"updatePosts\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"creator\\": [
-                                {
-                                    \\"disconnect\\": [
-                                        {
-                                            \\"where\\": {
-                                                \\"node\\": {
-                                                    \\"id\\": {
-                                                        \\"eq\\": \\"user-id\\"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });

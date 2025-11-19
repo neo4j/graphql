@@ -89,76 +89,46 @@ describe("Interface Relationships - Update create", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            WITH this
-            CALL (this) {
-            WITH this
-            CREATE (this_actedIn0_create0_node:Movie)
-            SET this_actedIn0_create0_node.title = $this_actedIn0_create0_node_title
-            SET this_actedIn0_create0_node.runtime = $this_actedIn0_create0_node_runtime
-            MERGE (this)-[this_actedIn0_create0_relationship:ACTED_IN]->(this_actedIn0_create0_node)
-            SET this_actedIn0_create0_relationship.screenTime = $updateActors.args.update.actedIn[0].create[0].edge.screenTime
-            RETURN count(*) AS update_this_Movie
-            }
-            CALL (this){
-            	WITH this
-            RETURN count(*) AS update_this_Series
-            }
             WITH *
+            WITH *
+            CALL (*) {
+                CREATE (this0:Movie)
+                MERGE (this)-[this1:ACTED_IN]->(this0)
+                SET
+                    this0.title = $param0,
+                    this0.runtime = $param1,
+                    this1.screenTime = $param2
+            }
+            WITH this
             CALL (this) {
                 CALL (*) {
                     WITH *
-                    MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
-                    WITH update_this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(update_this1) } AS update_var2
-                    RETURN update_var2
+                    MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
+                    WITH this3 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this3) } AS var4
+                    RETURN var4
                     UNION
                     WITH *
-                    MATCH (this)-[update_this3:ACTED_IN]->(update_this4:Series)
-                    WITH update_this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(update_this4) } AS update_var2
-                    RETURN update_var2
+                    MATCH (this)-[this5:ACTED_IN]->(this6:Series)
+                    WITH this6 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this6) } AS var4
+                    RETURN var4
                 }
-                WITH update_var2
-                RETURN collect(update_var2) AS update_var2
+                WITH var4
+                RETURN collect(var4) AS var4
             }
-            RETURN collect(DISTINCT this { .name, actedIn: update_var2 }) AS data"
+            RETURN this { .name, actedIn: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_actedIn0_create0_node_title\\": \\"Example Film\\",
-                \\"this_actedIn0_create0_node_runtime\\": {
+                \\"param0\\": \\"Example Film\\",
+                \\"param1\\": {
                     \\"low\\": 90,
                     \\"high\\": 0
                 },
-                \\"updateActors\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"actedIn\\": [
-                                {
-                                    \\"create\\": [
-                                        {
-                                            \\"edge\\": {
-                                                \\"screenTime\\": {
-                                                    \\"low\\": 90,
-                                                    \\"high\\": 0
-                                                }
-                                            },
-                                            \\"node\\": {
-                                                \\"Movie\\": {
-                                                    \\"title\\": \\"Example Film\\",
-                                                    \\"runtime\\": {
-                                                        \\"low\\": 90,
-                                                        \\"high\\": 0
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param2\\": {
+                    \\"low\\": 90,
+                    \\"high\\": 0
+                }
             }"
         `);
     });

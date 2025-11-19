@@ -68,33 +68,21 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             "CYPHER 5
             MATCH (this:Source)
             WITH *
-            CALL(*) {
-            	WITH this
-            	OPTIONAL MATCH (this_targets0_connect0_node:Target)
-            	WHERE this_targets0_connect0_node.id = $this_targets0_connect0_node_param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	CALL(*) {
-            		WITH collect(this_targets0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_targets0_connect0_node
-            			CREATE (this)-[:HAS_TARGET]->(this_targets0_connect0_node)
-            		}
-            	}
-            WITH this, this_targets0_connect0_node
-            	RETURN count(*) AS connect_this_targets0_connect_Target0
+            WITH *
+            CALL (*) {
+                CALL (this) {
+                    MATCH (this0:Target)
+                    WHERE this0.id = $param0
+                    CREATE (this)-[this1:HAS_TARGET]->(this0)
+                }
             }
-            RETURN collect(DISTINCT this { .id }) AS data"
+            WITH this
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_targets0_connect0_node_param0\\": \\"1\\",
-                \\"isAuthenticated\\": true,
-                \\"jwt\\": {
-                    \\"roles\\": [],
-                    \\"sub\\": \\"1\\"
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"1\\"
             }"
         `);
     });
@@ -144,51 +132,30 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Source)
-            WITH this
-            CALL(*) {
-            WITH this
-            OPTIONAL MATCH (this)-[this_targets0_disconnect0_rel:HAS_TARGET]->(this_targets0_disconnect0:Target)
-            WHERE this_targets0_disconnect0.id = $updateSources_args_update_targets0_disconnect0_where_Target_this_targets0_disconnect0param0 AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL (this_targets0_disconnect0, this_targets0_disconnect0_rel, this) {
-            	WITH collect(this_targets0_disconnect0) as this_targets0_disconnect0_x, this_targets0_disconnect0_rel, this
-            	UNWIND this_targets0_disconnect0_x as x
-            	DELETE this_targets0_disconnect0_rel
+            WITH *
+            WITH *
+            CALL (*) {
+                CALL (this) {
+                    OPTIONAL MATCH (this)-[this0:HAS_TARGET]->(this1:Target)
+                    WHERE this1.id = $param0
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                    WITH this0
+                    DELETE this0
+                }
             }
-            RETURN count(*) AS disconnect_this_targets0_disconnect_Target
-            }
-            RETURN collect(DISTINCT this { .id }) AS data"
+            WITH this
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateSources_args_update_targets0_disconnect0_where_Target_this_targets0_disconnect0param0\\": \\"1\\",
+                \\"param0\\": \\"1\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"sub\\": \\"1\\"
-                },
-                \\"updateSources\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"targets\\": [
-                                {
-                                    \\"disconnect\\": [
-                                        {
-                                            \\"where\\": {
-                                                \\"node\\": {
-                                                    \\"id\\": {
-                                                        \\"eq\\": \\"1\\"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });

@@ -76,66 +76,30 @@ describe("Interface Relationships - Update disconnect", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
+            WITH *
+            WITH *
+            CALL (*) {
+                CALL (this) {
+                    OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                    WHERE this1.title STARTS WITH $param0
+                    WITH this0
+                    DELETE this0
+                }
+                CALL (this) {
+                    OPTIONAL MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                    WHERE this3.title STARTS WITH $param1
+                    WITH this2
+                    DELETE this2
+                }
+            }
             WITH this
-            CALL (this) {
-            WITH this
-            CALL(*) {
-            WITH this
-            OPTIONAL MATCH (this)-[this_actedIn0_disconnect0_rel:ACTED_IN]->(this_actedIn0_disconnect0:Movie)
-            WHERE this_actedIn0_disconnect0.title STARTS WITH $updateActors_args_update_actedIn0_disconnect0_where_Movie_this_actedIn0_disconnect0param0
-            CALL (this_actedIn0_disconnect0, this_actedIn0_disconnect0_rel, this) {
-            	WITH collect(this_actedIn0_disconnect0) as this_actedIn0_disconnect0_x, this_actedIn0_disconnect0_rel, this
-            	UNWIND this_actedIn0_disconnect0_x as x
-            	DELETE this_actedIn0_disconnect0_rel
-            }
-            RETURN count(*) AS disconnect_this_actedIn0_disconnect_Movie
-            }
-            RETURN count(*) AS update_this_Movie
-            }
-            CALL (this){
-            	WITH this
-            CALL(*) {
-            WITH this
-            OPTIONAL MATCH (this)-[this_actedIn0_disconnect0_rel:ACTED_IN]->(this_actedIn0_disconnect0:Series)
-            WHERE this_actedIn0_disconnect0.title STARTS WITH $updateActors_args_update_actedIn0_disconnect0_where_Series_this_actedIn0_disconnect0param0
-            CALL (this_actedIn0_disconnect0, this_actedIn0_disconnect0_rel, this) {
-            	WITH collect(this_actedIn0_disconnect0) as this_actedIn0_disconnect0_x, this_actedIn0_disconnect0_rel, this
-            	UNWIND this_actedIn0_disconnect0_x as x
-            	DELETE this_actedIn0_disconnect0_rel
-            }
-            RETURN count(*) AS disconnect_this_actedIn0_disconnect_Series
-            }
-            RETURN count(*) AS update_this_Series
-            }
-            RETURN collect(DISTINCT this { .name }) AS data"
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateActors_args_update_actedIn0_disconnect0_where_Movie_this_actedIn0_disconnect0param0\\": \\"The \\",
-                \\"updateActors_args_update_actedIn0_disconnect0_where_Series_this_actedIn0_disconnect0param0\\": \\"The \\",
-                \\"updateActors\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"actedIn\\": [
-                                {
-                                    \\"disconnect\\": [
-                                        {
-                                            \\"where\\": {
-                                                \\"node\\": {
-                                                    \\"title\\": {
-                                                        \\"startsWith\\": \\"The \\"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"The \\",
+                \\"param1\\": \\"The \\"
             }"
         `);
     });
@@ -165,102 +129,48 @@ describe("Interface Relationships - Update disconnect", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
+            WITH *
+            WITH *
+            CALL (*) {
+                CALL (this) {
+                    OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                    WHERE this1.title STARTS WITH $param0
+                    CALL (this1) {
+                        CALL (this1) {
+                            OPTIONAL MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
+                            WHERE this3.name = $param1
+                            WITH this2
+                            DELETE this2
+                        }
+                    }
+                    WITH this0
+                    DELETE this0
+                }
+                CALL (this) {
+                    OPTIONAL MATCH (this)-[this4:ACTED_IN]->(this5:Series)
+                    WHERE this5.title STARTS WITH $param2
+                    CALL (this5) {
+                        CALL (this5) {
+                            OPTIONAL MATCH (this5)<-[this6:ACTED_IN]-(this7:Actor)
+                            WHERE this7.name = $param3
+                            WITH this6
+                            DELETE this6
+                        }
+                    }
+                    WITH this4
+                    DELETE this4
+                }
+            }
             WITH this
-            CALL (this) {
-            WITH this
-            CALL(*) {
-            WITH this
-            OPTIONAL MATCH (this)-[this_actedIn0_disconnect0_rel:ACTED_IN]->(this_actedIn0_disconnect0:Movie)
-            WHERE this_actedIn0_disconnect0.title STARTS WITH $updateActors_args_update_actedIn0_disconnect0_where_Movie_this_actedIn0_disconnect0param0
-            CALL (this_actedIn0_disconnect0, this_actedIn0_disconnect0_rel, this) {
-            	WITH collect(this_actedIn0_disconnect0) as this_actedIn0_disconnect0_x, this_actedIn0_disconnect0_rel, this
-            	UNWIND this_actedIn0_disconnect0_x as x
-            	DELETE this_actedIn0_disconnect0_rel
-            }
-            CALL(*) {
-            WITH this, this_actedIn0_disconnect0
-            OPTIONAL MATCH (this_actedIn0_disconnect0)<-[this_actedIn0_disconnect0_actors0_rel:ACTED_IN]-(this_actedIn0_disconnect0_actors0:Actor)
-            WHERE this_actedIn0_disconnect0_actors0.name = $updateActors_args_update_actedIn0_disconnect0_disconnect_actors0_where_Actor_this_actedIn0_disconnect0_actors0param0
-            CALL (this_actedIn0_disconnect0_actors0, this_actedIn0_disconnect0_actors0_rel, this_actedIn0_disconnect0) {
-            	WITH collect(this_actedIn0_disconnect0_actors0) as this_actedIn0_disconnect0_actors0_x, this_actedIn0_disconnect0_actors0_rel, this_actedIn0_disconnect0
-            	UNWIND this_actedIn0_disconnect0_actors0_x as x
-            	DELETE this_actedIn0_disconnect0_actors0_rel
-            }
-            RETURN count(*) AS disconnect_this_actedIn0_disconnect0_actors_Actor
-            }
-            RETURN count(*) AS disconnect_this_actedIn0_disconnect_Movie
-            }
-            RETURN count(*) AS update_this_Movie
-            }
-            CALL (this){
-            	WITH this
-            CALL(*) {
-            WITH this
-            OPTIONAL MATCH (this)-[this_actedIn0_disconnect0_rel:ACTED_IN]->(this_actedIn0_disconnect0:Series)
-            WHERE this_actedIn0_disconnect0.title STARTS WITH $updateActors_args_update_actedIn0_disconnect0_where_Series_this_actedIn0_disconnect0param0
-            CALL (this_actedIn0_disconnect0, this_actedIn0_disconnect0_rel, this) {
-            	WITH collect(this_actedIn0_disconnect0) as this_actedIn0_disconnect0_x, this_actedIn0_disconnect0_rel, this
-            	UNWIND this_actedIn0_disconnect0_x as x
-            	DELETE this_actedIn0_disconnect0_rel
-            }
-            CALL(*) {
-            WITH this, this_actedIn0_disconnect0
-            OPTIONAL MATCH (this_actedIn0_disconnect0)<-[this_actedIn0_disconnect0_actors0_rel:ACTED_IN]-(this_actedIn0_disconnect0_actors0:Actor)
-            WHERE this_actedIn0_disconnect0_actors0.name = $updateActors_args_update_actedIn0_disconnect0_disconnect_actors0_where_Actor_this_actedIn0_disconnect0_actors0param0
-            CALL (this_actedIn0_disconnect0_actors0, this_actedIn0_disconnect0_actors0_rel, this_actedIn0_disconnect0) {
-            	WITH collect(this_actedIn0_disconnect0_actors0) as this_actedIn0_disconnect0_actors0_x, this_actedIn0_disconnect0_actors0_rel, this_actedIn0_disconnect0
-            	UNWIND this_actedIn0_disconnect0_actors0_x as x
-            	DELETE this_actedIn0_disconnect0_actors0_rel
-            }
-            RETURN count(*) AS disconnect_this_actedIn0_disconnect0_actors_Actor
-            }
-            RETURN count(*) AS disconnect_this_actedIn0_disconnect_Series
-            }
-            RETURN count(*) AS update_this_Series
-            }
-            RETURN collect(DISTINCT this { .name }) AS data"
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateActors_args_update_actedIn0_disconnect0_where_Movie_this_actedIn0_disconnect0param0\\": \\"The \\",
-                \\"updateActors_args_update_actedIn0_disconnect0_disconnect_actors0_where_Actor_this_actedIn0_disconnect0_actors0param0\\": \\"Actor\\",
-                \\"updateActors_args_update_actedIn0_disconnect0_where_Series_this_actedIn0_disconnect0param0\\": \\"The \\",
-                \\"updateActors\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"actedIn\\": [
-                                {
-                                    \\"disconnect\\": [
-                                        {
-                                            \\"where\\": {
-                                                \\"node\\": {
-                                                    \\"title\\": {
-                                                        \\"startsWith\\": \\"The \\"
-                                                    }
-                                                }
-                                            },
-                                            \\"disconnect\\": {
-                                                \\"actors\\": [
-                                                    {
-                                                        \\"where\\": {
-                                                            \\"node\\": {
-                                                                \\"name\\": {
-                                                                    \\"eq\\": \\"Actor\\"
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                ]
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"The \\",
+                \\"param1\\": \\"Actor\\",
+                \\"param2\\": \\"The \\",
+                \\"param3\\": \\"Actor\\"
             }"
         `);
     });

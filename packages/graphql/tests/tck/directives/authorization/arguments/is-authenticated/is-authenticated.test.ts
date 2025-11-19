@@ -247,16 +247,18 @@ describe("Cypher Auth isAuthenticated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
+            WITH *
             WHERE this.id = $param0
-            SET this.id = $this_update_id_SET
-            RETURN collect(DISTINCT this { .id }) AS data"
+            SET
+                this.id = $param1
+            WITH this
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"this_update_id_SET\\": \\"id-1\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": \\"id-1\\"
             }"
         `);
     });
@@ -280,16 +282,18 @@ describe("Cypher Auth isAuthenticated", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
+            WITH *
             WHERE this.id = $param0
-            SET this.password = $this_update_password_SET
-            RETURN collect(DISTINCT this { .id }) AS data"
+            SET
+                this.password = $param1
+            WITH this
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"this_update_password_SET\\": \\"password\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": \\"password\\"
             }"
         `);
     });

@@ -1336,8 +1336,10 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             }
             WITH *
             WHERE var8 = true
-            SET this.name = $this_update_name_SET
-            RETURN collect(DISTINCT this { .name }) AS data"
+            SET
+                this.name = $param3
+            WITH this
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -1348,8 +1350,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                 },
                 \\"param1\\": \\"some role\\",
                 \\"param2\\": \\"another role\\",
-                \\"this_update_name_SET\\": \\"Exciting new name!\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param3\\": \\"Exciting new name!\\"
             }"
         `);
     });
