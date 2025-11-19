@@ -18,7 +18,6 @@
  */
 
 import type Cypher from "@neo4j/cypher-builder";
-import { debug } from "console";
 import { Kind, type FieldNode, type GraphQLResolveInfo } from "graphql";
 import type {
     ObjectTypeComposerArgumentConfigAsObjectDefinition,
@@ -117,7 +116,6 @@ async function translateUsingQueryAST({
         callbackBucket,
     });
 
-    debug(operationsTree.print());
     await callbackBucket.resolveCallbacks();
 
     const clause = operationsTree.build(context, varName);
