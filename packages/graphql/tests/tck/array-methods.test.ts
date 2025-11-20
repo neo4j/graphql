@@ -50,18 +50,19 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
+            WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0])
+            SET
+                this.ratings = (this.ratings + $param0)
             WITH this
-            WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
-            SET this.ratings = this.ratings + $this_update_ratings_PUSH
-            RETURN collect(DISTINCT this { .title, .ratings }) AS data"
+            RETURN this { .title, .ratings } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_ratings_PUSH\\": [
+                \\"param0\\": [
                     1
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -96,22 +97,23 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
+            WHERE (apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0]) AND apoc.util.validatePredicate(this.scores IS NULL, \\"Property scores cannot be NULL\\", [0]))
+            SET
+                this.ratings = (this.ratings + $param0),
+                this.scores = (this.scores + $param1)
             WITH this
-            WHERE apoc.util.validatePredicate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
-            SET this.ratings = this.ratings + $this_update_ratings_PUSH
-            SET this.scores = this.scores + $this_update_scores_PUSH
-            RETURN collect(DISTINCT this { .title, .ratings, .scores }) AS data"
+            RETURN this { .title, .ratings, .scores } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_ratings_PUSH\\": [
+                \\"param0\\": [
                     1
                 ],
-                \\"this_update_scores_PUSH\\": [
+                \\"param1\\": [
                     1
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -156,22 +158,23 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
+            WHERE apoc.util.validatePredicate(this.filmingLocations IS NULL, \\"Property filmingLocations cannot be NULL\\", [0])
+            SET
+                this.filmingLocations = (this.filmingLocations + [var0 IN $param0 | point(var0)])
             WITH this
-            WHERE apoc.util.validatePredicate(this.filmingLocations IS NULL, \\"Property %s cannot be NULL\\", ['filmingLocations'])
-            SET this.filmingLocations = this.filmingLocations + [p in $this_update_filmingLocations_PUSH | point(p)]
-            RETURN collect(DISTINCT this { .title, .filmingLocations }) AS data"
+            RETURN this { .title, .filmingLocations } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_filmingLocations_PUSH\\": [
+                \\"param0\\": [
                     {
                         \\"longitude\\": -178.7374,
                         \\"latitude\\": 38.4554,
                         \\"height\\": 60111.54
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });
@@ -214,26 +217,28 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0])
+            SET
+                this.ratings = (this.ratings + $param3)
+            WITH *
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
-            SET this.ratings = this.ratings + $this_update_ratings_PUSH
-            WITH this
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN collect(DISTINCT this { .title, .ratings }) AS data"
+            RETURN this { .title, .ratings } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_ratings_PUSH\\": [
-                    1
-                ],
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": []
                 },
-                \\"authorization__before_param2\\": \\"update\\",
-                \\"authorization__after_param2\\": \\"update\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param2\\": \\"update\\",
+                \\"param3\\": [
+                    1
+                ],
+                \\"param4\\": \\"update\\"
             }"
         `);
     });
@@ -266,19 +271,20 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
+            WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0])
+            SET
+                this.ratings = this.ratings[0..-$param0]
             WITH this
-            WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
-            SET this.ratings = this.ratings[0..-$this_update_ratings_POP]
-            RETURN collect(DISTINCT this { .title, .ratings }) AS data"
+            RETURN this { .title, .ratings } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_ratings_POP\\": {
+                \\"param0\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });
@@ -313,24 +319,25 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
+            WHERE (apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0]) AND apoc.util.validatePredicate(this.scores IS NULL, \\"Property scores cannot be NULL\\", [0]))
+            SET
+                this.ratings = this.ratings[0..-$param0],
+                this.scores = this.scores[0..-$param1]
             WITH this
-            WHERE apoc.util.validatePredicate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
-            SET this.ratings = this.ratings[0..-$this_update_ratings_POP]
-            SET this.scores = this.scores[0..-$this_update_scores_POP]
-            RETURN collect(DISTINCT this { .title, .ratings, .scores }) AS data"
+            RETURN this { .title, .ratings, .scores } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_ratings_POP\\": {
+                \\"param0\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
                 },
-                \\"this_update_scores_POP\\": {
+                \\"param1\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });
@@ -373,27 +380,29 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0])
+            SET
+                this.ratings = this.ratings[0..-$param3]
+            WITH *
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH this
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__before_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(this.ratings IS NULL, \\"Property %s cannot be NULL\\", ['ratings'])
-            SET this.ratings = this.ratings[0..-$this_update_ratings_POP]
-            WITH this
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $authorization__after_param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN collect(DISTINCT this { .title, .ratings }) AS data"
+            RETURN this { .title, .ratings } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_ratings_POP\\": {
-                    \\"low\\": 1,
-                    \\"high\\": 0
-                },
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": []
                 },
-                \\"authorization__before_param2\\": \\"update\\",
-                \\"authorization__after_param2\\": \\"update\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param2\\": \\"update\\",
+                \\"param3\\": {
+                    \\"low\\": 1,
+                    \\"high\\": 0
+                },
+                \\"param4\\": \\"update\\"
             }"
         `);
     });
@@ -428,23 +437,24 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
+            WHERE (apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0]) AND apoc.util.validatePredicate(this.scores IS NULL, \\"Property scores cannot be NULL\\", [0]))
+            SET
+                this.ratings = (this.ratings + $param0),
+                this.scores = this.scores[0..-$param1]
             WITH this
-            WHERE apoc.util.validatePredicate(this.ratings IS NULL OR this.scores IS NULL, \\"Properties %s, %s cannot be NULL\\", ['ratings', 'scores'])
-            SET this.ratings = this.ratings + $this_update_ratings_PUSH
-            SET this.scores = this.scores[0..-$this_update_scores_POP]
-            RETURN collect(DISTINCT this { .title, .ratings, .scores }) AS data"
+            RETURN this { .title, .ratings, .scores } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_ratings_PUSH\\": [
+                \\"param0\\": [
                     1.5
                 ],
-                \\"this_update_scores_POP\\": {
+                \\"param1\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });
@@ -496,55 +506,42 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            WHERE this.id = $param0
-            WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            	SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay + $updateActors.args.update.actedIn[0].update.edge.pay_PUSH
-            	RETURN count(*) AS update_this_actedIn0
-            }
             WITH *
+            WHERE this.id = $param0
+            WITH *
+            CALL (*) {
+                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WITH *
+                WHERE apoc.util.validatePredicate(this0.pay IS NULL, \\"Property pay cannot be NULL\\", [0])
+                SET
+                    this0.pay = (this0.pay + $param1)
+            }
+            WITH this
             CALL (this) {
-                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
-                WITH DISTINCT update_this1
-                WITH update_this1 { .title } AS update_this1
-                RETURN collect(update_this1) AS update_var2
+                MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
+                WITH DISTINCT this3
+                WITH this3 { .title } AS this3
+                RETURN collect(this3) AS var4
             }
             CALL (this) {
-                MATCH (this)-[update_this3:ACTED_IN]->(update_this4:Movie)
-                WITH collect({ node: update_this4, relationship: update_this3 }) AS edges
+                MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
+                WITH collect({ node: this6, relationship: this5 }) AS edges
                 CALL (edges) {
                     UNWIND edges AS edge
-                    WITH edge.node AS update_this4, edge.relationship AS update_this3
-                    RETURN collect({ properties: { pay: update_this3.pay, __resolveType: \\"ActedIn\\" }, node: { __id: id(update_this4), __resolveType: \\"Movie\\" } }) AS update_var5
+                    WITH edge.node AS this6, edge.relationship AS this5
+                    RETURN collect({ properties: { pay: this5.pay, __resolveType: \\"ActedIn\\" }, node: { __id: id(this6), __resolveType: \\"Movie\\" } }) AS var7
                 }
-                RETURN { edges: update_var5 } AS update_var6
+                RETURN { edges: var7 } AS var8
             }
-            RETURN collect(DISTINCT this { .name, actedIn: update_var2, actedInConnection: update_var6 }) AS data"
+            RETURN this { .name, actedIn: var4, actedInConnection: var8 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateActors\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"actedIn\\": [
-                                {
-                                    \\"update\\": {
-                                        \\"edge\\": {
-                                            \\"pay_PUSH\\": [
-                                                10
-                                            ]
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": [
+                    10
+                ]
             }"
         `);
     });
@@ -596,56 +593,43 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
-            WHERE this.id = $param0
-            WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            	SET this_acted_in0_relationship.pay = this_acted_in0_relationship.pay[0..-$updateActors.args.update.actedIn[0].update.edge.pay_POP]
-            	RETURN count(*) AS update_this_actedIn0
-            }
             WITH *
+            WHERE this.id = $param0
+            WITH *
+            CALL (*) {
+                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WITH *
+                WHERE apoc.util.validatePredicate(this0.pay IS NULL, \\"Property pay cannot be NULL\\", [0])
+                SET
+                    this0.pay = this0.pay[0..-$param1]
+            }
+            WITH this
             CALL (this) {
-                MATCH (this)-[update_this0:ACTED_IN]->(update_this1:Movie)
-                WITH DISTINCT update_this1
-                WITH update_this1 { .title } AS update_this1
-                RETURN collect(update_this1) AS update_var2
+                MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
+                WITH DISTINCT this3
+                WITH this3 { .title } AS this3
+                RETURN collect(this3) AS var4
             }
             CALL (this) {
-                MATCH (this)-[update_this3:ACTED_IN]->(update_this4:Movie)
-                WITH collect({ node: update_this4, relationship: update_this3 }) AS edges
+                MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
+                WITH collect({ node: this6, relationship: this5 }) AS edges
                 CALL (edges) {
                     UNWIND edges AS edge
-                    WITH edge.node AS update_this4, edge.relationship AS update_this3
-                    RETURN collect({ properties: { pay: update_this3.pay, __resolveType: \\"ActedIn\\" }, node: { __id: id(update_this4), __resolveType: \\"Movie\\" } }) AS update_var5
+                    WITH edge.node AS this6, edge.relationship AS this5
+                    RETURN collect({ properties: { pay: this5.pay, __resolveType: \\"ActedIn\\" }, node: { __id: id(this6), __resolveType: \\"Movie\\" } }) AS var7
                 }
-                RETURN { edges: update_var5 } AS update_var6
+                RETURN { edges: var7 } AS var8
             }
-            RETURN collect(DISTINCT this { .name, actedIn: update_var2, actedInConnection: update_var6 }) AS data"
+            RETURN this { .name, actedIn: var4, actedInConnection: var8 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"updateActors\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"actedIn\\": [
-                                {
-                                    \\"update\\": {
-                                        \\"edge\\": {
-                                            \\"pay_POP\\": {
-                                                \\"low\\": 1,
-                                                \\"high\\": 0
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": {
+                    \\"low\\": 1,
+                    \\"high\\": 0
+                }
             }"
         `);
     });

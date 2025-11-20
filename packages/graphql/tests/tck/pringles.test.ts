@@ -239,102 +239,44 @@ describe("Cypher Create Pringles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Product)
+            WITH *
             WHERE this.name = $param0
-            WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)-[this_has_photo0_relationship:HAS_PHOTO]->(this_photos0:Photo)
-            	WHERE this_photos0.description = $updateProducts_args_update_photos0_where_this_photos0param0
-            	SET this_photos0.description = $this_update_photos0_description_SET
-            	WITH this, this_photos0
-            	CALL(*) {
-            	WITH this, this_photos0
-            	OPTIONAL MATCH (this_photos0)-[this_photos0_color0_disconnect0_rel:OF_COLOR]->(this_photos0_color0_disconnect0:Color)
-            	WHERE this_photos0_color0_disconnect0.name = $updateProducts_args_update_photos0_update_node_color0_disconnect0_where_Color_this_photos0_color0_disconnect0param0
-            	CALL (this_photos0_color0_disconnect0, this_photos0_color0_disconnect0_rel, this_photos0) {
-            		WITH collect(this_photos0_color0_disconnect0) as this_photos0_color0_disconnect0_x, this_photos0_color0_disconnect0_rel, this_photos0
-            		UNWIND this_photos0_color0_disconnect0_x as x
-            		DELETE this_photos0_color0_disconnect0_rel
-            	}
-            	RETURN count(*) AS disconnect_this_photos0_color0_disconnect_Color
-            	}
-            	WITH *
-            	CALL(*) {
-            		WITH this, this_photos0
-            		OPTIONAL MATCH (this_photos0_color0_connect0_node:Color)
-            		WHERE this_photos0_color0_connect0_node.name = $this_photos0_color0_connect0_node_param0
-            		CALL(*) {
-            			WITH this, collect(this_photos0_color0_connect0_node) as connectedNodes, collect(this_photos0) as parentNodes
-            			CALL(connectedNodes, parentNodes) {
-            				UNWIND parentNodes as this_photos0
-            				UNWIND connectedNodes as this_photos0_color0_connect0_node
-            				CREATE (this_photos0)-[:OF_COLOR]->(this_photos0_color0_connect0_node)
-            			}
-            		}
-            	WITH this, this_photos0, this_photos0_color0_connect0_node
-            		RETURN count(*) AS connect_this_photos0_color0_connect_Color0
-            	}
-            	RETURN count(*) AS update_this_photos0
+            WITH *
+            CALL (*) {
+                MATCH (this)-[this0:HAS_PHOTO]->(this1:Photo)
+                WITH *
+                WHERE this1.description = $param1
+                SET
+                    this1.description = $param2
+                WITH *
+                CALL (*) {
+                    CALL (this1) {
+                        MATCH (this2:Color)
+                        WHERE this2.name = $param3
+                        CREATE (this1)-[this3:OF_COLOR]->(this2)
+                    }
+                }
+                WITH *
+                CALL (*) {
+                    CALL (this1) {
+                        OPTIONAL MATCH (this1)-[this4:OF_COLOR]->(this5:Color)
+                        WHERE this5.name = $param4
+                        WITH *
+                        DELETE this4
+                    }
+                }
             }
-            RETURN collect(DISTINCT this { .id }) AS data"
+            WITH this
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Pringles\\",
-                \\"updateProducts_args_update_photos0_where_this_photos0param0\\": \\"Green Photo\\",
-                \\"this_update_photos0_description_SET\\": \\"Light Green Photo\\",
-                \\"updateProducts_args_update_photos0_update_node_color0_disconnect0_where_Color_this_photos0_color0_disconnect0param0\\": \\"Green\\",
-                \\"this_photos0_color0_connect0_node_param0\\": \\"Light Green\\",
-                \\"updateProducts\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"photos\\": [
-                                {
-                                    \\"update\\": {
-                                        \\"node\\": {
-                                            \\"description_SET\\": \\"Light Green Photo\\",
-                                            \\"color\\": [
-                                                {
-                                                    \\"connect\\": [
-                                                        {
-                                                            \\"where\\": {
-                                                                \\"node\\": {
-                                                                    \\"name\\": {
-                                                                        \\"eq\\": \\"Light Green\\"
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    ],
-                                                    \\"disconnect\\": [
-                                                        {
-                                                            \\"where\\": {
-                                                                \\"node\\": {
-                                                                    \\"name\\": {
-                                                                        \\"eq\\": \\"Green\\"
-                                                                    }
-                                                                }
-                                                            }
-                                                        }
-                                                    ]
-                                                }
-                                            ]
-                                        },
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"description\\": {
-                                                    \\"eq\\": \\"Green Photo\\"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": \\"Green Photo\\",
+                \\"param2\\": \\"Light Green Photo\\",
+                \\"param3\\": \\"Light Green\\",
+                \\"param4\\": \\"Green\\"
             }"
         `);
     });

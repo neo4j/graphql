@@ -135,14 +135,16 @@ describe("Plural directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Tech)
-            SET this.name = $this_update_name_SET
-            RETURN collect(DISTINCT this { .name }) AS data"
+            WITH *
+            SET
+                this.name = $param0
+            WITH this
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_name_SET\\": \\"Matrix\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"Matrix\\"
             }"
         `);
     });

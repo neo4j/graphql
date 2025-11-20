@@ -1,5 +1,15 @@
 # @neo4j/graphql
 
+## 7.3.1
+
+### Patch Changes
+
+- [#6811](https://github.com/neo4j/graphql/pull/6811) [`f821f53`](https://github.com/neo4j/graphql/commit/f821f533ba040c66ed0c58225742e3de2107a167) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Add case insensitive support to Cypher filter
+
+- [`4e90418`](https://github.com/neo4j/graphql/commit/4e90418e85977f28763198f41dd14f4d8593e878) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix incorrect Cypher in authorization for create operations
+
+- [#6779](https://github.com/neo4j/graphql/pull/6779) [`bdbb211`](https://github.com/neo4j/graphql/commit/bdbb211ca327b8405801dd483ad986b4d47d42c9) Thanks [@angrykoala](https://github.com/angrykoala)! - Duration parser changed to support ISO strings ending in T, for example: "P-238DT"
+
 ## 7.3.0
 
 ### Minor Changes

@@ -87,78 +87,48 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            WHERE this.title = $param0
-            WITH this
-            CALL (this) {
-            WITH this
-            CREATE (this_reviewers0_create0_node:Person)
-            SET this_reviewers0_create0_node.name = $this_reviewers0_create0_node_name
-            SET this_reviewers0_create0_node.reputation = $this_reviewers0_create0_node_reputation
-            MERGE (this)<-[this_reviewers0_create0_relationship:REVIEWED]-(this_reviewers0_create0_node)
-            SET this_reviewers0_create0_relationship.score = $updateMovies.args.update.reviewers[0].create[0].edge.score
-            RETURN count(*) AS update_this_Person
-            }
-            CALL (this){
-            	WITH this
-            RETURN count(*) AS update_this_Influencer
-            }
             WITH *
+            WHERE this.title = $param0
+            WITH *
+            CALL (*) {
+                CREATE (this0:Person)
+                MERGE (this)<-[this1:REVIEWED]-(this0)
+                SET
+                    this0.name = $param1,
+                    this0.reputation = $param2,
+                    this1.score = $param3
+            }
+            WITH this
             CALL (this) {
                 CALL (*) {
                     WITH *
-                    MATCH (this)<-[update_this0:REVIEWED]-(update_this1:Person)
-                    WITH update_this1 { .name, .reputation, __resolveType: \\"Person\\", __id: id(update_this1) } AS update_var2
-                    RETURN update_var2
+                    MATCH (this)<-[this2:REVIEWED]-(this3:Person)
+                    WITH this3 { .name, .reputation, __resolveType: \\"Person\\", __id: id(this3) } AS var4
+                    RETURN var4
                     UNION
                     WITH *
-                    MATCH (this)<-[update_this3:REVIEWED]-(update_this4:Influencer)
-                    WITH update_this4 { __resolveType: \\"Influencer\\", __id: id(update_this4) } AS update_var2
-                    RETURN update_var2
+                    MATCH (this)<-[this5:REVIEWED]-(this6:Influencer)
+                    WITH this6 { __resolveType: \\"Influencer\\", __id: id(this6) } AS var4
+                    RETURN var4
                 }
-                WITH update_var2
-                RETURN collect(update_var2) AS update_var2
+                WITH var4
+                RETURN collect(var4) AS var4
             }
-            RETURN collect(DISTINCT this { .title, reviewers: update_var2 }) AS data"
+            RETURN this { .title, reviewers: var4 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"John Wick\\",
-                \\"this_reviewers0_create0_node_name\\": \\"Ana\\",
-                \\"this_reviewers0_create0_node_reputation\\": {
+                \\"param1\\": \\"Ana\\",
+                \\"param2\\": {
                     \\"low\\": 100,
                     \\"high\\": 0
                 },
-                \\"updateMovies\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"reviewers\\": [
-                                {
-                                    \\"create\\": [
-                                        {
-                                            \\"edge\\": {
-                                                \\"score\\": {
-                                                    \\"low\\": 10,
-                                                    \\"high\\": 0
-                                                }
-                                            },
-                                            \\"node\\": {
-                                                \\"Person\\": {
-                                                    \\"name\\": \\"Ana\\",
-                                                    \\"reputation\\": {
-                                                        \\"low\\": 100,
-                                                        \\"high\\": 0
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param3\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
             }"
         `);
     });
