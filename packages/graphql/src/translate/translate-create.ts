@@ -20,7 +20,6 @@
 import type Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { Node } from "../classes";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { EntityAdapter } from "../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
@@ -30,6 +29,7 @@ import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 import { CallbackBucket } from "./queryAST/utils/callback-bucket";
 import unwindCreate from "./unwind-create";
 import { buildClause } from "./utils/build-clause";
+import { type ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
@@ -67,16 +67,12 @@ async function translateUsingQueryAST({
 
 export async function translateCreate({
     context,
-    node,
+    entityAdapter,
 }: {
     context: Neo4jGraphQLTranslationContext;
-    node: Node;
+    entityAdapter: ConcreteEntityAdapter;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
     const { resolveTree } = context;
-    const entityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
-    if (!entityAdapter) {
-        throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
-    }
     const mutationInputs = resolveTree.args.input as any[];
     const { isSupported, reason } = isUnwindCreateSupported(entityAdapter, asArray(mutationInputs), context);
     if (isSupported) {

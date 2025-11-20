@@ -20,7 +20,6 @@
 import type { GraphQLResolveInfo } from "graphql";
 import type { AttributeAdapter } from "../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { translateTopLevelCypher } from "../../../translate/translate-top-level-cypher";
-import type { CypherField } from "../../../types";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
@@ -29,11 +28,9 @@ import { graphqlArgsToCompose } from "../../to-compose";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
 export function cypherResolver({
-    field,
     attributeAdapter,
     type,
 }: {
-    field: CypherField; // TODO: make this go away
     attributeAdapter: AttributeAdapter;
     type: "Query" | "Mutation";
 }) {
@@ -44,7 +41,7 @@ export function cypherResolver({
 
         const { cypher, params } = translateTopLevelCypher({
             context: context as Neo4jGraphQLTranslationContext,
-            field,
+            attributeAdapter,
             type,
         });
 

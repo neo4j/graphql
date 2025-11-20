@@ -24,7 +24,6 @@ import type {
     ObjectTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import type { Node } from "../../../classes";
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { QueryASTFactory } from "../../../translate/queryAST/factory/QueryASTFactory";
@@ -36,10 +35,8 @@ import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
 export function updateResolver({
-    node,
     concreteEntityAdapter,
 }: {
-    node: Node;
     concreteEntityAdapter: ConcreteEntityAdapter;
 }): ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
@@ -47,7 +44,10 @@ export function updateResolver({
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
-        const { cypher, params } = await translateUpdate({ context: context as Neo4jGraphQLTranslationContext, node });
+        const { cypher, params } = await translateUpdate({
+            context: context as Neo4jGraphQLTranslationContext,
+            entityAdapter: concreteEntityAdapter,
+        });
         const executeResult = await execute({
             cypher,
             params,
@@ -124,17 +124,12 @@ async function translateUsingQueryAST({
 
 async function translateUpdate({
     context,
-    node,
+    entityAdapter,
 }: {
     context: Neo4jGraphQLTranslationContext;
-    node: Node;
+    entityAdapter: ConcreteEntityAdapter;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
     const { resolveTree } = context;
-    const entityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
-    if (!entityAdapter) {
-        throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
-    }
-
     const varName = "this";
     const result = await translateUsingQueryAST({ context, entityAdapter, resolveTree, varName });
 

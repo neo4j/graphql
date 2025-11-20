@@ -18,7 +18,6 @@
  */
 
 import { Kind, type FieldNode, type GraphQLResolveInfo } from "graphql";
-import type { Node } from "../../../classes";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { translateCreate } from "../../../translate/translate-create";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
@@ -26,19 +25,16 @@ import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
-export function createResolver({
-    node,
-    concreteEntityAdapter,
-}: {
-    node: Node;
-    concreteEntityAdapter: ConcreteEntityAdapter;
-}) {
+export function createResolver({ concreteEntityAdapter }: { concreteEntityAdapter: ConcreteEntityAdapter }) {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
         const resolveTree = getNeo4jResolveTree(info, { args });
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
-        const { cypher, params } = await translateCreate({ context: context as Neo4jGraphQLTranslationContext, node });
+        const { cypher, params } = await translateCreate({
+            context: context as Neo4jGraphQLTranslationContext,
+            entityAdapter: concreteEntityAdapter,
+        });
 
         const executeResult = await execute({
             cypher,

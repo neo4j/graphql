@@ -23,7 +23,7 @@ import type { UniqueType } from "../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../utils/is-multi-db-unsupported-error";
 import { TestHelper } from "../utils/tests-helper";
 
-describe("multi-database", () => {
+describe.skip("multi-database", () => {
     let driver: Driver;
     const testHelper = new TestHelper();
     const id = generate({

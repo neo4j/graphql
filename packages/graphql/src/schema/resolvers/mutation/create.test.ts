@@ -17,16 +17,12 @@
  * limitations under the License.
  */
 
-import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
 import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { createResolver } from "./create";
 
 describe("Create resolver", () => {
     test("should return the correct; type, args and resolve", () => {
-        const node = new NodeBuilder({
-            name: "Movie",
-        }).instance();
         const concreteEntity = new ConcreteEntity({
             name: "Movie",
             labels: ["Movie"],
@@ -38,7 +34,7 @@ describe("Create resolver", () => {
         });
         const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
-        const result = createResolver({ node, concreteEntityAdapter });
+        const result = createResolver({ concreteEntityAdapter });
         expect(result.type).toBe("CreateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({

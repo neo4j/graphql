@@ -32,8 +32,6 @@ export class ContextBuilder extends Builder<Neo4jGraphQLTranslationContext, Neo4
     constructor(newOptions: Partial<Neo4jGraphQLTranslationContext> = {}) {
         super({
             resolveTree: {} as ResolveTree,
-            nodes: [],
-            relationships: [],
             schemaModel: new Neo4jGraphQLSchemaModel({
                 concreteEntities: [] as ConcreteEntity[],
                 compositeEntities: [] as CompositeEntity[],

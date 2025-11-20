@@ -20,7 +20,7 @@
 import type { DocumentNode, FieldDefinitionNode } from "graphql";
 import { parse } from "graphql";
 import type { ResolveTree } from "graphql-parse-resolve-info";
-import { selectionSetToResolveTree } from "../../schema/get-custom-resolver-meta";
+import { selectionSetToResolveTree } from "../../schema/selection-set-to-resolve-tree";
 import { getDefinitionCollection } from "../parser/definition-collection";
 import type { Annotation } from "./Annotation";
 

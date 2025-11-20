@@ -44,6 +44,7 @@ import type { DefinitionCollection } from "./definition-collection";
 import { parseAnnotations } from "./parse-annotation";
 import { parseArguments } from "./parse-arguments";
 import { findDirective } from "./utils";
+import type { IResolvers } from "@graphql-tools/utils";
 
 export function parseAttributeArguments(
     fieldArgs: readonly InputValueDefinitionNode[],
@@ -62,7 +63,8 @@ export function parseAttributeArguments(
 export function parseAttribute(
     field: FieldDefinitionNode,
     definitionCollection: DefinitionCollection,
-    definitionFields?: ReadonlyArray<FieldDefinitionNode>
+    definitionFields?: ReadonlyArray<FieldDefinitionNode>,
+    userDefinedCustomResolvers?: IResolvers | IResolvers[]
 ): Attribute {
     const name = field.name.value;
     const type = parseTypeNode(definitionCollection, field.type);
@@ -70,6 +72,11 @@ export function parseAttribute(
     const annotations = parseAnnotations(field.directives || []);
 
     annotations.customResolver?.parseRequire(definitionCollection.document, definitionFields);
+    if (annotations.customResolver) {
+        if (!userDefinedCustomResolvers?.[name]) {
+            console.warn(`Custom resolver for ${name} has not been provided`);
+        }
+    }
 
     const databaseName = getDatabaseName(field);
     return new Attribute({
