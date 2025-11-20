@@ -37,7 +37,7 @@ export class ParamInputField extends InputField {
     protected attribute: AttributeAdapter;
     protected inputValue: unknown;
 
-    private memoizedParam: Cypher.Param | undefined;
+    private param: Cypher.Variable;
 
     constructor({
         attribute,
@@ -51,6 +51,7 @@ export class ParamInputField extends InputField {
         super(attribute.name, attachedTo);
         this.attribute = attribute;
         this.inputValue = inputValue;
+        this.param = this.inputValue instanceof Cypher.Variable ? this.inputValue : new Cypher.Param(this.inputValue);
     }
 
     public getChildren() {
@@ -61,8 +62,8 @@ export class ParamInputField extends InputField {
         queryASTContext: QueryASTContext<Cypher.Node>,
         _inputVariable?: Cypher.Variable
     ): Cypher.SetParam[] {
-        // This check is needed for populatedBy callbacks
         const param = this.getParam();
+        // This check is needed for populatedBy callbacks
         if (param instanceof Cypher.Param) {
             if (param.value === undefined) {
                 return [];
@@ -80,18 +81,11 @@ export class ParamInputField extends InputField {
     }
 
     protected getParam(): Cypher.Variable {
-        if (this.inputValue instanceof Cypher.Variable) {
-            return this.inputValue;
-        } else {
-            if (!this.memoizedParam) {
-                this.memoizedParam = new Cypher.Param(this.inputValue);
-            }
-            return this.memoizedParam;
-        }
+        return this.param;
     }
 
     protected getRightExpression(
-        _: QueryASTContext<Cypher.Node>
+        _context: QueryASTContext<Cypher.Node>
     ): Exclude<Cypher.Expr, Cypher.Map | Cypher.MapProjection> {
         const rightVariable = this.getParam();
         return this.coerceReference(rightVariable);
@@ -106,7 +100,7 @@ export class ParamInputField extends InputField {
             }
             const comprehensionVar = new Cypher.Variable();
             const mapPoint = Cypher.point(comprehensionVar);
-            return new Cypher.ListComprehension(comprehensionVar, variable).map(mapPoint);
+            return new Cypher.ListComprehension(comprehensionVar).in(variable).map(mapPoint);
         }
 
         if (this.attribute.typeHelper.isDateTime()) {
@@ -115,7 +109,7 @@ export class ParamInputField extends InputField {
             }
             const comprehensionVar = new Cypher.Variable();
             const mapDateTime = Cypher.datetime(comprehensionVar);
-            return new Cypher.ListComprehension(comprehensionVar, variable).map(mapDateTime);
+            return new Cypher.ListComprehension(comprehensionVar).in(variable).map(mapDateTime);
         }
 
         if (this.attribute.typeHelper.isTime()) {
@@ -124,7 +118,7 @@ export class ParamInputField extends InputField {
             }
             const comprehensionVar = new Cypher.Variable();
             const mapTime = Cypher.time(comprehensionVar);
-            return new Cypher.ListComprehension(comprehensionVar, variable).map(mapTime);
+            return new Cypher.ListComprehension(comprehensionVar).in(variable).map(mapTime);
         }
         return variable;
     }
