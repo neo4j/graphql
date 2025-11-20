@@ -83,7 +83,6 @@ export class DisconnectOperation extends MutationOperation {
 
     /**
      * Get and set field methods are utilities to remove duplicate fields between separate inputs
-     * TODO: This logic should be handled in the factory.
      */
     public getField(key: string, attachedTo: "node" | "relationship") {
         return this.inputFields.get(`${attachedTo}_${key}`);

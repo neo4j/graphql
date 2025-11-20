@@ -17,15 +17,12 @@
  * limitations under the License.
  */
 
-import type Cypher from "@neo4j/cypher-builder";
 import { Kind, type FieldNode, type GraphQLResolveInfo } from "graphql";
 import type {
     ObjectTypeComposerArgumentConfigAsObjectDefinition,
     ObjectTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
-import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { Node } from "../../../classes";
-import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { QueryASTFactory } from "../../../translate/queryAST/factory/QueryASTFactory";
 import { CallbackBucket } from "../../../translate/queryAST/utils/callback-bucket";
@@ -47,7 +44,10 @@ export function updateResolver({
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
-        const { cypher, params } = await translateUpdate({ context: context as Neo4jGraphQLTranslationContext, node });
+        const { cypher, params } = await translateUpdate({
+            context: context as Neo4jGraphQLTranslationContext,
+            nodeName: node.name,
+        });
         const executeResult = await execute({
             cypher,
             params,
@@ -57,8 +57,9 @@ export function updateResolver({
         });
 
         const nodeProjection = info.fieldNodes[0]?.selectionSet?.selections.find(
-            (selection): selection is FieldNode =>
-                selection.kind === Kind.FIELD && selection.name.value === concreteEntityAdapter.plural
+            (selection): selection is FieldNode => {
+                return selection.kind === Kind.FIELD && selection.name.value === concreteEntityAdapter.plural;
+            }
         );
 
         const resolveResult = {
@@ -69,7 +70,6 @@ export function updateResolver({
 
         if (nodeProjection) {
             const nodeKey = nodeProjection.alias ? nodeProjection.alias.value : nodeProjection.name.value;
-            // resolveResult[nodeKey] = executeResult.records[0]?.data || [];
             resolveResult[nodeKey] = executeResult.records.map((x) => x.this);
         }
 
@@ -89,23 +89,21 @@ export function updateResolver({
     };
 }
 
-async function translateUsingQueryAST({
+async function translateUpdate({
     context,
-    entityAdapter,
-    resolveTree,
-    varName,
+    nodeName,
 }: {
     context: Neo4jGraphQLTranslationContext;
-    entityAdapter: EntityAdapter;
-    resolveTree: ResolveTree;
-    varName: string;
-}): Promise<Cypher.CypherResult> {
-    const operationsTreeFactory = new QueryASTFactory(context.schemaModel);
-
+    nodeName: string;
+}): Promise<{ cypher: string; params: Record<string, any> }> {
+    const { resolveTree } = context;
+    const entityAdapter = context.schemaModel.getConcreteEntityAdapter(nodeName);
     if (!entityAdapter) {
-        throw new Error("Entity not found");
+        throw new Error(`Transpilation error: ${nodeName} is not a concrete entity`);
     }
 
+    const varName = "this";
+    const operationsTreeFactory = new QueryASTFactory(context.schemaModel);
     const callbackBucket = new CallbackBucket(context);
 
     const operationsTree = operationsTreeFactory.createMutationAST({
@@ -120,23 +118,4 @@ async function translateUsingQueryAST({
 
     const clause = operationsTree.build(context, varName);
     return buildClause(clause, { context });
-}
-
-async function translateUpdate({
-    context,
-    node,
-}: {
-    context: Neo4jGraphQLTranslationContext;
-    node: Node;
-}): Promise<{ cypher: string; params: Record<string, any> }> {
-    const { resolveTree } = context;
-    const entityAdapter = context.schemaModel.getConcreteEntityAdapter(node.name);
-    if (!entityAdapter) {
-        throw new Error(`Transpilation error: ${node.name} is not a concrete entity`);
-    }
-
-    const varName = "this";
-    const result = await translateUsingQueryAST({ context, entityAdapter, resolveTree, varName });
-
-    return result;
 }
