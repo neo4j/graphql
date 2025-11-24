@@ -559,8 +559,6 @@ describe("Cypher Auth Where", () => {
             MATCH (this:User)
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            WITH *
-            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             SET
                 this.name = $param2
             WITH this
@@ -603,9 +601,7 @@ describe("Cypher Auth Where", () => {
             "CYPHER 5
             MATCH (this:User)
             WITH *
-            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            WITH *
-            WHERE (this.name = $param2 AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
+            WHERE (this.name = $param0 AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
             SET
                 this.name = $param3
             WITH this
@@ -616,6 +612,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": \\"bob\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -623,7 +620,6 @@ describe("Cypher Auth Where", () => {
                     ],
                     \\"sub\\": \\"id-01\\"
                 },
-                \\"param2\\": \\"bob\\",
                 \\"param3\\": \\"Bob\\"
             }"
         `);
@@ -655,11 +651,6 @@ describe("Cypher Auth Where", () => {
             WITH *
             CALL (*) {
                 MATCH (this)-[this0:HAS_POST]->(this1:Post)
-                WITH *
-                WHERE ($isAuthenticated = true AND EXISTS {
-                    MATCH (this1)<-[:HAS_POST]-(this2:User)
-                    WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
-                })
                 WITH *
                 WHERE ($isAuthenticated = true AND EXISTS {
                     MATCH (this1)<-[:HAS_POST]-(this2:User)

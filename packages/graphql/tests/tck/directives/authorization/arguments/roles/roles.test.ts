@@ -350,9 +350,11 @@ describe("Cypher Auth Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
-            WHERE this.id = $param3
+            WHERE this.id = $param0
+            WITH *
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
             SET
                 this.id = $param4
             WITH *
@@ -365,6 +367,7 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": \\"1\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -372,8 +375,7 @@ describe("Cypher Auth Roles", () => {
                     ],
                     \\"sub\\": \\"super_admin\\"
                 },
-                \\"param2\\": \\"admin\\",
-                \\"param3\\": \\"1\\",
+                \\"param3\\": \\"admin\\",
                 \\"param4\\": \\"id-1\\",
                 \\"param5\\": \\"admin\\",
                 \\"param6\\": \\"admin\\"
@@ -400,10 +402,12 @@ describe("Cypher Auth Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
-            WHERE this.id = $param4
+            WHERE this.id = $param0
+            WITH *
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
             SET
                 this.password = $param5
             WITH *
@@ -417,6 +421,7 @@ describe("Cypher Auth Roles", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": \\"1\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -424,9 +429,8 @@ describe("Cypher Auth Roles", () => {
                     ],
                     \\"sub\\": \\"super_admin\\"
                 },
-                \\"param2\\": \\"admin\\",
-                \\"param3\\": \\"super-admin\\",
-                \\"param4\\": \\"1\\",
+                \\"param3\\": \\"admin\\",
+                \\"param4\\": \\"super-admin\\",
                 \\"param5\\": \\"password\\",
                 \\"param6\\": \\"admin\\",
                 \\"param7\\": \\"super-admin\\",

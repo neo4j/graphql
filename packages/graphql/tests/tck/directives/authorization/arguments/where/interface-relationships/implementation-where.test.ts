@@ -381,11 +381,6 @@ describe("Cypher Auth Where", () => {
                 MATCH (this)<-[:HAS_CONTENT]-(this0:User)
                 WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
             })
-            WITH *
-            WHERE ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
-            })
             SET
                 this.content = $param2
             WITH this
@@ -429,12 +424,7 @@ describe("Cypher Auth Where", () => {
             "CYPHER 5
             MATCH (this:Post)
             WITH *
-            WHERE ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
-            })
-            WITH *
-            WHERE (this.content = $param2 AND ($isAuthenticated = true AND EXISTS {
+            WHERE (this.content = $param0 AND ($isAuthenticated = true AND EXISTS {
                 MATCH (this)<-[:HAS_CONTENT]-(this0:User)
                 WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
             }))
@@ -451,6 +441,7 @@ describe("Cypher Auth Where", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": \\"bob\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -458,7 +449,6 @@ describe("Cypher Auth Where", () => {
                     ],
                     \\"sub\\": \\"id-01\\"
                 },
-                \\"param2\\": \\"bob\\",
                 \\"param3\\": \\"Bob\\"
             }"
         `);
@@ -492,11 +482,6 @@ describe("Cypher Auth Where", () => {
             WITH *
             CALL (*) {
                 MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
-                WITH *
-                WHERE ($isAuthenticated = true AND EXISTS {
-                    MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                    WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
-                })
                 WITH *
                 WHERE ($isAuthenticated = true AND EXISTS {
                     MATCH (this3)<-[:HAS_CONTENT]-(this4:User)

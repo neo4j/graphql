@@ -361,9 +361,11 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
+            WITH *
+            WHERE this.id = $param0
+            WITH *
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
-            WHERE this.id = $param2
             SET
                 this.id = $param3
             WITH this
@@ -374,6 +376,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": \\"old-id\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -381,7 +384,6 @@ describe("Cypher Auth Allow", () => {
                     ],
                     \\"sub\\": \\"old-id\\"
                 },
-                \\"param2\\": \\"old-id\\",
                 \\"param3\\": \\"new-id\\"
             }"
         `);
@@ -406,10 +408,12 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
+            WITH *
+            WHERE this.id = $param0
+            WITH *
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
-            WHERE this.id = $param2
             SET
                 this.password = $param3
             WITH this
@@ -420,6 +424,7 @@ describe("Cypher Auth Allow", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": \\"id-01\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -427,7 +432,6 @@ describe("Cypher Auth Allow", () => {
                     ],
                     \\"sub\\": \\"id-01\\"
                 },
-                \\"param2\\": \\"id-01\\",
                 \\"param3\\": \\"new-password\\"
             }"
         `);
@@ -460,6 +464,8 @@ describe("Cypher Auth Allow", () => {
             WITH *
             CALL (*) {
                 MATCH (this)<-[this0:HAS_POST]-(this1:User)
+                WITH *
+                WITH *
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH *
                 SET
@@ -516,6 +522,8 @@ describe("Cypher Auth Allow", () => {
             WITH *
             CALL (*) {
                 MATCH (this)<-[this0:HAS_POST]-(this1:User)
+                WITH *
+                WITH *
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH *

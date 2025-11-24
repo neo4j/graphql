@@ -242,9 +242,7 @@ describe("https://github.com/neo4j/graphql/issues/6620", () => {
             "CYPHER 5
             MATCH (this:Car)
             WITH *
-            WHERE (this.accessibleBy IS NULL OR ($jwt.permission_Car_node_UPDATE IS NOT NULL AND this.accessibleBy IN $jwt.permission_Car_node_UPDATE))
-            WITH *
-            WHERE (this.name = $param1 AND (this.accessibleBy IS NULL OR ($jwt.permission_Car_node_UPDATE IS NOT NULL AND this.accessibleBy IN $jwt.permission_Car_node_UPDATE)))
+            WHERE (this.name = $param0 AND (this.accessibleBy IS NULL OR ($jwt.permission_Car_node_UPDATE IS NOT NULL AND this.accessibleBy IN $jwt.permission_Car_node_UPDATE)))
             SET
                 this.name = $param2
             WITH *
@@ -486,9 +484,11 @@ describe("https://github.com/neo4j/graphql/issues/6620 validate", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Car)
+            WITH *
+            WHERE this.name = $param0
+            WITH *
             CALL apoc.util.validate(NOT (this.accessibleBy IS NULL OR ($jwt.permission_Car_node_UPDATE IS NOT NULL AND this.accessibleBy IN $jwt.permission_Car_node_UPDATE)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
-            WHERE this.name = $param1
             SET
                 this.name = $param2
             WITH *
