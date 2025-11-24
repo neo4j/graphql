@@ -17,18 +17,12 @@
  * limitations under the License.
  */
 
-import { NodeBuilder } from "../../../../tests/utils/builders/node-builder";
 import { ConcreteEntity } from "../../../schema-model/entity/ConcreteEntity";
 import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { updateResolver } from "./update";
 
 describe("Update resolver", () => {
     test("should return the correct; type, args and resolve", () => {
-        const node = new NodeBuilder({
-            name: "Movie",
-            // @ts-ignore
-            relationFields: [{}, {}],
-        }).instance();
         const concreteEntity = new ConcreteEntity({
             name: "Movie",
             labels: ["Movie"],
@@ -40,7 +34,7 @@ describe("Update resolver", () => {
         });
         const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
-        const result = updateResolver({ node, concreteEntityAdapter });
+        const result = updateResolver({ concreteEntityAdapter });
         expect(result.type).toBe("UpdateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
         expect(result.args).toMatchObject({
@@ -49,11 +43,6 @@ describe("Update resolver", () => {
         });
     });
     test("should return fewer fields based on number of InputTCs created", () => {
-        const node = new NodeBuilder({
-            name: "Movie",
-            // @ts-ignore
-            relationFields: [{}, {}],
-        }).instance();
         const concreteEntity = new ConcreteEntity({
             name: "Movie",
             labels: ["Movie"],
@@ -65,7 +54,7 @@ describe("Update resolver", () => {
         });
         const concreteEntityAdapter = new ConcreteEntityAdapter(concreteEntity);
 
-        const result = updateResolver({ node, concreteEntityAdapter });
+        const result = updateResolver({ concreteEntityAdapter });
         expect(result.type).toBe("UpdateMoviesMutationResponse!");
         expect(result.resolve).toBeInstanceOf(Function);
 

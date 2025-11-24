@@ -22,7 +22,6 @@ import type {
     ObjectTypeComposerArgumentConfigAsObjectDefinition,
     ObjectTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
-import type { Node } from "../../../classes";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { QueryASTFactory } from "../../../translate/queryAST/factory/QueryASTFactory";
 import { CallbackBucket } from "../../../translate/queryAST/utils/callback-bucket";
@@ -33,10 +32,8 @@ import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
 export function updateResolver({
-    node,
     concreteEntityAdapter,
 }: {
-    node: Node;
     concreteEntityAdapter: ConcreteEntityAdapter;
 }): ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
@@ -46,7 +43,7 @@ export function updateResolver({
 
         const { cypher, params } = await translateUpdate({
             context: context as Neo4jGraphQLTranslationContext,
-            nodeName: node.name,
+            entityAdapter: concreteEntityAdapter,
         });
         const executeResult = await execute({
             cypher,
@@ -91,17 +88,12 @@ export function updateResolver({
 
 async function translateUpdate({
     context,
-    nodeName,
+    entityAdapter,
 }: {
     context: Neo4jGraphQLTranslationContext;
-    nodeName: string;
+    entityAdapter: ConcreteEntityAdapter;
 }): Promise<{ cypher: string; params: Record<string, any> }> {
     const { resolveTree } = context;
-    const entityAdapter = context.schemaModel.getConcreteEntityAdapter(nodeName);
-    if (!entityAdapter) {
-        throw new Error(`Transpilation error: ${nodeName} is not a concrete entity`);
-    }
-
     const varName = "this";
     const operationsTreeFactory = new QueryASTFactory(context.schemaModel);
     const callbackBucket = new CallbackBucket(context);

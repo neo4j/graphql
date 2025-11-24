@@ -17,48 +17,9 @@
  * limitations under the License.
  */
 
-import type { GraphElement } from "../classes";
 import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { parseMutationField } from "../translate/queryAST/factory/parsers/parse-mutation-field";
-import mapToDbProperty from "./map-to-db-property";
-
-/** returns conflicting mutation input properties
- * @deprecated
- */
-export function findConflictingProperties({
-    graphElement,
-    input,
-}: {
-    graphElement: GraphElement;
-    input: Record<string, any> | undefined;
-}): string[] {
-    if (!input) {
-        return [];
-    }
-    const dbPropertiesToInputFieldNames: Record<string, string[]> = Object.keys(input).reduce((acc, rawField) => {
-        const { fieldName } = parseMutationField(rawField);
-
-        const dbName = mapToDbProperty(graphElement, fieldName);
-        // some input fields (eg relation fields) have no corresponding db name in the map
-        if (!dbName) {
-            return acc;
-        }
-        if (acc[dbName]) {
-            acc[dbName].push(rawField);
-        } else {
-            acc[dbName] = [rawField];
-        }
-        return acc;
-    }, {});
-
-    return Object.values(dbPropertiesToInputFieldNames)
-        .filter((v) => v.length > 1)
-        .reduce((acc, el) => {
-            acc.push(...el);
-            return acc;
-        }, []);
-}
 
 export function findConflictingAttributes(
     fields: string[],

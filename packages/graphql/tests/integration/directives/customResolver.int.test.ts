@@ -18,7 +18,7 @@
  */
 
 import gql from "graphql-tag";
-import { INVALID_REQUIRED_FIELD_ERROR } from "../../../src/schema/get-custom-resolver-meta";
+import { INVALID_REQUIRED_FIELD_ERROR } from "../../../src/schema/selection-set-to-resolve-tree";
 import { createBearerToken } from "../../utils/create-bearer-token";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";

@@ -19,22 +19,17 @@
 
 import type Cypher from "@neo4j/cypher-builder";
 import type { EventEmitter } from "events";
-import type { DirectiveNode, InputValueDefinitionNode, TypeNode } from "graphql";
+import type { TypeNode } from "graphql";
 import type { Directive } from "graphql-compose";
-import type { ResolveTree } from "graphql-parse-resolve-info";
 import type { JWTVerifyOptions, RemoteJWKSetOptions } from "jose";
 import type { Integer } from "neo4j-driver";
 import type { Neo4jGraphQLSubscriptionsCDCEngine } from "../classes/subscription/Neo4jGraphQLSubscriptionsCDCEngine";
-import type { RelationshipNestedOperationsOption, RelationshipQueryDirectionOption } from "../constants";
 import type { Neo4jGraphQLSchemaModel } from "../schema-model/Neo4jGraphQLSchemaModel";
 import type { DefaultAnnotationValue } from "../schema-model/annotation/DefaultAnnotation";
 import type { FulltextField } from "../schema-model/annotation/FulltextAnnotation";
 import type { VectorField } from "../schema-model/annotation/VectorAnnotation";
-import type { RelationshipDirection } from "../schema-model/relationship/Relationship";
 import type { JwtPayload } from "./jwt-payload";
 import type { Neo4jGraphQLContext } from "./neo4j-graphql-context";
-
-export { Node } from "../classes";
 
 export type AuthorizationContext = {
     jwt?: JwtPayload;
@@ -57,10 +52,6 @@ export type VectorContext = {
     queryType: string;
     scoreVariable: Cypher.Variable;
     vectorSettings: Neo4jVectorSettings;
-};
-
-export type FullText = {
-    indexes: FulltextContext[];
 };
 
 /**
@@ -88,122 +79,6 @@ export interface TypeMeta {
     };
     originalType?: TypeNode;
 }
-
-export type Unique = {
-    constraintName: string;
-};
-
-export interface Callback {
-    operations: CallbackOperations[];
-    callbackName: string;
-}
-
-export type SelectableOptions = {
-    onRead: boolean;
-    onAggregate: boolean;
-};
-
-export type SettableOptions = {
-    onCreate: boolean;
-    onUpdate: boolean;
-};
-
-export type FilterableOptions = {
-    byValue: boolean;
-    byAggregate: boolean;
-};
-
-/**
- * Representation a ObjectTypeDefinitionNode field.
- */
-export interface BaseField {
-    fieldName: string;
-    typeMeta: TypeMeta;
-    otherDirectives: DirectiveNode[];
-    arguments: InputValueDefinitionNode[];
-    private?: boolean;
-    description?: string;
-    dbPropertyName?: string;
-    dbPropertyNameUnescaped?: string;
-    unique?: Unique;
-    selectableOptions: SelectableOptions;
-    settableOptions: SettableOptions;
-    filterableOptions: FilterableOptions;
-}
-
-/**
- * Representation of the `@relationship` directive and its meta.
- */
-export interface RelationField extends BaseField {
-    direction: RelationshipDirection;
-    typeUnescaped: string;
-    type: string;
-    connectionPrefix?: string;
-    inherited: boolean;
-    properties?: string;
-    union?: UnionField;
-    interface?: InterfaceField;
-    queryDirection: RelationshipQueryDirectionOption;
-    nestedOperations: RelationshipNestedOperationsOption[];
-    aggregate: boolean;
-}
-
-export interface ConnectionField extends BaseField {
-    relationship: RelationField;
-    relationshipTypeName: string;
-}
-
-/**
- * Representation of the `@cypher` directive and its meta.
- */
-export interface CypherField extends BaseField {
-    statement: string;
-    columnName: string;
-    isEnum: boolean;
-    isScalar: boolean;
-}
-
-/**
- * Representation of any field thats not
- * a cypher directive or relationship directive
- * String, Int, Float, ID, Boolean... (custom scalars).
- */
-export interface PrimitiveField extends BaseField {
-    autogenerate?: boolean;
-    defaultValue?: any;
-    coalesceValue?: any;
-    callback?: Callback;
-    isGlobalIdField?: boolean;
-}
-
-export type CustomScalarField = BaseField;
-
-export interface CustomEnumField extends BaseField {
-    // TODO Must be "Enum" - really needs refactoring into classes
-    kind: string;
-    defaultValue?: string | string[];
-    coalesceValue?: string | string[];
-}
-
-export interface UnionField extends BaseField {
-    nodes?: string[];
-}
-
-export interface CustomResolverField extends BaseField {
-    requiredFields: Record<string, ResolveTree>;
-}
-
-export interface InterfaceField extends BaseField {
-    implementations?: string[];
-}
-
-export type ObjectField = BaseField;
-
-export interface TemporalField extends PrimitiveField {
-    timestamps?: TimeStampOperations[];
-}
-
-export type PointField = BaseField;
 
 export type SortDirection = "ASC" | "DESC";
 
@@ -256,10 +131,6 @@ export interface ConnectionWhereArg {
     NOT?: ConnectionWhereArg;
 }
 
-export type TimeStampOperations = "CREATE" | "UPDATE";
-
-export type CallbackOperations = "CREATE" | "UPDATE";
-
 /*
   Object keys and enum values map to values at https://neo4j.com/docs/cypher-manual/current/query-tuning/query-options/#cypher-query-options
 */
@@ -280,43 +151,6 @@ export interface CypherQueryOptions {
 
 /** Input field for graphql-compose */
 export type InputField = { type: string; defaultValue?: DefaultAnnotationValue; directives?: Directive[] } | string;
-
-/** Raw event metadata returned from queries */
-export type NodeSubscriptionMeta = {
-    event: "create" | "update" | "delete";
-    typename: string;
-    properties: {
-        old: Record<string, any>;
-        new: Record<string, any>;
-    };
-    id: Integer | string | number;
-    timestamp: Integer | string | number;
-};
-export type RelationshipSubscriptionMeta =
-    | RelationshipSubscriptionMetaTypenameParameters
-    | RelationshipSubscriptionMetaLabelsParameters;
-type RelationshipSubscriptionMetaCommonParameters = {
-    event: "create_relationship" | "delete_relationship";
-    relationshipName: string;
-    id_from: Integer | string | number;
-    id_to: Integer | string | number;
-    properties: {
-        from: Record<string, any>;
-        to: Record<string, any>;
-        relationship: Record<string, any>;
-    };
-    id: Integer | string | number;
-    timestamp: Integer | string | number;
-};
-export type RelationshipSubscriptionMetaTypenameParameters = RelationshipSubscriptionMetaCommonParameters & {
-    fromTypename: string;
-    toTypename: string;
-};
-export type RelationshipSubscriptionMetaLabelsParameters = RelationshipSubscriptionMetaCommonParameters & {
-    fromLabels: string[];
-    toLabels: string[];
-};
-export type EventMeta = NodeSubscriptionMeta | RelationshipSubscriptionMeta;
 
 export type NodeSubscriptionsEvent =
     | {
@@ -480,10 +314,3 @@ export type Neo4jFeaturesSettings = {
 export type ContextFeatures = Neo4jFeaturesSettings & {
     subscriptionsEngine?: Neo4jGraphQLSubscriptionsEngine;
 };
-
-export type PredicateReturn = {
-    predicate: Cypher.Predicate | undefined;
-    preComputedSubqueries?: Cypher.CompositeClause | undefined;
-};
-
-export type CypherFieldReferenceMap = Record<string, Cypher.Node | Cypher.Variable>;
