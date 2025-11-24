@@ -17,11 +17,13 @@
  * limitations under the License.
  */
 
+import Debug from "debug";
 import { Kind, type FieldNode, type GraphQLResolveInfo } from "graphql";
 import type {
     ObjectTypeComposerArgumentConfigAsObjectDefinition,
     ObjectTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
+import { DEBUG_TRANSLATE } from "../../../constants";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { QueryASTFactory } from "../../../translate/queryAST/factory/QueryASTFactory";
 import { CallbackBucket } from "../../../translate/queryAST/utils/callback-bucket";
@@ -30,6 +32,8 @@ import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphq
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
+
+const debug = Debug(DEBUG_TRANSLATE);
 
 export function updateResolver({
     concreteEntityAdapter,
@@ -105,7 +109,7 @@ async function translateUpdate({
         varName,
         callbackBucket,
     });
-
+    debug(operationsTree.print());
     await callbackBucket.resolveCallbacks();
 
     const clause = operationsTree.build(context, varName);

@@ -143,6 +143,8 @@ export class UpdateOperation extends Operation {
         // We need to call the filter subqueries before predicate to handle aggregate filters
         const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
 
+        const authBeforeClauses = this.getAuthorizationClauses(nestedContext);
+
         const afterFilterSubqueries = this.authFilters
             .flatMap((af) => af.getSubqueriesAfter(nestedContext))
             .map((sq) => {
@@ -153,15 +155,15 @@ export class UpdateOperation extends Operation {
 
         const matchClause = new Cypher.Match(pattern);
         const filtersWith = new Cypher.With("*").where(predicate).set(...setParams);
-        if (afterFilterSubqueries.length) {
+        if (afterFilterSubqueries.length > 0 || authBeforeClauses.length > 0) {
             filtersWith.with("*");
         }
 
         const clauses = Cypher.utils.concat(
             matchClause,
             ...filterSubqueries,
-            ...this.getAuthorizationClauses(nestedContext), // THESE ARE "BEFORE" AUTH
             filtersWith,
+            ...authBeforeClauses,
             ...mutationSubqueries.map((sq) => Cypher.utils.concat(new Cypher.With("*"), new Cypher.Call(sq, "*"))),
             ...afterFilterSubqueries,
             ...this.getAuthorizationClausesAfter(nestedContext) // THESE ARE "AFTER" AUTH
@@ -184,19 +186,14 @@ export class UpdateOperation extends Operation {
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
-        const { subqueries, predicates, validations } = this.transpileAuthClauses(context);
+        const { subqueries, validations } = this.transpileAuthClauses(context);
         const authSubqueries = subqueries.map((sq) => {
             return new Cypher.Call(sq, "*");
         });
-        if (!predicates.length) {
-            if (!validations.length) {
-                return [];
-            }
-            return [...authSubqueries, ...validations];
+        if (!validations.length) {
+            return [];
         }
-
-        const predicate = Cypher.and(...predicates);
-        return [...authSubqueries, new Cypher.With("*").where(predicate), ...validations];
+        return [...authSubqueries, ...validations];
     }
 
     private getAuthorizationClausesAfter(context: QueryASTContext): Cypher.Clause[] {
