@@ -241,6 +241,8 @@ describe("@auth allow on specific interface implementation", () => {
             WITH *
             CALL (*) {
                 MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
+                WITH *
+                WITH *
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
                     MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
                     WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)

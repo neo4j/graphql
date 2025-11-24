@@ -217,9 +217,11 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0])
+            WITH *
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
             SET
                 this.ratings = (this.ratings + $param3)
             WITH *
@@ -380,9 +382,11 @@ describe("Arrays Methods", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
             WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0])
+            WITH *
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
             SET
                 this.ratings = this.ratings[0..-$param3]
             WITH *

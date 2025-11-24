@@ -52,6 +52,8 @@ describe("https://github.com/neo4j/graphql/issues/2789", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
+            WITH *
+            WITH *
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param1 IS NOT NULL AND this.id = $param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param2 IS NOT NULL AND this.id = $param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *

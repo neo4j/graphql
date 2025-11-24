@@ -154,9 +154,16 @@ export class UpdateOperation extends Operation {
         const predicate = this.getPredicate(nestedContext);
 
         const matchClause = new Cypher.Match(pattern);
-        const filtersWith = new Cypher.With("*").where(predicate).set(...setParams);
-        if (afterFilterSubqueries.length > 0 || authBeforeClauses.length > 0) {
+        const filtersWith = new Cypher.With("*").where(predicate);
+        if (authBeforeClauses.length > 0) {
             filtersWith.with("*");
+        }
+
+        let withAndSet: Cypher.Clause | undefined;
+        if (authBeforeClauses.length === 0) {
+            filtersWith.set(...setParams);
+        } else {
+            withAndSet = new Cypher.With("*").set(...setParams);
         }
 
         const clauses = Cypher.utils.concat(
@@ -164,6 +171,8 @@ export class UpdateOperation extends Operation {
             ...filterSubqueries,
             filtersWith,
             ...authBeforeClauses,
+            withAndSet,
+            afterFilterSubqueries.length > 0 ? new Cypher.With("*") : undefined,
             ...mutationSubqueries.map((sq) => Cypher.utils.concat(new Cypher.With("*"), new Cypher.Call(sq, "*"))),
             ...afterFilterSubqueries,
             ...this.getAuthorizationClausesAfter(nestedContext) // THESE ARE "AFTER" AUTH
