@@ -190,16 +190,11 @@ export class DisconnectOperation extends MutationOperation {
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
-        const { subqueries, predicates, validations } = this.transpileAuthClauses(context);
-        if (!predicates.length) {
-            if (!validations.length) {
-                return [];
-            }
-            return [...subqueries, ...validations];
+        const { subqueries, validations } = this.transpileAuthClauses(context);
+        if (!validations.length) {
+            return [];
         }
-
-        const predicate = Cypher.and(...predicates);
-        return [...subqueries, new Cypher.With("*").where(predicate), ...validations];
+        return [...subqueries, ...validations];
     }
 
     private getAuthorizationClausesAfter(context: QueryASTContext): Cypher.Clause[] {
