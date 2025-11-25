@@ -2457,8 +2457,8 @@ describe("@populatedBy directive - Relationship properties", () => {
         {
             description: "@populatedBy - Duration",
             type: "Duration",
-            callback: () => Promise.resolve(`P1Y2M3DT4H5M`),
-            expectedValue: `P1Y2M3DT4H5M`,
+            callback: () => Promise.resolve("P1Y2M3DT4H5M"),
+            expectedValue: expect.toBeOneOf(["P1Y2M3DT4H5M", "P14M3DT14700S"]), // This covers the different parsing between neo4j-driver 5 and 6
         },
     ])("$description", ({ type, callback, expectedValue, expectedValueTemp }) => {
         test("Should use on CREATE", async () => {
