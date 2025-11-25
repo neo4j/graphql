@@ -2185,7 +2185,8 @@ describe("@populatedBy directive - Node properties", () => {
         test("Should use on CREATE", async () => {
             const testMovie = testHelper.createUniqueType("Movie");
 
-            const duration = `P1Y2M3DT4H5M`;
+            const duration = "P1Y2M3DT4H5M";
+            const driverV5Duration = "P14M3DT14700S";
 
             const callback = () => Promise.resolve(duration);
 
@@ -2228,7 +2229,7 @@ describe("@populatedBy directive - Node properties", () => {
                     [testMovie.plural]: [
                         {
                             id: movieId,
-                            callback: duration,
+                            callback: expect.toBeOneOf([duration, driverV5Duration]), // Handles different parsing of Durations between versions of neo4j-driver
                         },
                     ],
                 },
@@ -2239,6 +2240,7 @@ describe("@populatedBy directive - Node properties", () => {
             const testMovie = testHelper.createUniqueType("Movie");
 
             const duration = `P1Y2M3DT4H5M`;
+            const driverV5Duration = "P14M3DT14700S";
 
             const callback = () => Promise.resolve(duration);
 
@@ -2285,7 +2287,7 @@ describe("@populatedBy directive - Node properties", () => {
                     [testMovie.plural]: [
                         {
                             id: movieId,
-                            callback: duration,
+                            callback: expect.toBeOneOf([duration, driverV5Duration]), // Handles different parsing of Durations between versions of neo4j-driver,
                         },
                     ],
                 },
