@@ -493,7 +493,7 @@ describe("Mathematical operations tests", () => {
         expect(gqlResult.errors).toBeDefined();
         expect(
             (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes(`Cannot _INCREMENT ${increment} to Nan`)
+                el.message.includes(`Cannot increment ${increment} to Nan`)
             )
         ).toBeTruthy();
         const storedValue = await testHelper.executeCypher(
@@ -669,9 +669,10 @@ describe("Mathematical operations tests", () => {
 
         expect(gqlResult.errors).toBeDefined();
 
-        const relationshipType = `${movie.name}ActorsRelationship`;
         expect(gqlResult.errors).toEqual([
-            new GraphQLError(`Conflicting modification of field pay: [[set]], [[add]] on type ${relationshipType}`),
+            new GraphQLError(
+                `Conflicting modification of field pay: [[set]], [[add]] on relationship ${movie.name}.actedIn`
+            ),
         ]);
         const storedValue = await testHelper.executeCypher(
             `

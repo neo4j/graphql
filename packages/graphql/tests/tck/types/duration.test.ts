@@ -155,19 +155,21 @@ describe("Cypher Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            SET this.duration = $this_update_duration_SET
-            RETURN collect(DISTINCT this { .id, .duration }) AS data"
+            WITH *
+            SET
+                this.duration = $param0
+            WITH this
+            RETURN this { .id, .duration } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_duration_SET\\": {
+                \\"param0\\": {
                     \\"months\\": 0,
                     \\"days\\": 4,
                     \\"seconds\\": 0,
                     \\"nanoseconds\\": 0
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });

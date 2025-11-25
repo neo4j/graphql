@@ -92,14 +92,16 @@ describe("Cypher autogenerate directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            SET this.name = $this_update_name_SET
-            RETURN collect(DISTINCT this { .id, .name }) AS data"
+            WITH *
+            SET
+                this.name = $param0
+            WITH this
+            RETURN this { .id, .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_name_SET\\": \\"dan\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"dan\\"
             }"
         `);
     });

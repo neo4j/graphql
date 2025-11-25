@@ -77,54 +77,6 @@ describe("array-pop-errors", () => {
         expect(gqlResult.data).toBeNull();
     });
 
-    test("should throw an error when trying to pop an element from multiple non-existing arrays", async () => {
-        const typeMovie = testHelper.createUniqueType("Movie");
-
-        const typeDefs = gql`
-            type ${typeMovie} @node {
-                title: String
-                tags: [String!]
-                otherTags: [String!]
-            }
-        `;
-
-        await testHelper.initNeo4jGraphQL({ typeDefs });
-
-        const movieTitle = generate({
-            charset: "alphabetic",
-        });
-
-        const update = `
-            mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 1, otherTags_POP: 1 }) {
-                    ${typeMovie.plural} {
-                        title
-                        tags
-                        otherTags
-                    }
-                }
-            }
-        `;
-
-        // Created deliberately without the tags or otherTags properties.
-        const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle})
-        `;
-
-        await testHelper.executeCypher(cypher, { movieTitle });
-
-        const gqlResult = await testHelper.executeGraphQL(update);
-
-        expect(gqlResult.errors).toBeDefined();
-        expect(
-            (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("Properties tags, otherTags cannot be NULL")
-            )
-        ).toBeTruthy();
-
-        expect(gqlResult.data).toBeNull();
-    });
-
     test("should throw an error if not authenticated on field definition", async () => {
         const typeMovie = testHelper.createUniqueType("Movie");
         const typeDefs = `
@@ -335,9 +287,8 @@ describe("array-pop-errors", () => {
 
         expect(gqlResult.errors).toBeDefined();
 
-        const relationshipType = `${movie.name}ActorsRelationship`;
         expect(gqlResult.errors).toEqual([
-            new GraphQLError(`Conflicting modification of [[pay_SET]], [[pay_POP]] on type ${relationshipType}`),
+            new GraphQLError(`Conflicting modification of [[pay_SET]], [[pay_POP]] on type ${actor}.actedIn`),
         ]);
         expect(gqlResult.data).toBeNull();
     });

@@ -20,7 +20,6 @@
 import type { DirectiveNode } from "graphql";
 import { GraphQLFloat, GraphQLNonNull } from "graphql";
 import type { ObjectTypeComposer, SchemaComposer } from "graphql-compose";
-import type { SubscriptionEvents } from "../../classes/Node";
 import { EventType } from "../../graphql/enums/EventType";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
@@ -28,7 +27,13 @@ import type { Neo4jFeaturesSettings, NodeSubscriptionsEvent, SubscriptionsEvent 
 import { withWhereInputType } from "../generation/where-input";
 import { generateSubscribeMethod, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
 import { attributeAdapterToComposeFields } from "../to-compose";
-
+type SubscriptionEvents = {
+    create: string;
+    update: string;
+    delete: string;
+    create_relationship: string;
+    delete_relationship: string;
+};
 export function generateSubscriptionTypes({
     schemaComposer,
     schemaModel,

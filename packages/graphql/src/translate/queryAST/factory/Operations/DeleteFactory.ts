@@ -183,6 +183,29 @@ export class DeleteFactory {
         );
     }
 
+    public createNestedDeleteOperationsForUpdate(
+        deleteArg: Record<string, any>,
+        relationship: RelationshipAdapter,
+        context: Neo4jGraphQLTranslationContext,
+        target: ConcreteEntityAdapter | InterfaceEntityAdapter
+    ): DeleteOperation[] {
+        if (isInterfaceEntity(target)) {
+            return this.createNestedDeleteOperationsForInterface({
+                deleteArg,
+                relationship,
+                target,
+                context,
+            });
+        }
+
+        return this.createNestedDeleteOperation({
+            relationship,
+            target,
+            args: deleteArg,
+            context,
+        });
+    }
+
     private createNestedDeleteOperation({
         relationship,
         target,

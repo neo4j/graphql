@@ -17,24 +17,27 @@
  * limitations under the License.
  */
 
+import Debug from "debug";
 import { Kind, type FieldNode, type GraphQLResolveInfo } from "graphql";
 import type {
     ObjectTypeComposerArgumentConfigAsObjectDefinition,
     ObjectTypeComposerFieldConfigAsObjectDefinition,
 } from "graphql-compose";
-import type { Node } from "../../../classes";
+import { DEBUG_TRANSLATE } from "../../../constants";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
-import { translateUpdate } from "../../../translate";
+import { QueryASTFactory } from "../../../translate/queryAST/factory/QueryASTFactory";
+import { CallbackBucket } from "../../../translate/queryAST/utils/callback-bucket";
+import { buildClause } from "../../../translate/utils/build-clause";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import type { Neo4jGraphQLComposedContext } from "../composition/wrap-query-and-mutation";
 
+const debug = Debug(DEBUG_TRANSLATE);
+
 export function updateResolver({
-    node,
     concreteEntityAdapter,
 }: {
-    node: Node;
     concreteEntityAdapter: ConcreteEntityAdapter;
 }): ObjectTypeComposerFieldConfigAsObjectDefinition<any, any> {
     async function resolve(_root: any, args: any, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) {
@@ -42,7 +45,10 @@ export function updateResolver({
 
         (context as Neo4jGraphQLTranslationContext).resolveTree = resolveTree;
 
-        const [cypher, params] = await translateUpdate({ context: context as Neo4jGraphQLTranslationContext, node });
+        const { cypher, params } = await translateUpdate({
+            context: context as Neo4jGraphQLTranslationContext,
+            entityAdapter: concreteEntityAdapter,
+        });
         const executeResult = await execute({
             cypher,
             params,
@@ -52,8 +58,9 @@ export function updateResolver({
         });
 
         const nodeProjection = info.fieldNodes[0]?.selectionSet?.selections.find(
-            (selection): selection is FieldNode =>
-                selection.kind === Kind.FIELD && selection.name.value === concreteEntityAdapter.plural
+            (selection): selection is FieldNode => {
+                return selection.kind === Kind.FIELD && selection.name.value === concreteEntityAdapter.plural;
+            }
         );
 
         const resolveResult = {
@@ -64,7 +71,7 @@ export function updateResolver({
 
         if (nodeProjection) {
             const nodeKey = nodeProjection.alias ? nodeProjection.alias.value : nodeProjection.name.value;
-            resolveResult[nodeKey] = executeResult.records[0]?.data || [];
+            resolveResult[nodeKey] = executeResult.records.map((x) => x.this);
         }
 
         return resolveResult;
@@ -81,4 +88,30 @@ export function updateResolver({
             ...relationFields,
         },
     };
+}
+
+async function translateUpdate({
+    context,
+    entityAdapter,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    entityAdapter: ConcreteEntityAdapter;
+}): Promise<{ cypher: string; params: Record<string, any> }> {
+    const { resolveTree } = context;
+    const varName = "this";
+    const operationsTreeFactory = new QueryASTFactory(context.schemaModel);
+    const callbackBucket = new CallbackBucket(context);
+
+    const operationsTree = operationsTreeFactory.createMutationAST({
+        resolveTree,
+        entityAdapter,
+        context,
+        varName,
+        callbackBucket,
+    });
+    debug(operationsTree.print());
+    await callbackBucket.resolveCallbacks();
+
+    const clause = operationsTree.build(context, varName);
+    return buildClause(clause, { context });
 }

@@ -53,28 +53,32 @@ describe("https://github.com/neo4j/graphql/issues/2789", () => {
             "CYPHER 5
             MATCH (this:User)
             WITH *
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($param1 IS NOT NULL AND this.id = $param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH this
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($authorization__before_param1 IS NOT NULL AND this.id = $authorization__before_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            SET this.password = $this_update_password_SET
-            WITH this
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($authorization__after_param1 IS NOT NULL AND this.id = $authorization__after_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0]) AND apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($authorization__after_param1 IS NOT NULL AND this.id = $authorization__after_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($update_param1 IS NOT NULL AND this.id = $update_param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($update_param2 IS NOT NULL AND this.id = $update_param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN collect(DISTINCT this { .password }) AS data"
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param1 IS NOT NULL AND this.id = $param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param2 IS NOT NULL AND this.id = $param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH *
+            SET
+                this.password = $param3
+            WITH *
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param4 IS NOT NULL AND this.id = $param4)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param5 IS NOT NULL AND this.id = $param5)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            WITH this
+            WITH *
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param6 IS NOT NULL AND this.id = $param6)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param7 IS NOT NULL AND this.id = $param7)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            RETURN this { .password } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"isAuthenticated\\": false,
-                \\"update_param1\\": \\"Foo\\",
-                \\"update_param2\\": \\"Bar\\",
                 \\"param1\\": \\"Foo\\",
-                \\"this_update_password_SET\\": \\"123\\",
-                \\"authorization__before_param1\\": \\"Bar\\",
-                \\"authorization__after_param1\\": \\"Foo\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param2\\": \\"Bar\\",
+                \\"param3\\": \\"123\\",
+                \\"param4\\": \\"Foo\\",
+                \\"param5\\": \\"Bar\\",
+                \\"param6\\": \\"Foo\\",
+                \\"param7\\": \\"Bar\\"
             }"
         `);
     });

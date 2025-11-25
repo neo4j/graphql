@@ -21,15 +21,17 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { filterTruthy } from "../../../../utils/utils";
+import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
+import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { InputField } from "../input-fields/InputField";
+import { ParamInputField } from "../input-fields/ParamInputField";
 import type { SelectionPattern } from "../selection/SelectionPattern/SelectionPattern";
-import type { ReadOperation } from "./ReadOperation";
 import { MutationOperation, type OperationTranspileResult } from "./operations";
 
 export class ConnectOperation extends MutationOperation {
@@ -38,9 +40,7 @@ export class ConnectOperation extends MutationOperation {
 
     private selectionPattern: SelectionPattern;
     protected readonly authFilters: AuthorizationFilters[] = [];
-
-    // The response fields in the mutation, currently only READ operations are supported in the MutationResponse
-    public projectionOperations: ReadOperation[] = [];
+    protected readonly sourceAuthFilters: AuthorizationFilters[] = [];
 
     public readonly inputFields: Map<string, InputField> = new Map();
     private filters: Filter[] = [];
@@ -68,7 +68,6 @@ export class ConnectOperation extends MutationOperation {
             ...this.filters,
             ...this.authFilters,
             ...this.inputFields.values(),
-            ...this.projectionOperations,
         ]);
     }
 
@@ -78,6 +77,9 @@ export class ConnectOperation extends MutationOperation {
 
     public addAuthFilters(...filter: AuthorizationFilters[]) {
         this.authFilters.push(...filter);
+    }
+    public addSourceAuthFilters(...filter: AuthorizationFilters[]) {
+        this.sourceAuthFilters.push(...filter);
     }
 
     /**
@@ -96,10 +98,6 @@ export class ConnectOperation extends MutationOperation {
 
     public addFilters(...filters: Filter[]): void {
         this.filters.push(...filters);
-    }
-
-    public addProjectionOperations(operations: ReadOperation[]) {
-        this.projectionOperations.push(...operations);
     }
 
     public getAuthorizationSubqueries(_context: QueryASTContext): Cypher.Clause[] {
@@ -124,6 +122,29 @@ export class ConnectOperation extends MutationOperation {
         const { nestedContext } = this.selectionPattern.apply(context);
         this.nestedContext = nestedContext;
 
+        checkEntityAuthentication({
+            context: nestedContext.neo4jGraphQLContext,
+            entity: this.target.entity,
+            targetOperations: ["CREATE_RELATIONSHIP"],
+        });
+        if (isConcreteEntity(this.relationship.source)) {
+            checkEntityAuthentication({
+                context: nestedContext.neo4jGraphQLContext,
+                entity: this.relationship.source.entity,
+                targetOperations: ["CREATE_RELATIONSHIP"],
+            });
+        }
+        this.inputFields.forEach((field) => {
+            if (field.attachedTo === "node" && field instanceof ParamInputField) {
+                checkEntityAuthentication({
+                    context: nestedContext.neo4jGraphQLContext,
+                    entity: this.target.entity,
+                    targetOperations: ["CREATE_RELATIONSHIP"],
+                    field: field.name,
+                });
+            }
+        });
+
         const matchPattern = new Cypher.Pattern(nestedContext.target, {
             labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
         });
@@ -132,22 +153,21 @@ export class ConnectOperation extends MutationOperation {
 
         const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, allFilters, [nestedContext.target]);
 
+        const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
         let matchClause: Cypher.Clause;
         if (filterSubqueries.length > 0) {
-            const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
             matchClause = Cypher.utils.concat(
                 new Cypher.Match(matchPattern),
                 ...filterSubqueries,
                 new Cypher.With("*").where(predicate)
             );
         } else {
-            const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
             matchClause = new Cypher.Match(matchPattern).where(predicate);
         }
 
         const relVar = new Cypher.Relationship();
 
-        const relDirection = this.relationship.getCypherDirection();
+        const relDirection = this.relationship.cypherDirectionFromRelDirection();
 
         const connectPattern = new Cypher.Pattern(context.target)
             .related(relVar, { direction: relDirection, type: this.relationship.type })
@@ -172,39 +192,43 @@ export class ConnectOperation extends MutationOperation {
             ...mutationSubqueries,
             connectClause,
             ...this.getAuthorizationClausesAfter(nestedContext), // THESE ARE "AFTER" AUTH
-            ...this.getProjectionClause(nestedContext)
+            ...this.getSourceAuthorizationClausesAfter(context) // ONLY RUN "AFTER" AUTH ON THE SOURCE NODE
         );
 
         const callClause = new Cypher.Call(clauses, [context.target]);
 
-        return { projectionExpr: context.returnVariable, clauses: [callClause] };
-    }
-
-    private getProjectionClause(context: QueryASTContext): Cypher.Clause[] {
-        return this.projectionOperations.map((operationField) => {
-            return Cypher.utils.concat(...operationField.transpile(context).clauses);
-        });
+        return {
+            projectionExpr: context.returnVariable,
+            clauses: [callClause],
+        };
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
-        const { selections, subqueries, predicates, validations } = this.transpileAuthClauses(context);
-        const predicate = Cypher.and(...predicates);
-        const lastSelection = selections[selections.length - 1];
-
-        if (!predicates.length && !validations.length) {
+        const { subqueries, validations } = this.transpileAuthClauses(context);
+        if (!validations.length) {
             return [];
-        } else {
-            if (lastSelection) {
-                lastSelection.where(predicate);
-                return [...subqueries, new Cypher.With("*"), ...selections, ...validations];
-            }
-            return [...subqueries, new Cypher.With("*").where(predicate), ...selections, ...validations];
         }
+        return [...subqueries, ...validations];
     }
 
     private getAuthorizationClausesAfter(context: QueryASTContext): Cypher.Clause[] {
         const validationsAfter: Cypher.VoidProcedure[] = [];
         for (const authFilter of this.authFilters) {
+            const validationAfter = authFilter.getValidation(context, "AFTER");
+            if (validationAfter) {
+                validationsAfter.push(validationAfter);
+            }
+        }
+
+        if (validationsAfter.length > 0) {
+            return [new Cypher.With("*"), ...validationsAfter];
+        }
+        return [];
+    }
+
+    private getSourceAuthorizationClausesAfter(context: QueryASTContext): Cypher.Clause[] {
+        const validationsAfter: Cypher.VoidProcedure[] = [];
+        for (const authFilter of this.sourceAuthFilters) {
             const validationAfter = authFilter.getValidation(context, "AFTER");
             if (validationAfter) {
                 validationsAfter.push(validationAfter);

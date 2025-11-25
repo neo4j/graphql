@@ -152,18 +152,20 @@ describe("Cypher Date", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            SET this.date = $this_update_date_SET
-            RETURN collect(DISTINCT this { .id, .date }) AS data"
+            WITH *
+            SET
+                this.date = $param0
+            WITH this
+            RETURN this { .id, .date } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_date_SET\\": {
+                \\"param0\\": {
                     \\"year\\": 1970,
                     \\"month\\": 1,
                     \\"day\\": 1
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });

@@ -381,13 +381,15 @@ describe("Cypher Auth Where", () => {
                 MATCH (this)<-[:HAS_CONTENT]-(this0:User)
                 WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
             })
-            SET this.content = $this_update_content_SET
+            SET
+                this.content = $param2
+            WITH this
             WITH *
             WHERE ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_CONTENT]-(update_this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)
+                MATCH (this)<-[:HAS_CONTENT]-(this1:User)
+                WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)
             })
-            RETURN collect(DISTINCT this { .id }) AS data"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -399,8 +401,7 @@ describe("Cypher Auth Where", () => {
                     ],
                     \\"sub\\": \\"id-01\\"
                 },
-                \\"this_update_content_SET\\": \\"Bob\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param2\\": \\"Bob\\"
             }"
         `);
     });
@@ -427,17 +428,20 @@ describe("Cypher Auth Where", () => {
                 MATCH (this)<-[:HAS_CONTENT]-(this0:User)
                 WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
             }))
-            SET this.content = $this_update_content_SET
+            SET
+                this.content = $param3
+            WITH this
             WITH *
             WHERE ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_CONTENT]-(update_this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND update_this0.id = $jwt.sub)
+                MATCH (this)<-[:HAS_CONTENT]-(this1:User)
+                WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)
             })
-            RETURN collect(DISTINCT this { .id }) AS data"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": \\"bob\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -445,9 +449,7 @@ describe("Cypher Auth Where", () => {
                     ],
                     \\"sub\\": \\"id-01\\"
                 },
-                \\"param0\\": \\"bob\\",
-                \\"this_update_content_SET\\": \\"Bob\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param3\\": \\"Bob\\"
             }"
         `);
     });
@@ -469,38 +471,34 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            WITH this
-            CALL (this) {
-            WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
-            	SET this_content0.id = $this_update_content0_id_SET
-            	RETURN count(*) AS update_this_content0
-            }
-            RETURN count(*) AS update_this_Comment
-            }
-            CALL (this){
-            	WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
-            	WHERE ($isAuthenticated = true AND EXISTS {
-            	    MATCH (this_content0)<-[:HAS_CONTENT]-(authorization_updatebefore_this0:User)
-            	    WHERE ($jwt.sub IS NOT NULL AND authorization_updatebefore_this0.id = $jwt.sub)
-            	})
-            	SET this_content0.id = $this_update_content0_id_SET
-            	RETURN count(*) AS update_this_content0
-            }
-            RETURN count(*) AS update_this_Post
+            WITH *
+            WITH *
+            CALL (*) {
+                MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                WITH *
+                SET
+                    this1.id = $param0
             }
             WITH *
+            CALL (*) {
+                MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
+                WITH *
+                WHERE ($isAuthenticated = true AND EXISTS {
+                    MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                })
+                SET
+                    this3.id = $param3
+            }
+            WITH this
+            WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            RETURN collect(DISTINCT this { .id }) AS data"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": \\"new-id\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -508,8 +506,7 @@ describe("Cypher Auth Where", () => {
                     ],
                     \\"sub\\": \\"id-01\\"
                 },
-                \\"this_update_content0_id_SET\\": \\"new-id\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param3\\": \\"new-id\\"
             }"
         `);
     });
@@ -794,51 +791,26 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            WITH this
-            CALL (this) {
             WITH *
-            CALL(*) {
-            	WITH this
-            	OPTIONAL MATCH (this_content0_connect0_node:Comment)
-            	WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            	CALL(*) {
-            		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_content0_connect0_node
-            			CREATE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
-            		}
-            	}
-            WITH this, this_content0_connect0_node
-            	RETURN count(*) AS connect_this_content0_connect_Comment0
+            WITH *
+            CALL (*) {
+                CALL (this) {
+                    MATCH (this0:Comment)
+                    CREATE (this)-[this1:HAS_CONTENT]->(this0)
+                }
+                CALL (this) {
+                    MATCH (this2:Post)
+                    WHERE ($isAuthenticated = true AND EXISTS {
+                        MATCH (this2)<-[:HAS_CONTENT]-(this3:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
+                    })
+                    CREATE (this)-[this4:HAS_CONTENT]->(this2)
+                }
             }
-            RETURN count(*) AS update_this_Comment
-            }
-            CALL (this){
-            	WITH *
-            CALL(*) {
-            	WITH this
-            	OPTIONAL MATCH (this_content0_connect0_node:Post)
-            	WHERE (($isAuthenticated = true AND EXISTS {
-                MATCH (this_content0_connect0_node)<-[:HAS_CONTENT]-(authorization__before_this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
-            }) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
-            	CALL(*) {
-            		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_content0_connect0_node
-            			CREATE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
-            		}
-            	}
-            WITH this, this_content0_connect0_node
-            	RETURN count(*) AS connect_this_content0_connect_Post0
-            }
-            RETURN count(*) AS update_this_Post
-            }
+            WITH this
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            RETURN collect(DISTINCT this { .id }) AS data"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -849,8 +821,7 @@ describe("Cypher Auth Where", () => {
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"id-01\\"
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });
@@ -872,55 +843,32 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            WITH this
-            CALL (this) {
             WITH *
-            CALL(*) {
-            	WITH this
-            	OPTIONAL MATCH (this_content0_connect0_node:Comment)
-            	WHERE this_content0_connect0_node.id = $this_content0_connect0_node_param0 AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            	CALL(*) {
-            		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_content0_connect0_node
-            			CREATE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
-            		}
-            	}
-            WITH this, this_content0_connect0_node
-            	RETURN count(*) AS connect_this_content0_connect_Comment0
+            WITH *
+            CALL (*) {
+                CALL (this) {
+                    MATCH (this0:Comment)
+                    WHERE this0.id = $param0
+                    CREATE (this)-[this1:HAS_CONTENT]->(this0)
+                }
+                CALL (this) {
+                    MATCH (this2:Post)
+                    WHERE (($isAuthenticated = true AND EXISTS {
+                        MATCH (this2)<-[:HAS_CONTENT]-(this3:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
+                    }) AND this2.id = $param3)
+                    CREATE (this)-[this4:HAS_CONTENT]->(this2)
+                }
             }
-            RETURN count(*) AS update_this_Comment
-            }
-            CALL (this){
-            	WITH *
-            CALL(*) {
-            	WITH this
-            	OPTIONAL MATCH (this_content0_connect0_node:Post)
-            	WHERE this_content0_connect0_node.id = $this_content0_connect0_node_param0 AND (($isAuthenticated = true AND EXISTS {
-                MATCH (this_content0_connect0_node)<-[:HAS_CONTENT]-(authorization__before_this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
-            }) AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
-            	CALL(*) {
-            		WITH collect(this_content0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_content0_connect0_node
-            			CREATE (this)-[:HAS_CONTENT]->(this_content0_connect0_node)
-            		}
-            	}
-            WITH this, this_content0_connect0_node
-            	RETURN count(*) AS connect_this_content0_connect_Post0
-            }
-            RETURN count(*) AS update_this_Post
-            }
+            WITH this
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            RETURN collect(DISTINCT this { .id }) AS data"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": \\"new-id\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -928,8 +876,7 @@ describe("Cypher Auth Where", () => {
                     ],
                     \\"sub\\": \\"id-01\\"
                 },
-                \\"this_content0_connect0_node_param0\\": \\"new-id\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param3\\": \\"new-id\\"
             }"
         `);
     });
@@ -951,43 +898,28 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
+            WITH *
+            WITH *
+            CALL (*) {
+                CALL (this) {
+                    OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                    WITH *
+                    DELETE this0
+                }
+                CALL (this) {
+                    OPTIONAL MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
+                    WHERE ($isAuthenticated = true AND EXISTS {
+                        MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                    })
+                    WITH *
+                    DELETE this2
+                }
+            }
             WITH this
-            CALL (this) {
-            WITH this
-            CALL(*) {
-            WITH this
-            OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Comment)
-            WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            CALL (this_content0_disconnect0, this_content0_disconnect0_rel, this) {
-            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0_x, this_content0_disconnect0_rel, this
-            	UNWIND this_content0_disconnect0_x as x
-            	DELETE this_content0_disconnect0_rel
-            }
-            RETURN count(*) AS disconnect_this_content0_disconnect_Comment
-            }
-            RETURN count(*) AS update_this_Comment
-            }
-            CALL (this){
-            	WITH this
-            CALL(*) {
-            WITH this
-            OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
-            WHERE (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND EXISTS {
-                MATCH (this_content0_disconnect0)<-[:HAS_CONTENT]-(authorization__before_this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
-            }))
-            CALL (this_content0_disconnect0, this_content0_disconnect0_rel, this) {
-            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0_x, this_content0_disconnect0_rel, this
-            	UNWIND this_content0_disconnect0_x as x
-            	DELETE this_content0_disconnect0_rel
-            }
-            RETURN count(*) AS disconnect_this_content0_disconnect_Post
-            }
-            RETURN count(*) AS update_this_Post
-            }
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            RETURN collect(DISTINCT this { .id }) AS data"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -998,8 +930,7 @@ describe("Cypher Auth Where", () => {
                         \\"admin\\"
                     ],
                     \\"sub\\": \\"id-01\\"
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });
@@ -1021,47 +952,34 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
+            WITH *
+            WITH *
+            CALL (*) {
+                CALL (this) {
+                    OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                    WHERE this1.id = $param0
+                    WITH *
+                    DELETE this0
+                }
+                CALL (this) {
+                    OPTIONAL MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
+                    WHERE (($isAuthenticated = true AND EXISTS {
+                        MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                    }) AND this3.id = $param3)
+                    WITH *
+                    DELETE this2
+                }
+            }
             WITH this
-            CALL (this) {
-            WITH this
-            CALL(*) {
-            WITH this
-            OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Comment)
-            WHERE this_content0_disconnect0.id = $updateUsers_args_update_content0_disconnect0_where_Comment_this_content0_disconnect0param0 AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            CALL (this_content0_disconnect0, this_content0_disconnect0_rel, this) {
-            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0_x, this_content0_disconnect0_rel, this
-            	UNWIND this_content0_disconnect0_x as x
-            	DELETE this_content0_disconnect0_rel
-            }
-            RETURN count(*) AS disconnect_this_content0_disconnect_Comment
-            }
-            RETURN count(*) AS update_this_Comment
-            }
-            CALL (this){
-            	WITH this
-            CALL(*) {
-            WITH this
-            OPTIONAL MATCH (this)-[this_content0_disconnect0_rel:HAS_CONTENT]->(this_content0_disconnect0:Post)
-            WHERE this_content0_disconnect0.id = $updateUsers_args_update_content0_disconnect0_where_Post_this_content0_disconnect0param0 AND (($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)) AND ($isAuthenticated = true AND EXISTS {
-                MATCH (this_content0_disconnect0)<-[:HAS_CONTENT]-(authorization__before_this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND authorization__before_this0.id = $jwt.sub)
-            }))
-            CALL (this_content0_disconnect0, this_content0_disconnect0_rel, this) {
-            	WITH collect(this_content0_disconnect0) as this_content0_disconnect0_x, this_content0_disconnect0_rel, this
-            	UNWIND this_content0_disconnect0_x as x
-            	DELETE this_content0_disconnect0_rel
-            }
-            RETURN count(*) AS disconnect_this_content0_disconnect_Post
-            }
-            RETURN count(*) AS update_this_Post
-            }
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-            RETURN collect(DISTINCT this { .id }) AS data"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": \\"new-id\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -1069,30 +987,7 @@ describe("Cypher Auth Where", () => {
                     ],
                     \\"sub\\": \\"id-01\\"
                 },
-                \\"updateUsers_args_update_content0_disconnect0_where_Comment_this_content0_disconnect0param0\\": \\"new-id\\",
-                \\"updateUsers_args_update_content0_disconnect0_where_Post_this_content0_disconnect0param0\\": \\"new-id\\",
-                \\"updateUsers\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"content\\": [
-                                {
-                                    \\"disconnect\\": [
-                                        {
-                                            \\"where\\": {
-                                                \\"node\\": {
-                                                    \\"id\\": {
-                                                        \\"eq\\": \\"new-id\\"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param3\\": \\"new-id\\"
             }"
         `);
     });

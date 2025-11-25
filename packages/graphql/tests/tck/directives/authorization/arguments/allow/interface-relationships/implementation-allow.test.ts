@@ -229,57 +229,55 @@ describe("@auth allow on specific interface implementation", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
+            WITH *
             WHERE this.id = $param0
-            WITH this
-            CALL (this) {
-            WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
-            	SET this_content0.id = $this_update_content0_id_SET
-            	RETURN count(*) AS update_this_content0
-            }
-            RETURN count(*) AS update_this_Comment
-            }
-            CALL (this){
-            	WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
-            	WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND EXISTS {
-            	    MATCH (this_content0)<-[:HAS_CONTENT]-(authorization_updatebefore_this0:User)
-            	    WHERE ($jwt.sub IS NOT NULL AND authorization_updatebefore_this0.id = $jwt.sub)
-            	}), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            	SET this_content0.id = $this_update_content0_id_SET
-            	RETURN count(*) AS update_this_content0
-            }
-            RETURN count(*) AS update_this_Post
+            WITH *
+            CALL (*) {
+                MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                WITH *
+                SET
+                    this1.id = $param1
             }
             WITH *
+            CALL (*) {
+                MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
+                WITH *
+                WITH *
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                    MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                WITH *
+                SET
+                    this3.id = $param4
+            }
+            WITH this
             CALL (this) {
                 CALL (*) {
                     WITH *
-                    MATCH (this)-[update_this0:HAS_CONTENT]->(update_this1:Comment)
-                    WITH update_this1 { .id, __resolveType: \\"Comment\\", __id: id(update_this1) } AS update_var2
-                    RETURN update_var2
+                    MATCH (this)-[this5:HAS_CONTENT]->(this6:Comment)
+                    WITH this6 { .id, __resolveType: \\"Comment\\", __id: id(this6) } AS var7
+                    RETURN var7
                     UNION
                     WITH *
-                    MATCH (this)-[update_this3:HAS_CONTENT]->(update_this4:Post)
+                    MATCH (this)-[this8:HAS_CONTENT]->(this9:Post)
                     CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                        MATCH (update_this4)<-[:HAS_CONTENT]-(update_this5:User)
-                        WHERE ($jwt.sub IS NOT NULL AND update_this5.id = $jwt.sub)
+                        MATCH (this9)<-[:HAS_CONTENT]-(this10:User)
+                        WHERE ($jwt.sub IS NOT NULL AND this10.id = $jwt.sub)
                     }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH update_this4 { .id, __resolveType: \\"Post\\", __id: id(update_this4) } AS update_var2
-                    RETURN update_var2
+                    WITH this9 { .id, __resolveType: \\"Post\\", __id: id(this9) } AS var7
+                    RETURN var7
                 }
-                WITH update_var2
-                RETURN collect(update_var2) AS update_var2
+                WITH var7
+                RETURN collect(var7) AS var7
             }
-            RETURN collect(DISTINCT this { .id, content: update_var2 }) AS data"
+            RETURN this { .id, content: var7 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"param0\\": \\"user-id\\",
+                \\"param1\\": \\"new-id\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -287,9 +285,7 @@ describe("@auth allow on specific interface implementation", () => {
                     ],
                     \\"sub\\": \\"user-id\\"
                 },
-                \\"param0\\": \\"user-id\\",
-                \\"this_update_content0_id_SET\\": \\"new-id\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param4\\": \\"new-id\\"
             }"
         `);
     });

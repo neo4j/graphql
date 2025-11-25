@@ -27,6 +27,7 @@ import { ConnectionReadOperation } from "./operations/ConnectionReadOperation";
 import { DeleteOperation } from "./operations/DeleteOperation";
 import { ReadOperation } from "./operations/ReadOperation";
 import { TopLevelCreateMutationOperation } from "./operations/TopLevelCreateMutationOperation";
+import { TopLevelUpdateMutationOperation } from "./operations/TopLevelUpdateMutationOperation";
 import { UnwindCreateOperation } from "./operations/UnwindCreateOperation";
 import type { Operation, OperationTranspileResult } from "./operations/operations";
 
@@ -87,7 +88,8 @@ export class QueryAST {
             this.operation instanceof DeleteOperation ||
             this.operation instanceof AggregationOperation ||
             this.operation instanceof UnwindCreateOperation ||
-            this.operation instanceof TopLevelCreateMutationOperation
+            this.operation instanceof TopLevelCreateMutationOperation ||
+            this.operation instanceof TopLevelUpdateMutationOperation
         ) {
             return createNode(varName);
         }
@@ -105,7 +107,7 @@ function getTreeLines(treeNode: QueryASTNode, depth: number = 0): string[] {
 
     const line = "────";
     if (depth === 0) {
-        resultLines.push(`${nodeName}`);
+        resultLines.push(getTopLevelNodeName(nodeName));
     } else if (depth === 1) {
         resultLines.push(`|${line} ${nodeName}`);
     } else {
@@ -128,4 +130,20 @@ function getTreeLines(treeNode: QueryASTNode, depth: number = 0): string[] {
     }
 
     return resultLines;
+}
+
+function getTopLevelNodeName(nodeName: string): string {
+    const currentMonth = new Date().getMonth();
+    const isApril = currentMonth === 3;
+    const isOctober = currentMonth === 9;
+    const isDecember = currentMonth === 11;
+    if (isOctober) {
+        return `${nodeName} \u{1F383}\u{1F383}\u{1F383}`;
+    } else if (isDecember) {
+        return `${nodeName} \u{1F384}\u{1F384}\u{1F384}`;
+    } else if (isApril) {
+        return `${nodeName} \u{1F430}\u{1F430}\u{1F430}`;
+    } else {
+        return `${nodeName}`;
+    }
 }

@@ -106,202 +106,84 @@ describe("Cypher Disconnect", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Product)
-            SET this.id = $this_update_id_SET
-            SET this.name = $this_update_name_SET
+            WITH *
+            SET
+                this.id = $param0,
+                this.name = $param1
+            WITH *
+            CALL (*) {
+                CALL (this) {
+                    OPTIONAL MATCH (this)-[this0:HAS_COLOR]->(this1:Color)
+                    WHERE this1.name = $param2
+                    CALL (this1) {
+                        CALL (this1) {
+                            OPTIONAL MATCH (this1)<-[this2:OF_COLOR]-(this3:Photo)
+                            WHERE this3.id = $param3
+                            CALL (this3) {
+                                CALL (this3) {
+                                    OPTIONAL MATCH (this3)-[this4:OF_COLOR]->(this5:Color)
+                                    WHERE this5.id = $param4
+                                    WITH *
+                                    DELETE this4
+                                }
+                            }
+                            WITH *
+                            DELETE this2
+                        }
+                    }
+                    WITH *
+                    DELETE this0
+                }
+            }
+            WITH *
+            CALL (*) {
+                CALL (this) {
+                    OPTIONAL MATCH (this)-[this6:HAS_PHOTO]->(this7:Photo)
+                    WHERE this7.id = $param5
+                    CALL (this7) {
+                        CALL (this7) {
+                            OPTIONAL MATCH (this7)-[this8:OF_COLOR]->(this9:Color)
+                            WHERE this9.name = $param6
+                            WITH *
+                            DELETE this8
+                        }
+                    }
+                    WITH *
+                    DELETE this6
+                }
+            }
+            WITH *
+            CALL (*) {
+                CALL (this) {
+                    OPTIONAL MATCH (this)-[this10:HAS_PHOTO]->(this11:Photo)
+                    WHERE this11.id = $param7
+                    CALL (this11) {
+                        CALL (this11) {
+                            OPTIONAL MATCH (this11)-[this12:OF_COLOR]->(this13:Color)
+                            WHERE this13.name = $param8
+                            WITH *
+                            DELETE this12
+                        }
+                    }
+                    WITH *
+                    DELETE this10
+                }
+            }
             WITH this
-            CALL(*) {
-            WITH this
-            OPTIONAL MATCH (this)-[this_colors0_disconnect0_rel:HAS_COLOR]->(this_colors0_disconnect0:Color)
-            WHERE this_colors0_disconnect0.name = $updateProducts_args_update_colors0_disconnect0_where_Color_this_colors0_disconnect0param0
-            CALL (this_colors0_disconnect0, this_colors0_disconnect0_rel, this) {
-            	WITH collect(this_colors0_disconnect0) as this_colors0_disconnect0_x, this_colors0_disconnect0_rel, this
-            	UNWIND this_colors0_disconnect0_x as x
-            	DELETE this_colors0_disconnect0_rel
-            }
-            CALL(*) {
-            WITH this, this_colors0_disconnect0
-            OPTIONAL MATCH (this_colors0_disconnect0)<-[this_colors0_disconnect0_photos0_rel:OF_COLOR]-(this_colors0_disconnect0_photos0:Photo)
-            WHERE this_colors0_disconnect0_photos0.id = $updateProducts_args_update_colors0_disconnect0_disconnect_photos0_where_Photo_this_colors0_disconnect0_photos0param0
-            CALL (this_colors0_disconnect0_photos0, this_colors0_disconnect0_photos0_rel, this_colors0_disconnect0) {
-            	WITH collect(this_colors0_disconnect0_photos0) as this_colors0_disconnect0_photos0_x, this_colors0_disconnect0_photos0_rel, this_colors0_disconnect0
-            	UNWIND this_colors0_disconnect0_photos0_x as x
-            	DELETE this_colors0_disconnect0_photos0_rel
-            }
-            CALL(*) {
-            WITH this, this_colors0_disconnect0, this_colors0_disconnect0_photos0
-            OPTIONAL MATCH (this_colors0_disconnect0_photos0)-[this_colors0_disconnect0_photos0_color0_rel:OF_COLOR]->(this_colors0_disconnect0_photos0_color0:Color)
-            WHERE this_colors0_disconnect0_photos0_color0.id = $updateProducts_args_update_colors0_disconnect0_disconnect_photos0_disconnect_color0_where_Color_this_colors0_disconnect0_photos0_color0param0
-            CALL (this_colors0_disconnect0_photos0_color0, this_colors0_disconnect0_photos0_color0_rel, this_colors0_disconnect0_photos0) {
-            	WITH collect(this_colors0_disconnect0_photos0_color0) as this_colors0_disconnect0_photos0_color0_x, this_colors0_disconnect0_photos0_color0_rel, this_colors0_disconnect0_photos0
-            	UNWIND this_colors0_disconnect0_photos0_color0_x as x
-            	DELETE this_colors0_disconnect0_photos0_color0_rel
-            }
-            RETURN count(*) AS disconnect_this_colors0_disconnect0_photos0_color_Color
-            }
-            RETURN count(*) AS disconnect_this_colors0_disconnect0_photos_Photo
-            }
-            RETURN count(*) AS disconnect_this_colors0_disconnect_Color
-            }
-            WITH this
-            CALL(*) {
-            WITH this
-            OPTIONAL MATCH (this)-[this_photos0_disconnect0_rel:HAS_PHOTO]->(this_photos0_disconnect0:Photo)
-            WHERE this_photos0_disconnect0.id = $updateProducts_args_update_photos0_disconnect0_where_Photo_this_photos0_disconnect0param0
-            CALL (this_photos0_disconnect0, this_photos0_disconnect0_rel, this) {
-            	WITH collect(this_photos0_disconnect0) as this_photos0_disconnect0_x, this_photos0_disconnect0_rel, this
-            	UNWIND this_photos0_disconnect0_x as x
-            	DELETE this_photos0_disconnect0_rel
-            }
-            CALL(*) {
-            WITH this, this_photos0_disconnect0
-            OPTIONAL MATCH (this_photos0_disconnect0)-[this_photos0_disconnect0_color0_rel:OF_COLOR]->(this_photos0_disconnect0_color0:Color)
-            WHERE this_photos0_disconnect0_color0.name = $updateProducts_args_update_photos0_disconnect0_disconnect_color0_where_Color_this_photos0_disconnect0_color0param0
-            CALL (this_photos0_disconnect0_color0, this_photos0_disconnect0_color0_rel, this_photos0_disconnect0) {
-            	WITH collect(this_photos0_disconnect0_color0) as this_photos0_disconnect0_color0_x, this_photos0_disconnect0_color0_rel, this_photos0_disconnect0
-            	UNWIND this_photos0_disconnect0_color0_x as x
-            	DELETE this_photos0_disconnect0_color0_rel
-            }
-            RETURN count(*) AS disconnect_this_photos0_disconnect0_color_Color
-            }
-            RETURN count(*) AS disconnect_this_photos0_disconnect_Photo
-            }
-            WITH this
-            CALL(*) {
-            WITH this
-            OPTIONAL MATCH (this)-[this_photos0_disconnect1_rel:HAS_PHOTO]->(this_photos0_disconnect1:Photo)
-            WHERE this_photos0_disconnect1.id = $updateProducts_args_update_photos0_disconnect1_where_Photo_this_photos0_disconnect1param0
-            CALL (this_photos0_disconnect1, this_photos0_disconnect1_rel, this) {
-            	WITH collect(this_photos0_disconnect1) as this_photos0_disconnect1_x, this_photos0_disconnect1_rel, this
-            	UNWIND this_photos0_disconnect1_x as x
-            	DELETE this_photos0_disconnect1_rel
-            }
-            CALL(*) {
-            WITH this, this_photos0_disconnect1
-            OPTIONAL MATCH (this_photos0_disconnect1)-[this_photos0_disconnect1_color0_rel:OF_COLOR]->(this_photos0_disconnect1_color0:Color)
-            WHERE this_photos0_disconnect1_color0.name = $updateProducts_args_update_photos0_disconnect0_disconnect_color0_where_Color_this_photos0_disconnect1_color0param0
-            CALL (this_photos0_disconnect1_color0, this_photos0_disconnect1_color0_rel, this_photos0_disconnect1) {
-            	WITH collect(this_photos0_disconnect1_color0) as this_photos0_disconnect1_color0_x, this_photos0_disconnect1_color0_rel, this_photos0_disconnect1
-            	UNWIND this_photos0_disconnect1_color0_x as x
-            	DELETE this_photos0_disconnect1_color0_rel
-            }
-            RETURN count(*) AS disconnect_this_photos0_disconnect1_color_Color
-            }
-            RETURN count(*) AS disconnect_this_photos0_disconnect_Photo
-            }
-            RETURN collect(DISTINCT this { .id }) AS data"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_update_id_SET\\": \\"123\\",
-                \\"this_update_name_SET\\": \\"Nested Connect\\",
-                \\"updateProducts_args_update_colors0_disconnect0_where_Color_this_colors0_disconnect0param0\\": \\"Red\\",
-                \\"updateProducts_args_update_colors0_disconnect0_disconnect_photos0_where_Photo_this_colors0_disconnect0_photos0param0\\": \\"123\\",
-                \\"updateProducts_args_update_colors0_disconnect0_disconnect_photos0_disconnect_color0_where_Color_this_colors0_disconnect0_photos0_color0param0\\": \\"134\\",
-                \\"updateProducts_args_update_photos0_disconnect0_where_Photo_this_photos0_disconnect0param0\\": \\"321\\",
-                \\"updateProducts_args_update_photos0_disconnect0_disconnect_color0_where_Color_this_photos0_disconnect0_color0param0\\": \\"Green\\",
-                \\"updateProducts_args_update_photos0_disconnect1_where_Photo_this_photos0_disconnect1param0\\": \\"33211\\",
-                \\"updateProducts_args_update_photos0_disconnect0_disconnect_color0_where_Color_this_photos0_disconnect1_color0param0\\": \\"Red\\",
-                \\"updateProducts\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"id_SET\\": \\"123\\",
-                            \\"name_SET\\": \\"Nested Connect\\",
-                            \\"colors\\": [
-                                {
-                                    \\"disconnect\\": [
-                                        {
-                                            \\"where\\": {
-                                                \\"node\\": {
-                                                    \\"name\\": {
-                                                        \\"eq\\": \\"Red\\"
-                                                    }
-                                                }
-                                            },
-                                            \\"disconnect\\": {
-                                                \\"photos\\": [
-                                                    {
-                                                        \\"where\\": {
-                                                            \\"node\\": {
-                                                                \\"id\\": {
-                                                                    \\"eq\\": \\"123\\"
-                                                                }
-                                                            }
-                                                        },
-                                                        \\"disconnect\\": {
-                                                            \\"color\\": [
-                                                                {
-                                                                    \\"where\\": {
-                                                                        \\"node\\": {
-                                                                            \\"id\\": {
-                                                                                \\"eq\\": \\"134\\"
-                                                                            }
-                                                                        }
-                                                                    }
-                                                                }
-                                                            ]
-                                                        }
-                                                    }
-                                                ]
-                                            }
-                                        }
-                                    ]
-                                }
-                            ],
-                            \\"photos\\": [
-                                {
-                                    \\"disconnect\\": [
-                                        {
-                                            \\"where\\": {
-                                                \\"node\\": {
-                                                    \\"id\\": {
-                                                        \\"eq\\": \\"321\\"
-                                                    }
-                                                }
-                                            },
-                                            \\"disconnect\\": {
-                                                \\"color\\": [
-                                                    {
-                                                        \\"where\\": {
-                                                            \\"node\\": {
-                                                                \\"name\\": {
-                                                                    \\"eq\\": \\"Green\\"
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                ]
-                                            }
-                                        },
-                                        {
-                                            \\"where\\": {
-                                                \\"node\\": {
-                                                    \\"id\\": {
-                                                        \\"eq\\": \\"33211\\"
-                                                    }
-                                                }
-                                            },
-                                            \\"disconnect\\": {
-                                                \\"color\\": [
-                                                    {
-                                                        \\"where\\": {
-                                                            \\"node\\": {
-                                                                \\"name\\": {
-                                                                    \\"eq\\": \\"Red\\"
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                ]
-                                            }
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"123\\",
+                \\"param1\\": \\"Nested Connect\\",
+                \\"param2\\": \\"Red\\",
+                \\"param3\\": \\"123\\",
+                \\"param4\\": \\"134\\",
+                \\"param5\\": \\"321\\",
+                \\"param6\\": \\"Green\\",
+                \\"param7\\": \\"33211\\",
+                \\"param8\\": \\"Red\\"
             }"
         `);
     });

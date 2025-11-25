@@ -62,16 +62,18 @@ describe("Subscriptions metadata on update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
             WHERE this.id = $param0
-            SET this.id = $this_update_id_SET
-            RETURN collect(DISTINCT this { .id }) AS data"
+            SET
+                this.id = $param1
+            WITH this
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"this_update_id_SET\\": \\"2\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": \\"2\\"
             }"
         `);
     });
@@ -100,49 +102,28 @@ describe("Subscriptions metadata on update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
             WHERE this.id = $param0
-            SET this.id = $this_update_id_SET
-            WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
-            	SET this_actors0.name = $this_update_actors0_name_SET
-            	RETURN count(*) AS update_this_actors0
+            SET
+                this.id = $param1
+            WITH *
+            CALL (*) {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH *
+                WHERE this1.name = $param2
+                SET
+                    this1.name = $param3
             }
-            RETURN collect(DISTINCT this { .id }) AS data"
+            WITH this
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"1\\",
-                \\"this_update_id_SET\\": \\"2\\",
-                \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"arthur\\",
-                \\"this_update_actors0_name_SET\\": \\"ford\\",
-                \\"updateMovies\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"id_SET\\": \\"2\\",
-                            \\"actors\\": [
-                                {
-                                    \\"update\\": {
-                                        \\"node\\": {
-                                            \\"name_SET\\": \\"ford\\"
-                                        },
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"name\\": {
-                                                    \\"eq\\": \\"arthur\\"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": \\"2\\",
+                \\"param2\\": \\"arthur\\",
+                \\"param3\\": \\"ford\\"
             }"
         `);
     });

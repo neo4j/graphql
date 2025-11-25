@@ -204,21 +204,23 @@ describe("Cypher Points", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:PointContainer)
+            WITH *
             WHERE this.id = $param0
-            SET this.points = [p in $this_update_points_SET | point(p)]
-            RETURN collect(DISTINCT this { .points }) AS data"
+            SET
+                this.points = [var0 IN $param1 | point(var0)]
+            WITH this
+            RETURN this { .points } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"id\\",
-                \\"this_update_points_SET\\": [
+                \\"param1\\": [
                     {
                         \\"longitude\\": 1,
                         \\"latitude\\": 2
                     }
-                ],
-                \\"resolvedCallbacks\\": {}
+                ]
             }"
         `);
     });

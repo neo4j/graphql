@@ -20,22 +20,16 @@
 import type { GraphQLResolveInfo } from "graphql";
 import type { ObjectTypeComposerFieldConfigAsObjectDefinition, SchemaComposer } from "graphql-compose";
 import { nodeDefinitions } from "graphql-relay";
-import type { Node } from "../types";
 import { globalNodeResolver } from "./resolvers/query/global-node";
 import type { Neo4jGraphQLComposedContext } from "./resolvers/composition/wrap-query-and-mutation";
 import type { ConcreteEntity } from "../schema-model/entity/ConcreteEntity";
 import { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
 // returns true if globalNodeFields added or false if not
-export function addGlobalNodeFields(
-    nodes: Node[],
-    composer: SchemaComposer,
-    concreteEntities: ConcreteEntity[]
-): boolean {
-    const globalNodes = nodes.filter((n) => n.isGlobalNode);
+export function addGlobalNodeFields(composer: SchemaComposer, concreteEntities: ConcreteEntity[]): boolean {
     const globalEntities = concreteEntities.map((e) => new ConcreteEntityAdapter(e)).filter((e) => e.isGlobalNode());
 
-    if (globalNodes.length === 0) return false;
+    if (globalEntities.length === 0) return false;
 
     const fetchById = (id: string, context: Neo4jGraphQLComposedContext, info: GraphQLResolveInfo) => {
         const resolver = globalNodeResolver({ entities: globalEntities });

@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { Node } from "../../classes";
 import type { ConcreteEntity } from "../../schema-model/entity/ConcreteEntity";
 import type {
     AuthenticationAnnotation,
@@ -26,32 +25,6 @@ import type {
 import { applyAuthentication } from "./utils/apply-authentication";
 import type { Neo4jGraphQLTranslationContext } from "../../types/neo4j-graphql-translation-context";
 import type { Operation } from "../../schema-model/Operation";
-
-export function checkAuthentication({
-    context,
-    node,
-    targetOperations,
-    field,
-}: {
-    context: Neo4jGraphQLTranslationContext;
-    node: Node;
-    targetOperations: AuthenticationOperation[];
-    field?: string;
-}) {
-    const concreteEntities = context.schemaModel.getEntitiesByNameAndLabels(node.name, node.getAllLabels());
-
-    if (concreteEntities.length !== 1) {
-        throw new Error("Couldn't match entity");
-    }
-    const entity = concreteEntities[0] as ConcreteEntity;
-
-    return checkEntityAuthentication({
-        context,
-        entity,
-        targetOperations,
-        field,
-    });
-}
 
 export function checkEntityAuthentication({
     context,

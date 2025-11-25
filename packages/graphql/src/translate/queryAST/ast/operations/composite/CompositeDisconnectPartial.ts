@@ -17,16 +17,6 @@
  * limitations under the License.
  */
 
-import type { DirectiveNode, StringValueNode } from "graphql";
+import { DisconnectOperation } from "../DisconnectOperation";
 
-/**
- * Parse the plural directive and return the plural value.
- * @param pluralDirective The plural directicve to parse.
- * @returns The plural value.
- */
-export default function parsePluralDirective(pluralDirective: DirectiveNode | undefined): string | undefined {
-    return (
-        (pluralDirective?.arguments?.find((argument) => argument.name.value === "value")?.value as StringValueNode)
-            ?.value || undefined
-    );
-}
+export class CompositeDisconnectPartial extends DisconnectOperation {}

@@ -20,7 +20,7 @@
 import type { GraphQLFieldResolver, GraphQLResolveInfo, SelectionSetNode } from "graphql";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import { translateRead } from "../../../translate";
+import { translateRead } from "../../../translate/translate-read";
 import type { VectorContext } from "../../../types";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";

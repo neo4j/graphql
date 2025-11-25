@@ -69,48 +69,28 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
             WHERE this.title = $param0
-            WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
-            	SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime_SET
-            	RETURN count(*) AS update_this_actors0
+            WITH *
+            CALL (*) {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH *
+                WHERE this1.name = $param1
+                SET
+                    this0.screenTime = $param2
             }
-            RETURN collect(DISTINCT this { .title }) AS data"
+            WITH this
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"Tom Hanks\\",
-                \\"updateMovies\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"actors\\": [
-                                {
-                                    \\"update\\": {
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"name\\": {
-                                                    \\"eq\\": \\"Tom Hanks\\"
-                                                }
-                                            }
-                                        },
-                                        \\"edge\\": {
-                                            \\"screenTime_SET\\": {
-                                                \\"low\\": 60,
-                                                \\"high\\": 0
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": \\"Tom Hanks\\",
+                \\"param2\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                }
             }"
         `);
     });
@@ -144,53 +124,30 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
             WHERE this.title = $param0
-            WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)<-[this_acted_in0_relationship:ACTED_IN]-(this_actors0:Actor)
-            	WHERE this_actors0.name = $updateMovies_args_update_actors0_where_this_actors0param0
-            	SET this_acted_in0_relationship.screenTime = $updateMovies.args.update.actors[0].update.edge.screenTime_SET
-            	SET this_actors0.name = $this_update_actors0_name_SET
-            	RETURN count(*) AS update_this_actors0
+            WITH *
+            CALL (*) {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH *
+                WHERE this1.name = $param1
+                SET
+                    this1.name = $param2,
+                    this0.screenTime = $param3
             }
-            RETURN collect(DISTINCT this { .title }) AS data"
+            WITH this
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"updateMovies_args_update_actors0_where_this_actors0param0\\": \\"Tom Hanks\\",
-                \\"this_update_actors0_name_SET\\": \\"Tom Hanks\\",
-                \\"updateMovies\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"actors\\": [
-                                {
-                                    \\"update\\": {
-                                        \\"node\\": {
-                                            \\"name_SET\\": \\"Tom Hanks\\"
-                                        },
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"name\\": {
-                                                    \\"eq\\": \\"Tom Hanks\\"
-                                                }
-                                            }
-                                        },
-                                        \\"edge\\": {
-                                            \\"screenTime_SET\\": {
-                                                \\"low\\": 60,
-                                                \\"high\\": 0
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": \\"Tom Hanks\\",
+                \\"param2\\": \\"Tom Hanks\\",
+                \\"param3\\": {
+                    \\"low\\": 60,
+                    \\"high\\": 0
+                }
             }"
         `);
     });

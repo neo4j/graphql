@@ -32,15 +32,11 @@ import type {
 import { GraphQLBoolean, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString, Kind, parse, print } from "graphql";
 import type { ObjectTypeComposer } from "graphql-compose";
 import { SchemaComposer } from "graphql-compose";
-import type { Node } from "../classes";
-import type Relationship from "../classes/Relationship";
 import * as Scalars from "../graphql/scalars";
 import { AggregationTypesMapper } from "./aggregations/aggregation-types-mapper";
 import { augmentFulltextSchema } from "./augment/fulltext";
 import { ensureNonEmptyInput } from "./ensure-non-empty-input";
 import getCustomResolvers from "./get-custom-resolvers";
-import type { ObjectFields } from "./get-obj-field-meta";
-import { getObjFieldMeta } from "./get-obj-field-meta";
 import { createResolver } from "./resolvers/mutation/create";
 import { deleteResolver } from "./resolvers/mutation/delete";
 import { updateResolver } from "./resolvers/mutation/update";
@@ -68,10 +64,9 @@ import { InterfaceEntityAdapter } from "../schema-model/entity/model-adapters/In
 import { UnionEntityAdapter } from "../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { getDefinitionCollection } from "../schema-model/parser/definition-collection";
 import { RelationshipDeclarationAdapter } from "../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
-import type { CypherField, Neo4jFeaturesSettings } from "../types";
+import type { Neo4jFeaturesSettings } from "../types";
 import { asArray, filterTruthy } from "../utils/utils";
 import { augmentVectorSchema } from "./augment/vector";
-import { createConnectionFields } from "./create-connection-fields";
 import { addGlobalNodeFields } from "./create-global-nodes";
 import { createRelationshipFields } from "./create-relationship-fields/create-relationship-fields";
 import { AugmentedSchemaGenerator } from "./generation/AugmentedSchemaGenerator";
@@ -82,9 +77,7 @@ import { withObjectType } from "./generation/object-type";
 import { withMutationResponseTypes } from "./generation/response-types";
 import { withUpdateInputType } from "./generation/update-input";
 import { withUniqueWhereInputType, withWhereInputType } from "./generation/where-input";
-import getNodes from "./get-nodes";
 import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription-methods";
-import { filterInterfaceTypes } from "./make-augmented-schema/filter-interface-types";
 import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
 import { cypherResolver } from "./resolvers/query/cypher";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
@@ -96,33 +89,27 @@ function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name:
 function makeAugmentedSchema({
     document,
     features,
-    userCustomResolvers,
     subgraph,
     schemaModel,
     complexityEstimatorHelper,
 }: {
     document: DocumentNode;
     features?: Neo4jFeaturesSettings;
-    userCustomResolvers?: IResolvers | Array<IResolvers>;
     subgraph?: Subgraph;
     schemaModel: Neo4jGraphQLSchemaModel;
     complexityEstimatorHelper: ComplexityEstimatorHelper;
 }): {
-    nodes: Node[];
-    relationships: Relationship[];
     typeDefs: DocumentNode;
     resolvers: IResolvers;
 } {
     const composer = new SchemaComposer();
-    const callbacks = features?.populatedBy?.callbacks;
 
-    let relationships: Relationship[] = [];
     //TODO: definition collection is being used to harmonize schema generation with schema model,
     //however make augmented schema inner methods are still accepting arrays as they were defined by the previous getDefinitionNodes
     const definitionCollection = getDefinitionCollection(document);
 
     const {
-        interfaceTypes,
+        // interfaceTypes,
         scalarTypes,
         userDefinedObjectTypes,
         enumTypes,
@@ -267,14 +254,7 @@ function makeAugmentedSchema({
     }
 
     const aggregationTypesMapper = new AggregationTypesMapper(composer, subgraph);
-
-    const getNodesResult = getNodes(definitionCollection, { callbacks, userCustomResolvers });
-
-    const { nodes, interfaceRelationshipNames } = getNodesResult;
-
-    const hasGlobalNodes = addGlobalNodeFields(nodes, composer, schemaModel.concreteEntities);
-
-    const { filteredInterfaceTypes } = filterInterfaceTypes(interfaceTypes.values(), interfaceRelationshipNames);
+    const hasGlobalNodes = addGlobalNodeFields(composer, schemaModel.concreteEntities);
 
     const {
         userDefinedFieldDirectivesForNode,
@@ -284,24 +264,6 @@ function makeAugmentedSchema({
         userDefinedDirectivesForUnion,
     } = getUserDefinedDirectives(definitionCollection);
 
-    /**
-     * TODO [translation-layer-compatibility]
-     * keeping this `relationshipFields` scaffold for backwards compatibility on translation layer
-     * actual functional logic is in schemaModel.concreteEntities.forEach
-     */
-    const relationshipFields = new Map<string, ObjectFields>();
-    for (const relationship of definitionCollection.relationshipProperties.values()) {
-        const relFields = getObjFieldMeta({
-            interfaces: filteredInterfaceTypes,
-            definitionCollection,
-            obj: relationship,
-            callbacks,
-        });
-
-        relationshipFields.set(relationship.name.value, relFields);
-    }
-
-    // this is the new "functional" way for the above forEach
     // helper to only create relationshipProperties Interface types once, even if multiple relationships reference it
     const seenRelationshipPropertiesTypes = new Set<string>();
     schemaModel.entities.forEach((entity) => {
@@ -348,23 +310,9 @@ function makeAugmentedSchema({
                 complexityEstimatorHelper,
                 schemaModel,
             });
-            const connectionFields = createConnectionFields({
-                entityAdapter: interfaceEntityAdapter,
-                relationshipFields,
-            });
-            relationships = [...relationships, ...connectionFields];
             return;
         }
         if (entity instanceof ConcreteEntity) {
-            /**
-             * TODO [translation-layer-compatibility]
-             * need the node for fulltext translation
-             */
-            const node = nodes.find((n) => n.name === entity.name);
-            if (!node) {
-                throw new Error(`Node not found with the name ${entity.name}`);
-            }
-
             const concreteEntityAdapter = new ConcreteEntityAdapter(entity);
             const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(concreteEntityAdapter.name);
             if (!userDefinedFieldDirectives) {
@@ -384,24 +332,17 @@ function makeAugmentedSchema({
                 userDefinedFieldDirectives,
                 propagatedDirectives,
                 aggregationTypesMapper,
-                node,
                 seenRelationshipPropertiesTypes,
                 userDefinedDirectivesForNode,
                 userDefinedFieldDirectivesForNode,
                 complexityEstimatorHelper,
                 schemaModel,
             });
-
-            const connectionFields = createConnectionFields({
-                entityAdapter: concreteEntityAdapter,
-                relationshipFields,
-            });
-            relationships = [...relationships, ...connectionFields];
             return;
         }
     });
 
-    if (nodes.length) {
+    if (schemaModel.concreteEntities.length) {
         generateSubscriptionTypes({
             schemaComposer: composer,
             schemaModel,
@@ -421,19 +362,7 @@ function makeAugmentedSchema({
         const userDefinedFieldDirectives = userDefinedFieldDirectivesForNode.get(type) as Map<string, DirectiveNode[]>;
 
         for (const attributeAdapter of operationAdapter.attributes.values()) {
-            /**
-             * TODO [translation-layer-compatibility]
-             * needed for compatibility with translation layer
-             */
-            const objectFields = getObjFieldMeta({
-                obj: customResolvers[`customCypher${type}`],
-                interfaces: filteredInterfaceTypes,
-                definitionCollection,
-                callbacks,
-            });
-            const field = objectFields.cypherFields.find((f) => f.fieldName === attributeAdapter.name) as CypherField;
             const customResolver = cypherResolver({
-                field,
                 attributeAdapter,
                 type: type as "Query" | "Mutation",
             });
@@ -537,8 +466,6 @@ function makeAugmentedSchema({
     };
 
     return {
-        nodes,
-        relationships,
         typeDefs: parsedDoc,
         resolvers: generatedResolvers,
     };
@@ -614,7 +541,6 @@ function generateObjectType({
     userDefinedObjectDirectives,
     propagatedDirectives,
     aggregationTypesMapper,
-    node,
     seenRelationshipPropertiesTypes,
     userDefinedDirectivesForNode,
     userDefinedFieldDirectivesForNode,
@@ -629,7 +555,6 @@ function generateObjectType({
     userDefinedObjectDirectives: DirectiveNode[];
     propagatedDirectives: DirectiveNode[];
     aggregationTypesMapper: AggregationTypesMapper;
-    node: Node;
     seenRelationshipPropertiesTypes: Set<string>;
     userDefinedDirectivesForNode: Map<string, DirectiveNode[]>;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
@@ -716,7 +641,6 @@ function generateObjectType({
     if (concreteEntityAdapter.isCreatable) {
         composer.Mutation.addFields({
             [concreteEntityAdapter.operations.rootTypeFieldNames.create]: createResolver({
-                node,
                 concreteEntityAdapter,
             }),
         });
@@ -742,7 +666,6 @@ function generateObjectType({
     if (concreteEntityAdapter.isUpdatable) {
         composer.Mutation.addFields({
             [concreteEntityAdapter.operations.rootTypeFieldNames.update]: updateResolver({
-                node,
                 concreteEntityAdapter,
             }),
         });

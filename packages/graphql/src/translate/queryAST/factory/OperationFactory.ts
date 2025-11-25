@@ -32,9 +32,11 @@ import { filterTruthy, isRecord } from "../../../utils/utils";
 import type { Filter } from "../ast/filters/Filter";
 import type { AggregationOperation } from "../ast/operations/AggregationOperation";
 import type { ConnectionReadOperation } from "../ast/operations/ConnectionReadOperation";
+import { type CreateOperation } from "../ast/operations/CreateOperation";
 import type { CypherAttributeOperation } from "../ast/operations/CypherAttributeOperation";
 import type { CypherEntityOperation } from "../ast/operations/CypherEntityOperation";
 import type { ReadOperation } from "../ast/operations/ReadOperation";
+import { type UpdateOperation } from "../ast/operations/UpdateOperation";
 import type { CompositeAggregationOperation } from "../ast/operations/composite/CompositeAggregationOperation";
 import type { CompositeConnectionReadOperation } from "../ast/operations/composite/CompositeConnectionReadOperation";
 import type { CompositeCypherOperation } from "../ast/operations/composite/CompositeCypherOperation";
@@ -55,6 +57,7 @@ import { ConnectionFactory } from "./Operations/ConnectionFactory";
 import { CreateFactory } from "./Operations/CreateFactory";
 import { CustomCypherFactory } from "./Operations/CustomCypherFactory";
 import { DeleteFactory } from "./Operations/DeleteFactory";
+import { DisconnectFactory } from "./Operations/DisconnectFactory";
 import { FulltextFactory } from "./Operations/FulltextFactory";
 import { ReadFactory } from "./Operations/ReadFactory";
 import { UpdateFactory } from "./Operations/UpdateFactory";
@@ -72,6 +75,7 @@ export class OperationsFactory {
     private authorizationFactory: AuthorizationFactory;
     private createFactory: CreateFactory;
     private connectFactory: ConnectFactory;
+    private disconnectFactory: DisconnectFactory;
     private updateFactory: UpdateFactory;
     private deleteFactory: DeleteFactory;
     private fulltextFactory: FulltextFactory;
@@ -88,6 +92,7 @@ export class OperationsFactory {
         this.authorizationFactory = queryASTFactory.authorizationFactory;
         this.createFactory = new CreateFactory(queryASTFactory);
         this.connectFactory = new ConnectFactory(queryASTFactory);
+        this.disconnectFactory = new DisconnectFactory(queryASTFactory);
         this.updateFactory = new UpdateFactory(queryASTFactory);
         this.deleteFactory = new DeleteFactory(queryASTFactory);
         this.fulltextFactory = new FulltextFactory(queryASTFactory);
@@ -203,7 +208,7 @@ export class OperationsFactory {
             }
             case "UPDATE": {
                 assertIsConcreteEntity(entity);
-                return this.updateFactory.createUpdateOperation(entity, resolveTree, context);
+                return this.updateFactory.createUpdateOperation(entity, resolveTree, context, callbackBucket, varName);
             }
             case "DELETE": {
                 assertIsConcreteEntity(entity);
@@ -243,6 +248,68 @@ export class OperationsFactory {
                 callbackBucket
             );
         }
+    }
+    public createDisconnectOperation(
+        entity: ConcreteEntityAdapter | InterfaceEntityAdapter | UnionEntityAdapter,
+        relationship: RelationshipAdapter,
+        input: Record<string, any>[],
+        context: Neo4jGraphQLTranslationContext,
+        callbackBucket: CallbackBucket
+    ) {
+        if (isConcreteEntity(entity)) {
+            return this.disconnectFactory.createDisconnectOperation(
+                entity,
+                relationship,
+                input,
+                context,
+                callbackBucket
+            );
+        } else {
+            return this.disconnectFactory.createCompositeDisconnectOperation(
+                entity,
+                relationship,
+                input,
+                context,
+                callbackBucket
+            );
+        }
+    }
+
+    public createNestedCreateOperation({
+        relationship,
+        targetEntity,
+        input,
+        callbackBucket,
+        context,
+        operation,
+        key,
+    }: {
+        input: Record<string, any> | Record<string, any>[];
+        targetEntity: ConcreteEntityAdapter | InterfaceEntityAdapter;
+        relationship: RelationshipAdapter;
+        callbackBucket: CallbackBucket;
+        context: Neo4jGraphQLTranslationContext;
+        operation: CreateOperation | UpdateOperation;
+        key: string;
+    }) {
+        return this.createFactory.createNestedCreateOperation({
+            relationship,
+            targetEntity,
+            input,
+            callbackBucket,
+            context,
+            operation,
+            key,
+        });
+    }
+
+    public createNestedDeleteOperationsForUpdate(
+        deleteArg: Record<string, any>,
+        relationship: RelationshipAdapter,
+        context: Neo4jGraphQLTranslationContext,
+        target: ConcreteEntityAdapter | InterfaceEntityAdapter
+    ) {
+        return this.deleteFactory.createNestedDeleteOperationsForUpdate(deleteArg, relationship, context, target);
     }
 
     public createReadOperation(arg: {

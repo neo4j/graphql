@@ -40,184 +40,219 @@ describe("array-push", () => {
     const expectedLocalDateTime = expect.stringContaining(localDateTime);
 
     test.each([
-        { description: "a single Int element", inputType: "Int", inputValue: 100, expectedOutputValue: [100] },
+        {
+            description: "a single Int element",
+            inputType: "Int",
+            inputValue: 100,
+            expectedOutputValue: [1, 100],
+            initialArray: [1],
+        },
         {
             description: "a single Int element in an array",
             inputType: "Int",
             inputValue: `[${100}]`,
-            expectedOutputValue: [100],
+            expectedOutputValue: [1, 100],
+            initialArray: [1],
         },
         {
             description: "multiple Int elements",
             inputType: "Int",
             inputValue: `[${100}, ${100}]`,
-            expectedOutputValue: [100, 100],
+            expectedOutputValue: [1, 100, 100],
+            initialArray: [1],
         },
         {
             description: "a single Float element",
             inputType: "Float",
             inputValue: 0.123456,
-            expectedOutputValue: [0.123456],
+            expectedOutputValue: [1.1, 0.123456],
+            initialArray: [1.1],
         },
         {
             description: "a single Float element in an array",
             inputType: "Float",
             inputValue: `[${0.123456}]`,
-            expectedOutputValue: [0.123456],
+            expectedOutputValue: [1.1, 0.123456],
+            initialArray: [1.1],
         },
         {
             description: "multiple Float elements",
             inputType: "Float",
             inputValue: `[${0.123456}, ${0.123456}]`,
-            expectedOutputValue: [0.123456, 0.123456],
+            expectedOutputValue: [1.1, 0.123456, 0.123456],
+            initialArray: [1.1],
         },
         {
             description: "a single String element",
             inputType: "String",
             inputValue: `"tag"`,
-            expectedOutputValue: ["tag"],
+            expectedOutputValue: ["first", "tag"],
+            initialArray: ["first"],
         },
         {
             description: "a single String element in an array",
             inputType: "String",
             inputValue: `["tag"]`,
-            expectedOutputValue: ["tag"],
+            expectedOutputValue: ["first", "tag"],
+            initialArray: ["first"],
         },
         {
             description: "multiple String elements",
             inputType: "String",
             inputValue: `["tag1", "tag2"]`,
-            expectedOutputValue: ["tag1", "tag2"],
+            expectedOutputValue: ["first", "tag1", "tag2"],
+            initialArray: ["first"],
         },
         {
             description: "a single Boolean element",
             inputType: "Boolean",
             inputValue: true,
-            expectedOutputValue: [true],
+            expectedOutputValue: [true, true],
+            initialArray: [true],
         },
         {
             description: "a single Boolean element in an array",
             inputType: "Boolean",
             inputValue: `[${true}]`,
-            expectedOutputValue: [true],
+            expectedOutputValue: [true, true],
+            initialArray: [true],
         },
         {
             description: "multiple Boolean elements",
             inputType: "Boolean",
             inputValue: `[${false}, ${true}]`,
-            expectedOutputValue: [false, true],
+            expectedOutputValue: [true, false, true],
+            initialArray: [true],
         },
         {
             description: "a single Duration element",
             inputType: "Duration",
             inputValue: `"P2MT10S"`,
             expectedOutputValue: ["P2MT10S"],
+            initialArray: [],
         },
         {
             description: "a single Duration element in an array",
             inputType: "Duration",
             inputValue: `["P2MT10S"]`,
             expectedOutputValue: ["P2MT10S"],
+            initialArray: [],
         },
         {
             description: "multiple Duration elements",
             inputType: "Duration",
             inputValue: `["P2MT10S", "P2MT10S"]`,
             expectedOutputValue: ["P2MT10S", "P2MT10S"],
+            initialArray: [],
         },
         {
             description: "a single Date element",
             inputType: "Date",
             inputValue: `"${date}"`,
             expectedOutputValue: [expectedDateOutput],
+            initialArray: [],
         },
         {
             description: "a single Date element in an array",
             inputType: "Date",
             inputValue: `["${date}"]`,
             expectedOutputValue: [expectedDateOutput],
+            initialArray: [],
         },
         {
             description: "multiple Date elements",
             inputType: "Date",
             inputValue: `["${date}", "${date}"]`,
             expectedOutputValue: [expectedDateOutput, expectedDateOutput],
+            initialArray: [],
         },
         {
             description: "a single Time element",
             inputType: "Time",
             inputValue: `"${time}"`,
             expectedOutputValue: [expectedTimeOutput],
+            initialArray: [],
         },
         {
             description: "a single Time element in an array",
             inputType: "Time",
             inputValue: `["${time}"]`,
             expectedOutputValue: [expectedTimeOutput],
+            initialArray: [],
         },
         {
             description: "multiple Time elements",
             inputType: "Time",
             inputValue: `["${time}", "${time}"]`,
             expectedOutputValue: [expectedTimeOutput, expectedTimeOutput],
+            initialArray: [],
         },
         {
             description: "a single LocalTime element",
             inputType: "LocalTime",
             inputValue: `"${localTime}"`,
             expectedOutputValue: [expectedLocalTime],
+            initialArray: [],
         },
         {
             description: "a single LocalTime element in an array",
             inputType: "LocalTime",
             inputValue: `["${localTime}"]`,
             expectedOutputValue: [expectedLocalTime],
+            initialArray: [],
         },
         {
             description: "multiple LocalTime elements",
             inputType: "LocalTime",
             inputValue: `["${localTime}", "${localTime}"]`,
             expectedOutputValue: [expectedLocalTime, expectedLocalTime],
+            initialArray: [],
         },
         {
             description: "a single DateTime element",
             inputType: "DateTime",
             inputValue: `"${date}"`,
             expectedOutputValue: [date],
+            initialArray: [],
         },
         {
             description: "a single DateTime element in an array",
             inputType: "DateTime",
             inputValue: `["${date}"]`,
             expectedOutputValue: [date],
+            initialArray: [],
         },
         {
             description: "multiple DateTime elements",
             inputType: "DateTime",
             inputValue: `["${date}", "${date}"]`,
             expectedOutputValue: [date, date],
+            initialArray: [],
         },
         {
             description: "a single LocalDateTime element",
             inputType: "LocalDateTime",
             inputValue: `"${localDateTime}"`,
             expectedOutputValue: [expectedLocalDateTime],
+            initialArray: [],
         },
         {
             description: "a single LocalDateTime element in an array",
             inputType: "LocalDateTime",
             inputValue: `["${localDateTime}"]`,
             expectedOutputValue: [expectedLocalDateTime],
+            initialArray: [],
         },
         {
             description: "multiple LocalDateTime elements",
             inputType: "LocalDateTime",
             inputValue: `["${localDateTime}", "${localDateTime}"]`,
             expectedOutputValue: [expectedLocalDateTime, expectedLocalDateTime],
+            initialArray: [],
         },
     ] as const)(
         "should push $description on to an existing array",
-        async ({ inputType, inputValue, expectedOutputValue }) => {
+        async ({ initialArray, inputType, inputValue, expectedOutputValue }) => {
             const typeMovie = testHelper.createUniqueType("Movie");
 
             const typeDefs = gql`
@@ -245,10 +280,10 @@ describe("array-push", () => {
         `;
 
             const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: []})
+            CREATE (m:${typeMovie} {title:$movieTitle, tags: $initialArray})
         `;
 
-            await testHelper.executeCypher(cypher, { movieTitle });
+            await testHelper.executeCypher(cypher, { movieTitle, initialArray });
 
             const gqlResult = await testHelper.executeGraphQL(update);
 
