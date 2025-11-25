@@ -211,10 +211,7 @@ describe("Authorization with aggregation filter rule", () => {
         ]);
     });
 
-    // Test disabled due to flakyness. Enable once `validatePredicate` has been removed from update operations.
-    // The flakyness is caused by the `AND` operation, that doesn't guarantee shortcircuit of each predicate
-    // eslint-disable-next-line jest/no-disabled-tests
-    test.skip("should authorize update operations on post with exactly two likes", async () => {
+    test("should authorize update operations on post with exactly two likes", async () => {
         const typeDefs = /* GraphQL */ `
             type ${User} @node {
                 id: ID!

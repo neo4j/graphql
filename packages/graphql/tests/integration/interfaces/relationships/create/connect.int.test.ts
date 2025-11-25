@@ -123,6 +123,10 @@ describe("interface relationships", () => {
                             }
                         }
                     }
+                    info {
+                        nodesCreated
+                        relationshipsCreated
+                    }
                 }
             }
         `;
@@ -160,6 +164,10 @@ describe("interface relationships", () => {
                         name: actorName1,
                     },
                 ],
+                info: {
+                    nodesCreated: 1,
+                    relationshipsCreated: 2,
+                },
             },
         });
     });

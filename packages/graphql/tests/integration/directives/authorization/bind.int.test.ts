@@ -636,6 +636,7 @@ describe("auth/bind", () => {
 
             await testHelper.executeCypher(`
                     CREATE (:${Post} {id: "${postId}"})
+                    CREATE (:${User} {id: "not bound"})
                 `);
 
             const token = createBearerToken(secret, { sub: userId });

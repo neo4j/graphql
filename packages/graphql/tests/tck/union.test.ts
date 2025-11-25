@@ -290,17 +290,21 @@ describe("Cypher Union", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
+            WITH *
+            CALL (*) {
+                CREATE (this0:Genre)
+                MERGE (this)-[this1:SEARCH]->(this0)
+                SET
+                    this0.name = $param0
+            }
             WITH this
-            CREATE (this_search_Genre0_create0_node:Genre)
-            SET this_search_Genre0_create0_node.name = $this_search_Genre0_create0_node_name
-            MERGE (this)-[this_search_Genre0_create0_relationship:SEARCH]->(this_search_Genre0_create0_node)
-            RETURN collect(DISTINCT this { .title }) AS data"
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"this_search_Genre0_create0_node_name\\": \\"some genre\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"some genre\\"
             }"
         `);
     });
@@ -335,6 +339,7 @@ describe("Cypher Union", () => {
                 WITH *
                 CALL (this0) {
                     MATCH (this1:Genre)
+                    WHERE this1.name = $param1
                     CREATE (this0)-[this2:SEARCH]->(this1)
                 }
                 RETURN this0 AS this
@@ -348,7 +353,8 @@ describe("Cypher Union", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"some movie\\"
+                \\"param0\\": \\"some movie\\",
+                \\"param1\\": \\"some genre\\"
             }"
         `);
     });
@@ -382,48 +388,25 @@ describe("Cypher Union", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
             WHERE this.title = $param0
-            WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)-[this_search0_relationship:SEARCH]->(this_search_Genre0:Genre)
-            	WHERE this_search_Genre0.name = $updateMovies_args_update_search_Genre0_where_this_search_Genre0param0
-            	SET this_search_Genre0.name = $this_update_search_Genre0_name_SET
-            	RETURN count(*) AS update_this_search_Genre0
+            WITH *
+            CALL (*) {
+                MATCH (this)-[this0:SEARCH]->(this1:Genre)
+                WITH *
+                WHERE this1.name = $param1
+                SET
+                    this1.name = $param2
             }
-            RETURN collect(DISTINCT this { .title }) AS data"
+            WITH this
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some movie\\",
-                \\"updateMovies_args_update_search_Genre0_where_this_search_Genre0param0\\": \\"some genre\\",
-                \\"this_update_search_Genre0_name_SET\\": \\"some new genre\\",
-                \\"updateMovies\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"search\\": {
-                                \\"Genre\\": [
-                                    {
-                                        \\"update\\": {
-                                            \\"node\\": {
-                                                \\"name_SET\\": \\"some new genre\\"
-                                            },
-                                            \\"where\\": {
-                                                \\"node\\": {
-                                                    \\"name\\": {
-                                                        \\"eq\\": \\"some genre\\"
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": \\"some genre\\",
+                \\"param2\\": \\"some new genre\\"
             }"
         `);
     });
@@ -448,50 +431,25 @@ describe("Cypher Union", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
             WHERE this.title = $param0
-            WITH this
-            CALL(*) {
-            WITH this
-            OPTIONAL MATCH (this)-[this_search_Genre0_disconnect0_rel:SEARCH]->(this_search_Genre0_disconnect0:Genre)
-            WHERE this_search_Genre0_disconnect0.name = $updateMovies_args_update_search_Genre0_disconnect0_where_Genre_this_search_Genre0_disconnect0param0
-            CALL (this_search_Genre0_disconnect0, this_search_Genre0_disconnect0_rel, this) {
-            	WITH collect(this_search_Genre0_disconnect0) as this_search_Genre0_disconnect0_x, this_search_Genre0_disconnect0_rel, this
-            	UNWIND this_search_Genre0_disconnect0_x as x
-            	DELETE this_search_Genre0_disconnect0_rel
+            WITH *
+            CALL (*) {
+                CALL (this) {
+                    OPTIONAL MATCH (this)-[this0:SEARCH]->(this1:Genre)
+                    WHERE this1.name = $param1
+                    WITH *
+                    DELETE this0
+                }
             }
-            RETURN count(*) AS disconnect_this_search_Genre0_disconnect_Genre
-            }
-            RETURN collect(DISTINCT this { .title }) AS data"
+            WITH this
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some movie\\",
-                \\"updateMovies_args_update_search_Genre0_disconnect0_where_Genre_this_search_Genre0_disconnect0param0\\": \\"some genre\\",
-                \\"updateMovies\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"search\\": {
-                                \\"Genre\\": [
-                                    {
-                                        \\"disconnect\\": [
-                                            {
-                                                \\"where\\": {
-                                                    \\"node\\": {
-                                                        \\"name\\": {
-                                                            \\"eq\\": \\"some genre\\"
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": \\"some genre\\"
             }"
         `);
     });
@@ -516,31 +474,24 @@ describe("Cypher Union", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
             WHERE this.title = $param0
             WITH *
-            CALL(*) {
-            	WITH this
-            	OPTIONAL MATCH (this_search_Genre0_connect0_node:Genre)
-            	WHERE this_search_Genre0_connect0_node.name = $this_search_Genre0_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this_search_Genre0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_search_Genre0_connect0_node
-            			CREATE (this)-[:SEARCH]->(this_search_Genre0_connect0_node)
-            		}
-            	}
-            WITH this, this_search_Genre0_connect0_node
-            	RETURN count(*) AS connect_this_search_Genre0_connect_Genre0
+            CALL (*) {
+                CALL (this) {
+                    MATCH (this0:Genre)
+                    WHERE this0.name = $param1
+                    CREATE (this)-[this1:SEARCH]->(this0)
+                }
             }
-            RETURN collect(DISTINCT this { .title }) AS data"
+            WITH this
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some movie\\",
-                \\"this_search_Genre0_connect0_node_param0\\": \\"some genre\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": \\"some genre\\"
             }"
         `);
     });
@@ -565,48 +516,26 @@ describe("Cypher Union", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
             WHERE this.title = $param0
             WITH *
-            CALL(*) {
-            OPTIONAL MATCH (this)-[this_search_Genre0_delete0_relationship:SEARCH]->(this_search_Genre0_delete0:Genre)
-            WHERE this_search_Genre0_delete0.name = $updateMovies_args_update_search0_delete_Genre0_where_this_search_Genre0_delete0param0
-            WITH this_search_Genre0_delete0_relationship, collect(DISTINCT this_search_Genre0_delete0) AS this_search_Genre0_delete0_to_delete
-            CALL(this_search_Genre0_delete0_to_delete) {
-            	UNWIND this_search_Genre0_delete0_to_delete AS x
-            	DETACH DELETE x
+            CALL (*) {
+                OPTIONAL MATCH (this)-[this0:SEARCH]->(this1:Genre)
+                WHERE this1.name = $param1
+                WITH this0, collect(DISTINCT this1) AS var2
+                CALL (var2) {
+                    UNWIND var2 AS var3
+                    DETACH DELETE var3
+                }
             }
-            }
-            RETURN collect(DISTINCT this { .title }) AS data"
+            WITH this
+            RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"some movie\\",
-                \\"updateMovies_args_update_search0_delete_Genre0_where_this_search_Genre0_delete0param0\\": \\"some genre\\",
-                \\"updateMovies\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"search\\": {
-                                \\"Genre\\": [
-                                    {
-                                        \\"delete\\": [
-                                            {
-                                                \\"where\\": {
-                                                    \\"node\\": {
-                                                        \\"name\\": {
-                                                            \\"eq\\": \\"some genre\\"
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        ]
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param1\\": \\"some genre\\"
             }"
         `);
     });

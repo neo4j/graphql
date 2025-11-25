@@ -72,25 +72,25 @@ describe("Cypher -> Connections -> Projections -> Update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            WHERE this.title = $param0
             WITH *
+            WHERE this.title = $param0
+            WITH this
             CALL (this) {
-                MATCH (this)<-[update_this0:ACTED_IN]-(update_this1:Actor)
-                WITH collect({ node: update_this1, relationship: update_this0 }) AS edges
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH collect({ node: this1, relationship: this0 }) AS edges
                 CALL (edges) {
                     UNWIND edges AS edge
-                    WITH edge.node AS update_this1, edge.relationship AS update_this0
-                    RETURN collect({ properties: { screenTime: update_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: update_this1.name, __resolveType: \\"Actor\\" } }) AS update_var2
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    RETURN collect({ properties: { screenTime: this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
                 }
-                RETURN { edges: update_var2 } AS update_var3
+                RETURN { edges: var2 } AS var3
             }
-            RETURN collect(DISTINCT this { .title, actorsConnection: update_var3 }) AS data"
+            RETURN this { .title, actorsConnection: var3 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Forrest Gump\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"Forrest Gump\\"
             }"
         `);
     });

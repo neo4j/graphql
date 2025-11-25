@@ -286,9 +286,8 @@ describe("array-push", () => {
         });
 
         expect(gqlResult.errors).toBeDefined();
-        const relationshipType = `${movie.name}ActorsRelationship`;
         expect(gqlResult.errors).toEqual([
-            new GraphQLError(`Conflicting modification of [[pay_SET]], [[pay_PUSH]] on type ${relationshipType}`),
+            new GraphQLError(`Conflicting modification of [[pay_SET]], [[pay_PUSH]] on type ${actor}.actedIn`),
         ]);
 
         expect(gqlResult.data).toBeNull();

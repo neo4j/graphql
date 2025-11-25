@@ -56,9 +56,9 @@ yarn install
 [Visual Studio Code](https://code.visualstudio.com/) comes highly recommended
 for working in this repository, and we additionally recommend the following extensions:
 
-* [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-* [Jest](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest)
-* [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+- [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+- [Jest](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest)
+- [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
 The Jest extension should automatically detect the tests for this repository and
 watch them in the Status Bar.
@@ -69,16 +69,16 @@ In some cases, it may be worth testing `@neo4j/graphql` with a local version of 
 
 In the Cypher Builder folder run:
 
-* `yarn link`
-* `yarn build` - This step needs to be done each time a change is done in the Cypher Builder
+- `yarn link`
+- `yarn build` - This step needs to be done each time a change is done in the Cypher Builder
 
 In the root of the `neo4j/graphql` monorepo run:
 
-* `yarn link -p [path-to-local-cypher-builder]
+- `yarn link -p [path-to-local-cypher-builder]
 
 To unlink, in the graphql project:
 
-* `yarn unlink @neo4j/cypher-builder`
+- `yarn unlink @neo4j/cypher-builder`
 
 ## Testing
 
@@ -135,7 +135,7 @@ yarn test:tck
 You can run all the TCK tests against the database to check that the Cypher generated is valid. This can be done with the env variable `VERIFY_TCK`
 
 ```bash
-VERIFY_TCK yarn test:tck
+VERIFY_TCK=true yarn test:tck
 ```
 
 ### Testing using docker
@@ -228,8 +228,8 @@ adhere to our linting and formatting rules.
 For the sake of completeness, add an entry for the new project into the following
 files in the root of the repository:
 
-* `tsconfig.json` (`references` entry)
-* `jest.config.base.js` (`moduleNameMapper` entry)
+- `tsconfig.json` (`references` entry)
+- `jest.config.base.js` (`moduleNameMapper` entry)
 
 ### Dependencies within the monorepo
 
@@ -268,10 +268,10 @@ like:
 
 The real key entries here are:
 
-* `baseUrl` - for all of the relative references in this file, this will tell
-    `tsc` where to start from
-* `paths` - this will translate `import` statements in code to the relative dependency
-* `references` - gives TypeScript "permission" to accesss the projects at these paths
+- `baseUrl` - for all of the relative references in this file, this will tell
+  `tsc` where to start from
+- `paths` - this will translate `import` statements in code to the relative dependency
+- `references` - gives TypeScript "permission" to accesss the projects at these paths
 
 Finally, it is highly likely that Jest will also need access to this internal
 dependency, so `packages/project/jest.config.js` will need to look like:

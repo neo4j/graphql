@@ -46,8 +46,6 @@ import type { ExecutorConstructorParam, Neo4jGraphQLSessionConfig } from "./Exec
 import { Executor } from "./Executor";
 import type { Neo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
 import { getNeo4jDatabaseInfo } from "./Neo4jDatabaseInfo";
-import type Node from "./Node";
-import type Relationship from "./Relationship";
 import { Neo4jGraphQLAuthorization } from "./authorization/Neo4jGraphQLAuthorization";
 import { Neo4jGraphQLSubscriptionsCDCEngine } from "./subscription/Neo4jGraphQLSubscriptionsCDCEngine";
 import { assertIndexesAndConstraints } from "./utils/asserts-indexes-and-constraints";
@@ -71,9 +69,6 @@ class Neo4jGraphQL {
 
     private driver?: Driver;
     private features: ContextFeatures;
-
-    private _nodes?: Node[];
-    private _relationships?: Relationship[];
 
     private jwtFieldsMap?: Map<string, string>;
 
@@ -201,22 +196,6 @@ class Neo4jGraphQL {
         });
     }
 
-    private get nodes(): Node[] {
-        if (!this._nodes) {
-            throw new Error("You must await `.getSchema()` before accessing `nodes`");
-        }
-
-        return this._nodes;
-    }
-
-    private get relationships(): Relationship[] {
-        if (!this._relationships) {
-            throw new Error("You must await `.getSchema()` before accessing `relationships`");
-        }
-
-        return this._relationships;
-    }
-
     /**
      * Currently just merges all type definitions into a document. Eventual intention described below:
      *
@@ -309,8 +288,6 @@ class Neo4jGraphQL {
 
         const wrapResolverArgs: WrapResolverArguments = {
             driver: this.driver,
-            nodes: this.nodes,
-            relationships: this.relationships,
             schemaModel: this.schemaModel,
             features: this.features,
             authorization: this.authorization,
@@ -382,7 +359,7 @@ class Neo4jGraphQL {
 
     private generateSchemaModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
         if (!this.schemaModel) {
-            return generateModel(document);
+            return generateModel(document, this.resolvers);
         }
         return this.schemaModel;
     }
@@ -420,10 +397,9 @@ class Neo4jGraphQL {
 
             this.schemaModel = this.generateSchemaModel(document);
 
-            const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema({
+            const { typeDefs, resolvers } = makeAugmentedSchema({
                 document,
                 features: this.features,
-                userCustomResolvers: this.resolvers,
                 schemaModel: this.schemaModel,
                 complexityEstimatorHelper: this.complexityEstimatorHelper,
             });
@@ -436,9 +412,6 @@ class Neo4jGraphQL {
                     features: this.features,
                 });
             }
-
-            this._nodes = nodes;
-            this._relationships = relationships;
 
             const schema = makeExecutableSchema({
                 typeDefs,
@@ -490,10 +463,9 @@ class Neo4jGraphQL {
 
         this.schemaModel = this.generateSchemaModel(document);
 
-        const { nodes, relationships, typeDefs, resolvers } = makeAugmentedSchema({
+        const { typeDefs, resolvers } = makeAugmentedSchema({
             document,
             features: this.features,
-            userCustomResolvers: this.resolvers,
             subgraph,
             schemaModel: this.schemaModel,
             complexityEstimatorHelper: this.complexityEstimatorHelper,
@@ -509,9 +481,6 @@ class Neo4jGraphQL {
                 features: this.features,
             });
         }
-
-        this._nodes = nodes;
-        this._relationships = relationships;
 
         // TODO: Move into makeAugmentedSchema, add resolvers alongside other resolvers
         const referenceResolvers = subgraph.getReferenceResolvers(this.schemaModel);

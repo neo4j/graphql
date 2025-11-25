@@ -83,59 +83,33 @@ describe("Interface Relationships - Update update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
+            WITH *
+            WITH *
+            CALL (*) {
+                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WITH *
+                WHERE this1.title = $param0
+                SET
+                    this1.title = $param1
+            }
+            WITH *
+            CALL (*) {
+                MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                WITH *
+                WHERE this3.title = $param2
+                SET
+                    this3.title = $param3
+            }
             WITH this
-            CALL (this) {
-            WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
-            	SET this_actedIn0.title = $this_update_actedIn0_title_SET
-            	RETURN count(*) AS update_this_actedIn0
-            }
-            RETURN count(*) AS update_this_Movie
-            }
-            CALL (this){
-            	WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
-            	SET this_actedIn0.title = $this_update_actedIn0_title_SET
-            	RETURN count(*) AS update_this_actedIn0
-            }
-            RETURN count(*) AS update_this_Series
-            }
-            RETURN collect(DISTINCT this { .name }) AS data"
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateActors_args_update_actedIn0_where_this_actedIn0param0\\": \\"Old Title\\",
-                \\"this_update_actedIn0_title_SET\\": \\"New Title\\",
-                \\"updateActors\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"actedIn\\": [
-                                {
-                                    \\"update\\": {
-                                        \\"node\\": {
-                                            \\"title_SET\\": \\"New Title\\"
-                                        },
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"title\\": {
-                                                    \\"eq\\": \\"Old Title\\"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"Old Title\\",
+                \\"param1\\": \\"New Title\\",
+                \\"param2\\": \\"Old Title\\",
+                \\"param3\\": \\"New Title\\"
             }"
         `);
     });
@@ -165,79 +139,43 @@ describe("Interface Relationships - Update update", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Actor)
+            WITH *
+            WITH *
+            CALL (*) {
+                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WITH *
+                WHERE this1.title = $param0
+                WITH *
+                CALL (*) {
+                    MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
+                    WITH *
+                    SET
+                        this3.name = $param1
+                }
+            }
+            WITH *
+            CALL (*) {
+                MATCH (this)-[this4:ACTED_IN]->(this5:Series)
+                WITH *
+                WHERE this5.title = $param2
+                WITH *
+                CALL (*) {
+                    MATCH (this5)<-[this6:ACTED_IN]-(this7:Actor)
+                    WITH *
+                    SET
+                        this7.name = $param3
+                }
+            }
             WITH this
-            CALL (this) {
-            WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Movie)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
-            	WITH this, this_actedIn0
-            	CALL(*) {
-            		WITH this, this_actedIn0
-            		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
-            		SET this_actedIn0_actors0.name = $this_update_actedIn0_actors0_name_SET
-            		RETURN count(*) AS update_this_actedIn0_actors0
-            	}
-            	RETURN count(*) AS update_this_actedIn0
-            }
-            RETURN count(*) AS update_this_Movie
-            }
-            CALL (this){
-            	WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)-[this_acted_in0_relationship:ACTED_IN]->(this_actedIn0:Series)
-            	WHERE this_actedIn0.title = $updateActors_args_update_actedIn0_where_this_actedIn0param0
-            	WITH this, this_actedIn0
-            	CALL(*) {
-            		WITH this, this_actedIn0
-            		MATCH (this_actedIn0)<-[this_actedIn0_acted_in0_relationship:ACTED_IN]-(this_actedIn0_actors0:Actor)
-            		SET this_actedIn0_actors0.name = $this_update_actedIn0_actors0_name_SET
-            		RETURN count(*) AS update_this_actedIn0_actors0
-            	}
-            	RETURN count(*) AS update_this_actedIn0
-            }
-            RETURN count(*) AS update_this_Series
-            }
-            RETURN collect(DISTINCT this { .name }) AS data"
+            RETURN this { .name } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"updateActors_args_update_actedIn0_where_this_actedIn0param0\\": \\"Old Title\\",
-                \\"this_update_actedIn0_actors0_name_SET\\": \\"New Actor Name\\",
-                \\"updateActors\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"actedIn\\": [
-                                {
-                                    \\"update\\": {
-                                        \\"node\\": {
-                                            \\"actors\\": [
-                                                {
-                                                    \\"update\\": {
-                                                        \\"node\\": {
-                                                            \\"name_SET\\": \\"New Actor Name\\"
-                                                        }
-                                                    }
-                                                }
-                                            ]
-                                        },
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"title\\": {
-                                                    \\"eq\\": \\"Old Title\\"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
-                },
-                \\"resolvedCallbacks\\": {}
+                \\"param0\\": \\"Old Title\\",
+                \\"param1\\": \\"New Actor Name\\",
+                \\"param2\\": \\"Old Title\\",
+                \\"param3\\": \\"New Actor Name\\"
             }"
         `);
     });

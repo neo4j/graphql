@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import type { IResolvers } from "@graphql-tools/utils";
 import type {
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
@@ -28,75 +27,15 @@ import type {
     UnionTypeDefinitionNode,
     FieldNode,
 } from "graphql";
-import { Kind, parse } from "graphql";
+import { Kind } from "graphql";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
 import { generateResolveTree } from "../translate/utils/resolveTree";
-
-type CustomResolverMeta = {
-    requiredFields: Record<string, ResolveTree>;
-};
 
 const INVALID_DIRECTIVES_TO_REQUIRE = ["customResolver"];
 export const INVALID_REQUIRED_FIELD_ERROR = `It is not possible to require fields that use the following directives: ${INVALID_DIRECTIVES_TO_REQUIRE.map(
     (name) => `\`@${name}\``
 ).join(", ")}`;
 export const INVALID_SELECTION_SET_ERROR = "Invalid selection set passed to @customResolver required";
-
-export function getCustomResolverMeta({
-    field,
-    object,
-    objects,
-    interfaces,
-    unions,
-    customResolvers,
-    interfaceField,
-}: {
-    field: FieldDefinitionNode;
-    object: ObjectTypeDefinitionNode | InterfaceTypeDefinitionNode;
-    objects: ObjectTypeDefinitionNode[];
-    interfaces: InterfaceTypeDefinitionNode[];
-    unions: UnionTypeDefinitionNode[];
-    customResolvers?: IResolvers | IResolvers[];
-    interfaceField?: FieldDefinitionNode;
-}): CustomResolverMeta | undefined {
-    const directive =
-        field.directives?.find((x) => x.name.value === "customResolver") ||
-        interfaceField?.directives?.find((x) => x.name.value === "customResolver");
-
-    if (!directive) {
-        return undefined;
-    }
-
-    if (object.kind !== Kind.INTERFACE_TYPE_DEFINITION && !customResolvers?.[field.name.value]) {
-        console.warn(`Custom resolver for ${field.name.value} has not been provided`);
-    }
-
-    const directiveRequiresArgument = directive?.arguments?.find((arg) => arg.name.value === "requires");
-
-    if (!directiveRequiresArgument) {
-        return {
-            requiredFields: {},
-        };
-    }
-
-    if (directiveRequiresArgument?.value.kind !== Kind.STRING) {
-        throw new Error("@customResolver requires expects a string");
-    }
-
-    const selectionSetDocument = parse(`{ ${directiveRequiresArgument.value.value} }`);
-    const requiredFieldsResolveTree = selectionSetToResolveTree(
-        object.fields || [],
-        objects,
-        interfaces,
-        unions,
-        selectionSetDocument
-    );
-    if (requiredFieldsResolveTree) {
-        return {
-            requiredFields: requiredFieldsResolveTree,
-        };
-    }
-}
 
 export function selectionSetToResolveTree(
     objectFields: ReadonlyArray<FieldDefinitionNode>,

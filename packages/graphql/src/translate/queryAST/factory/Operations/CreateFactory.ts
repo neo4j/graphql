@@ -33,6 +33,7 @@ import { CreateOperation } from "../../ast/operations/CreateOperation";
 import type { ReadOperation } from "../../ast/operations/ReadOperation";
 import { TopLevelCreateMutationOperation } from "../../ast/operations/TopLevelCreateMutationOperation";
 import { UnwindCreateOperation } from "../../ast/operations/UnwindCreateOperation";
+import type { UpdateOperation } from "../../ast/operations/UpdateOperation";
 import { NodeSelectionPattern } from "../../ast/selection/SelectionPattern/NodeSelectionPattern";
 import { RelationshipSelectionPattern } from "../../ast/selection/SelectionPattern/RelationshipSelectionPattern";
 import type { CallbackBucket } from "../../utils/callback-bucket";
@@ -392,7 +393,7 @@ export class CreateFactory {
         });
     }
 
-    private createNestedCreateOperation({
+    public createNestedCreateOperation({
         relationship,
         targetEntity,
         input,
@@ -406,7 +407,7 @@ export class CreateFactory {
         relationship: RelationshipAdapter;
         callbackBucket: CallbackBucket;
         context: Neo4jGraphQLTranslationContext;
-        operation: CreateOperation;
+        operation: CreateOperation | UpdateOperation;
         key: string;
     }) {
         asArray(input).forEach((input) => {

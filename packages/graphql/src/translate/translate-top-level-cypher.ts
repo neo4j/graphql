@@ -22,22 +22,22 @@ import Debug from "debug";
 import { DEBUG_TRANSLATE } from "../constants";
 import type { AuthenticationOperation } from "../schema-model/annotation/AuthenticationAnnotation";
 import { getEntityAdapter } from "../schema-model/utils/get-entity-adapter";
-import type { CypherField } from "../types";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
 import { applyAuthentication } from "./authorization/utils/apply-authentication";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 import { buildClause } from "./utils/build-clause";
+import { type AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 
 const debug = Debug(DEBUG_TRANSLATE);
 
 export function translateTopLevelCypher({
     context,
-    field,
+    attributeAdapter,
     type,
 }: {
     context: Neo4jGraphQLTranslationContext;
-    field: CypherField;
+    attributeAdapter: AttributeAdapter;
 
     type: "Query" | "Mutation";
 }): Cypher.CypherResult {
@@ -45,12 +45,11 @@ export function translateTopLevelCypher({
     if (!operation) {
         throw new Error(`Failed to find operation ${type} in Schema Model.`);
     }
-    const operationField = operation.findAttribute(field.fieldName);
+    const operationField = operation.findAttribute(attributeAdapter.name);
     if (!operationField) {
-        throw new Error(`Failed to find field ${field.fieldName} on operation ${type}.`);
+        throw new Error(`Failed to find field ${attributeAdapter.name} on operation ${type}.`);
     }
-    const entity = context.schemaModel.entities.get(field.typeMeta.name);
-
+    const entity = context.schemaModel.entities.get(attributeAdapter.getTypeName());
     const annotation = operationField.annotations.authentication;
     if (annotation) {
         const targetOperations: AuthenticationOperation[] =

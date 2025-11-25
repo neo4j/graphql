@@ -52,8 +52,12 @@ import { findDirective } from "./parser/utils";
 import type { NestedOperation, QueryDirection, RelationshipDirection } from "./relationship/Relationship";
 import { Relationship } from "./relationship/Relationship";
 import { RelationshipDeclaration } from "./relationship/RelationshipDeclaration";
+import type { IResolvers } from "@graphql-tools/utils";
 
-export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
+export function generateModel(
+    document: DocumentNode,
+    userDefinedCustomResolvers?: IResolvers | IResolvers[]
+): Neo4jGraphQLSchemaModel {
     const definitionCollection: DefinitionCollection = getDefinitionCollection(document);
 
     const operations: Operations = definitionCollection.operations.reduce((acc, definition): Operations => {
@@ -65,7 +69,7 @@ export function generateModel(document: DocumentNode): Neo4jGraphQLSchemaModel {
     hydrateInterfacesToTypeNamesMap(definitionCollection);
 
     const concreteEntities = Array.from(definitionCollection.nodes.values()).map((node) =>
-        generateConcreteEntity(node, definitionCollection)
+        generateConcreteEntity(node, definitionCollection, userDefinedCustomResolvers)
     );
 
     const concreteEntitiesMap = concreteEntities.reduce((acc, entity) => {
@@ -517,14 +521,15 @@ function generateRelationshipDeclaration(
 
 function generateConcreteEntity(
     definition: ObjectTypeDefinitionNode,
-    definitionCollection: DefinitionCollection
+    definitionCollection: DefinitionCollection,
+    userDefinedCustomResolvers?: IResolvers | IResolvers[]
 ): ConcreteEntity {
     const fields = (definition.fields || []).map((fieldDefinition) => {
         const isRelationshipAttribute = findDirective(fieldDefinition.directives, relationshipDirective.name);
         if (isRelationshipAttribute) {
             return;
         }
-        return parseAttribute(fieldDefinition, definitionCollection, definition.fields);
+        return parseAttribute(fieldDefinition, definitionCollection, definition.fields, userDefinedCustomResolvers);
     });
 
     // schema configuration directives are propagated onto concrete entities

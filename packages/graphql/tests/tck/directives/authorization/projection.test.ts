@@ -67,12 +67,16 @@ describe("Cypher Auth Projection", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            WITH this
-            WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            SET this.id = $this_update_id_SET
+            WITH *
             WITH *
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            RETURN collect(DISTINCT this { .id }) AS data"
+            WITH *
+            SET
+                this.id = $param2
+            WITH this
+            WITH *
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -84,8 +88,7 @@ describe("Cypher Auth Projection", () => {
                     ],
                     \\"sub\\": \\"super_admin\\"
                 },
-                \\"this_update_id_SET\\": \\"new-id\\",
-                \\"resolvedCallbacks\\": {}
+                \\"param2\\": \\"new-id\\"
             }"
         `);
     });

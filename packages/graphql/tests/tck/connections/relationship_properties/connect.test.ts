@@ -218,45 +218,38 @@ describe("Relationship Properties Connect Cypher", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
             WHERE this.title = $param0
             WITH *
-            CALL(*) {
-            	WITH this
-            	OPTIONAL MATCH (this_actors0_connect0_node:Actor)
-            	CALL(*) {
-            		WITH collect(this_actors0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_actors0_connect0_node
-            			CREATE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
-            			SET this_actors0_connect0_relationship.screenTime = $this_actors0_connect0_relationship_screenTime
-            		}
-            	}
-            WITH this, this_actors0_connect0_node
-            	RETURN count(*) AS connect_this_actors0_connect_Actor0
+            CALL (*) {
+                CALL (this) {
+                    MATCH (this0:Actor)
+                    CREATE (this)<-[this1:ACTED_IN]-(this0)
+                    SET
+                        this1.screenTime = $param1
+                }
             }
-            WITH *
+            WITH this
             CALL (this) {
-                MATCH (this)<-[update_this0:ACTED_IN]-(update_this1:Actor)
-                WITH collect({ node: update_this1, relationship: update_this0 }) AS edges
+                MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
+                WITH collect({ node: this3, relationship: this2 }) AS edges
                 CALL (edges) {
                     UNWIND edges AS edge
-                    WITH edge.node AS update_this1, edge.relationship AS update_this0
-                    RETURN collect({ properties: { screenTime: update_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: update_this1.name, __resolveType: \\"Actor\\" } }) AS update_var2
+                    WITH edge.node AS this3, edge.relationship AS this2
+                    RETURN collect({ properties: { screenTime: this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this3.name, __resolveType: \\"Actor\\" } }) AS var4
                 }
-                RETURN { edges: update_var2 } AS update_var3
+                RETURN { edges: var4 } AS var5
             }
-            RETURN collect(DISTINCT this { .title, actorsConnection: update_var3 }) AS data"
+            RETURN this { .title, actorsConnection: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"this_actors0_connect0_relationship_screenTime\\": {
+                \\"param1\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });
@@ -294,47 +287,40 @@ describe("Relationship Properties Connect Cypher", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
+            WITH *
             WHERE this.title = $param0
             WITH *
-            CALL(*) {
-            	WITH this
-            	OPTIONAL MATCH (this_actors0_connect0_node:Actor)
-            	WHERE this_actors0_connect0_node.name = $this_actors0_connect0_node_param0
-            	CALL(*) {
-            		WITH collect(this_actors0_connect0_node) as connectedNodes, collect(this) as parentNodes
-            		CALL(connectedNodes, parentNodes) {
-            			UNWIND parentNodes as this
-            			UNWIND connectedNodes as this_actors0_connect0_node
-            			CREATE (this)<-[this_actors0_connect0_relationship:ACTED_IN]-(this_actors0_connect0_node)
-            			SET this_actors0_connect0_relationship.screenTime = $this_actors0_connect0_relationship_screenTime
-            		}
-            	}
-            WITH this, this_actors0_connect0_node
-            	RETURN count(*) AS connect_this_actors0_connect_Actor0
+            CALL (*) {
+                CALL (this) {
+                    MATCH (this0:Actor)
+                    WHERE this0.name = $param1
+                    CREATE (this)<-[this1:ACTED_IN]-(this0)
+                    SET
+                        this1.screenTime = $param2
+                }
             }
-            WITH *
+            WITH this
             CALL (this) {
-                MATCH (this)<-[update_this0:ACTED_IN]-(update_this1:Actor)
-                WITH collect({ node: update_this1, relationship: update_this0 }) AS edges
+                MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
+                WITH collect({ node: this3, relationship: this2 }) AS edges
                 CALL (edges) {
                     UNWIND edges AS edge
-                    WITH edge.node AS update_this1, edge.relationship AS update_this0
-                    RETURN collect({ properties: { screenTime: update_this0.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: update_this1.name, __resolveType: \\"Actor\\" } }) AS update_var2
+                    WITH edge.node AS this3, edge.relationship AS this2
+                    RETURN collect({ properties: { screenTime: this2.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: this3.name, __resolveType: \\"Actor\\" } }) AS var4
                 }
-                RETURN { edges: update_var2 } AS update_var3
+                RETURN { edges: var4 } AS var5
             }
-            RETURN collect(DISTINCT this { .title, actorsConnection: update_var3 }) AS data"
+            RETURN this { .title, actorsConnection: var5 } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Forrest Gump\\",
-                \\"this_actors0_connect0_node_param0\\": \\"Tom Hanks\\",
-                \\"this_actors0_connect0_relationship_screenTime\\": {
+                \\"param1\\": \\"Tom Hanks\\",
+                \\"param2\\": {
                     \\"low\\": 60,
                     \\"high\\": 0
-                },
-                \\"resolvedCallbacks\\": {}
+                }
             }"
         `);
     });

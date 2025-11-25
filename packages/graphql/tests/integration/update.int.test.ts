@@ -212,17 +212,43 @@ describe("update", () => {
 
         expect(gqlResult.errors).toBeFalsy();
 
-        const cypherResult = await testHelper.executeCypher(
-            `
-                    MATCH (p:${Person} {id: "4"})-[:DIRECTED]->(m:${Movie} {id: "5"}) RETURN p, m
-                `
-        );
-
-        expect(cypherResult.records).toHaveLength(2);
-
-        expect(gqlResult?.data?.[Movie.operations.update]).toEqual({
-            [Movie.plural]: [{ id: "1", title: "Movie1" }],
+        expect(gqlResult.data).toEqual({
+            [Movie.operations.update]: {
+                [Movie.plural]: [{ id: "1", title: "Movie1" }],
+            },
         });
+        await testHelper.expectRelationship(Person, Movie, "DIRECTED").toEqual(
+            expect.toIncludeSameMembers([
+                {
+                    from: {
+                        id: "2",
+                    },
+                    to: { id: "1", title: "Movie1" },
+                    relationship: {},
+                },
+                {
+                    from: {
+                        id: "2",
+                    },
+                    to: { id: "3", title: "Movie3" },
+                    relationship: {},
+                },
+                {
+                    from: {
+                        id: "4",
+                    },
+                    to: { id: "3", title: "Movie3" },
+                    relationship: {},
+                },
+                {
+                    from: {
+                        id: "4",
+                    },
+                    to: { id: "5", title: "Movie5" },
+                    relationship: {},
+                },
+            ])
+        );
     });
 
     test("should update a movie when matching on relationship property", async () => {
@@ -362,17 +388,11 @@ describe("update", () => {
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
-        const movieId = generate({
-            charset: "alphabetic",
-        });
+        const movieId = "movieId";
 
-        const initialName = generate({
-            charset: "alphabetic",
-        });
+        const initialName = "Original Name";
 
-        const updatedName = generate({
-            charset: "alphabetic",
-        });
+        const updatedName = "New Fancy Name";
 
         const query = /* GraphQL */ `
         mutation($movieId: ID, $initialName: String, $updatedName: String) {

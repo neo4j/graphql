@@ -17,41 +17,33 @@
  * limitations under the License.
  */
 
-import type { GraphElement } from "../classes";
+import type { ConcreteEntityAdapter } from "../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { parseMutationField } from "../translate/queryAST/factory/parsers/parse-mutation-field";
-import mapToDbProperty from "./map-to-db-property";
 
-/* returns conflicting mutation input properties */
-export function findConflictingProperties({
-    graphElement,
-    input,
-}: {
-    graphElement: GraphElement;
-    input: Record<string, any> | undefined;
-}): string[] {
-    if (!input) {
-        return [];
-    }
-    const dbPropertiesToInputFieldNames: Record<string, string[]> = Object.keys(input).reduce((acc, rawField) => {
+export function findConflictingAttributes(
+    fields: string[],
+    entityOrRel: ConcreteEntityAdapter | RelationshipAdapter
+): Set<string> {
+    const fieldsByDbName = new Map<string, string[]>();
+
+    for (const rawField of fields) {
         const { fieldName } = parseMutationField(rawField);
-
-        const dbName = mapToDbProperty(graphElement, fieldName);
-        // some input fields (eg relation fields) have no corresponding db name in the map
-        if (!dbName) {
-            return acc;
+        const dbName = entityOrRel.findAttribute(fieldName)?.databaseName;
+        if (dbName) {
+            const duplicateFields = fieldsByDbName.get(dbName) ?? [];
+            duplicateFields.push(rawField);
+            fieldsByDbName.set(dbName, duplicateFields);
         }
-        if (acc[dbName]) {
-            acc[dbName].push(rawField);
-        } else {
-            acc[dbName] = [rawField];
-        }
-        return acc;
-    }, {});
+    }
 
-    return Object.values(dbPropertiesToInputFieldNames)
-        .filter((v) => v.length > 1)
-        .reduce((acc, el) => {
-            acc.push(...el);
-            return acc;
-        }, []);
+    const conflictingAttributes = new Set<string>();
+    for (const dedupedProps of fieldsByDbName.values()) {
+        if (dedupedProps.length > 1) {
+            for (const fieldName of dedupedProps) {
+                conflictingAttributes.add(fieldName);
+            }
+        }
+    }
+    return conflictingAttributes;
 }

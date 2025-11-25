@@ -286,81 +286,61 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
+            WITH *
             WHERE this.id = $param0
+            WITH *
+            CALL (*) {
+                MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                WITH *
+                WHERE this1.id = $param1
+                WITH *
+                CALL (*) {
+                    MATCH (this1)<-[this2:HAS_CONTENT]-(this3:User)
+                    WITH *
+                    SET
+                        this3.id = $param2
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                }
+            }
+            WITH *
+            CALL (*) {
+                MATCH (this)-[this4:HAS_CONTENT]->(this5:Post)
+                WITH *
+                WHERE this5.id = $param5
+                WITH *
+                CALL (*) {
+                    MATCH (this5)<-[this6:HAS_CONTENT]-(this7:User)
+                    WITH *
+                    SET
+                        this7.id = $param6
+                    WITH *
+                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this7.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                }
+                WITH *
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                    MATCH (this5)<-[:HAS_CONTENT]-(this8:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this8.id = $jwt.sub)
+                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            }
             WITH this
-            CALL (this) {
-            WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Comment)
-            	WHERE this_content0.id = $updateUsers_args_update_content0_where_this_content0param0
-            	WITH this, this_content0
-            	CALL(*) {
-            		WITH this, this_content0
-            		MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
-            		SET this_content0_creator0.id = $this_update_content0_creator0_id_SET
-            		RETURN count(*) AS update_this_content0_creator0
-            	}
-            	RETURN count(*) AS update_this_content0
-            }
-            RETURN count(*) AS update_this_Comment
-            }
-            CALL (this){
-            	WITH this
-            CALL(*) {
-            	WITH this
-            	MATCH (this)-[this_has_content0_relationship:HAS_CONTENT]->(this_content0:Post)
-            	WHERE this_content0.id = $updateUsers_args_update_content0_where_this_content0param0
-            	WITH this, this_content0
-            	CALL(*) {
-            		WITH this, this_content0
-            		MATCH (this_content0)<-[this_content0_has_content0_relationship:HAS_CONTENT]-(this_content0_creator0:User)
-            		SET this_content0_creator0.id = $this_update_content0_creator0_id_SET
-            		RETURN count(*) AS update_this_content0_creator0
-            	}
-            	RETURN count(*) AS update_this_content0
-            }
-            RETURN count(*) AS update_this_Post
-            }
-            RETURN collect(DISTINCT this { .id }) AS data"
+            RETURN this { .id } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"id-01\\",
-                \\"updateUsers_args_update_content0_where_this_content0param0\\": \\"post-id\\",
-                \\"this_update_content0_creator0_id_SET\\": \\"not bound\\",
-                \\"updateUsers\\": {
-                    \\"args\\": {
-                        \\"update\\": {
-                            \\"content\\": [
-                                {
-                                    \\"update\\": {
-                                        \\"node\\": {
-                                            \\"creator\\": [
-                                                {
-                                                    \\"update\\": {
-                                                        \\"node\\": {
-                                                            \\"id_SET\\": \\"not bound\\"
-                                                        }
-                                                    }
-                                                }
-                                            ]
-                                        },
-                                        \\"where\\": {
-                                            \\"node\\": {
-                                                \\"id\\": {
-                                                    \\"eq\\": \\"post-id\\"
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    }
+                \\"param1\\": \\"post-id\\",
+                \\"param2\\": \\"not bound\\",
+                \\"isAuthenticated\\": true,
+                \\"jwt\\": {
+                    \\"roles\\": [
+                        \\"admin\\"
+                    ],
+                    \\"sub\\": \\"id-01\\"
                 },
-                \\"resolvedCallbacks\\": {}
+                \\"param5\\": \\"post-id\\",
+                \\"param6\\": \\"not bound\\"
             }"
         `);
     });

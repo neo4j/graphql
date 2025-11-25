@@ -34,6 +34,7 @@ import { NodeSelectionPattern } from "../../ast/selection/SelectionPattern/NodeS
 import type { CallbackBucket } from "../../utils/callback-bucket";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
+import { isUnionEntity } from "../../utils/is-union-entity";
 import { raiseAttributeAmbiguity } from "../../utils/raise-attribute-ambiguity";
 import type { QueryASTFactory } from "../QueryASTFactory";
 
@@ -141,12 +142,19 @@ export class ConnectFactory {
             context,
             operation: connect,
         });
+        if (isConcreteEntity(relationship.source)) {
+            this.addSourceEntityAuthorization({
+                entity: relationship.source,
+                context,
+                operation: connect,
+            });
+        }
 
         asArray(input).forEach((inputItem) => {
             const { whereArg, connectArg } = this.parseConnectArgs(inputItem);
             const nodeFilters: Filter[] = [];
             if (whereArg.node) {
-                if (isConcreteEntity(relationship.target)) {
+                if (isConcreteEntity(relationship.target) || isUnionEntity(relationship.target)) {
                     nodeFilters.push(...this.queryASTFactory.filterFactory.createNodeFilters(target, whereArg.node));
                 } else if (isInterfaceEntity(relationship.target)) {
                     nodeFilters.push(
@@ -267,6 +275,25 @@ export class ConnectFactory {
         });
 
         operation.addAuthFilters(...authFilters);
+    }
+
+    private addSourceEntityAuthorization({
+        entity,
+        context,
+        operation,
+    }: {
+        entity: ConcreteEntityAdapter;
+        context: Neo4jGraphQLTranslationContext;
+        operation: ConnectOperation;
+    }): void {
+        const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+            entity,
+            operations: ["CREATE_RELATIONSHIP"],
+            context,
+            afterValidation: true,
+        });
+
+        operation.addSourceAuthFilters(...authFilters);
     }
 
     private getInputEdge(inputItem: Record<string, any>, relationship: RelationshipAdapter): Record<string, any> {

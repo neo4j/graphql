@@ -27,7 +27,8 @@ export abstract class SelectionPattern extends QueryASTNode {
     }
 
     /** Apply selection over the given context, returns the updated context and the selection clause
-     * TODO: Improve naming */
+     * This ensures the new context matches the generated Cypher (i.e. the target is the nested relationship)
+     */
     public abstract apply(context: QueryASTContext): {
         nestedContext: QueryASTContext<Cypher.Node>;
         pattern: Cypher.Pattern;
