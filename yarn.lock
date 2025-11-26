@@ -242,9 +242,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/server@npm:5.1.0":
-  version: 5.1.0
-  resolution: "@apollo/server@npm:5.1.0"
+"@apollo/server@npm:5.2.0, @apollo/server@npm:^5.0.0":
+  version: 5.2.0
+  resolution: "@apollo/server@npm:5.2.0"
   dependencies:
     "@apollo/cache-control-types": "npm:^1.0.3"
     "@apollo/server-gateway-interface": "npm:^2.0.0"
@@ -268,7 +268,7 @@ __metadata:
     whatwg-mimetype: "npm:^4.0.0"
   peerDependencies:
     graphql: ^16.11.0
-  checksum: 10c0/5ae3e6de4144a30107d5108f36603302e61591b730d259b695d9fa06b4b2007c1caa173cdc3d9ec319cf04417ec2e2e9f4163af64aa7be18a2c3545a7da702b6
+  checksum: 10c0/2500a8244bda60b65b11ba37711039e869c14d7cacae84ddc940b150e824ab684792be39424336c6aba0e8ca5332b945012cf9b05282fdad70ec2416333c484b
   languageName: node
   linkType: hard
 
@@ -303,36 +303,6 @@ __metadata:
   peerDependencies:
     graphql: ^16.6.0
   checksum: 10c0/c5ac01490adcc1f36787f6be2e0c698a3d7ffe9846bd6f70c18d788c5c60b528fc0f2d037ed5ac4a2ddf4d24e72335371e3e1bfc16c094cbb3e034b883ebffd4
-  languageName: node
-  linkType: hard
-
-"@apollo/server@npm:^5.0.0":
-  version: 5.2.0
-  resolution: "@apollo/server@npm:5.2.0"
-  dependencies:
-    "@apollo/cache-control-types": "npm:^1.0.3"
-    "@apollo/server-gateway-interface": "npm:^2.0.0"
-    "@apollo/usage-reporting-protobuf": "npm:^4.1.1"
-    "@apollo/utils.createhash": "npm:^3.0.0"
-    "@apollo/utils.fetcher": "npm:^3.0.0"
-    "@apollo/utils.isnodelike": "npm:^3.0.0"
-    "@apollo/utils.keyvaluecache": "npm:^4.0.0"
-    "@apollo/utils.logger": "npm:^3.0.0"
-    "@apollo/utils.usagereporting": "npm:^2.1.0"
-    "@apollo/utils.withrequired": "npm:^3.0.0"
-    "@graphql-tools/schema": "npm:^10.0.0"
-    async-retry: "npm:^1.2.1"
-    body-parser: "npm:^2.2.0"
-    cors: "npm:^2.8.5"
-    finalhandler: "npm:^2.1.0"
-    loglevel: "npm:^1.6.8"
-    lru-cache: "npm:^11.1.0"
-    negotiator: "npm:^1.0.0"
-    uuid: "npm:^11.1.0"
-    whatwg-mimetype: "npm:^4.0.0"
-  peerDependencies:
-    graphql: ^16.11.0
-  checksum: 10c0/2500a8244bda60b65b11ba37711039e869c14d7cacae84ddc940b150e824ab684792be39424336c6aba0e8ca5332b945012cf9b05282fdad70ec2416333c484b
   languageName: node
   linkType: hard
 
@@ -2799,7 +2769,7 @@ __metadata:
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
     "@apollo/gateway": "npm:2.12.1"
-    "@apollo/server": "npm:5.1.0"
+    "@apollo/server": "npm:5.2.0"
     "@apollo/subgraph": "npm:^2.2.3"
     "@as-integrations/express4": "npm:^1.1.2"
     "@graphql-tools/merge": "npm:^9.0.0"
@@ -8258,9 +8228,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:29.1.0":
-  version: 29.1.0
-  resolution: "eslint-plugin-jest@npm:29.1.0"
+"eslint-plugin-jest@npm:29.2.0":
+  version: 29.2.0
+  resolution: "eslint-plugin-jest@npm:29.2.0"
   dependencies:
     "@typescript-eslint/utils": "npm:^8.0.0"
   peerDependencies:
@@ -8272,7 +8242,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: 10c0/3fe5d4c35279025eb96bfb0adfad1b0eca03f5987db96adbe656279b5b4ed3eaa5240dd1876e54e7ea98b28acbd451256f8c7613cf2d2d6d3387f6360fcb3704
+  checksum: 10c0/3880065bc4f8081fb7f5bc017fae65b383e35c72445619bb6037fa374a84c36c18503642353c4615ddba8c8781b0ff1724decbc9b9b2f45f0e279e199797aeb8
   languageName: node
   linkType: hard
 
@@ -13757,7 +13727,7 @@ __metadata:
     eslint-import-resolver-typescript: "npm:4.4.4"
     eslint-plugin-eslint-comments: "npm:3.2.0"
     eslint-plugin-import: "npm:2.32.0"
-    eslint-plugin-jest: "npm:29.1.0"
+    eslint-plugin-jest: "npm:29.2.0"
     graphql: "npm:16.12.0"
     jest: "npm:30.2.0"
     neo4j-driver: "npm:6.0.1"
