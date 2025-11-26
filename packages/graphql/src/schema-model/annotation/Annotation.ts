@@ -105,7 +105,7 @@ export type Annotations = CheckAnnotationName<{
     timestamp: TimestampAnnotation;
 }>;
 
-export type AnnotationParser<T extends Annotation> = (
+type AnnotationParser<T extends Annotation> = (
     firstDirective: DirectiveNode,
     directives: readonly DirectiveNode[]
 ) => T;

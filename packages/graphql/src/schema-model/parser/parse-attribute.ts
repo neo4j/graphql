@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { IResolvers } from "@graphql-tools/utils";
 import type { FieldDefinitionNode, InputValueDefinitionNode, TypeNode } from "graphql";
 import { Kind } from "graphql";
 import { aliasDirective } from "../../graphql/directives";
@@ -44,7 +45,6 @@ import type { DefinitionCollection } from "./definition-collection";
 import { parseAnnotations } from "./parse-annotation";
 import { parseArguments } from "./parse-arguments";
 import { findDirective } from "./utils";
-import type { IResolvers } from "@graphql-tools/utils";
 
 export function parseAttributeArguments(
     fieldArgs: readonly InputValueDefinitionNode[],
@@ -144,15 +144,15 @@ function isUnion(definitionCollection: DefinitionCollection, name: string): bool
     return definitionCollection.unionTypes.has(name);
 }
 
-export function isEnum(definitionCollection: DefinitionCollection, name: string): boolean {
+function isEnum(definitionCollection: DefinitionCollection, name: string): boolean {
     return definitionCollection.enumTypes.has(name);
 }
 
-export function isUserScalar(definitionCollection: DefinitionCollection, name: string) {
+function isUserScalar(definitionCollection: DefinitionCollection, name: string) {
     return definitionCollection.scalarTypes.has(name);
 }
 
-export function isObject(definitionCollection: DefinitionCollection, name: string) {
+function isObject(definitionCollection: DefinitionCollection, name: string) {
     return definitionCollection.objectTypes.has(name);
 }
 
@@ -168,11 +168,11 @@ function isCartesianPoint(value: string): boolean {
     return isNeo4jGraphQLSpatialType(value) && value === Neo4jGraphQLSpatialType.CartesianPoint;
 }
 
-export function isNeo4jGraphQLSpatialType(value: string): value is Neo4jGraphQLSpatialType {
+function isNeo4jGraphQLSpatialType(value: string): value is Neo4jGraphQLSpatialType {
     return Object.values<string>(Neo4jGraphQLSpatialType).includes(value);
 }
 
-export function isScalarType(value: string): value is GraphQLBuiltInScalarType | Neo4jGraphQLScalarType {
+function isScalarType(value: string): value is GraphQLBuiltInScalarType | Neo4jGraphQLScalarType {
     return isGraphQLBuiltInScalar(value) || isNeo4jGraphQLNumberType(value) || isNeo4jGraphQLTemporalType(value);
 }
 

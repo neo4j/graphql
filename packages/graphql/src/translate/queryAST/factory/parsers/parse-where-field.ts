@@ -19,7 +19,7 @@
 
 import type { FilterOperator } from "../../ast/filters/Filter";
 
-export type WhereRegexGroups = {
+type WhereRegexGroups = {
     fieldName: string;
     isAggregate: boolean;
     operator: FilterOperator | undefined;
@@ -53,7 +53,7 @@ export function parseWhereField(field: string): WhereRegexGroups {
     };
 }
 
-export const aggregationFieldRegEx =
+const aggregationFieldRegEx =
     /(?<fieldName>[_A-Za-z]\w*?)(?:_(?<aggregationOperator>AVERAGE|MAX|MIN|SUM|SHORTEST|LONGEST))?(?:_LENGTH)?(?:_(?<logicalOperator>EQUAL|EQ|GT|GTE|LT|LTE|IN))?$/;
 
 export type AggregationOperator = "AVERAGE" | "SHORTEST" | "LONGEST" | "MIN" | "MAX" | "SUM";

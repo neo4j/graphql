@@ -29,7 +29,6 @@ export const AUTHORIZATION_UNAUTHENTICATED = "Unauthenticated";
 export const DEBUG_ALL = `${DEBUG_PREFIX}:*`;
 export const DEBUG_AUTH = `${DEBUG_PREFIX}:auth`;
 export const DEBUG_EXECUTE = `${DEBUG_PREFIX}:execution`;
-export const DEBUG_GENERATE = `${DEBUG_PREFIX}:generate`;
 export const DEBUG_GRAPHQL = `${DEBUG_PREFIX}:graphql`;
 export const DEBUG_TRANSLATE = `${DEBUG_PREFIX}:translate`;
 
@@ -86,9 +85,6 @@ export enum RelationshipNestedOperationsOption {
     CONNECT = "CONNECT",
     DISCONNECT = "DISCONNECT",
 }
-
-export const META_CYPHER_VARIABLE = "meta";
-export const META_OLD_PROPS_CYPHER_VARIABLE = "oldProps";
 
 export const DBMS_COMPONENTS_QUERY =
     "CALL dbms.components() YIELD versions, edition UNWIND versions AS version RETURN version, edition";

@@ -39,7 +39,7 @@ export const LIBRARY_DIRECTIVES = [
     ...additionalDirectives,
 ] as const satisfies readonly LibraryDirectives[];
 
-export const SCHEMA_CONFIGURATION_FIELD_DIRECTIVES = [
+const SCHEMA_CONFIGURATION_FIELD_DIRECTIVES = [
     "filterable",
     "selectable",
     "settable",
@@ -72,6 +72,7 @@ export const SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES = [
     "subscription",
 ] as const satisfies readonly LibraryDirectives[];
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const OBJECT_DIRECTIVES = [
     "authentication",
     "authorization",
@@ -88,8 +89,10 @@ const OBJECT_DIRECTIVES = [
 ] as const satisfies readonly LibraryDirectives[];
 export type ObjectDirective = ValueOf<typeof OBJECT_DIRECTIVES>;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const INTERFACE_DIRECTIVES = ["query", "plural", "limit"] as const satisfies readonly LibraryDirectives[];
 export type InterfaceDirective = ValueOf<typeof INTERFACE_DIRECTIVES>;
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const UNION_DIRECTIVES = ["query", "plural"] as const satisfies readonly LibraryDirectives[];
 export type UnionDirective = ValueOf<typeof UNION_DIRECTIVES>;

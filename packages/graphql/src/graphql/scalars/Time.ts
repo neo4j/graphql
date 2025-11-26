@@ -21,7 +21,7 @@ import type { ValueNode } from "graphql";
 import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
 import neo4j from "neo4j-driver";
 
-export const TIME_REGEX =
+const TIME_REGEX =
     /^(?<hour>[01]\d|2[0-3]):(?<minute>[0-5]\d)(:(?<second>[0-5]\d)(\.(?<fraction>\d{1}(?:\d{0,8})))?((?:[Zz])|((?<offsetDirection>[-|+])(?<offsetHour>[01]\d|2[0-3]):(?<offsetMinute>[0-5]\d)))?)?$/;
 
 export const validateTime = (value: unknown): string => {

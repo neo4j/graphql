@@ -26,10 +26,6 @@ import type { Neo4jGraphQLSessionConfig } from "../Executor";
 
 const debug = Debug(DEBUG_EXECUTE);
 
-export interface AssertIndexesAndConstraintsOptions {
-    create?: boolean;
-}
-
 export async function assertIndexesAndConstraints({
     driver,
     sessionConfig,

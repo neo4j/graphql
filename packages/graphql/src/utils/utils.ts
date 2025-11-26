@@ -26,7 +26,7 @@ export function isString(value: unknown): value is string {
 }
 
 /** Checks if value is object (array not included) */
-export function isObject(value: unknown): value is object {
+function isObject(value: unknown): value is object {
     return typeof value === "object" && !Array.isArray(value) && value !== null;
 }
 
@@ -48,11 +48,6 @@ export function haveSameLength(o1: Record<string, any>, o2: Record<string, any>)
 /** Checks if value is a Neo4j int object */
 export function isNeoInt(value: unknown): value is Integer {
     return isInt(value);
-}
-
-/** Transforms a value to number, if possible */
-export function toNumber(value: Integer | number): number {
-    return isNeoInt(value) ? value.toNumber() : value;
 }
 
 /** Makes sure input is an array, if not it turns into an array (empty array if input is null or undefined) */

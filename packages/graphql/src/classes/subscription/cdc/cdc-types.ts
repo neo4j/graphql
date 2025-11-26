@@ -19,6 +19,22 @@
 
 import type { DateTime } from "neo4j-driver";
 
+export type CDCNodeEvent = {
+    elementId: string;
+    eventType: "n";
+    state: {
+        before?: CDCEventState;
+        after?: CDCEventState;
+    };
+    operation: CDCOperation;
+    labels: string[];
+};
+export type CDCQueryResponse = {
+    id: string;
+    event: CDCEvent;
+    metadata: CDCMetadata;
+};
+
 type CDCEventState = {
     properties: Record<string, unknown>;
     labels: string[];
@@ -34,7 +50,7 @@ type CDCRelationshipNode = {
 
 type CDCOperation = "c" | "d" | "u";
 
-export type CDCRelationshipEvent = {
+type CDCRelationshipEvent = {
     elementId: string;
     eventType: "r";
     start: CDCRelationshipNode;
@@ -47,26 +63,9 @@ export type CDCRelationshipEvent = {
     type: string;
 };
 
-export type CDCNodeEvent = {
-    elementId: string;
-    eventType: "n";
-    state: {
-        before?: CDCEventState;
-        after?: CDCEventState;
-    };
-    operation: CDCOperation;
-    labels: string[];
-};
-
-export type CDCMetadata = {
+type CDCMetadata = {
     txStartTime: DateTime;
     // Other metadata is ignored here
 };
 
-export type CDCEvent = CDCNodeEvent | CDCRelationshipEvent;
-
-export type CDCQueryResponse = {
-    id: string;
-    event: CDCEvent;
-    metadata: CDCMetadata;
-};
+type CDCEvent = CDCNodeEvent | CDCRelationshipEvent;

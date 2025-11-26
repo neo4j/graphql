@@ -34,7 +34,7 @@ import { getInnerTypeName } from "../utils/utils";
 
 const debug = Debug(DEBUG_GRAPHQL);
 
-export const VALIDATE_OBJECT_FIELD_WARN_MSG = "Object types need a way to be resolved for field: ";
+const VALIDATE_OBJECT_FIELD_WARN_MSG = "Object types need a way to be resolved for field: ";
 
 export function WarnObjectFieldsWithoutResolver({ customResolvers }: { customResolvers: Array<IResolvers> }) {
     return (context: SDLValidationContext): ASTVisitor => {

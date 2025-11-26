@@ -18,14 +18,14 @@
  */
 
 import type {
+    DocumentNode,
     FieldDefinitionNode,
+    FieldNode,
     InterfaceTypeDefinitionNode,
     ObjectTypeDefinitionNode,
-    DocumentNode,
     SelectionSetNode,
     TypeNode,
     UnionTypeDefinitionNode,
-    FieldNode,
 } from "graphql";
 import { Kind } from "graphql";
 import type { FieldsByTypeName, ResolveTree } from "graphql-parse-resolve-info";
@@ -35,7 +35,7 @@ const INVALID_DIRECTIVES_TO_REQUIRE = ["customResolver"];
 export const INVALID_REQUIRED_FIELD_ERROR = `It is not possible to require fields that use the following directives: ${INVALID_DIRECTIVES_TO_REQUIRE.map(
     (name) => `\`@${name}\``
 ).join(", ")}`;
-export const INVALID_SELECTION_SET_ERROR = "Invalid selection set passed to @customResolver required";
+const INVALID_SELECTION_SET_ERROR = "Invalid selection set passed to @customResolver required";
 
 export function selectionSetToResolveTree(
     objectFields: ReadonlyArray<FieldDefinitionNode>,

@@ -50,7 +50,7 @@ type SubscriptionEvents = {
     delete_relationship: string;
 };
 
-export type UpdateMutationArgumentNames = {
+type UpdateMutationArgumentNames = {
     connect: string;
     disconnect: string;
     create: string;
@@ -59,7 +59,7 @@ export type UpdateMutationArgumentNames = {
     where: string;
 };
 
-export type CreateMutationArgumentNames = {
+type CreateMutationArgumentNames = {
     input: string;
 };
 

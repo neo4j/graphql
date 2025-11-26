@@ -1,0 +1,18 @@
+{
+    "$schema": "https://unpkg.com/knip@5/schema.json",
+    "ignoreExportsUsedInFile": {
+        "interface": false,
+        "type": false
+    },
+    "tags": ["-lintignore"],
+    "ignoreFiles": [
+        "tests/performance/**",
+        "tests/utils/**",
+        "tests/integration/teardown.ts",
+        "tests/e2e/**",
+        "jest-*-setup.js"
+    ],
+    "ignoreBinaries": [],
+    "ignoreDependencies": ["jest", "rimraf", "ts-node"],
+    "treatConfigHintsAsErrors": true
+}

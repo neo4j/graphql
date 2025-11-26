@@ -34,7 +34,7 @@ import type { Neo4jFeaturesSettings } from "../../types";
 import { withConnectionWhereInputType } from "./connection-where-input";
 import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
 
-export function withDeleteInputType({
+function withDeleteInputType({
     entityAdapter,
     composer,
 }: {
@@ -125,7 +125,7 @@ function makeDeleteInputTypeRelationshipField({
     };
 }
 
-export function withUnionDeleteInputType({
+function withUnionDeleteInputType({
     relationshipAdapter,
     composer,
     deprecatedDirectives,

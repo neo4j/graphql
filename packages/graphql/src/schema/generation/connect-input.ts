@@ -33,7 +33,7 @@ import type { RelationshipDeclarationAdapter } from "../../schema-model/relation
 import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
 import { withConnectWhereFieldInputType } from "./where-input";
 
-export function withConnectInputType({
+function withConnectInputType({
     entityAdapter,
     composer,
 }: {

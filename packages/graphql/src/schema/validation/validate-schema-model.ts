@@ -21,7 +21,7 @@ import type { GraphQLError } from "graphql";
 import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSchemaModel";
 import { pluralConflict } from "./schema-model-rules/plural-conflict";
 
-export type SchemaModelValidationRule = (model: Neo4jGraphQLSchemaModel) => GraphQLError[];
+type SchemaModelValidationRule = (model: Neo4jGraphQLSchemaModel) => GraphQLError[];
 
 export function validateSchemaModel(schemaModel: Neo4jGraphQLSchemaModel): void {
     const rules: SchemaModelValidationRule[] = [pluralConflict];
