@@ -1,5 +1,13 @@
 # @neo4j/graphql
 
+## 7.3.2
+
+### Patch Changes
+
+- [#6830](https://github.com/neo4j/graphql/pull/6830) [`c3ec362`](https://github.com/neo4j/graphql/commit/c3ec362b290621e513018527f03643c4a4b9c160) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix duplicate relationships on nested connect from union types
+
+- [#6842](https://github.com/neo4j/graphql/pull/6842) [`7455804`](https://github.com/neo4j/graphql/commit/74558044a554350f67c244d6155e2b3248809ed3) Thanks [@angrykoala](https://github.com/angrykoala)! - Update peer depdency of neo4j-driver to cover version 5 and 6
+
 ## 7.3.1
 
 ### Patch Changes
