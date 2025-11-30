@@ -13742,7 +13742,7 @@ __metadata:
     graphql: "npm:16.12.0"
     jest: "npm:30.2.0"
     neo4j-driver: "npm:6.0.1"
-    prettier: "npm:3.6.2"
+    prettier: "npm:3.7.0"
     prettier-2: "npm:prettier@2.8.8"
     set-tz: "npm:0.2.0"
     ts-jest: "npm:29.4.5"
@@ -14825,12 +14825,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:3.6.2":
-  version: 3.6.2
-  resolution: "prettier@npm:3.6.2"
+"prettier@npm:3.7.0":
+  version: 3.7.0
+  resolution: "prettier@npm:3.7.0"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10c0/488cb2f2b99ec13da1e50074912870217c11edaddedeadc649b1244c749d15ba94e846423d062e2c4c9ae683e2d65f754de28889ba06e697ac4f988d44f45812
+  checksum: 10c0/ef2ca136ae69d07248b3cbbe199b0862bec3b1f84c94192dd4df572649df1ebb2281f8513269fc328a0f1265851dc564af5723c6bd7a8c0559451aa560bac4d5
   languageName: node
   linkType: hard
 
