@@ -25,8 +25,8 @@
     },
     "devDependencies": {
         "@tsconfig/node20": "20.1.8",
-        "@typescript-eslint/eslint-plugin": "8.47.0",
-        "@typescript-eslint/parser": "8.47.0",
+        "@typescript-eslint/eslint-plugin": "8.48.0",
+        "@typescript-eslint/parser": "8.48.0",
         "concurrently": "9.2.1",
         "dotenv": "17.2.3",
         "eslint": "8.57.1",
@@ -35,19 +35,19 @@
         "eslint-import-resolver-typescript": "4.4.4",
         "eslint-plugin-eslint-comments": "3.2.0",
         "eslint-plugin-import": "2.32.0",
-        "eslint-plugin-jest": "29.1.0",
+        "eslint-plugin-jest": "29.2.1",
         "graphql": "16.12.0",
         "jest": "30.2.0",
         "neo4j-driver": "6.0.1",
-        "prettier": "3.6.2",
+        "prettier": "3.7.2",
         "prettier-2": "npm:prettier@2.8.8",
         "set-tz": "0.2.0",
         "ts-jest": "29.4.5",
         "typescript": "5.9.3"
     },
-    "packageManager": "yarn@4.11.0",
+    "packageManager": "yarn@4.12.0",
     "dependencies": {
-        "@changesets/changelog-github": "0.5.1",
-        "@changesets/cli": "2.29.7"
+        "@changesets/changelog-github": "0.5.2",
+        "@changesets/cli": "2.29.8"
     }
 }
