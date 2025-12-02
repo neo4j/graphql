@@ -24,10 +24,13 @@ describe("https://github.com/neo4j/graphql/issues/6869", () => {
     const testHelper = new TestHelper();
     let typeDefs: string;
 
-    let Person: UniqueType;
+    let OrganizationLabel: UniqueType;
+    let PersonLabel: UniqueType;
 
     beforeAll(async () => {
-        Person = new UniqueType("Person");
+        PersonLabel = new UniqueType("FiboPeople__Person");
+        OrganizationLabel = new UniqueType("FiboOrganizations__Organization");
+
         typeDefs = /* GraphQL */ `
             union AbstractUnion = Organization | Person
 
@@ -38,14 +41,14 @@ describe("https://github.com/neo4j/graphql/issues/6869", () => {
                 description: String @alias(property: "dc__description")
             }
 
-            type Organization implements AbstractInterface @node(labels: ["FiboOrganizations__Organization"]) {
+            type Organization implements AbstractInterface @node(labels: ["${OrganizationLabel}"]) {
                 type: String
                 uri: String
                 name: String @alias(property: "dc__title")
                 description: String @alias(property: "dc__description")
             }
 
-            type Person implements AbstractInterface @node(labels: ["FiboPeople__Person"]) {
+            type Person implements AbstractInterface @node(labels: ["${PersonLabel}"]) {
                 type: String
                 uri: String
                 name: String @alias(property: "dc__title")
@@ -56,7 +59,7 @@ describe("https://github.com/neo4j/graphql/issues/6869", () => {
                 resourceSearchInterface: [AbstractInterface]
                     @cypher(
                         statement: """
-                        MATCH(p:FiboPeople__Person)
+                        MATCH(p:${PersonLabel})
                         RETURN p as node
                         """
                         columnName: "node"
@@ -64,7 +67,7 @@ describe("https://github.com/neo4j/graphql/issues/6869", () => {
                 resourceSearchUnion: [AbstractUnion]
                     @cypher(
                         statement: """
-                        MATCH(p:FiboPeople__Person)
+                        MATCH(p:${PersonLabel})
                         RETURN p as node
                         """
                         columnName: "node"
@@ -78,13 +81,13 @@ describe("https://github.com/neo4j/graphql/issues/6869", () => {
         });
 
         await testHelper.executeCypher(`
-            CREATE (:FiboPeople__Person {
+            CREATE (:${PersonLabel} {
                 type: "Person",
                 uri: "an-uri",
                 dc__title: "A cool person",
                 dc__description: "A cool person"
             })
-            CREATE (:FiboOrganizations__Organization {             
+            CREATE (:${OrganizationLabel} {             
                 type: "Org",
                 uri: "an-org-uri",
                 dc__title: "A cool org",
