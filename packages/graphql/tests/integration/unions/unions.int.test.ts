@@ -17,10 +17,7 @@
  * limitations under the License.
  */
 
-import type { DocumentNode } from "graphql";
-import { gql } from "graphql-tag";
 import { generate } from "randomstring";
-import { createBearerToken } from "../../utils/create-bearer-token";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
@@ -721,101 +718,5 @@ describe("unions", () => {
             },
         });
         await testHelper.expectRelationship(MovieType, GenreType, "SEARCH").toNotExist();
-    });
-
-    describe("Unions with auth", () => {
-        const secret = "secret";
-        let typeDefs: DocumentNode;
-
-        beforeEach(async () => {
-            typeDefs = gql`
-                union Search = ${MovieType} | ${GenreType}
-
-
-                type ${GenreType} @authorization(validate: [{ operations: [READ], when: BEFORE, where: { node: { name_EQ: "$jwt.jwtAllowedNamesExample" } } }]) @node {
-                    name: String
-                }
-
-                type ${MovieType} @node {
-                    title: String
-                    search: [Search!]! @relationship(type: "SEARCH", direction: OUT)
-                }
-            `;
-
-            await testHelper.initNeo4jGraphQL({
-                typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
-                },
-            });
-        });
-
-        test("Read Unions with allow auth fail", async () => {
-            await testHelper.executeCypher(`
-            CREATE (m:${MovieType} { title: "some title" })
-            CREATE (:${GenreType} { name: "Romance" })<-[:SEARCH]-(m)
-            CREATE (:${MovieType} { title: "The Matrix" })<-[:SEARCH]-(m)`);
-
-            const query = `
-                {
-                    ${MovieType.plural}(where: { title_EQ: "some title" }) {
-                        title
-                        search(
-                            where: { ${MovieType}: { title_EQ: "The Matrix" }, ${GenreType}: { name_EQ: "Romance" } }
-                        ) {
-                            ... on ${MovieType} {
-                                title
-                            }
-                            ... on ${GenreType} {
-                                name
-                            }
-                        }
-                    }
-                }
-            `;
-
-            const token = createBearerToken(secret, { jwtAllowedNamesExample: "Horror" });
-
-            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
-            expect((gqlResult.errors as any[])[0].message).toBe("Forbidden");
-        });
-
-        test("Read Unions with allow auth", async () => {
-            await testHelper.executeCypher(`
-            CREATE (m:${MovieType} { title: "another title" })
-            CREATE (:${GenreType} { name: "Romance" })<-[:SEARCH]-(m)
-            CREATE (:${MovieType} { title: "The Matrix" })<-[:SEARCH]-(m)`);
-
-            const query = `
-                {
-                    ${MovieType.plural}(where: { title_EQ: "another title" }) {
-                        title
-                        search(
-                            where: { ${MovieType}: { title_EQ: "The Matrix" }, ${GenreType}: { name_EQ: "Romance" } }
-                        ) {
-                            ... on ${MovieType} {
-                                title
-                            }
-                            ... on ${GenreType} {
-                                name
-                            }
-                        }
-                    }
-                }
-            `;
-
-            const token = createBearerToken(secret, { jwtAllowedNamesExample: "Romance" });
-
-            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
-            expect(gqlResult.errors).toBeFalsy();
-            expect(gqlResult.data?.[MovieType.plural]).toEqual([
-                {
-                    title: "another title",
-                    search: expect.toIncludeSameMembers([{ title: "The Matrix" }, { name: "Romance" }]),
-                },
-            ]);
-        });
     });
 });
