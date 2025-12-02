@@ -49,6 +49,7 @@ jobs:
             { package: "graphql", shard: 4/4, coverage_name: 6 },
           ]
         graphql-version: [{ version: "^15.0.0", coverage_path: 15 }, { version: "^16.0.0", coverage_path: 16 }]
+        neo4j-driver-version: ["^5.0.0", "^6.0.0"]
 
     runs-on: ubuntu-latest
 
@@ -84,6 +85,8 @@ jobs:
         run: yarn --immutable
       - name: Overwrite GraphQL version
         run: yarn up --exact graphql@${{ matrix.graphql-version.version }}
+      - name: Overwrite neo4-driver version
+        run: yarn up --exact neo4j-driver@${{ matrix.neo4j-driver-version }}
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --shard=${{ matrix.packages.shard }} --coverage
@@ -98,7 +101,7 @@ jobs:
         name: Archive coverage report
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5
         with:
-          name: integration-nightly-coverage-${{ matrix.packages.package }}-${{ matrix.graphql-version.coverage_path }}-${{ matrix.packages.coverage_name }}-${{ matrix.node.coverage_name }}
+          name: integration-nightly-coverage-neo-driver${{matrix.neo4j-driver-version}}-${{ matrix.packages.package }}-${{ matrix.graphql-version.coverage_path }}-${{ matrix.packages.coverage_name }}-${{ matrix.node.coverage_name }}
           path: packages/${{ matrix.packages.package }}/coverage-nightly-${{ matrix.graphql-version.coverage_path }}/
       - name: Stop Neo4j container
         if: always()
