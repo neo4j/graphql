@@ -25,7 +25,7 @@ import type { Neo4jGraphQLComposedContext } from "../schema/resolvers/compositio
 
 const debug = Debug(DEBUG_EXECUTE);
 
-export interface ExecuteResult {
+interface ExecuteResult {
     result: QueryResult;
     statistics: Record<string, number>;
     records: Record<PropertyKey, any>[];

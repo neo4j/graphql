@@ -26,7 +26,7 @@ import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-gra
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
 import { isUnionEntity } from "../../utils/is-union-entity";
 
-export type TopLevelOperationFieldMatch =
+type TopLevelOperationFieldMatch =
     | "READ"
     | "CONNECTION"
     | "AGGREGATE"

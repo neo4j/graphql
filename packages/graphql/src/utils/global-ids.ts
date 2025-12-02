@@ -19,7 +19,7 @@
 import { GraphQLID } from "graphql";
 import { base64, unbase64 } from "graphql-relay/utils/base64";
 
-export interface DecodedGlobalId {
+interface DecodedGlobalId {
     typeName: string;
     field: string;
     id: string | number;

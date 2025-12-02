@@ -17,28 +17,11 @@
  * limitations under the License.
  */
 
-import Cypher from "@neo4j/cypher-builder";
 import { LOGICAL_OPERATORS } from "../../constants";
-import type { ValueOf } from "../../utils/value-of";
 import { isInArray } from "../../utils/is-in-array";
+import type { ValueOf } from "../../utils/value-of";
 
 type LogicalOperator = ValueOf<typeof LOGICAL_OPERATORS>;
-
-export function getLogicalPredicate(
-    graphQLOperator: LogicalOperator,
-    predicates: Cypher.Predicate[]
-): Cypher.Predicate | undefined {
-    if (predicates.length === 0) return undefined;
-    if (graphQLOperator === "NOT") {
-        const notPredicate = predicates[0];
-
-        return notPredicate ? Cypher.not(notPredicate) : undefined;
-    } else if (graphQLOperator === "AND") {
-        return Cypher.and(...predicates);
-    } else if (graphQLOperator === "OR") {
-        return Cypher.or(...predicates);
-    }
-}
 
 export function isLogicalOperator(key: unknown): key is LogicalOperator {
     return isInArray(LOGICAL_OPERATORS, key);

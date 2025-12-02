@@ -35,10 +35,3 @@ export function getEntityLabels(entity: EntityAdapter, neo4jGraphQLContext?: Neo
     const nodeLabels = entity instanceof ConcreteEntityAdapter ? entity.getLabels() : [entity.name];
     return neo4jGraphQLContext ? mapLabelsWithContext(nodeLabels, neo4jGraphQLContext) : nodeLabels;
 }
-
-export function createRelationship(name?: string): Cypher.Relationship {
-    if (name) {
-        return new Cypher.NamedRelationship(name);
-    }
-    return new Cypher.Relationship();
-}

@@ -24,7 +24,6 @@ import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-gra
 import { asArray } from "../../../../utils/utils";
 import { assertIsConcreteEntity, isConcreteEntity } from "../../utils/is-concrete-entity";
 
-export const UNSUPPORTED_REASON_SUBSCRIPTION = "Unwind create optimization does not yet support subscriptions";
 export const UNSUPPORTED_REASON_ABSTRACT_TYPES = "Abstract types are not yet supported";
 export const UNSUPPORTED_REASON_POPULATED_BY = "Annotation: populatedBy is not yet supported";
 export const UNSUPPORTED_REASON_CONNECT = "Operation: connect is not yet supported";

@@ -21,7 +21,7 @@ import { DirectiveLocation, GraphQLBoolean, GraphQLDirective, GraphQLList, Graph
 import { RelationshipNestedOperationsOption } from "../../constants";
 import { RelationshipNestedOperationsEnum } from "./arguments/enums/RelationshipNestedOperations";
 
-export const defaultNestedOperations = [
+const defaultNestedOperations = [
     RelationshipNestedOperationsOption.CREATE,
     RelationshipNestedOperationsOption.UPDATE,
     RelationshipNestedOperationsOption.DELETE,

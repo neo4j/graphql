@@ -36,14 +36,14 @@ const DURATION_REGEX_NO_DELIMITERS =
 
 // Normalized components per https://neo4j.com/docs/cypher-manual/current/syntax/operators/#cypher-ordering
 export const MONTHS_PER_YEAR = 12;
-export const DAYS_PER_YEAR = 365.2425;
-export const DAYS_PER_MONTH = DAYS_PER_YEAR / MONTHS_PER_YEAR;
+const DAYS_PER_YEAR = 365.2425;
+const DAYS_PER_MONTH = DAYS_PER_YEAR / MONTHS_PER_YEAR;
 export const DAYS_PER_WEEK = 7;
-export const HOURS_PER_DAY = 24;
-export const MINUTES_PER_HOUR = 60;
+const HOURS_PER_DAY = 24;
+const MINUTES_PER_HOUR = 60;
 export const SECONDS_PER_MINUTE = 60;
 export const SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
-export const NANOSECONDS_PER_SECOND = 1000000000;
+const NANOSECONDS_PER_SECOND = 1000000000;
 
 export const parseDuration = (
     value: string

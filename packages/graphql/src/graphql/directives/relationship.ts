@@ -30,7 +30,7 @@ import { RelationshipDirectionEnum } from "./arguments/enums/RelationshipDirecti
 import { RelationshipNestedOperationsEnum } from "./arguments/enums/RelationshipNestedOperations";
 import { RelationshipQueryDirectionEnum } from "./arguments/enums/RelationshipQueryDirection";
 
-export const defaultNestedOperations = [
+const defaultNestedOperations = [
     RelationshipNestedOperationsOption.CREATE,
     RelationshipNestedOperationsOption.UPDATE,
     RelationshipNestedOperationsOption.DELETE,

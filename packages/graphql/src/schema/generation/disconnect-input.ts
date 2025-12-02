@@ -34,7 +34,7 @@ import type { Neo4jFeaturesSettings } from "../../types";
 import { withConnectionWhereInputType } from "./connection-where-input";
 import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
 
-export function withDisconnectInputType({
+function withDisconnectInputType({
     entityAdapter,
     composer,
 }: {

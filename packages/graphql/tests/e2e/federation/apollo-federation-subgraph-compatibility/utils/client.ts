@@ -1,6 +1,5 @@
 import fetch from "make-fetch-happen";
 
-export const ROUTER_URL = "http://localhost:4013/";
 const PING_QUERY = "query { __typename }";
 
 const ROUTER_HEALTH_URL = "http://localhost:8088/health";

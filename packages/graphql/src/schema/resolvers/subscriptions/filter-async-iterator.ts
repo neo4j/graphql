@@ -17,7 +17,7 @@
  * limitations under the License.
  */
 
-export type FilterFn<T> = (rootValue: T) => boolean | Promise<boolean>;
+type FilterFn<T> = (rootValue: T) => boolean | Promise<boolean>;
 
 // Based on https://github.com/apollographql/graphql-subscriptions/blob/master/src/with-filter.ts
 export function filterAsyncIterator<T>(
