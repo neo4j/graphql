@@ -98,13 +98,13 @@ describe("https://github.com/neo4j/graphql/issues/1848", () => {
                     CALL (*) {
                         WITH *
                         MATCH (this0)
-                        WHERE this0:ContentPiece
+                        WHERE this0:ContentPiece:UNIVERSAL
                         WITH this0 { .id, __resolveType: \\"ContentPiece\\", __id: id(this0) } AS var1
                         RETURN var1
                         UNION
                         WITH *
                         MATCH (this0)
-                        WHERE this0:Project
+                        WHERE this0:Project:UNIVERSAL
                         WITH this0 { .id, __resolveType: \\"Project\\", __id: id(this0) } AS var1
                         RETURN var1
                     }

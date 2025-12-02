@@ -30,6 +30,7 @@ export function createNode(name?: string): Cypher.Node {
     return new Cypher.Node();
 }
 
+/** Return the labels of an entity */
 export function getEntityLabels(entity: EntityAdapter, neo4jGraphQLContext?: Neo4jGraphQLContext): string[] {
     const nodeLabels = entity instanceof ConcreteEntityAdapter ? entity.getLabels() : [entity.name];
     return neo4jGraphQLContext ? mapLabelsWithContext(nodeLabels, neo4jGraphQLContext) : nodeLabels;
