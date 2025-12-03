@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.3.3
+
+### Patch Changes
+
+- [#6880](https://github.com/neo4j/graphql/pull/6880) [`6e0bd78`](https://github.com/neo4j/graphql/commit/6e0bd78ee9bfe2b6f56036f11e41e889fe33818b) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix `@cypher` directive top level queries targetting an interface or union
+
 ## 7.3.2
 
 ### Patch Changes
