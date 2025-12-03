@@ -35,7 +35,7 @@ import type { RelationshipAdapter } from "../../schema-model/relationship/model-
 import { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
 import type { AggregationTypesMapper } from "../aggregations/aggregation-types-mapper";
-import { DEPRECATE_AGGREGATION_FILTERS } from "../constants";
+import { DEPRECATE_AGGREGATION_FILTERS, DEPRECATE_AGGREGATION_INPUT_FILTERS } from "../constants";
 import { numericalResolver } from "../resolvers/field/numerical";
 import { graphqlDirectivesToCompose } from "../to-compose";
 import { getAggregationFilterFromAttributeType } from "./get-aggregation-filter-from-attribute-type";
@@ -218,11 +218,26 @@ export function withAggregateInputType({
     const aggregateWhereInput = composer.createInputTC({
         name: aggregateInputTypeName,
         fields: {
-            count_EQ: GraphQLInt,
-            count_LT: GraphQLInt,
-            count_LTE: GraphQLInt,
-            count_GT: GraphQLInt,
-            count_GTE: GraphQLInt,
+            count_EQ: {
+                type: GraphQLInt,
+                directives: [DEPRECATE_AGGREGATION_INPUT_FILTERS("count", "EQ")],
+            },
+            count_LT: {
+                type: GraphQLInt,
+                directives: [DEPRECATE_AGGREGATION_INPUT_FILTERS("count", "LT")],
+            },
+            count_LTE: {
+                type: GraphQLInt,
+                directives: [DEPRECATE_AGGREGATION_INPUT_FILTERS("count", "LTE")],
+            },
+            count_GT: {
+                type: GraphQLInt,
+                directives: [DEPRECATE_AGGREGATION_INPUT_FILTERS("count", "GT")],
+            },
+            count_GTE: {
+                type: GraphQLInt,
+                directives: [DEPRECATE_AGGREGATION_INPUT_FILTERS("count", "GTE")],
+            },
             count: IntScalarFilters,
         },
     });

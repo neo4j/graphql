@@ -251,11 +251,11 @@ describe("162", () => {
               NOT: TigerJawLevel2Part1AggregateInput
               OR: [TigerJawLevel2Part1AggregateInput!]
               count: IntScalarFilters
-              count_EQ: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
+              count_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter '{ count: { eq: ... } } }' instead.\\")
+              count_GT: Int @deprecated(reason: \\"Please use the relevant generic filter '{ count: { gt: ... } } }' instead.\\")
+              count_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter '{ count: { gte: ... } } }' instead.\\")
+              count_LT: Int @deprecated(reason: \\"Please use the relevant generic filter '{ count: { lt: ... } } }' instead.\\")
+              count_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter '{ count: { lte: ... } } }' instead.\\")
             }
 
             input TigerJawLevel2Part1ConnectFieldInput {
@@ -392,11 +392,11 @@ describe("162", () => {
               NOT: TigerJawLevel2Part1TigerAggregateInput
               OR: [TigerJawLevel2Part1TigerAggregateInput!]
               count: IntScalarFilters
-              count_EQ: Int
-              count_GT: Int
-              count_GTE: Int
-              count_LT: Int
-              count_LTE: Int
+              count_EQ: Int @deprecated(reason: \\"Please use the relevant generic filter '{ count: { eq: ... } } }' instead.\\")
+              count_GT: Int @deprecated(reason: \\"Please use the relevant generic filter '{ count: { gt: ... } } }' instead.\\")
+              count_GTE: Int @deprecated(reason: \\"Please use the relevant generic filter '{ count: { gte: ... } } }' instead.\\")
+              count_LT: Int @deprecated(reason: \\"Please use the relevant generic filter '{ count: { lt: ... } } }' instead.\\")
+              count_LTE: Int @deprecated(reason: \\"Please use the relevant generic filter '{ count: { lte: ... } } }' instead.\\")
               node: TigerJawLevel2Part1TigerNodeAggregationWhereInput
             }
 
