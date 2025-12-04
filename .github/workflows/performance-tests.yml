@@ -25,7 +25,7 @@ jobs:
 
     steps:
       - name: Target Branch - Check out
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
         with:
           ref: ${{ github.base_ref }}
           fetch-depth: 0
@@ -73,7 +73,7 @@ jobs:
           NEO_URL: bolt://localhost:7687
 
       - name: PR Branch - Check out
-        uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6
+        uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6
         with:
           ref: ${{ github.ref }}
           clean: false
