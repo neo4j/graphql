@@ -61,3 +61,17 @@ export function DEPRECATE_AGGREGATION_FILTERS(name: string, aggregationOperation
         },
     };
 }
+
+export function DEPRECATE_AGGREGATION_INPUT_FILTERS(aggregationOperation: string, operator: string) {
+    let newOperator = operator.toLowerCase();
+    if (newOperator === "equal") {
+        newOperator = "eq";
+    }
+
+    return {
+        name: DEPRECATED,
+        args: {
+            reason: `Please use the relevant generic filter '{ ${aggregationOperation}: { ${newOperator}: ... } } }' instead.`,
+        },
+    };
+}
