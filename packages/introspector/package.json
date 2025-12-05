@@ -43,7 +43,7 @@
         "@types/node": "22.19.1",
         "@types/pluralize": "0.0.33",
         "jest": "30.2.0",
-        "ts-jest": "29.4.5",
+        "ts-jest": "29.4.6",
         "typescript": "5.9.3"
     },
     "dependencies": {
