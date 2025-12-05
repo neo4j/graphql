@@ -1690,9 +1690,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/delegate@npm:^11.1.3":
-  version: 11.1.3
-  resolution: "@graphql-tools/delegate@npm:11.1.3"
+"@graphql-tools/delegate@npm:^12.0.2":
+  version: 12.0.2
+  resolution: "@graphql-tools/delegate@npm:12.0.2"
   dependencies:
     "@graphql-tools/batch-execute": "npm:^10.0.4"
     "@graphql-tools/executor": "npm:^1.4.13"
@@ -1704,7 +1704,7 @@ __metadata:
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/19942fe32c370e5784ace9bd3cdda9db434ed3f1515b45c2cb5f5f99a4da661c7cfddbcacc8d3ac582653b3e40a7bf7978bb49a8b3806eeabdd09427f23b4457
+  checksum: 10c0/2346beff30fb7221a07e6061d907a86bce94538be50352f0a38b9a46379694809c2776c7fb062893e662d106e422f705a1b1174a8f15c8a1f2a29558138a59fe
   languageName: node
   linkType: hard
 
@@ -1898,17 +1898,17 @@ __metadata:
   linkType: hard
 
 "@graphql-tools/wrap@npm:^11.0.0":
-  version: 11.0.5
-  resolution: "@graphql-tools/wrap@npm:11.0.5"
+  version: 11.1.2
+  resolution: "@graphql-tools/wrap@npm:11.1.2"
   dependencies:
-    "@graphql-tools/delegate": "npm:^11.1.3"
+    "@graphql-tools/delegate": "npm:^12.0.2"
     "@graphql-tools/schema": "npm:^10.0.29"
     "@graphql-tools/utils": "npm:^10.10.3"
     "@whatwg-node/promise-helpers": "npm:^1.3.2"
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/01b7cad18ba47132b262893cc35ac2aa0b48c78089ecc9c808760d9aeb7ffaeb4ca4fdb706abd0cec650ec658b2e47caf13ab718cf7deef6f4ee9d713104db41
+  checksum: 10c0/bd49a166f5b1f4f65f5ec776864be29a976561fb1b8e2f320e7afa88842a51e0beca5945277cb24425738a7a7fdeed5fd6714de57b4529fae22d99249e66a235
   languageName: node
   linkType: hard
 
@@ -2841,7 +2841,7 @@ __metadata:
     jose: "npm:^5.0.0"
     jsonwebtoken: "npm:9.0.2"
     jwks-rsa: "npm:3.2.0"
-    knip: "npm:5.70.2"
+    knip: "npm:5.71.0"
     koa: "npm:3.1.1"
     koa-jwt: "npm:4.0.4"
     koa-router: "npm:14.0.0"
@@ -2851,7 +2851,7 @@ __metadata:
     rimraf: "npm:6.1.2"
     semver: "npm:^7.5.4"
     supertest: "npm:7.1.4"
-    ts-jest: "npm:29.4.5"
+    ts-jest: "npm:29.4.6"
     ts-node: "npm:10.9.2"
     typescript: "npm:5.9.3"
     typescript-memoize: "npm:^1.1.1"
@@ -2874,7 +2874,7 @@ __metadata:
     debug: "npm:^4.3.4"
     jest: "npm:30.2.0"
     pluralize: "npm:^8.0.0"
-    ts-jest: "npm:29.4.5"
+    ts-jest: "npm:29.4.6"
     typescript: "npm:5.9.3"
   peerDependencies:
     neo4j-driver: ^5.8.0 || ^6.0.0
@@ -12487,9 +12487,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"knip@npm:5.70.2":
-  version: 5.70.2
-  resolution: "knip@npm:5.70.2"
+"knip@npm:5.71.0":
+  version: 5.71.0
+  resolution: "knip@npm:5.71.0"
   dependencies:
     "@nodelib/fs.walk": "npm:^1.2.3"
     fast-glob: "npm:^3.3.3"
@@ -12509,7 +12509,7 @@ __metadata:
   bin:
     knip: bin/knip.js
     knip-bun: bin/knip-bun.js
-  checksum: 10c0/bacc5ad4c32de3af25da960f186efb2c4f006ad02b88bc09a8fe291912c0dd4f1fab0644c1848d5d194d2d0bc7ea046c7a27779149ec25065b4ded54bb72490c
+  checksum: 10c0/954a899343afe2bc495da205dceeecf0ff665f26ceb44424e465e4246ce7ee72c204e679bc375b9095443999d383b838e37dd2a9868d8884e4096be3dca66a7e
   languageName: node
   linkType: hard
 
@@ -14002,7 +14002,7 @@ __metadata:
     prettier: "npm:3.7.3"
     prettier-2: "npm:prettier@2.8.8"
     set-tz: "npm:0.2.0"
-    ts-jest: "npm:29.4.5"
+    ts-jest: "npm:29.4.6"
     typescript: "npm:5.9.3"
   languageName: unknown
   linkType: soft
@@ -17581,9 +17581,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:29.4.5":
-  version: 29.4.5
-  resolution: "ts-jest@npm:29.4.5"
+"ts-jest@npm:29.4.6":
+  version: 29.4.6
+  resolution: "ts-jest@npm:29.4.6"
   dependencies:
     bs-logger: "npm:^0.2.6"
     fast-json-stable-stringify: "npm:^2.1.0"
@@ -17617,7 +17617,7 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: 10c0/789f00666ba785ac425606d42601cbdc03015e46f228a0b333f06c6658d80865819bae0ddd59c762285352d2b14d0aa50912574ec699ba6369ddb0d400a49ac0
+  checksum: 10c0/013dda99ac938cd4b94bae9323ed1b633cd295976c256d596d01776866188078fe7b82b8b3ebd05deb401b27b5618d9d76208eded2568661240ecf9694a5c933
   languageName: node
   linkType: hard
 
