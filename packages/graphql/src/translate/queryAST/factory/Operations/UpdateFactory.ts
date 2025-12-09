@@ -492,6 +492,7 @@ export class UpdateFactory {
                 param: callbackParam,
                 parent: callbackParent,
                 type: attribute.type,
+                operation: "UPDATE",
             });
         });
 
@@ -517,6 +518,7 @@ export class UpdateFactory {
                     param: relCallbackParam,
                     parent: input,
                     type: attribute.type,
+                    operation: "UPDATE",
                 });
             });
         }

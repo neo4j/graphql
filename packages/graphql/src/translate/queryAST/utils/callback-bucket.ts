@@ -38,6 +38,7 @@ interface Callback {
     param: Cypher.Param;
     parent?: Record<string, unknown>;
     type: AttributeType;
+    operation: "CREATE" | "UPDATE";
 }
 
 type CallbackResult =
@@ -78,7 +79,11 @@ export class CallbackBucket {
             this.callbacks.map(async (cb) => {
                 const callbackFunction = callbacksList[cb.functionName];
                 if (callbackFunction) {
-                    const paramValue = await callbackFunction(cb.parent, {}, this.context);
+                    const paramValue = await callbackFunction(
+                        cb.parent,
+                        {},
+                        { ...this.context, populatedByOperation: cb.operation }
+                    );
                     if (paramValue === undefined) {
                         cb.param.value = undefined;
                     } else if (paramValue === null) {

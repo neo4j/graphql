@@ -195,6 +195,12 @@ export class TestHelper {
         });
     }
 
+    /**
+     * Gracefully closes a test neo4jGraphQl created {@link initNeo4jGraphQL} and cleans all nodes
+     * with labels created with ${@link createUniqueType}
+     * Use this in `afterEach` or `afterAll`.This method fails if called with an unopened server.
+     * @param preClose - A callback to execute before closing and cleaning the nodes
+     */
     public async close(preClose?: () => Promise<void>): Promise<void> {
         if (!this.driver) {
             this.reset();
