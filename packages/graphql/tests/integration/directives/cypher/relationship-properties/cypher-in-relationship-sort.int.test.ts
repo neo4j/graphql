@@ -60,60 +60,12 @@ describe("cypher directive in relationship properties", () => {
         await testHelper.close();
     });
 
-    test("should query custom query and return relationship properties", async () => {
+    test("order nested relationship by relationship properties DESC", async () => {
         const source = /* GraphQL */ `
             query {
                 ${Movie.plural} {
                     title
-                    actorsConnection {
-                        edges {
-                            properties {
-                                screenTimeHours
-                            }
-                            node {
-                                name
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        await testHelper.executeCypher(
-            `CREATE(:${Movie} {title: "The Matrix"})<-[:ACTED_IN {screenTimeMinutes: 120}]-(:${Actor} {name: "Keanu"})`
-        );
-
-        const gqlResult = await testHelper.executeGraphQL(source);
-
-        expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult.data).toEqual({
-            [Movie.plural]: [
-                {
-                    title: "The Matrix",
-                    actorsConnection: {
-                        edges: [
-                            {
-                                properties: {
-                                    screenTimeHours: 2.0,
-                                },
-                                node: {
-                                    name: "Keanu",
-                                },
-                            },
-                        ],
-                    },
-                },
-            ],
-        });
-    });
-
-    test("filter by relationship @cypher property without projection", async () => {
-        const source = /* GraphQL */ `
-            query {
-                ${Movie.plural} {
-                    title
-                    actorsConnection(where: {edge: {screenTimeHours: {gt: 1.0}}}) {
+                    actorsConnection(sort: {edge: {screenTimeHours: DESC}}) {
                         edges {
                             node {
                                 name
@@ -144,6 +96,11 @@ describe("cypher directive in relationship properties", () => {
                                     name: "Main actor",
                                 },
                             },
+                            {
+                                node: {
+                                    name: "Second actor",
+                                },
+                            },
                         ],
                     },
                 },
@@ -151,18 +108,15 @@ describe("cypher directive in relationship properties", () => {
         });
     });
 
-    test("filter by relationship @cypher property with projection", async () => {
+    test.only("order nested relationship by relationship properties ASC", async () => {
         const source = /* GraphQL */ `
             query {
                 ${Movie.plural} {
                     title
-                    actorsConnection(where: {edge: {screenTimeHours: {gt: 1.0}}}) {
+                    actorsConnection(sort: {edge: {screenTimeHours: ASC}}) {
                         edges {
                             node {
                                 name
-                            }
-                            properties {
-                                screenTimeHours
                             }
                         }
                     }
@@ -187,10 +141,12 @@ describe("cypher directive in relationship properties", () => {
                         edges: [
                             {
                                 node: {
-                                    name: "Main actor",
+                                    name: "Second actor",
                                 },
-                                properties: {
-                                    screenTimeHours: 2.0,
+                            },
+                            {
+                                node: {
+                                    name: "Main actor",
                                 },
                             },
                         ],

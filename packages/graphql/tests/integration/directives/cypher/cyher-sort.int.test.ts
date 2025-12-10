@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import type { UniqueType } from "../../../../utils/graphql-types";
-import { TestHelper } from "../../../../utils/tests-helper";
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
 
-describe("cypher directive in relationship properties", () => {
+describe("cypher directive sort", () => {
     const testHelper = new TestHelper();
 
     let Movie: UniqueType;
@@ -33,24 +33,17 @@ describe("cypher directive in relationship properties", () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String!
-                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", direction: IN)
             }
 
             type ${Actor} @node {
                 name: String!
-                actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT)
+                ranking: Int! @cypher(statement: """
+                    RETURN this.rank as ranking
+                """, columnName: "ranking")
             }
 
-            type ActedIn @relationshipProperties {
-                screenTimeHours: Float
-                    @cypher(
-                        statement: """
-                        RETURN this.screenTimeMinutes / 60 AS c
-                        """
-                        columnName: "c"
-                    )
-                screenTimeMinutes: Int
-            }
         `;
 
         await testHelper.initNeo4jGraphQL({ typeDefs });
@@ -60,16 +53,13 @@ describe("cypher directive in relationship properties", () => {
         await testHelper.close();
     });
 
-    test("should query custom query and return relationship properties", async () => {
+    test("order nested relationship by relationship properties DESC", async () => {
         const source = /* GraphQL */ `
             query {
                 ${Movie.plural} {
                     title
-                    actorsConnection {
+                    actorsConnection(sort: {node: {ranking: DESC}}) {
                         edges {
-                            properties {
-                                screenTimeHours
-                            }
                             node {
                                 name
                             }
@@ -80,7 +70,8 @@ describe("cypher directive in relationship properties", () => {
         `;
 
         await testHelper.executeCypher(
-            `CREATE(:${Movie} {title: "The Matrix"})<-[:ACTED_IN {screenTimeMinutes: 120}]-(:${Actor} {name: "Keanu"})`
+            `CREATE(m:${Movie} {title: "The Matrix"})<-[:ACTED_IN]-(:${Actor} {name: "Main actor", rank: 1})
+            CREATE(m)<-[:ACTED_IN]-(:${Actor} {name: "Second actor", rank: 2})`
         );
 
         const gqlResult = await testHelper.executeGraphQL(source);
@@ -94,11 +85,13 @@ describe("cypher directive in relationship properties", () => {
                     actorsConnection: {
                         edges: [
                             {
-                                properties: {
-                                    screenTimeHours: 2.0,
-                                },
                                 node: {
-                                    name: "Keanu",
+                                    name: "Second actor",
+                                },
+                            },
+                            {
+                                node: {
+                                    name: "Main actor",
                                 },
                             },
                         ],
@@ -107,13 +100,12 @@ describe("cypher directive in relationship properties", () => {
             ],
         });
     });
-
-    test("filter by relationship @cypher property without projection", async () => {
+    test("order nested relationship by relationship properties ASC", async () => {
         const source = /* GraphQL */ `
             query {
                 ${Movie.plural} {
                     title
-                    actorsConnection(where: {edge: {screenTimeHours: {gt: 1.0}}}) {
+                    actorsConnection(sort: {node: {ranking: ASC}}) {
                         edges {
                             node {
                                 name
@@ -125,8 +117,8 @@ describe("cypher directive in relationship properties", () => {
         `;
 
         await testHelper.executeCypher(
-            `CREATE(m:${Movie} {title: "The Matrix"})<-[:ACTED_IN {screenTimeMinutes: 120}]-(:${Actor} {name: "Main actor"})
-            CREATE(m)<-[:ACTED_IN {screenTimeMinutes: 80}]-(:${Actor} {name: "Second actor"})`
+            `CREATE(m:${Movie} {title: "The Matrix"})<-[:ACTED_IN]-(:${Actor} {name: "Main actor", rank: 1})
+            CREATE(m)<-[:ACTED_IN]-(:${Actor} {name: "Second actor", rank: 2})`
         );
 
         const gqlResult = await testHelper.executeGraphQL(source);
@@ -144,53 +136,9 @@ describe("cypher directive in relationship properties", () => {
                                     name: "Main actor",
                                 },
                             },
-                        ],
-                    },
-                },
-            ],
-        });
-    });
-
-    test("filter by relationship @cypher property with projection", async () => {
-        const source = /* GraphQL */ `
-            query {
-                ${Movie.plural} {
-                    title
-                    actorsConnection(where: {edge: {screenTimeHours: {gt: 1.0}}}) {
-                        edges {
-                            node {
-                                name
-                            }
-                            properties {
-                                screenTimeHours
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        await testHelper.executeCypher(
-            `CREATE(m:${Movie} {title: "The Matrix"})<-[:ACTED_IN {screenTimeMinutes: 120}]-(:${Actor} {name: "Main actor"})
-            CREATE(m)<-[:ACTED_IN {screenTimeMinutes: 80}]-(:${Actor} {name: "Second actor"})`
-        );
-
-        const gqlResult = await testHelper.executeGraphQL(source);
-
-        expect(gqlResult.errors).toBeFalsy();
-
-        expect(gqlResult.data).toEqual({
-            [Movie.plural]: [
-                {
-                    title: "The Matrix",
-                    actorsConnection: {
-                        edges: [
                             {
                                 node: {
-                                    name: "Main actor",
-                                },
-                                properties: {
-                                    screenTimeHours: 2.0,
+                                    name: "Second actor",
                                 },
                             },
                         ],

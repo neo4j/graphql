@@ -57,7 +57,7 @@ export class CustomCypherFactory {
             operationField: cypherAttributeField,
             rawArguments: cypherArguments,
             isNested: true,
-            attachedTo: "relationship",
+            attachedTo: isEdge ? "relationship" : "node",
         });
         if (!entity) {
             return new CypherAttributeOperation(selection, cypherAttributeField, true);
