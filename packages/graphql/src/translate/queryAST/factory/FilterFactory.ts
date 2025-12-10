@@ -181,16 +181,19 @@ export class FilterFactory {
         comparisonValue,
         operator,
         caseInsensitive,
+        attachedTo,
     }: {
         attribute: AttributeAdapter;
         comparisonValue: GraphQLWhereArg;
         operator: FilterOperator | undefined;
         caseInsensitive?: boolean;
+        attachedTo?: "node" | "relationship";
     }): Filter | Filter[] {
         const selection = new CustomCypherSelection({
             operationField: attribute,
             rawArguments: {},
             isNested: true,
+            attachedTo,
         });
 
         if (attribute.annotations.cypher?.targetEntity) {
@@ -255,6 +258,7 @@ export class FilterFactory {
                 comparisonValue,
                 operator,
                 caseInsensitive,
+                attachedTo,
             });
         }
         // Implicit _EQ filters are removed but the argument "operator" can still be undefined in some cases, for instance:

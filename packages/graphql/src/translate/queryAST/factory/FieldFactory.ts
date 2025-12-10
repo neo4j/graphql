@@ -239,7 +239,6 @@ export class FieldFactory {
 
         const cypherAnnotation = attribute.annotations.cypher;
         if (cypherAnnotation) {
-            console.log("In cypher annotaton");
             return this.createCypherAttributeField({
                 entity,
                 field,
@@ -285,7 +284,7 @@ export class FieldFactory {
         const isEdge = entity instanceof RelationshipAdapter;
         if (rawFields) {
             if (attribute.typeHelper.isObject()) {
-                // NOTE: This entity is the cypher result, not the target node
+                // NOTE: This entity is the cypher result type (if an entity), not the target node. Naming may be confusing
                 const concreteEntity = this.queryASTFactory.schemaModel.getConcreteEntityAdapter(typeName);
 
                 return this.createCypherOperationField({
@@ -370,7 +369,6 @@ export class FieldFactory {
         cypherArguments?: Record<string, any>;
         isEdge: boolean;
     }): OperationField {
-        console.log("Create Cypher Opeation Field", target);
         const cypherOp = this.queryASTFactory.operationsFactory.createCustomCypherOperation({
             resolveTree: field,
             context,

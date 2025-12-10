@@ -33,7 +33,7 @@ export class CustomCypherSelection extends EntitySelection {
     private rawArguments: Record<string, any>;
     private cypherAnnotation: CypherAnnotation;
     private isNested: boolean;
-    private targetRelationship: boolean;
+    private attachedTo: "node" | "relationship";
 
     /**
      *  @param targetRelationship - Should this selector use the relationship variable of the context as "this" target in the Cypher? (use it for edge props)
@@ -42,12 +42,12 @@ export class CustomCypherSelection extends EntitySelection {
         operationField,
         rawArguments = {},
         isNested,
-        targetRelationship = false,
+        attachedTo = "node",
     }: {
         operationField: AttributeAdapter;
         rawArguments: Record<string, any>;
         isNested: boolean;
-        targetRelationship?: boolean;
+        attachedTo?: "node" | "relationship";
     }) {
         super();
         this.operationField = operationField;
@@ -57,7 +57,7 @@ export class CustomCypherSelection extends EntitySelection {
             throw new Error("Missing Cypher Annotation on Cypher field");
         }
         this.cypherAnnotation = this.operationField.annotations.cypher;
-        this.targetRelationship = targetRelationship;
+        this.attachedTo = attachedTo;
     }
 
     public apply(context: QueryASTContext): {
@@ -87,7 +87,7 @@ export class CustomCypherSelection extends EntitySelection {
 
         let statementSubquery: Cypher.Call;
 
-        const nestedTarget = this.targetRelationship ? context.relationship : context.target;
+        const nestedTarget = this.attachedTo === "relationship" ? context.relationship : context.target;
         if (this.isNested && nestedTarget) {
             const aliasTargetToPublicTarget = new Cypher.With([nestedTarget, CYPHER_TARGET_VARIABLE]);
             statementSubquery = new Cypher.Call(Cypher.utils.concat(aliasTargetToPublicTarget, statementCypherQuery), [
