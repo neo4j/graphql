@@ -258,7 +258,7 @@ describe("populatedBy arguments", () => {
             mutation {
                 updatePeople(
                     update: {
-                        actedIn: [{ update: { node: { title_SET: "Test" }, edge: { screenTime: { set: 100 } } } }]
+                        actedIn: [{ update: { node: { title: { set: "Test" } }, edge: { screenTime: { set: 100 } } } }]
                     }
                 ) {
                     people {
