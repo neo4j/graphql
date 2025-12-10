@@ -491,6 +491,7 @@ export class CreateFactory {
                 param: callbackParam,
                 parent: callbackParent,
                 type: attribute.type,
+                operation: "CREATE",
             });
         });
 
@@ -516,6 +517,7 @@ export class CreateFactory {
                     param: relCallbackParam,
                     parent: input.edge,
                     type: attribute.type,
+                    operation: "CREATE",
                 });
             });
         }

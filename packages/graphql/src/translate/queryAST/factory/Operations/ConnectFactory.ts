@@ -254,6 +254,7 @@ export class ConnectFactory {
                 param: relCallbackParam,
                 parent: input.edge,
                 type: attribute.type,
+                operation: "UPDATE",
             });
         });
     }
