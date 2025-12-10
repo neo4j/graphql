@@ -153,6 +153,7 @@ export class SortAndPaginationFactory {
                 const cypherOperation = this.queryASTFactory.operationsFactory.createCustomCypherOperation({
                     context,
                     cypherAttributeField: attribute,
+                    isEdge: entity instanceof RelationshipAdapter,
                 });
                 if (!(cypherOperation instanceof CypherAttributeOperation)) {
                     throw new Error("Transpile error: sorting is supported only for @cypher scalar properties");

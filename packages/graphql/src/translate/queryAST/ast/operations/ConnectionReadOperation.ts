@@ -474,7 +474,27 @@ export class ConnectionReadOperation extends Operation {
             {}
         );
 
-        const preAndPostFields = this.nodeFields.reduce<Record<"Pre" | "Post", Field[]>>(
+        const preAndPostFields = [...this.nodeFields].reduce<Record<"Pre" | "Post", Field[]>>(
+            (acc, nodeField) => {
+                if (
+                    nodeField instanceof OperationField &&
+                    nodeField.isCypherField() &&
+                    nodeField.operation instanceof CypherAttributeOperation
+                ) {
+                    const cypherFieldName = nodeField.operation.cypherAttributeField.name;
+                    if (cypherSortFieldsFlagMap[cypherFieldName]) {
+                        acc.Pre.push(nodeField);
+                        return acc;
+                    }
+                }
+
+                acc.Post.push(nodeField);
+                return acc;
+            },
+            { Pre: [], Post: [] }
+        );
+
+        const preAndPostEdgeFields = [...this.edgeFields].reduce<Record<"Pre" | "Post", Field[]>>(
             (acc, nodeField) => {
                 if (
                     nodeField instanceof OperationField &&
@@ -495,11 +515,20 @@ export class ConnectionReadOperation extends Operation {
         );
         const preNodeSubqueries = wrapSubqueriesInCypherCalls(context, preAndPostFields.Pre, [context.target]);
         const postNodeSubqueries = wrapSubqueriesInCypherCalls(context, preAndPostFields.Post, [context.target]);
+
+        let preEdgeSubqueries: Cypher.Clause[] = [];
+        let postEdgeSubqueries: Cypher.Clause[] = [];
+        if (context.relationship) {
+            preEdgeSubqueries = wrapSubqueriesInCypherCalls(context, preAndPostEdgeFields.Pre, [context.relationship]);
+            postEdgeSubqueries = wrapSubqueriesInCypherCalls(context, preAndPostEdgeFields.Post, [
+                context.relationship,
+            ]);
+        }
         const sortSubqueries = wrapSubqueriesInCypherCalls(context, sortNodeFields, [context.target]);
 
         return {
-            prePaginationSubqueries: [...sortSubqueries, ...preNodeSubqueries],
-            postPaginationSubqueries: postNodeSubqueries,
+            prePaginationSubqueries: [...sortSubqueries, ...preNodeSubqueries, ...preEdgeSubqueries],
+            postPaginationSubqueries: [...postNodeSubqueries, ...postEdgeSubqueries],
         };
     }
 }

@@ -17,11 +17,12 @@
  * limitations under the License.
  */
 
-import type { ASTVisitor, FieldDefinitionNode } from "graphql";
+import type { ASTNode, ASTVisitor, FieldDefinitionNode } from "graphql";
 import { cypherDirective } from "../../../../graphql/directives";
-import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
+import type { Neo4jValidationContext, TypeMapWithExtensions } from "../../Neo4jValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { fieldIsInNodeType } from "../utils/location-helpers/is-in-node-type";
+import { fieldIsInRelationshipPropertiesType } from "../utils/location-helpers/is-in-relationship-properties-type";
 import { fieldIsInRootType } from "../utils/location-helpers/is-in-root-type";
 import { fieldIsInSubscriptionType } from "../utils/location-helpers/is-in-subscription-type";
 import { getPathToNode } from "../utils/path-parser";
@@ -39,10 +40,8 @@ export function validateCypherDirective(context: Neo4jValidationContext): ASTVis
             ) {
                 return;
             }
-            const isValidLocation =
-                (fieldIsInNodeType({ path, ancestors, typeMapWithExtensions }) ||
-                    fieldIsInRootType({ path, ancestors, typeMapWithExtensions })) &&
-                !fieldIsInSubscriptionType({ path, ancestors, typeMapWithExtensions });
+
+            const isValidLocation = isCypherLocationValid({ path, ancestors, typeMapWithExtensions });
 
             const { isValid, errorMsg } = assertValid(() => {
                 if (!isValidLocation) {
@@ -65,4 +64,20 @@ export function validateCypherDirective(context: Neo4jValidationContext): ASTVis
             }
         },
     };
+}
+
+function isCypherLocationValid(directiveLocationData: {
+    path: readonly (string | number)[];
+    ancestors: readonly (ASTNode | readonly ASTNode[])[];
+    typeMapWithExtensions: TypeMapWithExtensions;
+}): boolean {
+    if (fieldIsInSubscriptionType(directiveLocationData)) {
+        return false;
+    }
+
+    return (
+        fieldIsInNodeType(directiveLocationData) ||
+        fieldIsInRootType(directiveLocationData) ||
+        fieldIsInRelationshipPropertiesType(directiveLocationData)
+    );
 }
