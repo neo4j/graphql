@@ -96,7 +96,9 @@ describe("populatedBy arguments", () => {
                 title: "The Matrix",
             },
             {},
-            expect.toBeObject()
+            expect.objectContaining({
+                populatedByOperation: "CREATE",
+            })
         );
         expect(edgeMockCallback).not.toHaveBeenCalled();
     });
@@ -120,7 +122,9 @@ describe("populatedBy arguments", () => {
                 title_SET: "The Matrix",
             },
             {},
-            expect.toBeObject()
+            expect.objectContaining({
+                populatedByOperation: "UPDATE",
+            })
         );
         expect(edgeMockCallback).not.toHaveBeenCalled();
     });
@@ -144,9 +148,17 @@ describe("populatedBy arguments", () => {
                 title: "Matrix",
             },
             {},
-            expect.toBeObject()
+            expect.objectContaining({
+                populatedByOperation: "CREATE",
+            })
         );
-        expect(edgeMockCallback).toHaveBeenCalledWith({}, {}, expect.toBeObject());
+        expect(edgeMockCallback).toHaveBeenCalledWith(
+            {},
+            {},
+            expect.objectContaining({
+                populatedByOperation: "CREATE",
+            })
+        );
     });
 
     test("nested update", async () => {
@@ -168,7 +180,9 @@ describe("populatedBy arguments", () => {
                 title_SET: "Test",
             },
             {},
-            expect.toBeObject()
+            expect.objectContaining({
+                populatedByOperation: "UPDATE",
+            })
         );
         expect(edgeMockCallback).not.toHaveBeenCalled();
     });
@@ -189,13 +203,91 @@ describe("populatedBy arguments", () => {
         const queryResult = await testHelper.executeGraphQL(query);
         expect(queryResult.errors).toBeUndefined();
 
-        expect(nodeMockCallback).toHaveBeenCalledWith({}, {}, expect.toBeObject());
+        expect(nodeMockCallback).toHaveBeenCalledWith(
+            {},
+            {},
+            expect.objectContaining({
+                populatedByOperation: "CREATE",
+            })
+        );
         expect(edgeMockCallback).toHaveBeenCalledWith(
             {
                 screenTime: new neo4j.Integer(10),
             },
             {},
-            expect.toBeObject()
+            expect.objectContaining({
+                populatedByOperation: "CREATE",
+            })
+        );
+    });
+
+    test("nested update -> create", async () => {
+        const query = /* GraphQL */ `
+            mutation {
+                updatePeople(update: { actedIn: { create: [{ node: { title: "Matrix" } }] } }) {
+                    people {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const queryResult = await testHelper.executeGraphQL(query);
+        expect(queryResult.errors).toBeUndefined();
+
+        expect(nodeMockCallback).toHaveBeenCalledWith(
+            {
+                title: "Matrix",
+            },
+            {},
+            expect.objectContaining({
+                populatedByOperation: "CREATE",
+            })
+        );
+        expect(edgeMockCallback).toHaveBeenCalledWith(
+            {},
+            {},
+            expect.objectContaining({
+                populatedByOperation: "CREATE",
+            })
+        );
+    });
+
+    test("update relationships", async () => {
+        const query = /* GraphQL */ `
+            mutation {
+                updatePeople(
+                    update: {
+                        actedIn: [{ update: { node: { title: { set: "Test" } }, edge: { screenTime: { set: 100 } } } }]
+                    }
+                ) {
+                    people {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const queryResult = await testHelper.executeGraphQL(query);
+        expect(queryResult.errors).toBeUndefined();
+
+        expect(nodeMockCallback).toHaveBeenCalledWith(
+            {
+                title: { set: "Test" },
+            },
+            {},
+            expect.objectContaining({
+                populatedByOperation: "UPDATE",
+            })
+        );
+        expect(edgeMockCallback).toHaveBeenCalledWith(
+            {
+                screenTime: { set: new neo4j.Integer(100) },
+            },
+            {},
+            expect.objectContaining({
+                populatedByOperation: "UPDATE",
+            })
         );
     });
 });

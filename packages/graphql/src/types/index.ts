@@ -207,7 +207,7 @@ export type CallbackReturnValue = string | number | boolean | undefined | null |
 export type Neo4jGraphQLCallback = (
     parent: Record<string, unknown> | undefined,
     args: Record<string, never>,
-    context: Neo4jGraphQLContext
+    context: Neo4jGraphQLContext & { populatedByOperation: "CREATE" | "UPDATE" }
 ) => CallbackReturnValue | Promise<CallbackReturnValue>;
 
 export type Neo4jGraphQLCallbacks = Record<string, Neo4jGraphQLCallback>;
