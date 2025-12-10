@@ -273,7 +273,7 @@ describe("populatedBy arguments", () => {
 
         expect(nodeMockCallback).toHaveBeenCalledWith(
             {
-                title_SET: "Test",
+                title: { set: "Test" },
             },
             {},
             expect.objectContaining({
