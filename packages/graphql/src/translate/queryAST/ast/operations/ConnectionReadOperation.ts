@@ -460,11 +460,21 @@ export class ConnectionReadOperation extends Operation {
             throw new Error("No parent node found!");
         }
         const sortNodeFields = this.sortFields.flatMap((sf) => sf.node);
+        const sortEdgeFields = this.sortFields.flatMap((sf) => sf.edge);
         /**
          * cypherSortFieldsFlagMap is a Record<string, boolean> that holds the name of the sort field as key
          * and a boolean flag defined as true when the field is a `@cypher` field.
          **/
         const cypherSortFieldsFlagMap = sortNodeFields.reduce<Record<string, boolean>>(
+            (sortFieldsFlagMap, sortField) => {
+                if (sortField instanceof CypherPropertySort) {
+                    sortFieldsFlagMap[sortField.getFieldName()] = true;
+                }
+                return sortFieldsFlagMap;
+            },
+            {}
+        );
+        const cypherSortFieldsEdgeFlagMap = sortEdgeFields.reduce<Record<string, boolean>>(
             (sortFieldsFlagMap, sortField) => {
                 if (sortField instanceof CypherPropertySort) {
                     sortFieldsFlagMap[sortField.getFieldName()] = true;
@@ -495,20 +505,20 @@ export class ConnectionReadOperation extends Operation {
         );
 
         const preAndPostEdgeFields = [...this.edgeFields].reduce<Record<"Pre" | "Post", Field[]>>(
-            (acc, nodeField) => {
+            (acc, edgeField) => {
                 if (
-                    nodeField instanceof OperationField &&
-                    nodeField.isCypherField() &&
-                    nodeField.operation instanceof CypherAttributeOperation
+                    edgeField instanceof OperationField &&
+                    edgeField.isCypherField() &&
+                    edgeField.operation instanceof CypherAttributeOperation
                 ) {
-                    const cypherFieldName = nodeField.operation.cypherAttributeField.name;
-                    if (cypherSortFieldsFlagMap[cypherFieldName]) {
-                        acc.Pre.push(nodeField);
+                    const cypherFieldName = edgeField.operation.cypherAttributeField.name;
+                    if (cypherSortFieldsEdgeFlagMap[cypherFieldName]) {
+                        acc.Pre.push(edgeField);
                         return acc;
                     }
                 }
 
-                acc.Post.push(nodeField);
+                acc.Post.push(edgeField);
                 return acc;
             },
             { Pre: [], Post: [] }
@@ -518,16 +528,23 @@ export class ConnectionReadOperation extends Operation {
 
         let preEdgeSubqueries: Cypher.Clause[] = [];
         let postEdgeSubqueries: Cypher.Clause[] = [];
+        let sortEdgeSubqueries: Cypher.Clause[] = [];
         if (context.relationship) {
             preEdgeSubqueries = wrapSubqueriesInCypherCalls(context, preAndPostEdgeFields.Pre, [context.relationship]);
             postEdgeSubqueries = wrapSubqueriesInCypherCalls(context, preAndPostEdgeFields.Post, [
                 context.relationship,
             ]);
+            sortEdgeSubqueries = wrapSubqueriesInCypherCalls(context, sortEdgeFields, [context.relationship]);
         }
         const sortSubqueries = wrapSubqueriesInCypherCalls(context, sortNodeFields, [context.target]);
 
         return {
-            prePaginationSubqueries: [...sortSubqueries, ...preNodeSubqueries, ...preEdgeSubqueries],
+            prePaginationSubqueries: [
+                ...sortSubqueries,
+                ...sortEdgeSubqueries,
+                ...preNodeSubqueries,
+                ...preEdgeSubqueries,
+            ],
             postPaginationSubqueries: [...postNodeSubqueries, ...postEdgeSubqueries],
         };
     }

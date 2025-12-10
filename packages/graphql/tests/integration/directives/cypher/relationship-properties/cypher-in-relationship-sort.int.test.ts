@@ -108,7 +108,7 @@ describe("cypher directive in relationship properties", () => {
         });
     });
 
-    test.only("order nested relationship by relationship properties ASC", async () => {
+    test("order nested relationship by relationship properties ASC", async () => {
         const source = /* GraphQL */ `
             query {
                 ${Movie.plural} {
