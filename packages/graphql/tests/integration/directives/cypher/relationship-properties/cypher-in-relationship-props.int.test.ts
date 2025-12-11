@@ -199,4 +199,53 @@ describe("cypher directive in relationship properties", () => {
             ],
         });
     });
+
+    test("filter nested relationship by @cypher property with projection", async () => {
+        const source = /* GraphQL */ `
+            query {
+                ${Movie.plural}(where: {actorsConnection: {some: {edge: {screenTimeHours: {gt: 1.5}}}}}) {
+                    title
+                    actorsConnection {
+                        edges {
+                            node {
+                                name
+                            }
+                            properties {
+                                screenTimeHours
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        await testHelper.executeCypher(
+            `CREATE(m:${Movie} {title: "The Matrix"})<-[:ACTED_IN {screenTimeMinutes: 120}]-(:${Actor} {name: "Main actor"})
+            CREATE(:${Movie} {title: "The Matrix Reloaded"})<-[:ACTED_IN {screenTimeMinutes: 80}]-(:${Actor} {name: "Second actor"})`
+        );
+
+        const gqlResult = await testHelper.executeGraphQL(source);
+
+        expect(gqlResult.errors).toBeFalsy();
+
+        expect(gqlResult.data).toEqual({
+            [Movie.plural]: [
+                {
+                    title: "The Matrix",
+                    actorsConnection: {
+                        edges: [
+                            {
+                                node: {
+                                    name: "Main actor",
+                                },
+                                properties: {
+                                    screenTimeHours: 2.0,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ],
+        });
+    });
 });

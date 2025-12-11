@@ -21,6 +21,7 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import type { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { filterTruthy } from "../../../../utils/utils";
 import { hasTarget } from "../../utils/context-has-target";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
@@ -206,7 +207,7 @@ export class ConnectionFilter extends Filter {
         const subqueries = this.innerFilters.flatMap((f) => {
             const nestedSubqueries = f
                 .getSubqueries(queryASTContext)
-                .map((sq) => new Cypher.Call(sq, [queryASTContext.target]));
+                .map((sq) => new Cypher.Call(sq, filterTruthy([queryASTContext.target, queryASTContext.relationship])));
             const selection = f.getSelection(queryASTContext);
             const predicate = f.getPredicate(queryASTContext);
             const clauses = [...selection, ...nestedSubqueries];
@@ -217,7 +218,6 @@ export class ConnectionFilter extends Filter {
 
             return clauses;
         });
-
         if (subqueries.length === 0) return []; // Hack logic to change predicates logic
 
         const comparisonValue = this.operator === "NONE" ? Cypher.false : Cypher.true;
