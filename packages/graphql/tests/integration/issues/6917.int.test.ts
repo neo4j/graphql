@@ -60,7 +60,7 @@ describe("https://github.com/neo4j/graphql/issues/6917", () => {
         await testHelper.close();
     });
 
-    test("should match 1 edge, aggregate count 1", async () => {
+    test("should match 1 edge by node filter, aggregate count 1", async () => {
         const query = `
         query {
             ${personType.plural}(where: {name: { eq: "Michael" } } ) {
@@ -114,7 +114,61 @@ describe("https://github.com/neo4j/graphql/issues/6917", () => {
         });
     });
 
-    test("should not matcha any edge, aggregate count 0", async () => {
+    test("should match 1 edge by edge filter, aggregate count 1", async () => {
+        const query = `
+        query {
+            ${personType.plural}(where: {name: { eq: "Michael" } } ) {
+                name
+                carsConnection(where: { edge: { order: { eq: 1 } } }) {
+                    edges {
+                        properties {
+                            order
+                        }
+                        node {
+                            color
+                            name
+                        }
+                    }
+                    aggregate {
+                        count {
+                            edges
+                        }
+                    }
+                }
+            }
+        }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeUndefined();
+        expect(result.data as any).toEqual({
+            [personType.plural]: [
+                {
+                    name: "Michael",
+                    carsConnection: {
+                        edges: [
+                            {
+                                properties: {
+                                    order: 1,
+                                },
+                                node: {
+                                    color: "black",
+                                    name: "Jeep",
+                                },
+                            },
+                        ],
+                        aggregate: {
+                            count: {
+                                edges: 1,
+                            },
+                        },
+                    },
+                },
+            ],
+        });
+    });
+
+    test("should not match any edge by node filter, aggregate count 0", async () => {
         const query = `
         query {
             ${personType.plural}(where: {name: { eq: "Michael" } } ) {
@@ -158,7 +212,51 @@ describe("https://github.com/neo4j/graphql/issues/6917", () => {
         });
     });
 
-    test("should not match any edge, aggregate count 0 - fails to apply filter", async () => {
+    test("should not matcha any edge by edge filter, aggregate count 0", async () => {
+        const query = `
+        query {
+            ${personType.plural}(where: {name: { eq: "Michael" } } ) {
+                name
+                carsConnection(where: { edge: { order: { gt: 1 } } }) {
+                    edges {
+                        properties {
+                            order
+                        }
+                        node {
+                            color
+                            name
+                        }
+                    }
+                    aggregate {
+                        count {
+                            edges
+                        }
+                    }
+                }
+            }
+        }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeUndefined();
+        expect(result.data as any).toEqual({
+            [personType.plural]: [
+                {
+                    name: "Michael",
+                    carsConnection: {
+                        edges: [],
+                        aggregate: {
+                            count: {
+                                edges: 0,
+                            },
+                        },
+                    },
+                },
+            ],
+        });
+    });
+
+    test("should not match any edge by node filter in logical operator, aggregate count 0", async () => {
         const query = `
         query {
             ${personType.plural}(where: {name: { eq: "Michael" } } ) {
@@ -193,8 +291,51 @@ describe("https://github.com/neo4j/graphql/issues/6917", () => {
                         edges: [],
                         aggregate: {
                             count: {
-                                // TODO: should be 0
-                                edges: 1,
+                                edges: 0,
+                            },
+                        },
+                    },
+                },
+            ],
+        });
+    });
+
+    test("should not match any edge by edge filter in logical operator, aggregate count 0", async () => {
+        const query = `
+        query {
+            ${personType.plural}(where: {name: { eq: "Michael" } } ) {
+                name
+                carsConnection( where: { OR: [ { edge: { order: { gt: 1 } } } ] } ) {
+                    edges {
+                        properties {
+                            order
+                        }
+                        node {
+                            color
+                            name
+                        }
+                    }
+                    aggregate {
+                        count {
+                            edges
+                        }
+                    }
+                }
+            }
+        }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeUndefined();
+        expect(result.data as any).toEqual({
+            [personType.plural]: [
+                {
+                    name: "Michael",
+                    carsConnection: {
+                        edges: [],
+                        aggregate: {
+                            count: {
+                                edges: 0,
                             },
                         },
                     },
