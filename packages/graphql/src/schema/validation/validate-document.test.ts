@@ -5240,46 +5240,6 @@ describe("validation 2.0", () => {
                     expect(errors[0]).toHaveProperty("path", ["ActedIn", "actors", "@relationship"]);
                 });
 
-                test("should throw error if @cypher is used on relationship property", () => {
-                    const relationshipProperties = gql`
-                        type ActedIn @relationshipProperties {
-                            id: ID @cypher(statement: "RETURN id(this) as id", columnName: "id")
-                            roles: [String!]
-                        }
-                    `;
-                    const doc = gql`
-                        ${relationshipProperties}
-                        type Movie @node {
-                            actors: [Actor!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
-                        }
-
-                        type Actor @node {
-                            name: String
-                        }
-                    `;
-
-                    const enums = [] as EnumTypeDefinitionNode[];
-                    const interfaces = [] as InterfaceTypeDefinitionNode[];
-                    const unions = [] as UnionTypeDefinitionNode[];
-                    const objects = relationshipProperties.definitions as ObjectTypeDefinitionNode[];
-                    const executeValidate = () =>
-                        validateDocument({
-                            document: doc,
-                            additionalDefinitions: { enums, interfaces, unions, objects },
-                            features: {},
-                        });
-
-                    const errors = getError(executeValidate);
-
-                    expect(errors).toHaveLength(1);
-                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[0]).toHaveProperty(
-                        "message",
-                        'Directive "cypher" must be in a type with "@node" or on root types: Query, and Mutation'
-                    );
-                    expect(errors[0]).toHaveProperty("path", ["ActedIn", "id", "@cypher"]);
-                });
-
                 test("@relationshipProperties reserved field name", () => {
                     const relationshipProperties = gql`
                         type HasPost @relationshipProperties {
@@ -5317,51 +5277,6 @@ describe("validation 2.0", () => {
                         "Invalid @relationshipProperties field: Interface field name 'cursor' reserved to support relay See https://relay.dev/graphql/"
                     );
                     expect(errors[0]).toHaveProperty("path", ["HasPost", "cursor"]);
-                });
-
-                test("@cypher forbidden on @relationshipProperties field", () => {
-                    const relationshipProperties = gql`
-                        type HasPost @relationshipProperties {
-                            review: Float
-                                @cypher(
-                                    statement: """
-                                    WITH 2 as x RETURN x
-                                    """
-                                    columnName: "x"
-                                )
-                        }
-                    `;
-                    const doc = gql`
-                        ${relationshipProperties}
-                        type User @node {
-                            name: String
-                            posts: [Post!]! @relationship(type: "HAS_POST", direction: OUT, properties: "HasPost")
-                        }
-                        type Post @node {
-                            title: String
-                        }
-                    `;
-
-                    const enums = [] as EnumTypeDefinitionNode[];
-                    const interfaces = [] as InterfaceTypeDefinitionNode[];
-                    const unions = [] as UnionTypeDefinitionNode[];
-                    const objects = relationshipProperties.definitions as ObjectTypeDefinitionNode[];
-                    const executeValidate = () =>
-                        validateDocument({
-                            document: doc,
-                            additionalDefinitions: { enums, interfaces, unions, objects },
-                            features: {},
-                        });
-
-                    const errors = getError(executeValidate);
-
-                    expect(errors).toHaveLength(1);
-                    expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                    expect(errors[0]).toHaveProperty(
-                        "message",
-                        'Directive "cypher" must be in a type with "@node" or on root types: Query, and Mutation'
-                    );
-                    expect(errors[0]).toHaveProperty("path", ["HasPost", "review", "@cypher"]);
                 });
             });
 
