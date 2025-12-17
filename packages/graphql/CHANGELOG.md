@@ -8,7 +8,7 @@
 
 ### Patch Changes
 
-- [#6917](https://github.com/neo4j/graphql/pull/6917) Thanks [@a-alle](https://github.com/a-alle)! - Fix logical filters in connection queries for aggregations
+- [#6920](https://github.com/neo4j/graphql/pull/6920) Thanks [@a-alle](https://github.com/a-alle)! - Fix logical filters in connection queries for aggregations
 
 ## 7.3.3
 
