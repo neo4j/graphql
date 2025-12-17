@@ -2819,7 +2819,7 @@ __metadata:
     "@types/is-uuid": "npm:1.0.2"
     "@types/jest": "npm:30.0.0"
     "@types/jsonwebtoken": "npm:9.0.10"
-    "@types/node": "npm:22.19.2"
+    "@types/node": "npm:22.19.3"
     "@types/pluralize": "npm:0.0.33"
     "@types/randomstring": "npm:1.3.0"
     "@types/semver": "npm:7.7.1"
@@ -2868,7 +2868,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": "npm:^7.0.0"
     "@types/jest": "npm:30.0.0"
-    "@types/node": "npm:22.19.2"
+    "@types/node": "npm:22.19.3"
     "@types/pluralize": "npm:0.0.33"
     camelcase: "npm:^6.3.0"
     debug: "npm:^4.3.4"
@@ -3789,12 +3789,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:22.19.2":
-  version: 22.19.2
-  resolution: "@types/node@npm:22.19.2"
+"@types/node@npm:22.19.3":
+  version: 22.19.3
+  resolution: "@types/node@npm:22.19.3"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10c0/fd56fc727bdc2cd9582e05db5daab6c8eb7bc5e5640a54cbc64ccc160a61cf50940742be5536f83796bffc83ce7709d5580a9ca85806f57501958821d230ab78
+  checksum: 10c0/a30a75d503da795ddbd5f8851014f3e91925c2a63fa3f14128d54c998f25d682dfba96dc9589c73cf478b87a16d88beb790b11697bb8cd5bee913079237a58f2
   languageName: node
   linkType: hard
 
@@ -8408,9 +8408,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:29.2.2":
-  version: 29.2.2
-  resolution: "eslint-plugin-jest@npm:29.2.2"
+"eslint-plugin-jest@npm:29.4.0":
+  version: 29.4.0
+  resolution: "eslint-plugin-jest@npm:29.4.0"
   dependencies:
     "@typescript-eslint/utils": "npm:^8.0.0"
   peerDependencies:
@@ -8422,7 +8422,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: 10c0/cc2737a10f491e0deb3489951da248ac636ba7da6335918b05020090ba165fcb80d242f207fecf0d1294b452a0e33795f46778b5f2bfb09b1df3a8f9ce08e784
+  checksum: 10c0/3e021e466358be027c96a77120d62d26571ac7c6cb1750966a544632866c1e6953477e7b0ff9eb5151d63fbf505f5c6ffe9dfcbb68530364c7fb7d8f1a5c0b2f
   languageName: node
   linkType: hard
 
@@ -14033,7 +14033,7 @@ __metadata:
     eslint-import-resolver-typescript: "npm:4.4.4"
     eslint-plugin-eslint-comments: "npm:3.2.0"
     eslint-plugin-import: "npm:2.32.0"
-    eslint-plugin-jest: "npm:29.2.2"
+    eslint-plugin-jest: "npm:29.4.0"
     graphql: "npm:16.12.0"
     jest: "npm:30.2.0"
     neo4j-driver: "npm:6.0.1"
