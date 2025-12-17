@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.4.0
+
+### Minor Changes
+
+- [#6899](https://github.com/neo4j/graphql/pull/6899) [`f359c4d`](https://github.com/neo4j/graphql/commit/f359c4d7ac87983d51485b60b7970dd11be3207b) Thanks [@angrykoala](https://github.com/angrykoala)! - Add populatedByOperation field in context passed to populatedBy callbacks
+
 ## 7.3.3
 
 ### Patch Changes
