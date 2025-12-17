@@ -447,10 +447,13 @@ export class AggregateFactory {
                 );
                 operation.addFilters(...nodeFilters, ...edgefilters);
             } else {
-                const nodeFilters = this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArgs.node ?? {}); // Aggregation filters only apply to target node
+                const nodeFilters = this.queryASTFactory.filterFactory.createNodeFilters(
+                    entity,
+                    whereArgs.node ?? whereArgs ?? {}
+                ); // Aggregation filters only apply to target node
                 const edgeFilters = this.queryASTFactory.filterFactory.createEdgeFilters(
                     relationship,
-                    whereArgs.edge ?? {}
+                    whereArgs.edge ?? whereArgs ?? {}
                 ); // Aggregation filters only apply to target node
                 operation.addFilters(...nodeFilters, ...edgeFilters);
 

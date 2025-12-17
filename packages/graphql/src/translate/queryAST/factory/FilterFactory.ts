@@ -484,6 +484,9 @@ export class FilterFactory {
         relationship?: RelationshipAdapter;
     }): Filter | Filter[] {
         const valueAsArray = asArray(value);
+        if (key === "edge") {
+            return [];
+        }
         if (isLogicalOperator(key)) {
             const nestedFilters = valueAsArray.flatMap((nestedWhere) => {
                 const nestedOfNestedFilters = Object.entries(nestedWhere).flatMap(([nestedKey, nestedValue]) => {
@@ -503,6 +506,16 @@ export class FilterFactory {
             return new LogicalFilter({
                 operation: key,
                 filters: nestedFilters,
+            });
+        }
+        if (key === "node") {
+            const key = Object.keys(value)[0] as string;
+            return this.parseEntryFilter({
+                entity,
+                key: Object.keys(value)[0] as string,
+                value: value[key],
+                targetEntity,
+                relationship,
             });
         }
         const { fieldName, operator, isConnection, isAggregate } = parseWhereField(key);
@@ -558,7 +571,6 @@ export class FilterFactory {
         if (!operator && !attribute.annotations.cypher?.targetEntity && typeof value === "object") {
             return this.parseGenericFilters(targetEntity ?? entity, fieldName, value, relationship);
         }
-
         return this.createPropertyFilter({
             attribute,
             comparisonValue: value,
@@ -798,6 +810,9 @@ export class FilterFactory {
 
     public createEdgeFilters(relationship: RelationshipAdapter, where: GraphQLWhereArg): Filter[] {
         const filterASTs = Object.entries(where).flatMap(([key, value]): Filter | Filter[] | undefined => {
+            if (key === "node") {
+                return [];
+            }
             if (isLogicalOperator(key)) {
                 const nestedFilters = asArray(value).flatMap((nestedWhere) => {
                     return this.createEdgeFilters(relationship, nestedWhere);
@@ -806,6 +821,9 @@ export class FilterFactory {
                     operation: key,
                     filters: nestedFilters,
                 });
+            }
+            if (key === "edge") {
+                return this.createEdgeFilters(relationship, value);
             }
             const { fieldName, operator } = parseWhereField(key);
 
