@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 
-describe("cypher directive in relationship properties with interfaces", () => {
+describe("cypher directive in relationship properties with unions", () => {
     const testHelper = new TestHelper();
 
     let Movie: UniqueType;
@@ -35,31 +35,26 @@ describe("cypher directive in relationship properties with interfaces", () => {
         Series = testHelper.createUniqueType("Series");
 
         const typeDefs = /* GraphQL */ `
-            interface Production {
-                title: String!
-                actors: [Person!]! @declareRelationship
-            }
+            union Production = ${Movie} | ${Series}
 
-            type ${Movie} implements Production @node {
+            type ${Movie} @node {
                 title: String!
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            type ${Series} implements Production @node {
+            type ${Series} @node {
                 title: String!
                 actors: [Person!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
             }
 
-            interface Person {
-                name: String!
-            }
+            union Person = ${Actor} | ${Director}
 
-            type ${Actor} implements Person @node {
+            type ${Actor} @node {
                 name: String!
                 actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
-            type ${Director} implements Person @node {
+            type ${Director} @node {
                 name: String!
             }
 
@@ -82,7 +77,7 @@ describe("cypher directive in relationship properties with interfaces", () => {
         await testHelper.close();
     });
 
-    test("custom properties on a interface relationship", async () => {
+    test("custom properties on a union relationship", async () => {
         const source = /* GraphQL */ `
             query {
                  ${Movie.plural} {
