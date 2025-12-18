@@ -347,7 +347,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         `);
     });
 
-    test.only("should find movies aggregate within double nested connections", async () => {
+    test("should find movies aggregate within double nested connections", async () => {
         const query = /* GraphQL */ `
             {
                 actors(
