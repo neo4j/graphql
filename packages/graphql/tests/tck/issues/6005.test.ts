@@ -196,7 +196,7 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
                 WITH edge.node AS this0
                 CALL (this0) {
                     MATCH (this0)-[this1:ACTED_IN]->(this2:Movie)
-                    CALL (this2) {
+                    CALL (this2, this1) {
                         MATCH (this2)<-[this3:ACTED_IN]-(this4:Actor)
                         WITH DISTINCT this4
                         RETURN count(this4) = $param0 AS var5

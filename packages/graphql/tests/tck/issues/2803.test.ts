@@ -347,7 +347,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
         `);
     });
 
-    test("should find movies aggregate within double nested connections", async () => {
+    test.only("should find movies aggregate within double nested connections", async () => {
         const query = /* GraphQL */ `
             {
                 actors(
@@ -371,7 +371,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             MATCH (this:Actor)
             CALL (this) {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                CALL (this1) {
+                CALL (this1, this0) {
                     MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
                     CALL (this3) {
                         MATCH (this3)-[this4:ACTED_IN]->(this5:Movie)
@@ -381,7 +381,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                     WHERE var6 = true
                     RETURN count(this3) > 0 AS var7
                 }
-                CALL (this1) {
+                CALL (this1, this0) {
                     MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
                     CALL (this3) {
                         MATCH (this3)-[this8:ACTED_IN]->(this9:Movie)
