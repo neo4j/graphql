@@ -11059,8 +11059,8 @@ __metadata:
   linkType: hard
 
 "graphql-yoga@npm:^5.0.0":
-  version: 5.17.1
-  resolution: "graphql-yoga@npm:5.17.1"
+  version: 5.18.0
+  resolution: "graphql-yoga@npm:5.18.0"
   dependencies:
     "@envelop/core": "npm:^5.3.0"
     "@envelop/instrumentation": "npm:^1.0.0"
@@ -11076,7 +11076,7 @@ __metadata:
     tslib: "npm:^2.8.1"
   peerDependencies:
     graphql: ^15.2.0 || ^16.0.0
-  checksum: 10c0/36b98c67fbc02f7bb6b984060b235825a2bb1aecfa51300f463d5323d44b96aeac125eb3bfc862414c9ce0cc269a5460089d863cb13f129a77af781e46c21022
+  checksum: 10c0/c5a079eb4ae76a7a7bb784b5e11a6e86002c64aace5dcc0f4013f950a419a53ada6bb240b27673f6a7f8237ff1d57cbe5d7c099612cfd6c17191e9e126a06e91
   languageName: node
   linkType: hard
 
