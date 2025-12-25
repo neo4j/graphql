@@ -2841,7 +2841,7 @@ __metadata:
     jose: "npm:^5.0.0"
     jsonwebtoken: "npm:9.0.3"
     jwks-rsa: "npm:3.2.0"
-    knip: "npm:5.76.1"
+    knip: "npm:5.76.2"
     koa: "npm:3.1.1"
     koa-jwt: "npm:4.0.4"
     koa-router: "npm:14.0.0"
@@ -8408,9 +8408,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"eslint-plugin-jest@npm:29.5.0":
-  version: 29.5.0
-  resolution: "eslint-plugin-jest@npm:29.5.0"
+"eslint-plugin-jest@npm:29.6.0":
+  version: 29.6.0
+  resolution: "eslint-plugin-jest@npm:29.6.0"
   dependencies:
     "@typescript-eslint/utils": "npm:^8.0.0"
   peerDependencies:
@@ -8422,7 +8422,7 @@ __metadata:
       optional: true
     jest:
       optional: true
-  checksum: 10c0/e135181330a593018611c754c5a6449ac683080803e6c9931f2a8e432d133c33e5ac5f1df52ff52c4a6ca14267ceffc57739d602e11909e3691acfbd2a923f66
+  checksum: 10c0/1aa51bc95b3c716b475e2502656860d7647638f2ad145ed7dacdb5661beec09bc0a7442c4758fbabdb9bbc35eb76814dfbc2eca3395bf56ce5d7d1553655e396
   languageName: node
   linkType: hard
 
@@ -12525,9 +12525,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"knip@npm:5.76.1":
-  version: 5.76.1
-  resolution: "knip@npm:5.76.1"
+"knip@npm:5.76.2":
+  version: 5.76.2
+  resolution: "knip@npm:5.76.2"
   dependencies:
     "@nodelib/fs.walk": "npm:^1.2.3"
     fast-glob: "npm:^3.3.3"
@@ -12547,7 +12547,7 @@ __metadata:
   bin:
     knip: bin/knip.js
     knip-bun: bin/knip-bun.js
-  checksum: 10c0/7d83f0f7780ed5531719f51347abe9ef97a88b1ef0048cd4cffab92cff71f672375f110f950ecaae5e3ba128a7aec58e248c5254de8b9da523711d3e286d5a3e
+  checksum: 10c0/1080bf38fac2abca4a8dffeedcc5125818f46e8216bd9b9de4f3172be517a97223df44fc98055ba79e19fb64ac88f9ea6a66bf25b2d8a7e6b7b79355f118e056
   languageName: node
   linkType: hard
 
@@ -14033,7 +14033,7 @@ __metadata:
     eslint-import-resolver-typescript: "npm:4.4.4"
     eslint-plugin-eslint-comments: "npm:3.2.0"
     eslint-plugin-import: "npm:2.32.0"
-    eslint-plugin-jest: "npm:29.5.0"
+    eslint-plugin-jest: "npm:29.6.0"
     graphql: "npm:16.12.0"
     jest: "npm:30.2.0"
     neo4j-driver: "npm:6.0.1"
