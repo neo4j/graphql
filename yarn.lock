@@ -2841,7 +2841,7 @@ __metadata:
     jose: "npm:^5.0.0"
     jsonwebtoken: "npm:9.0.3"
     jwks-rsa: "npm:3.2.0"
-    knip: "npm:5.77.1"
+    knip: "npm:5.77.4"
     koa: "npm:3.1.1"
     koa-jwt: "npm:4.0.4"
     koa-router: "npm:14.0.0"
@@ -12525,9 +12525,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"knip@npm:5.77.1":
-  version: 5.77.1
-  resolution: "knip@npm:5.77.1"
+"knip@npm:5.77.4":
+  version: 5.77.4
+  resolution: "knip@npm:5.77.4"
   dependencies:
     "@nodelib/fs.walk": "npm:^1.2.3"
     fast-glob: "npm:^3.3.3"
@@ -12547,7 +12547,7 @@ __metadata:
   bin:
     knip: bin/knip.js
     knip-bun: bin/knip-bun.js
-  checksum: 10c0/be085b497a835e18634d65d746520862e578d1707672976d31d64c25adb3d5026d750bd0b8d4b6e7eb069202bc4b541b4dd7b1bb8948f23071110b7a66c1dc43
+  checksum: 10c0/82bd93924061ca9e6142d327401d147a8871db652fec529226bb129eafa3f9fc4f943a363c2b61e636a251a2261c8f30bffdb19b139eaf0bc651c095daddd759
   languageName: node
   linkType: hard
 
