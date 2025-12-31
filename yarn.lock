@@ -3484,10 +3484,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/node22@npm:22.0.0":
-  version: 22.0.0
-  resolution: "@tsconfig/node22@npm:22.0.0"
-  checksum: 10c0/ccb736a008d33fb5ae0ac1254e83d7fa53cdbade02c645131eafcddd11f61982a4efe4c507487952202c240d2bd46c991561a4a0dfea52972947446d80de2081
+"@tsconfig/node24@npm:24.0.0":
+  version: 24.0.0
+  resolution: "@tsconfig/node24@npm:24.0.0"
+  checksum: 10c0/50f93181a84aab782a56a5fed6ca90c6b19ab94b91a33c8921f2b2e6f561d26f13c36af302402e8320d615a325dee5dbf57f5f5d4853d1aee54c6afc542f6131
   languageName: node
   linkType: hard
 
@@ -14022,7 +14022,7 @@ __metadata:
   dependencies:
     "@changesets/changelog-github": "npm:0.5.2"
     "@changesets/cli": "npm:2.29.8"
-    "@tsconfig/node22": "npm:22.0.0"
+    "@tsconfig/node24": "npm:24.0.0"
     "@typescript-eslint/eslint-plugin": "npm:8.50.1"
     "@typescript-eslint/parser": "npm:8.50.1"
     concurrently: "npm:9.2.1"
