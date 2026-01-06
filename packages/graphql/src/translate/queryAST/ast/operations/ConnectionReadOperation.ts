@@ -123,32 +123,6 @@ export class ConnectionReadOperation extends Operation {
         ]);
     }
 
-    protected getWithCollectEdgesAndTotalCount(
-        nestedContext: QueryASTContext<Cypher.Node>,
-        edgesVar: Cypher.Variable,
-        totalCount: Cypher.Variable,
-        extraColumns: Array<[Cypher.Expr, Cypher.Variable]> = []
-    ): Cypher.With {
-        const nodeAndRelationshipMap = new Cypher.Map({
-            node: nestedContext.target,
-        });
-
-        if (nestedContext.relationship) {
-            nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
-        }
-
-        const withClause = new Cypher.With();
-        if (this.shouldProjectEdges()) {
-            withClause.addColumns([Cypher.collect(nodeAndRelationshipMap), edgesVar]);
-        }
-        withClause.addColumns(...extraColumns);
-
-        if (this.hasTotalCount) {
-            withClause.addColumns([Cypher.count(nestedContext.target), totalCount]);
-        }
-        return withClause;
-    }
-
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.hasTarget()) {
             throw new Error(
@@ -286,6 +260,32 @@ export class ConnectionReadOperation extends Operation {
             clauses: [Cypher.utils.concat(...aggregationSubqueries, connectionClauses, returnClause)],
             projectionExpr: context.returnVariable,
         };
+    }
+
+    protected getWithCollectEdgesAndTotalCount(
+        nestedContext: QueryASTContext<Cypher.Node>,
+        edgesVar: Cypher.Variable,
+        totalCount: Cypher.Variable,
+        extraColumns: Array<[Cypher.Expr, Cypher.Variable]> = []
+    ): Cypher.With {
+        const nodeAndRelationshipMap = new Cypher.Map({
+            node: nestedContext.target,
+        });
+
+        if (nestedContext.relationship) {
+            nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
+        }
+
+        const withClause = new Cypher.With();
+        if (this.shouldProjectEdges()) {
+            withClause.addColumns([Cypher.collect(nodeAndRelationshipMap), edgesVar]);
+        }
+        withClause.addColumns(...extraColumns);
+
+        if (this.hasTotalCount) {
+            withClause.addColumns([Cypher.count(nestedContext.target), totalCount]);
+        }
+        return withClause;
     }
 
     /** Defines if the query should project edges */

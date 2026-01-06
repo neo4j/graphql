@@ -19,8 +19,8 @@
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { lexicographicSortSchema } from "graphql/utilities";
-import { Neo4jGraphQL } from "../../../src";
-import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
+import { Neo4jGraphQL } from "../../../../src";
+import { TestCDCEngine } from "../../../utils/builders/TestCDCEngine";
 
 describe("Cypher", () => {
     test("Custom Directive Simple", async () => {
