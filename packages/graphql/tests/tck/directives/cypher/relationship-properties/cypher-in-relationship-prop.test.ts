@@ -53,7 +53,7 @@ describe("cypher directive in relationship properties", () => {
         });
     });
 
-    test("top-level union", async () => {
+    test("cypher field in relationship", async () => {
         const query = /* GraphQL */ `
             query {
                 movies {
