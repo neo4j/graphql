@@ -65,7 +65,7 @@
         "jest-extended": "7.0.0",
         "jsonwebtoken": "9.0.3",
         "jwks-rsa": "3.2.0",
-        "knip": "5.79.0",
+        "knip": "5.80.0",
         "koa": "3.1.1",
         "koa-jwt": "4.0.4",
         "koa-router": "14.0.0",
@@ -76,7 +76,7 @@
         "ts-jest": "29.4.6",
         "ts-node": "10.9.2",
         "typescript": "5.9.3",
-        "ws": "8.18.3"
+        "ws": "8.19.0"
     },
     "dependencies": {
         "@apollo/subgraph": "^2.2.3",
