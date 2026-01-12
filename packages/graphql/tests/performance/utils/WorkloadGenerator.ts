@@ -17,13 +17,12 @@
  * limitations under the License.
  */
 
-import { Integer, Date, LocalTime, Duration, Time, DateTime } from "neo4j-driver";
-import type { Neo4jGraphQL } from "../../../src";
-import type * as Performance from "../types";
 import * as fs from "fs/promises";
+import { Date, DateTime, Duration, Integer, LocalTime, Time } from "neo4j-driver";
 import * as path from "path";
+import type { Neo4jGraphQL } from "../../../src";
 import { translateQuery } from "../../tck/utils/tck-test-utils";
-import gql from "graphql-tag";
+import type * as Performance from "../types";
 
 // Initial configuration, add available configuration options here
 type QueryConfig = {
@@ -156,7 +155,7 @@ export class WorkloadGenerator {
     private async getCypherAndParams(
         test: Performance.TestInfo
     ): Promise<{ cypher: string; params: Record<string, any> }> {
-        const cypherQuery = await translateQuery(this.schema, gql(test.query));
+        const cypherQuery = await translateQuery(this.schema, test.query);
         return {
             cypher: cypherQuery.cypher,
             params: cypherQuery.params,

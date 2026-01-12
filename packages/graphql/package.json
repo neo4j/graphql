@@ -43,7 +43,7 @@
         "test:unit": "jest src --coverage=true -c jest.minimal.config.js",
         "test": "jest",
         "knip": "knip",
-        "build-benchmark-workflow": "ts-node tests/performance/build-benchmark-workflow.ts"
+        "build-benchmark-workflow": "ts-node tests/performance/build-benchmark-workload.ts"
     },
     "author": "Neo4j Inc.",
     "devDependencies": {

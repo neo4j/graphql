@@ -1,0 +1,2 @@
+param0:Integer|param1:Integer
+1|1

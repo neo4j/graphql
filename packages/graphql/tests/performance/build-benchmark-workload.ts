@@ -28,7 +28,6 @@ import { collectTests } from "./utils/collect-test-files";
 async function main() {
     const neoSchema = new Neo4jGraphQL({
         typeDefs,
-        experimental: true,
     });
     const gqlTests: Performance.TestInfo[] = await collectTests(path.join(__dirname, "graphql"));
     await new WorkloadGenerator(neoSchema).generateWorkload(gqlTests);

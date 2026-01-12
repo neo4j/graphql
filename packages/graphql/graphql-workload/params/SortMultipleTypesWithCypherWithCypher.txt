@@ -1,0 +1,2 @@
+param0:Integer
+10
