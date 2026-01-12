@@ -1,5 +1,24 @@
 # @neo4j/graphql
 
+## 7.4.1
+
+### Patch Changes
+
+- [#6903](https://github.com/neo4j/graphql/pull/6903) [`9fb31f6`](https://github.com/neo4j/graphql/commit/9fb31f69143c1ba73c053564b803721b6eac1234) Thanks [@angrykoala](https://github.com/angrykoala)! - Add support for `@cypher` directive in relationship properties
+
+    ```graphql
+    type ActedIn @relationshipProperties {
+        screenTimeHours: Float
+            @cypher(
+                statement: """
+                RETURN this.screenTimeMinutes / 60 AS c
+                """
+                columnName: "c"
+            )
+        screenTimeMinutes: Int
+    }
+    ```
+
 ## 7.4.0
 
 ### Minor Changes
