@@ -34,7 +34,6 @@ import { CypherPropertySort } from "../ast/sort/CypherPropertySort";
 import { PropertySort } from "../ast/sort/PropertySort";
 import { ScoreSort } from "../ast/sort/ScoreSort";
 import type { Sort } from "../ast/sort/Sort";
-import { isConcreteEntity } from "../utils/is-concrete-entity";
 import { isRelationshipEntity } from "../utils/is-relationship-entity";
 import { isUnionEntity } from "../utils/is-union-entity";
 import type { QueryASTFactory } from "./QueryASTFactory";
@@ -149,10 +148,12 @@ export class SortAndPaginationFactory {
             if (!attribute) {
                 throw new Error(`no filter attribute ${fieldName}`);
             }
-            if (attribute.annotations.cypher && isConcreteEntity(entity)) {
+
+            if (attribute.annotations.cypher) {
                 const cypherOperation = this.queryASTFactory.operationsFactory.createCustomCypherOperation({
                     context,
                     cypherAttributeField: attribute,
+                    isEdge: entity instanceof RelationshipAdapter,
                 });
                 if (!(cypherOperation instanceof CypherAttributeOperation)) {
                     throw new Error("Transpile error: sorting is supported only for @cypher scalar properties");

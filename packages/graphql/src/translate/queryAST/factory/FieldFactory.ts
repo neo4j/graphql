@@ -24,7 +24,7 @@ import type { AttributeAdapter } from "../../../schema-model/attribute/model-ada
 import type { EntityAdapter } from "../../../schema-model/entity/EntityAdapter";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
-import type { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { RelationshipAdapter } from "../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { getEntityAdapter } from "../../../schema-model/utils/get-entity-adapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 import { deepMerge } from "../../../utils/deep-merge";
@@ -240,6 +240,7 @@ export class FieldFactory {
         const cypherAnnotation = attribute.annotations.cypher;
         if (cypherAnnotation) {
             return this.createCypherAttributeField({
+                entity,
                 field,
                 attribute,
                 context,
@@ -258,11 +259,13 @@ export class FieldFactory {
     }
 
     private createCypherAttributeField({
+        entity,
         field,
         attribute,
         context,
         cypherAnnotation,
     }: {
+        entity: ConcreteEntityAdapter | RelationshipAdapter;
         attribute: AttributeAdapter;
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
@@ -278,9 +281,10 @@ export class FieldFactory {
         // move the user specified arguments in a different object as they should be treated as arguments of a Cypher Field
         const cypherArguments = { ...field.args };
         field.args = {};
-
+        const isEdge = entity instanceof RelationshipAdapter;
         if (rawFields) {
             if (attribute.typeHelper.isObject()) {
+                // NOTE: This entity is the cypher result type (if an entity), not the target node. Naming may be confusing
                 const concreteEntity = this.queryASTFactory.schemaModel.getConcreteEntityAdapter(typeName);
 
                 return this.createCypherOperationField({
@@ -289,6 +293,7 @@ export class FieldFactory {
                     context,
                     cypherAttributeField: attribute,
                     cypherArguments,
+                    isEdge,
                 });
             } else if (attribute.typeHelper.isAbstract()) {
                 const entity = this.queryASTFactory.schemaModel.getEntity(typeName);
@@ -300,6 +305,7 @@ export class FieldFactory {
                     context,
                     cypherAttributeField: attribute,
                     cypherArguments,
+                    isEdge,
                 });
             }
         }
@@ -309,6 +315,7 @@ export class FieldFactory {
             context,
             cypherAttributeField: attribute,
             cypherArguments,
+            isEdge,
         });
     }
 
@@ -353,12 +360,14 @@ export class FieldFactory {
         context,
         cypherAttributeField,
         cypherArguments,
+        isEdge,
     }: {
         target?: EntityAdapter;
         field: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         cypherAttributeField: AttributeAdapter;
         cypherArguments?: Record<string, any>;
+        isEdge: boolean;
     }): OperationField {
         const cypherOp = this.queryASTFactory.operationsFactory.createCustomCypherOperation({
             resolveTree: field,
@@ -366,6 +375,7 @@ export class FieldFactory {
             entity: target,
             cypherAttributeField,
             cypherArguments,
+            isEdge,
         });
 
         return new OperationField({

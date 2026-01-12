@@ -371,7 +371,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             MATCH (this:Actor)
             CALL (this) {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                CALL (this1) {
+                CALL (this1, this0) {
                     MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
                     CALL (this3) {
                         MATCH (this3)-[this4:ACTED_IN]->(this5:Movie)
@@ -381,7 +381,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                     WHERE var6 = true
                     RETURN count(this3) > 0 AS var7
                 }
-                CALL (this1) {
+                CALL (this1, this0) {
                     MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
                     CALL (this3) {
                         MATCH (this3)-[this8:ACTED_IN]->(this9:Movie)
@@ -524,9 +524,9 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             MATCH (this:Movie)
             CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                CALL (this1) {
+                CALL (this1, this0) {
                     MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
-                    CALL (this3) {
+                    CALL (this3, this2) {
                         MATCH (this3)<-[this4:ACTED_IN]-(this5:Actor)
                         CALL (this5) {
                             MATCH (this5)-[this6:ACTED_IN]->(this7:Movie)
@@ -536,7 +536,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                         WHERE var8 = true
                         RETURN count(this5) > 0 AS var9
                     }
-                    CALL (this3) {
+                    CALL (this3, this2) {
                         MATCH (this3)<-[this4:ACTED_IN]-(this5:Actor)
                         CALL (this5) {
                             MATCH (this5)-[this10:ACTED_IN]->(this11:Movie)
@@ -610,9 +610,9 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             MATCH (this:Movie)
             CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                CALL (this1) {
+                CALL (this1, this0) {
                     MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
-                    CALL (this3) {
+                    CALL (this3, this2) {
                         MATCH (this3)<-[this4:ACTED_IN]-(this5:Actor)
                         CALL (this5) {
                             MATCH (this5)-[this6:ACTED_IN]->(this7:Movie)
@@ -622,7 +622,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                         WHERE var8 = true
                         RETURN count(this5) > 0 AS var9
                     }
-                    CALL (this3) {
+                    CALL (this3, this2) {
                         MATCH (this3)<-[this4:ACTED_IN]-(this5:Actor)
                         CALL (this5) {
                             MATCH (this5)-[this10:ACTED_IN]->(this11:Movie)
@@ -632,7 +632,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                         WHERE NOT (var12 = true)
                         RETURN count(this5) > 0 AS var13
                     }
-                    CALL (this3) {
+                    CALL (this3, this2) {
                         MATCH (this3)<-[this14:ACTED_IN]-(this15:Actor)
                         RETURN avg(size(this15.name)) < $param2 AS var16
                     }
@@ -640,7 +640,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                     WHERE ((var13 = false AND var9 = true) AND var16 = true)
                     RETURN count(this3) > 0 AS var17
                 }
-                CALL (this1) {
+                CALL (this1, this0) {
                     MATCH (this1)-[this18:ACTED_IN]->(this19:Movie)
                     RETURN avg(this19.released) = $param3 AS var20
                 }
@@ -761,7 +761,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             MATCH (this:Actor)
             CALL (this) {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                CALL (this1) {
+                CALL (this1, this0) {
                     MATCH (this1)<-[:ACTED_IN]-(this2:Actor)
                     CALL (this2) {
                         MATCH (this2)-[this3:ACTED_IN]->(this4:Movie)
@@ -771,7 +771,7 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
                     WHERE var5 = true
                     RETURN count(this2) > 0 AS var6
                 }
-                CALL (this1) {
+                CALL (this1, this0) {
                     MATCH (this1)<-[:ACTED_IN]-(this2:Actor)
                     CALL (this2) {
                         MATCH (this2)-[this7:ACTED_IN]->(this8:Movie)
@@ -836,11 +836,11 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             MATCH (this:Movie)
             CALL (this) {
                 MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                CALL (this1) {
+                CALL (this1, this0) {
                     MATCH (this1)-[:ACTED_IN]->(this2:Movie)
                     CALL (this2) {
                         MATCH (this2)<-[this3:ACTED_IN]-(this4:Actor)
-                        CALL (this4) {
+                        CALL (this4, this3) {
                             MATCH (this4)-[this5:ACTED_IN]->(this6:Movie)
                             RETURN count(this6) > $param0 AS var7
                         }
@@ -961,9 +961,9 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             MATCH (this:Actor)
             CALL (this) {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                CALL (this1) {
+                CALL (this1, this0) {
                     MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
-                    CALL (this3) {
+                    CALL (this3, this2) {
                         MATCH (this3)-[this4:ACTED_IN]->(this5:Movie)
                         RETURN count(this5) > $param0 AS var6
                     }
@@ -1023,9 +1023,9 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             MATCH (this:Actor)
             CALL (this) {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                CALL (this1) {
+                CALL (this1, this0) {
                     MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
-                    CALL (this3) {
+                    CALL (this3, this2) {
                         MATCH (this3)-[this4:ACTED_IN]->(this5:Movie)
                         RETURN count(this5) > $param0 AS var6
                     }
@@ -1320,9 +1320,9 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             MATCH (this:Actor)
             CALL (this) {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                CALL (this1) {
+                CALL (this1, this0) {
                     MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
-                    CALL (this3) {
+                    CALL (this3, this2) {
                         MATCH (this3)-[this4:ACTED_IN]->(this5:Movie)
                         RETURN count(this5) > $param0 AS var6
                     }
@@ -1386,9 +1386,9 @@ describe("https://github.com/neo4j/graphql/issues/2803", () => {
             MATCH (this:Actor)
             CALL (this) {
                 MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                CALL (this1) {
+                CALL (this1, this0) {
                     MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
-                    CALL (this3) {
+                    CALL (this3, this2) {
                         MATCH (this3)-[this4:ACTED_IN]->(this5:Movie)
                         RETURN count(this5) > $param0 AS var6
                     }

@@ -397,6 +397,7 @@ export class OperationsFactory {
         entity?: EntityAdapter;
         cypherAttributeField: AttributeAdapter;
         cypherArguments?: Record<string, any>;
+        isEdge: boolean;
     }): CypherEntityOperation | CompositeCypherOperation | CypherAttributeOperation {
         return this.customCypherFactory.createCustomCypherOperation(arg);
     }

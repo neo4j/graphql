@@ -97,8 +97,6 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
             CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                WITH *
-                ORDER BY this0.title ASC
                 CALL (this0) {
                     CALL (this0) {
                         WITH this0 AS this
@@ -108,6 +106,8 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                     WITH result AS this1
                     RETURN this1 AS var2
                 }
+                WITH *
+                ORDER BY this0.title ASC
                 RETURN collect({ node: { title: this0.title, totalGenres: var2, __resolveType: \\"Movie\\" } }) AS var3
             }
             RETURN { edges: var3 } AS this"
@@ -187,8 +187,6 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                     WITH result AS this1
                     RETURN this1 AS var2
                 }
-                WITH *
-                ORDER BY var2 ASC
                 CALL (this0) {
                     CALL (this0) {
                         WITH this0 AS this
@@ -198,6 +196,8 @@ describe("https://github.com/neo4j/graphql/issues/1364", () => {
                     WITH result AS this3
                     RETURN this3 AS var4
                 }
+                WITH *
+                ORDER BY var2 ASC
                 RETURN collect({ node: { title: this0.title, totalGenres: var2, totalActors: var4, __resolveType: \\"Movie\\" } }) AS var5
             }
             RETURN { edges: var5 } AS this"

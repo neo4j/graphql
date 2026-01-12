@@ -31,7 +31,6 @@ import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { Pagination } from "../pagination/Pagination";
 import type { EntitySelection } from "../selection/EntitySelection";
-import { CypherPropertySort } from "../sort/CypherPropertySort";
 import type { Sort, SortField } from "../sort/Sort";
 import { CypherAttributeOperation } from "./CypherAttributeOperation";
 import type { OperationTranspileResult } from "./operations";
@@ -124,32 +123,6 @@ export class ConnectionReadOperation extends Operation {
         ]);
     }
 
-    protected getWithCollectEdgesAndTotalCount(
-        nestedContext: QueryASTContext<Cypher.Node>,
-        edgesVar: Cypher.Variable,
-        totalCount: Cypher.Variable,
-        extraColumns: Array<[Cypher.Expr, Cypher.Variable]> = []
-    ): Cypher.With {
-        const nodeAndRelationshipMap = new Cypher.Map({
-            node: nestedContext.target,
-        });
-
-        if (nestedContext.relationship) {
-            nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
-        }
-
-        const withClause = new Cypher.With();
-        if (this.shouldProjectEdges()) {
-            withClause.addColumns([Cypher.collect(nodeAndRelationshipMap), edgesVar]);
-        }
-        withClause.addColumns(...extraColumns);
-
-        if (this.hasTotalCount) {
-            withClause.addColumns([Cypher.count(nestedContext.target), totalCount]);
-        }
-        return withClause;
-    }
-
     public transpile(context: QueryASTContext): OperationTranspileResult {
         if (!context.hasTarget()) {
             throw new Error(
@@ -170,11 +143,11 @@ export class ConnectionReadOperation extends Operation {
         }
 
         const authFilterSubqueries = this.getAuthFilterSubqueries(nestedContext).map((sq) => {
-            return new Cypher.Call(sq, [nestedContext.target]);
+            return new Cypher.Call(sq, filterTruthy([nestedContext.target, nestedContext.relationship]));
         });
 
         const normalFilterSubqueries = this.getFilterSubqueries(nestedContext).map((sq) => {
-            return new Cypher.Call(sq, [nestedContext.target]);
+            return new Cypher.Call(sq, filterTruthy([nestedContext.target, nestedContext.relationship]));
         });
 
         const filtersSubqueries = [...authFilterSubqueries, ...normalFilterSubqueries];
@@ -214,7 +187,8 @@ export class ConnectionReadOperation extends Operation {
         let unwindAndProjectionSubquery: Cypher.Call | undefined;
         if (hasProjectionFields) {
             const edgeVar = new Cypher.NamedVariable("edge");
-            const { prePaginationSubqueries, postPaginationSubqueries } = this.getPreAndPostSubqueries(nestedContext);
+            const { prePaginationSubqueries, postPaginationSubqueries } =
+                this.getPreAndPostPaginationSubqueries(nestedContext);
 
             const unwindClause = this.getUnwindClause(nestedContext, edgeVar, edgesVar);
 
@@ -286,6 +260,32 @@ export class ConnectionReadOperation extends Operation {
             clauses: [Cypher.utils.concat(...aggregationSubqueries, connectionClauses, returnClause)],
             projectionExpr: context.returnVariable,
         };
+    }
+
+    protected getWithCollectEdgesAndTotalCount(
+        nestedContext: QueryASTContext<Cypher.Node>,
+        edgesVar: Cypher.Variable,
+        totalCount: Cypher.Variable,
+        extraColumns: Array<[Cypher.Expr, Cypher.Variable]> = []
+    ): Cypher.With {
+        const nodeAndRelationshipMap = new Cypher.Map({
+            node: nestedContext.target,
+        });
+
+        if (nestedContext.relationship) {
+            nodeAndRelationshipMap.set("relationship", nestedContext.relationship);
+        }
+
+        const withClause = new Cypher.With();
+        if (this.shouldProjectEdges()) {
+            withClause.addColumns([Cypher.collect(nodeAndRelationshipMap), edgesVar]);
+        }
+        withClause.addColumns(...extraColumns);
+
+        if (this.hasTotalCount) {
+            withClause.addColumns([Cypher.count(nestedContext.target), totalCount]);
+        }
+        return withClause;
     }
 
     /** Defines if the query should project edges */
@@ -448,11 +448,12 @@ export class ConnectionReadOperation extends Operation {
             return nodeFields;
         });
     }
+
     /**
      *  This method resolves all the subqueries for each field and splits them into separate fields: `prePaginationSubqueries` and `postPaginationSubqueries`,
      *  in the `prePaginationSubqueries` are present all the subqueries required for the pagination purpose.
      **/
-    private getPreAndPostSubqueries(context: QueryASTContext): {
+    private getPreAndPostPaginationSubqueries(context: QueryASTContext): {
         prePaginationSubqueries: Cypher.Clause[];
         postPaginationSubqueries: Cypher.Clause[];
     } {
@@ -460,32 +461,48 @@ export class ConnectionReadOperation extends Operation {
             throw new Error("No parent node found!");
         }
         const sortNodeFields = this.sortFields.flatMap((sf) => sf.node);
-        /**
-         * cypherSortFieldsFlagMap is a Record<string, boolean> that holds the name of the sort field as key
-         * and a boolean flag defined as true when the field is a `@cypher` field.
-         **/
-        const cypherSortFieldsFlagMap = sortNodeFields.reduce<Record<string, boolean>>(
-            (sortFieldsFlagMap, sortField) => {
-                if (sortField instanceof CypherPropertySort) {
-                    sortFieldsFlagMap[sortField.getFieldName()] = true;
-                }
-                return sortFieldsFlagMap;
-            },
-            {}
-        );
+        const sortEdgeFields = this.sortFields.flatMap((sf) => sf.edge);
 
-        const preAndPostFields = this.nodeFields.reduce<Record<"Pre" | "Post", Field[]>>(
+        const preAndPostFields = this.getPreAndPostFields(this.nodeFields);
+        const preAndPostEdgeFields = this.getPreAndPostFields(this.edgeFields);
+
+        const preNodeSubqueries = wrapSubqueriesInCypherCalls(context, preAndPostFields.Pre, [context.target]);
+        const postNodeSubqueries = wrapSubqueriesInCypherCalls(context, preAndPostFields.Post, [context.target]);
+
+        let preEdgeSubqueries: Cypher.Clause[] = [];
+        let postEdgeSubqueries: Cypher.Clause[] = [];
+        let sortEdgeSubqueries: Cypher.Clause[] = [];
+        if (context.relationship) {
+            preEdgeSubqueries = wrapSubqueriesInCypherCalls(context, preAndPostEdgeFields.Pre, [context.relationship]);
+            postEdgeSubqueries = wrapSubqueriesInCypherCalls(context, preAndPostEdgeFields.Post, [
+                context.relationship,
+            ]);
+            sortEdgeSubqueries = wrapSubqueriesInCypherCalls(context, sortEdgeFields, [context.relationship]);
+        }
+        const sortSubqueries = wrapSubqueriesInCypherCalls(context, sortNodeFields, [context.target]);
+
+        return {
+            prePaginationSubqueries: [
+                ...sortSubqueries,
+                ...sortEdgeSubqueries,
+                ...preNodeSubqueries,
+                ...preEdgeSubqueries,
+            ],
+            postPaginationSubqueries: [...postNodeSubqueries, ...postEdgeSubqueries],
+        };
+    }
+
+    /** Given a set of fields and sortFields,  */
+    private getPreAndPostFields(fields: Field[]): Record<"Pre" | "Post", Field[]> {
+        return fields.reduce<Record<"Pre" | "Post", Field[]>>(
             (acc, nodeField) => {
                 if (
                     nodeField instanceof OperationField &&
                     nodeField.isCypherField() &&
                     nodeField.operation instanceof CypherAttributeOperation
                 ) {
-                    const cypherFieldName = nodeField.operation.cypherAttributeField.name;
-                    if (cypherSortFieldsFlagMap[cypherFieldName]) {
-                        acc.Pre.push(nodeField);
-                        return acc;
-                    }
+                    acc.Pre.push(nodeField);
+                    return acc;
                 }
 
                 acc.Post.push(nodeField);
@@ -493,13 +510,5 @@ export class ConnectionReadOperation extends Operation {
             },
             { Pre: [], Post: [] }
         );
-        const preNodeSubqueries = wrapSubqueriesInCypherCalls(context, preAndPostFields.Pre, [context.target]);
-        const postNodeSubqueries = wrapSubqueriesInCypherCalls(context, preAndPostFields.Post, [context.target]);
-        const sortSubqueries = wrapSubqueriesInCypherCalls(context, sortNodeFields, [context.target]);
-
-        return {
-            prePaginationSubqueries: [...sortSubqueries, ...preNodeSubqueries],
-            postPaginationSubqueries: postNodeSubqueries,
-        };
     }
 }

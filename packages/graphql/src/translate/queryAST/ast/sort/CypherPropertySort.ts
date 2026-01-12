@@ -46,7 +46,7 @@ export class CypherPropertySort extends Sort {
     }
 
     public getChildren(): QueryASTNode[] {
-        return [];
+        return [this.cypherOperation];
     }
 
     public print(): string {

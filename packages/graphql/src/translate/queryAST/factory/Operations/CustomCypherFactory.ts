@@ -44,17 +44,20 @@ export class CustomCypherFactory {
         entity,
         cypherAttributeField,
         cypherArguments = {},
+        isEdge,
     }: {
         resolveTree?: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
-        entity?: EntityAdapter;
+        entity?: EntityAdapter; // This is the target type in the cypher response, if it is a node
         cypherAttributeField: AttributeAdapter;
         cypherArguments?: Record<string, any>;
+        isEdge: boolean;
     }): CypherEntityOperation | CompositeCypherOperation | CypherAttributeOperation {
         const selection = new CustomCypherSelection({
             operationField: cypherAttributeField,
             rawArguments: cypherArguments,
             isNested: true,
+            attachedTo: isEdge ? "relationship" : "node",
         });
         if (!entity) {
             return new CypherAttributeOperation(selection, cypherAttributeField, true);

@@ -57,6 +57,13 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
         const nodeProjectionSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.nodeFields, [
             nestedContext.target,
         ]);
+
+        let edgeProjectionSubqueries: Array<Cypher.Clause> = [];
+        if (nestedContext.relationship) {
+            edgeProjectionSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.edgeFields, [
+                nestedContext.relationship,
+            ]);
+        }
         const nodeProjectionMap = new Cypher.Map();
 
         // This bit is different than normal connection ops
@@ -131,6 +138,7 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
             withWhere,
             ...validations,
             ...nodeProjectionSubqueries,
+            ...edgeProjectionSubqueries,
             projectionClauses
         );
 
