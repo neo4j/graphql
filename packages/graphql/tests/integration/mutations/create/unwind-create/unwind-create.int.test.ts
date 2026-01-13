@@ -19,8 +19,8 @@
 
 import { int } from "neo4j-driver";
 import { generate } from "randomstring";
-import { UniqueType } from "../../utils/graphql-types";
-import { TestHelper } from "../../utils/tests-helper";
+import { UniqueType } from "../../../../utils/graphql-types";
+import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("unwind-create", () => {
     const testHelper = new TestHelper();

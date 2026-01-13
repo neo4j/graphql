@@ -18,9 +18,9 @@
  */
 
 import { gql } from "graphql-tag";
-import { toGlobalId } from "../../src/utils/global-ids";
-import { createBearerToken } from "../utils/create-bearer-token";
-import { TestHelper } from "../utils/tests-helper";
+import { toGlobalId } from "../../../../src/utils/global-ids";
+import { createBearerToken } from "../../../utils/create-bearer-token";
+import { TestHelper } from "../../../utils/tests-helper";
 
 describe("Global node resolution", () => {
     const testHelper = new TestHelper();
