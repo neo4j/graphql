@@ -50,6 +50,9 @@ export function augmentWhereInputWithRelationshipFilters({
     deprecatedDirectives: Directive[];
     features?: Neo4jFeaturesSettings;
 }) {
+    if (!relationshipAdapter.isList) {
+        return {};
+    }
     if (!relationshipAdapter.isFilterableByAggregate() && !relationshipAdapter.isFilterableByValue()) {
         return {};
     }
