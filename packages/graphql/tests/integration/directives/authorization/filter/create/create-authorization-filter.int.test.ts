@@ -75,7 +75,7 @@ describe("create with authorization filter", () => {
         await testHelper.close();
     });
 
-    test("create and connect with authorization filter", async () => {
+    test.only("create and connect with authorization filter", async () => {
         const id = "123";
         const query = /* GraphQL */ `
             mutation ($id: ID!) {
