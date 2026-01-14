@@ -1,3 +1,0 @@
-CYPHER 5
-MATCH (this:Movie)
-DETACH DELETE this
