@@ -28,6 +28,7 @@ describe("single item relationships", () => {
             type Movie @node {
                 title: String!
                 actor: Person @relationship(type: "ACTED_IN", direction: IN)
+                Director: Person! @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Person @node {
@@ -85,8 +86,10 @@ describe("single item relationships", () => {
             }
 
             type Movie {
+              Director(where: PersonWhere): Person!
+              DirectorConnection(where: MovieDirectorConnectionWhere): MovieDirectorConnection!
               actor(where: PersonWhere): Person
-              actorConnection(after: String, first: Int, sort: [MovieActorConnectionSort!], where: MovieActorConnectionWhere): MovieActorConnection!
+              actorConnection(where: MovieActorConnectionWhere): MovieActorConnection!
               title: String!
             }
 
@@ -94,10 +97,6 @@ describe("single item relationships", () => {
               edges: [MovieActorRelationship!]!
               pageInfo: PageInfo!
               totalCount: Int!
-            }
-
-            input MovieActorConnectionSort {
-              node: PersonSort
             }
 
             input MovieActorConnectionWhere {
@@ -123,6 +122,24 @@ describe("single item relationships", () => {
 
             input MovieCreateInput {
               title: String!
+            }
+
+            type MovieDirectorConnection {
+              edges: [MovieDirectorRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input MovieDirectorConnectionWhere {
+              AND: [MovieDirectorConnectionWhere!]
+              NOT: MovieDirectorConnectionWhere
+              OR: [MovieDirectorConnectionWhere!]
+              node: PersonWhere
+            }
+
+            type MovieDirectorRelationship {
+              cursor: String!
+              node: Person!
             }
 
             type MovieEdge {

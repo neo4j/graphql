@@ -115,19 +115,22 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
             relationshipAdapter,
             composer: schemaComposer,
         }),
-        first: {
-            type: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
-        },
-        after: {
-            type: GraphQLString,
-        },
     };
-    const connectionSortITC = withConnectionSortInputType({
-        relationshipAdapter,
-        composer: schemaComposer,
-    });
-    if (connectionSortITC) {
-        composeNodeArgs.sort = connectionSortITC.NonNull.List;
+    if (relationshipAdapter.isList) {
+        composeNodeArgs.first = {
+            type: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
+        };
+        composeNodeArgs.after = {
+            type: GraphQLString,
+        };
+
+        const connectionSortITC = withConnectionSortInputType({
+            relationshipAdapter,
+            composer: schemaComposer,
+        });
+        if (connectionSortITC) {
+            composeNodeArgs.sort = connectionSortITC.NonNull.List;
+        }
     }
     const isTargetUnion = relationshipAdapter.target instanceof UnionEntityAdapter;
     const isSourceInterface = relationshipAdapter.source instanceof InterfaceEntityAdapter;
