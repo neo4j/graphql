@@ -19,8 +19,8 @@
 
 import { offsetToCursor } from "graphql-relay";
 import { generate } from "randomstring";
-import type { UniqueType } from "../utils/graphql-types";
-import { TestHelper } from "../utils/tests-helper";
+import type { UniqueType } from "../../utils/graphql-types";
+import { TestHelper } from "../../utils/tests-helper";
 
 describe("Connection Resolvers", () => {
     const testHelper = new TestHelper();
