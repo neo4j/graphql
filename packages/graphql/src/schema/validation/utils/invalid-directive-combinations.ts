@@ -102,6 +102,7 @@ export const invalidObjectCombinations: InvalidObjectCombinations = {
         "mutation",
         "limit",
         "fulltext",
+        "plural",
     ],
     authentication: ["relationshipProperties"],
     authorization: ["relationshipProperties"],
@@ -110,7 +111,7 @@ export const invalidObjectCombinations: InvalidObjectCombinations = {
     // jwt: OBJECT_DIRECTIVES, // This is deliberately commented out. JWT is a special case. We do different validations for jwt.
     mutation: ["relationshipProperties"],
     node: ["relationshipProperties"],
-    plural: [],
+    plural: ["relationshipProperties"],
     query: ["relationshipProperties"],
     shareable: [],
     subscription: ["relationshipProperties"],
