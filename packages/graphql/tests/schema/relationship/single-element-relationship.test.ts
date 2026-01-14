@@ -85,7 +85,7 @@ describe("single item relationships", () => {
             }
 
             type Movie {
-              actor(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): Person
+              actor(where: PersonWhere): Person
               actorConnection(after: String, first: Int, sort: [MovieActorConnectionSort!], where: MovieActorConnectionWhere): MovieActorConnection!
               title: String!
             }

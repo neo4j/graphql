@@ -71,17 +71,21 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField({
 
         const nodeFieldsArgs = {
             where: whereTypeName,
-            limit: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
-            offset: GraphQLInt,
         };
-        if (!(relationshipTarget instanceof UnionEntityAdapter)) {
-            const sortConfig = makeSortInput({
-                entityAdapter: relationshipTarget,
-                userDefinedFieldDirectives: new Map(),
-                composer,
-            });
-            if (sortConfig) {
-                nodeFieldsArgs["sort"] = sortConfig.NonNull.List;
+
+        if (relationshipAdapter.isList) {
+            nodeFieldsArgs["limit"] = features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt;
+            nodeFieldsArgs["offset"] = GraphQLInt;
+
+            if (!(relationshipTarget instanceof UnionEntityAdapter)) {
+                const sortConfig = makeSortInput({
+                    entityAdapter: relationshipTarget,
+                    userDefinedFieldDirectives: new Map(),
+                    composer,
+                });
+                if (sortConfig) {
+                    nodeFieldsArgs["sort"] = sortConfig.NonNull.List;
+                }
             }
         }
 
