@@ -85,6 +85,7 @@ const OBJECT_DIRECTIVES = [
     SHAREABLE,
     "deprecated",
     "relationshipProperties",
+    "vector",
     ...SCHEMA_CONFIGURATION_OBJECT_DIRECTIVES,
 ] as const satisfies readonly LibraryDirectives[];
 export type ObjectDirective = ValueOf<typeof OBJECT_DIRECTIVES>;
