@@ -23,12 +23,12 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("single item relationships", () => {
-    test("1-* relationship nullable", async () => {
+    test("1-* relationship", async () => {
         const typeDefs = gql`
             type Movie @node {
                 title: String!
                 actor: Person @relationship(type: "ACTED_IN", direction: IN)
-                Director: Person! @relationship(type: "DIRECTED", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Person @node {
@@ -86,10 +86,10 @@ describe("single item relationships", () => {
             }
 
             type Movie {
-              Director(where: PersonWhere): Person!
-              DirectorConnection(where: MovieDirectorConnectionWhere): MovieDirectorConnection!
               actor(where: PersonWhere): Person
               actorConnection(where: MovieActorConnectionWhere): MovieActorConnection!
+              director(where: PersonWhere): Person!
+              directorConnection(where: MovieDirectorConnectionWhere): MovieDirectorConnection!
               title: String!
             }
 
