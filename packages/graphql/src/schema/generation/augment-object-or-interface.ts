@@ -71,17 +71,21 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField({
 
         const nodeFieldsArgs = {
             where: whereTypeName,
-            limit: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
-            offset: GraphQLInt,
         };
-        if (!(relationshipTarget instanceof UnionEntityAdapter)) {
-            const sortConfig = makeSortInput({
-                entityAdapter: relationshipTarget,
-                userDefinedFieldDirectives: new Map(),
-                composer,
-            });
-            if (sortConfig) {
-                nodeFieldsArgs["sort"] = sortConfig.NonNull.List;
+
+        if (relationshipAdapter.isList) {
+            nodeFieldsArgs["limit"] = features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt;
+            nodeFieldsArgs["offset"] = GraphQLInt;
+
+            if (!(relationshipTarget instanceof UnionEntityAdapter)) {
+                const sortConfig = makeSortInput({
+                    entityAdapter: relationshipTarget,
+                    userDefinedFieldDirectives: new Map(),
+                    composer,
+                });
+                if (sortConfig) {
+                    nodeFieldsArgs["sort"] = sortConfig.NonNull.List;
+                }
             }
         }
 
@@ -111,19 +115,22 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
             relationshipAdapter,
             composer: schemaComposer,
         }),
-        first: {
-            type: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
-        },
-        after: {
-            type: GraphQLString,
-        },
     };
-    const connectionSortITC = withConnectionSortInputType({
-        relationshipAdapter,
-        composer: schemaComposer,
-    });
-    if (connectionSortITC) {
-        composeNodeArgs.sort = connectionSortITC.NonNull.List;
+    if (relationshipAdapter.isList) {
+        composeNodeArgs.first = {
+            type: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
+        };
+        composeNodeArgs.after = {
+            type: GraphQLString,
+        };
+
+        const connectionSortITC = withConnectionSortInputType({
+            relationshipAdapter,
+            composer: schemaComposer,
+        });
+        if (connectionSortITC) {
+            composeNodeArgs.sort = connectionSortITC.NonNull.List;
+        }
     }
     const isTargetUnion = relationshipAdapter.target instanceof UnionEntityAdapter;
     const isSourceInterface = relationshipAdapter.source instanceof InterfaceEntityAdapter;
@@ -139,7 +146,7 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
             resolve: (source: any, args: ConnectionQueryArgs, _ctx: any, info: GraphQLResolveInfo) => {
                 return connectionFieldResolver({
                     connectionFieldName: relationshipAdapter.operations.connectionFieldName,
-                args,
+                    args,
                     info,
                     source,
                 });

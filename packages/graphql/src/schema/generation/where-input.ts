@@ -195,7 +195,7 @@ export function withSourceWhereInputType({
         return;
     }
 
-    if (relationshipAdapter.isFilterableByAggregate()) {
+    if (relationshipAdapter.isList && relationshipAdapter.isFilterableByAggregate()) {
         withConnectionAggregateInputType({
             relationshipAdapter,
             entityAdapter: relationshipTarget,
