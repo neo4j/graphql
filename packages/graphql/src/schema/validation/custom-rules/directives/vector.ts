@@ -54,7 +54,6 @@ export function validateVectorDirective(context: Neo4jValidationContext): ASTVis
                 }
             });
             const pathToNode = getPathToNode(path, ancestors);
-            console.log("pathToNode", pathToNode);
             if (!isValid) {
                 context.reportError(
                     createGraphQLError({
