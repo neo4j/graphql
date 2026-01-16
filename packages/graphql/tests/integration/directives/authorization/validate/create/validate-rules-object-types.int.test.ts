@@ -37,6 +37,44 @@ describe("Validate rules on create operations", () => {
         await testHelper.close();
     });
 
+    test("Should not throw if auth rule is met", async () => {
+        const typeDefs = `
+                type ${Post} @node {
+                    id: ID 
+                }
+
+                extend type ${Post}  @authorization(validate: [{ when: AFTER, operations: [CREATE], where: { node: { id_EQ: "$jwt.sub" } } }])
+            `;
+
+        const postId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+                mutation {
+                    ${Post.operations.create}(input: [{id: "${postId}"}]) {
+                        ${Post.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: "secret",
+                },
+            },
+        });
+
+        const token = createBearerToken(secret, { sub: postId });
+
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+        expect(gqlResult.errors).toBeUndefined();
+    });
     test("Rule for CREATE on Post node based on its own fields failed, should throw forbidden", async () => {
         const typeDefs = `
                 type ${Post} @node {

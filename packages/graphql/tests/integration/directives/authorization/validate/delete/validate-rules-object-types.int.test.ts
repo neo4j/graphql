@@ -21,7 +21,6 @@ import { generate } from "randomstring";
 import { createBearerToken } from "../../../../../utils/create-bearer-token";
 import type { UniqueType } from "../../../../../utils/graphql-types";
 import { TestHelper } from "../../../../../utils/tests-helper";
-
 describe("Validate rules on delete operations", () => {
     const testHelper = new TestHelper();
     const secret = "secret";
@@ -39,6 +38,49 @@ describe("Validate rules on delete operations", () => {
     });
 
     describe("BEFORE rules", () => {
+        test("should not throw Forbidden when deleting a node when allow is valid", async () => {
+            const typeDefs = `
+                type ${userType.name} @node {
+                    id: ID
+                }
+
+                extend type ${userType.name} @authorization(validate: [ { operations: [DELETE], when: BEFORE, where: { node: { id_EQ: "$jwt.sub" } } }])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                mutation {
+                    ${userType.operations.delete}(
+                        where: { id_EQ: "${userId}" }
+                    ) {
+                       nodesDeleted
+                    }
+                }
+            `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
+                },
+            });
+
+            await testHelper.executeCypher(`
+                    CREATE (:${userType.name} {id: "${userId}"})
+                `);
+
+            const token = createBearerToken(secret, { sub: `${userId}` });
+
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+            expect(gqlResult.errors).toBeUndefined();
+        });
+
         test("should throw Forbidden when deleting a node with invalid allow", async () => {
             const typeDefs = `
                 type ${userType.name} @node {

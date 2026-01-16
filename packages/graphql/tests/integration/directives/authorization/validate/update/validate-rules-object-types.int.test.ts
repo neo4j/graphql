@@ -38,6 +38,52 @@ describe("Validate rules on update operations", () => {
     });
 
     describe("AFTER rules", () => {
+        test("should not throw forbidden when updating a node when rule is valid", async () => {
+            const typeDefs = /* GraphQL */ `
+                type ${User} @node {
+                    id: ID
+                }
+
+                extend type ${User} @authorization(validate: [{ when: AFTER, operations: [UPDATE], where: { node: { id_EQ: "$jwt.sub" } } }])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+            const userId2 = generate({
+                charset: "alphabetic",
+            });
+
+            const query = /* GraphQL */ `
+                mutation {
+                    ${User.operations.update}(where: { id_EQ: "${userId2}" }, update: { id_SET: "${userId}" }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
+                },
+            });
+
+            await testHelper.executeCypher(`
+                    CREATE (:${User} {id: "${userId2}"})
+                `);
+
+            const token = createBearerToken(secret, { sub: userId });
+
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+            expect(gqlResult.errors).toBeUndefined();
+        });
+
         test("should throw forbidden when updating a node with invalid rule", async () => {
             const typeDefs = /* GraphQL */ `
                 type ${User} @node {
@@ -256,6 +302,50 @@ describe("Validate rules on update operations", () => {
     });
 
     describe("BEFORE rules", () => {
+        test("should notthrow Forbidden when editing a node with valid allow", async () => {
+            const typeDefs = /* GraphQL */ `
+                type ${User.name}  @node {
+                    id: ID
+                }
+
+                extend type ${User.name}
+                @authorization(validate: [ { operations: [UPDATE], when: BEFORE, where: { node: { id_EQ: "$jwt.sub" } } }])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = /* GraphQL */ `
+                mutation {
+                    ${User.operations.update}(where: { id_EQ: "${userId}" }, update: { id_SET: "new-id" }) {
+                        ${User.plural} {
+                            id
+                        }
+                    }
+                }
+            `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
+                },
+            });
+
+            await testHelper.executeCypher(`
+                    CREATE (: ${User.name} {id: "${userId}"})
+                `);
+
+            const token = createBearerToken(secret, { sub: userId });
+
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+            expect(gqlResult.errors).toBeUndefined();
+        });
+
         test("should throw Forbidden when editing a node with invalid allow", async () => {
             const typeDefs = /* GraphQL */ `
                 type ${User.name}  @node {

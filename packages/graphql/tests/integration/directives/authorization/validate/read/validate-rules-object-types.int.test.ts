@@ -41,6 +41,47 @@ describe("Validate rules on read operations", () => {
     });
 
     describe("BEFORE rules", () => {
+        test("should not throw forbidden when reading a node when allow is valid", async () => {
+            const typeDefs = `
+                type ${userType.name} @node {
+                    id: ID
+                }
+
+                extend type ${userType.name} @authorization(validate: [ { operations: [READ], when: BEFORE, where: { node: { id_EQ: "$jwt.sub" } } }])
+            `;
+
+            const userId = generate({
+                charset: "alphabetic",
+            });
+
+            const query = `
+                {
+                    ${userType.plural}(where: {id_EQ: "${userId}"}) {
+                        id
+                    }
+                }
+            `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+                features: {
+                    authorization: {
+                        key: "secret",
+                    },
+                },
+            });
+
+            await testHelper.executeCypher(`
+                    CREATE (:${userType.name} {id: "${userId}"})
+                `);
+
+            const token = createBearerToken(secret, { sub: userId });
+
+            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+            expect(gqlResult.errors).toBeUndefined();
+        });
+
         test("should throw forbidden when reading a node with invalid allow", async () => {
             const typeDefs = `
                 type ${userType.name} @node {
