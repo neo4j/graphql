@@ -129,7 +129,7 @@ describe("https://github.com/neo4j/graphql/issues/6981", () => {
             },
         });
 
-        await testHelper.expectRelationship(TypeCodePlaceholder, TypeCodeValue).toEqual([
+        await testHelper.expectRelationship(TypeCodePlaceholder, TypeCodeValue).toIncludeSameMembers([
             {
                 from: {
                     id: "A",
