@@ -183,7 +183,7 @@ describe("Entity api on single element relationships from an Interface type usin
                 director: ${Person}! @declareRelationship
             }
 
-            type ${Movie} @node {
+            type ${Movie} implements Production @node {
                 title: String!
                 actor: Actor @relationship(type: "ACTED_IN", direction: IN)
                 director: ${Person}! @relationship(type: "DIRECTED", direction: IN)
@@ -213,7 +213,44 @@ describe("Entity api on single element relationships from an Interface type usin
         await testHelper.close();
     });
 
-    test("returns first element of 1-1 relationship with multiple relationships", async () => {
+    test("returns first element of 1-1 relationship with multiple relationships on top level interface query", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED]-(:${Person} { name: "Director"})
+            CREATE(m)<-[:DIRECTED]-(:${Series} { name: "T-800"})
+        `);
+
+        const query = `
+            query {
+              productions {
+                    actor {
+                        name
+                    }
+                    director {
+                       name
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            productions: [
+                {
+                    actor: {
+                        name: "Hachiko",
+                    },
+                    director: {
+                        name: "Director",
+                    },
+                },
+            ],
+        });
+    });
+
+    test("returns first element of 1-1 relationship with multiple relationships on top level type query", async () => {
         await testHelper.executeCypher(`
             CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
             CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
