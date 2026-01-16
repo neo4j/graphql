@@ -35,14 +35,14 @@ describe("invalid-directive-combinations", () => {
     for (const [directive, invalidDirectives] of Object.entries(invalidObjectCombinations)) {
         for (const invalidDirective of invalidDirectives) {
             test(`${directive} should be invalid with ${invalidDirective}`, () => {
-                expect(invalidFieldCombinations[invalidDirective]).toContain(directive);
+                expect(invalidObjectCombinations[invalidDirective]).toContain(directive);
             });
         }
     }
     for (const [directive, invalidDirectives] of Object.entries(invalidInterfaceCombinations)) {
         for (const invalidDirective of invalidDirectives) {
             test(`${directive} should be invalid with ${invalidDirective}`, () => {
-                expect(invalidFieldCombinations[invalidDirective]).toContain(directive);
+                expect(invalidInterfaceCombinations[invalidDirective]).toContain(directive);
             });
         }
     }
