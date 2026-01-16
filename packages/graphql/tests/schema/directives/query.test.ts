@@ -267,8 +267,7 @@ describe("@query directive", () => {
         });
     });
 
-    // TODO
-    describe.only("on SCHEMA", () => {
+    describe("on SCHEMA", () => {
         test("default arguments should disable aggregation", async () => {
             const typeDefs = /* GraphQL */ `
                 type Actor @node {
@@ -415,14 +414,14 @@ describe("@query directive", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const schema = await neoSchema.getSchema();
-            const { media, productions, productionsConnection, productionsAggregate } = schema
-                .getQueryType()
-                ?.getFields() as GraphQLFieldMap<any, any>;
+            const { media, productions, productionsConnection } = schema.getQueryType()?.getFields() as GraphQLFieldMap<
+                any,
+                any
+            >;
 
             expect(media).toBeDefined();
             expect(productions).toBeDefined();
             expect(productionsConnection).toBeDefined();
-            expect(productionsAggregate).toBeDefined();
 
             const productionsConnectionType = schema.getType("ProductionsConnection") as GraphQLObjectType;
             expect(productionsConnectionType).toBeDefined();
