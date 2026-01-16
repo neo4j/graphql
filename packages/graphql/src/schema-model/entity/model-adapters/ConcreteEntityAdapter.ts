@@ -101,6 +101,14 @@ export class ConcreteEntityAdapter {
         return schemaModel.annotations.query === undefined || schemaModel.annotations.query.read === true;
     }
 
+    public isReadableFromConnectionRootQuery(schemaModel: Neo4jGraphQLSchemaModel): boolean {
+        if (this.annotations.query) {
+            return this.annotations.query.connection;
+        }
+
+        return schemaModel.annotations.query === undefined || schemaModel.annotations.query.connection === true;
+    }
+
     public isAggregable(schemaModel: Neo4jGraphQLSchemaModel): boolean {
         if (this.annotations.query) {
             return this.annotations.query.aggregate;

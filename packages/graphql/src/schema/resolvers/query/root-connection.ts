@@ -106,7 +106,7 @@ export function rootConnectionResolver({
         directives: graphqlDirectivesToCompose(propagatedDirectives),
     });
 
-    if (entityAdapter.isReadable(schemaModel)) {
+    if (entityAdapter.isReadableFromConnectionRootQuery(schemaModel)) {
         rootConnection.addFields({
             edges: rootEdge.NonNull.List.NonNull,
             totalCount: new GraphQLNonNull(GraphQLInt),

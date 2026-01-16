@@ -282,6 +282,7 @@ function makeAugmentedSchema({
             );
             const hasImplementedEntities = unionEntityAdapter.concreteEntities.length > 0;
 
+            // TODO: check why no connection query generated for unions - is this intentional?
             if (unionEntityAdapter.isReadable(schemaModel) && hasImplementedEntities) {
                 complexityEstimatorHelper.registerField("Query", unionEntityAdapter.operations.rootTypeFieldNames.read);
                 composer.Query.addFields({
@@ -594,7 +595,10 @@ function generateObjectType({
 
     ensureNonEmptyInput(composer, concreteEntityAdapter.operations.updateInputTypeName);
     ensureNonEmptyInput(composer, concreteEntityAdapter.operations.createInputTypeName);
-    if (concreteEntityAdapter.isReadable(schemaModel) || concreteEntityAdapter.isAggregable(schemaModel)) {
+    if (
+        concreteEntityAdapter.isReadableFromConnectionRootQuery(schemaModel) ||
+        concreteEntityAdapter.isAggregable(schemaModel)
+    ) {
         complexityEstimatorHelper.registerField(
             "Query",
             concreteEntityAdapter.operations.rootTypeFieldNames.connection
@@ -608,6 +612,10 @@ function generateObjectType({
                 schemaModel,
             }),
         });
+        composer.Query.setFieldDirectives(
+            concreteEntityAdapter.operations.rootTypeFieldNames.connection,
+            graphqlDirectivesToCompose(propagatedDirectives)
+        );
     }
     if (concreteEntityAdapter.isReadable(schemaModel)) {
         complexityEstimatorHelper.registerField("Query", concreteEntityAdapter.operations.rootTypeFieldNames.read);
@@ -620,11 +628,6 @@ function generateObjectType({
         });
         composer.Query.setFieldDirectives(
             concreteEntityAdapter.operations.rootTypeFieldNames.read,
-            graphqlDirectivesToCompose(propagatedDirectives)
-        );
-
-        composer.Query.setFieldDirectives(
-            concreteEntityAdapter.operations.rootTypeFieldNames.connection,
             graphqlDirectivesToCompose(propagatedDirectives)
         );
     }
@@ -736,7 +739,10 @@ function generateInterfaceObjectType({
     const hasImplementedEntities = interfaceEntityAdapter.concreteEntities.length > 0;
     if (hasImplementedEntities) {
         const propagatedDirectives = propagatedDirectivesForNode.get(interfaceEntityAdapter.name) || [];
-        if (interfaceEntityAdapter.isReadable(schemaModel) || interfaceEntityAdapter.isAggregable(schemaModel)) {
+        if (
+            interfaceEntityAdapter.isReadableFromConnectionRootQuery(schemaModel) ||
+            interfaceEntityAdapter.isAggregable(schemaModel)
+        ) {
             composer.Query.addFields({
                 [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
                     composer,
@@ -746,6 +752,15 @@ function generateInterfaceObjectType({
                     schemaModel,
                 }),
             });
+            complexityEstimatorHelper.registerField(
+                "Query",
+                interfaceEntityAdapter.operations.rootTypeFieldNames.connection
+            );
+
+            composer.Query.setFieldDirectives(
+                interfaceEntityAdapter.operations.rootTypeFieldNames.connection,
+                graphqlDirectivesToCompose(propagatedDirectives)
+            );
         }
         if (interfaceEntityAdapter.isReadable(schemaModel)) {
             complexityEstimatorHelper.registerField("Query", interfaceEntityAdapter.operations.rootTypeFieldNames.read);
@@ -759,25 +774,6 @@ function generateInterfaceObjectType({
 
             composer.Query.setFieldDirectives(
                 interfaceEntityAdapter.operations.rootTypeFieldNames.read,
-                graphqlDirectivesToCompose(propagatedDirectives)
-            );
-
-            complexityEstimatorHelper.registerField(
-                "Query",
-                interfaceEntityAdapter.operations.rootTypeFieldNames.connection
-            );
-
-            composer.Query.addFields({
-                [interfaceEntityAdapter.operations.rootTypeFieldNames.connection]: rootConnectionResolver({
-                    composer,
-                    entityAdapter: interfaceEntityAdapter,
-                    propagatedDirectives,
-                    isLimitRequired: features?.limitRequired,
-                    schemaModel,
-                }),
-            });
-            composer.Query.setFieldDirectives(
-                interfaceEntityAdapter.operations.rootTypeFieldNames.connection,
                 graphqlDirectivesToCompose(propagatedDirectives)
             );
         }

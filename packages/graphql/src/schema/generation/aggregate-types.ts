@@ -103,6 +103,7 @@ function createConnectionAggregate({
         aggregateNode.addFields(aggregableFields);
     }
 
+    // TODO: wtf is this?!
     const connectionAggregate = composer.createObjectTC({
         name: entityAdapter.operations.aggregateTypeNames.connection,
         fields: {
