@@ -100,34 +100,32 @@ describe("https://github.com/neo4j/graphql/issues/6981", () => {
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeUndefined();
 
-        expect(result.data).toEqual({
-            [TypeCodePlaceholder.operations.update]: {
-                [TypeCodePlaceholder.plural]: [
-                    {
-                        valuesConnection: {
-                            edges: [
-                                {
-                                    properties: {
-                                        order: 2,
-                                    },
-                                    node: {
-                                        id: "B",
-                                    },
+        expect(result.data?.[TypeCodePlaceholder.operations.update]?.[TypeCodePlaceholder.plural]).toIncludeSameMembers(
+            [
+                {
+                    valuesConnection: {
+                        edges: [
+                            {
+                                properties: {
+                                    order: 2,
                                 },
-                                {
-                                    properties: {
-                                        order: 1,
-                                    },
-                                    node: {
-                                        id: "C",
-                                    },
+                                node: {
+                                    id: "B",
                                 },
-                            ],
-                        },
+                            },
+                            {
+                                properties: {
+                                    order: 1,
+                                },
+                                node: {
+                                    id: "C",
+                                },
+                            },
+                        ],
                     },
-                ],
-            },
-        });
+                },
+            ]
+        );
 
         await testHelper.expectRelationship(TypeCodePlaceholder, TypeCodeValue).toEqual([
             {
