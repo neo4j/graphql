@@ -21,19 +21,19 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/6981", () => {
-    let personType: UniqueType;
-    let carType: UniqueType;
+    let TypeCodePlaceholder: UniqueType;
+    let TypeCodeValue: UniqueType;
 
     const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        personType = testHelper.createUniqueType("Person");
-        carType = testHelper.createUniqueType("Car");
+        TypeCodePlaceholder = testHelper.createUniqueType("TypeCodePlaceholder");
+        TypeCodeValue = testHelper.createUniqueType("TypeCodeValue");
 
         const typeDefs = /* GraphQL */ `
-            type TypeCodePlaceholder @mutation(operations: [CREATE, UPDATE, DELETE]) @node @subscription(events: []) {
+            type ${TypeCodePlaceholder} @mutation(operations: [CREATE, UPDATE, DELETE]) @node @subscription(events: []) {
                 id: String!
-                values: [TypeCodeValue!]!
+                values: [${TypeCodeValue}!]!
                     @relationship(
                         type: "TYPECODEPLACEHOLDER_HAS_TYPECODEVALUE"
                         properties: "TypecodeplaceholderHasTypecodevalueProperties"
@@ -44,7 +44,7 @@ describe("https://github.com/neo4j/graphql/issues/6981", () => {
                     @settable(onCreate: true, onUpdate: true)
             }
 
-            type TypeCodeValue @mutation(operations: [CREATE, UPDATE, DELETE]) @node @subscription(events: []) {
+            type ${TypeCodeValue} @mutation(operations: [CREATE, UPDATE, DELETE]) @node @subscription(events: []) {
                 id: String!
             }
 
@@ -58,9 +58,9 @@ describe("https://github.com/neo4j/graphql/issues/6981", () => {
         });
 
         await testHelper.executeCypher(`
-            CREATE (tcp:TypeCodePlaceholder {id: "A"})
-            CREATE (tcp)-[:TYPECODEPLACEHOLDER_HAS_TYPECODEVALUE {order: 1}]->(:TypeCodeValue {id: "B"})
-            CREATE (tcp)-[:TYPECODEPLACEHOLDER_HAS_TYPECODEVALUE {order: 2}]->(:TypeCodeValue {id: "C"})
+            CREATE (tcp:${TypeCodePlaceholder} {id: "A"})
+            CREATE (tcp)-[:TYPECODEPLACEHOLDER_HAS_TYPECODEVALUE {order: 1}]->(:${TypeCodeValue} {id: "B"})
+            CREATE (tcp)-[:TYPECODEPLACEHOLDER_HAS_TYPECODEVALUE {order: 2}]->(:${TypeCodeValue} {id: "C"})
 
         `);
     });
@@ -72,7 +72,7 @@ describe("https://github.com/neo4j/graphql/issues/6981", () => {
     test("should match 1 edge by node filter, aggregate count 1", async () => {
         const query = /* GraphQL */ `
             mutation {
-                updateTypeCodePlaceholders(
+                ${TypeCodePlaceholder.operations.update}(
                     where: { id: { eq: "A" } }
                     update: {
                         values: [
@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/6981", () => {
                         ]
                     }
                 ) {
-                    typeCodePlaceholders {
+                    ${TypeCodePlaceholder.plural} {
                         valuesConnection {
                             edges {
                                 properties {
@@ -101,8 +101,8 @@ describe("https://github.com/neo4j/graphql/issues/6981", () => {
         expect(result.errors).toBeUndefined();
 
         expect(result.data).toEqual({
-            updateTypeCodePlaceholders: {
-                typeCodePlaceholders: [
+            [TypeCodePlaceholder.operations.update]: {
+                [TypeCodePlaceholder.plural]: [
                     {
                         valuesConnection: {
                             edges: [
@@ -116,7 +116,7 @@ describe("https://github.com/neo4j/graphql/issues/6981", () => {
                                 },
                                 {
                                     properties: {
-                                        order: 3,
+                                        order: 1,
                                     },
                                     node: {
                                         id: "C",
@@ -129,7 +129,7 @@ describe("https://github.com/neo4j/graphql/issues/6981", () => {
             },
         });
 
-        await testHelper.expectRelationship("TypeCodePlaceholder", "TypeCodeValue").toEqual([
+        await testHelper.expectRelationship(TypeCodePlaceholder, TypeCodeValue).toEqual([
             {
                 from: {
                     id: "A",
@@ -143,7 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/6981", () => {
             },
             {
                 from: {
-                    id: "C",
+                    id: "A",
                 },
                 relationship: {
                     order: 1,
