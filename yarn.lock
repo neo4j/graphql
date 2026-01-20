@@ -1864,9 +1864,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/utils@npm:10.11.0":
-  version: 10.11.0
-  resolution: "@graphql-tools/utils@npm:10.11.0"
+"@graphql-tools/utils@npm:11.0.0, @graphql-tools/utils@npm:^11.0.0":
+  version: 11.0.0
+  resolution: "@graphql-tools/utils@npm:11.0.0"
   dependencies:
     "@graphql-typed-document-node/core": "npm:^3.1.1"
     "@whatwg-node/promise-helpers": "npm:^1.0.0"
@@ -1874,7 +1874,7 @@ __metadata:
     tslib: "npm:^2.4.0"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/73459332c199d8f3aa698bdee4ac6ce802274dba95cc7eff1f0219b6fe6e3a8f314d2e824168e296df8f5ce18f6dbd23ca14406b71890a41ce80b7548e8ccd6d
+  checksum: 10c0/008f7d033b900bab7daf073c34d2b5502f52005a3dfa9761dfd550d64734c7cd47c2cc92f130f24c5911ceed91315494b54e6849ed345004e59e84377ab1f6c7
   languageName: node
   linkType: hard
 
@@ -1900,20 +1900,6 @@ __metadata:
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
   checksum: 10c0/c294a7e239e5bc18fd0cb16fd3e579fed64ae0d8913524ab3e2368de0bee9e39abb2b9b701f877adab5e1a78162b5545dc93539a4c9ab8f3981e1fbaa03e3ed9
-  languageName: node
-  linkType: hard
-
-"@graphql-tools/utils@npm:^11.0.0":
-  version: 11.0.0
-  resolution: "@graphql-tools/utils@npm:11.0.0"
-  dependencies:
-    "@graphql-typed-document-node/core": "npm:^3.1.1"
-    "@whatwg-node/promise-helpers": "npm:^1.0.0"
-    cross-inspect: "npm:1.0.1"
-    tslib: "npm:^2.4.0"
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/008f7d033b900bab7daf073c34d2b5502f52005a3dfa9761dfd550d64734c7cd47c2cc92f130f24c5911ceed91315494b54e6849ed345004e59e84377ab1f6c7
   languageName: node
   linkType: hard
 
@@ -2835,7 +2821,7 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@neo4j/graphql@npm:^7.0.0, @neo4j/graphql@npm:^7.4.1, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@npm:^7.0.0, @neo4j/graphql@npm:^7.4.2, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -2846,12 +2832,12 @@ __metadata:
     "@graphql-tools/merge": "npm:^9.0.0"
     "@graphql-tools/resolvers-composition": "npm:^7.0.0"
     "@graphql-tools/schema": "npm:^10.0.0"
-    "@graphql-tools/utils": "npm:10.11.0"
+    "@graphql-tools/utils": "npm:11.0.0"
     "@neo4j/cypher-builder": "npm:2.11.0"
     "@types/is-uuid": "npm:1.0.2"
     "@types/jest": "npm:30.0.0"
     "@types/jsonwebtoken": "npm:9.0.10"
-    "@types/node": "npm:22.19.5"
+    "@types/node": "npm:22.19.7"
     "@types/pluralize": "npm:0.0.33"
     "@types/randomstring": "npm:1.3.0"
     "@types/semver": "npm:7.7.1"
@@ -2872,8 +2858,8 @@ __metadata:
     jest-extended: "npm:7.0.0"
     jose: "npm:^5.0.0"
     jsonwebtoken: "npm:9.0.3"
-    jwks-rsa: "npm:3.2.0"
-    knip: "npm:5.80.2"
+    jwks-rsa: "npm:3.2.1"
+    knip: "npm:5.81.0"
     koa: "npm:3.1.1"
     koa-jwt: "npm:4.0.4"
     koa-router: "npm:14.0.0"
@@ -2900,7 +2886,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": "npm:^7.0.0"
     "@types/jest": "npm:30.0.0"
-    "@types/node": "npm:22.19.5"
+    "@types/node": "npm:22.19.7"
     "@types/pluralize": "npm:0.0.33"
     camelcase: "npm:^6.3.0"
     debug: "npm:^4.3.4"
@@ -3516,10 +3502,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tsconfig/node24@npm:24.0.3":
-  version: 24.0.3
-  resolution: "@tsconfig/node24@npm:24.0.3"
-  checksum: 10c0/68068b503774450d533dda769785356c5722bdc6a3333646fcbcb265e02aafb6d0784619ed85de6d62414df20483428b25bf3d608955ca40b085fb1f12cc26c4
+"@tsconfig/node24@npm:24.0.4":
+  version: 24.0.4
+  resolution: "@tsconfig/node24@npm:24.0.4"
+  checksum: 10c0/9c5d4173204c6935c45d3ff0584fd423bd7d8bc3f6b246e646320ae584e4226b34ea1c66ec67cd16769c73e7e80f4cc562287b0acaa4ec81aa482463972ff83f
   languageName: node
   linkType: hard
 
@@ -3661,7 +3647,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/express@npm:^4.17.13, @types/express@npm:^4.17.20":
+"@types/express@npm:^4.17.13":
   version: 4.17.22
   resolution: "@types/express@npm:4.17.22"
   dependencies:
@@ -3821,12 +3807,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:22.19.5":
-  version: 22.19.5
-  resolution: "@types/node@npm:22.19.5"
+"@types/node@npm:22.19.7":
+  version: 22.19.7
+  resolution: "@types/node@npm:22.19.7"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10c0/753c86850d2e3d9a7ccaa2569d565ab20d9a69389871e45283f71035c62fed649511aee7e05da8209b41e15438085c43b533d01e9ed3bb2e9dbd570aef732354
+  checksum: 10c0/0a4b13fd51306a72393f145693063e074be1bf884bdc642c879436d2c053ac9d573cc0a0d69867f60b14d3f1b9d03317e8ec0e4377f7527cb645e7b2a5d34045
   languageName: node
   linkType: hard
 
@@ -4963,7 +4949,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": "npm:2.2.2"
     "@apollo/server": "npm:^5.0.0"
     "@graphql-tools/wrap": "npm:^11.0.0"
-    "@neo4j/graphql": "npm:^7.4.1"
+    "@neo4j/graphql": "npm:^7.4.2"
     fork-ts-checker-webpack-plugin: "npm:9.1.0"
     graphql: "npm:16.12.0"
     graphql-tag: "npm:^2.12.6"
@@ -12496,17 +12482,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwks-rsa@npm:3.2.0":
-  version: 3.2.0
-  resolution: "jwks-rsa@npm:3.2.0"
+"jwks-rsa@npm:3.2.1":
+  version: 3.2.1
+  resolution: "jwks-rsa@npm:3.2.1"
   dependencies:
-    "@types/express": "npm:^4.17.20"
     "@types/jsonwebtoken": "npm:^9.0.4"
     debug: "npm:^4.3.4"
     jose: "npm:^4.15.4"
     limiter: "npm:^1.1.5"
     lru-memoizer: "npm:^2.2.0"
-  checksum: 10c0/94896264473c8ec0ec21b8f29fd69b760ccb58ff63e6d5328d99694dc49a9be1d6f739fa536c71ca279966874e6c77b405181ed2c567318e0f545d3e941c318e
+  checksum: 10c0/04bd809a01b426f2d1eeaef9fa933e95f1eff46049f06e99d7464317477f62dd2fa8c94ba37bdc258287d15d7806f970617242faa137b7a4764c0924b6531cf9
   languageName: node
   linkType: hard
 
@@ -12564,9 +12549,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"knip@npm:5.80.2":
-  version: 5.80.2
-  resolution: "knip@npm:5.80.2"
+"knip@npm:5.81.0":
+  version: 5.81.0
+  resolution: "knip@npm:5.81.0"
   dependencies:
     "@nodelib/fs.walk": "npm:^1.2.3"
     fast-glob: "npm:^3.3.3"
@@ -12586,7 +12571,7 @@ __metadata:
   bin:
     knip: bin/knip.js
     knip-bun: bin/knip-bun.js
-  checksum: 10c0/118d00a2c4989b6559aba724654b749944658a2536036289d5bd455aaa6cc414e3c561b1468143628543fa48cb5183d0473134f43915a2c22b0b3b97cb268603
+  checksum: 10c0/f403863d87ac0c0fedee124ed0e5f2d5fd8ece756192a62e62917898895cf38c7555088307915d2ae2e3e0f77c74ae1b0e45048daf4b46b22b2a2bb082025c84
   languageName: node
   linkType: hard
 
@@ -14061,7 +14046,7 @@ __metadata:
   dependencies:
     "@changesets/changelog-github": "npm:0.5.2"
     "@changesets/cli": "npm:2.29.8"
-    "@tsconfig/node24": "npm:24.0.3"
+    "@tsconfig/node24": "npm:24.0.4"
     "@typescript-eslint/eslint-plugin": "npm:8.53.0"
     "@typescript-eslint/parser": "npm:8.53.0"
     concurrently: "npm:9.2.1"
@@ -14076,7 +14061,7 @@ __metadata:
     graphql: "npm:16.12.0"
     jest: "npm:30.2.0"
     neo4j-driver: "npm:6.0.1"
-    prettier: "npm:3.7.4"
+    prettier: "npm:3.8.0"
     prettier-2: "npm:prettier@2.8.8"
     set-tz: "npm:0.2.0"
     ts-jest: "npm:29.4.6"
@@ -15217,12 +15202,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prettier@npm:3.7.4":
-  version: 3.7.4
-  resolution: "prettier@npm:3.7.4"
+"prettier@npm:3.8.0":
+  version: 3.8.0
+  resolution: "prettier@npm:3.8.0"
   bin:
     prettier: bin/prettier.cjs
-  checksum: 10c0/9675d2cd08eacb1faf1d1a2dbfe24bfab6a912b059fc9defdb380a408893d88213e794a40a2700bd29b140eb3172e0b07c852853f6e22f16f3374659a1a13389
+  checksum: 10c0/8926e9c9941a293b76c2d799089d038e9f6d84fb37702fc370bedd03b3c70d7fcf507e2e3c4f151f222d81820a3b74cac5e692c955cfafe34dd0d02616ce8327
   languageName: node
   linkType: hard
 
