@@ -282,7 +282,6 @@ function makeAugmentedSchema({
             );
             const hasImplementedEntities = unionEntityAdapter.concreteEntities.length > 0;
 
-            // TODO: check why no connection query generated for unions - is this intentional?
             if (unionEntityAdapter.isReadable(schemaModel) && hasImplementedEntities) {
                 complexityEstimatorHelper.registerField("Query", unionEntityAdapter.operations.rootTypeFieldNames.read);
                 composer.Query.addFields({
