@@ -383,14 +383,17 @@ describe("@query directive", () => {
             const neoSchema = new Neo4jGraphQL({ typeDefs });
 
             const schema = await neoSchema.getSchema();
-            const { media, productions, productionsConnection, productionsAggregate } = schema
-                .getQueryType()
-                ?.getFields() as GraphQLFieldMap<any, any>;
+            const { media, productions, productionsConnection } = schema.getQueryType()?.getFields() as GraphQLFieldMap<
+                any,
+                any
+            >;
 
             expect(media).toBeUndefined();
             expect(productions).toBeUndefined();
             expect(productionsConnection).toBeUndefined();
-            expect(productionsAggregate).toBeUndefined();
+
+            const productionAggregateType = schema.getType("ProductionAggregate") as GraphQLObjectType;
+            expect(productionAggregateType).toBeUndefined();
         });
 
         test("should enable connection field with only aggregate field for interfaces and unions, read enabled", async () => {
@@ -429,6 +432,9 @@ describe("@query directive", () => {
 
             expect(aggregate).toBeDefined();
             expect(edges).toBeUndefined();
+
+            const productionAggregateType = schema.getType("ProductionAggregate") as GraphQLObjectType;
+            expect(productionAggregateType).toBeDefined();
         });
     });
 });

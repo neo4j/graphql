@@ -398,7 +398,12 @@ describe("Extending the schema in when using getSubgraphSchema", () => {
         const typeDefs = gql`
             extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key", "@shareable"])
 
-            type Movie @query(read: false) @shareable @key(fields: "title") @key(fields: "id") @node {
+            type Movie
+                @query(read: false, connection: false)
+                @shareable
+                @key(fields: "title")
+                @key(fields: "id")
+                @node {
                 title: String!
                 id: ID!
                 actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
