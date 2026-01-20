@@ -25,17 +25,17 @@ export const queryDirective = new GraphQLDirective({
         "Instructs @neo4j/graphql to exclude read, connection, or aggregate operations from the query root type.",
     args: {
         read: {
-            description: "Disable/Enabled read operations from query root type",
+            description: "Disable/Enabled all read operations from query root type (this means connections too).",
             type: new GraphQLNonNull(GraphQLBoolean),
             defaultValue: true,
         },
         connection: {
-            description: "Disable/Enabled connection operations from query root type",
-            type: new GraphQLNonNull(GraphQLBoolean),
-            defaultValue: true,
+            description:
+                "Disable/Enabled connection operations from query root type. Default value matches value of read argument, or true if not provided.",
+            type: GraphQLBoolean,
         },
         aggregate: {
-            description: "Disable/Enabled aggregate operations from query root type",
+            description: "Disable/Enabled aggregate operations from the connection read operations.",
             type: new GraphQLNonNull(GraphQLBoolean),
             defaultValue: false,
         },
