@@ -60,7 +60,7 @@ export class NeoExpectRelationship extends NeoExpect {
     public async toIncludeSameMembers(expectation: any[]): Promise<void> {
         const result = await this.getAll();
         try {
-            expect(result).toIncludeSameMembers(expectation);
+            expect(new Set(result)).toEqual(new Set(expectation));
         } catch (err: any) {
             const typeStr = this.type ? `[${this.type}]` : "-";
             err.message = `Error on ${this.from} ${typeStr} ${this.to}\n\n ${err.message}`;
