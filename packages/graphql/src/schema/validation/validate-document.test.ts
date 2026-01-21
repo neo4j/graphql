@@ -858,7 +858,7 @@ describe("validation 2.0", () => {
                 expect(executeValidate).not.toThrow();
             });
 
-            test("Error on 1-1 relationships", () => {
+            test("1-1 relationships allowed", () => {
                 const doc = gql`
                     type Movie @node {
                         id: ID
@@ -872,18 +872,7 @@ describe("validation 2.0", () => {
                 `;
 
                 const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
-                const errors = getError(executeValidate);
-                expect(errors).toHaveLength(2);
-                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[0]).toHaveProperty(
-                    "message",
-                    `Using @relationship directive on a non-list property "actors" is not supported.`
-                );
-                expect(errors[1]).toHaveProperty(
-                    "message",
-                    `Using @relationship directive on a non-list property "movie" is not supported.`
-                );
+                expect(executeValidate).not.toThrow();
             });
         });
     });

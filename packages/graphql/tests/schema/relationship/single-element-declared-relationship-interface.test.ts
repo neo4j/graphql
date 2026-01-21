@@ -23,7 +23,7 @@ import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 
 describe("single item relationships from a declared relationship", () => {
-    test("1-* relationship", async () => {
+    test("1-1 relationship", async () => {
         const typeDefs = gql`
             interface Actor {
                 name: String!
@@ -34,14 +34,14 @@ describe("single item relationships from a declared relationship", () => {
                 director: Person! @declareRelationship
             }
 
-            type Movie @node {
+            type Movie implements Production @node {
                 title: String!
                 actor: Actor @relationship(type: "ACTED_IN", direction: IN)
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
             }
 
-            type Series @node {
-                name: String!
+            type Series implements Production @node {
+                title: String!
                 actor: Actor @relationship(type: "ACTED_IN", direction: IN)
                 director: Person! @relationship(type: "DIRECTED", direction: IN)
             }
@@ -206,30 +206,12 @@ describe("single item relationships from a declared relationship", () => {
               totalCount: Int!
             }
 
-            type Movie {
-              actor(where: ActorWhere): Actor
-              actorConnection(where: MovieActorConnectionWhere): MovieActorConnection!
-              director(where: PersonWhere): Person!
-              directorConnection(where: MovieDirectorConnectionWhere): MovieDirectorConnection!
+            type Movie implements Production {
+              actor: Actor
+              actorConnection: ProductionActorConnection!
+              director: Person!
+              directorConnection: ProductionDirectorConnection!
               title: String!
-            }
-
-            type MovieActorConnection {
-              edges: [MovieActorRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input MovieActorConnectionWhere {
-              AND: [MovieActorConnectionWhere!]
-              NOT: MovieActorConnectionWhere
-              OR: [MovieActorConnectionWhere!]
-              node: ActorWhere
-            }
-
-            type MovieActorRelationship {
-              cursor: String!
-              node: Actor!
             }
 
             type MovieAggregate {
@@ -243,24 +225,6 @@ describe("single item relationships from a declared relationship", () => {
 
             input MovieCreateInput {
               title: String!
-            }
-
-            type MovieDirectorConnection {
-              edges: [MovieDirectorRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input MovieDirectorConnectionWhere {
-              AND: [MovieDirectorConnectionWhere!]
-              NOT: MovieDirectorConnectionWhere
-              OR: [MovieDirectorConnectionWhere!]
-              node: PersonWhere
-            }
-
-            type MovieDirectorRelationship {
-              cursor: String!
-              node: Person!
             }
 
             type MovieEdge {
@@ -363,6 +327,77 @@ describe("single item relationships from a declared relationship", () => {
               name: StringScalarFilters
             }
 
+            interface Production {
+              actor: Actor
+              actorConnection: ProductionActorConnection!
+              director: Person!
+              directorConnection: ProductionDirectorConnection!
+              title: String!
+            }
+
+            type ProductionActorConnection {
+              edges: [ProductionActorRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type ProductionActorRelationship {
+              cursor: String!
+              node: Actor!
+            }
+
+            type ProductionAggregate {
+              count: Count!
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
+              title: StringAggregateSelection!
+            }
+
+            type ProductionDirectorConnection {
+              edges: [ProductionDirectorRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type ProductionDirectorRelationship {
+              cursor: String!
+              node: Person!
+            }
+
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
+            \\"\\"\\"
+            Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
+            \\"\\"\\"
+            input ProductionSort {
+              title: SortDirection
+            }
+
+            input ProductionWhere {
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
+              title: StringScalarFilters
+              typename: [ProductionImplementation!]
+            }
+
+            type ProductionsConnection {
+              aggregate: ProductionAggregate!
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
             type Query {
               actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
@@ -372,34 +407,18 @@ describe("single item relationships from a declared relationship", () => {
               moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
               people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
               peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
+              productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
               series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
               seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
             }
 
-            type Series {
-              actor(where: ActorWhere): Actor
-              actorConnection(where: SeriesActorConnectionWhere): SeriesActorConnection!
-              director(where: PersonWhere): Person!
-              directorConnection(where: SeriesDirectorConnectionWhere): SeriesDirectorConnection!
-              name: String!
-            }
-
-            type SeriesActorConnection {
-              edges: [SeriesActorRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input SeriesActorConnectionWhere {
-              AND: [SeriesActorConnectionWhere!]
-              NOT: SeriesActorConnectionWhere
-              OR: [SeriesActorConnectionWhere!]
-              node: ActorWhere
-            }
-
-            type SeriesActorRelationship {
-              cursor: String!
-              node: Actor!
+            type Series implements Production {
+              actor: Actor
+              actorConnection: ProductionActorConnection!
+              director: Person!
+              directorConnection: ProductionDirectorConnection!
+              title: String!
             }
 
             type SeriesAggregate {
@@ -408,7 +427,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             type SeriesAggregateNode {
-              name: StringAggregateSelection!
+              title: StringAggregateSelection!
             }
 
             type SeriesConnection {
@@ -419,25 +438,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input SeriesCreateInput {
-              name: String!
-            }
-
-            type SeriesDirectorConnection {
-              edges: [SeriesDirectorRelationship!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
-            }
-
-            input SeriesDirectorConnectionWhere {
-              AND: [SeriesDirectorConnectionWhere!]
-              NOT: SeriesDirectorConnectionWhere
-              OR: [SeriesDirectorConnectionWhere!]
-              node: PersonWhere
-            }
-
-            type SeriesDirectorRelationship {
-              cursor: String!
-              node: Person!
+              title: String!
             }
 
             type SeriesEdge {
@@ -449,18 +450,18 @@ describe("single item relationships from a declared relationship", () => {
             Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
             \\"\\"\\"
             input SeriesSort {
-              name: SortDirection
+              title: SortDirection
             }
 
             input SeriesUpdateInput {
-              name: StringScalarMutations
+              title: StringScalarMutations
             }
 
             input SeriesWhere {
               AND: [SeriesWhere!]
               NOT: SeriesWhere
               OR: [SeriesWhere!]
-              name: StringScalarFilters
+              title: StringScalarFilters
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
@@ -474,6 +475,1147 @@ describe("single item relationships from a declared relationship", () => {
             type StringAggregateSelection {
               longest: String
               shortest: String
+            }
+
+            \\"\\"\\"String filters\\"\\"\\"
+            input StringScalarFilters {
+              contains: String
+              endsWith: String
+              eq: String
+              in: [String!]
+              startsWith: String
+            }
+
+            \\"\\"\\"String mutations\\"\\"\\"
+            input StringScalarMutations {
+              set: String
+            }
+
+            type UpdateDogsMutationResponse {
+              dogs: [Dog!]!
+              info: UpdateInfo!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created and deleted during an update mutation
+            \\"\\"\\"
+            type UpdateInfo {
+              nodesCreated: Int!
+              nodesDeleted: Int!
+              relationshipsCreated: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type UpdateMoviesMutationResponse {
+              info: UpdateInfo!
+              movies: [Movie!]!
+            }
+
+            type UpdatePeopleMutationResponse {
+              info: UpdateInfo!
+              people: [Person!]!
+            }
+
+            type UpdateSeriesMutationResponse {
+              info: UpdateInfo!
+              series: [Series!]!
+            }"
+        `);
+    });
+    test("1-* relationship", async () => {
+        const typeDefs = gql`
+            interface Actor {
+                name: String!
+                actedIn: Production! @declareRelationship
+                directed: [Production!]! @declareRelationship
+            }
+            interface Production {
+                title: String!
+                actor: [Actor!]! @declareRelationship
+                director: Person! @declareRelationship
+            }
+
+            type Movie implements Production @node {
+                title: String!
+                actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
+            }
+
+            type Series implements Production @node {
+                title: String!
+                actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                director: Person! @relationship(type: "DIRECTED", direction: IN)
+            }
+
+            type Dog implements Actor @node {
+                name: String!
+                actedIn: Production! @relationship(type: "ACTED_IN", direction: OUT)
+                directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT)
+            }
+
+            type Person implements Actor @node {
+                name: String!
+                actedIn: Production! @relationship(type: "ACTED_IN", direction: OUT)
+                directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT)
+            }
+        `;
+        const neoSchema = new Neo4jGraphQL({
+            typeDefs,
+            features: {
+                excludeDeprecatedFields: {
+                    mutationOperations: true,
+                    aggregationFilters: true,
+                    aggregationFiltersOutsideConnection: true,
+                    relationshipFilters: true,
+                    attributeFilters: true,
+                },
+            },
+        });
+        const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSchema()));
+
+        expect(printedSchema).toMatchInlineSnapshot(`
+            "schema {
+              query: Query
+              mutation: Mutation
+            }
+
+            interface Actor {
+              actedIn: Production!
+              actedInConnection: ActorActedInConnection!
+              directed(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
+              directedConnection(after: String, first: Int, sort: [ActorDirectedConnectionSort!], where: ActorDirectedConnectionWhere): ActorDirectedConnection!
+              name: String!
+            }
+
+            type ActorActedInConnection {
+              edges: [ActorActedInRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type ActorActedInRelationship {
+              cursor: String!
+              node: Production!
+            }
+
+            type ActorAggregate {
+              count: Count!
+              node: ActorAggregateNode!
+            }
+
+            type ActorAggregateNode {
+              name: StringAggregateSelection!
+            }
+
+            input ActorConnectInput {
+              directed: [ActorDirectedConnectFieldInput!]
+            }
+
+            input ActorConnectWhere {
+              node: ActorWhere!
+            }
+
+            input ActorCreateInput {
+              Dog: DogCreateInput
+              Person: PersonCreateInput
+            }
+
+            input ActorDeleteInput {
+              directed: [ActorDirectedDeleteFieldInput!]
+            }
+
+            input ActorDirectedConnectFieldInput {
+              connect: ProductionConnectInput
+              where: ProductionConnectWhere
+            }
+
+            type ActorDirectedConnection {
+              edges: [ActorDirectedRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ActorDirectedConnectionAggregateInput {
+              AND: [ActorDirectedConnectionAggregateInput!]
+              NOT: ActorDirectedConnectionAggregateInput
+              OR: [ActorDirectedConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: ActorDirectedNodeAggregationWhereInput
+            }
+
+            input ActorDirectedConnectionFilters {
+              \\"\\"\\"
+              Filter Actors by aggregating results on related ActorDirectedConnections
+              \\"\\"\\"
+              aggregate: ActorDirectedConnectionAggregateInput
+              \\"\\"\\"
+              Return Actors where all of the related ActorDirectedConnections match this filter
+              \\"\\"\\"
+              all: ActorDirectedConnectionWhere
+              \\"\\"\\"
+              Return Actors where none of the related ActorDirectedConnections match this filter
+              \\"\\"\\"
+              none: ActorDirectedConnectionWhere
+              \\"\\"\\"
+              Return Actors where one of the related ActorDirectedConnections match this filter
+              \\"\\"\\"
+              single: ActorDirectedConnectionWhere
+              \\"\\"\\"
+              Return Actors where some of the related ActorDirectedConnections match this filter
+              \\"\\"\\"
+              some: ActorDirectedConnectionWhere
+            }
+
+            input ActorDirectedConnectionSort {
+              node: ProductionSort
+            }
+
+            input ActorDirectedConnectionWhere {
+              AND: [ActorDirectedConnectionWhere!]
+              NOT: ActorDirectedConnectionWhere
+              OR: [ActorDirectedConnectionWhere!]
+              node: ProductionWhere
+            }
+
+            input ActorDirectedCreateFieldInput {
+              node: ProductionCreateInput!
+            }
+
+            input ActorDirectedDeleteFieldInput {
+              delete: ProductionDeleteInput
+              where: ActorDirectedConnectionWhere
+            }
+
+            input ActorDirectedDisconnectFieldInput {
+              disconnect: ProductionDisconnectInput
+              where: ActorDirectedConnectionWhere
+            }
+
+            input ActorDirectedNodeAggregationWhereInput {
+              AND: [ActorDirectedNodeAggregationWhereInput!]
+              NOT: ActorDirectedNodeAggregationWhereInput
+              OR: [ActorDirectedNodeAggregationWhereInput!]
+              title: StringScalarAggregationFilters
+            }
+
+            type ActorDirectedRelationship {
+              cursor: String!
+              node: Production!
+            }
+
+            input ActorDirectedUpdateConnectionInput {
+              node: ProductionUpdateInput
+              where: ActorDirectedConnectionWhere
+            }
+
+            input ActorDirectedUpdateFieldInput {
+              connect: [ActorDirectedConnectFieldInput!]
+              create: [ActorDirectedCreateFieldInput!]
+              delete: [ActorDirectedDeleteFieldInput!]
+              disconnect: [ActorDirectedDisconnectFieldInput!]
+              update: ActorDirectedUpdateConnectionInput
+            }
+
+            input ActorDisconnectInput {
+              directed: [ActorDirectedDisconnectFieldInput!]
+            }
+
+            type ActorEdge {
+              cursor: String!
+              node: Actor!
+            }
+
+            enum ActorImplementation {
+              Dog
+              Person
+            }
+
+            input ActorRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Actors match this filter\\"\\"\\"
+              all: ActorWhere
+              \\"\\"\\"Filter type where none of the related Actors match this filter\\"\\"\\"
+              none: ActorWhere
+              \\"\\"\\"Filter type where one of the related Actors match this filter\\"\\"\\"
+              single: ActorWhere
+              \\"\\"\\"Filter type where some of the related Actors match this filter\\"\\"\\"
+              some: ActorWhere
+            }
+
+            \\"\\"\\"
+            Fields to sort Actors by. The order in which sorts are applied is not guaranteed when specifying many fields in one ActorSort object.
+            \\"\\"\\"
+            input ActorSort {
+              name: SortDirection
+            }
+
+            input ActorUpdateInput {
+              directed: [ActorDirectedUpdateFieldInput!]
+              name: StringScalarMutations
+            }
+
+            input ActorWhere {
+              AND: [ActorWhere!]
+              NOT: ActorWhere
+              OR: [ActorWhere!]
+              directed: ProductionRelationshipFilters
+              directedConnection: ActorDirectedConnectionFilters
+              name: StringScalarFilters
+              typename: [ActorImplementation!]
+            }
+
+            type ActorsConnection {
+              aggregate: ActorAggregate!
+              edges: [ActorEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ConnectionAggregationCountFilterInput {
+              edges: IntScalarFilters
+              nodes: IntScalarFilters
+            }
+
+            type Count {
+              nodes: Int!
+            }
+
+            type CreateDogsMutationResponse {
+              dogs: [Dog!]!
+              info: CreateInfo!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships created during a create mutation
+            \\"\\"\\"
+            type CreateInfo {
+              nodesCreated: Int!
+              relationshipsCreated: Int!
+            }
+
+            type CreateMoviesMutationResponse {
+              info: CreateInfo!
+              movies: [Movie!]!
+            }
+
+            type CreatePeopleMutationResponse {
+              info: CreateInfo!
+              people: [Person!]!
+            }
+
+            type CreateSeriesMutationResponse {
+              info: CreateInfo!
+              series: [Series!]!
+            }
+
+            \\"\\"\\"
+            Information about the number of nodes and relationships deleted during a delete mutation
+            \\"\\"\\"
+            type DeleteInfo {
+              nodesDeleted: Int!
+              relationshipsDeleted: Int!
+            }
+
+            type Dog implements Actor {
+              actedIn: Production!
+              actedInConnection: ActorActedInConnection!
+              directed(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
+              directedConnection(after: String, first: Int, sort: [ActorDirectedConnectionSort!], where: ActorDirectedConnectionWhere): ActorDirectedConnection!
+              name: String!
+            }
+
+            type DogAggregate {
+              count: Count!
+              node: DogAggregateNode!
+            }
+
+            type DogAggregateNode {
+              name: StringAggregateSelection!
+            }
+
+            input DogCreateInput {
+              directed: DogDirectedFieldInput
+              name: String!
+            }
+
+            input DogDeleteInput {
+              directed: [DogDirectedDeleteFieldInput!]
+            }
+
+            input DogDirectedConnectFieldInput {
+              connect: ProductionConnectInput
+              where: ProductionConnectWhere
+            }
+
+            input DogDirectedConnectionAggregateInput {
+              AND: [DogDirectedConnectionAggregateInput!]
+              NOT: DogDirectedConnectionAggregateInput
+              OR: [DogDirectedConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: DogDirectedNodeAggregationWhereInput
+            }
+
+            input DogDirectedConnectionFilters {
+              \\"\\"\\"Filter Dogs by aggregating results on related ActorDirectedConnections\\"\\"\\"
+              aggregate: DogDirectedConnectionAggregateInput
+              \\"\\"\\"
+              Return Dogs where all of the related ActorDirectedConnections match this filter
+              \\"\\"\\"
+              all: ActorDirectedConnectionWhere
+              \\"\\"\\"
+              Return Dogs where none of the related ActorDirectedConnections match this filter
+              \\"\\"\\"
+              none: ActorDirectedConnectionWhere
+              \\"\\"\\"
+              Return Dogs where one of the related ActorDirectedConnections match this filter
+              \\"\\"\\"
+              single: ActorDirectedConnectionWhere
+              \\"\\"\\"
+              Return Dogs where some of the related ActorDirectedConnections match this filter
+              \\"\\"\\"
+              some: ActorDirectedConnectionWhere
+            }
+
+            input DogDirectedCreateFieldInput {
+              node: ProductionCreateInput!
+            }
+
+            input DogDirectedDeleteFieldInput {
+              delete: ProductionDeleteInput
+              where: ActorDirectedConnectionWhere
+            }
+
+            input DogDirectedDisconnectFieldInput {
+              disconnect: ProductionDisconnectInput
+              where: ActorDirectedConnectionWhere
+            }
+
+            input DogDirectedFieldInput {
+              connect: [DogDirectedConnectFieldInput!]
+              create: [DogDirectedCreateFieldInput!]
+            }
+
+            input DogDirectedNodeAggregationWhereInput {
+              AND: [DogDirectedNodeAggregationWhereInput!]
+              NOT: DogDirectedNodeAggregationWhereInput
+              OR: [DogDirectedNodeAggregationWhereInput!]
+              title: StringScalarAggregationFilters
+            }
+
+            input DogDirectedUpdateConnectionInput {
+              node: ProductionUpdateInput
+              where: ActorDirectedConnectionWhere
+            }
+
+            input DogDirectedUpdateFieldInput {
+              connect: [DogDirectedConnectFieldInput!]
+              create: [DogDirectedCreateFieldInput!]
+              delete: [DogDirectedDeleteFieldInput!]
+              disconnect: [DogDirectedDisconnectFieldInput!]
+              update: DogDirectedUpdateConnectionInput
+            }
+
+            type DogEdge {
+              cursor: String!
+              node: Dog!
+            }
+
+            \\"\\"\\"
+            Fields to sort Dogs by. The order in which sorts are applied is not guaranteed when specifying many fields in one DogSort object.
+            \\"\\"\\"
+            input DogSort {
+              name: SortDirection
+            }
+
+            input DogUpdateInput {
+              directed: [DogDirectedUpdateFieldInput!]
+              name: StringScalarMutations
+            }
+
+            input DogWhere {
+              AND: [DogWhere!]
+              NOT: DogWhere
+              OR: [DogWhere!]
+              directed: ProductionRelationshipFilters
+              directedConnection: DogDirectedConnectionFilters
+              name: StringScalarFilters
+            }
+
+            type DogsConnection {
+              aggregate: DogAggregate!
+              edges: [DogEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            \\"\\"\\"Float filters\\"\\"\\"
+            input FloatScalarFilters {
+              eq: Float
+              gt: Float
+              gte: Float
+              in: [Float!]
+              lt: Float
+              lte: Float
+            }
+
+            \\"\\"\\"Int filters\\"\\"\\"
+            input IntScalarFilters {
+              eq: Int
+              gt: Int
+              gte: Int
+              in: [Int!]
+              lt: Int
+              lte: Int
+            }
+
+            type Movie implements Production {
+              actor(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
+              actorConnection(after: String, first: Int, sort: [ProductionActorConnectionSort!], where: ProductionActorConnectionWhere): ProductionActorConnection!
+              director: Person!
+              directorConnection: ProductionDirectorConnection!
+              title: String!
+            }
+
+            input MovieActorConnectFieldInput {
+              connect: ActorConnectInput
+              where: ActorConnectWhere
+            }
+
+            input MovieActorConnectionAggregateInput {
+              AND: [MovieActorConnectionAggregateInput!]
+              NOT: MovieActorConnectionAggregateInput
+              OR: [MovieActorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: MovieActorNodeAggregationWhereInput
+            }
+
+            input MovieActorConnectionFilters {
+              \\"\\"\\"
+              Filter Movies by aggregating results on related ProductionActorConnections
+              \\"\\"\\"
+              aggregate: MovieActorConnectionAggregateInput
+              \\"\\"\\"
+              Return Movies where all of the related ProductionActorConnections match this filter
+              \\"\\"\\"
+              all: ProductionActorConnectionWhere
+              \\"\\"\\"
+              Return Movies where none of the related ProductionActorConnections match this filter
+              \\"\\"\\"
+              none: ProductionActorConnectionWhere
+              \\"\\"\\"
+              Return Movies where one of the related ProductionActorConnections match this filter
+              \\"\\"\\"
+              single: ProductionActorConnectionWhere
+              \\"\\"\\"
+              Return Movies where some of the related ProductionActorConnections match this filter
+              \\"\\"\\"
+              some: ProductionActorConnectionWhere
+            }
+
+            input MovieActorCreateFieldInput {
+              node: ActorCreateInput!
+            }
+
+            input MovieActorDeleteFieldInput {
+              delete: ActorDeleteInput
+              where: ProductionActorConnectionWhere
+            }
+
+            input MovieActorDisconnectFieldInput {
+              disconnect: ActorDisconnectInput
+              where: ProductionActorConnectionWhere
+            }
+
+            input MovieActorFieldInput {
+              connect: [MovieActorConnectFieldInput!]
+              create: [MovieActorCreateFieldInput!]
+            }
+
+            input MovieActorNodeAggregationWhereInput {
+              AND: [MovieActorNodeAggregationWhereInput!]
+              NOT: MovieActorNodeAggregationWhereInput
+              OR: [MovieActorNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
+            }
+
+            input MovieActorUpdateConnectionInput {
+              node: ActorUpdateInput
+              where: ProductionActorConnectionWhere
+            }
+
+            input MovieActorUpdateFieldInput {
+              connect: [MovieActorConnectFieldInput!]
+              create: [MovieActorCreateFieldInput!]
+              delete: [MovieActorDeleteFieldInput!]
+              disconnect: [MovieActorDisconnectFieldInput!]
+              update: MovieActorUpdateConnectionInput
+            }
+
+            type MovieAggregate {
+              count: Count!
+              node: MovieAggregateNode!
+            }
+
+            type MovieAggregateNode {
+              title: StringAggregateSelection!
+            }
+
+            input MovieCreateInput {
+              actor: MovieActorFieldInput
+              title: String!
+            }
+
+            input MovieDeleteInput {
+              actor: [MovieActorDeleteFieldInput!]
+            }
+
+            type MovieEdge {
+              cursor: String!
+              node: Movie!
+            }
+
+            \\"\\"\\"
+            Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
+            \\"\\"\\"
+            input MovieSort {
+              title: SortDirection
+            }
+
+            input MovieUpdateInput {
+              actor: [MovieActorUpdateFieldInput!]
+              title: StringScalarMutations
+            }
+
+            input MovieWhere {
+              AND: [MovieWhere!]
+              NOT: MovieWhere
+              OR: [MovieWhere!]
+              actor: ActorRelationshipFilters
+              actorConnection: MovieActorConnectionFilters
+              title: StringScalarFilters
+            }
+
+            type MoviesConnection {
+              aggregate: MovieAggregate!
+              edges: [MovieEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Mutation {
+              createDogs(input: [DogCreateInput!]!): CreateDogsMutationResponse!
+              createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
+              createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
+              createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
+              deleteDogs(delete: DogDeleteInput, where: DogWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
+              deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
+              deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
+              updateDogs(update: DogUpdateInput, where: DogWhere): UpdateDogsMutationResponse!
+              updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
+              updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
+              updateSeries(update: SeriesUpdateInput, where: SeriesWhere): UpdateSeriesMutationResponse!
+            }
+
+            \\"\\"\\"Pagination information (Relay)\\"\\"\\"
+            type PageInfo {
+              endCursor: String
+              hasNextPage: Boolean!
+              hasPreviousPage: Boolean!
+              startCursor: String
+            }
+
+            type PeopleConnection {
+              aggregate: PersonAggregate!
+              edges: [PersonEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Person implements Actor {
+              actedIn: Production!
+              actedInConnection: ActorActedInConnection!
+              directed(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
+              directedConnection(after: String, first: Int, sort: [ActorDirectedConnectionSort!], where: ActorDirectedConnectionWhere): ActorDirectedConnection!
+              name: String!
+            }
+
+            type PersonAggregate {
+              count: Count!
+              node: PersonAggregateNode!
+            }
+
+            type PersonAggregateNode {
+              name: StringAggregateSelection!
+            }
+
+            input PersonCreateInput {
+              directed: PersonDirectedFieldInput
+              name: String!
+            }
+
+            input PersonDeleteInput {
+              directed: [PersonDirectedDeleteFieldInput!]
+            }
+
+            input PersonDirectedConnectFieldInput {
+              connect: ProductionConnectInput
+              where: ProductionConnectWhere
+            }
+
+            input PersonDirectedConnectionAggregateInput {
+              AND: [PersonDirectedConnectionAggregateInput!]
+              NOT: PersonDirectedConnectionAggregateInput
+              OR: [PersonDirectedConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: PersonDirectedNodeAggregationWhereInput
+            }
+
+            input PersonDirectedConnectionFilters {
+              \\"\\"\\"
+              Filter People by aggregating results on related ActorDirectedConnections
+              \\"\\"\\"
+              aggregate: PersonDirectedConnectionAggregateInput
+              \\"\\"\\"
+              Return People where all of the related ActorDirectedConnections match this filter
+              \\"\\"\\"
+              all: ActorDirectedConnectionWhere
+              \\"\\"\\"
+              Return People where none of the related ActorDirectedConnections match this filter
+              \\"\\"\\"
+              none: ActorDirectedConnectionWhere
+              \\"\\"\\"
+              Return People where one of the related ActorDirectedConnections match this filter
+              \\"\\"\\"
+              single: ActorDirectedConnectionWhere
+              \\"\\"\\"
+              Return People where some of the related ActorDirectedConnections match this filter
+              \\"\\"\\"
+              some: ActorDirectedConnectionWhere
+            }
+
+            input PersonDirectedCreateFieldInput {
+              node: ProductionCreateInput!
+            }
+
+            input PersonDirectedDeleteFieldInput {
+              delete: ProductionDeleteInput
+              where: ActorDirectedConnectionWhere
+            }
+
+            input PersonDirectedDisconnectFieldInput {
+              disconnect: ProductionDisconnectInput
+              where: ActorDirectedConnectionWhere
+            }
+
+            input PersonDirectedFieldInput {
+              connect: [PersonDirectedConnectFieldInput!]
+              create: [PersonDirectedCreateFieldInput!]
+            }
+
+            input PersonDirectedNodeAggregationWhereInput {
+              AND: [PersonDirectedNodeAggregationWhereInput!]
+              NOT: PersonDirectedNodeAggregationWhereInput
+              OR: [PersonDirectedNodeAggregationWhereInput!]
+              title: StringScalarAggregationFilters
+            }
+
+            input PersonDirectedUpdateConnectionInput {
+              node: ProductionUpdateInput
+              where: ActorDirectedConnectionWhere
+            }
+
+            input PersonDirectedUpdateFieldInput {
+              connect: [PersonDirectedConnectFieldInput!]
+              create: [PersonDirectedCreateFieldInput!]
+              delete: [PersonDirectedDeleteFieldInput!]
+              disconnect: [PersonDirectedDisconnectFieldInput!]
+              update: PersonDirectedUpdateConnectionInput
+            }
+
+            type PersonEdge {
+              cursor: String!
+              node: Person!
+            }
+
+            \\"\\"\\"
+            Fields to sort People by. The order in which sorts are applied is not guaranteed when specifying many fields in one PersonSort object.
+            \\"\\"\\"
+            input PersonSort {
+              name: SortDirection
+            }
+
+            input PersonUpdateInput {
+              directed: [PersonDirectedUpdateFieldInput!]
+              name: StringScalarMutations
+            }
+
+            input PersonWhere {
+              AND: [PersonWhere!]
+              NOT: PersonWhere
+              OR: [PersonWhere!]
+              directed: ProductionRelationshipFilters
+              directedConnection: PersonDirectedConnectionFilters
+              name: StringScalarFilters
+            }
+
+            interface Production {
+              actor(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
+              actorConnection(after: String, first: Int, sort: [ProductionActorConnectionSort!], where: ProductionActorConnectionWhere): ProductionActorConnection!
+              director: Person!
+              directorConnection: ProductionDirectorConnection!
+              title: String!
+            }
+
+            input ProductionActorConnectFieldInput {
+              connect: ActorConnectInput
+              where: ActorConnectWhere
+            }
+
+            type ProductionActorConnection {
+              edges: [ProductionActorRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input ProductionActorConnectionAggregateInput {
+              AND: [ProductionActorConnectionAggregateInput!]
+              NOT: ProductionActorConnectionAggregateInput
+              OR: [ProductionActorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: ProductionActorNodeAggregationWhereInput
+            }
+
+            input ProductionActorConnectionFilters {
+              \\"\\"\\"
+              Filter Productions by aggregating results on related ProductionActorConnections
+              \\"\\"\\"
+              aggregate: ProductionActorConnectionAggregateInput
+              \\"\\"\\"
+              Return Productions where all of the related ProductionActorConnections match this filter
+              \\"\\"\\"
+              all: ProductionActorConnectionWhere
+              \\"\\"\\"
+              Return Productions where none of the related ProductionActorConnections match this filter
+              \\"\\"\\"
+              none: ProductionActorConnectionWhere
+              \\"\\"\\"
+              Return Productions where one of the related ProductionActorConnections match this filter
+              \\"\\"\\"
+              single: ProductionActorConnectionWhere
+              \\"\\"\\"
+              Return Productions where some of the related ProductionActorConnections match this filter
+              \\"\\"\\"
+              some: ProductionActorConnectionWhere
+            }
+
+            input ProductionActorConnectionSort {
+              node: ActorSort
+            }
+
+            input ProductionActorConnectionWhere {
+              AND: [ProductionActorConnectionWhere!]
+              NOT: ProductionActorConnectionWhere
+              OR: [ProductionActorConnectionWhere!]
+              node: ActorWhere
+            }
+
+            input ProductionActorCreateFieldInput {
+              node: ActorCreateInput!
+            }
+
+            input ProductionActorDeleteFieldInput {
+              delete: ActorDeleteInput
+              where: ProductionActorConnectionWhere
+            }
+
+            input ProductionActorDisconnectFieldInput {
+              disconnect: ActorDisconnectInput
+              where: ProductionActorConnectionWhere
+            }
+
+            input ProductionActorNodeAggregationWhereInput {
+              AND: [ProductionActorNodeAggregationWhereInput!]
+              NOT: ProductionActorNodeAggregationWhereInput
+              OR: [ProductionActorNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
+            }
+
+            type ProductionActorRelationship {
+              cursor: String!
+              node: Actor!
+            }
+
+            input ProductionActorUpdateConnectionInput {
+              node: ActorUpdateInput
+              where: ProductionActorConnectionWhere
+            }
+
+            input ProductionActorUpdateFieldInput {
+              connect: [ProductionActorConnectFieldInput!]
+              create: [ProductionActorCreateFieldInput!]
+              delete: [ProductionActorDeleteFieldInput!]
+              disconnect: [ProductionActorDisconnectFieldInput!]
+              update: ProductionActorUpdateConnectionInput
+            }
+
+            type ProductionAggregate {
+              count: Count!
+              node: ProductionAggregateNode!
+            }
+
+            type ProductionAggregateNode {
+              title: StringAggregateSelection!
+            }
+
+            input ProductionConnectInput {
+              actor: [ProductionActorConnectFieldInput!]
+            }
+
+            input ProductionConnectWhere {
+              node: ProductionWhere!
+            }
+
+            input ProductionCreateInput {
+              Movie: MovieCreateInput
+              Series: SeriesCreateInput
+            }
+
+            input ProductionDeleteInput {
+              actor: [ProductionActorDeleteFieldInput!]
+            }
+
+            type ProductionDirectorConnection {
+              edges: [ProductionDirectorRelationship!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type ProductionDirectorRelationship {
+              cursor: String!
+              node: Person!
+            }
+
+            input ProductionDisconnectInput {
+              actor: [ProductionActorDisconnectFieldInput!]
+            }
+
+            type ProductionEdge {
+              cursor: String!
+              node: Production!
+            }
+
+            enum ProductionImplementation {
+              Movie
+              Series
+            }
+
+            input ProductionRelationshipFilters {
+              \\"\\"\\"Filter type where all of the related Productions match this filter\\"\\"\\"
+              all: ProductionWhere
+              \\"\\"\\"Filter type where none of the related Productions match this filter\\"\\"\\"
+              none: ProductionWhere
+              \\"\\"\\"Filter type where one of the related Productions match this filter\\"\\"\\"
+              single: ProductionWhere
+              \\"\\"\\"Filter type where some of the related Productions match this filter\\"\\"\\"
+              some: ProductionWhere
+            }
+
+            \\"\\"\\"
+            Fields to sort Productions by. The order in which sorts are applied is not guaranteed when specifying many fields in one ProductionSort object.
+            \\"\\"\\"
+            input ProductionSort {
+              title: SortDirection
+            }
+
+            input ProductionUpdateInput {
+              actor: [ProductionActorUpdateFieldInput!]
+              title: StringScalarMutations
+            }
+
+            input ProductionWhere {
+              AND: [ProductionWhere!]
+              NOT: ProductionWhere
+              OR: [ProductionWhere!]
+              actor: ActorRelationshipFilters
+              actorConnection: ProductionActorConnectionFilters
+              title: StringScalarFilters
+              typename: [ProductionImplementation!]
+            }
+
+            type ProductionsConnection {
+              aggregate: ProductionAggregate!
+              edges: [ProductionEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            type Query {
+              actors(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
+              actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+              dogs(limit: Int, offset: Int, sort: [DogSort!], where: DogWhere): [Dog!]!
+              dogsConnection(after: String, first: Int, sort: [DogSort!], where: DogWhere): DogsConnection!
+              movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+              people(limit: Int, offset: Int, sort: [PersonSort!], where: PersonWhere): [Person!]!
+              peopleConnection(after: String, first: Int, sort: [PersonSort!], where: PersonWhere): PeopleConnection!
+              productions(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
+              productionsConnection(after: String, first: Int, sort: [ProductionSort!], where: ProductionWhere): ProductionsConnection!
+              series(limit: Int, offset: Int, sort: [SeriesSort!], where: SeriesWhere): [Series!]!
+              seriesConnection(after: String, first: Int, sort: [SeriesSort!], where: SeriesWhere): SeriesConnection!
+            }
+
+            type Series implements Production {
+              actor(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
+              actorConnection(after: String, first: Int, sort: [ProductionActorConnectionSort!], where: ProductionActorConnectionWhere): ProductionActorConnection!
+              director: Person!
+              directorConnection: ProductionDirectorConnection!
+              title: String!
+            }
+
+            input SeriesActorConnectFieldInput {
+              connect: ActorConnectInput
+              where: ActorConnectWhere
+            }
+
+            input SeriesActorConnectionAggregateInput {
+              AND: [SeriesActorConnectionAggregateInput!]
+              NOT: SeriesActorConnectionAggregateInput
+              OR: [SeriesActorConnectionAggregateInput!]
+              count: ConnectionAggregationCountFilterInput
+              node: SeriesActorNodeAggregationWhereInput
+            }
+
+            input SeriesActorConnectionFilters {
+              \\"\\"\\"
+              Filter Series by aggregating results on related ProductionActorConnections
+              \\"\\"\\"
+              aggregate: SeriesActorConnectionAggregateInput
+              \\"\\"\\"
+              Return Series where all of the related ProductionActorConnections match this filter
+              \\"\\"\\"
+              all: ProductionActorConnectionWhere
+              \\"\\"\\"
+              Return Series where none of the related ProductionActorConnections match this filter
+              \\"\\"\\"
+              none: ProductionActorConnectionWhere
+              \\"\\"\\"
+              Return Series where one of the related ProductionActorConnections match this filter
+              \\"\\"\\"
+              single: ProductionActorConnectionWhere
+              \\"\\"\\"
+              Return Series where some of the related ProductionActorConnections match this filter
+              \\"\\"\\"
+              some: ProductionActorConnectionWhere
+            }
+
+            input SeriesActorCreateFieldInput {
+              node: ActorCreateInput!
+            }
+
+            input SeriesActorDeleteFieldInput {
+              delete: ActorDeleteInput
+              where: ProductionActorConnectionWhere
+            }
+
+            input SeriesActorDisconnectFieldInput {
+              disconnect: ActorDisconnectInput
+              where: ProductionActorConnectionWhere
+            }
+
+            input SeriesActorFieldInput {
+              connect: [SeriesActorConnectFieldInput!]
+              create: [SeriesActorCreateFieldInput!]
+            }
+
+            input SeriesActorNodeAggregationWhereInput {
+              AND: [SeriesActorNodeAggregationWhereInput!]
+              NOT: SeriesActorNodeAggregationWhereInput
+              OR: [SeriesActorNodeAggregationWhereInput!]
+              name: StringScalarAggregationFilters
+            }
+
+            input SeriesActorUpdateConnectionInput {
+              node: ActorUpdateInput
+              where: ProductionActorConnectionWhere
+            }
+
+            input SeriesActorUpdateFieldInput {
+              connect: [SeriesActorConnectFieldInput!]
+              create: [SeriesActorCreateFieldInput!]
+              delete: [SeriesActorDeleteFieldInput!]
+              disconnect: [SeriesActorDisconnectFieldInput!]
+              update: SeriesActorUpdateConnectionInput
+            }
+
+            type SeriesAggregate {
+              count: Count!
+              node: SeriesAggregateNode!
+            }
+
+            type SeriesAggregateNode {
+              title: StringAggregateSelection!
+            }
+
+            type SeriesConnection {
+              aggregate: SeriesAggregate!
+              edges: [SeriesEdge!]!
+              pageInfo: PageInfo!
+              totalCount: Int!
+            }
+
+            input SeriesCreateInput {
+              actor: SeriesActorFieldInput
+              title: String!
+            }
+
+            input SeriesDeleteInput {
+              actor: [SeriesActorDeleteFieldInput!]
+            }
+
+            type SeriesEdge {
+              cursor: String!
+              node: Series!
+            }
+
+            \\"\\"\\"
+            Fields to sort Series by. The order in which sorts are applied is not guaranteed when specifying many fields in one SeriesSort object.
+            \\"\\"\\"
+            input SeriesSort {
+              title: SortDirection
+            }
+
+            input SeriesUpdateInput {
+              actor: [SeriesActorUpdateFieldInput!]
+              title: StringScalarMutations
+            }
+
+            input SeriesWhere {
+              AND: [SeriesWhere!]
+              NOT: SeriesWhere
+              OR: [SeriesWhere!]
+              actor: ActorRelationshipFilters
+              actorConnection: SeriesActorConnectionFilters
+              title: StringScalarFilters
+            }
+
+            \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"
+            enum SortDirection {
+              \\"\\"\\"Sort by field values in ascending order.\\"\\"\\"
+              ASC
+              \\"\\"\\"Sort by field values in descending order.\\"\\"\\"
+              DESC
+            }
+
+            type StringAggregateSelection {
+              longest: String
+              shortest: String
+            }
+
+            \\"\\"\\"Filters for an aggregation of a string field\\"\\"\\"
+            input StringScalarAggregationFilters {
+              averageLength: FloatScalarFilters
+              longestLength: IntScalarFilters
+              shortestLength: IntScalarFilters
             }
 
             \\"\\"\\"String filters\\"\\"\\"

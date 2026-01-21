@@ -61,6 +61,10 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField({
         }
     }
 
+    if (!relationshipAdapter.isList) {
+        generateRelFieldArgs = false;
+    }
+
     if (generateRelFieldArgs) {
         const relationshipTarget =
             relationshipAdapter instanceof RelationshipAdapter && relationshipAdapter.originalTarget
@@ -73,19 +77,17 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField({
             where: whereTypeName,
         };
 
-        if (relationshipAdapter.isList) {
-            nodeFieldsArgs["limit"] = features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt;
-            nodeFieldsArgs["offset"] = GraphQLInt;
+        nodeFieldsArgs["limit"] = features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt;
+        nodeFieldsArgs["offset"] = GraphQLInt;
 
-            if (!(relationshipTarget instanceof UnionEntityAdapter)) {
-                const sortConfig = makeSortInput({
-                    entityAdapter: relationshipTarget,
-                    userDefinedFieldDirectives: new Map(),
-                    composer,
-                });
-                if (sortConfig) {
-                    nodeFieldsArgs["sort"] = sortConfig.NonNull.List;
-                }
+        if (!(relationshipTarget instanceof UnionEntityAdapter)) {
+            const sortConfig = makeSortInput({
+                entityAdapter: relationshipTarget,
+                userDefinedFieldDirectives: new Map(),
+                composer,
+            });
+            if (sortConfig) {
+                nodeFieldsArgs["sort"] = sortConfig.NonNull.List;
             }
         }
 
@@ -110,13 +112,14 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
             (directive) => directive.name.value === DEPRECATED
         )
     );
-    const composeNodeArgs: ObjectTypeComposerArgumentConfigMapDefinition = {
-        where: makeConnectionWhereInputType({
+    const composeNodeArgs: ObjectTypeComposerArgumentConfigMapDefinition = {};
+
+    if (relationshipAdapter.isList) {
+        composeNodeArgs.where = makeConnectionWhereInputType({
             relationshipAdapter,
             composer: schemaComposer,
-        }),
-    };
-    if (relationshipAdapter.isList) {
+        });
+
         composeNodeArgs.first = {
             type: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
         };
