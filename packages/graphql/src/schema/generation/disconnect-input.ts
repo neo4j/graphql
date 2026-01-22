@@ -42,7 +42,7 @@ function withDisconnectInputType({
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
     if (entityAdapter instanceof ConcreteEntityAdapter) {
-        if (![...entityAdapter.relationships.values()].find((r) => r.isList)) {
+        if (!entityAdapter.hasListRelationship()) {
             return undefined;
         }
         return composer.getOrCreateITC(entityAdapter.operations.updateMutationArgumentNames.disconnect);

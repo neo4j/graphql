@@ -20,11 +20,11 @@
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
-describe("1-* relationship involving Interface type", () => {
+describe("1-* relationship involving Interface type declared relationship", () => {
     let Movie: UniqueType;
     let Person: UniqueType;
     let Dog: UniqueType;
-    let AI: UniqueType;
+    let Series: UniqueType;
 
     const testHelper = new TestHelper();
 
@@ -32,32 +32,42 @@ describe("1-* relationship involving Interface type", () => {
         Movie = testHelper.createUniqueType("Movie");
         Person = testHelper.createUniqueType("Person");
         Dog = testHelper.createUniqueType("Dog");
-        AI = testHelper.createUniqueType("AI");
+        Series = testHelper.createUniqueType("Series");
 
         const typeDefs = /* GraphQL */ `
             interface Actor {
                 name: String!
+                actedIn: Production! @declareRelationship
+                directed: [Production!]! @declareRelationship
             }
-            interface Director {
-                years: Int!
+            interface Production {
+                title: String!
+                actor: [Actor!]! @declareRelationship
+                director: ${Person}! @declareRelationship
             }
 
-            type ${Movie} @node {
+            type ${Movie} implements Production @node {
                 title: String!
-                actor: [${Dog}!]! @relationship(type: "ACTED_IN", direction: IN)
+                actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                director: ${Person}! @relationship(type: "DIRECTED", direction: IN)
+            }
+
+            type ${Series} implements Production @node {
+                title: String!
+                actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
                 director: ${Person}! @relationship(type: "DIRECTED", direction: IN)
             }
 
             type ${Dog} implements Actor @node {
                 name: String!
-                actedIn: ${Movie}! @relationship(type: "ACTED_IN", direction: OUT)
+                actedIn: Production! @relationship(type: "ACTED_IN", direction: OUT)
+                directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT)
             }
 
-            type ${Person} implements Actor & Director @node{
+            type ${Person} implements Actor @node{
                 name: String!
-                years: Int!
-                actedIn: ${Movie}! @relationship(type: "ACTED_IN", direction: OUT)
-                directed: [${Movie}!]! @relationship(type: "DIRECTED", direction: OUT)
+                actedIn: Production! @relationship(type: "ACTED_IN", direction: OUT)
+                directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT)
              }
         `;
 
@@ -74,14 +84,15 @@ describe("1-* relationship involving Interface type", () => {
         await testHelper.executeCypher(`
             CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
             CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
-            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director", years: 10})
-            CREATE(d)-[:DIRECTED]->(m2:${Movie} { title: "The Office"})
-            CREATE(a)-[:ACTED_IN]->(m2)
+            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director"})
+            CREATE(d)-[:DIRECTED]->(s:${Series} { title: "The Office"})
+            CREATE(a)-[:ACTED_IN]->(s)
+
         `);
 
         const query = `
             query {
-               ${Movie.plural} {
+              productions {
                     actor {
                         name
                         actedIn {
@@ -89,10 +100,10 @@ describe("1-* relationship involving Interface type", () => {
                         }
                     }
                     director {
-                       years
+                       name
                        directed {
                             title
-                        }
+                       }
                     }
                 }
             }
@@ -101,7 +112,7 @@ describe("1-* relationship involving Interface type", () => {
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [Movie.plural]: [
+            productions: [
                 {
                     actor: [
                         {
@@ -110,16 +121,20 @@ describe("1-* relationship involving Interface type", () => {
                                 title: "The Matrix",
                             },
                         },
+                        {
+                            name: "Keanu",
+                            actedIn: {
+                                title: "The Matrix",
+                            },
+                        },
                     ],
                     director: {
-                        years: 10,
+                        name: "Director",
                         directed: [
                             {
                                 title: "The Matrix",
                             },
-                            {
-                                title: "The Office",
-                            },
+                            { title: "The Office" },
                         ],
                     },
                 },
@@ -133,14 +148,12 @@ describe("1-* relationship involving Interface type", () => {
                         },
                     ],
                     director: {
-                        years: 10,
+                        name: "Director",
                         directed: [
                             {
                                 title: "The Matrix",
                             },
-                            {
-                                title: "The Office",
-                            },
+                            { title: "The Office" },
                         ],
                     },
                 },
@@ -148,29 +161,29 @@ describe("1-* relationship involving Interface type", () => {
         });
     });
 
-    test("returns filtered", async () => {
+    test("returns filtered fields", async () => {
         await testHelper.executeCypher(`
             CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
             CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
-            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director", years: 10})
-            CREATE(d)-[:DIRECTED]->(m2:${Movie} { title: "The Office"})
-            CREATE(a)-[:ACTED_IN]->(m2)
+            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director"})
+            CREATE(d)-[:DIRECTED]->(s:${Series} { title: "The Office"})
+            CREATE(a)-[:ACTED_IN]->(s)
         `);
 
         const query = `
             query {
-               ${Movie.plural}(where: {title: {eq: "The Matrix"}}) {
-                    actor(where: { name: {startsWith: "K" } }) {
+              productions {
+                    actor(where: { name: { eq: "Hachiko" }}) {
                         name
                         actedIn {
                             title
                         }
                     }
                     director {
-                       years
-                       directed(where: {title: { eq: "The Office"} }) {
+                       name
+                       directed(where: { title: { eq: "The Office"} }) {
                             title
-                        }
+                       }
                     }
                 }
             }
@@ -179,16 +192,33 @@ describe("1-* relationship involving Interface type", () => {
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [Movie.plural]: [
+            productions: [
                 {
-                    actor: [],
-                    director: {
-                        years: 10,
-                        directed: [
-                            {
-                                title: "The Office",
+                    actor: [
+                        {
+                            name: "Hachiko",
+                            actedIn: {
+                                title: "The Matrix",
                             },
-                        ],
+                        },
+                    ],
+                    director: {
+                        name: "Director",
+                        directed: [{ title: "The Office" }],
+                    },
+                },
+                {
+                    actor: [
+                        {
+                            name: "Hachiko",
+                            actedIn: {
+                                title: "The Matrix",
+                            },
+                        },
+                    ],
+                    director: {
+                        name: "Director",
+                        directed: [{ title: "The Office" }],
                     },
                 },
             ],
@@ -199,25 +229,25 @@ describe("1-* relationship involving Interface type", () => {
         await testHelper.executeCypher(`
             CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
             CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
-            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director", years: 10})
-            CREATE(d)-[:DIRECTED]->(m2:${Movie} { title: "The Office"})
-            CREATE(a)-[:ACTED_IN]->(m2)
+            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director"})
+            CREATE(d)-[:DIRECTED]->(s:${Series} { title: "The Office"})
+            CREATE(a)-[:ACTED_IN]->(s)
         `);
 
         const query = `
             query {
-               ${Movie.plural} {
+              productions {
                     actor {
                         name
                         actedIn {
                             title
                         }
                     }
-                    director(where: {name: { eq: "Keanu"} }) {
-                       years
+                    director(where: { name: { eq: "Hachiko" }}) {
+                       name
                        directed {
                             title
-                        }
+                       }
                     }
                 }
             }
@@ -226,7 +256,7 @@ describe("1-* relationship involving Interface type", () => {
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toHaveLength(1);
         expect((result.errors?.[0] || { message: "" }).message).toBe(
-            `Unknown argument "where" on field "${Movie}.director".`
+            `Unknown argument "where" on field "Production.director".`
         );
     });
 });
