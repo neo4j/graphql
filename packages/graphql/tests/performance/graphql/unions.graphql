@@ -45,22 +45,3 @@ query NestedUnion {
         }
     }
 }
-
-query NestedUnionWithMissingFields {
-    people {
-        name
-        likes {
-            ... on Person {
-                name
-                likes {
-                    ... on Person {
-                        name
-                    }
-                    ... on Movie {
-                        title
-                    }
-                }
-            }
-        }
-    }
-}

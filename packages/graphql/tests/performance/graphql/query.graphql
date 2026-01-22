@@ -36,51 +36,7 @@ query Nested {
     }
 }
 
-query DeeplyNested_skip {
-    movies {
-        actors {
-            name
-            movies {
-                title
-                actors {
-                    name
-                    movies {
-                        title
-                        actors {
-                            name
-                        }
-                        directors {
-                            name
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-
-query OrFilterOnRelationships {
-    movies(
-        where: {
-            OR: [
-                { actors_SOME: { born: { eq: 1997 } } }
-                { actors_SOME: { born: { eq: 1998 } } }
-                { actors_SOME: { born: { eq: 1999 } } }
-                { actors_SOME: { born: { eq: 1956 } } }
-                { actors_SOME: { born: { eq: 1975 } } }
-                { actors_SOME: { born: { eq: 1976 } } }
-            ]
-        }
-    ) {
-        title
-        actors {
-            name
-            born
-        }
-    }
-}
-
-query OrFilterOnRelationshipsAndNested {
+query OrFilterOnRelationshipsAndNestedFilters {
     movies(
         where: {
             OR: [

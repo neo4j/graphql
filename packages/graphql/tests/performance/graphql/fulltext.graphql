@@ -24,3 +24,14 @@ query FulltextWithNestedQuery {
         }
     }
 }
+
+query FulltextWithSort {
+    movieTaglineFulltextQuery(first: 1000, phrase: "*", sort: [{ node: { title: ASC } }]) {
+        edges {
+            node {
+                title
+                tagline
+            }
+        }
+    }
+}
