@@ -1525,6 +1525,7 @@ describe("single item relationships to an Interface type", () => {
 
             input AIDirectedConnectFieldInput {
               connect: [MovieConnectInput!]
+              edge: DirectedCreateInput!
               where: MovieConnectWhere
             }
 
@@ -1540,6 +1541,7 @@ describe("single item relationships to an Interface type", () => {
               NOT: AIDirectedConnectionAggregateInput
               OR: [AIDirectedConnectionAggregateInput!]
               count: ConnectionAggregationCountFilterInput
+              edge: DirectedAggregationWhereInput
               node: AIDirectedNodeAggregationWhereInput
             }
 
@@ -1565,6 +1567,7 @@ describe("single item relationships to an Interface type", () => {
             }
 
             input AIDirectedConnectionSort {
+              edge: DirectedSort
               node: MovieSort
             }
 
@@ -1572,10 +1575,12 @@ describe("single item relationships to an Interface type", () => {
               AND: [AIDirectedConnectionWhere!]
               NOT: AIDirectedConnectionWhere
               OR: [AIDirectedConnectionWhere!]
+              edge: DirectedWhere
               node: MovieWhere
             }
 
             input AIDirectedCreateFieldInput {
+              edge: DirectedCreateInput!
               node: MovieCreateInput!
             }
 
@@ -1604,9 +1609,11 @@ describe("single item relationships to an Interface type", () => {
             type AIDirectedRelationship {
               cursor: String!
               node: Movie!
+              properties: Directed!
             }
 
             input AIDirectedUpdateConnectionInput {
+              edge: DirectedUpdateInput
               node: MovieUpdateInput
               where: AIDirectedConnectionWhere
             }
@@ -1626,7 +1633,12 @@ describe("single item relationships to an Interface type", () => {
 
             type AIMovieDirectedAggregateSelection {
               count: CountConnection!
+              edge: AIMovieDirectedEdgeAggregateSelection
               node: AIMovieDirectedNodeAggregateSelection
+            }
+
+            type AIMovieDirectedEdgeAggregateSelection {
+              year: IntAggregateSelection!
             }
 
             type AIMovieDirectedNodeAggregateSelection {
@@ -1655,6 +1667,42 @@ describe("single item relationships to an Interface type", () => {
               directedConnection: AIDirectedConnectionFilters
               model: StringScalarFilters
               years: IntScalarFilters
+            }
+
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.actor
+            * Dog.actedIn
+            * Person.actedIn
+            \\"\\"\\"
+            type ActedIn {
+              scenes: Int!
+            }
+
+            input ActedInAggregationWhereInput {
+              AND: [ActedInAggregationWhereInput!]
+              NOT: ActedInAggregationWhereInput
+              OR: [ActedInAggregationWhereInput!]
+              scenes: IntScalarAggregationFilters
+            }
+
+            input ActedInCreateInput {
+              scenes: Int!
+            }
+
+            input ActedInSort {
+              scenes: SortDirection
+            }
+
+            input ActedInUpdateInput {
+              scenes: IntScalarMutations
+            }
+
+            input ActedInWhere {
+              AND: [ActedInWhere!]
+              NOT: ActedInWhere
+              OR: [ActedInWhere!]
+              scenes: IntScalarFilters
             }
 
             interface Actor {
@@ -1783,6 +1831,41 @@ describe("single item relationships to an Interface type", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.director
+            * AI.directed
+            \\"\\"\\"
+            type Directed {
+              year: Int!
+            }
+
+            input DirectedAggregationWhereInput {
+              AND: [DirectedAggregationWhereInput!]
+              NOT: DirectedAggregationWhereInput
+              OR: [DirectedAggregationWhereInput!]
+              year: IntScalarAggregationFilters
+            }
+
+            input DirectedCreateInput {
+              year: Int!
+            }
+
+            input DirectedSort {
+              year: SortDirection
+            }
+
+            input DirectedUpdateInput {
+              year: IntScalarMutations
+            }
+
+            input DirectedWhere {
+              AND: [DirectedWhere!]
+              NOT: DirectedWhere
+              OR: [DirectedWhere!]
+              year: IntScalarFilters
+            }
+
             interface Director {
               years: Int!
             }
@@ -1844,12 +1927,14 @@ describe("single item relationships to an Interface type", () => {
               AND: [DogActedInConnectionWhere!]
               NOT: DogActedInConnectionWhere
               OR: [DogActedInConnectionWhere!]
+              edge: ActedInWhere
               node: MovieWhere
             }
 
             type DogActedInRelationship {
               cursor: String!
               node: Movie!
+              properties: ActedIn!
             }
 
             type DogAggregate {
@@ -1914,6 +1999,14 @@ describe("single item relationships to an Interface type", () => {
               sum: Int
             }
 
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
               eq: Int
@@ -1941,7 +2034,12 @@ describe("single item relationships to an Interface type", () => {
 
             type MovieActorActorAggregateSelection {
               count: CountConnection!
+              edge: MovieActorActorEdgeAggregateSelection
               node: MovieActorActorNodeAggregateSelection
+            }
+
+            type MovieActorActorEdgeAggregateSelection {
+              scenes: IntAggregateSelection!
             }
 
             type MovieActorActorNodeAggregateSelection {
@@ -1949,6 +2047,7 @@ describe("single item relationships to an Interface type", () => {
             }
 
             input MovieActorConnectFieldInput {
+              edge: ActedInCreateInput!
               where: ActorConnectWhere
             }
 
@@ -1964,6 +2063,7 @@ describe("single item relationships to an Interface type", () => {
               NOT: MovieActorConnectionAggregateInput
               OR: [MovieActorConnectionAggregateInput!]
               count: ConnectionAggregationCountFilterInput
+              edge: ActedInAggregationWhereInput
               node: MovieActorNodeAggregationWhereInput
             }
 
@@ -1989,6 +2089,7 @@ describe("single item relationships to an Interface type", () => {
             }
 
             input MovieActorConnectionSort {
+              edge: ActedInSort
               node: ActorSort
             }
 
@@ -1996,10 +2097,12 @@ describe("single item relationships to an Interface type", () => {
               AND: [MovieActorConnectionWhere!]
               NOT: MovieActorConnectionWhere
               OR: [MovieActorConnectionWhere!]
+              edge: ActedInWhere
               node: ActorWhere
             }
 
             input MovieActorCreateFieldInput {
+              edge: ActedInCreateInput!
               node: ActorCreateInput!
             }
 
@@ -2026,9 +2129,11 @@ describe("single item relationships to an Interface type", () => {
             type MovieActorRelationship {
               cursor: String!
               node: Actor!
+              properties: ActedIn!
             }
 
             input MovieActorUpdateConnectionInput {
+              edge: ActedInUpdateInput
               node: ActorUpdateInput
               where: MovieActorConnectionWhere
             }
@@ -2077,12 +2182,14 @@ describe("single item relationships to an Interface type", () => {
               AND: [MovieDirectorConnectionWhere!]
               NOT: MovieDirectorConnectionWhere
               OR: [MovieDirectorConnectionWhere!]
+              edge: DirectedWhere
               node: DirectorWhere
             }
 
             type MovieDirectorRelationship {
               cursor: String!
               node: Director!
+              properties: Directed!
             }
 
             input MovieDisconnectInput {
@@ -2182,12 +2289,14 @@ describe("single item relationships to an Interface type", () => {
               AND: [PersonActedInConnectionWhere!]
               NOT: PersonActedInConnectionWhere
               OR: [PersonActedInConnectionWhere!]
+              edge: ActedInWhere
               node: MovieWhere
             }
 
             type PersonActedInRelationship {
               cursor: String!
               node: Movie!
+              properties: ActedIn!
             }
 
             type PersonAggregate {

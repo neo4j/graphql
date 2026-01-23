@@ -1486,6 +1486,7 @@ describe("single item relationships to an Union type", () => {
 
             input AIDirectedConnectFieldInput {
               connect: [MovieConnectInput!]
+              edge: DirectedCreateInput!
               where: MovieConnectWhere
             }
 
@@ -1501,6 +1502,7 @@ describe("single item relationships to an Union type", () => {
               NOT: AIDirectedConnectionAggregateInput
               OR: [AIDirectedConnectionAggregateInput!]
               count: ConnectionAggregationCountFilterInput
+              edge: DirectedAggregationWhereInput
               node: AIDirectedNodeAggregationWhereInput
             }
 
@@ -1526,6 +1528,7 @@ describe("single item relationships to an Union type", () => {
             }
 
             input AIDirectedConnectionSort {
+              edge: DirectedSort
               node: MovieSort
             }
 
@@ -1533,10 +1536,12 @@ describe("single item relationships to an Union type", () => {
               AND: [AIDirectedConnectionWhere!]
               NOT: AIDirectedConnectionWhere
               OR: [AIDirectedConnectionWhere!]
+              edge: DirectedWhere
               node: MovieWhere
             }
 
             input AIDirectedCreateFieldInput {
+              edge: DirectedCreateInput!
               node: MovieCreateInput!
             }
 
@@ -1565,9 +1570,11 @@ describe("single item relationships to an Union type", () => {
             type AIDirectedRelationship {
               cursor: String!
               node: Movie!
+              properties: Directed!
             }
 
             input AIDirectedUpdateConnectionInput {
+              edge: DirectedUpdateInput
               node: MovieUpdateInput
               where: AIDirectedConnectionWhere
             }
@@ -1587,7 +1594,12 @@ describe("single item relationships to an Union type", () => {
 
             type AIMovieDirectedAggregateSelection {
               count: CountConnection!
+              edge: AIMovieDirectedEdgeAggregateSelection
               node: AIMovieDirectedNodeAggregateSelection
+            }
+
+            type AIMovieDirectedEdgeAggregateSelection {
+              year: IntAggregateSelection!
             }
 
             type AIMovieDirectedNodeAggregateSelection {
@@ -1613,6 +1625,35 @@ describe("single item relationships to an Union type", () => {
               directed: MovieRelationshipFilters
               directedConnection: AIDirectedConnectionFilters
               model: StringScalarFilters
+            }
+
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.actor
+            * Person.actedIn
+            * Dog.actedIn
+            \\"\\"\\"
+            type ActedIn {
+              scenes: Int!
+            }
+
+            input ActedInCreateInput {
+              scenes: Int!
+            }
+
+            input ActedInSort {
+              scenes: SortDirection
+            }
+
+            input ActedInUpdateInput {
+              scenes: IntScalarMutations
+            }
+
+            input ActedInWhere {
+              AND: [ActedInWhere!]
+              NOT: ActedInWhere
+              OR: [ActedInWhere!]
+              scenes: IntScalarFilters
             }
 
             union Actor = Dog | Person
@@ -1690,6 +1731,42 @@ describe("single item relationships to an Union type", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.director
+            * Person.directed
+            * AI.directed
+            \\"\\"\\"
+            type Directed {
+              year: Int!
+            }
+
+            input DirectedAggregationWhereInput {
+              AND: [DirectedAggregationWhereInput!]
+              NOT: DirectedAggregationWhereInput
+              OR: [DirectedAggregationWhereInput!]
+              year: IntScalarAggregationFilters
+            }
+
+            input DirectedCreateInput {
+              year: Int!
+            }
+
+            input DirectedSort {
+              year: SortDirection
+            }
+
+            input DirectedUpdateInput {
+              year: IntScalarMutations
+            }
+
+            input DirectedWhere {
+              AND: [DirectedWhere!]
+              NOT: DirectedWhere
+              OR: [DirectedWhere!]
+              year: IntScalarFilters
+            }
+
             union Director = AI | Person
 
             input DirectorWhere {
@@ -1713,12 +1790,14 @@ describe("single item relationships to an Union type", () => {
               AND: [DogActedInConnectionWhere!]
               NOT: DogActedInConnectionWhere
               OR: [DogActedInConnectionWhere!]
+              edge: ActedInWhere
               node: MovieWhere
             }
 
             type DogActedInRelationship {
               cursor: String!
               node: Movie!
+              properties: ActedIn!
             }
 
             type DogAggregate {
@@ -1780,6 +1859,21 @@ describe("single item relationships to an Union type", () => {
               lte: Float
             }
 
+            type IntAggregateSelection {
+              average: Float
+              max: Int
+              min: Int
+              sum: Int
+            }
+
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
               eq: Int
@@ -1790,9 +1884,16 @@ describe("single item relationships to an Union type", () => {
               lte: Int
             }
 
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
+            }
+
             type Movie {
               actor(limit: Int, offset: Int, where: ActorWhere): [Actor!]!
-              actorConnection(after: String, first: Int, where: MovieActorConnectionWhere): MovieActorConnection!
+              actorConnection(after: String, first: Int, sort: [MovieActorConnectionSort!], where: MovieActorConnectionWhere): MovieActorConnection!
               director: Director!
               directorConnection: MovieDirectorConnection!
               title: String!
@@ -1828,6 +1929,10 @@ describe("single item relationships to an Union type", () => {
               some: MovieActorConnectionWhere
             }
 
+            input MovieActorConnectionSort {
+              edge: ActedInSort
+            }
+
             input MovieActorConnectionWhere {
               Dog: MovieActorDogConnectionWhere
               Person: MovieActorPersonConnectionWhere
@@ -1849,6 +1954,7 @@ describe("single item relationships to an Union type", () => {
             }
 
             input MovieActorDogConnectFieldInput {
+              edge: ActedInCreateInput!
               where: DogConnectWhere
             }
 
@@ -1856,10 +1962,12 @@ describe("single item relationships to an Union type", () => {
               AND: [MovieActorDogConnectionWhere!]
               NOT: MovieActorDogConnectionWhere
               OR: [MovieActorDogConnectionWhere!]
+              edge: ActedInWhere
               node: DogWhere
             }
 
             input MovieActorDogCreateFieldInput {
+              edge: ActedInCreateInput!
               node: DogCreateInput!
             }
 
@@ -1877,6 +1985,7 @@ describe("single item relationships to an Union type", () => {
             }
 
             input MovieActorDogUpdateConnectionInput {
+              edge: ActedInUpdateInput
               node: DogUpdateInput
               where: MovieActorDogConnectionWhere
             }
@@ -1891,6 +2000,7 @@ describe("single item relationships to an Union type", () => {
 
             input MovieActorPersonConnectFieldInput {
               connect: [PersonConnectInput!]
+              edge: ActedInCreateInput!
               where: PersonConnectWhere
             }
 
@@ -1898,10 +2008,12 @@ describe("single item relationships to an Union type", () => {
               AND: [MovieActorPersonConnectionWhere!]
               NOT: MovieActorPersonConnectionWhere
               OR: [MovieActorPersonConnectionWhere!]
+              edge: ActedInWhere
               node: PersonWhere
             }
 
             input MovieActorPersonCreateFieldInput {
+              edge: ActedInCreateInput!
               node: PersonCreateInput!
             }
 
@@ -1921,6 +2033,7 @@ describe("single item relationships to an Union type", () => {
             }
 
             input MovieActorPersonUpdateConnectionInput {
+              edge: ActedInUpdateInput
               node: PersonUpdateInput
               where: MovieActorPersonConnectionWhere
             }
@@ -1936,6 +2049,7 @@ describe("single item relationships to an Union type", () => {
             type MovieActorRelationship {
               cursor: String!
               node: Actor!
+              properties: ActedIn!
             }
 
             input MovieActorUpdateInput {
@@ -1973,6 +2087,7 @@ describe("single item relationships to an Union type", () => {
               AND: [MovieDirectorAIConnectionWhere!]
               NOT: MovieDirectorAIConnectionWhere
               OR: [MovieDirectorAIConnectionWhere!]
+              edge: DirectedWhere
               node: AIWhere
             }
 
@@ -1991,12 +2106,14 @@ describe("single item relationships to an Union type", () => {
               AND: [MovieDirectorPersonConnectionWhere!]
               NOT: MovieDirectorPersonConnectionWhere
               OR: [MovieDirectorPersonConnectionWhere!]
+              edge: DirectedWhere
               node: PersonWhere
             }
 
             type MovieDirectorRelationship {
               cursor: String!
               node: Director!
+              properties: Directed!
             }
 
             input MovieDisconnectInput {
@@ -2097,12 +2214,14 @@ describe("single item relationships to an Union type", () => {
               AND: [PersonActedInConnectionWhere!]
               NOT: PersonActedInConnectionWhere
               OR: [PersonActedInConnectionWhere!]
+              edge: ActedInWhere
               node: MovieWhere
             }
 
             type PersonActedInRelationship {
               cursor: String!
               node: Movie!
+              properties: ActedIn!
             }
 
             type PersonAggregate {
@@ -2133,6 +2252,7 @@ describe("single item relationships to an Union type", () => {
 
             input PersonDirectedConnectFieldInput {
               connect: [MovieConnectInput!]
+              edge: DirectedCreateInput!
               where: MovieConnectWhere
             }
 
@@ -2148,6 +2268,7 @@ describe("single item relationships to an Union type", () => {
               NOT: PersonDirectedConnectionAggregateInput
               OR: [PersonDirectedConnectionAggregateInput!]
               count: ConnectionAggregationCountFilterInput
+              edge: DirectedAggregationWhereInput
               node: PersonDirectedNodeAggregationWhereInput
             }
 
@@ -2175,6 +2296,7 @@ describe("single item relationships to an Union type", () => {
             }
 
             input PersonDirectedConnectionSort {
+              edge: DirectedSort
               node: MovieSort
             }
 
@@ -2182,10 +2304,12 @@ describe("single item relationships to an Union type", () => {
               AND: [PersonDirectedConnectionWhere!]
               NOT: PersonDirectedConnectionWhere
               OR: [PersonDirectedConnectionWhere!]
+              edge: DirectedWhere
               node: MovieWhere
             }
 
             input PersonDirectedCreateFieldInput {
+              edge: DirectedCreateInput!
               node: MovieCreateInput!
             }
 
@@ -2214,9 +2338,11 @@ describe("single item relationships to an Union type", () => {
             type PersonDirectedRelationship {
               cursor: String!
               node: Movie!
+              properties: Directed!
             }
 
             input PersonDirectedUpdateConnectionInput {
+              edge: DirectedUpdateInput
               node: MovieUpdateInput
               where: PersonDirectedConnectionWhere
             }
@@ -2240,7 +2366,12 @@ describe("single item relationships to an Union type", () => {
 
             type PersonMovieDirectedAggregateSelection {
               count: CountConnection!
+              edge: PersonMovieDirectedEdgeAggregateSelection
               node: PersonMovieDirectedNodeAggregateSelection
+            }
+
+            type PersonMovieDirectedEdgeAggregateSelection {
+              year: IntAggregateSelection!
             }
 
             type PersonMovieDirectedNodeAggregateSelection {

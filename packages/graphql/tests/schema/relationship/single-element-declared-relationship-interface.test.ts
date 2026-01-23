@@ -1783,6 +1783,76 @@ describe("single item relationships from a declared relationship", () => {
               mutation: Mutation
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.actor
+            * Dog.actedIn
+            \\"\\"\\"
+            type ActedInMovie {
+              scenes: Int!
+            }
+
+            input ActedInMovieAggregationWhereInput {
+              AND: [ActedInMovieAggregationWhereInput!]
+              NOT: ActedInMovieAggregationWhereInput
+              OR: [ActedInMovieAggregationWhereInput!]
+              scenes: IntScalarAggregationFilters
+            }
+
+            input ActedInMovieCreateInput {
+              scenes: Int!
+            }
+
+            input ActedInMovieSort {
+              scenes: SortDirection
+            }
+
+            input ActedInMovieUpdateInput {
+              scenes: IntScalarMutations
+            }
+
+            input ActedInMovieWhere {
+              AND: [ActedInMovieWhere!]
+              NOT: ActedInMovieWhere
+              OR: [ActedInMovieWhere!]
+              scenes: IntScalarFilters
+            }
+
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Series.actor
+            * Person.actedIn
+            \\"\\"\\"
+            type ActedInSeries {
+              episodes: Int!
+            }
+
+            input ActedInSeriesAggregationWhereInput {
+              AND: [ActedInSeriesAggregationWhereInput!]
+              NOT: ActedInSeriesAggregationWhereInput
+              OR: [ActedInSeriesAggregationWhereInput!]
+              episodes: IntScalarAggregationFilters
+            }
+
+            input ActedInSeriesCreateInput {
+              episodes: Int!
+            }
+
+            input ActedInSeriesSort {
+              episodes: SortDirection
+            }
+
+            input ActedInSeriesUpdateInput {
+              episodes: IntScalarMutations
+            }
+
+            input ActedInSeriesWhere {
+              AND: [ActedInSeriesWhere!]
+              NOT: ActedInSeriesWhere
+              OR: [ActedInSeriesWhere!]
+              episodes: IntScalarFilters
+            }
+
             interface Actor {
               actedIn: Production!
               actedInConnection: ActorActedInConnection!
@@ -1801,13 +1871,30 @@ describe("single item relationships from a declared relationship", () => {
               AND: [ActorActedInConnectionWhere!]
               NOT: ActorActedInConnectionWhere
               OR: [ActorActedInConnectionWhere!]
+              edge: ActorActedInEdgeWhere
               node: ProductionWhere
+            }
+
+            input ActorActedInEdgeWhere {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Dog
+              \\"\\"\\"
+              ActedInMovie: ActedInMovieWhere
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Person
+              \\"\\"\\"
+              ActedInSeries: ActedInSeriesWhere
             }
 
             type ActorActedInRelationship {
               cursor: String!
               node: Production!
+              properties: ActorActedInRelationshipProperties!
             }
+
+            union ActorActedInRelationshipProperties = ActedInMovie | ActedInSeries
 
             type ActorAggregate {
               count: Count!
@@ -1837,6 +1924,7 @@ describe("single item relationships from a declared relationship", () => {
 
             input ActorDirectedConnectFieldInput {
               connect: ProductionConnectInput
+              edge: ActorDirectedEdgeCreateInput!
               where: ProductionConnectWhere
             }
 
@@ -1851,6 +1939,7 @@ describe("single item relationships from a declared relationship", () => {
               NOT: ActorDirectedConnectionAggregateInput
               OR: [ActorDirectedConnectionAggregateInput!]
               count: ConnectionAggregationCountFilterInput
+              edge: ActorDirectedEdgeAggregationWhereInput
               node: ActorDirectedNodeAggregationWhereInput
             }
 
@@ -1878,6 +1967,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input ActorDirectedConnectionSort {
+              edge: ActorDirectedEdgeSort
               node: ProductionSort
             }
 
@@ -1885,10 +1975,12 @@ describe("single item relationships from a declared relationship", () => {
               AND: [ActorDirectedConnectionWhere!]
               NOT: ActorDirectedConnectionWhere
               OR: [ActorDirectedConnectionWhere!]
+              edge: ActorDirectedEdgeWhere
               node: ProductionWhere
             }
 
             input ActorDirectedCreateFieldInput {
+              edge: ActorDirectedEdgeCreateInput!
               node: ProductionCreateInput!
             }
 
@@ -1902,6 +1994,51 @@ describe("single item relationships from a declared relationship", () => {
               where: ActorDirectedConnectionWhere
             }
 
+            input ActorDirectedEdgeAggregationWhereInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Dog
+              * Person
+              \\"\\"\\"
+              Directed: DirectedAggregationWhereInput
+            }
+
+            input ActorDirectedEdgeCreateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Dog
+              * Person
+              \\"\\"\\"
+              Directed: DirectedCreateInput!
+            }
+
+            input ActorDirectedEdgeSort {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Dog
+              * Person
+              \\"\\"\\"
+              Directed: DirectedSort
+            }
+
+            input ActorDirectedEdgeUpdateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Dog
+              * Person
+              \\"\\"\\"
+              Directed: DirectedUpdateInput
+            }
+
+            input ActorDirectedEdgeWhere {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Dog
+              * Person
+              \\"\\"\\"
+              Directed: DirectedWhere
+            }
+
             input ActorDirectedNodeAggregationWhereInput {
               AND: [ActorDirectedNodeAggregationWhereInput!]
               NOT: ActorDirectedNodeAggregationWhereInput
@@ -1912,9 +2049,13 @@ describe("single item relationships from a declared relationship", () => {
             type ActorDirectedRelationship {
               cursor: String!
               node: Production!
+              properties: ActorDirectedRelationshipProperties!
             }
 
+            union ActorDirectedRelationshipProperties = Directed
+
             input ActorDirectedUpdateConnectionInput {
+              edge: ActorDirectedEdgeUpdateInput
               node: ProductionUpdateInput
               where: ActorDirectedConnectionWhere
             }
@@ -2028,6 +2169,43 @@ describe("single item relationships from a declared relationship", () => {
               relationshipsDeleted: Int!
             }
 
+            \\"\\"\\"
+            The edge properties for the following fields:
+            * Movie.director
+            * Series.director
+            * Dog.directed
+            * Person.directed
+            \\"\\"\\"
+            type Directed {
+              year: Int!
+            }
+
+            input DirectedAggregationWhereInput {
+              AND: [DirectedAggregationWhereInput!]
+              NOT: DirectedAggregationWhereInput
+              OR: [DirectedAggregationWhereInput!]
+              year: IntScalarAggregationFilters
+            }
+
+            input DirectedCreateInput {
+              year: Int!
+            }
+
+            input DirectedSort {
+              year: SortDirection
+            }
+
+            input DirectedUpdateInput {
+              year: IntScalarMutations
+            }
+
+            input DirectedWhere {
+              AND: [DirectedWhere!]
+              NOT: DirectedWhere
+              OR: [DirectedWhere!]
+              year: IntScalarFilters
+            }
+
             type Dog implements Actor {
               actedIn: Production!
               actedInConnection: ActorActedInConnection!
@@ -2056,6 +2234,7 @@ describe("single item relationships from a declared relationship", () => {
 
             input DogDirectedConnectFieldInput {
               connect: ProductionConnectInput
+              edge: DirectedCreateInput!
               where: ProductionConnectWhere
             }
 
@@ -2064,6 +2243,7 @@ describe("single item relationships from a declared relationship", () => {
               NOT: DogDirectedConnectionAggregateInput
               OR: [DogDirectedConnectionAggregateInput!]
               count: ConnectionAggregationCountFilterInput
+              edge: DirectedAggregationWhereInput
               node: DogDirectedNodeAggregationWhereInput
             }
 
@@ -2089,6 +2269,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input DogDirectedCreateFieldInput {
+              edge: DirectedCreateInput!
               node: ProductionCreateInput!
             }
 
@@ -2115,6 +2296,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input DogDirectedUpdateConnectionInput {
+              edge: DirectedUpdateInput
               node: ProductionUpdateInput
               where: ActorDirectedConnectionWhere
             }
@@ -2172,6 +2354,14 @@ describe("single item relationships from a declared relationship", () => {
               lte: Float
             }
 
+            \\"\\"\\"Filters for an aggregation of an int field\\"\\"\\"
+            input IntScalarAggregationFilters {
+              average: FloatScalarFilters
+              max: IntScalarFilters
+              min: IntScalarFilters
+              sum: IntScalarFilters
+            }
+
             \\"\\"\\"Int filters\\"\\"\\"
             input IntScalarFilters {
               eq: Int
@@ -2180,6 +2370,13 @@ describe("single item relationships from a declared relationship", () => {
               in: [Int!]
               lt: Int
               lte: Int
+            }
+
+            \\"\\"\\"Int mutations\\"\\"\\"
+            input IntScalarMutations {
+              add: Int
+              set: Int
+              subtract: Int
             }
 
             type Movie implements Production {
@@ -2192,6 +2389,7 @@ describe("single item relationships from a declared relationship", () => {
 
             input MovieActorConnectFieldInput {
               connect: ActorConnectInput
+              edge: ActedInMovieCreateInput!
               where: ActorConnectWhere
             }
 
@@ -2200,6 +2398,7 @@ describe("single item relationships from a declared relationship", () => {
               NOT: MovieActorConnectionAggregateInput
               OR: [MovieActorConnectionAggregateInput!]
               count: ConnectionAggregationCountFilterInput
+              edge: ActedInMovieAggregationWhereInput
               node: MovieActorNodeAggregationWhereInput
             }
 
@@ -2227,6 +2426,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input MovieActorCreateFieldInput {
+              edge: ActedInMovieCreateInput!
               node: ActorCreateInput!
             }
 
@@ -2253,6 +2453,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input MovieActorUpdateConnectionInput {
+              edge: ActedInMovieUpdateInput
               node: ActorUpdateInput
               where: ProductionActorConnectionWhere
             }
@@ -2376,6 +2577,7 @@ describe("single item relationships from a declared relationship", () => {
 
             input PersonDirectedConnectFieldInput {
               connect: ProductionConnectInput
+              edge: DirectedCreateInput!
               where: ProductionConnectWhere
             }
 
@@ -2384,6 +2586,7 @@ describe("single item relationships from a declared relationship", () => {
               NOT: PersonDirectedConnectionAggregateInput
               OR: [PersonDirectedConnectionAggregateInput!]
               count: ConnectionAggregationCountFilterInput
+              edge: DirectedAggregationWhereInput
               node: PersonDirectedNodeAggregationWhereInput
             }
 
@@ -2411,6 +2614,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input PersonDirectedCreateFieldInput {
+              edge: DirectedCreateInput!
               node: ProductionCreateInput!
             }
 
@@ -2437,6 +2641,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input PersonDirectedUpdateConnectionInput {
+              edge: DirectedUpdateInput
               node: ProductionUpdateInput
               where: ActorDirectedConnectionWhere
             }
@@ -2487,6 +2692,7 @@ describe("single item relationships from a declared relationship", () => {
 
             input ProductionActorConnectFieldInput {
               connect: ActorConnectInput
+              edge: ProductionActorEdgeCreateInput!
               where: ActorConnectWhere
             }
 
@@ -2501,6 +2707,7 @@ describe("single item relationships from a declared relationship", () => {
               NOT: ProductionActorConnectionAggregateInput
               OR: [ProductionActorConnectionAggregateInput!]
               count: ConnectionAggregationCountFilterInput
+              edge: ProductionActorEdgeAggregationWhereInput
               node: ProductionActorNodeAggregationWhereInput
             }
 
@@ -2528,6 +2735,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input ProductionActorConnectionSort {
+              edge: ProductionActorEdgeSort
               node: ActorSort
             }
 
@@ -2535,10 +2743,12 @@ describe("single item relationships from a declared relationship", () => {
               AND: [ProductionActorConnectionWhere!]
               NOT: ProductionActorConnectionWhere
               OR: [ProductionActorConnectionWhere!]
+              edge: ProductionActorEdgeWhere
               node: ActorWhere
             }
 
             input ProductionActorCreateFieldInput {
+              edge: ProductionActorEdgeCreateInput!
               node: ActorCreateInput!
             }
 
@@ -2552,6 +2762,71 @@ describe("single item relationships from a declared relationship", () => {
               where: ProductionActorConnectionWhere
             }
 
+            input ProductionActorEdgeAggregationWhereInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedInMovie: ActedInMovieAggregationWhereInput
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              ActedInSeries: ActedInSeriesAggregationWhereInput
+            }
+
+            input ProductionActorEdgeCreateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedInMovie: ActedInMovieCreateInput!
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              ActedInSeries: ActedInSeriesCreateInput!
+            }
+
+            input ProductionActorEdgeSort {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedInMovie: ActedInMovieSort
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              ActedInSeries: ActedInSeriesSort
+            }
+
+            input ProductionActorEdgeUpdateInput {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedInMovie: ActedInMovieUpdateInput
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              ActedInSeries: ActedInSeriesUpdateInput
+            }
+
+            input ProductionActorEdgeWhere {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              \\"\\"\\"
+              ActedInMovie: ActedInMovieWhere
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Series
+              \\"\\"\\"
+              ActedInSeries: ActedInSeriesWhere
+            }
+
             input ProductionActorNodeAggregationWhereInput {
               AND: [ProductionActorNodeAggregationWhereInput!]
               NOT: ProductionActorNodeAggregationWhereInput
@@ -2562,9 +2837,13 @@ describe("single item relationships from a declared relationship", () => {
             type ProductionActorRelationship {
               cursor: String!
               node: Actor!
+              properties: ProductionActorRelationshipProperties!
             }
 
+            union ProductionActorRelationshipProperties = ActedInMovie | ActedInSeries
+
             input ProductionActorUpdateConnectionInput {
+              edge: ProductionActorEdgeUpdateInput
               node: ActorUpdateInput
               where: ProductionActorConnectionWhere
             }
@@ -2613,13 +2892,26 @@ describe("single item relationships from a declared relationship", () => {
               AND: [ProductionDirectorConnectionWhere!]
               NOT: ProductionDirectorConnectionWhere
               OR: [ProductionDirectorConnectionWhere!]
+              edge: ProductionDirectorEdgeWhere
               node: PersonWhere
+            }
+
+            input ProductionDirectorEdgeWhere {
+              \\"\\"\\"
+              Relationship properties when source node is of type:
+              * Movie
+              * Series
+              \\"\\"\\"
+              Directed: DirectedWhere
             }
 
             type ProductionDirectorRelationship {
               cursor: String!
               node: Person!
+              properties: ProductionDirectorRelationshipProperties!
             }
+
+            union ProductionDirectorRelationshipProperties = Directed
 
             input ProductionDisconnectInput {
               actor: [ProductionActorDisconnectFieldInput!]
@@ -2702,6 +2994,7 @@ describe("single item relationships from a declared relationship", () => {
 
             input SeriesActorConnectFieldInput {
               connect: ActorConnectInput
+              edge: ActedInSeriesCreateInput!
               where: ActorConnectWhere
             }
 
@@ -2710,6 +3003,7 @@ describe("single item relationships from a declared relationship", () => {
               NOT: SeriesActorConnectionAggregateInput
               OR: [SeriesActorConnectionAggregateInput!]
               count: ConnectionAggregationCountFilterInput
+              edge: ActedInSeriesAggregationWhereInput
               node: SeriesActorNodeAggregationWhereInput
             }
 
@@ -2737,6 +3031,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input SeriesActorCreateFieldInput {
+              edge: ActedInSeriesCreateInput!
               node: ActorCreateInput!
             }
 
@@ -2763,6 +3058,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input SeriesActorUpdateConnectionInput {
+              edge: ActedInSeriesUpdateInput
               node: ActorUpdateInput
               where: ProductionActorConnectionWhere
             }
