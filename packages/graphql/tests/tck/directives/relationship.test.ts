@@ -20,6 +20,7 @@
 import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
+// TODO: add some
 describe("Cypher relationship", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;

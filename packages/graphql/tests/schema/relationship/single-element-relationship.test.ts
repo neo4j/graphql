@@ -711,7 +711,6 @@ describe("single item relationships", () => {
             }"
         `);
     });
-
     test("1-* relationship with edge properties", async () => {
         const typeDefs = gql`
             type Movie @node {

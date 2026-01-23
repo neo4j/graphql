@@ -33,12 +33,16 @@ describe("1-* simple relationship", () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String!
-                director: ${Person}! @relationship(type: "DIRECTED", direction: IN)
+                director: ${Person}! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type ${Person} @node {
                 name: String!
-                directed: [${Movie}!]! @relationship(type: "DIRECTED", direction: OUT)
+                directed: [${Movie}!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
+            }
+            
+            type Directed @relationshipProperties {
+                year: Int
             }
         `;
 
@@ -109,6 +113,152 @@ describe("1-* simple relationship", () => {
                 {
                     director: {
                         name: "Keanu",
+                    },
+                },
+            ],
+        });
+    });
+
+    test("double nested filter", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:DIRECTED]-(a:${Person} { name: "Keanu"})
+            CREATE (:${Movie} { title: "The Apartment"})
+        `);
+
+        const query = `
+            query {
+               ${Person.plural}(where: { directed: { some: { director: { name: { eq: "Keanu" } } } } }) {
+                    directed {
+                        title
+                        director {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        console.log(result.errors);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Person.plural]: [
+                {
+                    directed: [
+                        {
+                            title: "The Matrix",
+                            director: {
+                                name: "Keanu",
+                            },
+                        },
+                    ],
+                },
+            ],
+        });
+    });
+
+    test("nested filter with edge properties", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:DIRECTED {year: 1999}]-(a:${Person} { name: "Keanu"})
+            CREATE (:${Movie} { title: "The Apartment"})
+        `);
+
+        const query = `
+            query {
+               ${Movie.plural}(where: { directorConnection: { edge: { year: { eq: 1999 } } } }) {
+                    directorConnection {
+                        edges {
+                            node {
+                                name
+                            }
+                            properties {
+                                year
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        console.log(result.errors);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Movie.plural]: [
+                {
+                    directorConnection: {
+                        edges: [
+                            {
+                                node: {
+                                    name: "Keanu",
+                                },
+                                properties: {
+                                    year: 1999,
+                                },
+                            },
+                        ],
+                    },
+                },
+            ],
+        });
+    });
+
+    test("double nested filter with edge properties", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:DIRECTED {year: 1999}]-(a:${Person} { name: "Keanu"})
+            CREATE (:${Movie} { title: "The Apartment"})
+        `);
+
+        const query = `
+            query {
+               ${Person.plural}(where: { directedConnection: { some: { node: { directorConnection: { OR: [{ edge: { year: { gt: 2000 } } }, { node: { name: { startsWith: "K" } } }] } } } } }) {
+                    directedConnection {
+                        edges {
+                            node {
+                                title
+                                directorConnection {
+                                    edges {
+                                        node {
+                                            name
+                                        }
+                                    }
+                                }
+                            }
+                            properties {
+                                year
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        console.log(result.errors);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Person.plural]: [
+                {
+                    directedConnection: {
+                        edges: [
+                            {
+                                node: {
+                                    title: "The Matrix",
+                                    directorConnection: {
+                                        edges: [
+                                            {
+                                                node: {
+                                                    name: "Keanu",
+                                                },
+                                            },
+                                        ],
+                                    },
+                                },
+                                properties: {
+                                    year: 1999,
+                                },
+                            },
+                        ],
                     },
                 },
             ],

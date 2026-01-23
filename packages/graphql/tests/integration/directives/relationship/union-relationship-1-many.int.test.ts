@@ -39,23 +39,31 @@ describe("1-* relationships involving Union type", () => {
             union Director = ${Person} | ${AI}
             type ${Movie} @node {
                 title: String!
-                actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-                director: Director! @relationship(type: "DIRECTED", direction: IN)
+                actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+                director: Director! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type ${Person} @node {
                 name: String!
-                actedIn: ${Movie}! @relationship(type: "ACTED_IN", direction: OUT)
-                directed: [${Movie}!]! @relationship(type: "DIRECTED", direction: OUT)
+                actedIn: ${Movie}! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                directed: [${Movie}!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
             }
 
             type ${Dog} @node {
                 nickName: String!
-                actedIn: ${Movie}! @relationship(type: "ACTED_IN", direction: OUT)
+                actedIn: ${Movie}! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
             type ${AI} @node {
                 model: String!
-                directed: [${Movie}!]! @relationship(type: "DIRECTED", direction: OUT)
+                directed: [${Movie}!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
+            }
+
+            type ActedIn @relationshipProperties {
+                screenTime: Int
+            }
+
+            type Directed @relationshipProperties {
+                year: Int
             }
         `;
 
@@ -212,6 +220,129 @@ describe("1-* relationships involving Union type", () => {
                     },
                 },
             ],
+        });
+    });
+
+    test("nested filter", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(:${Dog} { nickName: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED]-(a:${AI} { model: "T-800"})
+            CREATE(:${Movie} { title: "The Apartment"})<-[:DIRECTED]-(a)
+        `);
+
+        const query = `
+            query {
+               ${Movie.plural}(where: { director: { ${AI}: { model: { eq: "T-800" } } } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        console.log(result.errors);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Movie.plural]: [
+                {
+                    title: "The Matrix",
+                },
+                {
+                    title: "The Apartment",
+                },
+            ],
+        });
+    });
+
+    test("double nested filter", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(:${Dog} { nickName: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED]-(a:${AI} { model: "T-800"})
+            CREATE(:${Movie} { title: "The Apartment"})<-[:DIRECTED]-(a)
+        `);
+
+        const query = `
+            query {
+               ${Person.plural}(where: { actedIn: { director: { ${AI}: { model: { eq: "T-800" } } } } }) {
+                    name
+                    actedIn {
+                        title
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        console.log(result.errors);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Person.plural]: [
+                {
+                    name: "Keanu",
+                    actedIn: {
+                        title: "The Matrix",
+                    },
+                },
+            ],
+        });
+    });
+
+    test("nested filter with edge properties", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN {screenTime: 120}]-(:${Dog} { nickName: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN {screenTime: 150}]-(d:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED {year: 1999}]-(a:${AI} { model: "T-800"})
+            CREATE(:${Movie} { title: "The Apartment"})<-[:DIRECTED {year: 1996}]-(d)
+        `);
+
+        const query = `
+            query {
+               ${Movie.plural}(where: { directorConnection: { ${Person}: { edge: { year: { gt: 1990 } } } } }) {
+                   title
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        console.log(result.errors);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Movie.plural]: [
+                {
+                    title: "The Apartment",
+                },
+            ],
+        });
+    });
+
+    test("double nested filter with edge properties", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN {screenTime: 120}]-(:${Dog} { nickName: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN {screenTime: 150}]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED {year: 1999}]-(a:${AI} { model: "T-800"})
+            CREATE(:${Movie} { title: "The Apartment"})<-[:DIRECTED {year: 1996}]-(a)
+        `);
+
+        const query = `
+            query {
+               ${Movie.plural}(where: { directorConnection: { ${AI}: { node: { directedConnection: { some: { OR: [{ edge: { year: { gt: 1997 } } }, { node: { title: { eq: "The Apartment" } } }] } } } } } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Movie.plural]: expect.toIncludeSameMembers([
+                {
+                    title: "The Apartment",
+                },
+                {
+                    title: "The Matrix",
+                },
+            ]),
         });
     });
 
