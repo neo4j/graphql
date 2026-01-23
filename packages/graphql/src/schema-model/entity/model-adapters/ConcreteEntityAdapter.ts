@@ -253,6 +253,10 @@ export class ConcreteEntityAdapter {
         return this.relationships.get(name);
     }
 
+    public hasListRelationship(): boolean {
+        return !![...this.relationships.values()].find((r) => r.isList);
+    }
+
     // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed
     public getLabels(): string[] {
         return Array.from(this.labels);
