@@ -72,14 +72,44 @@ describe("1-* simple relationship", () => {
         expect(result.data).toEqual({
             [Person.plural]: [
                 {
-                    directed: [
+                    directed: expect.toIncludeSameMembers([
                         {
                             title: "The Matrix",
                         },
                         {
                             title: "The Matrix 2",
                         },
-                    ],
+                    ]),
+                },
+            ],
+        });
+    });
+
+    test("nested filter", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:DIRECTED]-(a:${Person} { name: "Keanu"})
+            CREATE (:${Movie} { title: "The Apartment"})
+        `);
+
+        const query = `
+            query {
+               ${Movie.plural}(where: { director: { name: { eq: "Keanu" } } }) {
+                    director {
+                        name
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        console.log(result.errors);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Movie.plural]: [
+                {
+                    director: {
+                        name: "Keanu",
+                    },
                 },
             ],
         });
@@ -137,14 +167,14 @@ describe("1-* simple relationship", () => {
         expect(result.data).toEqual({
             [Person.plural]: [
                 {
-                    directed: [
+                    directed: expect.toIncludeSameMembers([
                         {
                             title: "The Matrix",
                         },
                         {
                             title: "The Matrix 2",
                         },
-                    ],
+                    ]),
                 },
             ],
         });

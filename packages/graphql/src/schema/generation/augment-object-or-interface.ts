@@ -114,12 +114,14 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
     );
     const composeNodeArgs: ObjectTypeComposerArgumentConfigMapDefinition = {};
 
-    if (relationshipAdapter.isList) {
-        composeNodeArgs.where = makeConnectionWhereInputType({
-            relationshipAdapter,
-            composer: schemaComposer,
-        });
+    // we want this type to be created for single relationships, but don't want to set the argument
+    const connectionWhereInput = makeConnectionWhereInputType({
+        relationshipAdapter,
+        composer: schemaComposer,
+    });
 
+    if (relationshipAdapter.isList) {
+        composeNodeArgs.where = connectionWhereInput;
         composeNodeArgs.first = {
             type: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
         };
