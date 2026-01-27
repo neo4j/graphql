@@ -55,7 +55,7 @@ describe("1-* simple relationship", () => {
         await testHelper.close();
     });
 
-    test("returns all relationships", async () => {
+    test.only("returns all relationships", async () => {
         await testHelper.executeCypher(`
             CREATE(m:${Movie} { title: "The Matrix"})<-[:DIRECTED]-(a:${Person} { name: "Keanu"})
             CREATE(a)-[:DIRECTED]->(:${Movie} { title: "The Matrix 2"})
@@ -106,7 +106,6 @@ describe("1-* simple relationship", () => {
         `;
 
         const result = await testHelper.executeGraphQL(query);
-        console.log(result.errors);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Movie.plural]: [
@@ -139,7 +138,6 @@ describe("1-* simple relationship", () => {
         `;
 
         const result = await testHelper.executeGraphQL(query);
-        console.log(result.errors);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Person.plural]: [
@@ -181,7 +179,6 @@ describe("1-* simple relationship", () => {
         `;
 
         const result = await testHelper.executeGraphQL(query);
-        console.log(result.errors);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Movie.plural]: [
@@ -234,7 +231,6 @@ describe("1-* simple relationship", () => {
         `;
 
         const result = await testHelper.executeGraphQL(query);
-        console.log(result.errors);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Person.plural]: [

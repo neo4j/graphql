@@ -240,7 +240,6 @@ describe("1-* relationships involving Union type", () => {
         `;
 
         const result = await testHelper.executeGraphQL(query);
-        console.log(result.errors);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Movie.plural]: [
@@ -274,7 +273,6 @@ describe("1-* relationships involving Union type", () => {
         `;
 
         const result = await testHelper.executeGraphQL(query);
-        console.log(result.errors);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Person.plural]: [
@@ -305,7 +303,6 @@ describe("1-* relationships involving Union type", () => {
         `;
 
         const result = await testHelper.executeGraphQL(query);
-        console.log(result.errors);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Movie.plural]: [

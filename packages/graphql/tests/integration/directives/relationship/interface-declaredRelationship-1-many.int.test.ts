@@ -255,7 +255,6 @@ describe("1-* relationship involving Interface type declared relationship", () =
         `;
 
         const result = await testHelper.executeGraphQL(query);
-        console.log(result.errors);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             productions: [
@@ -290,7 +289,6 @@ describe("1-* relationship involving Interface type declared relationship", () =
         `;
 
         const result = await testHelper.executeGraphQL(query);
-        console.log(result.errors);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             actors: [
@@ -328,7 +326,6 @@ describe("1-* relationship involving Interface type declared relationship", () =
         `;
 
         const result = await testHelper.executeGraphQL(query);
-        console.log(result.errors);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             productions: [
@@ -357,7 +354,6 @@ describe("1-* relationship involving Interface type declared relationship", () =
         `;
 
         const result = await testHelper.executeGraphQL(query);
-        console.log(result.errors);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             actors: [
