@@ -730,6 +730,12 @@ export class FilterFactory {
                 isDeprecated: true,
             });
         }
+        if (!relationship.isList) {
+            if (isConnection) {
+                return this.createConnectionFilter(relationship, value as ConnectionWhereArg, "SOME");
+            }
+            return this.createRelationshipFilter(relationship, value as GraphQLWhereArg, undefined);
+        }
         if (!operator) {
             const genericFilters = Object.entries(value).flatMap(([genericOperator, predicate]) => {
                 if (genericOperator === "aggregate") {

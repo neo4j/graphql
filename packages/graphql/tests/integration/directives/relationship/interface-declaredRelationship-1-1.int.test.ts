@@ -20,11 +20,11 @@
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
-describe("Entity api on single element relationships to an Interface type", () => {
+describe("Entity api on single element relationships from an Interface type using declared relationship", () => {
     let Movie: UniqueType;
     let Person: UniqueType;
     let Dog: UniqueType;
-    let AI: UniqueType;
+    let Series: UniqueType;
 
     const testHelper = new TestHelper();
 
@@ -32,35 +32,37 @@ describe("Entity api on single element relationships to an Interface type", () =
         Movie = testHelper.createUniqueType("Movie");
         Person = testHelper.createUniqueType("Person");
         Dog = testHelper.createUniqueType("Dog");
-        AI = testHelper.createUniqueType("AI");
+        Series = testHelper.createUniqueType("Series");
 
         const typeDefs = /* GraphQL */ `
             interface Actor {
                 name: String!
             }
-            interface Director {
-                years: Int!
+            interface Production {
+                title: String!
+                actor: Actor @declareRelationship
+                director: ${Person}! @declareRelationship
             }
 
-            type ${Movie} @node {
+            type ${Movie} implements Production @node {
                 title: String!
                 actor: Actor @relationship(type: "ACTED_IN", direction: IN)
-                director: Director! @relationship(type: "DIRECTED", direction: IN)
+                director: ${Person}! @relationship(type: "DIRECTED", direction: IN)
+            }
+
+            type ${Series} @node {
+                name: String!
+                actor: Actor @relationship(type: "ACTED_IN", direction: IN)
+                director: ${Person}! @relationship(type: "DIRECTED", direction: IN)
             }
 
             type ${Dog} implements Actor @node {
                 name: String!
             }
 
-            type ${Person} implements Actor & Director @node{
+            type ${Person} implements Actor @node{
                 name: String!
-                years: Int!
              }
-
-            type ${AI} implements Director @node {
-                model: String!
-                years: Int!
-            }
         `;
 
         await testHelper.initNeo4jGraphQL({
@@ -72,12 +74,49 @@ describe("Entity api on single element relationships to an Interface type", () =
         await testHelper.close();
     });
 
-    test("returns first element of 1-1 relationship with multiple relationships", async () => {
+    test("returns first element of 1-1 relationship with multiple relationships on top level interface query", async () => {
         await testHelper.executeCypher(`
             CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
             CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
-            CREATE(m)<-[:DIRECTED]-(:${Person} { name: "Director", years: 10})
-            CREATE(m)<-[:DIRECTED]-(:${AI} { model: "T-800", years: 1})
+            CREATE(m)<-[:DIRECTED]-(:${Person} { name: "Director"})
+            CREATE(m)<-[:DIRECTED]-(:${Series} { name: "T-800"})
+        `);
+
+        const query = `
+            query {
+              productions {
+                    actor {
+                        name
+                    }
+                    director {
+                       name
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            productions: [
+                {
+                    actor: {
+                        name: "Hachiko",
+                    },
+                    director: {
+                        name: "Director",
+                    },
+                },
+            ],
+        });
+    });
+
+    test("returns first element of 1-1 relationship with multiple relationships on top level type query", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED]-(:${Person} { name: "Director"})
+            CREATE(m)<-[:DIRECTED]-(:${Series} { name: "T-800"})
         `);
 
         const query = `
@@ -87,7 +126,7 @@ describe("Entity api on single element relationships to an Interface type", () =
                         name
                     }
                     director {
-                       years
+                       name
                     }
                 }
             }
@@ -102,7 +141,7 @@ describe("Entity api on single element relationships to an Interface type", () =
                         name: "Hachiko",
                     },
                     director: {
-                        years: 10,
+                        name: "Director",
                     },
                 },
             ],
@@ -144,7 +183,7 @@ describe("Entity api on single element relationships to an Interface type", () =
             query {
                 ${Movie.plural} {
                     director {
-                        years
+                        name
                     }
                 }
             }

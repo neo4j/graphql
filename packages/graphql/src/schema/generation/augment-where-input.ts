@@ -51,6 +51,16 @@ export function augmentWhereInputWithRelationshipFilters({
     features?: Neo4jFeaturesSettings;
 }) {
     if (!relationshipAdapter.isList) {
+        whereInput.addFields({
+            [relationshipAdapter.name]: {
+                type: relationshipAdapter.target.operations.whereInputTypeName,
+            },
+        });
+        whereInput.addFields({
+            [relationshipAdapter.operations.connectionFieldName]: {
+                type: relationshipAdapter.operations.getConnectionWhereTypename(),
+            },
+        });
         return {};
     }
     if (!relationshipAdapter.isFilterableByAggregate() && !relationshipAdapter.isFilterableByValue()) {
