@@ -55,7 +55,7 @@ describe("1-* simple relationship", () => {
         await testHelper.close();
     });
 
-    test.only("returns all relationships", async () => {
+    test("returns all relationships", async () => {
         await testHelper.executeCypher(`
             CREATE(m:${Movie} { title: "The Matrix"})<-[:DIRECTED]-(a:${Person} { name: "Keanu"})
             CREATE(a)-[:DIRECTED]->(:${Movie} { title: "The Matrix 2"})
