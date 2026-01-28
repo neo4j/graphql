@@ -83,6 +83,7 @@ import { WarnObjectFieldsWithoutResolver } from "./custom-rules/warnings/object-
 import { WarnIfSubscriptionsAuthorizationMissing } from "./custom-rules/warnings/subscriptions-authorization-missing";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
 import { validateSDL } from "./validate-sdl";
+import { validateVectorDirective } from "./custom-rules/directives/vector";
 
 function filterDocument(document: DocumentNode, filterDirectives: boolean = false): DocumentNode {
     const nodeNames = document.definitions
@@ -254,6 +255,7 @@ function runValidationRulesOnFilteredDocument({
             validateRelayIdDirective,
             validateTimestampDirective,
             validateSubscriptionAuthorizationDirective,
+            validateVectorDirective,
         ],
         schema,
         features?.populatedBy?.callbacks

@@ -56,6 +56,21 @@ export class NeoExpectRelationship extends NeoExpect {
         }
     }
 
+    /**
+     * Use this if expectation is a list an elements order does not matter
+     * This fn does not use the toIncludeSameMembers on jest bc aura test teardown runs without jest-extended
+     */
+    public async toIncludeSameMembers(expectation: any[]): Promise<void> {
+        const result = await this.getAll();
+        try {
+            expect(new Set(result)).toEqual(new Set(expectation));
+        } catch (err: any) {
+            const typeStr = this.type ? `[${this.type}]` : "-";
+            err.message = `Error on ${this.from} ${typeStr} ${this.to}\n\n ${err.message}`;
+            throw err;
+        }
+    }
+
     public async count(expected: number): Promise<void> {
         const count = await this.getCount();
         if (count !== expected) {

@@ -667,7 +667,7 @@ export class UpdateFactory {
         switch (operator) {
             case "set":
                 return new ParamInputField({
-                    attachedTo: "node",
+                    attachedTo,
                     attribute,
                     inputValue: value,
                 });

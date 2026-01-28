@@ -1,5 +1,15 @@
 # @neo4j/graphql
 
+## 7.4.2
+
+### Patch Changes
+
+- [#6986](https://github.com/neo4j/graphql/pull/6986) [`8c42414`](https://github.com/neo4j/graphql/commit/8c42414a3ee584c263e22e397f63a6e623f682b8) Thanks [@a-alle](https://github.com/a-alle)! - Fix set properties always targeting nodes
+
+- [#6978](https://github.com/neo4j/graphql/pull/6978) [`ee44c33`](https://github.com/neo4j/graphql/commit/ee44c33385764ceb5c13e087e4c7cead2aae8392) Thanks [@a-alle](https://github.com/a-alle)! - Bump min neo4j version to 5.23
+
+- [#6977](https://github.com/neo4j/graphql/pull/6977) [`d6286f0`](https://github.com/neo4j/graphql/commit/d6286f019c36cdc14356f6e4bd013888abcb8c14) Thanks [@a-alle](https://github.com/a-alle)! - Validates vector directive must be used in conjuction with node directive
+
 ## 7.4.1
 
 ### Patch Changes

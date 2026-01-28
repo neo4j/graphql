@@ -19,7 +19,7 @@
 
 import Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
 
-const basicTypeDefs = `
+const basicTypeDefs = /* GraphQL */ `
     extend schema @link(url: "https://specs.apollo.dev/federation/v2.0", import: ["@key"])
 
     type Journalist @node {
@@ -31,12 +31,12 @@ const basicTypeDefs = `
     }
 
     type Article @authorization(filter: [{ where: { node: { id: { eq: "$jwt.sub" } } } }]) @node {
-        id: ID! @id  @authorization(filter: [{ where: { node: { id: { eq: "$jwt.sub" } } } }])
+        id: ID! @id @authorization(filter: [{ where: { node: { id: { eq: "$jwt.sub" } } } }])
         blocks: [Block!]! @relationship(type: "HAS_BLOCK", direction: OUT, properties: "HasBlock")
         images: [Image!]! @relationship(type: "HAS_IMAGE", direction: OUT)
     }
 
-    type HasBlock @relationshipProperties @node {
+    type HasBlock @relationshipProperties {
         order: Int!
     }
 

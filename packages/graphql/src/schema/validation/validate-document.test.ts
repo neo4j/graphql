@@ -6616,4 +6616,64 @@ describe("validation 2.0", () => {
             });
         });
     });
+
+    describe("vector must be set on node", () => {
+        test("valid", () => {
+            const doc = gql`
+                type User
+                    @node
+                    @vector(
+                        indexes: [{ indexName: "UserIndex", embeddingProperty: "embedding", queryName: "userQuery" }]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("valid with extension", () => {
+            const doc = gql`
+                type User
+                    @vector(
+                        indexes: [{ indexName: "UserIndex", embeddingProperty: "embedding", queryName: "userQuery" }]
+                    ) {
+                    id: ID
+                    name: String
+                }
+                extend type User @node
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("invalid", () => {
+            const doc = gql`
+                type User
+                    @vector(
+                        indexes: [{ indexName: "UserIndex", embeddingProperty: "embedding", queryName: "userQuery" }]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                validateDocument({
+                    document: doc,
+                    additionalDefinitions,
+                    features: {},
+                });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty("message", 'Directive "@vector" must be in a type with "@node"');
+            expect(errors[0]).toHaveProperty("path", ["User"]);
+        });
+    });
 });

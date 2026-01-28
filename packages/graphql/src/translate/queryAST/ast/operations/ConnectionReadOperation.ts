@@ -248,7 +248,10 @@ export class ConnectionReadOperation extends Operation {
         );
 
         if (aggregationSubqueries.length > 0) {
-            const returnClause = new Cypher.Return(edgesProjectionVar);
+            const returnClause = new Cypher.Return();
+            if (hasProjectionFields) {
+                returnClause.addColumns(edgesProjectionVar);
+            }
             if (this.hasTotalCount) {
                 returnClause.addColumns(totalCount);
             }
