@@ -24,6 +24,7 @@ export type ProfileResult = {
         hits: number;
         misses: number;
     };
+    memory: number;
 };
 
 export type Result = ProfileResult & { time: number };

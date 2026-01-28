@@ -18,7 +18,7 @@
  */
 
 import assert from "assert";
-import type { Driver, ProfiledPlan } from "neo4j-driver";
+import type { Driver, Integer, ProfiledPlan } from "neo4j-driver";
 import type Neo4jGraphQL from "../../../src/classes/Neo4jGraphQL";
 import { translateQuery } from "../../tck/utils/tck-test-utils";
 import type * as Performance from "../types";
@@ -120,6 +120,7 @@ export class TestRunner {
         const nodeResult: Performance.ProfileResult = {
             maxRows: plan.rows,
             dbHits: plan.dbHits,
+            memory: this.getMemoryFromPlan(plan),
             cache: {
                 hits: plan.pageCacheHits,
                 misses: plan.pageCacheMisses,
@@ -133,6 +134,7 @@ export class TestRunner {
             return {
                 maxRows: Math.max(agg.maxRows, childResult.maxRows),
                 dbHits: agg.dbHits + childResult.dbHits,
+                memory: agg.memory + childResult.memory,
                 cache: {
                     hits: agg.cache.hits + childResult.cache.hits,
                     misses: agg.cache.misses + childResult.cache.misses,
@@ -141,5 +143,13 @@ export class TestRunner {
         }, nodeResult);
 
         return result;
+    }
+
+    private getMemoryFromPlan(plan: ProfiledPlan): number {
+        const rawMemory = plan.arguments["Memory"] as Integer | undefined;
+        if (!rawMemory) {
+            return 0;
+        }
+        return rawMemory.toInt();
     }
 }
