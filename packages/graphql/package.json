@@ -46,7 +46,7 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@apollo/gateway": "2.12.2",
+        "@apollo/gateway": "2.13.0",
         "@apollo/server": "5.2.0",
         "@types/is-uuid": "1.0.2",
         "@types/jest": "30.0.0",
@@ -65,7 +65,7 @@
         "jest-extended": "7.0.0",
         "jsonwebtoken": "9.0.3",
         "jwks-rsa": "3.2.1",
-        "knip": "5.82.0",
+        "knip": "5.82.1",
         "koa": "3.1.1",
         "koa-jwt": "4.0.4",
         "koa-router": "14.0.0",
