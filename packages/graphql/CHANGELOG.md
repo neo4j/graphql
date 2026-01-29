@@ -1,5 +1,68 @@
 # @neo4j/graphql
 
+## 7.4.3
+
+### Patch Changes
+
+- [#7027](https://github.com/neo4j/graphql/pull/7027) [`eba4216`](https://github.com/neo4j/graphql/commit/eba421624608bfda3c5fe9215c898ce301dd75f3) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix failing query when aggregation and totalCount is queried in a connection, but not edges. For example:
+
+    ```graphql
+    type Actor @node {
+        name: String!
+    }
+    ```
+
+    ```graphql
+    query {
+        actorsConnection {
+            totalCount
+            aggregate {
+                node {
+                    name {
+                        shortest
+                    }
+                }
+                count {
+                    nodes
+                }
+            }
+        }
+    }
+    ```
+
+- [#6987](https://github.com/neo4j/graphql/pull/6987) [`3a3306a`](https://github.com/neo4j/graphql/commit/3a3306a998e84815809e0d770bef0a0cead49e31) Thanks [@a-alle](https://github.com/a-alle)! - Allow enabling/disabling of connection query fields on type by type basis as well as for the whole schema via a new `@query` directive argument `connection`. Default value of `connection` is the same as `read`, inheriting its default value of `true` if not provided.
+
+    Usage example:
+
+    The following type definitions will create the GraphQL Query fields:
+
+    ```gql
+    type Actor @query(read: false, connection: true) @node {
+        name: String
+    }
+    ```
+
+    ```graphql
+    type Query {
+        # only connection field
+        actorsConnection(after: String, first: Int, sort: [ActorSort!], where: ActorWhere): ActorsConnection!
+    }
+    ```
+
+    Inheriting the value of the read argument as default:
+
+    ```gql
+    type Actor @query(read: false) @node {
+        name: String
+    }
+    ```
+
+    ```graphql
+    type Query {
+        # no reads
+    }
+    ```
+
 ## 7.4.2
 
 ### Patch Changes
