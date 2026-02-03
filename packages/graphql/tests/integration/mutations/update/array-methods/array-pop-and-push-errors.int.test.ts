@@ -171,4 +171,74 @@ describe("array-pop-and-push", () => {
 
         expect(gqlResult.data).toBeUndefined();
     });
+
+    test("should throw an error when trying to pop and push from/to a non-existing array on relationship properties", async () => {
+        const movie = testHelper.createUniqueType("Movie");
+        const actor = testHelper.createUniqueType("Actor");
+
+        const typeDefs = `
+            type ${movie} @node {
+                title: String
+                actors: [${actor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
+
+            type ${actor} @node {
+                id: ID!
+                name: String!
+                actedIn: [${movie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            }
+
+            type ActedIn @relationshipProperties {
+                stuffs: [Int!]
+                morethings: [String!]
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const query = `
+            mutation Mutation($id: ID) {
+                ${actor.operations.update}(where: { id_EQ: $id }, update: {
+                    actedIn: [
+                        {
+                            update: {
+                                edge: {
+                                    stuffs_PUSH: 10
+                                    morethings_POP: 1
+                                }
+                            }
+                        }
+                    ]
+                }) {
+                    ${actor.plural} {
+                        name
+                    }
+                }
+            }
+        `;
+
+        await testHelper.executeCypher(
+            `
+                CREATE (a:${movie} {title: "The Matrix"}), (b:${actor} {id: $id, name: "Keanu"})
+                WITH a,b
+                CREATE (a)<-[actedIn: ACTED_IN { morethings: ["this", "that", "them"]}]-(b)
+                RETURN a, actedIn, b
+            `,
+            { id }
+        );
+
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            variableValues: { id },
+        });
+
+        expect(gqlResult.errors).toBeDefined();
+        expect(
+            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("stuffs cannot be NULL"))
+        ).toBeTruthy();
+        expect(gqlResult.data).toBeNull();
+    });
 });
