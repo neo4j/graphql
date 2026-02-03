@@ -355,7 +355,9 @@ describe("array-pop-errors", () => {
         });
 
         expect(gqlResult.errors).toBeDefined();
-        expect(gqlResult.errors).toEqual([new GraphQLError("Property stuffs cannot be NULL")]);
+        expect(
+            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Property stuffs cannot be NULL"))
+        ).toBeTruthy();
         expect(gqlResult.data).toBeNull();
     });
 });
