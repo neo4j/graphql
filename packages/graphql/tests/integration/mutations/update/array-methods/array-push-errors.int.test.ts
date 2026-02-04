@@ -49,7 +49,7 @@ describe("array-push", () => {
 
         const update = /* GraphQL */ `
             mutation {
-                ${Movie.operations.update} (update: { tags_PUSH: "test" }) {
+                ${Movie.operations.update} (update: { tags: { push: "test" } }) {
                     ${Movie.plural} {
                         title
                         tags
@@ -67,11 +67,9 @@ describe("array-push", () => {
 
         const gqlResult = await testHelper.executeGraphQL(update);
 
-        expect(gqlResult.errors).toBeDefined();
-        expect(
-            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Property tags cannot be NULL"))
-        ).toBeTruthy();
-
+        expect(gqlResult.errors).toIncludeAllMembers([
+            expect.objectContaining({ message: expect.toInclude("Property tags cannot be NULL") }),
+        ]);
         expect(gqlResult.data).toBeNull();
     });
 
@@ -91,7 +89,7 @@ describe("array-push", () => {
 
         const update = /* GraphQL */ `
             mutation {
-                ${Movie.operations.update} (update: { tags_PUSH: "test" }) {
+                ${Movie.operations.update} (update: { tags: { push: "test" } }) {
                     ${Movie.plural} {
                         title
                         tags
@@ -120,8 +118,9 @@ describe("array-push", () => {
             contextValue: { req },
         });
 
-        expect(gqlResult.errors).toBeDefined();
-        expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Unauthenticated"))).toBeTruthy();
+        expect(gqlResult.errors).toIncludeAllMembers([
+            expect.objectContaining({ message: expect.toInclude("Unauthenticated") }),
+        ]);
         expect(gqlResult.data).toBeNull();
     });
 
@@ -142,7 +141,7 @@ describe("array-push", () => {
 
         const update = /* GraphQL */ `
             mutation {
-                ${Movie.operations.update} (update: { tags_PUSH: 123 }) {
+                ${Movie.operations.update} (update: { tags: { push: 123 } }) {
                     ${Movie.plural} {
                         title
                         tags
@@ -159,12 +158,9 @@ describe("array-push", () => {
 
         const gqlResult = await testHelper.executeGraphQL(update);
 
-        expect(gqlResult.errors).toBeDefined();
-        expect(
-            (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("String cannot represent a non string value")
-            )
-        ).toBeTruthy();
+        expect(gqlResult.errors).toIncludeAllMembers([
+            expect.objectContaining({ message: expect.toInclude("String cannot represent a non string value") }),
+        ]);
         expect(gqlResult.data).toBeUndefined();
     });
 
@@ -185,7 +181,7 @@ describe("array-push", () => {
 
         const update = /* GraphQL */ `
             mutation {
-                ${Movie.operations.update} (update: { tags_PUSH: "test", tags_SET: [] }) {
+                ${Movie.operations.update} (update: { tags: { push: "test", set: [] } }) {
                     ${Movie.plural} {
                         title
                         tags
@@ -203,7 +199,7 @@ describe("array-push", () => {
         const gqlResult = await testHelper.executeGraphQL(update);
 
         expect(gqlResult.errors).toEqual([
-            new GraphQLError(`Conflicting modification of [[tags_SET]], [[tags_PUSH]] on type ${Movie}`),
+            new GraphQLError(`Conflicting modification of field tags: [[set]], [[push]] on type ${Movie}`),
         ]);
         expect(gqlResult.data).toBeNull();
     });
@@ -238,13 +234,12 @@ describe("array-push", () => {
 
         const query = /* GraphQL */ `
             mutation Mutation($id: ID, $payIncrement: [Float!]) {
-                ${Actor.operations.update}(where: { id_EQ: $id }, update: {
+                ${Actor.operations.update}(where: { id: { eq: $id } }, update: {
                     actedIn: [
                         {
                             update: {
                                 edge: {
-                                    pay_SET: [],
-                                    pay_PUSH: $payIncrement
+                                    pay: { set: [], push: $payIncrement }
                                 }
                             }
                         }
@@ -282,11 +277,11 @@ describe("array-push", () => {
             variableValues: { id, payIncrement },
         });
 
-        expect(gqlResult.errors).toBeDefined();
         expect(gqlResult.errors).toEqual([
-            new GraphQLError(`Conflicting modification of [[pay_SET]], [[pay_PUSH]] on type ${Actor}.actedIn`),
+            new GraphQLError(
+                `Conflicting modification of field pay: [[set]], [[push]] on relationship ${Movie}.actedIn`
+            ),
         ]);
-
         expect(gqlResult.data).toBeNull();
     });
 
@@ -348,9 +343,7 @@ describe("array-push", () => {
         });
 
         expect(gqlResult.errors).toIncludeAllMembers([
-            expect.objectContaining({
-                message: expect.toInclude("stuffs cannot be NULL"),
-            }),
+            expect.objectContaining({ message: expect.toInclude("stuffs cannot be NULL") }),
         ]);
         expect(gqlResult.data).toBeNull();
     });

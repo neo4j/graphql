@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import { TestHelper } from "../../../../utils/tests-helper";
 
@@ -256,14 +255,14 @@ describe("array-push", () => {
     ] as const)(
         "should push $description on to an existing array",
         async ({ initialArray, inputType, inputValue, expectedOutputValue }) => {
-            const typeMovie = testHelper.createUniqueType("Movie");
+            const Movie = testHelper.createUniqueType("Movie");
 
-            const typeDefs = gql`
-            type ${typeMovie} @node {
-                title: String
-                tags: [${inputType}!]
-            }
-        `;
+            const typeDefs = /* GraphQL */ `
+                type ${Movie} @node {
+                    title: String
+                    tags: [${inputType}!]
+                }
+            `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -273,8 +272,8 @@ describe("array-push", () => {
 
             const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_PUSH: ${inputValue} }) {
-                    ${typeMovie.plural} {
+                ${Movie.operations.update} (update: { tags_PUSH: ${inputValue} }) {
+                    ${Movie.plural} {
                         title
                         tags
                     }
@@ -282,9 +281,7 @@ describe("array-push", () => {
             }
         `;
 
-            const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: $initialArray})
-        `;
+            const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags: $initialArray})`;
 
             await testHelper.executeCypher(cypher, { movieTitle, initialArray });
 
@@ -295,8 +292,7 @@ describe("array-push", () => {
             }
 
             expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
+            expect((gqlResult.data as any)[Movie.operations.update][Movie.plural]).toEqual([
                 { title: movieTitle, tags: expectedOutputValue },
             ]);
         }
@@ -330,14 +326,14 @@ describe("array-push", () => {
     ] as const)(
         "should push $description on to an existing array",
         async ({ inputType, inputValue, expectedOutputValue }) => {
-            const typeMovie = testHelper.createUniqueType("Movie");
+            const Movie = testHelper.createUniqueType("Movie");
 
-            const typeDefs = gql`
-            type ${typeMovie} @node {
-                title: String
-                tags: [${inputType}!]
-            }
-        `;
+            const typeDefs = /* GraphQL */ `
+                type ${Movie} @node {
+                    title: String
+                    tags: [${inputType}!]
+                }
+            `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -345,24 +341,22 @@ describe("array-push", () => {
                 charset: "alphabetic",
             });
 
-            const update = `
-            mutation UpdateMovie($inputValue: [${inputType}Input!]!) {
-                ${typeMovie.operations.update} (update: { tags_PUSH: $inputValue }) {
-                    ${typeMovie.plural} {
-                        title
-                        tags {
-                            latitude
-                            longitude
-                            height
+            const update = /* GraphQL */ `
+                mutation UpdateMovie($inputValue: [${inputType}Input!]!) {
+                    ${Movie.operations.update} (update: { tags_PUSH: $inputValue }) {
+                        ${Movie.plural} {
+                            title
+                            tags {
+                                latitude
+                                longitude
+                                height
+                            }
                         }
                     }
                 }
-            }
-        `;
+            `;
 
-            const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: []})
-        `;
+            const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags: []})`;
 
             await testHelper.executeCypher(cypher, { movieTitle });
 
@@ -375,8 +369,7 @@ describe("array-push", () => {
             }
 
             expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
+            expect((gqlResult.data as any)[Movie.operations.update][Movie.plural]).toEqual([
                 { title: movieTitle, tags: expectedOutputValue },
             ]);
         }
@@ -406,14 +399,14 @@ describe("array-push", () => {
     ] as const)(
         "should push $description on to an existing array",
         async ({ inputType, inputValue, expectedOutputValue }) => {
-            const typeMovie = testHelper.createUniqueType("Movie");
+            const Movie = testHelper.createUniqueType("Movie");
 
-            const typeDefs = gql`
-            type ${typeMovie} @node {
-                title: String
-                tags: [${inputType}!]
-            }
-        `;
+            const typeDefs = /* GraphQL */ `
+                type ${Movie} @node {
+                    title: String
+                    tags: [${inputType}!]
+                }
+            `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -421,23 +414,21 @@ describe("array-push", () => {
                 charset: "alphabetic",
             });
 
-            const update = `
-            mutation UpdateMovie($inputValue: [${inputType}Input!]!) {
-                ${typeMovie.operations.update} (update: { tags_PUSH: $inputValue }) {
-                    ${typeMovie.plural} {
-                        title
-                        tags {
-                            x
-                            y
+            const update = /* GraphQL */ `
+                mutation UpdateMovie($inputValue: [${inputType}Input!]!) {
+                    ${Movie.operations.update} (update: { tags_PUSH: $inputValue }) {
+                        ${Movie.plural} {
+                            title
+                            tags {
+                                x
+                                y
+                            }
                         }
                     }
                 }
-            }
-        `;
+            `;
 
-            const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: []})
-        `;
+            const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags: []})`;
 
             await testHelper.executeCypher(cypher, { movieTitle });
 
@@ -450,18 +441,17 @@ describe("array-push", () => {
             }
 
             expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
+            expect((gqlResult.data as any)[Movie.operations.update][Movie.plural]).toEqual([
                 { title: movieTitle, tags: expectedOutputValue },
             ]);
         }
     );
 
     test("should push to two different arrays in the same update", async () => {
-        const typeMovie = testHelper.createUniqueType("Movie");
+        const Movie = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
-            type ${typeMovie} @node {
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
                 title: String
                 tags: [String!]
                 moreTags: [String!]
@@ -474,10 +464,10 @@ describe("array-push", () => {
             charset: "alphabetic",
         });
 
-        const update = `
+        const update = /* GraphQL */ `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_PUSH: ["test"], moreTags_PUSH: ["another test"] }) {
-                    ${typeMovie.plural} {
+                ${Movie.operations.update} (update: { tags_PUSH: ["test"], moreTags_PUSH: ["another test"] }) {
+                    ${Movie.plural} {
                         title
                         tags
                         moreTags
@@ -486,9 +476,7 @@ describe("array-push", () => {
             }
         `;
 
-        const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: [], moreTags: [] })
-        `;
+        const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags: [], moreTags: [] })`;
 
         await testHelper.executeCypher(cypher, { movieTitle });
 
@@ -499,25 +487,24 @@ describe("array-push", () => {
         }
 
         expect(gqlResult.errors).toBeUndefined();
-
-        expect((gqlResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
+        expect((gqlResult.data as any)[Movie.operations.update][Movie.plural]).toEqual([
             { title: movieTitle, tags: ["test"], moreTags: ["another test"] },
         ]);
     });
 
     test("should be able to push in a nested update", async () => {
         const actorName = "Luigino";
-        const movie = testHelper.createUniqueType("Movie");
-        const actor = testHelper.createUniqueType("Actor");
-        const typeDefs = `
-            type ${movie.name} @node {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Actor = testHelper.createUniqueType("Actor");
+        const typeDefs = /* GraphQL */ `
+            type ${Movie.name} @node {
                 viewers: [Int!]!
-                workers: [${actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
+                workers: [${Actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
             }
-            type ${actor.name} @node {
+            type ${Actor.name} @node {
                 id: ID!
                 name: String!
-                worksInMovies: [${movie.name}!]! @relationship(type: "WORKED_IN", direction: OUT)
+                worksInMovies: [${Movie.name}!]! @relationship(type: "WORKED_IN", direction: OUT)
             }
         `;
 
@@ -527,22 +514,22 @@ describe("array-push", () => {
             charset: "alphabetic",
         });
 
-        const update = `
+        const update = /* GraphQL */ `
             mutation($id: ID, $value: [Int!]) {
-                ${actor.operations.update}(where: { id_EQ: $id },
+                ${Actor.operations.update}(where: { id: { eq: $id } },
                     update: {
                         worksInMovies: [
                             {
                                 update: {
                                     node: {
-                                        viewers_PUSH: $value
+                                        viewers: { push: $value }
                                     }
                                 }
                             }
                         ]
                     }
                 ) {
-                    ${actor.plural} {
+                    ${Actor.plural} {
                         name
                         worksInMovies {
                             viewers
@@ -553,7 +540,7 @@ describe("array-push", () => {
         `;
 
         const cypher = `
-            CREATE (a:${movie.name} {viewers: $initialViewers}), (b:${actor.name} {id: $id, name: $name})
+            CREATE (a:${Movie.name} {viewers: $initialViewers}), (b:${Actor.name} {id: $id, name: $name})
             WITH a,b CREATE (a)<-[worksInMovies: WORKED_IN]-(b)
         `;
 
@@ -568,7 +555,7 @@ describe("array-push", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult.data as any)[actor.operations.update][actor.plural]).toEqual(
+        expect((gqlResult.data as any)[Actor.operations.update][Actor.plural]).toEqual(
             expect.toIncludeSameMembers([{ name: actorName, worksInMovies: [{ viewers: [1, 2, 3, 4] }] }])
         );
     });
@@ -576,18 +563,18 @@ describe("array-push", () => {
     test("should be possible to update relationship properties", async () => {
         const initialPay = 100;
         const payIncrement = 50;
-        const movie = testHelper.createUniqueType("Movie");
-        const actor = testHelper.createUniqueType("Actor");
-        const typeDefs = `
-            type ${movie.name} @node {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Actor = testHelper.createUniqueType("Actor");
+        const typeDefs = /* GraphQL */ `
+            type ${Movie.name} @node {
                 title: String
-                actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+                actors: [${Actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type ${actor.name} @node {
+            type ${Actor.name} @node {
                 id: ID!
                 name: String!
-                actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+                actedIn: [${Movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
             type ActedIn @relationshipProperties {
@@ -601,20 +588,20 @@ describe("array-push", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             mutation Mutation($id: ID, $payIncrement: [Float!]) {
-                ${actor.operations.update}(where: { id_EQ: $id }, update: {
+                ${Actor.operations.update}(where: { id: { eq: $id } }, update: {
                     actedIn: [
                         {
                             update: {
                                 edge: {
-                                    pay_PUSH: $payIncrement
+                                    pay: { push: $payIncrement }
                                 }
                             }
                         }
                     ]
                 }) {
-                    ${actor.plural} {
+                    ${Actor.plural} {
                         name
                         actedIn {
                             title
@@ -633,9 +620,7 @@ describe("array-push", () => {
 
         // Create new movie
         await testHelper.executeCypher(
-            `
-                CREATE (a:${movie.name} {title: "The Matrix"}), (b:${actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b
-                `,
+            `CREATE (a:${Movie.name} {title: "The Matrix"}), (b:${Actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b`,
             {
                 id,
                 initialPay: [initialPay],
@@ -648,9 +633,7 @@ describe("array-push", () => {
 
         expect(gqlResult.errors).toBeUndefined();
         const storedValue = await testHelper.executeCypher(
-            `
-                MATCH(b: ${actor.name}{id: $id}) -[c: ACTED_IN]-> (a: ${movie.name}) RETURN c.pay as pay
-                `,
+            `MATCH(b: ${Actor.name}{id: $id}) -[c: ACTED_IN]-> (a: ${Movie.name}) RETURN c.pay as pay`,
             {
                 id,
             }
@@ -659,18 +642,18 @@ describe("array-push", () => {
     });
 
     test("should be possible to update Point relationship properties", async () => {
-        const movie = testHelper.createUniqueType("Movie");
-        const actor = testHelper.createUniqueType("Actor");
-        const typeDefs = `
-            type ${movie.name} @node {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Actor = testHelper.createUniqueType("Actor");
+        const typeDefs = /* GraphQL */ `
+            type ${Movie.name} @node {
                 title: String
-                actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+                actors: [${Actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type ${actor.name} @node {
+            type ${Actor.name} @node {
                 id: ID!
                 name: String!
-                actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+                actedIn: [${Movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
             type ActedIn @relationshipProperties {
@@ -684,20 +667,20 @@ describe("array-push", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             mutation Mutation($id: ID, $location: [PointInput!]) {
-                ${actor.operations.update}(where: { id_EQ: $id }, update: {
+                ${Actor.operations.update}(where: { id: { eq: $id } }, update: {
                     actedIn: [
                         {
                             update: {
                                 edge: {
-                                    locations_PUSH: $location
+                                    locations: { push: $location }
                                 }
                             }
                         }
                     ]
                 }) {
-                    ${actor.plural} {
+                    ${Actor.plural} {
                         name
                         actedIn {
                             title
@@ -720,9 +703,7 @@ describe("array-push", () => {
 
         // Create new movie
         await testHelper.executeCypher(
-            `
-                CREATE (a:${movie.name} {title: "The Matrix"}), (b:${actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ locations: [] }]-(b) RETURN a, actedIn, b
-                `,
+            `CREATE (a:${Movie.name} {title: "The Matrix"}), (b:${Actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ locations: [] }]-(b) RETURN a, actedIn, b`,
             {
                 id,
             }
@@ -733,7 +714,7 @@ describe("array-push", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult.data as any)[actor.operations.update][actor.plural]).toEqual(
+        expect((gqlResult.data as any)[Actor.operations.update][Actor.plural]).toEqual(
             expect.toIncludeSameMembers([
                 {
                     name: "Keanu",
@@ -748,10 +729,10 @@ describe("array-push", () => {
         const localTime = "09:36:55.000";
         const expectedOutputValue = ["09:36:55"];
 
-        const typeMovie = testHelper.createUniqueType("Movie");
+        const Movie = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
-        type ${typeMovie} @node {
+        const typeDefs = /* GraphQL */ `
+        type ${Movie} @node {
             title: String
             tags: [LocalTime!]
         }
@@ -763,20 +744,18 @@ describe("array-push", () => {
             charset: "alphabetic",
         });
 
-        const update = `
-        mutation {
-            ${typeMovie.operations.update} (update: { tags_PUSH: "${localTime}" }) {
-                ${typeMovie.plural} {
-                    title
-                    tags
+        const update = /* GraphQL */ `
+            mutation {
+                ${Movie.operations.update} (update: { tags_PUSH: "${localTime}" }) {
+                    ${Movie.plural} {
+                        title
+                        tags
+                    }
                 }
             }
-        }
-    `;
+        `;
 
-        const cypher = `
-        CREATE (m:${typeMovie} {title:$movieTitle, tags: []})
-    `;
+        const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags: []})`;
 
         await testHelper.executeCypher(cypher, { movieTitle });
 
@@ -787,8 +766,7 @@ describe("array-push", () => {
         }
 
         expect(gqlResult.errors).toBeUndefined();
-
-        expect((gqlResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
+        expect((gqlResult.data as any)[Movie.operations.update][Movie.plural]).toEqual([
             { title: movieTitle, tags: expectedOutputValue },
         ]);
     });

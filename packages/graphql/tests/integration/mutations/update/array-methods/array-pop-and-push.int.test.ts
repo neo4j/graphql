@@ -17,7 +17,6 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import { TestHelper } from "../../../../utils/tests-helper";
 
@@ -31,10 +30,10 @@ describe("array-pop-and-push", () => {
     });
 
     test("should push to and pop from two different arrays in the same update", async () => {
-        const typeMovie = testHelper.createUniqueType("Movie");
+        const Movie = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
-            type ${typeMovie} @node {
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
                 title: String
                 tags: [String!]
                 moreTags: [String!]
@@ -47,10 +46,10 @@ describe("array-pop-and-push", () => {
             charset: "alphabetic",
         });
 
-        const update = `
+        const update = /* GraphQL */ `
             mutation {
-                ${typeMovie.operations.update} (update: { tags: {push: "new tag" }, moreTags: {pop: 2 } }) {
-                    ${typeMovie.plural} {
+                ${Movie.operations.update} (update: { tags: { push: "new tag" }, moreTags: { pop: 2 } }) {
+                    ${Movie.plural} {
                         title
                         tags
                         moreTags
@@ -59,9 +58,7 @@ describe("array-pop-and-push", () => {
             }
         `;
 
-        const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: ["abc"], moreTags: ["this", "that", "them"] })
-        `;
+        const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags: ["abc"], moreTags: ["this", "that", "them"] })`;
 
         await testHelper.executeCypher(cypher, { movieTitle });
 
@@ -72,8 +69,7 @@ describe("array-pop-and-push", () => {
         }
 
         expect(gqlResult.errors).toBeUndefined();
-
-        expect((gqlResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
+        expect((gqlResult.data as any)[Movie.operations.update][Movie.plural]).toEqual([
             { title: movieTitle, tags: ["abc", "new tag"], moreTags: ["this"] },
         ]);
     });

@@ -17,14 +17,11 @@
  * limitations under the License.
  */
 
-import { gql } from "graphql-tag";
 import { generate } from "randomstring";
 import { TestHelper } from "../../../../utils/tests-helper";
 
 describe("array-pop", () => {
     const testHelper = new TestHelper();
-
-    beforeEach(() => {});
 
     afterEach(async () => {
         await testHelper.close();
@@ -91,14 +88,14 @@ describe("array-pop", () => {
     ] as const)(
         "should pop a single $inputType element from an array of a single $inputType element",
         async ({ inputType, initialValue, expectedOutputValue }) => {
-            const typeMovie = testHelper.createUniqueType("Movie");
+            const Movie = testHelper.createUniqueType("Movie");
 
-            const typeDefs = gql`
-            type ${typeMovie} @node {
-                title: String
-                tags: [${inputType}!]
-            }
-        `;
+            const typeDefs = /* GraphQL */ `
+                type ${Movie} @node {
+                    title: String
+                    tags: [${inputType}!]
+                }
+            `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -106,20 +103,18 @@ describe("array-pop", () => {
                 charset: "alphabetic",
             });
 
-            const update = `
-            mutation {
-                ${typeMovie.operations.update} (update: { tags: { pop: 1} }) {
-                    ${typeMovie.plural} {
-                        title
-                        tags
+            const update = /* GraphQL */ `
+                mutation {
+                    ${Movie.operations.update} (update: { tags: { pop: 1} }) {
+                        ${Movie.plural} {
+                            title
+                            tags
+                        }
                     }
                 }
-            }
-        `;
+            `;
 
-            const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: ${initialValue}})
-        `;
+            const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags: ${initialValue}})`;
 
             await testHelper.executeCypher(cypher, { movieTitle });
 
@@ -130,8 +125,7 @@ describe("array-pop", () => {
             }
 
             expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
+            expect((gqlResult.data as any)[Movie.operations.update][Movie.plural]).toEqual([
                 { title: movieTitle, tags: expectedOutputValue },
             ]);
         }
@@ -191,14 +185,14 @@ describe("array-pop", () => {
     ] as const)(
         "should pop a single $inputType element from an array of two $inputType elements",
         async ({ inputType, initialValue, expectedOutputValue }) => {
-            const typeMovie = testHelper.createUniqueType("Movie");
+            const Movie = testHelper.createUniqueType("Movie");
 
-            const typeDefs = gql`
-            type ${typeMovie} @node {
-                title: String
-                tags: [${inputType}!]
-            }
-        `;
+            const typeDefs = /* GraphQL */ `
+                type ${Movie} @node {
+                    title: String
+                    tags: [${inputType}!]
+                }
+            `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -206,20 +200,18 @@ describe("array-pop", () => {
                 charset: "alphabetic",
             });
 
-            const update = `
-            mutation {
-                ${typeMovie.operations.update} (update: { tags: {pop: 1 } }) {
-                    ${typeMovie.plural} {
-                        title
-                        tags
+            const update = /* GraphQL */ `
+                mutation {
+                    ${Movie.operations.update} (update: { tags: { pop: 1 } }) {
+                        ${Movie.plural} {
+                            title
+                            tags
+                        }
                     }
                 }
-            }
-        `;
+            `;
 
-            const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: ${initialValue}})
-        `;
+            const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags: ${initialValue}})`;
 
             await testHelper.executeCypher(cypher, { movieTitle });
 
@@ -230,8 +222,7 @@ describe("array-pop", () => {
             }
 
             expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
+            expect((gqlResult.data as any)[Movie.operations.update][Movie.plural]).toEqual([
                 { title: movieTitle, tags: expectedOutputValue },
             ]);
         }
@@ -291,14 +282,14 @@ describe("array-pop", () => {
     ] as const)(
         "should pop two $inputType elements from an array of two $inputType elements",
         async ({ inputType, initialValue, expectedOutputValue }) => {
-            const typeMovie = testHelper.createUniqueType("Movie");
+            const Movie = testHelper.createUniqueType("Movie");
 
-            const typeDefs = gql`
-            type ${typeMovie} @node {
-                title: String
-                tags: [${inputType}!]
-            }
-        `;
+            const typeDefs = /* GraphQL */ `
+                type ${Movie} @node {
+                    title: String
+                    tags: [${inputType}!]
+                }
+            `;
 
             await testHelper.initNeo4jGraphQL({ typeDefs });
 
@@ -306,20 +297,18 @@ describe("array-pop", () => {
                 charset: "alphabetic",
             });
 
-            const update = `
-            mutation {
-                ${typeMovie.operations.update} (update: { tags: {pop: 2 } }) {
-                    ${typeMovie.plural} {
-                        title
-                        tags
+            const update = /* GraphQL */ `
+                mutation {
+                    ${Movie.operations.update} (update: { tags: {pop: 2 } }) {
+                        ${Movie.plural} {
+                            title
+                            tags
+                        }
                     }
                 }
-            }
-        `;
+            `;
 
-            const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: ${initialValue}})
-        `;
+            const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags: ${initialValue}})`;
 
             await testHelper.executeCypher(cypher, { movieTitle });
 
@@ -330,8 +319,7 @@ describe("array-pop", () => {
             }
 
             expect(gqlResult.errors).toBeUndefined();
-
-            expect((gqlResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
+            expect((gqlResult.data as any)[Movie.operations.update][Movie.plural]).toEqual([
                 { title: movieTitle, tags: expectedOutputValue },
             ]);
         }
@@ -371,10 +359,10 @@ describe("array-pop", () => {
             elementsToPop: 2,
         },
     ])("should pop $description", async ({ elementsToPop, tags, expectedOutputValue }) => {
-        const typeMovie = testHelper.createUniqueType("Movie");
+        const Movie = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
-            type ${typeMovie} @node {
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
                 title: String
                 tags: [Point!]
             }
@@ -386,13 +374,13 @@ describe("array-pop", () => {
             charset: "alphabetic",
         });
 
-        const create = `
+        const create = /* GraphQL */ `
             mutation CreateMovie($title: String!, $longitude: Float!, $latitude: Float!, $height: Float!) {
-                ${typeMovie.operations.create} (input: {
+                ${Movie.operations.create} (input: {
                     title: $title,
                     tags: ${tags}
                 }) {
-                    ${typeMovie.plural} {
+                    ${Movie.plural} {
                         title
                         tags {
                             latitude
@@ -419,10 +407,10 @@ describe("array-pop", () => {
 
         expect(gqlCreateResult.errors).toBeUndefined();
 
-        const update = `
+        const update = /* GraphQL */ `
             mutation UpdateMovie($elementsToPop: Int!) {
-                ${typeMovie.operations.update} (update: { tags: { pop: $elementsToPop } }) {
-                    ${typeMovie.plural} {
+                ${Movie.operations.update} (update: { tags: { pop: $elementsToPop } }) {
+                    ${Movie.plural} {
                         title
                         tags {
                             latitude
@@ -443,8 +431,7 @@ describe("array-pop", () => {
         }
 
         expect(gqlUpdateResult.errors).toBeUndefined();
-
-        expect((gqlUpdateResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
+        expect((gqlUpdateResult.data as any)[Movie.operations.update][Movie.plural]).toEqual([
             { title: movieTitle, tags: expectedOutputValue },
         ]);
     });
@@ -482,10 +469,10 @@ describe("array-pop", () => {
             elementsToPop: 2,
         },
     ])("should pop $description", async ({ elementsToPop, tags, expectedOutputValue }) => {
-        const typeMovie = testHelper.createUniqueType("Movie");
+        const Movie = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
-            type ${typeMovie} @node {
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
                 title: String
                 tags: [CartesianPoint!]
             }
@@ -497,13 +484,13 @@ describe("array-pop", () => {
             charset: "alphabetic",
         });
 
-        const create = `
+        const create = /* GraphQL */ `
             mutation CreateMovie($title: String!, $x: Float!, $y: Float!) {
-                ${typeMovie.operations.create} (input: {
+                ${Movie.operations.create} (input: {
                     title: $title,
                     tags: ${tags}
                 }) {
-                    ${typeMovie.plural} {
+                    ${Movie.plural} {
                         title
                         tags {
                             x
@@ -528,10 +515,10 @@ describe("array-pop", () => {
 
         expect(gqlCreateResult.errors).toBeUndefined();
 
-        const update = `
+        const update = /* GraphQL */ `
             mutation UpdateMovie($elementsToPop: Int!) {
-                ${typeMovie.operations.update} (update: { tags: {pop: $elementsToPop } }) {
-                    ${typeMovie.plural} {
+                ${Movie.operations.update} (update: { tags: {pop: $elementsToPop } }) {
+                    ${Movie.plural} {
                         title
                         tags {
                             x
@@ -551,17 +538,16 @@ describe("array-pop", () => {
         }
 
         expect(gqlUpdateResult.errors).toBeUndefined();
-
-        expect((gqlUpdateResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
+        expect((gqlUpdateResult.data as any)[Movie.operations.update][Movie.plural]).toEqual([
             { title: movieTitle, tags: expectedOutputValue },
         ]);
     });
 
     test("should pop from two different arrays in the same update", async () => {
-        const typeMovie = testHelper.createUniqueType("Movie");
+        const Movie = testHelper.createUniqueType("Movie");
 
-        const typeDefs = gql`
-            type ${typeMovie} @node {
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
                 title: String
                 tags: [String!]
                 moreTags: [String!]
@@ -574,10 +560,10 @@ describe("array-pop", () => {
             charset: "alphabetic",
         });
 
-        const update = `
+        const update = /* GraphQL */ `
             mutation {
-                ${typeMovie.operations.update} (update: { tags: {pop: 1}, moreTags: {pop: 2} }) {
-                    ${typeMovie.plural} {
+                ${Movie.operations.update} (update: { tags: {pop: 1}, moreTags: {pop: 2} }) {
+                    ${Movie.plural} {
                         title
                         tags
                         moreTags
@@ -586,9 +572,7 @@ describe("array-pop", () => {
             }
         `;
 
-        const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: ["abc", "xyz"], moreTags: ["this", "that", "them"] })
-        `;
+        const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags: ["abc", "xyz"], moreTags: ["this", "that", "them"] })`;
 
         await testHelper.executeCypher(cypher, { movieTitle });
 
@@ -599,25 +583,24 @@ describe("array-pop", () => {
         }
 
         expect(gqlResult.errors).toBeUndefined();
-
-        expect((gqlResult.data as any)[typeMovie.operations.update][typeMovie.plural]).toEqual([
+        expect((gqlResult.data as any)[Movie.operations.update][Movie.plural]).toEqual([
             { title: movieTitle, tags: ["abc"], moreTags: ["this"] },
         ]);
     });
 
     test("should be able to pop in a nested update", async () => {
         const actorName = "Luigino";
-        const movie = testHelper.createUniqueType("Movie");
-        const actor = testHelper.createUniqueType("Actor");
-        const typeDefs = `
-            type ${movie.name} @node {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Actor = testHelper.createUniqueType("Actor");
+        const typeDefs = /* GraphQL */ `
+            type ${Movie.name} @node {
                 viewers: [Int!]!
-                workers: [${actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
+                workers: [${Actor.name}!]! @relationship(type: "WORKED_IN", direction: IN)
             }
-            type ${actor.name} @node {
+            type ${Actor.name} @node {
                 id: ID!
                 name: String!
-                worksInMovies: [${movie.name}!]! @relationship(type: "WORKED_IN", direction: OUT)
+                worksInMovies: [${Movie.name}!]! @relationship(type: "WORKED_IN", direction: OUT)
             }
         `;
 
@@ -627,22 +610,22 @@ describe("array-pop", () => {
             charset: "alphabetic",
         });
 
-        const update = `
+        const update = /* GraphQL */ `
             mutation($id: ID, $numberToPop: Int) {
-                ${actor.operations.update}(where: { id_EQ: $id },
+                ${Actor.operations.update}(where: { id: { eq: $id } },
                     update: {
                         worksInMovies: [
                             {
                                 update: {
                                     node: {
-                                        viewers: {pop: $numberToPop}
+                                        viewers: { pop: $numberToPop }
                                     }
                                 }
                             }
                         ]
                     }
                 ) {
-                    ${actor.plural} {
+                    ${Actor.plural} {
                         name
                         worksInMovies {
                             viewers
@@ -653,7 +636,7 @@ describe("array-pop", () => {
         `;
 
         const cypher = `
-            CREATE (a:${movie.name} {viewers: $initialViewers}), (b:${actor.name} {id: $id, name: $name})
+            CREATE (a:${Movie.name} {viewers: $initialViewers}), (b:${Actor.name} {id: $id, name: $name})
             WITH a,b CREATE (a)<-[worksInMovies: WORKED_IN]-(b)
         `;
 
@@ -668,25 +651,25 @@ describe("array-pop", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult.data as any)[actor.operations.update][actor.plural]).toEqual(
+        expect((gqlResult.data as any)[Actor.operations.update][Actor.plural]).toEqual(
             expect.toIncludeSameMembers([{ name: actorName, worksInMovies: [{ viewers: [1] }] }])
         );
     });
 
     test("should be possible to update relationship properties", async () => {
         const initialPay = 100;
-        const movie = testHelper.createUniqueType("Movie");
-        const actor = testHelper.createUniqueType("Actor");
-        const typeDefs = `
-            type ${movie.name} @node {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Actor = testHelper.createUniqueType("Actor");
+        const typeDefs = /* GraphQL */ `
+            type ${Movie.name} @node {
                 title: String
-                actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+                actors: [${Actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type ${actor.name} @node {
+            type ${Actor.name} @node {
                 id: ID!
                 name: String!
-                actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+                actedIn: [${Movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
             type ActedIn @relationshipProperties {
@@ -700,20 +683,20 @@ describe("array-pop", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             mutation Mutation($id: ID, $numberToPop: Int) {
-                ${actor.operations.update}(where: { id_EQ: $id }, update: {
+                ${Actor.operations.update}(where: { id: { eq: $id } }, update: {
                     actedIn: [
                         {
                             update: {
                                 edge: {
-                                    pay: {pop: $numberToPop}
+                                    pay: { pop: $numberToPop }
                                 }
                             }
                         }
                     ]
                 }) {
-                    ${actor.plural} {
+                    ${Actor.plural} {
                         name
                         actedIn {
                             title
@@ -732,9 +715,7 @@ describe("array-pop", () => {
 
         // Create new movie
         await testHelper.executeCypher(
-            `
-                CREATE (a:${movie.name} {title: "The Matrix"}), (b:${actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b
-                `,
+            `CREATE (a:${Movie.name} {title: "The Matrix"}), (b:${Actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b`,
             {
                 id,
                 initialPay: [initialPay],
@@ -747,9 +728,7 @@ describe("array-pop", () => {
 
         expect(gqlResult.errors).toBeUndefined();
         const storedValue = await testHelper.executeCypher(
-            `
-                MATCH(b: ${actor.name}{id: $id}) -[c: ACTED_IN]-> (a: ${movie.name}) RETURN c.pay as pay
-                `,
+            `MATCH(b: ${Actor.name}{id: $id}) -[c: ACTED_IN]-> (a: ${Movie.name}) RETURN c.pay as pay`,
             {
                 id,
             }
@@ -758,18 +737,18 @@ describe("array-pop", () => {
     });
 
     test("should be possible to update Point relationship properties", async () => {
-        const movie = testHelper.createUniqueType("Movie");
-        const actor = testHelper.createUniqueType("Actor");
+        const Movie = testHelper.createUniqueType("Movie");
+        const Actor = testHelper.createUniqueType("Actor");
         const typeDefs = /* GraphQL */ `
-            type ${movie.name} @node {
+            type ${Movie.name} @node {
                 title: String
-                actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+                actors: [${Actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type ${actor.name} @node {
+            type ${Actor.name} @node {
                 id: ID!
                 name: String!
-                actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+                actedIn: [${Movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
             type ActedIn @relationshipProperties {
@@ -783,20 +762,20 @@ describe("array-pop", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             mutation Mutation($id: ID, $numberToPop: Int) {
-                ${actor.operations.update}(where: { id_EQ: $id }, update: {
+                ${Actor.operations.update}(where: { id: { eq: $id } }, update: {
                     actedIn: [
                         {
                             update: {
                                 edge: {
-                                    locations: {pop: $numberToPop}
+                                    locations: { pop: $numberToPop }
                                 }
                             }
                         }
                     ]
                 }) {
-                    ${actor.plural} {
+                    ${Actor.plural} {
                         name
                         actedIn {
                             title
@@ -819,9 +798,7 @@ describe("array-pop", () => {
 
         // Create new movie
         await testHelper.executeCypher(
-            `
-                CREATE (a:${movie.name} {title: "The Matrix"}), (b:${actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ locations: [point($initialLocation)] }]-(b) RETURN a, actedIn, b
-                `,
+            `CREATE (a:${Movie.name} {title: "The Matrix"}), (b:${Actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ locations: [point($initialLocation)] }]-(b) RETURN a, actedIn, b`,
             {
                 id,
                 initialLocation: point,
@@ -833,7 +810,7 @@ describe("array-pop", () => {
         });
 
         expect(gqlResult.errors).toBeUndefined();
-        expect((gqlResult.data as any)[actor.operations.update][actor.plural]).toEqual(
+        expect((gqlResult.data as any)[Actor.operations.update][Actor.plural]).toEqual(
             expect.toIncludeSameMembers([
                 {
                     name: "Keanu",

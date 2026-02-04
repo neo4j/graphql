@@ -17,8 +17,6 @@
  * limitations under the License.
  */
 
-import type { GraphQLError } from "graphql";
-import { gql } from "graphql-tag";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import { generate } from "randomstring";
@@ -35,7 +33,7 @@ describe("array-pop-and-push", () => {
 
     test("should throw an error when trying to pop an element from a non-existing array", async () => {
         const Movie = testHelper.createUniqueType("Movie");
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String
                 tags: [String!]
@@ -49,9 +47,9 @@ describe("array-pop-and-push", () => {
             charset: "alphabetic",
         });
 
-        const update = `
+        const update = /* GraphQL */ `
             mutation {
-                ${Movie.operations.update} (update: { tags_PUSH: "xyz", moreTags_POP: 2 }) {
+                ${Movie.operations.update} (update: { tags: { push: "xyz" }, moreTags: { pop: 2 } }) {
                     ${Movie.plural} {
                         title
                         tags
@@ -61,25 +59,21 @@ describe("array-pop-and-push", () => {
             }
         `;
 
-        const cypher = `
-            CREATE (m:${Movie} {title:$movieTitle, tags: ["abc"] })
-        `;
+        const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags: ["abc"] })`;
 
         await testHelper.executeCypher(cypher, { movieTitle });
 
         const gqlResult = await testHelper.executeGraphQL(update);
 
-        expect(gqlResult.errors).toBeDefined();
-        expect(
-            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("moreTags cannot be NULL"))
-        ).toBeTruthy();
-
+        expect(gqlResult.errors).toIncludeAllMembers([
+            expect.objectContaining({ message: expect.toInclude("moreTags cannot be NULL") }),
+        ]);
         expect(gqlResult.data).toBeNull();
     });
 
     test("should throw an error if not authenticated on field definition", async () => {
         const Movie = testHelper.createUniqueType("Movie");
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String
                 tags: [String!] @authentication(operations: [UPDATE])
@@ -93,9 +87,9 @@ describe("array-pop-and-push", () => {
             charset: "alphabetic",
         });
 
-        const update = `
+        const update = /* GraphQL */ `
             mutation {
-                ${Movie.operations.update} (update: { tags_POP: 1, moreTags_PUSH: "new tag" }) {
+                ${Movie.operations.update} (update: { tags: { pop: 1 }, moreTags: { push: "new tag" } }) {
                     ${Movie.plural} {
                         title
                         tags
@@ -105,9 +99,7 @@ describe("array-pop-and-push", () => {
             }
         `;
 
-        const cypher = `
-            CREATE (m:${Movie} {title:$movieTitle, tags: ['a', 'b'], moreTags: []})
-        `;
+        const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags: ['a', 'b'], moreTags: []})`;
 
         await testHelper.executeCypher(cypher, { movieTitle });
 
@@ -119,14 +111,15 @@ describe("array-pop-and-push", () => {
 
         const gqlResult = await testHelper.executeGraphQL(update);
 
-        expect(gqlResult.errors).toBeDefined();
-        expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Unauthenticated"))).toBeTruthy();
+        expect(gqlResult.errors).toIncludeAllMembers([
+            expect.objectContaining({ message: expect.toInclude("Unauthenticated") }),
+        ]);
         expect(gqlResult.data).toBeNull();
     });
 
     test("should throw an error when input is invalid", async () => {
         const Movie = testHelper.createUniqueType("Movie");
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String
                 tags: [String!]
@@ -140,9 +133,9 @@ describe("array-pop-and-push", () => {
             charset: "alphabetic",
         });
 
-        const update = `
+        const update = /* GraphQL */ `
             mutation {
-                ${Movie.operations.update} (update: { tags_PUSH: 1, moreTags_POP: 2 }) {
+                ${Movie.operations.update} (update: { tags: { push: 1 }, moreTags: { pop: 2 } }) {
                     ${Movie.plural} {
                         title
                         tags
@@ -152,21 +145,15 @@ describe("array-pop-and-push", () => {
             }
         `;
 
-        const cypher = `
-            CREATE (m:${Movie} {title:$movieTitle, tags: ["abc"], moreTags: ["this", "that", "them"] })
-        `;
+        const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags: ["abc"], moreTags: ["this", "that", "them"] })`;
 
         await testHelper.executeCypher(cypher, { movieTitle });
 
         const gqlResult = await testHelper.executeGraphQL(update);
 
-        expect(gqlResult.errors).toBeDefined();
-        expect(
-            (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("String cannot represent a non string value")
-            )
-        ).toBeTruthy();
-
+        expect(gqlResult.errors).toIncludeAllMembers([
+            expect.objectContaining({ message: expect.toInclude("String cannot represent a non string value") }),
+        ]);
         expect(gqlResult.data).toBeUndefined();
     });
 
@@ -174,7 +161,7 @@ describe("array-pop-and-push", () => {
         const Movie = testHelper.createUniqueType("Movie");
         const Actor = testHelper.createUniqueType("Actor");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String
                 actors: [${Actor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
@@ -220,9 +207,7 @@ describe("array-pop-and-push", () => {
         `;
 
         await testHelper.executeCypher(
-            `
-                CREATE(:${Movie} {title: "The Matrix"})<-[:ACTED_IN { morethings: ["this", "that", "them"] }]-(:${Actor} {id: $id, name: "Keanu"})
-            `,
+            `CREATE(:${Movie} {title: "The Matrix"})<-[:ACTED_IN { morethings: ["this", "that", "them"] }]-(:${Actor} {id: $id, name: "Keanu"})`,
             { id }
         );
 
