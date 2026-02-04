@@ -318,12 +318,12 @@ describe("array-push", () => {
 
         const query = /* GraphQL */ `
             mutation Mutation($id: ID) {
-                ${Actor.operations.update}(where: { id_EQ: $id }, update: {
+                ${Actor.operations.update}(where: { id: { eq: $id } }, update: {
                     actedIn: [
                         {
                             update: {
                                 edge: {
-                                    stuffs_PUSH: 10
+                                    stuffs: { pop: 10 }
                                 }
                             }
                         }

@@ -318,12 +318,12 @@ describe("array-pop-errors", () => {
 
         const query = /* GraphQL */ `
             mutation Mutation($id: ID) {
-                ${Actor.operations.update}(where: { id_EQ: $id }, update: {
+                ${Actor.operations.update}(where: { id: { eq: $id } }, update: {
                     actedIn: [
                         {
                             update: {
                                 edge: {
-                                    stuffs_POP: 1
+                                    stuffs: { pop: 1 }
                                 }
                             }
                         }

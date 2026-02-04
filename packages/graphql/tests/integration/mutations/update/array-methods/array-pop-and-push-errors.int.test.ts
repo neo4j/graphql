@@ -198,15 +198,15 @@ describe("array-pop-and-push", () => {
             charset: "alphabetic",
         });
 
-        const query = `
+        const query = /* GraphQL */ `
             mutation Mutation($id: ID) {
-                ${Actor.operations.update}(where: { id_EQ: $id }, update: {
+                ${Actor.operations.update}(where: { id: { eq: $id } }, update: {
                     actedIn: [
                         {
                             update: {
                                 edge: {
-                                    stuffs_PUSH: 10
-                                    morethings_POP: 1
+                                    stuffs: { push: 10 }
+                                    morethings: { pop: 1 }
                                 }
                             }
                         }
