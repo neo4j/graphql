@@ -230,10 +230,11 @@ describe("array-pop-and-push", () => {
             variableValues: { id },
         });
 
-        expect(gqlResult.errors).toBeDefined();
-        expect(
-            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("stuffs cannot be NULL"))
-        ).toBeTruthy();
+        expect(gqlResult.errors).toIncludeAllMembers([
+            expect.objectContaining({
+                message: expect.toInclude("stuffs cannot be NULL"),
+            }),
+        ]);
         expect(gqlResult.data).toBeNull();
     });
 });
