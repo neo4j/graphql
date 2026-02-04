@@ -63,7 +63,7 @@
         "is-uuid": "1.0.2",
         "jest": "29.7.0",
         "jest-extended": "7.0.0",
-        "jwks-rsa": "3.2.1",
+        "jwks-rsa": "3.2.2",
         "koa": "3.1.1",
         "koa-jwt": "4.0.4",
         "koa-router": "14.0.0",
