@@ -34,10 +34,9 @@ describe("array-pop-and-push", () => {
     });
 
     test("should throw an error when trying to pop an element from a non-existing array", async () => {
-        const typeMovie = testHelper.createUniqueType("Movie");
-
+        const Movie = testHelper.createUniqueType("Movie");
         const typeDefs = gql`
-            type ${typeMovie} @node {
+            type ${Movie} @node {
                 title: String
                 tags: [String!]
                 moreTags: [String!]
@@ -52,8 +51,8 @@ describe("array-pop-and-push", () => {
 
         const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_PUSH: "xyz", moreTags_POP: 2 }) {
-                    ${typeMovie.plural} {
+                ${Movie.operations.update} (update: { tags_PUSH: "xyz", moreTags_POP: 2 }) {
+                    ${Movie.plural} {
                         title
                         tags
                         moreTags
@@ -63,7 +62,7 @@ describe("array-pop-and-push", () => {
         `;
 
         const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: ["abc"] })
+            CREATE (m:${Movie} {title:$movieTitle, tags: ["abc"] })
         `;
 
         await testHelper.executeCypher(cypher, { movieTitle });
@@ -79,9 +78,9 @@ describe("array-pop-and-push", () => {
     });
 
     test("should throw an error if not authenticated on field definition", async () => {
-        const typeMovie = testHelper.createUniqueType("Movie");
+        const Movie = testHelper.createUniqueType("Movie");
         const typeDefs = `
-            type ${typeMovie} @node {
+            type ${Movie} @node {
                 title: String
                 tags: [String!] @authentication(operations: [UPDATE])
                 moreTags: [String!]
@@ -96,8 +95,8 @@ describe("array-pop-and-push", () => {
 
         const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 1, moreTags_PUSH: "new tag" }) {
-                    ${typeMovie.plural} {
+                ${Movie.operations.update} (update: { tags_POP: 1, moreTags_PUSH: "new tag" }) {
+                    ${Movie.plural} {
                         title
                         tags
                         moreTags
@@ -107,7 +106,7 @@ describe("array-pop-and-push", () => {
         `;
 
         const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: ['a', 'b'], moreTags: []})
+            CREATE (m:${Movie} {title:$movieTitle, tags: ['a', 'b'], moreTags: []})
         `;
 
         await testHelper.executeCypher(cypher, { movieTitle });
@@ -126,10 +125,9 @@ describe("array-pop-and-push", () => {
     });
 
     test("should throw an error when input is invalid", async () => {
-        const typeMovie = testHelper.createUniqueType("Movie");
-
+        const Movie = testHelper.createUniqueType("Movie");
         const typeDefs = gql`
-            type ${typeMovie} @node {
+            type ${Movie} @node {
                 title: String
                 tags: [String!]
                 moreTags: [String!]
@@ -144,8 +142,8 @@ describe("array-pop-and-push", () => {
 
         const update = `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_PUSH: 1, moreTags_POP: 2 }) {
-                    ${typeMovie.plural} {
+                ${Movie.operations.update} (update: { tags_PUSH: 1, moreTags_POP: 2 }) {
+                    ${Movie.plural} {
                         title
                         tags
                         moreTags
@@ -155,7 +153,7 @@ describe("array-pop-and-push", () => {
         `;
 
         const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: ["abc"], moreTags: ["this", "that", "them"] })
+            CREATE (m:${Movie} {title:$movieTitle, tags: ["abc"], moreTags: ["this", "that", "them"] })
         `;
 
         await testHelper.executeCypher(cypher, { movieTitle });
@@ -173,19 +171,19 @@ describe("array-pop-and-push", () => {
     });
 
     test("should throw an error when trying to pop and push from/to a non-existing array on relationship properties", async () => {
-        const movie = testHelper.createUniqueType("Movie");
-        const actor = testHelper.createUniqueType("Actor");
+        const Movie = testHelper.createUniqueType("Movie");
+        const Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = `
-            type ${movie} @node {
+            type ${Movie} @node {
                 title: String
-                actors: [${actor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+                actors: [${Actor}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
 
-            type ${actor} @node {
+            type ${Actor} @node {
                 id: ID!
                 name: String!
-                actedIn: [${movie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+                actedIn: [${Movie}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
             type ActedIn @relationshipProperties {
@@ -202,7 +200,7 @@ describe("array-pop-and-push", () => {
 
         const query = `
             mutation Mutation($id: ID) {
-                ${actor.operations.update}(where: { id_EQ: $id }, update: {
+                ${Actor.operations.update}(where: { id_EQ: $id }, update: {
                     actedIn: [
                         {
                             update: {
@@ -214,7 +212,7 @@ describe("array-pop-and-push", () => {
                         }
                     ]
                 }) {
-                    ${actor.plural} {
+                    ${Actor.plural} {
                         name
                     }
                 }
@@ -223,7 +221,7 @@ describe("array-pop-and-push", () => {
 
         await testHelper.executeCypher(
             `
-                CREATE(:${movie} {title: "The Matrix"})<-[:ACTED_IN { morethings: ["this", "that", "them"] }]-(:${actor} {id: $id, name: "Keanu"})
+                CREATE(:${Movie} {title: "The Matrix"})<-[:ACTED_IN { morethings: ["this", "that", "them"] }]-(:${Actor} {id: $id, name: "Keanu"})
             `,
             { id }
         );
