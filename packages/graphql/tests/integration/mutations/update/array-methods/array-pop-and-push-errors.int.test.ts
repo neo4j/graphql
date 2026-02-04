@@ -223,10 +223,7 @@ describe("array-pop-and-push", () => {
 
         await testHelper.executeCypher(
             `
-                CREATE (a:${movie} {title: "The Matrix"}), (b:${actor} {id: $id, name: "Keanu"})
-                WITH a,b
-                CREATE (a)<-[actedIn: ACTED_IN { morethings: ["this", "that", "them"]}]-(b)
-                RETURN a, actedIn, b
+                CREATE(:${movie} {title: "The Matrix"})<-[:ACTED_IN { morethings: ["this", "that", "them"] }]-(:${actor} {id: $id, name: "Keanu"})
             `,
             { id }
         );

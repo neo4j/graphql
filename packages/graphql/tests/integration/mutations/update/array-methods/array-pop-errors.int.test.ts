@@ -342,10 +342,7 @@ describe("array-pop-errors", () => {
 
         await testHelper.executeCypher(
             `
-                CREATE (a:${movie.name} {title: "The Matrix"}), (b:${actor.name} {id: $id, name: "Keanu"})
-                WITH a,b
-                CREATE (a)<-[actedIn: ACTED_IN]-(b)
-                RETURN a, actedIn, b
+                CREATE(:${movie} {title: "The Matrix"})<-[:ACTED_IN]-(:${actor} {id: $id, name: "Keanu"})
             `,
             { id }
         );
