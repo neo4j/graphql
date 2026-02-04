@@ -18,7 +18,6 @@
  */
 
 import { GraphQLError } from "graphql";
-import { gql } from "graphql-tag";
 import { IncomingMessage } from "http";
 import { Socket } from "net";
 import { generate } from "randomstring";
@@ -34,10 +33,9 @@ describe("array-pop-errors", () => {
     });
 
     test("should throw an error when trying to pop an element from a non-existing array", async () => {
-        const typeMovie = testHelper.createUniqueType("Movie");
-
-        const typeDefs = gql`
-            type ${typeMovie} @node {
+        const Movie = testHelper.createUniqueType("Movie");
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
                 title: String
                 tags: [String!]
             }
@@ -49,10 +47,10 @@ describe("array-pop-errors", () => {
             charset: "alphabetic",
         });
 
-        const update = `
+        const update = /* GraphQL */ `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 1 }) {
-                    ${typeMovie.plural} {
+                ${Movie.operations.update} (update: { tags: { pop: 1 } }) {
+                    ${Movie.plural} {
                         title
                         tags
                     }
@@ -62,25 +60,23 @@ describe("array-pop-errors", () => {
 
         // Created deliberately without the tags property.
         const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle})
+            CREATE (m:${Movie} {title:$movieTitle})
         `;
 
         await testHelper.executeCypher(cypher, { movieTitle });
 
         const gqlResult = await testHelper.executeGraphQL(update);
 
-        expect(gqlResult.errors).toBeDefined();
-        expect(
-            (gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Property tags cannot be NULL"))
-        ).toBeTruthy();
-
+        expect(gqlResult.errors).toIncludeAllMembers([
+            expect.objectContaining({ message: expect.toInclude("Property tags cannot be NULL") }),
+        ]);
         expect(gqlResult.data).toBeNull();
     });
 
     test("should throw an error if not authenticated on field definition", async () => {
-        const typeMovie = testHelper.createUniqueType("Movie");
-        const typeDefs = `
-            type ${typeMovie} @node {
+        const Movie = testHelper.createUniqueType("Movie");
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
                 title: String
                 tags: [String!] @authentication(operations: [UPDATE])
             }
@@ -95,10 +91,10 @@ describe("array-pop-errors", () => {
             charset: "alphabetic",
         });
 
-        const update = `
+        const update = /* GraphQL */ `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 1 }) {
-                    ${typeMovie.plural} {
+                ${Movie.operations.update} (update: { tags: { pop: 1 } }) {
+                    ${Movie.plural} {
                         title
                         tags
                     }
@@ -106,9 +102,7 @@ describe("array-pop-errors", () => {
             }
         `;
 
-        const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: ['a', 'b']})
-        `;
+        const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags: ['a', 'b']})`;
 
         await testHelper.executeCypher(cypher, { movieTitle });
 
@@ -120,61 +114,16 @@ describe("array-pop-errors", () => {
 
         const gqlResult = await testHelper.executeGraphQL(update);
 
-        expect(gqlResult.errors).toBeDefined();
-        expect((gqlResult.errors as GraphQLError[]).some((el) => el.message.includes("Unauthenticated"))).toBeTruthy();
+        expect(gqlResult.errors).toIncludeAllMembers([
+            expect.objectContaining({ message: expect.toInclude("Unauthenticated") }),
+        ]);
         expect(gqlResult.data).toBeNull();
     });
 
     test("should throw an error when input is invalid", async () => {
-        const typeMovie = testHelper.createUniqueType("Movie");
-
-        const typeDefs = gql`
-            type ${typeMovie} @node {
-                title: String
-                tags: [String!]
-            }
-        `;
-
-        await testHelper.initNeo4jGraphQL({ typeDefs });
-
-        const movieTitle = generate({
-            charset: "alphabetic",
-        });
-
-        const update = `
-            mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: a }) {
-                    ${typeMovie.plural} {
-                        title
-                        tags
-                    }
-                }
-            }
-        `;
-
-        const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags: ["abc", "xyz"]})
-        `;
-
-        await testHelper.executeCypher(cypher, { movieTitle });
-
-        const gqlResult = await testHelper.executeGraphQL(update);
-
-        expect(gqlResult.errors).toBeDefined();
-        expect(
-            (gqlResult.errors as GraphQLError[]).some((el) =>
-                el.message.includes("Int cannot represent non-integer value")
-            )
-        ).toBeTruthy();
-
-        expect(gqlResult.data).toBeUndefined();
-    });
-
-    test("should throw an error when performing an ambiguous property update", async () => {
-        const typeMovie = testHelper.createUniqueType("Movie");
-
-        const typeDefs = gql`
-            type ${typeMovie} @node {
+        const Movie = testHelper.createUniqueType("Movie");
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
                 title: String
                 tags: [String!]
             }
@@ -188,8 +137,8 @@ describe("array-pop-errors", () => {
 
         const update = /* GraphQL */ `
             mutation {
-                ${typeMovie.operations.update} (update: { tags_POP: 1, tags_SET: [] }) {
-                    ${typeMovie.plural} {
+                ${Movie.operations.update} (update: { tags: { pop: a } }) {
+                    ${Movie.plural} {
                         title
                         tags
                     }
@@ -197,35 +146,70 @@ describe("array-pop-errors", () => {
             }
         `;
 
-        const cypher = `
-            CREATE (m:${typeMovie} {title:$movieTitle, tags:["existing value"]})
+        const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags: ["abc", "xyz"]})`;
+
+        await testHelper.executeCypher(cypher, { movieTitle });
+
+        const gqlResult = await testHelper.executeGraphQL(update);
+
+        expect(gqlResult.errors).toIncludeAllMembers([
+            expect.objectContaining({ message: expect.toInclude("Int cannot represent non-integer value") }),
+        ]);
+        expect(gqlResult.data).toBeUndefined();
+    });
+
+    test("should throw an error when performing an ambiguous property update", async () => {
+        const Movie = testHelper.createUniqueType("Movie");
+        const typeDefs = /* GraphQL */ `
+            type ${Movie} @node {
+                title: String
+                tags: [String!]
+            }
         `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
+        const movieTitle = generate({
+            charset: "alphabetic",
+        });
+
+        const update = /* GraphQL */ `
+            mutation {
+                ${Movie.operations.update} (update: { tags:{ pop: 1, set: [] } }) {
+                    ${Movie.plural} {
+                        title
+                        tags
+                    }
+                }
+            }
+        `;
+
+        const cypher = `CREATE (m:${Movie} {title:$movieTitle, tags:["existing value"]})`;
 
         await testHelper.executeCypher(cypher, { movieTitle });
 
         const gqlResult = await testHelper.executeGraphQL(update);
 
         expect(gqlResult.errors).toEqual([
-            new GraphQLError(`Conflicting modification of [[tags_SET]], [[tags_POP]] on type ${typeMovie}`),
+            new GraphQLError(`Conflicting modification of field tags: [[set]], [[pop]] on type ${Movie}`),
         ]);
-
         expect(gqlResult.data).toBeNull();
     });
 
     test("should throw an error when performing an ambiguous property update on relationship properties", async () => {
         const initialPay = 100;
-        const movie = testHelper.createUniqueType("Movie");
-        const actor = testHelper.createUniqueType("Actor");
-        const typeDefs = `
-            type ${movie.name} @node {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Actor = testHelper.createUniqueType("Actor");
+        const typeDefs = /* GraphQL */ `
+            type ${Movie.name} @node {
                 title: String
-                actors: [${actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+                actors: [${Actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
             }
             
-            type ${actor.name} @node {
+            type ${Actor.name} @node {
                 id: ID!
                 name: String!
-                actedIn: [${movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+                actedIn: [${Movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
             }
 
             type ActedIn @relationshipProperties {
@@ -241,19 +225,18 @@ describe("array-pop-errors", () => {
 
         const query = /* GraphQL */ `
             mutation Mutation($id: ID, $numberToPop: Int) {
-                ${actor.operations.update}(where: { id_EQ: $id }, update: {
+                ${Actor.operations.update}(where: { id: { eq: $id } }, update: {
                     actedIn: [
                         {
                             update: {
                                 edge: {
-                                    pay_SET: [],
-                                    pay_POP: $numberToPop
+                                    pay: { set: [], pop: $numberToPop }
                                 }
                             }
                         }
                     ]
                 }) {
-                    ${actor.plural} {
+                    ${Actor.plural} {
                         name
                         actedIn {
                             title
@@ -272,9 +255,7 @@ describe("array-pop-errors", () => {
 
         // Create new movie
         await testHelper.executeCypher(
-            `
-                CREATE (a:${movie.name} {title: "The Matrix"}), (b:${actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b
-                `,
+            `CREATE (a:${Movie.name} {title: "The Matrix"}), (b:${Actor.name} {id: $id, name: "Keanu"}) WITH a,b CREATE (a)<-[actedIn: ACTED_IN{ pay: $initialPay }]-(b) RETURN a, actedIn, b`,
             {
                 id,
                 initialPay: [initialPay],
@@ -285,10 +266,73 @@ describe("array-pop-errors", () => {
             variableValues: { id, numberToPop: 1 },
         });
 
-        expect(gqlResult.errors).toBeDefined();
-
         expect(gqlResult.errors).toEqual([
-            new GraphQLError(`Conflicting modification of [[pay_SET]], [[pay_POP]] on type ${actor}.actedIn`),
+            new GraphQLError(
+                `Conflicting modification of field pay: [[set]], [[pop]] on relationship ${Movie}.actedIn`
+            ),
+        ]);
+        expect(gqlResult.data).toBeNull();
+    });
+
+    test("should throw an error when trying to pop from a non-existing array on relationship properties", async () => {
+        const Movie = testHelper.createUniqueType("Movie");
+        const Actor = testHelper.createUniqueType("Actor");
+        const typeDefs = /* GraphQL */ `
+            type ${Movie.name} @node {
+                title: String
+                actors: [${Actor.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
+
+            type ${Actor.name} @node {
+                id: ID!
+                name: String!
+                actedIn: [${Movie.name}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            }
+
+            type ActedIn @relationshipProperties {
+                stuffs: [Int!]
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+
+        const id = generate({
+            charset: "alphabetic",
+        });
+
+        const query = /* GraphQL */ `
+            mutation Mutation($id: ID) {
+                ${Actor.operations.update}(where: { id: { eq: $id } }, update: {
+                    actedIn: [
+                        {
+                            update: {
+                                edge: {
+                                    stuffs: { pop: 1 }
+                                }
+                            }
+                        }
+                    ]
+                }) {
+                    ${Actor.plural} {
+                        name
+                    }
+                }
+            }
+        `;
+
+        await testHelper.executeCypher(
+            `CREATE(:${Movie} {title: "The Matrix"})<-[:ACTED_IN]-(:${Actor} {id: $id, name: "Keanu"})`,
+            { id }
+        );
+
+        const gqlResult = await testHelper.executeGraphQL(query, {
+            variableValues: { id },
+        });
+
+        expect(gqlResult.errors).toIncludeAllMembers([
+            expect.objectContaining({
+                message: expect.toInclude("stuffs cannot be NULL"),
+            }),
         ]);
         expect(gqlResult.data).toBeNull();
     });
