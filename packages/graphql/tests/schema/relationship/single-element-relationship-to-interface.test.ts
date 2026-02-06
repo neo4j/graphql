@@ -1231,6 +1231,7 @@ describe("single item relationships to an Interface type", () => {
 
             input MovieDeleteInput {
               actor: [MovieActorDeleteFieldInput!]
+              director: MovieDirectorDeleteFieldInput
             }
 
             type MovieDirectorConnection {
@@ -1248,6 +1249,10 @@ describe("single item relationships to an Interface type", () => {
 
             input MovieDirectorCreateFieldInput {
               node: DirectorCreateInput!
+            }
+
+            input MovieDirectorDeleteFieldInput {
+              where: MovieDirectorConnectionWhere
             }
 
             input MovieDirectorFieldInput {
@@ -2246,6 +2251,7 @@ describe("single item relationships to an Interface type", () => {
 
             input MovieDeleteInput {
               actor: [MovieActorDeleteFieldInput!]
+              director: MovieDirectorDeleteFieldInput
             }
 
             type MovieDirectorConnection {
@@ -2265,6 +2271,10 @@ describe("single item relationships to an Interface type", () => {
             input MovieDirectorCreateFieldInput {
               edge: DirectedCreateInput!
               node: DirectorCreateInput!
+            }
+
+            input MovieDirectorDeleteFieldInput {
+              where: MovieDirectorConnectionWhere
             }
 
             input MovieDirectorFieldInput {

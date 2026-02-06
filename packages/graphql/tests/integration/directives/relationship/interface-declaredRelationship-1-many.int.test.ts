@@ -133,15 +133,16 @@ describe("1-* relationship involving Interface type declared relationship", () =
     test("delete single relationship", async () => {
         await testHelper.executeCypher(`
             CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
-            CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:ACTED_IN]-(k:${Person} { name: "Keanu"})
             CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director"})
+            CREATE(k)-[:DIRECTED]->(s:${Series} { title: "The Office"})
+            CREATE(s)<-[:ACTED_IN]-(d)
             CREATE(m)<-[:ACTED_IN]-(d)
-            CREATE(d)-[:DIRECTED]->(s:${Series} { title: "The Office"})
             CREATE(a)-[:ACTED_IN]->(s)
         `);
         const query = `
             mutation {
-                ${Movie.operations.delete}(where: { director: { actedIn: { director: { name: { eq: "Director" } } } } }) {
+                ${Person.operations.delete}(where: { name: { eq: "Director" } }, delete: { actedIn: { delete: { director: { where: { node: { name: { eq: "K" } } } } } } }) {
                     nodesDeleted
                 }
             }
@@ -150,16 +151,21 @@ describe("1-* relationship involving Interface type declared relationship", () =
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [Movie.operations.delete]: {
-                nodesDeleted: 1,
+            [Person.operations.delete]: {
+                nodesDeleted: 3,
             },
         });
 
-        const remainingNodesAfterDelete = await testHelper.executeCypher(`
+        const remainingMovieNodesAfterDelete = await testHelper.executeCypher(`
             MATCH (m:${Movie})
             RETURN m
         `);
-        expect(remainingNodesAfterDelete.records).toHaveLength(0);
+        expect(remainingMovieNodesAfterDelete.records).toHaveLength(0);
+        const remainingPersonNodesAfterDelete = await testHelper.executeCypher(`
+            MATCH (m:${Person})
+            RETURN m
+        `);
+        expect(remainingPersonNodesAfterDelete.records).toHaveLength(1);
     });
 
     test("returns all fields", async () => {

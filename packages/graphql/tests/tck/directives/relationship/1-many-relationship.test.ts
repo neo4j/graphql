@@ -125,7 +125,7 @@ describe("1-to-many relationships on object types", () => {
     test("delete relationship", async () => {
         const query = `
             mutation {
-               deleteMovies(where: { director: { name: { eq: "Keanu" } } }) {
+               deleteMovies(delete: { director: { where: { node: { name: { eq: "Keanu" } } } } }) {
                    nodesDeleted
                 }
             }
@@ -136,10 +136,17 @@ describe("1-to-many relationships on object types", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            WHERE EXISTS {
-                MATCH (this)<-[:DIRECTED]-(this0:Person)
-                WHERE this0.name = $param0
+            WITH *
+            CALL (*) {
+                OPTIONAL MATCH (this)<-[this0:DIRECTED]-(this1:Person)
+                WHERE this1.name = $param0
+                WITH this0, collect(DISTINCT this1) AS var2
+                CALL (var2) {
+                    UNWIND var2 AS var3
+                    DETACH DELETE var3
+                }
             }
+            WITH *
             DETACH DELETE this"
         `);
 

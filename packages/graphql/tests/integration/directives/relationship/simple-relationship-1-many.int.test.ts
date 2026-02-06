@@ -101,7 +101,7 @@ describe("1-* simple relationship", () => {
 
         const query = `
             mutation {
-                ${Movie.operations.delete}(where: { director: { name: { eq: "Keanu" } } }) {
+                ${Movie.operations.delete}(delete: { director: { where: { node: { name: { eq: "Keanu" } } } } }) {
                    nodesDeleted
                 }
             }
@@ -111,42 +111,13 @@ describe("1-* simple relationship", () => {
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Movie.operations.delete]: {
-                nodesDeleted: 2,
+                nodesDeleted: 3,
             },
         });
 
         const remainingNodesAfterDelete = await testHelper.executeCypher(`
             MATCH (m:${Movie})
             RETURN m
-        `);
-        expect(remainingNodesAfterDelete.records).toHaveLength(0);
-    });
-
-    test("nested delete single relationship", async () => {
-        await testHelper.executeCypher(`
-            CREATE(m:${Movie} { title: "The Matrix"})<-[:DIRECTED]-(a:${Person} { name: "Keanu"})
-            CREATE(a)-[:DIRECTED]->(:${Movie} { title: "The Matrix 2"})
-        `);
-
-        const query = `
-            mutation {
-                ${Person.operations.delete}(where: { directed: { some: { director: { name: { eq: "Keanu" } } } } }) {
-                   nodesDeleted
-                }
-            }
-        `;
-
-        const result = await testHelper.executeGraphQL(query);
-        expect(result.errors).toBeFalsy();
-        expect(result.data).toEqual({
-            [Person.operations.delete]: {
-                nodesDeleted: 1,
-            },
-        });
-
-        const remainingNodesAfterDelete = await testHelper.executeCypher(`
-            MATCH (p:${Person})
-            RETURN p
         `);
         expect(remainingNodesAfterDelete.records).toHaveLength(0);
     });

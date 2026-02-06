@@ -156,7 +156,7 @@ describe("1-many relationships with Interfaces and declared relationships", () =
     test("delete single declared relationship", async () => {
         const query = `
             mutation {
-              deletePeople(where: { actedIn: { director: { name: { eq: "Director" } } } }) {
+              deletePeople(where: { name: { eq: "Director" } }, delete: { actedIn: { delete: { director: { where: { node: { name: { eq: "K" } } } } } } }) {
                     nodesDeleted
                 }
             }
@@ -167,26 +167,53 @@ describe("1-many relationships with Interfaces and declared relationships", () =
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Person)
-            WHERE (EXISTS {
-                MATCH (this)-[:ACTED_IN]->(this0:Movie)
-                WHERE EXISTS {
-                    MATCH (this0)<-[:DIRECTED]-(this1:Person)
-                    WHERE this1.name = $param0
-                }
-            } OR EXISTS {
-                MATCH (this)-[:ACTED_IN]->(this2:Series)
-                WHERE EXISTS {
-                    MATCH (this2)<-[:DIRECTED]-(this3:Person)
+            WHERE this.name = $param0
+            WITH *
+            CALL (*) {
+                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WITH *
+                CALL (*) {
+                    OPTIONAL MATCH (this1)<-[this2:DIRECTED]-(this3:Person)
                     WHERE this3.name = $param1
+                    WITH this2, collect(DISTINCT this3) AS var4
+                    CALL (var4) {
+                        UNWIND var4 AS var5
+                        DETACH DELETE var5
+                    }
                 }
-            })
+                WITH this0, collect(DISTINCT this1) AS var6
+                CALL (var6) {
+                    UNWIND var6 AS var7
+                    DETACH DELETE var7
+                }
+            }
+            CALL (*) {
+                OPTIONAL MATCH (this)-[this8:ACTED_IN]->(this9:Series)
+                WITH *
+                CALL (*) {
+                    OPTIONAL MATCH (this9)<-[this10:DIRECTED]-(this11:Person)
+                    WHERE this11.name = $param2
+                    WITH this10, collect(DISTINCT this11) AS var12
+                    CALL (var12) {
+                        UNWIND var12 AS var13
+                        DETACH DELETE var13
+                    }
+                }
+                WITH this8, collect(DISTINCT this9) AS var14
+                CALL (var14) {
+                    UNWIND var14 AS var15
+                    DETACH DELETE var15
+                }
+            }
+            WITH *
             DETACH DELETE this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Director\\",
-                \\"param1\\": \\"Director\\"
+                \\"param1\\": \\"K\\",
+                \\"param2\\": \\"K\\"
             }"
         `);
     });

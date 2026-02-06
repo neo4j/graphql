@@ -336,6 +336,13 @@ function createRelationshipFieldsForTarget({
         features,
     });
 
+    augmentDeleteInputTypeWithDeleteFieldInput({
+        relationshipAdapter,
+        composer,
+        deprecatedDirectives,
+        features,
+    });
+
     if (relationshipAdapter.isList) {
         withRelationInputType({
             relationshipAdapter,
@@ -348,13 +355,6 @@ function createRelationshipFieldsForTarget({
             relationshipAdapter,
             composer,
             deprecatedDirectives,
-        });
-
-        augmentDeleteInputTypeWithDeleteFieldInput({
-            relationshipAdapter,
-            composer,
-            deprecatedDirectives,
-            features,
         });
 
         augmentDisconnectInputTypeWithDisconnectFieldInput({

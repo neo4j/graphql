@@ -151,13 +151,12 @@ describe("1-* relationships involving Union type", () => {
             CREATE(m)<-[:ACTED_IN]-(p:${Person} { name: "Keanu"})
             CREATE(m)<-[:DIRECTED]-(a:${AI} { model: "T-800"})
             CREATE(:${Movie} { title: "The Apartment"})<-[:DIRECTED]-(a)
-            CREATE(:${Movie} { title: "The Office"})<-[:DIRECTED]-(p)
 
         `);
 
         const query = `
             mutation {
-                ${Movie.operations.delete}(where: { director: { ${AI}: { model: { eq: "T-800" } } } }) {
+                ${Movie.operations.delete}(delete: { director: { ${AI}: { where: { node: { model: { eq: "T-800" } } } } } }) {
                     nodesDeleted
                 }
             }
@@ -167,16 +166,15 @@ describe("1-* relationships involving Union type", () => {
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
             [Movie.operations.delete]: {
-                nodesDeleted: 2,
+                nodesDeleted: 3,
             },
         });
 
         const remainingNodesAfterDelete = await testHelper.executeCypher(`
-            MATCH (m:${Movie})
-            RETURN m
+            MATCH (a:${AI})
+            RETURN a
         `);
-        expect(remainingNodesAfterDelete.records).toHaveLength(1);
-        expect(remainingNodesAfterDelete.records[0]?.get("m").properties.title).toBe("The Office");
+        expect(remainingNodesAfterDelete.records).toHaveLength(0);
     });
 
     test("returns all relationships", async () => {
