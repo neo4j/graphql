@@ -28,7 +28,7 @@ describe("1-to-many relationships on object types", () => {
         typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String!
-                director: Person! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+                director: Person @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type Person @node {

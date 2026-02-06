@@ -34,7 +34,7 @@ describe("Entity api on single element relationships", () => {
             type ${Movie} @node {
                 title: String!
                 actor: ${Person} @relationship(type: "ACTED_IN", direction: IN)
-                director: ${Person}! @relationship(type: "DIRECTED", direction: IN)
+                director: ${Person} @relationship(type: "DIRECTED", direction: IN)
             }
 
             type ${Person} @node {
@@ -107,7 +107,7 @@ describe("Entity api on single element relationships", () => {
         });
     });
 
-    test("fails on 1-1 non nullable relationship", async () => {
+    test.skip("fails on 1-1 non nullable relationship", async () => {
         await testHelper.executeCypher(`
             CREATE(m:${Movie} { title: "The Matrix"})
         `);

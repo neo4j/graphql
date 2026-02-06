@@ -28,36 +28,36 @@ describe("1-many relationships with Interfaces and declared relationships", () =
         typeDefs = /* GraphQL */ `
             interface Actor {
                 name: String!
-                actedIn: Production! @declareRelationship
+                actedIn: Production @declareRelationship
                 directed: [Production!]! @declareRelationship
             }
             interface Production {
                 title: String!
                 actor: [Actor!]! @declareRelationship
-                director: Person! @declareRelationship
+                director: Person @declareRelationship
             }
 
             type Movie implements Production @node {
                 title: String!
                 actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedInMovie")
-                director: Person! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+                director: Person @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type Series implements Production @node {
                 title: String!
                 actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedInSeries")
-                director: Person! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+                director: Person @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type Dog implements Actor @node {
                 name: String!
-                actedIn: Production! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInMovie")
+                actedIn: Production @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInMovie")
                 directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
             }
 
             type Person implements Actor @node {
                 name: String!
-                actedIn: Production! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInSeries")
+                actedIn: Production @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInSeries")
                 directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
             }
 

@@ -320,6 +320,12 @@ export class CreateFactory {
                     > = [];
 
                     if (isUnionEntity(nestedEntity)) {
+                        const isListRelationship = nestedRelationship.isList;
+                        if (!isListRelationship && Object.keys(operationInput).length > 1) {
+                            throw new Error(
+                                `Invalid input for relationship ${nestedRelationship.name}. Expected single entity input for non-list relationship but received multiple.`
+                            );
+                        }
                         Object.entries(operationInput).forEach(([entityTypename, input]) => {
                             const concreteNestedEntity = nestedEntity.concreteEntities.find(
                                 (e) => e.name === entityTypename

@@ -28,7 +28,7 @@ describe("single item relationships", () => {
             type Movie @node {
                 title: String!
                 actor: Person @relationship(type: "ACTED_IN", direction: IN)
-                director: Person! @relationship(type: "DIRECTED", direction: IN)
+                director: Person @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Person @node {
@@ -88,7 +88,7 @@ describe("single item relationships", () => {
             type Movie {
               actor: Person
               actorConnection: MovieActorConnection!
-              director: Person!
+              director: Person
               directorConnection: MovieDirectorConnection!
               title: String!
             }
@@ -106,6 +106,14 @@ describe("single item relationships", () => {
               node: PersonWhere
             }
 
+            input MovieActorCreateFieldInput {
+              node: PersonCreateInput!
+            }
+
+            input MovieActorFieldInput {
+              create: MovieActorCreateFieldInput
+            }
+
             type MovieActorRelationship {
               cursor: String!
               node: Person!
@@ -121,6 +129,8 @@ describe("single item relationships", () => {
             }
 
             input MovieCreateInput {
+              actor: MovieActorFieldInput
+              director: MovieDirectorFieldInput
               title: String!
             }
 
@@ -135,6 +145,14 @@ describe("single item relationships", () => {
               NOT: MovieDirectorConnectionWhere
               OR: [MovieDirectorConnectionWhere!]
               node: PersonWhere
+            }
+
+            input MovieDirectorCreateFieldInput {
+              node: PersonCreateInput!
+            }
+
+            input MovieDirectorFieldInput {
+              create: MovieDirectorCreateFieldInput
             }
 
             type MovieDirectorRelationship {
@@ -299,7 +317,7 @@ describe("single item relationships", () => {
         const typeDefs = gql`
             type Movie @node {
                 title: String!
-                director: Person! @relationship(type: "DIRECTED", direction: IN)
+                director: Person @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Person @node {
@@ -388,7 +406,7 @@ describe("single item relationships", () => {
             }
 
             type Movie {
-              director: Person!
+              director: Person
               directorConnection: MovieDirectorConnection!
               title: String!
             }
@@ -407,6 +425,7 @@ describe("single item relationships", () => {
             }
 
             input MovieCreateInput {
+              director: MovieDirectorFieldInput
               title: String!
             }
 
@@ -421,6 +440,14 @@ describe("single item relationships", () => {
               NOT: MovieDirectorConnectionWhere
               OR: [MovieDirectorConnectionWhere!]
               node: PersonWhere
+            }
+
+            input MovieDirectorCreateFieldInput {
+              node: PersonCreateInput!
+            }
+
+            input MovieDirectorFieldInput {
+              create: MovieDirectorCreateFieldInput
             }
 
             type MovieDirectorRelationship {
@@ -715,7 +742,7 @@ describe("single item relationships", () => {
         const typeDefs = gql`
             type Movie @node {
                 title: String!
-                director: Person! @relationship(type: "DIRECTED", direction: IN, properties: "DirectedProps")
+                director: Person @relationship(type: "DIRECTED", direction: IN, properties: "DirectedProps")
             }
 
             type Person @node {
@@ -865,7 +892,7 @@ describe("single item relationships", () => {
             }
 
             type Movie {
-              director: Person!
+              director: Person
               directorConnection: MovieDirectorConnection!
               title: String!
             }
@@ -884,6 +911,7 @@ describe("single item relationships", () => {
             }
 
             input MovieCreateInput {
+              director: MovieDirectorFieldInput
               title: String!
             }
 
@@ -899,6 +927,15 @@ describe("single item relationships", () => {
               OR: [MovieDirectorConnectionWhere!]
               edge: DirectedPropsWhere
               node: PersonWhere
+            }
+
+            input MovieDirectorCreateFieldInput {
+              edge: DirectedPropsCreateInput!
+              node: PersonCreateInput!
+            }
+
+            input MovieDirectorFieldInput {
+              create: MovieDirectorCreateFieldInput
             }
 
             type MovieDirectorRelationship {

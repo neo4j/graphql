@@ -40,18 +40,18 @@ describe("1-* relationships involving Union type", () => {
             type ${Movie} @node {
                 title: String!
                 actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-                director: Director! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+                director: Director @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type ${Person} @node {
                 name: String!
-                actedIn: ${Movie}! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: ${Movie} @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 directed: [${Movie}!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
             }
 
             type ${Dog} @node {
                 nickName: String!
-                actedIn: ${Movie}! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: ${Movie} @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
             type ${AI} @node {
                 model: String!
@@ -74,6 +74,75 @@ describe("1-* relationships involving Union type", () => {
 
     afterEach(async () => {
         await testHelper.close();
+    });
+
+    test("create single relationship", async () => {
+        const query = `
+            mutation {
+                ${Movie.operations.create}(input: [{ title: "The Matrix", director: { ${AI}: { create: { node: { model: "T-800" } } } } }]) {
+                    ${Movie.plural} {
+                        title
+                        director {
+                            ... on ${AI} {
+                                model
+                            }
+                             ... on ${Person} {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Movie.operations.create]: {
+                [Movie.plural]: [
+                    {
+                        title: "The Matrix",
+                        director: {
+                            model: "T-800",
+                        },
+                    },
+                ],
+            },
+        });
+
+        const newNodes = await testHelper.executeCypher(`
+            MATCH (m:${Movie})<-[:DIRECTED]-(a:${AI})
+            RETURN m, a
+        `);
+        expect(newNodes.records).toHaveLength(1);
+        expect(newNodes.records[0]?.get("m").properties.title).toBe("The Matrix");
+        expect(newNodes.records[0]?.get("a").properties.model).toBe("T-800");
+    });
+
+    test("create single relationship even when providing multiple", async () => {
+        const query = `
+            mutation {
+                ${Movie.operations.create}(input: [{ title: "The Matrix", director: { ${AI}: { create: { node: { model: "T-800" } } }, ${Person}: { create: { node: { name: "Keanu" } } } } }]) {
+                    ${Movie.plural} {
+                        title
+                        director {
+                            ... on ${AI} {
+                                model
+                            }
+                             ... on ${Person} {
+                                name
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toHaveLength(1);
+        expect((result.errors?.[0] || { message: "" }).message).toBe(
+            `Invalid input for relationship director. Expected single entity input for non-list relationship but received multiple.`
+        );
     });
 
     test("returns all relationships", async () => {
@@ -124,7 +193,7 @@ describe("1-* relationships involving Union type", () => {
         expect(result.data).toEqual({
             [Movie.plural]: [
                 {
-                    actor: [
+                    actor: expect.toIncludeSameMembers([
                         {
                             nickName: "Hachiko",
                             actedIn: {
@@ -137,17 +206,17 @@ describe("1-* relationships involving Union type", () => {
                                 title: "The Matrix",
                             },
                         },
-                    ],
+                    ]),
                     director: {
                         model: "T-800",
-                        directed: [
+                        directed: expect.toIncludeSameMembers([
                             {
                                 title: "The Matrix",
                             },
                             {
                                 title: "The Apartment",
                             },
-                        ],
+                        ]),
                     },
                 },
             ],

@@ -858,7 +858,24 @@ describe("validation 2.0", () => {
                 expect(executeValidate).not.toThrow();
             });
 
-            test("1-1 relationships allowed", () => {
+            test("1-1 nullable relationships allowed", () => {
+                const doc = gql`
+                    type Movie @node {
+                        id: ID
+                        actors: Actor @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+
+                    type Actor @node {
+                        name: String
+                        movie: Movie @relationship(type: "ACTED_IN", direction: IN)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("1-1 non-nullable relationships should throw error", () => {
                 const doc = gql`
                     type Movie @node {
                         id: ID
@@ -872,7 +889,14 @@ describe("validation 2.0", () => {
                 `;
 
                 const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
-                expect(executeValidate).not.toThrow();
+                const errors = getError(executeValidate);
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    'Non-list relationship property "movie" cannot have non-nullable type.'
+                );
+                expect(errors[0]).toHaveProperty("path", ["Actor", "movie"]);
             });
         });
     });
