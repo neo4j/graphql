@@ -130,6 +130,38 @@ describe("1-* relationship involving Interface type declared relationship", () =
         expect(newNodes.records[0]?.get("a").properties.name).toBe("Hachiko");
     });
 
+    test("delete single relationship", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director"})
+            CREATE(m)<-[:ACTED_IN]-(d)
+            CREATE(d)-[:DIRECTED]->(s:${Series} { title: "The Office"})
+            CREATE(a)-[:ACTED_IN]->(s)
+        `);
+        const query = `
+            mutation {
+                ${Movie.operations.delete}(where: { director: { actedIn: { director: { name: { eq: "Director" } } } } }) {
+                    nodesDeleted
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Movie.operations.delete]: {
+                nodesDeleted: 1,
+            },
+        });
+
+        const remainingNodesAfterDelete = await testHelper.executeCypher(`
+            MATCH (m:${Movie})
+            RETURN m
+        `);
+        expect(remainingNodesAfterDelete.records).toHaveLength(0);
+    });
+
     test("returns all fields", async () => {
         await testHelper.executeCypher(`
             CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
@@ -137,7 +169,6 @@ describe("1-* relationship involving Interface type declared relationship", () =
             CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director"})
             CREATE(d)-[:DIRECTED]->(s:${Series} { title: "The Office"})
             CREATE(a)-[:ACTED_IN]->(s)
-
         `);
 
         const query = `

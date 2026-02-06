@@ -114,6 +114,73 @@ describe("1-* relationship involving Interface type", () => {
         expect(newNodes.records[0]?.get("a").properties.name).toBe("Keanu");
     });
 
+    test("delete single relationship", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director", years: 10})
+            CREATE(d)-[:DIRECTED]->(m2:${Movie} { title: "The Office"})
+            CREATE(a)-[:ACTED_IN]->(m2)
+            CREATE(:${Person} { name: "Francisco" })-[:DIRECTED]->(:${Movie} { title: "Holiday"})
+        `);
+
+        const query = `
+            mutation {
+                ${Movie.operations.delete}(where: { director: { name: { eq: "Director" } } }) {
+                    nodesDeleted
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Movie.operations.delete]: {
+                nodesDeleted: 2,
+            },
+        });
+
+        const remainingNodesAfterDelete = await testHelper.executeCypher(`
+            MATCH (m:${Movie})
+            RETURN m
+        `);
+        expect(remainingNodesAfterDelete.records).toHaveLength(1);
+        expect(remainingNodesAfterDelete.records[0]?.get("m").properties.title).toBe("Holiday");
+    });
+
+    test("nested delete single relationship", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director", years: 10})
+            CREATE(d)-[:DIRECTED]->(m2:${Movie} { title: "The Office"})
+            CREATE(a)-[:ACTED_IN]->(m2)
+            CREATE(:${Person} { name: "Francisco" })-[:DIRECTED]->(:${Movie} { title: "Holiday"})
+        `);
+
+        const query = `
+            mutation {
+                ${Person.operations.delete}(where: { actedIn: { director: { name: { eq: "Director" } } } }) {
+                    nodesDeleted
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Person.operations.delete]: {
+                nodesDeleted: 1,
+            },
+        });
+
+        const remainingNodesAfterDelete = await testHelper.executeCypher(`
+            MATCH (p:${Person} { name: "Keanu" })
+            RETURN p
+        `);
+        expect(remainingNodesAfterDelete.records).toHaveLength(0);
+    });
+
     test("returns all fields", async () => {
         await testHelper.executeCypher(`
             CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
@@ -126,6 +193,7 @@ describe("1-* relationship involving Interface type", () => {
         const query = `
             query {
                ${Movie.plural} {
+                    title
                     actor {
                         name
                         actedIn {
@@ -147,6 +215,7 @@ describe("1-* relationship involving Interface type", () => {
         expect(result.data).toEqual({
             [Movie.plural]: expect.toIncludeSameMembers([
                 {
+                    title: "The Matrix",
                     actor: [
                         {
                             name: "Hachiko",
@@ -168,6 +237,7 @@ describe("1-* relationship involving Interface type", () => {
                     },
                 },
                 {
+                    title: "The Office",
                     actor: [
                         {
                             name: "Hachiko",
