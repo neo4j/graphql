@@ -223,6 +223,10 @@ describe("single item relationships from a declared relationship", () => {
               node: ActorCreateInput!
             }
 
+            input MovieActorDeleteFieldInput {
+              where: ProductionActorConnectionWhere
+            }
+
             input MovieActorFieldInput {
               create: MovieActorCreateFieldInput
             }
@@ -240,6 +244,11 @@ describe("single item relationships from a declared relationship", () => {
               actor: MovieActorFieldInput
               director: MovieDirectorFieldInput
               title: String!
+            }
+
+            input MovieDeleteInput {
+              actor: MovieActorDeleteFieldInput
+              director: ProductionDirectorDeleteFieldInput
             }
 
             input MovieDirectorCreateFieldInput {
@@ -290,9 +299,9 @@ describe("single item relationships from a declared relationship", () => {
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
               createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
               deleteDogs(where: DogWhere): DeleteInfo!
-              deleteMovies(where: MovieWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(where: PersonWhere): DeleteInfo!
-              deleteSeries(where: SeriesWhere): DeleteInfo!
+              deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
               updateDogs(update: DogUpdateInput, where: DogWhere): UpdateDogsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
               updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
@@ -402,6 +411,10 @@ describe("single item relationships from a declared relationship", () => {
               node: PersonWhere
             }
 
+            input ProductionDirectorDeleteFieldInput {
+              where: ProductionDirectorConnectionWhere
+            }
+
             type ProductionDirectorRelationship {
               cursor: String!
               node: Person!
@@ -470,6 +483,10 @@ describe("single item relationships from a declared relationship", () => {
               node: ActorCreateInput!
             }
 
+            input SeriesActorDeleteFieldInput {
+              where: ProductionActorConnectionWhere
+            }
+
             input SeriesActorFieldInput {
               create: SeriesActorCreateFieldInput
             }
@@ -494,6 +511,11 @@ describe("single item relationships from a declared relationship", () => {
               actor: SeriesActorFieldInput
               director: SeriesDirectorFieldInput
               title: String!
+            }
+
+            input SeriesDeleteInput {
+              actor: SeriesActorDeleteFieldInput
+              director: ProductionDirectorDeleteFieldInput
             }
 
             input SeriesDirectorCreateFieldInput {

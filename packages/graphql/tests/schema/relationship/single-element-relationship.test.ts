@@ -110,6 +110,10 @@ describe("single item relationships", () => {
               node: PersonCreateInput!
             }
 
+            input MovieActorDeleteFieldInput {
+              where: MovieActorConnectionWhere
+            }
+
             input MovieActorFieldInput {
               create: MovieActorCreateFieldInput
             }
@@ -134,6 +138,11 @@ describe("single item relationships", () => {
               title: String!
             }
 
+            input MovieDeleteInput {
+              actor: MovieActorDeleteFieldInput
+              director: MovieDirectorDeleteFieldInput
+            }
+
             type MovieDirectorConnection {
               edges: [MovieDirectorRelationship!]!
               pageInfo: PageInfo!
@@ -149,6 +158,10 @@ describe("single item relationships", () => {
 
             input MovieDirectorCreateFieldInput {
               node: PersonCreateInput!
+            }
+
+            input MovieDirectorDeleteFieldInput {
+              where: MovieDirectorConnectionWhere
             }
 
             input MovieDirectorFieldInput {
@@ -197,7 +210,7 @@ describe("single item relationships", () => {
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
-              deleteMovies(where: MovieWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(where: PersonWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
               updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
@@ -429,6 +442,10 @@ describe("single item relationships", () => {
               title: String!
             }
 
+            input MovieDeleteInput {
+              director: MovieDirectorDeleteFieldInput
+            }
+
             type MovieDirectorConnection {
               edges: [MovieDirectorRelationship!]!
               pageInfo: PageInfo!
@@ -444,6 +461,11 @@ describe("single item relationships", () => {
 
             input MovieDirectorCreateFieldInput {
               node: PersonCreateInput!
+            }
+
+            input MovieDirectorDeleteFieldInput {
+              delete: PersonDeleteInput
+              where: MovieDirectorConnectionWhere
             }
 
             input MovieDirectorFieldInput {
@@ -501,7 +523,7 @@ describe("single item relationships", () => {
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
-              deleteMovies(where: MovieWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
               updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
@@ -604,6 +626,7 @@ describe("single item relationships", () => {
             }
 
             input PersonDirectedDeleteFieldInput {
+              delete: MovieDeleteInput
               where: PersonDirectedConnectionWhere
             }
 
@@ -915,6 +938,10 @@ describe("single item relationships", () => {
               title: String!
             }
 
+            input MovieDeleteInput {
+              director: MovieDirectorDeleteFieldInput
+            }
+
             type MovieDirectorConnection {
               edges: [MovieDirectorRelationship!]!
               pageInfo: PageInfo!
@@ -932,6 +959,11 @@ describe("single item relationships", () => {
             input MovieDirectorCreateFieldInput {
               edge: DirectedPropsCreateInput!
               node: PersonCreateInput!
+            }
+
+            input MovieDirectorDeleteFieldInput {
+              delete: PersonDeleteInput
+              where: MovieDirectorConnectionWhere
             }
 
             input MovieDirectorFieldInput {
@@ -990,7 +1022,7 @@ describe("single item relationships", () => {
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
-              deleteMovies(where: MovieWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
               updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
@@ -1098,6 +1130,7 @@ describe("single item relationships", () => {
             }
 
             input PersonDirectedDeleteFieldInput {
+              delete: MovieDeleteInput
               where: PersonDirectedConnectionWhere
             }
 

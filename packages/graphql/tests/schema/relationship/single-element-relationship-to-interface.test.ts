@@ -361,6 +361,10 @@ describe("single item relationships to an Interface type", () => {
               node: ActorCreateInput!
             }
 
+            input MovieActorDeleteFieldInput {
+              where: MovieActorConnectionWhere
+            }
+
             input MovieActorFieldInput {
               create: MovieActorCreateFieldInput
             }
@@ -385,6 +389,11 @@ describe("single item relationships to an Interface type", () => {
               title: String!
             }
 
+            input MovieDeleteInput {
+              actor: MovieActorDeleteFieldInput
+              director: MovieDirectorDeleteFieldInput
+            }
+
             type MovieDirectorConnection {
               edges: [MovieDirectorRelationship!]!
               pageInfo: PageInfo!
@@ -400,6 +409,10 @@ describe("single item relationships to an Interface type", () => {
 
             input MovieDirectorCreateFieldInput {
               node: DirectorCreateInput!
+            }
+
+            input MovieDirectorDeleteFieldInput {
+              where: MovieDirectorConnectionWhere
             }
 
             input MovieDirectorFieldInput {
@@ -452,7 +465,7 @@ describe("single item relationships to an Interface type", () => {
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
               deleteAis(where: AIWhere): DeleteInfo!
               deleteDogs(where: DogWhere): DeleteInfo!
-              deleteMovies(where: MovieWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(where: PersonWhere): DeleteInfo!
               updateAis(update: AIUpdateInput, where: AIWhere): UpdateAisMutationResponse!
               updateDogs(update: DogUpdateInput, where: DogWhere): UpdateDogsMutationResponse!
@@ -1007,6 +1020,11 @@ describe("single item relationships to an Interface type", () => {
               node: MovieCreateInput!
             }
 
+            input DogActedInDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: DogActedInConnectionWhere
+            }
+
             input DogActedInFieldInput {
               create: DogActedInCreateFieldInput
             }
@@ -1028,6 +1046,10 @@ describe("single item relationships to an Interface type", () => {
             input DogCreateInput {
               actedIn: DogActedInFieldInput
               name: String!
+            }
+
+            input DogDeleteInput {
+              actedIn: DogActedInDeleteFieldInput
             }
 
             type DogEdge {
@@ -1320,9 +1342,9 @@ describe("single item relationships to an Interface type", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
               deleteAis(delete: AIDeleteInput, where: AIWhere): DeleteInfo!
-              deleteDogs(where: DogWhere): DeleteInfo!
+              deleteDogs(delete: DogDeleteInput, where: DogWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-              deletePeople(where: PersonWhere): DeleteInfo!
+              deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
               updateAis(update: AIUpdateInput, where: AIWhere): UpdateAisMutationResponse!
               updateDogs(update: DogUpdateInput, where: DogWhere): UpdateDogsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
@@ -1368,6 +1390,11 @@ describe("single item relationships to an Interface type", () => {
               node: MovieCreateInput!
             }
 
+            input PersonActedInDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: PersonActedInConnectionWhere
+            }
+
             input PersonActedInFieldInput {
               create: PersonActedInCreateFieldInput
             }
@@ -1391,6 +1418,10 @@ describe("single item relationships to an Interface type", () => {
               actedIn: PersonActedInFieldInput
               name: String!
               years: Int!
+            }
+
+            input PersonDeleteInput {
+              actedIn: PersonActedInDeleteFieldInput
             }
 
             type PersonEdge {
@@ -2006,6 +2037,11 @@ describe("single item relationships to an Interface type", () => {
               node: MovieCreateInput!
             }
 
+            input DogActedInDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: DogActedInConnectionWhere
+            }
+
             input DogActedInFieldInput {
               create: DogActedInCreateFieldInput
             }
@@ -2028,6 +2064,10 @@ describe("single item relationships to an Interface type", () => {
             input DogCreateInput {
               actedIn: DogActedInFieldInput
               name: String!
+            }
+
+            input DogDeleteInput {
+              actedIn: DogActedInDeleteFieldInput
             }
 
             type DogEdge {
@@ -2343,9 +2383,9 @@ describe("single item relationships to an Interface type", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
               deleteAis(delete: AIDeleteInput, where: AIWhere): DeleteInfo!
-              deleteDogs(where: DogWhere): DeleteInfo!
+              deleteDogs(delete: DogDeleteInput, where: DogWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-              deletePeople(where: PersonWhere): DeleteInfo!
+              deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
               updateAis(update: AIUpdateInput, where: AIWhere): UpdateAisMutationResponse!
               updateDogs(update: DogUpdateInput, where: DogWhere): UpdateDogsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
@@ -2393,6 +2433,11 @@ describe("single item relationships to an Interface type", () => {
               node: MovieCreateInput!
             }
 
+            input PersonActedInDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: PersonActedInConnectionWhere
+            }
+
             input PersonActedInFieldInput {
               create: PersonActedInCreateFieldInput
             }
@@ -2417,6 +2462,10 @@ describe("single item relationships to an Interface type", () => {
               actedIn: PersonActedInFieldInput
               name: String!
               years: Int!
+            }
+
+            input PersonDeleteInput {
+              actedIn: PersonActedInDeleteFieldInput
             }
 
             type PersonEdge {
