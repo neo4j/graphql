@@ -79,6 +79,118 @@ describe("1-many relationships with Interfaces and declared relationships", () =
         });
     });
 
+    test("create single declared relationship", async () => {
+        const query = `
+            mutation {
+               createPeople(input: [{ 
+                    name: "Keanu", 
+                    actedIn: { 
+                        create: { 
+                            node: { 
+                                Movie: { 
+                                    title: "The Matrix", 
+                                    director: { 
+                                        create: { 
+                                            node: { name: "Director" }, 
+                                            edge: { year: 1999 } 
+                                        } 
+                                    } 
+                                } 
+                            }, 
+                            edge: { episodes: 10 } 
+                        } 
+                    }
+                }]) {
+                    people {
+                        name
+                    }
+                }
+            }
+        `;
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            CALL {
+                CREATE (this0:Person)
+                SET
+                    this0.name = $param0
+                WITH *
+                CREATE (this1:Movie)
+                WITH *
+                CREATE (this2:Person)
+                MERGE (this1)<-[this3:DIRECTED]-(this2)
+                SET
+                    this2.name = $param1,
+                    this3.year = $param2
+                MERGE (this0)-[this4:ACTED_IN]->(this1)
+                SET
+                    this1.title = $param3,
+                    this4.episodes = $param4
+                RETURN this0 AS this
+            }
+            WITH this
+            CALL (this) {
+                RETURN this { .name } AS var5
+            }
+            RETURN collect(var5) AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"Keanu\\",
+                \\"param1\\": \\"Director\\",
+                \\"param2\\": {
+                    \\"low\\": 1999,
+                    \\"high\\": 0
+                },
+                \\"param3\\": \\"The Matrix\\",
+                \\"param4\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("delete single declared relationship", async () => {
+        const query = `
+            mutation {
+              deletePeople(where: { actedIn: { director: { name: { eq: "Director" } } } }) {
+                    nodesDeleted
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            MATCH (this:Person)
+            WHERE (EXISTS {
+                MATCH (this)-[:ACTED_IN]->(this0:Movie)
+                WHERE EXISTS {
+                    MATCH (this0)<-[:DIRECTED]-(this1:Person)
+                    WHERE this1.name = $param0
+                }
+            } OR EXISTS {
+                MATCH (this)-[:ACTED_IN]->(this2:Series)
+                WHERE EXISTS {
+                    MATCH (this2)<-[:DIRECTED]-(this3:Person)
+                    WHERE this3.name = $param1
+                }
+            })
+            DETACH DELETE this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"Director\\",
+                \\"param1\\": \\"Director\\"
+            }"
+        `);
+    });
+
     test("returns all fields", async () => {
         const query = `
             query {

@@ -77,6 +77,7 @@ export function createRelationshipValidationClauses({
     );
 }
 
+// TODO: discuss this
 function getCardinalityPredicateAndMessage(
     relationship: RelationshipAdapter,
     entity: ConcreteEntityAdapter,
