@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
-describe("https://github.com/neo4j/graphql/issues/7026", () => {
+describe("https://github.com/neo4j/graphql/issues/6917", () => {
     let Actor: UniqueType;
 
     const testHelper = new TestHelper();
@@ -29,7 +29,16 @@ describe("https://github.com/neo4j/graphql/issues/7026", () => {
         Actor = testHelper.createUniqueType("Actor");
 
         const typeDefs = /* GraphQL */ `
-            type ${Actor} @node {
+            type A @node {
+                hasB: B @cypher(statement: "MATCH (this)-[:HAS]->(b:B) RETURN b", columnName: "b")
+                name: String!
+            }
+
+            type B @node {
+                hasC: C @cypher(statement: "MATCH (this)-[:HAS]->(c:c) RETURN c", columnName: "c")
+            }
+
+            type C @node {
                 name: String!
             }
         `;
@@ -39,8 +48,8 @@ describe("https://github.com/neo4j/graphql/issues/7026", () => {
         });
 
         await testHelper.executeCypher(`
-            CREATE(:${Actor} {name: "Keanu"})
-            CREATE(:${Actor} {name: "Pepe"})
+            CREATE(:A {name: "A1"})-[:HAS]->(:B {name: "B1"})-[:HAS]->(:C {name: "C1"})
+            CREATE(:A {name: "A2"})-[:HAS]->(:B {name: "B2"})-[:HAS]->(:C {name: "test"})
         `);
     });
 
@@ -51,18 +60,8 @@ describe("https://github.com/neo4j/graphql/issues/7026", () => {
     test("should return totalCount and aggregate, without edges", async () => {
         const query = /* GraphQL */ `
             query {
-                ${Actor.operations.connection} {
-                    totalCount
-                    aggregate {
-                        node {
-                            name {
-                                shortest
-                            }
-                        }
-                        count {
-                            nodes
-                        }
-                    }
+                as(where: { hasB: { hasC: { name: { eq: "test" } } } }) {
+                    name
                 }
             }
         `;
@@ -70,19 +69,11 @@ describe("https://github.com/neo4j/graphql/issues/7026", () => {
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeUndefined();
         expect(result.data as any).toEqual({
-            [Actor.operations.connection]: {
-                totalCount: 2,
-                aggregate: {
-                    node: {
-                        name: {
-                            shortest: "Pepe",
-                        },
-                    },
-                    count: {
-                        nodes: 2,
-                    },
+            as: [
+                {
+                    name: "A2",
                 },
-            },
+            ],
         });
     });
 });
