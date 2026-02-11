@@ -110,13 +110,17 @@ describe("1-* relationships involving Union type", () => {
             },
         });
 
-        const newNodes = await testHelper.executeCypher(`
-            MATCH (m:${Movie})<-[:DIRECTED]-(a:${AI})
-            RETURN m, a
-        `);
-        expect(newNodes.records).toHaveLength(1);
-        expect(newNodes.records[0]?.get("m").properties.title).toBe("The Matrix");
-        expect(newNodes.records[0]?.get("a").properties.model).toBe("T-800");
+        await testHelper.expectRelationship(AI, Movie, "DIRECTED").toEqual([
+            {
+                from: {
+                    model: "T-800",
+                },
+                to: {
+                    title: "The Matrix",
+                },
+                relationship: {},
+            },
+        ]);
     });
 
     test("create single relationship even when providing multiple", async () => {
@@ -170,11 +174,7 @@ describe("1-* relationships involving Union type", () => {
             },
         });
 
-        const remainingNodesAfterDelete = await testHelper.executeCypher(`
-            MATCH (a:${AI})
-            RETURN a
-        `);
-        expect(remainingNodesAfterDelete.records).toHaveLength(0);
+        await testHelper.expectNode(AI).toNotExist();
     });
 
     test("returns all relationships", async () => {

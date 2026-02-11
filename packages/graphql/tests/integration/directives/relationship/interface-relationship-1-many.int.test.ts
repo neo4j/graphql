@@ -105,13 +105,18 @@ describe("1-* relationship involving Interface type", () => {
             },
         });
 
-        const newNodes = await testHelper.executeCypher(`
-            MATCH (m:${Movie})<-[:DIRECTED]-(a:${Person})
-            RETURN m, a
-        `);
-        expect(newNodes.records).toHaveLength(1);
-        expect(newNodes.records[0]?.get("m").properties.title).toBe("The Matrix");
-        expect(newNodes.records[0]?.get("a").properties.name).toBe("Keanu");
+        await testHelper.expectRelationship(Person, Movie, "DIRECTED").toEqual([
+            {
+                from: {
+                    name: "Keanu",
+                    years: 20,
+                },
+                to: {
+                    title: "The Matrix",
+                },
+                relationship: {},
+            },
+        ]);
     });
 
     test("delete single relationship", async () => {
@@ -140,12 +145,7 @@ describe("1-* relationship involving Interface type", () => {
             },
         });
 
-        const remainingNodesAfterDelete = await testHelper.executeCypher(`
-            MATCH (m:${Movie})
-            RETURN m
-        `);
-        expect(remainingNodesAfterDelete.records).toHaveLength(1);
-        expect(remainingNodesAfterDelete.records[0]?.get("m").properties.title).toBe("The Office");
+        await testHelper.expectNode(Movie).toEqual([{ title: "The Office" }]);
     });
 
     test("returns all fields", async () => {

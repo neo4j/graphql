@@ -84,13 +84,17 @@ describe("1-* simple relationship", () => {
             },
         });
 
-        const newNodes = await testHelper.executeCypher(`
-            MATCH (m:${Movie})<-[:DIRECTED]-(p:${Person})
-            RETURN m, p
-        `);
-        expect(newNodes.records).toHaveLength(1);
-        expect(newNodes.records[0]?.get("m").properties.title).toBe("The Matrix");
-        expect(newNodes.records[0]?.get("p").properties.name).toBe("Keanu");
+        await testHelper.expectRelationship(Person, Movie, "DIRECTED").toEqual([
+            {
+                from: {
+                    name: "Keanu",
+                },
+                to: {
+                    title: "The Matrix",
+                },
+                relationship: {},
+            },
+        ]);
     });
 
     test("delete single relationship", async () => {
@@ -115,11 +119,7 @@ describe("1-* simple relationship", () => {
             },
         });
 
-        const remainingNodesAfterDelete = await testHelper.executeCypher(`
-            MATCH (m:${Movie})
-            RETURN m
-        `);
-        expect(remainingNodesAfterDelete.records).toHaveLength(0);
+        await testHelper.expectNode(Movie).toNotExist();
     });
 
     test("returns all relationships", async () => {

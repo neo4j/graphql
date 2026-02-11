@@ -121,13 +121,17 @@ describe("1-* relationship involving Interface type declared relationship", () =
             },
         });
 
-        const newNodes = await testHelper.executeCypher(`
-            MATCH (m:${Movie})<-[:ACTED_IN]-(a:${Dog})
-            RETURN m, a
-        `);
-        expect(newNodes.records).toHaveLength(1);
-        expect(newNodes.records[0]?.get("m").properties.title).toBe("The Matrix");
-        expect(newNodes.records[0]?.get("a").properties.name).toBe("Hachiko");
+        await testHelper.expectRelationship(Dog, Movie, "ACTED_IN").toEqual([
+            {
+                from: {
+                    name: "Hachiko",
+                },
+                to: {
+                    title: "The Matrix",
+                },
+                relationship: {},
+            },
+        ]);
     });
 
     test("delete single relationship", async () => {
@@ -156,16 +160,8 @@ describe("1-* relationship involving Interface type declared relationship", () =
             },
         });
 
-        const remainingMovieNodesAfterDelete = await testHelper.executeCypher(`
-            MATCH (m:${Movie})
-            RETURN m
-        `);
-        expect(remainingMovieNodesAfterDelete.records).toHaveLength(0);
-        const remainingPersonNodesAfterDelete = await testHelper.executeCypher(`
-            MATCH (m:${Person})
-            RETURN m
-        `);
-        expect(remainingPersonNodesAfterDelete.records).toHaveLength(1);
+        await testHelper.expectNode(Movie).toNotExist();
+        await testHelper.expectNode(Person).count(1);
     });
 
     test("returns all fields", async () => {
