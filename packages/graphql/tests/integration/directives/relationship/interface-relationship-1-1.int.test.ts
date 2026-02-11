@@ -134,27 +134,4 @@ describe("Entity api on single element relationships to an Interface type", () =
             ],
         });
     });
-
-    test.skip("fails on 1-1 non nullable relationship", async () => {
-        await testHelper.executeCypher(`
-            CREATE(m:${Movie} { title: "The Matrix"})
-        `);
-
-        const query = `
-            query {
-                ${Movie.plural} {
-                    director {
-                        years
-                    }
-                }
-            }
-        `;
-
-        const result = await testHelper.executeGraphQL(query);
-        expect(result.errors).toEqual([
-            expect.objectContaining({
-                message: `Cannot return null for non-nullable field ${Movie}.director.`,
-            }),
-        ]);
-    });
 });

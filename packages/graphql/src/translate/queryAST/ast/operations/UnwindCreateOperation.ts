@@ -21,7 +21,6 @@ import Cypher from "@neo4j/cypher-builder";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
-import { createRelationshipValidationClauses } from "../../../create-relationship-validation-clauses";
 import { getEntityLabels } from "../../utils/create-node-from-entity";
 import { assertIsConcreteEntity } from "../../utils/is-concrete-entity";
 import { QueryASTContext } from "../QueryASTContext";
@@ -134,17 +133,11 @@ export class UnwindCreateOperation extends MutationOperation {
         ]);
 
         const authorizationClauses = this.getAuthorizationClauses(nestedContext);
-        const cardinalityClauses = createRelationshipValidationClauses({
-            entity: target,
-            context: nestedContext.neo4jGraphQLContext,
-            varName: nestedContext.target,
-        });
         const unwindCreateClauses = Cypher.utils.concat(
             createClause,
             mergeClause,
             ...nestedSubqueries,
-            ...authorizationClauses,
-            ...(cardinalityClauses.length ? [new Cypher.With(nestedContext.target), ...cardinalityClauses] : [])
+            ...authorizationClauses
         );
 
         let subQueryClause: Cypher.Clause;

@@ -80,22 +80,15 @@ describe("1-to-many relationships on object types", () => {
                         create_this4.year = create_var2.edge.year
                     RETURN collect(NULL) AS create_var5
                 }
-                WITH create_this1
-                CALL (create_this1) {
-                    MATCH (create_this1)<-[create_this6:DIRECTED]-(:Person)
-                    WITH count(create_this6) AS c
-                    WHERE apoc.util.validatePredicate(NOT (c <= 1), \\"@neo4j/graphql/RELATIONSHIP-REQUIREDMovie.director must be less than or equal to one\\", [0])
-                    RETURN c AS create_var7
-                }
                 RETURN create_this1
             }
             CALL (create_this1) {
-                MATCH (create_this1)<-[create_this8:DIRECTED]-(create_this9:Person)
-                WITH DISTINCT create_this9
-                WITH create_this9 { .name } AS create_this9
-                RETURN head(collect(create_this9)) AS create_var10
+                MATCH (create_this1)<-[create_this6:DIRECTED]-(create_this7:Person)
+                WITH DISTINCT create_this7
+                WITH create_this7 { .name } AS create_this7
+                RETURN head(collect(create_this7)) AS create_var8
             }
-            RETURN collect(create_this1 { .title, director: create_var10 }) AS data"
+            RETURN collect(create_this1 { .title, director: create_var8 }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
