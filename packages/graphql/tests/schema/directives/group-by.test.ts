@@ -123,6 +123,10 @@ describe("@groupBy directive", () => {
               node: Movie!
             }
 
+            input MovieGroupByInput {
+              title: Boolean
+            }
+
             \\"\\"\\"
             Fields to sort Movies by. The order in which sorts are applied is not guaranteed when specifying many fields in one MovieSort object.
             \\"\\"\\"
@@ -156,10 +160,6 @@ describe("@groupBy directive", () => {
               edges: [MovieEdge!]!
             }
 
-            input MovieGroupByInput {
-              title: Boolean
-            }
-
             type Mutation {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               deleteMovies(where: MovieWhere): DeleteInfo!
@@ -176,7 +176,7 @@ describe("@groupBy directive", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere, groupBy: MovieGroupByInput): MoviesConnection!
+              moviesConnection(after: String, first: Int, groupBy: MovieGroupByInput, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

@@ -122,6 +122,10 @@ export abstract class RelationshipBaseOperations<T extends RelationshipAdapter |
         return `${this.prefixForTypenameWithInheritance}${ifUnionRelationshipTargetEntity?.name || ""}ConnectionWhere`;
     }
 
+    public getConnectionGroupByTypename(): string {
+        return `${this.prefixForTypenameWithInheritance}GroupBy`;
+    }
+
     public getUpdateConnectionInputTypename(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
         return `${this.prefixForTypename}${ifUnionRelationshipTargetEntity?.name || ""}UpdateConnectionInput`;
     }

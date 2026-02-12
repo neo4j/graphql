@@ -106,6 +106,7 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
             (directive) => directive.name.value === DEPRECATED
         )
     );
+
     const composeNodeArgs: ObjectTypeComposerArgumentConfigMapDefinition = {
         where: makeConnectionWhereInputType({
             relationshipAdapter,
@@ -139,7 +140,7 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
             resolve: (source: any, args: ConnectionQueryArgs, _ctx: any, info: GraphQLResolveInfo) => {
                 return connectionFieldResolver({
                     connectionFieldName: relationshipAdapter.operations.connectionFieldName,
-                args,
+                    args,
                     info,
                     source,
                 });

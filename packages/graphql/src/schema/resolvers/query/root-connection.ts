@@ -25,9 +25,9 @@ import {
     type GraphQLResolveInfo,
     type SelectionSetNode,
 } from "graphql";
-import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type { ObjectTypeComposerArgumentConfigDefinition, SchemaComposer } from "graphql-compose";
 import { PageInfo } from "../../../graphql/objects/PageInfo";
-import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
@@ -35,6 +35,7 @@ import { translateRead } from "../../../translate/translate-read";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { isNeoInt } from "../../../utils/utils";
+import { makeConnectionGroupByInputType } from "../../generation/connection-group-by";
 import { makeSortInput } from "../../generation/sort-and-options-input";
 import { createConnectionWithEdgeProperties } from "../../pagination";
 import { graphqlDirectivesToCompose } from "../../to-compose";
@@ -120,20 +121,33 @@ export function rootConnectionResolver({
         });
     }
 
+    const args: Record<string, ObjectTypeComposerArgumentConfigDefinition> = {
+        first: isLimitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
+        after: GraphQLString,
+        where: entityAdapter.operations.whereInputTypeName,
+    };
+
     // since sort is not created when there is nothing to sort, we check for its existence
-    let sortArg: InputTypeComposer | undefined;
     if (!(entityAdapter instanceof UnionEntityAdapter)) {
-        sortArg = makeSortInput({ entityAdapter, userDefinedFieldDirectives: new Map(), composer });
+        const sortArg = makeSortInput({ entityAdapter, userDefinedFieldDirectives: new Map(), composer });
+        if (sortArg) {
+            args.sort = sortArg.NonNull.List;
+        }
+    }
+
+    if (entityAdapter instanceof ConcreteEntityAdapter) {
+        const groupBy = makeConnectionGroupByInputType({
+            composer,
+            entityAdapter,
+        });
+        if (groupBy) {
+            args.groupBy = groupBy;
+        }
     }
 
     return {
         type: rootConnection.NonNull,
         resolve,
-        args: {
-            first: isLimitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
-            after: GraphQLString,
-            where: entityAdapter.operations.whereInputTypeName,
-            ...(sortArg ? { sort: sortArg.NonNull.List } : {}),
-        },
+        args,
     };
 }
