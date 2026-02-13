@@ -28,36 +28,36 @@ describe("1-many relationships with Interfaces and declared relationships", () =
         typeDefs = /* GraphQL */ `
             interface Actor {
                 name: String!
-                actedIn: Production! @declareRelationship
+                actedIn: Production @declareRelationship
                 directed: [Production!]! @declareRelationship
             }
             interface Production {
                 title: String!
                 actor: [Actor!]! @declareRelationship
-                director: Person! @declareRelationship
+                director: Person @declareRelationship
             }
 
             type Movie implements Production @node {
                 title: String!
                 actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedInMovie")
-                director: Person! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+                director: Person @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type Series implements Production @node {
                 title: String!
                 actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedInSeries")
-                director: Person! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+                director: Person @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type Dog implements Actor @node {
                 name: String!
-                actedIn: Production! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInMovie")
+                actedIn: Production @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInMovie")
                 directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
             }
 
             type Person implements Actor @node {
                 name: String!
-                actedIn: Production! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInSeries")
+                actedIn: Production @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInSeries")
                 directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
             }
 
@@ -77,6 +77,145 @@ describe("1-many relationships with Interfaces and declared relationships", () =
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
+    });
+
+    test("create single declared relationship", async () => {
+        const query = `
+            mutation {
+               createPeople(input: [{ 
+                    name: "Keanu", 
+                    actedIn: { 
+                        create: { 
+                            node: { 
+                                Movie: { 
+                                    title: "The Matrix", 
+                                    director: { 
+                                        create: { 
+                                            node: { name: "Director" }, 
+                                            edge: { year: 1999 } 
+                                        } 
+                                    } 
+                                } 
+                            }, 
+                            edge: { episodes: 10 } 
+                        } 
+                    }
+                }]) {
+                    people {
+                        name
+                    }
+                }
+            }
+        `;
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            CALL {
+                CREATE (this0:Person)
+                SET
+                    this0.name = $param0
+                WITH *
+                CREATE (this1:Movie)
+                WITH *
+                CREATE (this2:Person)
+                MERGE (this1)<-[this3:DIRECTED]-(this2)
+                SET
+                    this2.name = $param1,
+                    this3.year = $param2
+                MERGE (this0)-[this4:ACTED_IN]->(this1)
+                SET
+                    this1.title = $param3,
+                    this4.episodes = $param4
+                RETURN this0 AS this
+            }
+            WITH this
+            CALL (this) {
+                RETURN this { .name } AS var5
+            }
+            RETURN collect(var5) AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"Keanu\\",
+                \\"param1\\": \\"Director\\",
+                \\"param2\\": {
+                    \\"low\\": 1999,
+                    \\"high\\": 0
+                },
+                \\"param3\\": \\"The Matrix\\",
+                \\"param4\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
+            }"
+        `);
+    });
+
+    test("delete single declared relationship", async () => {
+        const query = `
+            mutation {
+              deletePeople(where: { name: { eq: "Director" } }, delete: { actedIn: { delete: { director: { where: { node: { name: { eq: "K" } } } } } } }) {
+                    nodesDeleted
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            MATCH (this:Person)
+            WHERE this.name = $param0
+            WITH *
+            CALL (*) {
+                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WITH *
+                CALL (*) {
+                    OPTIONAL MATCH (this1)<-[this2:DIRECTED]-(this3:Person)
+                    WHERE this3.name = $param1
+                    WITH this2, collect(DISTINCT this3) AS var4
+                    CALL (var4) {
+                        UNWIND var4 AS var5
+                        DETACH DELETE var5
+                    }
+                }
+                WITH this0, collect(DISTINCT this1) AS var6
+                CALL (var6) {
+                    UNWIND var6 AS var7
+                    DETACH DELETE var7
+                }
+            }
+            CALL (*) {
+                OPTIONAL MATCH (this)-[this8:ACTED_IN]->(this9:Series)
+                WITH *
+                CALL (*) {
+                    OPTIONAL MATCH (this9)<-[this10:DIRECTED]-(this11:Person)
+                    WHERE this11.name = $param2
+                    WITH this10, collect(DISTINCT this11) AS var12
+                    CALL (var12) {
+                        UNWIND var12 AS var13
+                        DETACH DELETE var13
+                    }
+                }
+                WITH this8, collect(DISTINCT this9) AS var14
+                CALL (var14) {
+                    UNWIND var14 AS var15
+                    DETACH DELETE var15
+                }
+            }
+            WITH *
+            DETACH DELETE this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"Director\\",
+                \\"param1\\": \\"K\\",
+                \\"param2\\": \\"K\\"
+            }"
+        `);
     });
 
     test("returns all fields", async () => {

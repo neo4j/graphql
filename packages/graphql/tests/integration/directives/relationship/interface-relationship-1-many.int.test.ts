@@ -43,18 +43,18 @@ describe("1-* relationship involving Interface type", () => {
             type ${Movie} @node {
                 title: String!
                 actor: [${Dog}!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-                director: ${Person}! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+                director: ${Person} @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type ${Dog} implements Actor @node {
                 name: String!
-                actedIn: ${Movie}! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: ${Movie} @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type ${Person} implements Actor & Director @node{
                 name: String!
                 years: Int!
-                actedIn: ${Movie}! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: ${Movie} @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 directed: [${Movie}!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
              }
 
@@ -76,6 +76,78 @@ describe("1-* relationship involving Interface type", () => {
         await testHelper.close();
     });
 
+    test("create single relationship", async () => {
+        const query = `
+            mutation {
+                ${Movie.operations.create}(input: [{ title: "The Matrix", director: { create: { node: { name: "Keanu", years: 20 } } } }]) {
+                    ${Movie.plural} {
+                        title
+                        director {
+                           name
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Movie.operations.create]: {
+                [Movie.plural]: [
+                    {
+                        title: "The Matrix",
+                        director: {
+                            name: "Keanu",
+                        },
+                    },
+                ],
+            },
+        });
+
+        await testHelper.expectRelationship(Person, Movie, "DIRECTED").toEqual([
+            {
+                from: {
+                    name: "Keanu",
+                    years: 20,
+                },
+                to: {
+                    title: "The Matrix",
+                },
+                relationship: {},
+            },
+        ]);
+    });
+
+    test("delete single relationship", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN]-(k:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director", years: 10})
+            CREATE(d)-[:DIRECTED]->(m2:${Movie} { title: "The Office"})
+            CREATE(a)-[:ACTED_IN]->(m2)
+            CREATE(k)-[:DIRECTED]->(:${Movie} { title: "Holiday"})
+        `);
+
+        const query = `
+            mutation {
+                ${Movie.operations.delete}(where: { title: { eq: "Holiday" } }, delete: { director: { delete: { actedIn: { where: { node: { title: { startsWith: "The" } } } } } } }) {
+                    nodesDeleted
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Movie.operations.delete]: {
+                nodesDeleted: 3,
+            },
+        });
+
+        await testHelper.expectNode(Movie).toEqual([{ title: "The Office" }]);
+    });
+
     test("returns all fields", async () => {
         await testHelper.executeCypher(`
             CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
@@ -88,6 +160,7 @@ describe("1-* relationship involving Interface type", () => {
         const query = `
             query {
                ${Movie.plural} {
+                    title
                     actor {
                         name
                         actedIn {
@@ -107,8 +180,9 @@ describe("1-* relationship involving Interface type", () => {
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [Movie.plural]: [
+            [Movie.plural]: expect.toIncludeSameMembers([
                 {
+                    title: "The Matrix",
                     actor: [
                         {
                             name: "Hachiko",
@@ -119,17 +193,18 @@ describe("1-* relationship involving Interface type", () => {
                     ],
                     director: {
                         years: 10,
-                        directed: [
+                        directed: expect.toIncludeSameMembers([
                             {
                                 title: "The Matrix",
                             },
                             {
                                 title: "The Office",
                             },
-                        ],
+                        ]),
                     },
                 },
                 {
+                    title: "The Office",
                     actor: [
                         {
                             name: "Hachiko",
@@ -140,17 +215,17 @@ describe("1-* relationship involving Interface type", () => {
                     ],
                     director: {
                         years: 10,
-                        directed: [
+                        directed: expect.toIncludeSameMembers([
                             {
                                 title: "The Matrix",
                             },
                             {
                                 title: "The Office",
                             },
-                        ],
+                        ]),
                     },
                 },
-            ],
+            ]),
         });
     });
 
@@ -221,14 +296,14 @@ describe("1-* relationship involving Interface type", () => {
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [Movie.plural]: [
+            [Movie.plural]: expect.toIncludeSameMembers([
                 {
                     title: "The Matrix",
                 },
                 {
                     title: "The Office",
                 },
-            ],
+            ]),
         });
     });
 
@@ -338,14 +413,14 @@ describe("1-* relationship involving Interface type", () => {
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [Movie.plural]: [
+            [Movie.plural]: expect.toIncludeSameMembers([
                 {
                     title: "The Matrix",
                 },
                 {
                     title: "The Office",
                 },
-            ],
+            ]),
         });
     });
 

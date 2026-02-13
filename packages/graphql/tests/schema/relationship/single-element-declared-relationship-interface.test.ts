@@ -31,19 +31,19 @@ describe("single item relationships from a declared relationship", () => {
             interface Production {
                 title: String!
                 actor: Actor @declareRelationship
-                director: Person! @declareRelationship
+                director: Person @declareRelationship
             }
 
             type Movie implements Production @node {
                 title: String!
                 actor: Actor @relationship(type: "ACTED_IN", direction: IN)
-                director: Person! @relationship(type: "DIRECTED", direction: IN)
+                director: Person @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Series implements Production @node {
                 title: String!
                 actor: Actor @relationship(type: "ACTED_IN", direction: IN)
-                director: Person! @relationship(type: "DIRECTED", direction: IN)
+                director: Person @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Dog implements Actor @node {
@@ -85,6 +85,11 @@ describe("single item relationships from a declared relationship", () => {
 
             type ActorAggregateNode {
               name: StringAggregateSelection!
+            }
+
+            input ActorCreateInput {
+              Dog: DogCreateInput
+              Person: PersonCreateInput
             }
 
             type ActorEdge {
@@ -209,9 +214,21 @@ describe("single item relationships from a declared relationship", () => {
             type Movie implements Production {
               actor: Actor
               actorConnection: ProductionActorConnection!
-              director: Person!
+              director: Person
               directorConnection: ProductionDirectorConnection!
               title: String!
+            }
+
+            input MovieActorCreateFieldInput {
+              node: ActorCreateInput!
+            }
+
+            input MovieActorDeleteFieldInput {
+              where: ProductionActorConnectionWhere
+            }
+
+            input MovieActorFieldInput {
+              create: MovieActorCreateFieldInput
             }
 
             type MovieAggregate {
@@ -224,7 +241,22 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input MovieCreateInput {
+              actor: MovieActorFieldInput
+              director: MovieDirectorFieldInput
               title: String!
+            }
+
+            input MovieDeleteInput {
+              actor: MovieActorDeleteFieldInput
+              director: ProductionDirectorDeleteFieldInput
+            }
+
+            input MovieDirectorCreateFieldInput {
+              node: PersonCreateInput!
+            }
+
+            input MovieDirectorFieldInput {
+              create: MovieDirectorCreateFieldInput
             }
 
             type MovieEdge {
@@ -267,9 +299,9 @@ describe("single item relationships from a declared relationship", () => {
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
               createSeries(input: [SeriesCreateInput!]!): CreateSeriesMutationResponse!
               deleteDogs(where: DogWhere): DeleteInfo!
-              deleteMovies(where: MovieWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(where: PersonWhere): DeleteInfo!
-              deleteSeries(where: SeriesWhere): DeleteInfo!
+              deleteSeries(delete: SeriesDeleteInput, where: SeriesWhere): DeleteInfo!
               updateDogs(update: DogUpdateInput, where: DogWhere): UpdateDogsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
               updatePeople(update: PersonUpdateInput, where: PersonWhere): UpdatePeopleMutationResponse!
@@ -334,7 +366,7 @@ describe("single item relationships from a declared relationship", () => {
             interface Production {
               actor: Actor
               actorConnection: ProductionActorConnection!
-              director: Person!
+              director: Person
               directorConnection: ProductionDirectorConnection!
               title: String!
             }
@@ -377,6 +409,10 @@ describe("single item relationships from a declared relationship", () => {
               NOT: ProductionDirectorConnectionWhere
               OR: [ProductionDirectorConnectionWhere!]
               node: PersonWhere
+            }
+
+            input ProductionDirectorDeleteFieldInput {
+              where: ProductionDirectorConnectionWhere
             }
 
             type ProductionDirectorRelationship {
@@ -438,9 +474,21 @@ describe("single item relationships from a declared relationship", () => {
             type Series implements Production {
               actor: Actor
               actorConnection: ProductionActorConnection!
-              director: Person!
+              director: Person
               directorConnection: ProductionDirectorConnection!
               title: String!
+            }
+
+            input SeriesActorCreateFieldInput {
+              node: ActorCreateInput!
+            }
+
+            input SeriesActorDeleteFieldInput {
+              where: ProductionActorConnectionWhere
+            }
+
+            input SeriesActorFieldInput {
+              create: SeriesActorCreateFieldInput
             }
 
             type SeriesAggregate {
@@ -460,7 +508,22 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input SeriesCreateInput {
+              actor: SeriesActorFieldInput
+              director: SeriesDirectorFieldInput
               title: String!
+            }
+
+            input SeriesDeleteInput {
+              actor: SeriesActorDeleteFieldInput
+              director: ProductionDirectorDeleteFieldInput
+            }
+
+            input SeriesDirectorCreateFieldInput {
+              node: PersonCreateInput!
+            }
+
+            input SeriesDirectorFieldInput {
+              create: SeriesDirectorCreateFieldInput
             }
 
             type SeriesEdge {
@@ -552,36 +615,36 @@ describe("single item relationships from a declared relationship", () => {
         const typeDefs = gql`
             interface Actor {
                 name: String!
-                actedIn: Production! @declareRelationship
+                actedIn: Production @declareRelationship
                 directed: [Production!]! @declareRelationship
             }
             interface Production {
                 title: String!
                 actor: [Actor!]! @declareRelationship
-                director: Person! @declareRelationship
+                director: Person @declareRelationship
             }
 
             type Movie implements Production @node {
                 title: String!
                 actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-                director: Person! @relationship(type: "DIRECTED", direction: IN)
+                director: Person @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Series implements Production @node {
                 title: String!
                 actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-                director: Person! @relationship(type: "DIRECTED", direction: IN)
+                director: Person @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Dog implements Actor @node {
                 name: String!
-                actedIn: Production! @relationship(type: "ACTED_IN", direction: OUT)
+                actedIn: Production @relationship(type: "ACTED_IN", direction: OUT)
                 directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT)
             }
 
             type Person implements Actor @node {
                 name: String!
-                actedIn: Production! @relationship(type: "ACTED_IN", direction: OUT)
+                actedIn: Production @relationship(type: "ACTED_IN", direction: OUT)
                 directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT)
             }
         `;
@@ -606,7 +669,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             interface Actor {
-              actedIn: Production!
+              actedIn: Production
               actedInConnection: ActorActedInConnection!
               directed(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               directedConnection(after: String, first: Int, sort: [ActorDirectedConnectionSort!], where: ActorDirectedConnectionWhere): ActorDirectedConnection!
@@ -624,6 +687,11 @@ describe("single item relationships from a declared relationship", () => {
               NOT: ActorActedInConnectionWhere
               OR: [ActorActedInConnectionWhere!]
               node: ProductionWhere
+            }
+
+            input ActorActedInDeleteFieldInput {
+              delete: ProductionDeleteInput
+              where: ActorActedInConnectionWhere
             }
 
             type ActorActedInRelationship {
@@ -654,6 +722,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input ActorDeleteInput {
+              actedIn: ActorActedInDeleteFieldInput
               directed: [ActorDirectedDeleteFieldInput!]
             }
 
@@ -851,11 +920,24 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             type Dog implements Actor {
-              actedIn: Production!
+              actedIn: Production
               actedInConnection: ActorActedInConnection!
               directed(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               directedConnection(after: String, first: Int, sort: [ActorDirectedConnectionSort!], where: ActorDirectedConnectionWhere): ActorDirectedConnection!
               name: String!
+            }
+
+            input DogActedInCreateFieldInput {
+              node: ProductionCreateInput!
+            }
+
+            input DogActedInDeleteFieldInput {
+              delete: ProductionDeleteInput
+              where: ActorActedInConnectionWhere
+            }
+
+            input DogActedInFieldInput {
+              create: DogActedInCreateFieldInput
             }
 
             type DogAggregate {
@@ -868,11 +950,13 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input DogCreateInput {
+              actedIn: DogActedInFieldInput
               directed: DogDirectedFieldInput
               name: String!
             }
 
             input DogDeleteInput {
+              actedIn: DogActedInDeleteFieldInput
               directed: [DogDirectedDeleteFieldInput!]
             }
 
@@ -1007,7 +1091,7 @@ describe("single item relationships from a declared relationship", () => {
             type Movie implements Production {
               actor(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorConnection(after: String, first: Int, sort: [ProductionActorConnectionSort!], where: ProductionActorConnectionWhere): ProductionActorConnection!
-              director: Person!
+              director: Person
               directorConnection: ProductionDirectorConnection!
               title: String!
             }
@@ -1098,11 +1182,21 @@ describe("single item relationships from a declared relationship", () => {
 
             input MovieCreateInput {
               actor: MovieActorFieldInput
+              director: MovieDirectorFieldInput
               title: String!
             }
 
             input MovieDeleteInput {
               actor: [MovieActorDeleteFieldInput!]
+              director: ProductionDirectorDeleteFieldInput
+            }
+
+            input MovieDirectorCreateFieldInput {
+              node: PersonCreateInput!
+            }
+
+            input MovieDirectorFieldInput {
+              create: MovieDirectorCreateFieldInput
             }
 
             type MovieEdge {
@@ -1171,11 +1265,24 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             type Person implements Actor {
-              actedIn: Production!
+              actedIn: Production
               actedInConnection: ActorActedInConnection!
               directed(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               directedConnection(after: String, first: Int, sort: [ActorDirectedConnectionSort!], where: ActorDirectedConnectionWhere): ActorDirectedConnection!
               name: String!
+            }
+
+            input PersonActedInCreateFieldInput {
+              node: ProductionCreateInput!
+            }
+
+            input PersonActedInDeleteFieldInput {
+              delete: ProductionDeleteInput
+              where: ActorActedInConnectionWhere
+            }
+
+            input PersonActedInFieldInput {
+              create: PersonActedInCreateFieldInput
             }
 
             type PersonAggregate {
@@ -1188,11 +1295,13 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input PersonCreateInput {
+              actedIn: PersonActedInFieldInput
               directed: PersonDirectedFieldInput
               name: String!
             }
 
             input PersonDeleteInput {
+              actedIn: PersonActedInDeleteFieldInput
               directed: [PersonDirectedDeleteFieldInput!]
             }
 
@@ -1302,7 +1411,7 @@ describe("single item relationships from a declared relationship", () => {
             interface Production {
               actor(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorConnection(after: String, first: Int, sort: [ProductionActorConnectionSort!], where: ProductionActorConnectionWhere): ProductionActorConnection!
-              director: Person!
+              director: Person
               directorConnection: ProductionDirectorConnection!
               title: String!
             }
@@ -1423,6 +1532,7 @@ describe("single item relationships from a declared relationship", () => {
 
             input ProductionDeleteInput {
               actor: [ProductionActorDeleteFieldInput!]
+              director: ProductionDirectorDeleteFieldInput
             }
 
             type ProductionDirectorConnection {
@@ -1436,6 +1546,11 @@ describe("single item relationships from a declared relationship", () => {
               NOT: ProductionDirectorConnectionWhere
               OR: [ProductionDirectorConnectionWhere!]
               node: PersonWhere
+            }
+
+            input ProductionDirectorDeleteFieldInput {
+              delete: PersonDeleteInput
+              where: ProductionDirectorConnectionWhere
             }
 
             type ProductionDirectorRelationship {
@@ -1517,7 +1632,7 @@ describe("single item relationships from a declared relationship", () => {
             type Series implements Production {
               actor(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorConnection(after: String, first: Int, sort: [ProductionActorConnectionSort!], where: ProductionActorConnectionWhere): ProductionActorConnection!
-              director: Person!
+              director: Person
               directorConnection: ProductionDirectorConnection!
               title: String!
             }
@@ -1615,11 +1730,21 @@ describe("single item relationships from a declared relationship", () => {
 
             input SeriesCreateInput {
               actor: SeriesActorFieldInput
+              director: SeriesDirectorFieldInput
               title: String!
             }
 
             input SeriesDeleteInput {
               actor: [SeriesActorDeleteFieldInput!]
+              director: ProductionDirectorDeleteFieldInput
+            }
+
+            input SeriesDirectorCreateFieldInput {
+              node: PersonCreateInput!
+            }
+
+            input SeriesDirectorFieldInput {
+              create: SeriesDirectorCreateFieldInput
             }
 
             type SeriesEdge {
@@ -1720,36 +1845,36 @@ describe("single item relationships from a declared relationship", () => {
         const typeDefs = gql`
             interface Actor {
                 name: String!
-                actedIn: Production! @declareRelationship
+                actedIn: Production @declareRelationship
                 directed: [Production!]! @declareRelationship
             }
             interface Production {
                 title: String!
                 actor: [Actor!]! @declareRelationship
-                director: Person! @declareRelationship
+                director: Person @declareRelationship
             }
 
             type Movie implements Production @node {
                 title: String!
                 actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedInMovie")
-                director: Person! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+                director: Person @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type Series implements Production @node {
                 title: String!
                 actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedInSeries")
-                director: Person! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+                director: Person @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type Dog implements Actor @node {
                 name: String!
-                actedIn: Production! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInMovie")
+                actedIn: Production @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInMovie")
                 directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
             }
 
             type Person implements Actor @node {
                 name: String!
-                actedIn: Production! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInSeries")
+                actedIn: Production @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInSeries")
                 directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
             }
 
@@ -1854,7 +1979,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             interface Actor {
-              actedIn: Production!
+              actedIn: Production
               actedInConnection: ActorActedInConnection!
               directed(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               directedConnection(after: String, first: Int, sort: [ActorDirectedConnectionSort!], where: ActorDirectedConnectionWhere): ActorDirectedConnection!
@@ -1873,6 +1998,11 @@ describe("single item relationships from a declared relationship", () => {
               OR: [ActorActedInConnectionWhere!]
               edge: ActorActedInEdgeWhere
               node: ProductionWhere
+            }
+
+            input ActorActedInDeleteFieldInput {
+              delete: ProductionDeleteInput
+              where: ActorActedInConnectionWhere
             }
 
             input ActorActedInEdgeWhere {
@@ -1919,6 +2049,7 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input ActorDeleteInput {
+              actedIn: ActorActedInDeleteFieldInput
               directed: [ActorDirectedDeleteFieldInput!]
             }
 
@@ -2207,11 +2338,25 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             type Dog implements Actor {
-              actedIn: Production!
+              actedIn: Production
               actedInConnection: ActorActedInConnection!
               directed(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               directedConnection(after: String, first: Int, sort: [ActorDirectedConnectionSort!], where: ActorDirectedConnectionWhere): ActorDirectedConnection!
               name: String!
+            }
+
+            input DogActedInCreateFieldInput {
+              edge: ActedInMovieCreateInput!
+              node: ProductionCreateInput!
+            }
+
+            input DogActedInDeleteFieldInput {
+              delete: ProductionDeleteInput
+              where: ActorActedInConnectionWhere
+            }
+
+            input DogActedInFieldInput {
+              create: DogActedInCreateFieldInput
             }
 
             type DogAggregate {
@@ -2224,11 +2369,13 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input DogCreateInput {
+              actedIn: DogActedInFieldInput
               directed: DogDirectedFieldInput
               name: String!
             }
 
             input DogDeleteInput {
+              actedIn: DogActedInDeleteFieldInput
               directed: [DogDirectedDeleteFieldInput!]
             }
 
@@ -2382,7 +2529,7 @@ describe("single item relationships from a declared relationship", () => {
             type Movie implements Production {
               actor(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorConnection(after: String, first: Int, sort: [ProductionActorConnectionSort!], where: ProductionActorConnectionWhere): ProductionActorConnection!
-              director: Person!
+              director: Person
               directorConnection: ProductionDirectorConnection!
               title: String!
             }
@@ -2477,11 +2624,22 @@ describe("single item relationships from a declared relationship", () => {
 
             input MovieCreateInput {
               actor: MovieActorFieldInput
+              director: MovieDirectorFieldInput
               title: String!
             }
 
             input MovieDeleteInput {
               actor: [MovieActorDeleteFieldInput!]
+              director: ProductionDirectorDeleteFieldInput
+            }
+
+            input MovieDirectorCreateFieldInput {
+              edge: DirectedCreateInput!
+              node: PersonCreateInput!
+            }
+
+            input MovieDirectorFieldInput {
+              create: MovieDirectorCreateFieldInput
             }
 
             type MovieEdge {
@@ -2550,11 +2708,25 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             type Person implements Actor {
-              actedIn: Production!
+              actedIn: Production
               actedInConnection: ActorActedInConnection!
               directed(limit: Int, offset: Int, sort: [ProductionSort!], where: ProductionWhere): [Production!]!
               directedConnection(after: String, first: Int, sort: [ActorDirectedConnectionSort!], where: ActorDirectedConnectionWhere): ActorDirectedConnection!
               name: String!
+            }
+
+            input PersonActedInCreateFieldInput {
+              edge: ActedInSeriesCreateInput!
+              node: ProductionCreateInput!
+            }
+
+            input PersonActedInDeleteFieldInput {
+              delete: ProductionDeleteInput
+              where: ActorActedInConnectionWhere
+            }
+
+            input PersonActedInFieldInput {
+              create: PersonActedInCreateFieldInput
             }
 
             type PersonAggregate {
@@ -2567,11 +2739,13 @@ describe("single item relationships from a declared relationship", () => {
             }
 
             input PersonCreateInput {
+              actedIn: PersonActedInFieldInput
               directed: PersonDirectedFieldInput
               name: String!
             }
 
             input PersonDeleteInput {
+              actedIn: PersonActedInDeleteFieldInput
               directed: [PersonDirectedDeleteFieldInput!]
             }
 
@@ -2685,7 +2859,7 @@ describe("single item relationships from a declared relationship", () => {
             interface Production {
               actor(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorConnection(after: String, first: Int, sort: [ProductionActorConnectionSort!], where: ProductionActorConnectionWhere): ProductionActorConnection!
-              director: Person!
+              director: Person
               directorConnection: ProductionDirectorConnection!
               title: String!
             }
@@ -2880,6 +3054,7 @@ describe("single item relationships from a declared relationship", () => {
 
             input ProductionDeleteInput {
               actor: [ProductionActorDeleteFieldInput!]
+              director: ProductionDirectorDeleteFieldInput
             }
 
             type ProductionDirectorConnection {
@@ -2894,6 +3069,11 @@ describe("single item relationships from a declared relationship", () => {
               OR: [ProductionDirectorConnectionWhere!]
               edge: ProductionDirectorEdgeWhere
               node: PersonWhere
+            }
+
+            input ProductionDirectorDeleteFieldInput {
+              delete: PersonDeleteInput
+              where: ProductionDirectorConnectionWhere
             }
 
             input ProductionDirectorEdgeWhere {
@@ -2987,7 +3167,7 @@ describe("single item relationships from a declared relationship", () => {
             type Series implements Production {
               actor(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorConnection(after: String, first: Int, sort: [ProductionActorConnectionSort!], where: ProductionActorConnectionWhere): ProductionActorConnection!
-              director: Person!
+              director: Person
               directorConnection: ProductionDirectorConnection!
               title: String!
             }
@@ -3089,11 +3269,22 @@ describe("single item relationships from a declared relationship", () => {
 
             input SeriesCreateInput {
               actor: SeriesActorFieldInput
+              director: SeriesDirectorFieldInput
               title: String!
             }
 
             input SeriesDeleteInput {
               actor: [SeriesActorDeleteFieldInput!]
+              director: ProductionDirectorDeleteFieldInput
+            }
+
+            input SeriesDirectorCreateFieldInput {
+              edge: DirectedCreateInput!
+              node: PersonCreateInput!
+            }
+
+            input SeriesDirectorFieldInput {
+              create: SeriesDirectorCreateFieldInput
             }
 
             type SeriesEdge {

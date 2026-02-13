@@ -42,9 +42,6 @@ function withDeleteInputType({
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
     if (entityAdapter instanceof ConcreteEntityAdapter) {
-        if (!entityAdapter.hasListRelationship()) {
-            return undefined;
-        }
         return composer.getOrCreateITC(entityAdapter.operations.updateMutationArgumentNames.delete);
     }
 

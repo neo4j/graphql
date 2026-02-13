@@ -40,7 +40,7 @@ describe("Entity api on single element relationships to a Union type", () => {
             type ${Movie} @node {
                 title: String!
                 actor: Actor @relationship(type: "ACTED_IN", direction: IN)
-                director: Director! @relationship(type: "DIRECTED", direction: IN)
+                director: Director @relationship(type: "DIRECTED", direction: IN)
             }
 
             type ${Person} @node {
@@ -140,33 +140,5 @@ describe("Entity api on single element relationships to a Union type", () => {
                 },
             ],
         });
-    });
-
-    test("fails on 1-1 non nullable relationship", async () => {
-        await testHelper.executeCypher(`
-            CREATE(m:${Movie} { title: "The Matrix"})
-        `);
-
-        const query = `
-            query {
-                ${Movie.plural} {
-                    director {
-                        ... on ${Person} {
-                            name
-                        }
-                        ... on ${AI} {
-                            model
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await testHelper.executeGraphQL(query);
-        expect(result.errors).toEqual([
-            expect.objectContaining({
-                message: `Cannot return null for non-nullable field ${Movie}.director.`,
-            }),
-        ]);
     });
 });

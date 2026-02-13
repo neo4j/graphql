@@ -37,36 +37,36 @@ describe("1-* relationship involving Interface type declared relationship", () =
         const typeDefs = /* GraphQL */ `
             interface Actor {
                 name: String!
-                actedIn: Production! @declareRelationship
+                actedIn: Production @declareRelationship
                 directed: [Production!]! @declareRelationship
             }
             interface Production {
                 title: String!
                 actor: [Actor!]! @declareRelationship
-                director: ${Person}! @declareRelationship
+                director: ${Person} @declareRelationship
             }
 
             type ${Movie} implements Production @node {
                 title: String!
                 actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedInMovie")
-                director: ${Person}! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+                director: ${Person} @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type ${Series} implements Production @node {
                 title: String!
                 actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN , properties: "ActedInSeries")
-                director: ${Person}! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+                director: ${Person} @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type ${Dog} implements Actor @node {
                 name: String!
-                actedIn: Production! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInMovie")
+                actedIn: Production @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInMovie")
                 directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
             }
 
             type ${Person} implements Actor @node{
                 name: String!
-                actedIn: Production! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInSeries")
+                actedIn: Production @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInSeries")
                 directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
              }
 
@@ -92,6 +92,78 @@ describe("1-* relationship involving Interface type declared relationship", () =
         await testHelper.close();
     });
 
+    test("create single relationship", async () => {
+        const query = `
+            mutation {
+                ${Dog.operations.create}(input: [{ name: "Hachiko", actedIn: { create: { node: { ${Movie}: { title: "The Matrix" } } } } }]) {
+                    ${Dog.plural} {
+                        name
+                        actedIn {
+                           title
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Dog.operations.create]: {
+                [Dog.plural]: [
+                    {
+                        name: "Hachiko",
+                        actedIn: {
+                            title: "The Matrix",
+                        },
+                    },
+                ],
+            },
+        });
+
+        await testHelper.expectRelationship(Dog, Movie, "ACTED_IN").toEqual([
+            {
+                from: {
+                    name: "Hachiko",
+                },
+                to: {
+                    title: "The Matrix",
+                },
+                relationship: {},
+            },
+        ]);
+    });
+
+    test("delete single relationship", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN]-(k:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director"})
+            CREATE(k)-[:DIRECTED]->(s:${Series} { title: "The Office"})
+            CREATE(s)<-[:ACTED_IN]-(d)
+            CREATE(m)<-[:ACTED_IN]-(d)
+            CREATE(a)-[:ACTED_IN]->(s)
+        `);
+        const query = `
+            mutation {
+                ${Person.operations.delete}(where: { name: { eq: "Director" } }, delete: { actedIn: { delete: { director: { where: { node: { name: { eq: "K" } } } } } } }) {
+                    nodesDeleted
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Person.operations.delete]: {
+                nodesDeleted: 3,
+            },
+        });
+
+        await testHelper.expectNode(Movie).toNotExist();
+        await testHelper.expectNode(Person).count(1);
+    });
+
     test("returns all fields", async () => {
         await testHelper.executeCypher(`
             CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
@@ -99,7 +171,6 @@ describe("1-* relationship involving Interface type declared relationship", () =
             CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director"})
             CREATE(d)-[:DIRECTED]->(s:${Series} { title: "The Office"})
             CREATE(a)-[:ACTED_IN]->(s)
-
         `);
 
         const query = `

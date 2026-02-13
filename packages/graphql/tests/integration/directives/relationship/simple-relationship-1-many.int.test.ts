@@ -33,7 +33,7 @@ describe("1-* simple relationship", () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String!
-                director: ${Person}! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+                director: ${Person} @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type ${Person} @node {
@@ -53,6 +53,73 @@ describe("1-* simple relationship", () => {
 
     afterEach(async () => {
         await testHelper.close();
+    });
+
+    test("create single relationship", async () => {
+        const query = `
+            mutation {
+                ${Movie.operations.create}(input: [{ title: "The Matrix", director: { create: { node: { name: "Keanu" } } } }]) {
+                    ${Movie.plural} {
+                        title
+                        director {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Movie.operations.create]: {
+                [Movie.plural]: [
+                    {
+                        title: "The Matrix",
+                        director: {
+                            name: "Keanu",
+                        },
+                    },
+                ],
+            },
+        });
+
+        await testHelper.expectRelationship(Person, Movie, "DIRECTED").toEqual([
+            {
+                from: {
+                    name: "Keanu",
+                },
+                to: {
+                    title: "The Matrix",
+                },
+                relationship: {},
+            },
+        ]);
+    });
+
+    test("delete single relationship", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:DIRECTED]-(a:${Person} { name: "Keanu"})
+            CREATE(a)-[:DIRECTED]->(:${Movie} { title: "The Matrix 2"})
+        `);
+
+        const query = `
+            mutation {
+                ${Movie.operations.delete}(delete: { director: { where: { node: { name: { eq: "Keanu" } } } } }) {
+                   nodesDeleted
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Movie.operations.delete]: {
+                nodesDeleted: 3,
+            },
+        });
+
+        await testHelper.expectNode(Movie).toNotExist();
     });
 
     test("returns all relationships", async () => {
@@ -324,29 +391,6 @@ describe("1-* simple relationship", () => {
                 },
             ],
         });
-    });
-
-    test("fails on 1-1 non nullable relationship", async () => {
-        await testHelper.executeCypher(`
-            CREATE(m:${Movie} { title: "The Matrix"})
-        `);
-
-        const query = `
-            query {
-                ${Movie.plural} {
-                    director {
-                        name
-                    }
-                }
-            }
-        `;
-
-        const result = await testHelper.executeGraphQL(query);
-        expect(result.errors).toEqual([
-            expect.objectContaining({
-                message: `Cannot return null for non-nullable field ${Movie}.director.`,
-            }),
-        ]);
     });
 
     test("no filter from the 1- relationship side", async () => {

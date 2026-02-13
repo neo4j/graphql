@@ -35,7 +35,7 @@ describe("single item relationships to an Interface type", () => {
             type Movie @node {
                 title: String!
                 actor: Actor @relationship(type: "ACTED_IN", direction: IN)
-                director: Director! @relationship(type: "DIRECTED", direction: IN)
+                director: Director @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Dog implements Actor @node {
@@ -131,6 +131,11 @@ describe("single item relationships to an Interface type", () => {
               name: StringAggregateSelection!
             }
 
+            input ActorCreateInput {
+              Dog: DogCreateInput
+              Person: PersonCreateInput
+            }
+
             type ActorEdge {
               cursor: String!
               node: Actor!
@@ -221,6 +226,11 @@ describe("single item relationships to an Interface type", () => {
 
             type DirectorAggregateNode {
               years: IntAggregateSelection!
+            }
+
+            input DirectorCreateInput {
+              AI: AICreateInput
+              Person: PersonCreateInput
             }
 
             type DirectorEdge {
@@ -329,7 +339,7 @@ describe("single item relationships to an Interface type", () => {
             type Movie {
               actor: Actor
               actorConnection: MovieActorConnection!
-              director: Director!
+              director: Director
               directorConnection: MovieDirectorConnection!
               title: String!
             }
@@ -347,6 +357,18 @@ describe("single item relationships to an Interface type", () => {
               node: ActorWhere
             }
 
+            input MovieActorCreateFieldInput {
+              node: ActorCreateInput!
+            }
+
+            input MovieActorDeleteFieldInput {
+              where: MovieActorConnectionWhere
+            }
+
+            input MovieActorFieldInput {
+              create: MovieActorCreateFieldInput
+            }
+
             type MovieActorRelationship {
               cursor: String!
               node: Actor!
@@ -362,7 +384,14 @@ describe("single item relationships to an Interface type", () => {
             }
 
             input MovieCreateInput {
+              actor: MovieActorFieldInput
+              director: MovieDirectorFieldInput
               title: String!
+            }
+
+            input MovieDeleteInput {
+              actor: MovieActorDeleteFieldInput
+              director: MovieDirectorDeleteFieldInput
             }
 
             type MovieDirectorConnection {
@@ -376,6 +405,18 @@ describe("single item relationships to an Interface type", () => {
               NOT: MovieDirectorConnectionWhere
               OR: [MovieDirectorConnectionWhere!]
               node: DirectorWhere
+            }
+
+            input MovieDirectorCreateFieldInput {
+              node: DirectorCreateInput!
+            }
+
+            input MovieDirectorDeleteFieldInput {
+              where: MovieDirectorConnectionWhere
+            }
+
+            input MovieDirectorFieldInput {
+              create: MovieDirectorCreateFieldInput
             }
 
             type MovieDirectorRelationship {
@@ -424,7 +465,7 @@ describe("single item relationships to an Interface type", () => {
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
               deleteAis(where: AIWhere): DeleteInfo!
               deleteDogs(where: DogWhere): DeleteInfo!
-              deleteMovies(where: MovieWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(where: PersonWhere): DeleteInfo!
               updateAis(update: AIUpdateInput, where: AIWhere): UpdateAisMutationResponse!
               updateDogs(update: DogUpdateInput, where: DogWhere): UpdateDogsMutationResponse!
@@ -579,18 +620,18 @@ describe("single item relationships to an Interface type", () => {
             type Movie @node {
                 title: String!
                 actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-                director: Director! @relationship(type: "DIRECTED", direction: IN)
+                director: Director @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Dog implements Actor @node {
                 name: String!
-                actedIn: Movie! @relationship(type: "ACTED_IN", direction: OUT)
+                actedIn: Movie @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type Person implements Actor & Director @node {
                 name: String!
                 years: Int!
-                actedIn: Movie! @relationship(type: "ACTED_IN", direction: OUT)
+                actedIn: Movie @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type AI implements Director @node {
@@ -919,6 +960,11 @@ describe("single item relationships to an Interface type", () => {
               years: IntAggregateSelection!
             }
 
+            input DirectorCreateInput {
+              AI: AICreateInput
+              Person: PersonCreateInput
+            }
+
             type DirectorEdge {
               cursor: String!
               node: Director!
@@ -952,7 +998,7 @@ describe("single item relationships to an Interface type", () => {
             }
 
             type Dog implements Actor {
-              actedIn: Movie!
+              actedIn: Movie
               actedInConnection: DogActedInConnection!
               name: String!
             }
@@ -970,6 +1016,19 @@ describe("single item relationships to an Interface type", () => {
               node: MovieWhere
             }
 
+            input DogActedInCreateFieldInput {
+              node: MovieCreateInput!
+            }
+
+            input DogActedInDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: DogActedInConnectionWhere
+            }
+
+            input DogActedInFieldInput {
+              create: DogActedInCreateFieldInput
+            }
+
             type DogActedInRelationship {
               cursor: String!
               node: Movie!
@@ -985,7 +1044,12 @@ describe("single item relationships to an Interface type", () => {
             }
 
             input DogCreateInput {
+              actedIn: DogActedInFieldInput
               name: String!
+            }
+
+            input DogDeleteInput {
+              actedIn: DogActedInDeleteFieldInput
             }
 
             type DogEdge {
@@ -1057,7 +1121,7 @@ describe("single item relationships to an Interface type", () => {
             type Movie {
               actor(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorConnection(after: String, first: Int, sort: [MovieActorConnectionSort!], where: MovieActorConnectionWhere): MovieActorConnection!
-              director: Director!
+              director: Director
               directorConnection: MovieDirectorConnection!
               title: String!
             }
@@ -1183,11 +1247,13 @@ describe("single item relationships to an Interface type", () => {
 
             input MovieCreateInput {
               actor: MovieActorFieldInput
+              director: MovieDirectorFieldInput
               title: String!
             }
 
             input MovieDeleteInput {
               actor: [MovieActorDeleteFieldInput!]
+              director: MovieDirectorDeleteFieldInput
             }
 
             type MovieDirectorConnection {
@@ -1201,6 +1267,18 @@ describe("single item relationships to an Interface type", () => {
               NOT: MovieDirectorConnectionWhere
               OR: [MovieDirectorConnectionWhere!]
               node: DirectorWhere
+            }
+
+            input MovieDirectorCreateFieldInput {
+              node: DirectorCreateInput!
+            }
+
+            input MovieDirectorDeleteFieldInput {
+              where: MovieDirectorConnectionWhere
+            }
+
+            input MovieDirectorFieldInput {
+              create: MovieDirectorCreateFieldInput
             }
 
             type MovieDirectorRelationship {
@@ -1264,9 +1342,9 @@ describe("single item relationships to an Interface type", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
               deleteAis(delete: AIDeleteInput, where: AIWhere): DeleteInfo!
-              deleteDogs(where: DogWhere): DeleteInfo!
+              deleteDogs(delete: DogDeleteInput, where: DogWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-              deletePeople(where: PersonWhere): DeleteInfo!
+              deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
               updateAis(update: AIUpdateInput, where: AIWhere): UpdateAisMutationResponse!
               updateDogs(update: DogUpdateInput, where: DogWhere): UpdateDogsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
@@ -1289,7 +1367,7 @@ describe("single item relationships to an Interface type", () => {
             }
 
             type Person implements Actor & Director {
-              actedIn: Movie!
+              actedIn: Movie
               actedInConnection: PersonActedInConnection!
               name: String!
               years: Int!
@@ -1308,6 +1386,19 @@ describe("single item relationships to an Interface type", () => {
               node: MovieWhere
             }
 
+            input PersonActedInCreateFieldInput {
+              node: MovieCreateInput!
+            }
+
+            input PersonActedInDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: PersonActedInConnectionWhere
+            }
+
+            input PersonActedInFieldInput {
+              create: PersonActedInCreateFieldInput
+            }
+
             type PersonActedInRelationship {
               cursor: String!
               node: Movie!
@@ -1324,8 +1415,13 @@ describe("single item relationships to an Interface type", () => {
             }
 
             input PersonCreateInput {
+              actedIn: PersonActedInFieldInput
               name: String!
               years: Int!
+            }
+
+            input PersonDeleteInput {
+              actedIn: PersonActedInDeleteFieldInput
             }
 
             type PersonEdge {
@@ -1449,18 +1545,18 @@ describe("single item relationships to an Interface type", () => {
             type Movie @node {
                 title: String!
                 actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-                director: Director! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+                director: Director @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type Dog implements Actor @node {
                 name: String!
-                actedIn: Movie! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: Movie @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type Person implements Actor & Director @node {
                 name: String!
                 years: Int!
-                actedIn: Movie! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: Movie @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type AI implements Director @node {
@@ -1879,6 +1975,11 @@ describe("single item relationships to an Interface type", () => {
               years: IntAggregateSelection!
             }
 
+            input DirectorCreateInput {
+              AI: AICreateInput
+              Person: PersonCreateInput
+            }
+
             type DirectorEdge {
               cursor: String!
               node: Director!
@@ -1912,7 +2013,7 @@ describe("single item relationships to an Interface type", () => {
             }
 
             type Dog implements Actor {
-              actedIn: Movie!
+              actedIn: Movie
               actedInConnection: DogActedInConnection!
               name: String!
             }
@@ -1931,6 +2032,20 @@ describe("single item relationships to an Interface type", () => {
               node: MovieWhere
             }
 
+            input DogActedInCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: MovieCreateInput!
+            }
+
+            input DogActedInDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: DogActedInConnectionWhere
+            }
+
+            input DogActedInFieldInput {
+              create: DogActedInCreateFieldInput
+            }
+
             type DogActedInRelationship {
               cursor: String!
               node: Movie!
@@ -1947,7 +2062,12 @@ describe("single item relationships to an Interface type", () => {
             }
 
             input DogCreateInput {
+              actedIn: DogActedInFieldInput
               name: String!
+            }
+
+            input DogDeleteInput {
+              actedIn: DogActedInDeleteFieldInput
             }
 
             type DogEdge {
@@ -2027,7 +2147,7 @@ describe("single item relationships to an Interface type", () => {
             type Movie {
               actor(limit: Int, offset: Int, sort: [ActorSort!], where: ActorWhere): [Actor!]!
               actorConnection(after: String, first: Int, sort: [MovieActorConnectionSort!], where: MovieActorConnectionWhere): MovieActorConnection!
-              director: Director!
+              director: Director
               directorConnection: MovieDirectorConnection!
               title: String!
             }
@@ -2165,11 +2285,13 @@ describe("single item relationships to an Interface type", () => {
 
             input MovieCreateInput {
               actor: MovieActorFieldInput
+              director: MovieDirectorFieldInput
               title: String!
             }
 
             input MovieDeleteInput {
               actor: [MovieActorDeleteFieldInput!]
+              director: MovieDirectorDeleteFieldInput
             }
 
             type MovieDirectorConnection {
@@ -2184,6 +2306,19 @@ describe("single item relationships to an Interface type", () => {
               OR: [MovieDirectorConnectionWhere!]
               edge: DirectedWhere
               node: DirectorWhere
+            }
+
+            input MovieDirectorCreateFieldInput {
+              edge: DirectedCreateInput!
+              node: DirectorCreateInput!
+            }
+
+            input MovieDirectorDeleteFieldInput {
+              where: MovieDirectorConnectionWhere
+            }
+
+            input MovieDirectorFieldInput {
+              create: MovieDirectorCreateFieldInput
             }
 
             type MovieDirectorRelationship {
@@ -2248,9 +2383,9 @@ describe("single item relationships to an Interface type", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
               deleteAis(delete: AIDeleteInput, where: AIWhere): DeleteInfo!
-              deleteDogs(where: DogWhere): DeleteInfo!
+              deleteDogs(delete: DogDeleteInput, where: DogWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
-              deletePeople(where: PersonWhere): DeleteInfo!
+              deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
               updateAis(update: AIUpdateInput, where: AIWhere): UpdateAisMutationResponse!
               updateDogs(update: DogUpdateInput, where: DogWhere): UpdateDogsMutationResponse!
               updateMovies(update: MovieUpdateInput, where: MovieWhere): UpdateMoviesMutationResponse!
@@ -2273,7 +2408,7 @@ describe("single item relationships to an Interface type", () => {
             }
 
             type Person implements Actor & Director {
-              actedIn: Movie!
+              actedIn: Movie
               actedInConnection: PersonActedInConnection!
               name: String!
               years: Int!
@@ -2293,6 +2428,20 @@ describe("single item relationships to an Interface type", () => {
               node: MovieWhere
             }
 
+            input PersonActedInCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: MovieCreateInput!
+            }
+
+            input PersonActedInDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: PersonActedInConnectionWhere
+            }
+
+            input PersonActedInFieldInput {
+              create: PersonActedInCreateFieldInput
+            }
+
             type PersonActedInRelationship {
               cursor: String!
               node: Movie!
@@ -2310,8 +2459,13 @@ describe("single item relationships to an Interface type", () => {
             }
 
             input PersonCreateInput {
+              actedIn: PersonActedInFieldInput
               name: String!
               years: Int!
+            }
+
+            input PersonDeleteInput {
+              actedIn: PersonActedInDeleteFieldInput
             }
 
             type PersonEdge {

@@ -28,7 +28,7 @@ describe("1-to-many relationships on object types", () => {
         typeDefs = /* GraphQL */ `
             type Movie @node {
                 title: String!
-                director: Person! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+                director: Person @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type Person @node {
@@ -44,6 +44,110 @@ describe("1-to-many relationships on object types", () => {
         neoSchema = new Neo4jGraphQL({
             typeDefs,
         });
+    });
+
+    test("create relationship", async () => {
+        const query = `
+            mutation {
+               createMovies(input: [{ title: "The Matrix", director: { create: { node: { name: "Keanu" }, edge: { year: 1999 } } } }]) {
+                    movies {
+                        title
+                        director {
+                            name
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            UNWIND $create_param0 AS create_var0
+            CALL (create_var0) {
+                CREATE (create_this1:Movie)
+                SET
+                    create_this1.title = create_var0.title
+                WITH create_this1, create_var0
+                CALL (create_this1, create_var0) {
+                    UNWIND create_var0.director.create AS create_var2
+                    CREATE (create_this3:Person)
+                    SET
+                        create_this3.name = create_var2.node.name
+                    MERGE (create_this1)<-[create_this4:DIRECTED]-(create_this3)
+                    SET
+                        create_this4.year = create_var2.edge.year
+                    RETURN collect(NULL) AS create_var5
+                }
+                RETURN create_this1
+            }
+            CALL (create_this1) {
+                MATCH (create_this1)<-[create_this6:DIRECTED]-(create_this7:Person)
+                WITH DISTINCT create_this7
+                WITH create_this7 { .name } AS create_this7
+                RETURN head(collect(create_this7)) AS create_var8
+            }
+            RETURN collect(create_this1 { .title, director: create_var8 }) AS data"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"create_param0\\": [
+                    {
+                        \\"title\\": \\"The Matrix\\",
+                        \\"director\\": {
+                            \\"create\\": {
+                                \\"edge\\": {
+                                    \\"year\\": {
+                                        \\"low\\": 1999,
+                                        \\"high\\": 0
+                                    }
+                                },
+                                \\"node\\": {
+                                    \\"name\\": \\"Keanu\\"
+                                }
+                            }
+                        }
+                    }
+                ]
+            }"
+        `);
+    });
+
+    test("delete relationship", async () => {
+        const query = `
+            mutation {
+               deleteMovies(delete: { director: { where: { node: { name: { eq: "Keanu" } } } } }) {
+                   nodesDeleted
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            MATCH (this:Movie)
+            WITH *
+            CALL (*) {
+                OPTIONAL MATCH (this)<-[this0:DIRECTED]-(this1:Person)
+                WHERE this1.name = $param0
+                WITH this0, collect(DISTINCT this1) AS var2
+                CALL (var2) {
+                    UNWIND var2 AS var3
+                    DETACH DELETE var3
+                }
+            }
+            WITH *
+            DETACH DELETE this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"Keanu\\"
+            }"
+        `);
     });
 
     test("returns all relationships", async () => {

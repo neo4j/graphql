@@ -41,19 +41,19 @@ describe("Entity api on single element relationships from an Interface type usin
             interface Production {
                 title: String!
                 actor: Actor @declareRelationship
-                director: ${Person}! @declareRelationship
+                director: ${Person} @declareRelationship
             }
 
             type ${Movie} implements Production @node {
                 title: String!
                 actor: Actor @relationship(type: "ACTED_IN", direction: IN)
-                director: ${Person}! @relationship(type: "DIRECTED", direction: IN)
+                director: ${Person} @relationship(type: "DIRECTED", direction: IN)
             }
 
             type ${Series} @node {
                 name: String!
                 actor: Actor @relationship(type: "ACTED_IN", direction: IN)
-                director: ${Person}! @relationship(type: "DIRECTED", direction: IN)
+                director: ${Person} @relationship(type: "DIRECTED", direction: IN)
             }
 
             type ${Dog} implements Actor @node {
@@ -172,28 +172,5 @@ describe("Entity api on single element relationships from an Interface type usin
                 },
             ],
         });
-    });
-
-    test("fails on 1-1 non nullable relationship", async () => {
-        await testHelper.executeCypher(`
-            CREATE(m:${Movie} { title: "The Matrix"})
-        `);
-
-        const query = `
-            query {
-                ${Movie.plural} {
-                    director {
-                        name
-                    }
-                }
-            }
-        `;
-
-        const result = await testHelper.executeGraphQL(query);
-        expect(result.errors).toEqual([
-            expect.objectContaining({
-                message: `Cannot return null for non-nullable field ${Movie}.director.`,
-            }),
-        ]);
     });
 });

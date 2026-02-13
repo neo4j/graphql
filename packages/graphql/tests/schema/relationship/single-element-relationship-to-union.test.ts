@@ -31,7 +31,7 @@ describe("single item relationships to an Union type", () => {
             type Movie @node {
                 title: String!
                 actor: Actor @relationship(type: "ACTED_IN", direction: IN)
-                director: Director! @relationship(type: "DIRECTED", direction: IN)
+                director: Director @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Person @node {
@@ -217,7 +217,7 @@ describe("single item relationships to an Union type", () => {
             type Movie {
               actor: Actor
               actorConnection: MovieActorConnection!
-              director: Director!
+              director: Director
               directorConnection: MovieDirectorConnection!
               title: String!
             }
@@ -233,6 +233,16 @@ describe("single item relationships to an Union type", () => {
               Person: MovieActorPersonConnectionWhere
             }
 
+            input MovieActorCreateInput {
+              Dog: MovieActorDogFieldInput
+              Person: MovieActorPersonFieldInput
+            }
+
+            input MovieActorDeleteInput {
+              Dog: MovieActorDogDeleteFieldInput
+              Person: MovieActorPersonDeleteFieldInput
+            }
+
             input MovieActorDogConnectionWhere {
               AND: [MovieActorDogConnectionWhere!]
               NOT: MovieActorDogConnectionWhere
@@ -240,11 +250,35 @@ describe("single item relationships to an Union type", () => {
               node: DogWhere
             }
 
+            input MovieActorDogCreateFieldInput {
+              node: DogCreateInput!
+            }
+
+            input MovieActorDogDeleteFieldInput {
+              where: MovieActorDogConnectionWhere
+            }
+
+            input MovieActorDogFieldInput {
+              create: MovieActorDogCreateFieldInput
+            }
+
             input MovieActorPersonConnectionWhere {
               AND: [MovieActorPersonConnectionWhere!]
               NOT: MovieActorPersonConnectionWhere
               OR: [MovieActorPersonConnectionWhere!]
               node: PersonWhere
+            }
+
+            input MovieActorPersonCreateFieldInput {
+              node: PersonCreateInput!
+            }
+
+            input MovieActorPersonDeleteFieldInput {
+              where: MovieActorPersonConnectionWhere
+            }
+
+            input MovieActorPersonFieldInput {
+              create: MovieActorPersonCreateFieldInput
             }
 
             type MovieActorRelationship {
@@ -262,7 +296,14 @@ describe("single item relationships to an Union type", () => {
             }
 
             input MovieCreateInput {
+              actor: MovieActorCreateInput
+              director: MovieDirectorCreateInput
               title: String!
+            }
+
+            input MovieDeleteInput {
+              actor: MovieActorDeleteInput
+              director: MovieDirectorDeleteInput
             }
 
             input MovieDirectorAIConnectionWhere {
@@ -270,6 +311,18 @@ describe("single item relationships to an Union type", () => {
               NOT: MovieDirectorAIConnectionWhere
               OR: [MovieDirectorAIConnectionWhere!]
               node: AIWhere
+            }
+
+            input MovieDirectorAICreateFieldInput {
+              node: AICreateInput!
+            }
+
+            input MovieDirectorAIDeleteFieldInput {
+              where: MovieDirectorAIConnectionWhere
+            }
+
+            input MovieDirectorAIFieldInput {
+              create: MovieDirectorAICreateFieldInput
             }
 
             type MovieDirectorConnection {
@@ -283,11 +336,33 @@ describe("single item relationships to an Union type", () => {
               Person: MovieDirectorPersonConnectionWhere
             }
 
+            input MovieDirectorCreateInput {
+              AI: MovieDirectorAIFieldInput
+              Person: MovieDirectorPersonFieldInput
+            }
+
+            input MovieDirectorDeleteInput {
+              AI: MovieDirectorAIDeleteFieldInput
+              Person: MovieDirectorPersonDeleteFieldInput
+            }
+
             input MovieDirectorPersonConnectionWhere {
               AND: [MovieDirectorPersonConnectionWhere!]
               NOT: MovieDirectorPersonConnectionWhere
               OR: [MovieDirectorPersonConnectionWhere!]
               node: PersonWhere
+            }
+
+            input MovieDirectorPersonCreateFieldInput {
+              node: PersonCreateInput!
+            }
+
+            input MovieDirectorPersonDeleteFieldInput {
+              where: MovieDirectorPersonConnectionWhere
+            }
+
+            input MovieDirectorPersonFieldInput {
+              create: MovieDirectorPersonCreateFieldInput
             }
 
             type MovieDirectorRelationship {
@@ -336,7 +411,7 @@ describe("single item relationships to an Union type", () => {
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
               deleteAis(where: AIWhere): DeleteInfo!
               deleteDogs(where: DogWhere): DeleteInfo!
-              deleteMovies(where: MovieWhere): DeleteInfo!
+              deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(where: PersonWhere): DeleteInfo!
               updateAis(update: AIUpdateInput, where: AIWhere): UpdateAisMutationResponse!
               updateDogs(update: DogUpdateInput, where: DogWhere): UpdateDogsMutationResponse!
@@ -478,18 +553,18 @@ describe("single item relationships to an Union type", () => {
             type Movie @node {
                 title: String!
                 actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
-                director: Director! @relationship(type: "DIRECTED", direction: IN)
+                director: Director @relationship(type: "DIRECTED", direction: IN)
             }
 
             type Person @node {
                 name: String!
-                actedIn: Movie! @relationship(type: "ACTED_IN", direction: OUT)
+                actedIn: Movie @relationship(type: "ACTED_IN", direction: OUT)
                 directed: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
             }
 
             type Dog @node {
                 nickName: String!
-                actedIn: Movie! @relationship(type: "ACTED_IN", direction: OUT)
+                actedIn: Movie @relationship(type: "ACTED_IN", direction: OUT)
             }
 
             type AI @node {
@@ -755,7 +830,7 @@ describe("single item relationships to an Union type", () => {
             }
 
             type Dog {
-              actedIn: Movie!
+              actedIn: Movie
               actedInConnection: DogActedInConnection!
               nickName: String!
             }
@@ -771,6 +846,19 @@ describe("single item relationships to an Union type", () => {
               NOT: DogActedInConnectionWhere
               OR: [DogActedInConnectionWhere!]
               node: MovieWhere
+            }
+
+            input DogActedInCreateFieldInput {
+              node: MovieCreateInput!
+            }
+
+            input DogActedInDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: DogActedInConnectionWhere
+            }
+
+            input DogActedInFieldInput {
+              create: DogActedInCreateFieldInput
             }
 
             type DogActedInRelationship {
@@ -792,7 +880,12 @@ describe("single item relationships to an Union type", () => {
             }
 
             input DogCreateInput {
+              actedIn: DogActedInFieldInput
               nickName: String!
+            }
+
+            input DogDeleteInput {
+              actedIn: DogActedInDeleteFieldInput
             }
 
             type DogEdge {
@@ -850,7 +943,7 @@ describe("single item relationships to an Union type", () => {
             type Movie {
               actor(limit: Int, offset: Int, where: ActorWhere): [Actor!]!
               actorConnection(after: String, first: Int, where: MovieActorConnectionWhere): MovieActorConnection!
-              director: Director!
+              director: Director
               directorConnection: MovieDirectorConnection!
               title: String!
             }
@@ -921,6 +1014,7 @@ describe("single item relationships to an Union type", () => {
             }
 
             input MovieActorDogDeleteFieldInput {
+              delete: DogDeleteInput
               where: MovieActorDogConnectionWhere
             }
 
@@ -1019,11 +1113,13 @@ describe("single item relationships to an Union type", () => {
 
             input MovieCreateInput {
               actor: MovieActorCreateInput
+              director: MovieDirectorCreateInput
               title: String!
             }
 
             input MovieDeleteInput {
               actor: MovieActorDeleteInput
+              director: MovieDirectorDeleteInput
             }
 
             input MovieDirectorAIConnectionWhere {
@@ -1031,6 +1127,19 @@ describe("single item relationships to an Union type", () => {
               NOT: MovieDirectorAIConnectionWhere
               OR: [MovieDirectorAIConnectionWhere!]
               node: AIWhere
+            }
+
+            input MovieDirectorAICreateFieldInput {
+              node: AICreateInput!
+            }
+
+            input MovieDirectorAIDeleteFieldInput {
+              delete: AIDeleteInput
+              where: MovieDirectorAIConnectionWhere
+            }
+
+            input MovieDirectorAIFieldInput {
+              create: MovieDirectorAICreateFieldInput
             }
 
             type MovieDirectorConnection {
@@ -1044,11 +1153,34 @@ describe("single item relationships to an Union type", () => {
               Person: MovieDirectorPersonConnectionWhere
             }
 
+            input MovieDirectorCreateInput {
+              AI: MovieDirectorAIFieldInput
+              Person: MovieDirectorPersonFieldInput
+            }
+
+            input MovieDirectorDeleteInput {
+              AI: MovieDirectorAIDeleteFieldInput
+              Person: MovieDirectorPersonDeleteFieldInput
+            }
+
             input MovieDirectorPersonConnectionWhere {
               AND: [MovieDirectorPersonConnectionWhere!]
               NOT: MovieDirectorPersonConnectionWhere
               OR: [MovieDirectorPersonConnectionWhere!]
               node: PersonWhere
+            }
+
+            input MovieDirectorPersonCreateFieldInput {
+              node: PersonCreateInput!
+            }
+
+            input MovieDirectorPersonDeleteFieldInput {
+              delete: PersonDeleteInput
+              where: MovieDirectorPersonConnectionWhere
+            }
+
+            input MovieDirectorPersonFieldInput {
+              create: MovieDirectorPersonCreateFieldInput
             }
 
             type MovieDirectorRelationship {
@@ -1112,7 +1244,7 @@ describe("single item relationships to an Union type", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
               deleteAis(delete: AIDeleteInput, where: AIWhere): DeleteInfo!
-              deleteDogs(where: DogWhere): DeleteInfo!
+              deleteDogs(delete: DogDeleteInput, where: DogWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
               updateAis(update: AIUpdateInput, where: AIWhere): UpdateAisMutationResponse!
@@ -1137,7 +1269,7 @@ describe("single item relationships to an Union type", () => {
             }
 
             type Person {
-              actedIn: Movie!
+              actedIn: Movie
               actedInConnection: PersonActedInConnection!
               directed(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               directedConnection(after: String, first: Int, sort: [PersonDirectedConnectionSort!], where: PersonDirectedConnectionWhere): PersonDirectedConnection!
@@ -1155,6 +1287,19 @@ describe("single item relationships to an Union type", () => {
               NOT: PersonActedInConnectionWhere
               OR: [PersonActedInConnectionWhere!]
               node: MovieWhere
+            }
+
+            input PersonActedInCreateFieldInput {
+              node: MovieCreateInput!
+            }
+
+            input PersonActedInDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: PersonActedInConnectionWhere
+            }
+
+            input PersonActedInFieldInput {
+              create: PersonActedInCreateFieldInput
             }
 
             type PersonActedInRelationship {
@@ -1180,11 +1325,13 @@ describe("single item relationships to an Union type", () => {
             }
 
             input PersonCreateInput {
+              actedIn: PersonActedInFieldInput
               directed: PersonDirectedFieldInput
               name: String!
             }
 
             input PersonDeleteInput {
+              actedIn: PersonActedInDeleteFieldInput
               directed: [PersonDirectedDeleteFieldInput!]
             }
 
@@ -1413,18 +1560,18 @@ describe("single item relationships to an Union type", () => {
             type Movie @node {
                 title: String!
                 actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
-                director: Director! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+                director: Director @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
             }
 
             type Person @node {
                 name: String!
-                actedIn: Movie! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: Movie @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
                 directed: [Movie!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
             }
 
             type Dog @node {
                 nickName: String!
-                actedIn: Movie! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
+                actedIn: Movie @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
             }
 
             type AI @node {
@@ -1775,7 +1922,7 @@ describe("single item relationships to an Union type", () => {
             }
 
             type Dog {
-              actedIn: Movie!
+              actedIn: Movie
               actedInConnection: DogActedInConnection!
               nickName: String!
             }
@@ -1792,6 +1939,20 @@ describe("single item relationships to an Union type", () => {
               OR: [DogActedInConnectionWhere!]
               edge: ActedInWhere
               node: MovieWhere
+            }
+
+            input DogActedInCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: MovieCreateInput!
+            }
+
+            input DogActedInDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: DogActedInConnectionWhere
+            }
+
+            input DogActedInFieldInput {
+              create: DogActedInCreateFieldInput
             }
 
             type DogActedInRelationship {
@@ -1814,7 +1975,12 @@ describe("single item relationships to an Union type", () => {
             }
 
             input DogCreateInput {
+              actedIn: DogActedInFieldInput
               nickName: String!
+            }
+
+            input DogDeleteInput {
+              actedIn: DogActedInDeleteFieldInput
             }
 
             type DogEdge {
@@ -1894,7 +2060,7 @@ describe("single item relationships to an Union type", () => {
             type Movie {
               actor(limit: Int, offset: Int, where: ActorWhere): [Actor!]!
               actorConnection(after: String, first: Int, sort: [MovieActorConnectionSort!], where: MovieActorConnectionWhere): MovieActorConnection!
-              director: Director!
+              director: Director
               directorConnection: MovieDirectorConnection!
               title: String!
             }
@@ -1972,6 +2138,7 @@ describe("single item relationships to an Union type", () => {
             }
 
             input MovieActorDogDeleteFieldInput {
+              delete: DogDeleteInput
               where: MovieActorDogConnectionWhere
             }
 
@@ -2076,11 +2243,13 @@ describe("single item relationships to an Union type", () => {
 
             input MovieCreateInput {
               actor: MovieActorCreateInput
+              director: MovieDirectorCreateInput
               title: String!
             }
 
             input MovieDeleteInput {
               actor: MovieActorDeleteInput
+              director: MovieDirectorDeleteInput
             }
 
             input MovieDirectorAIConnectionWhere {
@@ -2089,6 +2258,20 @@ describe("single item relationships to an Union type", () => {
               OR: [MovieDirectorAIConnectionWhere!]
               edge: DirectedWhere
               node: AIWhere
+            }
+
+            input MovieDirectorAICreateFieldInput {
+              edge: DirectedCreateInput!
+              node: AICreateInput!
+            }
+
+            input MovieDirectorAIDeleteFieldInput {
+              delete: AIDeleteInput
+              where: MovieDirectorAIConnectionWhere
+            }
+
+            input MovieDirectorAIFieldInput {
+              create: MovieDirectorAICreateFieldInput
             }
 
             type MovieDirectorConnection {
@@ -2102,12 +2285,36 @@ describe("single item relationships to an Union type", () => {
               Person: MovieDirectorPersonConnectionWhere
             }
 
+            input MovieDirectorCreateInput {
+              AI: MovieDirectorAIFieldInput
+              Person: MovieDirectorPersonFieldInput
+            }
+
+            input MovieDirectorDeleteInput {
+              AI: MovieDirectorAIDeleteFieldInput
+              Person: MovieDirectorPersonDeleteFieldInput
+            }
+
             input MovieDirectorPersonConnectionWhere {
               AND: [MovieDirectorPersonConnectionWhere!]
               NOT: MovieDirectorPersonConnectionWhere
               OR: [MovieDirectorPersonConnectionWhere!]
               edge: DirectedWhere
               node: PersonWhere
+            }
+
+            input MovieDirectorPersonCreateFieldInput {
+              edge: DirectedCreateInput!
+              node: PersonCreateInput!
+            }
+
+            input MovieDirectorPersonDeleteFieldInput {
+              delete: PersonDeleteInput
+              where: MovieDirectorPersonConnectionWhere
+            }
+
+            input MovieDirectorPersonFieldInput {
+              create: MovieDirectorPersonCreateFieldInput
             }
 
             type MovieDirectorRelationship {
@@ -2172,7 +2379,7 @@ describe("single item relationships to an Union type", () => {
               createMovies(input: [MovieCreateInput!]!): CreateMoviesMutationResponse!
               createPeople(input: [PersonCreateInput!]!): CreatePeopleMutationResponse!
               deleteAis(delete: AIDeleteInput, where: AIWhere): DeleteInfo!
-              deleteDogs(where: DogWhere): DeleteInfo!
+              deleteDogs(delete: DogDeleteInput, where: DogWhere): DeleteInfo!
               deleteMovies(delete: MovieDeleteInput, where: MovieWhere): DeleteInfo!
               deletePeople(delete: PersonDeleteInput, where: PersonWhere): DeleteInfo!
               updateAis(update: AIUpdateInput, where: AIWhere): UpdateAisMutationResponse!
@@ -2197,7 +2404,7 @@ describe("single item relationships to an Union type", () => {
             }
 
             type Person {
-              actedIn: Movie!
+              actedIn: Movie
               actedInConnection: PersonActedInConnection!
               directed(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
               directedConnection(after: String, first: Int, sort: [PersonDirectedConnectionSort!], where: PersonDirectedConnectionWhere): PersonDirectedConnection!
@@ -2216,6 +2423,20 @@ describe("single item relationships to an Union type", () => {
               OR: [PersonActedInConnectionWhere!]
               edge: ActedInWhere
               node: MovieWhere
+            }
+
+            input PersonActedInCreateFieldInput {
+              edge: ActedInCreateInput!
+              node: MovieCreateInput!
+            }
+
+            input PersonActedInDeleteFieldInput {
+              delete: MovieDeleteInput
+              where: PersonActedInConnectionWhere
+            }
+
+            input PersonActedInFieldInput {
+              create: PersonActedInCreateFieldInput
             }
 
             type PersonActedInRelationship {
@@ -2242,11 +2463,13 @@ describe("single item relationships to an Union type", () => {
             }
 
             input PersonCreateInput {
+              actedIn: PersonActedInFieldInput
               directed: PersonDirectedFieldInput
               name: String!
             }
 
             input PersonDeleteInput {
+              actedIn: PersonActedInDeleteFieldInput
               directed: [PersonDirectedDeleteFieldInput!]
             }
 

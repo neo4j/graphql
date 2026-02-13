@@ -84,6 +84,7 @@ import { WarnIfSubscriptionsAuthorizationMissing } from "./custom-rules/warnings
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
 import { validateSDL } from "./validate-sdl";
 import { validateVectorDirective } from "./custom-rules/directives/vector";
+import { ErrorIfSingleRelationshipNonNullable } from "./custom-rules/error-single-relationships-non-nullable";
 
 function filterDocument(document: DocumentNode, filterDirectives: boolean = false): DocumentNode {
     const nodeNames = document.definitions
@@ -234,6 +235,7 @@ function runValidationRulesOnFilteredDocument({
             ValidUnionType,
             ValidDirectiveInheritance,
             ValidateNeo4jDirectiveArgumentsValue,
+            ErrorIfSingleRelationshipNonNullable,
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
             WarnIfAMaxLimitCanBeBypassedThroughInterface(),
             WarnObjectFieldsWithoutResolver({
