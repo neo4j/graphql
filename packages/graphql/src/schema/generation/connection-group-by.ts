@@ -17,26 +17,59 @@
  * limitations under the License.
  */
 
-import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type { InputTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 
-export function makeConnectionGroupByInputType({
+export function makeConnectionGroupByType({
+    entityAdapter,
+    composer,
+    edgeType,
+}: {
+    entityAdapter: ConcreteEntityAdapter;
+    composer: SchemaComposer;
+    edgeType: ObjectTypeComposer;
+}): { type: ObjectTypeComposer; args: Record<string, InputTypeComposer> } | undefined {
+    const typeName = entityAdapter.operations.getConnectionGroupByTypename();
+    const groupByFields = entityAdapter.groupByFields;
+
+    if (groupByFields.length === 0) {
+        return undefined;
+    }
+
+    const inputArgs = getInputArgs({ entityAdapter, composer });
+
+    if (composer.has(typeName)) {
+        return { type: composer.getOTC(typeName), args: inputArgs };
+    }
+
+    const connectionGroupByOTC = composer.createObjectTC(typeName);
+    connectionGroupByOTC.addFields({
+        edges: edgeType.NonNull.List.NonNull,
+    });
+
+    return { type: connectionGroupByOTC, args: inputArgs };
+}
+
+function getInputArgs({ entityAdapter, composer }: { entityAdapter: ConcreteEntityAdapter; composer: SchemaComposer }) {
+    const inputType = makeConnectionGroupByInputType({ entityAdapter, composer });
+    return {
+        fields: inputType,
+    };
+}
+
+function makeConnectionGroupByInputType({
     entityAdapter,
     composer,
 }: {
     entityAdapter: ConcreteEntityAdapter;
     composer: SchemaComposer;
-}): InputTypeComposer | undefined {
+}): InputTypeComposer {
     const typeName = entityAdapter.operations.getConnectionGroupByInputTypename();
     if (composer.has(typeName)) {
         return composer.getITC(typeName);
     }
 
     const groupByFields = entityAdapter.groupByFields;
-
-    if (groupByFields.length === 0) {
-        return undefined;
-    }
 
     const connectionGroupByITC = composer.createInputTC(typeName);
     for (const attribute of groupByFields) {

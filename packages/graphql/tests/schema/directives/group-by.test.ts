@@ -123,6 +123,10 @@ describe("@groupBy directive", () => {
               node: Movie!
             }
 
+            type MovieGroupBy {
+              edges: [MovieEdge!]!
+            }
+
             input MovieGroupByInput {
               title: Boolean
             }
@@ -150,14 +154,10 @@ describe("@groupBy directive", () => {
 
             type MoviesConnection {
               aggregate: MovieAggregate!
-              groupBy: MovieGroupBy!
               edges: [MovieEdge!]!
+              groupBy(fields: MovieGroupByInput): MovieGroupBy!
               pageInfo: PageInfo!
               totalCount: Int!
-            }
-
-            type MovieGroupBy {
-              edges: [MovieEdge!]!
             }
 
             type Mutation {
@@ -176,7 +176,7 @@ describe("@groupBy directive", () => {
 
             type Query {
               movies(limit: Int, offset: Int, sort: [MovieSort!], where: MovieWhere): [Movie!]!
-              moviesConnection(after: String, first: Int, groupBy: MovieGroupByInput, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
+              moviesConnection(after: String, first: Int, sort: [MovieSort!], where: MovieWhere): MoviesConnection!
             }
 
             \\"\\"\\"An enum for sorting in either ascending or descending order.\\"\\"\\"

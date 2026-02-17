@@ -60,7 +60,7 @@ export class ConcreteEntityOperations extends ImplementingEntityOperations<Concr
     }
 
     public getConnectionGroupByTypename(): string {
-        return `${this.entityAdapter.name}GroupByInput`;
+        return `${this.entityAdapter.name}GroupBy`;
     }
 
     public get rootTypeFieldNames(): RootTypeFieldNames {
