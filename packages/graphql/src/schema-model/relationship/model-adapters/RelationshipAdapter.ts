@@ -220,6 +220,9 @@ export class RelationshipAdapter {
     public get hasUpdateInputFields(): boolean {
         return this.updateInputFields.length > 0;
     }
+    public get hasAggregationWhereFields(): boolean {
+        return this.aggregationWhereFields.length > 0;
+    }
     public get hasAnyProperties(): boolean {
         return this.propertiesTypeName !== undefined;
     }
