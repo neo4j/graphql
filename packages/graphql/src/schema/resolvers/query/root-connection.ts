@@ -126,7 +126,6 @@ export function rootConnectionResolver({
         const groupByField = makeConnectionGroupByType({
             entityAdapter,
             composer,
-            edgeType: rootEdge,
         });
         if (groupByField) {
             rootConnection.addFields({

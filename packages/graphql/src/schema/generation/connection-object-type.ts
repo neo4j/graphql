@@ -24,6 +24,7 @@ import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
+import { makeNestedConnectionGroupByType } from "./connection-group-by";
 
 export function withConnectionObjectType({
     relationshipAdapter,
@@ -39,8 +40,27 @@ export function withConnectionObjectType({
     const connectionObjectType = composer.getOrCreateOTC(typeName);
 
     if (relationshipAdapter.isReadable()) {
+        const edgeType = withRelationshipObjectType({ relationshipAdapter, composer });
+
+        // TODO: support @declareRelationship
+        if (relationshipAdapter instanceof RelationshipAdapter) {
+            const groupBy = makeNestedConnectionGroupByType({
+                relationshipAdapter,
+                composer,
+            });
+
+            if (groupBy) {
+                connectionObjectType.addFields({
+                    groupBy: {
+                        type: groupBy.type.NonNull,
+                        args: groupBy.args,
+                    },
+                });
+            }
+        }
+
         connectionObjectType.addFields({
-            edges: withRelationshipObjectType({ relationshipAdapter, composer }).NonNull.List.NonNull,
+            edges: edgeType.NonNull.List.NonNull,
             totalCount: new GraphQLNonNull(GraphQLInt),
             pageInfo: new GraphQLNonNull(PageInfo),
         });

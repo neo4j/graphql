@@ -17,18 +17,51 @@
  * limitations under the License.
  */
 
-import type { InputTypeComposer, ObjectTypeComposer, SchemaComposer } from "graphql-compose";
+import type {
+    InputTypeComposer,
+    ObjectTypeComposer,
+    ObjectTypeComposerArgumentConfigMapDefinition,
+    SchemaComposer,
+} from "graphql-compose";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
+import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { isConcreteEntity } from "../../translate/queryAST/utils/is-concrete-entity";
 
+export function makeNestedConnectionGroupByType({
+    relationshipAdapter,
+    composer,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+}): { type: ObjectTypeComposer; args: ObjectTypeComposerArgumentConfigMapDefinition } | undefined {
+    const targetEntityAdapter = relationshipAdapter.target;
+    if (!isConcreteEntity(targetEntityAdapter)) {
+        return undefined;
+    }
+
+    const typeName = relationshipAdapter.operations.getConnectionGroupByTypename();
+    const groupByFields = targetEntityAdapter.groupByFields;
+
+    if (groupByFields.length === 0) {
+        return undefined;
+    }
+
+    return createConnectionGroupByForTypename({
+        typeName,
+        edgeType: getGroupByRelationshipEdge({ composer, relationshipAdapter }),
+        entityAdapter: targetEntityAdapter,
+        composer,
+    });
+}
+
+/** Returns the type and args for groupBy field in connections */
 export function makeConnectionGroupByType({
     entityAdapter,
     composer,
-    edgeType,
 }: {
     entityAdapter: ConcreteEntityAdapter;
     composer: SchemaComposer;
-    edgeType: ObjectTypeComposer;
-}): { type: ObjectTypeComposer; args: Record<string, InputTypeComposer> } | undefined {
+}): { type: ObjectTypeComposer; args: ObjectTypeComposerArgumentConfigMapDefinition } | undefined {
     const typeName = entityAdapter.operations.getConnectionGroupByTypename();
     const groupByFields = entityAdapter.groupByFields;
 
@@ -36,8 +69,61 @@ export function makeConnectionGroupByType({
         return undefined;
     }
 
-    const inputArgs = getInputArgs({ entityAdapter, composer });
+    return createConnectionGroupByForTypename({
+        typeName,
+        composer,
+        edgeType: getGroupByEdge({ composer, entityAdapter }),
+        entityAdapter,
+    });
+}
 
+function getGroupByEdge({
+    entityAdapter,
+    composer,
+}: {
+    entityAdapter: ConcreteEntityAdapter | RelationshipAdapter;
+    composer: SchemaComposer;
+}): ObjectTypeComposer {
+    const edgeTypeName = entityAdapter.operations.getConnectionGroupByEdgeTypename();
+    return composer.getOrCreateOTC(edgeTypeName, (oc) => {
+        const nodeType = composer.getOTC(entityAdapter.name);
+        oc.addFields({
+            node: nodeType.NonNull,
+        });
+    });
+}
+
+function getGroupByRelationshipEdge({
+    relationshipAdapter,
+    composer,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+}): ObjectTypeComposer {
+    const edgeTypeName = relationshipAdapter.operations.getConnectionGroupByEdgeTypename();
+    return composer.getOrCreateOTC(edgeTypeName, (oc) => {
+        // Using the string here directly because the types may not have been generated yet
+        oc.addFields({
+            node: `${relationshipAdapter.target.name}!`,
+        });
+    });
+}
+
+function createConnectionGroupByForTypename({
+    typeName,
+    composer,
+    edgeType,
+    entityAdapter,
+}: {
+    typeName: string;
+    entityAdapter: ConcreteEntityAdapter;
+    composer: SchemaComposer;
+    edgeType: ObjectTypeComposer;
+}): {
+    type: ObjectTypeComposer;
+    args: ObjectTypeComposerArgumentConfigMapDefinition;
+} {
+    const inputArgs = getInputArgs({ entityAdapter, composer });
     if (composer.has(typeName)) {
         return { type: composer.getOTC(typeName), args: inputArgs };
     }
@@ -53,7 +139,7 @@ export function makeConnectionGroupByType({
 function getInputArgs({ entityAdapter, composer }: { entityAdapter: ConcreteEntityAdapter; composer: SchemaComposer }) {
     const inputType = makeConnectionGroupByInputType({ entityAdapter, composer });
     return {
-        fields: inputType,
+        fields: inputType.NonNull,
     };
 }
 

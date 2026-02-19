@@ -20,7 +20,7 @@
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
 import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
-import { Neo4jGraphQL } from "../../../src";
+import { Neo4jGraphQL } from "../../../../src";
 
 describe("@groupBy directive", () => {
     test("enables groupBy on node fields", async () => {
@@ -124,7 +124,11 @@ describe("@groupBy directive", () => {
             }
 
             type MovieGroupBy {
-              edges: [MovieEdge!]!
+              edges: [MovieGroupByEdge!]!
+            }
+
+            type MovieGroupByEdge {
+              node: Movie!
             }
 
             input MovieGroupByInput {
@@ -155,7 +159,7 @@ describe("@groupBy directive", () => {
             type MoviesConnection {
               aggregate: MovieAggregate!
               edges: [MovieEdge!]!
-              groupBy(fields: MovieGroupByInput): MovieGroupBy!
+              groupBy(fields: MovieGroupByInput!): MovieGroupBy!
               pageInfo: PageInfo!
               totalCount: Int!
             }
