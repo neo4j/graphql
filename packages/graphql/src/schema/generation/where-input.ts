@@ -212,21 +212,23 @@ export function withSourceWhereInputType({
                 features,
             });
 
-            whereInput.addFields({
-                [relationshipAdapter.operations.aggregateFieldName]: {
-                    type: whereAggregateInput,
-                    directives: deprecatedDirectives.length
-                        ? deprecatedDirectives
-                        : [
-                              {
-                                  name: DEPRECATED,
-                                  args: {
-                                      reason: `Aggregate filters are moved inside the ${relationshipAdapter.operations.connectionFieldName} filter, please use { ${relationshipAdapter.operations.connectionFieldName}: { aggregate: {...} } } instead`,
+            if (whereAggregateInput) {
+                whereInput.addFields({
+                    [relationshipAdapter.operations.aggregateFieldName]: {
+                        type: whereAggregateInput,
+                        directives: deprecatedDirectives.length
+                            ? deprecatedDirectives
+                            : [
+                                  {
+                                      name: DEPRECATED,
+                                      args: {
+                                          reason: `Aggregate filters are moved inside the ${relationshipAdapter.operations.connectionFieldName} filter, please use { ${relationshipAdapter.operations.connectionFieldName}: { aggregate: {...} } } instead`,
+                                      },
                                   },
-                              },
-                          ],
-                },
-            });
+                              ],
+                    },
+                });
+            }
         }
     }
 }

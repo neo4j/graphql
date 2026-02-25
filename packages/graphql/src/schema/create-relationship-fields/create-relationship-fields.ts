@@ -106,7 +106,7 @@ function doForRelationshipDeclaration({
             });
         }
 
-        if (relationshipAdapter.aggregationWhereFields) {
+        if (relationshipAdapter.hasAggregationWhereFields) {
             withEdgeWrapperType({
                 edgeTypeName: relationshipDeclarationAdapter.operations.edgeAggregationWhereInputTypeName,
                 edgeFieldTypeName: relationshipAdapter.operations.edgeAggregationWhereInputTypeName,
