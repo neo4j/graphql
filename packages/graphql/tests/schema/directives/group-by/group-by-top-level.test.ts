@@ -159,7 +159,7 @@ describe("@groupBy directive", () => {
             type MoviesConnection {
               aggregate: MovieAggregate!
               edges: [MovieEdge!]!
-              groupBy(fields: MovieGroupByInput!): MovieGroupBy!
+              groupBy(fields: MovieGroupByInput!): [MovieGroupBy!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }

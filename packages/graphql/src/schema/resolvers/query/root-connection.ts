@@ -81,7 +81,7 @@ export function rootConnectionResolver({
 
         const connection = createConnectionWithEdgeProperties({
             selectionSet: resolveTree as unknown as SelectionSetNode,
-            source: { edges: record.edges, aggregate: record.aggregate },
+            source: { edges: record.edges, aggregate: record.aggregate, groupBy: record.groupBy },
             args: { first: args.first, after: args.after },
             totalCount,
         });
@@ -89,6 +89,7 @@ export function rootConnectionResolver({
         return {
             totalCount,
             edges: connection.edges,
+            groupBy: connection.groupBy,
             pageInfo: connection.pageInfo,
             aggregate: connection.aggregate,
         };
@@ -129,7 +130,7 @@ export function rootConnectionResolver({
         });
         if (groupByField) {
             rootConnection.addFields({
-                groupBy: { type: groupByField.type.NonNull, args: groupByField.args },
+                groupBy: { type: groupByField.type.NonNull.List.NonNull, args: groupByField.args },
             });
         }
     }

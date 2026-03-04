@@ -40,6 +40,8 @@ export class ConnectionReadOperation extends Operation {
     public readonly relationship: RelationshipAdapter | undefined;
     public readonly target: ConcreteEntityAdapter;
 
+    public fields: Field[] = []; // TODO: move edgeFields and nodeFields here?
+
     public nodeFields: Field[] = [];
     public edgeFields: Field[] = []; // TODO: merge with attachedTo?
     public filters: Filter[] = [];
@@ -81,6 +83,11 @@ export class ConnectionReadOperation extends Operation {
         this.nodeFields = fields;
     }
 
+    // TODO: replace node and edge fields for this
+    public setFields(fields: Field[]) {
+        this.fields = fields;
+    }
+
     public addFilters(...filters: Filter[]) {
         this.filters.push(...filters);
     }
@@ -115,6 +122,7 @@ export class ConnectionReadOperation extends Operation {
             this.selection,
             ...this.nodeFields,
             ...this.edgeFields,
+            ...this.fields,
             this.aggregationField,
             ...this.filters,
             ...this.authFilters,
@@ -235,8 +243,26 @@ export class ConnectionReadOperation extends Operation {
             ...aggregationProjection,
         });
 
+        const groupBySubqueries = this.fields.flatMap((f) => {
+            return f.getSubqueries(nestedContext);
+        });
+        // .map((sq) => {
+        //     const edgeVar = new Cypher.NamedVariable("edge");
+        //     const unwindClause = this.getUnwindClause(nestedContext, edgeVar, edgesVar);
+
+        //     return new Cypher.With("*", [
+        //         new Cypher.Collect(new Cypher.Call(Cypher.utils.concat(unwindClause, sq), [edgesVar])),
+        //         new Cypher.NamedVariable("TODO"),
+        //     ]);
+        // });
+
+        if (this.fields.length > 0) {
+            this.generateProjectionMapForFields(this.fields, context.target, projectionMap);
+        }
+
         const returnClause = new Cypher.Return([projectionMap, context.returnVariable]);
         const validations = this.getValidations(nestedContext);
+
         let connectionClauses: Cypher.Clause = Cypher.utils.concat(
             ...extraMatches,
             selectionClause,
@@ -244,7 +270,8 @@ export class ConnectionReadOperation extends Operation {
             withWhere,
             ...validations,
             withCollectEdgesAndTotalCount,
-            unwindAndProjectionSubquery
+            unwindAndProjectionSubquery,
+            ...groupBySubqueries
         );
 
         if (aggregationSubqueries.length > 0) {
@@ -372,8 +399,18 @@ export class ConnectionReadOperation extends Operation {
         return edgeProjectionMap;
     }
 
-    protected generateProjectionMapForFields(fields: Field[], target: Cypher.Variable): Cypher.Map {
-        const projectionMap = new Cypher.Map();
+    /** Given a set of fields, generate a projection map.
+     * @param projectionMap - If provided, the new projection fields will be added to that map, instead of creating a new one
+     */
+    protected generateProjectionMapForFields(
+        fields: Field[],
+        target: Cypher.Variable,
+        projectionMap?: Cypher.Map
+    ): Cypher.Map {
+        if (!projectionMap) {
+            projectionMap = new Cypher.Map();
+        }
+
         fields
             .map((f) => f.getProjectionField(target))
             .forEach((p) => {
