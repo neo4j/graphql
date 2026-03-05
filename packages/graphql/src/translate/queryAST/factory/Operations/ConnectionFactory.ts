@@ -228,10 +228,6 @@ export class ConnectionFactory {
             selection,
         });
 
-        if (Object.keys(resolveTreeEdgeFields).length === 0 && !totalCountEdgeField && !pageInfoEdgeField) {
-            operation.skipConnection = true;
-        }
-
         this.hydrateConnectionOperationAST({
             relationship,
             target: target,
@@ -260,6 +256,14 @@ export class ConnectionFactory {
         });
 
         const resolveTreeGroupBy = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "groupBy");
+        if (
+            Object.keys(resolveTreeEdgeFields).length === 0 &&
+            !totalCountEdgeField &&
+            !pageInfoEdgeField &&
+            resolveTreeGroupBy.length === 0
+        ) {
+            operation.skipConnection = true;
+        }
         this.hydrateConnectionOperationWithGroupBy({
             target,
             resolveTreeGroupBy: resolveTreeGroupBy[0],

@@ -320,7 +320,7 @@ export class ConnectionReadOperation extends Operation {
 
     /** Defines if the query should project edges */
     protected shouldProjectEdges(): boolean {
-        const hasFields = this.nodeFields.length + this.edgeFields.length > 0;
+        const hasFields = this.nodeFields.length + this.edgeFields.length + this.fields.length > 0;
 
         // Project edges when there are explicit node/edge projection fields or when pageInfo is requested.
         return hasFields || this.needsPageInfo;

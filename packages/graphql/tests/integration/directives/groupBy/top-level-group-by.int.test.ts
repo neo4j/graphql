@@ -44,6 +44,60 @@ describe("@groupBy directive top level", () => {
         await testHelper.close();
     });
 
+    test("group by in top level query without projection", async () => {
+        await testHelper.executeCypher(`
+            CREATE (:${Movie} {title: "The Matrix", year: 1999})
+            CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001})
+            CREATE (:${Movie} {title: "Another Movie", year: 1999})
+        `);
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.operations.connection} {
+                    groupBy(fields: {year: true}) {
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeUndefined();
+        expect(result.data).toEqual({
+            [Movie.operations.connection]: {
+                groupBy: expect.toIncludeSameMembers([
+                    {
+                        edges: expect.toIncludeSameMembers([
+                            {
+                                node: {
+                                    title: "The Matrix",
+                                },
+                            },
+                            {
+                                node: {
+                                    title: "Another Movie",
+                                },
+                            },
+                        ]),
+                    },
+                    {
+                        edges: [
+                            {
+                                node: {
+                                    title: "The Matrix Reloaded",
+                                },
+                            },
+                        ],
+                    },
+                ]),
+            },
+        });
+    });
+
     test("group by in top level query with node projection", async () => {
         await testHelper.executeCypher(`
             CREATE (:${Movie} {title: "The Matrix", year: 1999})
@@ -91,7 +145,7 @@ describe("@groupBy directive top level", () => {
                         },
                     },
                 ]),
-                groupBy: [
+                groupBy: expect.toIncludeSameMembers([
                     {
                         edges: expect.toIncludeSameMembers([
                             {
@@ -115,7 +169,7 @@ describe("@groupBy directive top level", () => {
                             },
                         ],
                     },
-                ],
+                ]),
             },
         });
     });

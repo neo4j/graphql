@@ -124,7 +124,7 @@ describe("@groupBy directive", () => {
             type ActorsConnection {
               aggregate: ActorAggregate!
               edges: [ActorEdge!]!
-              groupBy(fields: ActorGroupByInput!): ActorGroupBy!
+              groupBy(fields: ActorGroupByInput!): [ActorGroupBy!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
@@ -385,7 +385,7 @@ describe("@groupBy directive", () => {
             type MoviesConnection {
               aggregate: MovieAggregate!
               edges: [MovieEdge!]!
-              groupBy(fields: MovieGroupByInput!): MovieGroupBy!
+              groupBy(fields: MovieGroupByInput!): [MovieGroupBy!]!
               pageInfo: PageInfo!
               totalCount: Int!
             }
