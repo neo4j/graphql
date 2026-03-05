@@ -57,7 +57,7 @@ jobs:
           RABBITMQ_USER: guest
           RABBITMQ_PASSWORD: guest
       - name: Archive coverage report
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: e2e-coverage-graphql-amqp-subscriptions-engine-${{ matrix.graphql-version }}-${{ matrix.neo4j-version }}
           path: packages/graphql-amqp-subscriptions-engine/coverage/
@@ -67,7 +67,7 @@ jobs:
     needs: e2e-tests
     steps:
       - name: Merge Artifacts
-        uses: actions/upload-artifact/merge@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact/merge@bbbca2ddaa5d8feaa63e36b76fdaad77386f024f # v7
         with:
           name: e2e-coverage-graphql-amqp-subscriptions-engine
           pattern: e2e-coverage-graphql-amqp-subscriptions-engine-*
