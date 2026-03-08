@@ -1877,16 +1877,16 @@ __metadata:
   linkType: hard
 
 "@graphql-tools/resolvers-composition@npm:^7.0.0":
-  version: 7.0.26
-  resolution: "@graphql-tools/resolvers-composition@npm:7.0.26"
+  version: 7.0.28
+  resolution: "@graphql-tools/resolvers-composition@npm:7.0.28"
   dependencies:
     "@graphql-tools/utils": "npm:^11.0.0"
-    lodash: "npm:4.17.21"
+    lodash: "npm:4.17.23"
     micromatch: "npm:^4.0.8"
     tslib: "npm:^2.4.0"
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/fc3bd9099832e6b4afdaddc1103a810624fd41592e4bc4ec7d5f82876764fb07b497885f889cea8a029b5aed06bb9dfd8ac5c6c21b011033bed27276d5791232
+  checksum: 10c0/c19483787c2e0737255434c1fd6de78c21c011f994e054208478d3747d553657bf1d2cfdc6e97fb0d454b38d0bd91c482858f19431df35af6345a393bc3e37d8
   languageName: node
   linkType: hard
 
@@ -13743,7 +13743,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:4.17.21, lodash@npm:^4.14.0, lodash@npm:^4.17.12, lodash@npm:^4.17.14, lodash@npm:~4.17.0":
+"lodash@npm:4.17.23":
+  version: 4.17.23
+  resolution: "lodash@npm:4.17.23"
+  checksum: 10c0/1264a90469f5bb95d4739c43eb6277d15b6d9e186df4ac68c3620443160fc669e2f14c11e7d8b2ccf078b81d06147c01a8ccced9aab9f9f63d50dcf8cace6bf6
+  languageName: node
+  linkType: hard
+
+"lodash@npm:^4.14.0, lodash@npm:^4.17.12, lodash@npm:^4.17.14, lodash@npm:~4.17.0":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
   checksum: 10c0/d8cbea072bb08655bb4c989da418994b073a608dffa608b09ac04b43a791b12aeae7cd7ad919aa4c925f33b48490b5cfe6c1f71d827956071dae2e7bb3a6b74c
