@@ -2820,7 +2820,7 @@ __metadata:
     "@types/is-uuid": "npm:1.0.2"
     "@types/jest": "npm:30.0.0"
     "@types/jsonwebtoken": "npm:9.0.10"
-    "@types/node": "npm:22.19.13"
+    "@types/node": "npm:22.19.14"
     "@types/pluralize": "npm:0.0.33"
     "@types/randomstring": "npm:1.3.0"
     "@types/semver": "npm:7.7.1"
@@ -2869,7 +2869,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": "npm:^7.0.0"
     "@types/jest": "npm:30.0.0"
-    "@types/node": "npm:22.19.13"
+    "@types/node": "npm:22.19.14"
     "@types/pluralize": "npm:0.0.33"
     camelcase: "npm:^6.3.0"
     debug: "npm:^4.3.4"
@@ -3805,12 +3805,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:22.19.13":
-  version: 22.19.13
-  resolution: "@types/node@npm:22.19.13"
+"@types/node@npm:22.19.14":
+  version: 22.19.14
+  resolution: "@types/node@npm:22.19.14"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10c0/ad8a0b6a69dd8ef663701573eca94ef6d20ce093f54f05bed823c826374eb1ea8b06e6f2c5d7f6cfc203b82dfd60293296bf80ea987ddb77775840bc2ef9f803
+  checksum: 10c0/32e7144efa454a07581b6bd075954e56b8784c1da5e3fbd49716072180384963801b22fff324e1eaeabf338641874f9c3e021d968d5cb929eb556f5622b87942
   languageName: node
   linkType: hard
 
