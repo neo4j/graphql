@@ -80,7 +80,7 @@ describe("Single Relationships", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [Movie.plural]: [
                     {
                         title: NoCountryForOldMen,
@@ -107,7 +107,7 @@ describe("Single Relationships", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [Movie.plural]: [
                     {
                         title: NoCountryForOldMen,
@@ -158,7 +158,7 @@ describe("Single Relationships", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [Movie.operations.create]: {
                     [Movie.plural]: [
                         {
@@ -213,7 +213,7 @@ describe("Single Relationships", () => {
 
             const result = await testHelper.executeGraphQL(createQuery);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [Movie.operations.create]: {
                     [Movie.plural]: [
                         {
@@ -244,7 +244,7 @@ describe("Single Relationships", () => {
 
             const connectResult = await testHelper.executeGraphQL(connectQuery);
             expect(connectResult.errors).toBeUndefined();
-            expect(connectResult.data as any).toEqual({
+            expect(connectResult.data).toEqual({
                 [Person.operations.update]: {
                     info: {
                         relationshipsCreated: 1,
@@ -296,7 +296,7 @@ describe("Single Relationships", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [Movie.operations.delete]: {
                     nodesDeleted: 2,
                     relationshipsDeleted: 1,
@@ -339,7 +339,7 @@ describe("Single Relationships", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [Person.operations.update]: {
                     info: {
                         relationshipsDeleted: 1,
@@ -388,7 +388,7 @@ describe("Single Relationships", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [Person.operations.update]: {
                     info: {
                         relationshipsCreated: 2,
@@ -443,7 +443,7 @@ describe("Single Relationships", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [Person.operations.create]: {
                     [Person.plural]: [
                         {

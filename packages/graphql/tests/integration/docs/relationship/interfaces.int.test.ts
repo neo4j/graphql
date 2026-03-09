@@ -124,7 +124,7 @@ describe("Interfaces", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 productions: [
                     {
                         title: Argo,
@@ -195,7 +195,7 @@ describe("Interfaces", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 productionsConnection: {
                     edges: expect.toIncludeSameMembers([
                         {
@@ -293,7 +293,7 @@ describe("Interfaces", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [Person.plural]: [
                     {
                         name: BenAffleck,
@@ -337,7 +337,7 @@ describe("Interfaces", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [Person.plural]: [
                     {
                         name: BenAffleck,
@@ -423,7 +423,7 @@ describe("Interfaces", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [Person.operations.create]: {
                     [Person.plural]: [
                         {
@@ -533,7 +533,7 @@ describe("Interfaces", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [Person.operations.update]: {
                     info: {
                         relationshipsCreated: 1,
@@ -606,7 +606,7 @@ describe("Interfaces", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [Person.operations.update]: {
                     info: {
                         relationshipsCreated: 0,

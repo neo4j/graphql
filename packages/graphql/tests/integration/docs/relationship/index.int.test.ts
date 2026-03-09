@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../../utils/graphql-types";
 import { TestHelper } from "../../../utils/tests-helper";
 
-describe("Server should start", () => {
+describe("Type defs are valid", () => {
     let Person: UniqueType;
     let Movie: UniqueType;
 
@@ -58,7 +58,7 @@ describe("Server should start", () => {
         await testHelper.close();
     });
 
-    test("run dummy query to make sure it executes", async () => {
+    test("simple query", async () => {
         const query = /* GraphQL */ `
             query {
                 ${Movie.plural} {

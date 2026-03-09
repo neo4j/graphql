@@ -112,7 +112,7 @@ describe("Union", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [User.plural]: [
                     {
                         name: Alice,
@@ -153,7 +153,7 @@ describe("Union", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [User.plural]: [
                     {
                         name: Alice,
@@ -188,7 +188,7 @@ describe("Union", () => {
 
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
-            expect(result.data as any).toEqual({
+            expect(result.data).toEqual({
                 [User.plural]: [
                     {
                         name: Alice,
