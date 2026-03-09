@@ -2768,7 +2768,7 @@ __metadata:
     "@types/cors": "npm:2.8.19"
     "@types/debug": "npm:4.1.12"
     "@types/jest": "npm:29.5.14"
-    "@types/node": "npm:20.19.35"
+    "@types/node": "npm:20.19.36"
     amqplib: "npm:0.10.9"
     body-parser: "npm:^2.0.0"
     camelcase: "npm:6.3.0"
@@ -2797,7 +2797,7 @@ __metadata:
     "@graphql-tools/merge": "npm:^9.0.0"
     "@neo4j/graphql": "npm:^5.12.10"
     "@types/jest": "npm:29.5.14"
-    "@types/node": "npm:20.19.35"
+    "@types/node": "npm:20.19.36"
     camelcase: "npm:6.3.0"
     jest: "npm:29.7.0"
     jsonwebtoken: "npm:9.0.3"
@@ -2836,7 +2836,7 @@ __metadata:
     "@types/is-uuid": "npm:1.0.2"
     "@types/jest": "npm:29.5.14"
     "@types/jsonwebtoken": "npm:9.0.10"
-    "@types/node": "npm:20.19.35"
+    "@types/node": "npm:20.19.36"
     "@types/pluralize": "npm:0.0.33"
     "@types/randomstring": "npm:1.3.0"
     "@types/semver": "npm:7.7.1"
@@ -2883,7 +2883,7 @@ __metadata:
   dependencies:
     "@neo4j/graphql": "npm:^5.11.2"
     "@types/jest": "npm:29.5.14"
-    "@types/node": "npm:20.19.35"
+    "@types/node": "npm:20.19.36"
     "@types/pluralize": "npm:0.0.33"
     camelcase: "npm:^6.3.0"
     debug: "npm:^4.3.4"
@@ -4785,12 +4785,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:20.19.35":
-  version: 20.19.35
-  resolution: "@types/node@npm:20.19.35"
+"@types/node@npm:20.19.36":
+  version: 20.19.36
+  resolution: "@types/node@npm:20.19.36"
   dependencies:
     undici-types: "npm:~6.21.0"
-  checksum: 10c0/e27d3e1eac4105b627fdba2d86577e603c66fc7b4ad61418d41f3898d84b2f5ff3e0c6b6d3948b34976ea91056e6359740b387edcc65ca516c3f2b5a0c0f9c6a
+  checksum: 10c0/caf1e7802a986a3d98dfac2cbed968a359694a1289e4d1a7a0c93337f3d9b0843e668f11fd2ee03e1a97dc7ab237ef253888200d2a5b455f21bc7c871cd893c8
   languageName: node
   linkType: hard
 
