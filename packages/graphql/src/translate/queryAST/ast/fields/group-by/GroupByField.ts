@@ -19,6 +19,7 @@
 
 import type { Clause, Expr, Variable } from "@neo4j/cypher-builder";
 import Cypher from "@neo4j/cypher-builder";
+import { wrapSubqueriesInCypherCalls } from "../../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { Field } from "../Field";
@@ -54,13 +55,17 @@ export class GroupByField extends Field {
         this.edgeFields = fields;
     }
 
-    // NOTE: All of this is based on ConnectionReadOperation
-    // TODO: Unify this logic
+    // NOTE: Based on ConnectionReadOperation
     public getSubqueries(context: QueryASTContext): Clause[] {
         if (!context.target) {
             throw new Error("Invalid target");
         }
 
+        const subqueries = wrapSubqueriesInCypherCalls(
+            context,
+            [...this.nodeFields, ...this.edgeFields],
+            [context.target]
+        );
         const edgeProjectionMap = this.createProjectionMapForEdge(context as QueryASTContext<Cypher.Node>);
 
         const groupByFields: Array<[Cypher.Expr, string]> = this.by.map((prop) => {
@@ -70,7 +75,7 @@ export class GroupByField extends Field {
             return [context.target.property(prop), prop];
         });
         const sq = Cypher.utils.concat(
-            // unwindClause,
+            ...subqueries,
             new Cypher.Return(...groupByFields, [
                 new Cypher.Map({ edges: Cypher.collect(edgeProjectionMap) }),
                 this.resultVariable,

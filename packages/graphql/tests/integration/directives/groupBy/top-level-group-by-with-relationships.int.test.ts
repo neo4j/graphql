@@ -24,14 +24,21 @@ describe("@groupBy directive top level", () => {
     const testHelper = new TestHelper();
 
     let Movie: UniqueType;
+    let Person: UniqueType;
 
     beforeEach(async () => {
         Movie = testHelper.createUniqueType("Movie");
+        Person = testHelper.createUniqueType("Person");
 
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String!
-                year: Int! @groupBy 
+                year: Int! @groupBy
+                actors: [${Person}!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+
+            type ${Person} @node {
+                name: String!
             }
         `;
 
@@ -44,11 +51,11 @@ describe("@groupBy directive top level", () => {
         await testHelper.close();
     });
 
-    test("groupBy in top level query without projection", async () => {
+    test("groupBy in top level query with nested relationship in groupBy", async () => {
         await testHelper.executeCypher(`
             CREATE (:${Movie} {title: "The Matrix", year: 1999})
             CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001})
-            CREATE (:${Movie} {title: "Another Movie", year: 1999})
+            CREATE (:${Movie} {title: "Another Movie", year: 1999})<-[:ACTED_IN]-(:${Person} { name: "Another Keanu" })
         `);
 
         const query = /* GraphQL */ `
@@ -58,6 +65,9 @@ describe("@groupBy directive top level", () => {
                         edges {
                             node {
                                 title
+                                actors {
+                                    name
+                                }
                             }
                         }
                     }
@@ -66,6 +76,7 @@ describe("@groupBy directive top level", () => {
         `;
 
         const result = await testHelper.executeGraphQL(query);
+
         expect(result.errors).toBeUndefined();
         expect(result.data).toEqual({
             [Movie.operations.connection]: {
@@ -75,11 +86,17 @@ describe("@groupBy directive top level", () => {
                             {
                                 node: {
                                     title: "The Matrix",
+                                    actors: [],
                                 },
                             },
                             {
                                 node: {
                                     title: "Another Movie",
+                                    actors: [
+                                        {
+                                            name: "Another Keanu",
+                                        },
+                                    ],
                                 },
                             },
                         ]),
@@ -89,82 +106,7 @@ describe("@groupBy directive top level", () => {
                             {
                                 node: {
                                     title: "The Matrix Reloaded",
-                                },
-                            },
-                        ],
-                    },
-                ]),
-            },
-        });
-    });
-
-    test("groupBy in top level query with node projection", async () => {
-        await testHelper.executeCypher(`
-            CREATE (:${Movie} {title: "The Matrix", year: 1999})
-            CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001})
-            CREATE (:${Movie} {title: "Another Movie", year: 1999})
-        `);
-
-        const query = /* GraphQL */ `
-            query {
-                ${Movie.operations.connection} {
-                    edges {
-                        node {
-                            title
-                        }
-                    }
-                    groupBy(fields: {year: true}) {
-                        edges {
-                            node {
-                                title
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await testHelper.executeGraphQL(query);
-        expect(result.errors).toBeUndefined();
-        expect(result.data).toEqual({
-            [Movie.operations.connection]: {
-                edges: expect.toIncludeSameMembers([
-                    {
-                        node: {
-                            title: "The Matrix",
-                        },
-                    },
-                    {
-                        node: {
-                            title: "The Matrix Reloaded",
-                        },
-                    },
-                    {
-                        node: {
-                            title: "Another Movie",
-                        },
-                    },
-                ]),
-                groupBy: expect.toIncludeSameMembers([
-                    {
-                        edges: expect.toIncludeSameMembers([
-                            {
-                                node: {
-                                    title: "The Matrix",
-                                },
-                            },
-                            {
-                                node: {
-                                    title: "Another Movie",
-                                },
-                            },
-                        ]),
-                    },
-                    {
-                        edges: [
-                            {
-                                node: {
-                                    title: "The Matrix Reloaded",
+                                    actors: [],
                                 },
                             },
                         ],
