@@ -65,7 +65,7 @@
         "jest-extended": "7.0.0",
         "jsonwebtoken": "9.0.3",
         "jwks-rsa": "3.2.2",
-        "knip": "5.85.0",
+        "knip": "5.86.0",
         "koa": "3.1.2",
         "koa-jwt": "4.0.4",
         "koa-router": "14.0.0",
