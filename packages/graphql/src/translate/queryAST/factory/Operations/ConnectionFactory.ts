@@ -61,7 +61,7 @@ export class ConnectionFactory {
         this.queryASTFactory = queryASTFactory;
         this.fulltextFactory = new FulltextFactory(queryASTFactory);
         this.aggregateFactory = new AggregateFactory(queryASTFactory);
-        this.groupByFactory = new GroupByFactory(queryASTFactory);
+        this.groupByFactory = new GroupByFactory();
     }
 
     public createCompositeConnectionOperationAST({
@@ -256,21 +256,25 @@ export class ConnectionFactory {
         });
 
         const resolveTreeGroupBy = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "groupBy");
+        const hasGroupByFields = resolveTreeGroupBy.length > 0;
+
         if (
             Object.keys(resolveTreeEdgeFields).length === 0 &&
             !totalCountEdgeField &&
             !pageInfoEdgeField &&
-            resolveTreeGroupBy.length === 0
+            !hasGroupByFields
         ) {
             operation.skipConnection = true;
         }
-        this.hydrateConnectionOperationWithGroupBy({
-            target,
-            resolveTreeGroupBy: resolveTreeGroupBy[0],
-            relationship,
-            context,
-            operation,
-        });
+
+        if (resolveTreeGroupBy[0]) {
+            this.hydrateConnectionOperationWithGroupBy({
+                target,
+                resolveTreeGroupBy: resolveTreeGroupBy[0],
+                context,
+                operation,
+            });
+        }
 
         return operation;
     }
@@ -385,46 +389,42 @@ export class ConnectionFactory {
     private hydrateConnectionOperationWithGroupBy({
         target,
         resolveTreeGroupBy,
-        relationship,
         context,
         operation,
     }: {
         target: ConcreteEntityAdapter;
-        resolveTreeGroupBy: ResolveTree | undefined;
-        relationship: RelationshipAdapter | undefined;
+        resolveTreeGroupBy: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         operation: ConnectionReadOperation;
     }): void {
-        if (resolveTreeGroupBy) {
-            const groupBy = this.groupByFactory.createGroupByField({
-                resolveTree: resolveTreeGroupBy,
-            });
+        const groupBy = this.groupByFactory.createGroupByField({
+            resolveTree: resolveTreeGroupBy,
+        });
 
-            const edgesResolveTree =
-                resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()]?.edges;
-            if (edgesResolveTree) {
-                const nodeResolveTree =
-                    edgesResolveTree.fieldsByTypeName[target.operations.getConnectionGroupByEdgeTypename()]?.node;
-                if (nodeResolveTree) {
-                    const resolveTreeNodeFieldsTypesNames = [
-                        target.name,
-                        ...target.compositeEntities.filter((e) => e instanceof InterfaceEntity).map((e) => e.name),
-                    ];
+        const edgesResolveTree =
+            resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()]?.edges;
+        if (edgesResolveTree) {
+            const nodeResolveTree =
+                edgesResolveTree.fieldsByTypeName[target.operations.getConnectionGroupByEdgeTypename()]?.node;
+            if (nodeResolveTree) {
+                const resolveTreeNodeFieldsTypesNames = [
+                    target.name,
+                    ...target.compositeEntities.filter((e) => e instanceof InterfaceEntity).map((e) => e.name),
+                ];
 
-                    const resolveTreeNodeFields = getFieldsByTypeName(nodeResolveTree, resolveTreeNodeFieldsTypesNames);
+                const resolveTreeNodeFields = getFieldsByTypeName(nodeResolveTree, resolveTreeNodeFieldsTypesNames);
 
-                    const nodeFields = this.queryASTFactory.fieldFactory.createFields(
-                        target,
-                        resolveTreeNodeFields,
-                        context
-                    );
+                const nodeFields = this.queryASTFactory.fieldFactory.createFields(
+                    target,
+                    resolveTreeNodeFields,
+                    context
+                );
 
-                    groupBy.setNodeFields(nodeFields);
-                }
+                groupBy.setNodeFields(nodeFields);
             }
-
-            operation.setFields([groupBy]);
         }
+
+        operation.setFields([groupBy]);
     }
 
     // The current top-level Connection API is inconsistent with the rest of the API making the parsing more complex than it should be.

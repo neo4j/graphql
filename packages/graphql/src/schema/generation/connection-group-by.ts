@@ -41,15 +41,43 @@ export function makeConnectionGroupByType({
         return undefined;
     }
 
-    return createConnectionGroupByForTypename({
+    return getOrCreateConnectionGroupBy({
         typeName,
         composer,
-        edgeType: getGroupByEdge({ composer, entityAdapter }),
+        edgeType: getGroupByEdgeType({ composer, entityAdapter }),
         entityAdapter,
     });
 }
 
-function getGroupByEdge({
+function getOrCreateConnectionGroupBy({
+    typeName,
+    composer,
+    edgeType,
+    entityAdapter,
+}: {
+    typeName: string;
+    composer: SchemaComposer;
+    edgeType: ObjectTypeComposer;
+    entityAdapter: ConcreteEntityAdapter;
+}): {
+    type: ObjectTypeComposer;
+    args: ObjectTypeComposerArgumentConfigMapDefinition;
+} {
+    const inputArgs = getInputArgs({ entityAdapter, composer });
+
+    if (composer.has(typeName)) {
+        return { type: composer.getOTC(typeName), args: inputArgs };
+    }
+
+    const connectionGroupByOTC = composer.createObjectTC(typeName);
+    connectionGroupByOTC.addFields({
+        edges: edgeType.NonNull.List.NonNull,
+    });
+
+    return { type: connectionGroupByOTC, args: inputArgs };
+}
+
+function getGroupByEdgeType({
     entityAdapter,
     composer,
 }: {
@@ -65,41 +93,14 @@ function getGroupByEdge({
     });
 }
 
-function createConnectionGroupByForTypename({
-    typeName,
-    composer,
-    edgeType,
-    entityAdapter,
-}: {
-    typeName: string;
-    entityAdapter: ConcreteEntityAdapter;
-    composer: SchemaComposer;
-    edgeType: ObjectTypeComposer;
-}): {
-    type: ObjectTypeComposer;
-    args: ObjectTypeComposerArgumentConfigMapDefinition;
-} {
-    const inputArgs = getInputArgs({ entityAdapter, composer });
-    if (composer.has(typeName)) {
-        return { type: composer.getOTC(typeName), args: inputArgs };
-    }
-
-    const connectionGroupByOTC = composer.createObjectTC(typeName);
-    connectionGroupByOTC.addFields({
-        edges: edgeType.NonNull.List.NonNull,
-    });
-
-    return { type: connectionGroupByOTC, args: inputArgs };
-}
-
 function getInputArgs({ entityAdapter, composer }: { entityAdapter: ConcreteEntityAdapter; composer: SchemaComposer }) {
-    const inputType = makeConnectionGroupByInputType({ entityAdapter, composer });
+    const inputType = getOrCreateConnectionGroupByInputType({ entityAdapter, composer });
     return {
         fields: inputType.NonNull,
     };
 }
 
-function makeConnectionGroupByInputType({
+function getOrCreateConnectionGroupByInputType({
     entityAdapter,
     composer,
 }: {
@@ -111,10 +112,8 @@ function makeConnectionGroupByInputType({
         return composer.getITC(typeName);
     }
 
-    const groupByFields = entityAdapter.groupByFields;
-
     const connectionGroupByITC = composer.createInputTC(typeName);
-    for (const attribute of groupByFields) {
+    for (const attribute of entityAdapter.groupByFields) {
         connectionGroupByITC.addFields({
             [attribute.name]: "Boolean",
         });

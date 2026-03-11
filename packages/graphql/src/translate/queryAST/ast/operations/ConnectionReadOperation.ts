@@ -83,7 +83,6 @@ export class ConnectionReadOperation extends Operation {
         this.nodeFields = fields;
     }
 
-    // TODO: replace node and edge fields for this
     public setFields(fields: Field[]) {
         this.fields = fields;
     }
@@ -246,15 +245,6 @@ export class ConnectionReadOperation extends Operation {
         const groupBySubqueries = this.fields.flatMap((f) => {
             return f.getSubqueries(nestedContext);
         });
-        // .map((sq) => {
-        //     const edgeVar = new Cypher.NamedVariable("edge");
-        //     const unwindClause = this.getUnwindClause(nestedContext, edgeVar, edgesVar);
-
-        //     return new Cypher.With("*", [
-        //         new Cypher.Collect(new Cypher.Call(Cypher.utils.concat(unwindClause, sq), [edgesVar])),
-        //         new Cypher.NamedVariable("TODO"),
-        //     ]);
-        // });
 
         if (this.fields.length > 0) {
             this.generateProjectionMapForFields(this.fields, context.target, projectionMap);
@@ -347,15 +337,11 @@ export class ConnectionReadOperation extends Operation {
         edgeVar: Cypher.Variable,
         edgesVar: Cypher.Variable
     ): Cypher.With {
-        let unwindClause: Cypher.With;
+        const unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with([edgeVar.property("node"), context.target]);
         if (context.relationship) {
-            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with(
-                [edgeVar.property("node"), context.target],
-                [edgeVar.property("relationship"), context.relationship]
-            );
-        } else {
-            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with([edgeVar.property("node"), context.target]);
+            unwindClause.addColumns([edgeVar.property("relationship"), context.relationship]);
         }
+
         return unwindClause;
     }
 

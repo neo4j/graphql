@@ -55,7 +55,10 @@ export class GroupByField extends Field {
         this.edgeFields = fields;
     }
 
-    // NOTE: Based on ConnectionReadOperation
+    public getChildren(): QueryASTNode[] {
+        return [...this.nodeFields, ...this.edgeFields];
+    }
+
     public getSubqueries(context: QueryASTContext): Clause[] {
         if (!context.target) {
             throw new Error("Invalid target");
@@ -96,7 +99,7 @@ export class GroupByField extends Field {
         ];
     }
 
-    protected createProjectionMapForEdge(context: QueryASTContext<Cypher.Node>): Cypher.Map {
+    private createProjectionMapForEdge(context: QueryASTContext<Cypher.Node>): Cypher.Map {
         const edgeProjectionMap = new Cypher.Map();
         // this.addProjectionMapForRelationshipProperties(context, edgeProjectionMap);
 
@@ -105,7 +108,7 @@ export class GroupByField extends Field {
         return edgeProjectionMap;
     }
 
-    protected createProjectionMapForNode(context: QueryASTContext<Cypher.Node>): Cypher.Map {
+    private createProjectionMapForNode(context: QueryASTContext<Cypher.Node>): Cypher.Map {
         const projectionMap = this.generateProjectionMapForFields(this.nodeFields, context.target);
         if (projectionMap.size === 0) {
             projectionMap.set({
@@ -118,7 +121,7 @@ export class GroupByField extends Field {
     /** Given a set of fields, generate a projection map.
      * @param projectionMap - If provided, the new projection fields will be added to that map, instead of creating a new one
      */
-    protected generateProjectionMapForFields(
+    private generateProjectionMapForFields(
         fields: Field[],
         target: Cypher.Variable,
         projectionMap?: Cypher.Map
@@ -140,24 +143,16 @@ export class GroupByField extends Field {
         return projectionMap;
     }
 
-    protected getUnwindClause(
+    private getUnwindClause(
         context: QueryASTContext<Cypher.Node>,
         edgeVar: Cypher.Variable,
         edgesVar: Cypher.Variable
     ): Cypher.With {
-        let unwindClause: Cypher.With;
+        const unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with([edgeVar.property("node"), context.target]);
         if (context.relationship) {
-            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with(
-                [edgeVar.property("node"), context.target],
-                [edgeVar.property("relationship"), context.relationship]
-            );
-        } else {
-            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with([edgeVar.property("node"), context.target]);
+            unwindClause.addColumns([edgeVar.property("relationship"), context.relationship]);
         }
-        return unwindClause;
-    }
 
-    public getChildren(): QueryASTNode[] {
-        return [...this.nodeFields, ...this.edgeFields];
+        return unwindClause;
     }
 }
