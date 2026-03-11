@@ -41,23 +41,6 @@ export function withConnectionObjectType({
     if (relationshipAdapter.isReadable()) {
         const edgeType = withRelationshipObjectType({ relationshipAdapter, composer });
 
-        // Schema for nested groupBy
-        // if (relationshipAdapter instanceof RelationshipAdapter) {
-        //     const groupBy = makeNestedConnectionGroupByType({
-        //         relationshipAdapter,
-        //         composer,
-        //     });
-
-        //     if (groupBy) {
-        //         connectionObjectType.addFields({
-        //             groupBy: {
-        //                 type: groupBy.type.NonNull,
-        //                 args: groupBy.args,
-        //             },
-        //         });
-        //     }
-        // }
-
         connectionObjectType.addFields({
             edges: edgeType.NonNull.List.NonNull,
             totalCount: new GraphQLNonNull(GraphQLInt),
