@@ -226,7 +226,6 @@ describe("@groupBy directive", () => {
             type MovieActorsConnection {
               aggregate: MovieActorActorsAggregateSelection!
               edges: [MovieActorsRelationship!]!
-              groupBy(fields: ActorGroupByInput!): MovieActorsGroupBy!
               pageInfo: PageInfo!
               totalCount: Int!
             }
@@ -286,14 +285,6 @@ describe("@groupBy directive", () => {
             input MovieActorsFieldInput {
               connect: [MovieActorsConnectFieldInput!]
               create: [MovieActorsCreateFieldInput!]
-            }
-
-            type MovieActorsGroupBy {
-              edges: [MovieActorsGroupByEdge!]!
-            }
-
-            type MovieActorsGroupByEdge {
-              node: Actor!
             }
 
             input MovieActorsNodeAggregationWhereInput {
