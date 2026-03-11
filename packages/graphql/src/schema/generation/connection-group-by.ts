@@ -25,6 +25,34 @@ import type {
 } from "graphql-compose";
 import type { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
+import { isConcreteEntity } from "../../translate/queryAST/utils/is-concrete-entity";
+
+export function makeNestedConnectionGroupByType({
+    relationshipAdapter,
+    composer,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+}): { type: ObjectTypeComposer; args: ObjectTypeComposerArgumentConfigMapDefinition } | undefined {
+    const targetEntityAdapter = relationshipAdapter.target;
+    if (!isConcreteEntity(targetEntityAdapter)) {
+        return undefined;
+    }
+
+    const typeName = relationshipAdapter.operations.getConnectionGroupByTypename();
+    const groupByFields = targetEntityAdapter.groupByFields;
+
+    if (groupByFields.length === 0) {
+        return undefined;
+    }
+
+    return createConnectionGroupByForTypename({
+        typeName,
+        edgeType: getGroupByRelationshipEdge({ composer, relationshipAdapter }),
+        entityAdapter: targetEntityAdapter,
+        composer,
+    });
+}
 
 /** Returns the type and args for groupBy field in connections */
 export function makeConnectionGroupByType({
@@ -61,6 +89,22 @@ function getGroupByEdge({
         const nodeType = composer.getOTC(entityAdapter.name);
         oc.addFields({
             node: nodeType.NonNull,
+        });
+    });
+}
+
+function getGroupByRelationshipEdge({
+    relationshipAdapter,
+    composer,
+}: {
+    relationshipAdapter: RelationshipAdapter;
+    composer: SchemaComposer;
+}): ObjectTypeComposer {
+    const edgeTypeName = relationshipAdapter.operations.getConnectionGroupByEdgeTypename();
+    return composer.getOrCreateOTC(edgeTypeName, (oc) => {
+        // Using the string here directly because the types may not have been generated yet
+        oc.addFields({
+            node: `${relationshipAdapter.target.name}!`,
         });
     });
 }
