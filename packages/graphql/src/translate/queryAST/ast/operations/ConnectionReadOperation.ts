@@ -265,15 +265,7 @@ export class ConnectionReadOperation extends Operation {
         );
 
         if (aggregationSubqueries.length > 0) {
-            const returnClause = new Cypher.Return();
-            if (hasProjectionFields) {
-                returnClause.addColumns(edgesProjectionVar);
-            }
-            if (this.hasTotalCount) {
-                returnClause.addColumns(totalCount);
-            }
-
-            connectionClauses = new Cypher.Call(Cypher.utils.concat(connectionClauses, returnClause), "*"); // NOTE: this call is only needed when aggregate is used
+            connectionClauses = new Cypher.Call(Cypher.utils.concat(connectionClauses, new Cypher.Return("*")), "*");
         }
 
         return {

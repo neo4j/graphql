@@ -173,4 +173,90 @@ describe("@groupBy directive top level", () => {
             },
         });
     });
+
+    test("groupBy in top level query with aggregation projection", async () => {
+        await testHelper.executeCypher(`
+            CREATE (:${Movie} {title: "The Matrix", year: 1999})
+            CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001})
+            CREATE (:${Movie} {title: "Another Movie", year: 1999})
+        `);
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.operations.connection} {
+                    edges {
+                        node {
+                            title
+                        }
+                    }
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                    }
+                    groupBy(fields: {year: true}) {
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeUndefined();
+        expect(result.data).toEqual({
+            [Movie.operations.connection]: {
+                aggregate: {
+                    count: {
+                        nodes: 3,
+                    },
+                },
+                edges: expect.toIncludeSameMembers([
+                    {
+                        node: {
+                            title: "The Matrix",
+                        },
+                    },
+                    {
+                        node: {
+                            title: "The Matrix Reloaded",
+                        },
+                    },
+                    {
+                        node: {
+                            title: "Another Movie",
+                        },
+                    },
+                ]),
+                groupBy: expect.toIncludeSameMembers([
+                    {
+                        edges: expect.toIncludeSameMembers([
+                            {
+                                node: {
+                                    title: "The Matrix",
+                                },
+                            },
+                            {
+                                node: {
+                                    title: "Another Movie",
+                                },
+                            },
+                        ]),
+                    },
+                    {
+                        edges: [
+                            {
+                                node: {
+                                    title: "The Matrix Reloaded",
+                                },
+                            },
+                        ],
+                    },
+                ]),
+            },
+        });
+    });
 });
