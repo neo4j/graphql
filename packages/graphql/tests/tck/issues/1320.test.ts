@@ -77,20 +77,20 @@ describe("https://github.com/neo4j/graphql/issues/1320", () => {
             "CYPHER 5
             MATCH (this:Team)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)-[this0:OWNS_RISK]->(this1:Risk)
-                    WHERE $param0 IN this1.mitigationState
-                    RETURN { nodes: count(DISTINCT this1) } AS var2
-                }
-                RETURN { aggregate: { count: var2 } } AS var3
+              CALL (this) {
+                MATCH (this)-[this0:OWNS_RISK]->(this1:Risk)
+                WHERE $param0 IN this1.mitigationState
+                RETURN {nodes: count(DISTINCT this1)} AS var2
+              }
+              RETURN {aggregate: {count: var2}} AS var3
             }
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)-[this4:OWNS_RISK]->(this5:Risk)
-                    WHERE $param1 IN this5.mitigationState
-                    RETURN { nodes: count(DISTINCT this5) } AS var6
-                }
-                RETURN { aggregate: { count: var6 } } AS var7
+              CALL (this) {
+                MATCH (this)-[this4:OWNS_RISK]->(this5:Risk)
+                WHERE $param1 IN this5.mitigationState
+                RETURN {nodes: count(DISTINCT this5)} AS var6
+              }
+              RETURN {aggregate: {count: var6}} AS var7
             }
             RETURN this { accepted: var3, identified: var7 } AS this"
         `);

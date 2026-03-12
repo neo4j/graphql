@@ -92,45 +92,42 @@ describe("Interface Relationships - Create connect", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Actor)
-                SET
-                    this0.name = $param0
-                WITH *
-                CALL (this0) {
-                    MATCH (this1:Movie)
-                    WHERE this1.title STARTS WITH $param1
-                    CREATE (this0)-[this2:ACTED_IN]->(this1)
-                    SET
-                        this2.screenTime = $param2
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this3:Series)
-                    WHERE this3.title STARTS WITH $param3
-                    CREATE (this0)-[this4:ACTED_IN]->(this3)
-                    SET
-                        this4.screenTime = $param4
-                }
-                RETURN this0 AS this
+              CREATE (this0:Actor)
+              SET this0.name = $param0
+              WITH *
+              CALL (this0) {
+                MATCH (this1:Movie)
+                WHERE this1.title STARTS WITH $param1
+                CREATE (this0)-[this2:ACTED_IN]->(this1)
+                SET this2.screenTime = $param2
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this3:Series)
+                WHERE this3.title STARTS WITH $param3
+                CREATE (this0)-[this4:ACTED_IN]->(this3)
+                SET this4.screenTime = $param4
+              }
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                CALL (this) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
-                        WITH this6 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this6) } AS var7
-                        RETURN var7
-                        UNION
-                        WITH *
-                        MATCH (this)-[this8:ACTED_IN]->(this9:Series)
-                        WITH this9 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this9) } AS var7
-                        RETURN var7
-                    }
-                    WITH var7
-                    RETURN collect(var7) AS var7
+              CALL (this) {
+                CALL (*) {
+                  WITH *
+                  MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
+                  WITH this6 { .title, .runtime, __resolveType: 'Movie', __id: elementId(this6) } AS var7
+                  RETURN var7
+                  UNION
+                  WITH *
+                  MATCH (this)-[this8:ACTED_IN]->(this9:Series)
+                  WITH this9 { .title, .episodes, __resolveType: 'Series', __id: elementId(this9) } AS var7
+                  RETURN var7
                 }
-                RETURN this { .name, actedIn: var7 } AS var10
+                WITH var7
+                RETURN collect(var7) AS var7
+              }
+              RETURN this { .name, actedIn: var7 } AS var10
             }
             RETURN collect(var10) AS data"
         `);

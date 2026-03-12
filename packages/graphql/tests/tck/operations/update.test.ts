@@ -65,8 +65,7 @@ describe("Cypher Update", () => {
             MATCH (this:Movie)
             WITH *
             WHERE this.id = $param0
-            SET
-                this.id = $param1
+            SET this.id = $param1
             WITH this
             RETURN this { .id } AS this"
         `);
@@ -112,11 +111,10 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH *
-                WHERE this1.name = $param1
-                SET
-                    this1.name = $param2
+              MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              WITH *
+              WHERE this1.name = $param1
+              SET this1.name = $param2
             }
             WITH this
             RETURN this { .id } AS this"
@@ -173,19 +171,17 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              WITH *
+              WHERE this1.name = $param1
+              SET this1.name = $param2
+              WITH *
+              CALL (*) {
+                MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
                 WITH *
-                WHERE this1.name = $param1
-                SET
-                    this1.name = $param2
-                WITH *
-                CALL (*) {
-                    MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
-                    WITH *
-                    WHERE this3.id = $param3
-                    SET
-                        this3.title = $param4
-                }
+                WHERE this3.id = $param3
+                SET this3.title = $param4
+              }
             }
             WITH this
             RETURN this { .id } AS this"
@@ -225,11 +221,11 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this0:Actor)
-                    WHERE this0.name = $param1
-                    CREATE (this)<-[this1:ACTED_IN]-(this0)
-                }
+              CALL (this) {
+                MATCH (this0:Actor)
+                WHERE this0.name = $param1
+                CREATE (this)<-[this1:ACTED_IN]-(this0)
+              }
             }
             WITH this
             RETURN this { .id } AS this"
@@ -273,19 +269,19 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this0:Actor)
-                    WHERE this0.name = $param1
-                    CREATE (this)<-[this1:ACTED_IN]-(this0)
-                }
+              CALL (this) {
+                MATCH (this0:Actor)
+                WHERE this0.name = $param1
+                CREATE (this)<-[this1:ACTED_IN]-(this0)
+              }
             }
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this2:Actor)
-                    WHERE this2.name = $param2
-                    CREATE (this)<-[this3:ACTED_IN]-(this2)
-                }
+              CALL (this) {
+                MATCH (this2:Actor)
+                WHERE this2.name = $param2
+                CREATE (this)<-[this3:ACTED_IN]-(this2)
+              }
             }
             WITH this
             RETURN this { .id } AS this"
@@ -323,12 +319,12 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                CALL (this) {
-                    OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WHERE this1.name = $param1
-                    WITH *
-                    DELETE this0
-                }
+              CALL (this) {
+                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WHERE this1.name = $param1
+                WITH *
+                DELETE this0
+              }
             }
             WITH this
             RETURN this { .id } AS this"
@@ -372,21 +368,21 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                CALL (this) {
-                    OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WHERE this1.name = $param1
-                    WITH *
-                    DELETE this0
-                }
+              CALL (this) {
+                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WHERE this1.name = $param1
+                WITH *
+                DELETE this0
+              }
             }
             WITH *
             CALL (*) {
-                CALL (this) {
-                    OPTIONAL MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
-                    WHERE this3.name = $param2
-                    WITH *
-                    DELETE this2
-                }
+              CALL (this) {
+                OPTIONAL MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
+                WHERE this3.name = $param2
+                WITH *
+                DELETE this2
+              }
             }
             WITH this
             RETURN this { .id } AS this"
@@ -428,18 +424,18 @@ describe("Cypher Update", () => {
             WHERE this.name = $param0
             WITH *
             CALL (*) {
-                CREATE (this0:Movie)
-                MERGE (this)-[this1:ACTED_IN]->(this0)
-                SET
-                    this0.id = $param1,
-                    this0.title = $param2
+              CREATE (this0:Movie)
+              MERGE (this)-[this1:ACTED_IN]->(this0)
+              SET
+                this0.id = $param1,
+                this0.title = $param2
             }
             WITH this
             CALL (this) {
-                MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
-                WITH DISTINCT this3
-                WITH this3 { .id, .title } AS this3
-                RETURN collect(this3) AS var4
+              MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
+              WITH DISTINCT this3
+              WITH this3 { .id, .title } AS this3
+              RETURN collect(this3) AS var4
             }
             RETURN this { .name, movies: var4 } AS this"
         `);
@@ -480,18 +476,18 @@ describe("Cypher Update", () => {
             WHERE this.name = $param0
             WITH *
             CALL (*) {
-                CREATE (this0:Movie)
-                MERGE (this)-[this1:ACTED_IN]->(this0)
-                SET
-                    this0.id = $param1,
-                    this0.title = $param2
+              CREATE (this0:Movie)
+              MERGE (this)-[this1:ACTED_IN]->(this0)
+              SET
+                this0.id = $param1,
+                this0.title = $param2
             }
             WITH this
             CALL (this) {
-                MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
-                WITH DISTINCT this3
-                WITH this3 { .id, .title } AS this3
-                RETURN collect(this3) AS var4
+              MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
+              WITH DISTINCT this3
+              WITH this3 { .id, .title } AS this3
+              RETURN collect(this3) AS var4
             }
             RETURN this { .name, movies: var4 } AS this"
         `);
@@ -539,26 +535,26 @@ describe("Cypher Update", () => {
             WHERE this.name = $param0
             WITH *
             CALL (*) {
-                CREATE (this0:Movie)
-                MERGE (this)-[this1:ACTED_IN]->(this0)
-                SET
-                    this0.id = $param1,
-                    this0.title = $param2
+              CREATE (this0:Movie)
+              MERGE (this)-[this1:ACTED_IN]->(this0)
+              SET
+                this0.id = $param1,
+                this0.title = $param2
             }
             WITH *
             CALL (*) {
-                CREATE (this2:Movie)
-                MERGE (this)-[this3:ACTED_IN]->(this2)
-                SET
-                    this2.id = $param3,
-                    this2.title = $param4
+              CREATE (this2:Movie)
+              MERGE (this)-[this3:ACTED_IN]->(this2)
+              SET
+                this2.id = $param3,
+                this2.title = $param4
             }
             WITH this
             CALL (this) {
-                MATCH (this)-[this4:ACTED_IN]->(this5:Movie)
-                WITH DISTINCT this5
-                WITH this5 { .id, .title } AS this5
-                RETURN collect(this5) AS var6
+              MATCH (this)-[this4:ACTED_IN]->(this5:Movie)
+              WITH DISTINCT this5
+              WITH this5 { .id, .title } AS this5
+              RETURN collect(this5) AS var6
             }
             RETURN this { .name, movies: var6 } AS this"
         `);
@@ -603,13 +599,13 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE (this1.name = $param1 AND this0.screenTime = $param2)
-                WITH this0, collect(DISTINCT this1) AS var2
-                CALL (var2) {
-                    UNWIND var2 AS var3
-                    DETACH DELETE var3
-                }
+              OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              WHERE (this1.name = $param1 AND this0.screenTime = $param2)
+              WITH this0, collect(DISTINCT this1) AS var2
+              CALL (var2) {
+                UNWIND var2 AS var3
+                DETACH DELETE var3
+              }
             }
             WITH this
             RETURN this { .id } AS this"
@@ -658,21 +654,20 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH *
-                WHERE this1.name = $param1
-                SET
-                    this1.name = $param2
+              MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              WITH *
+              WHERE this1.name = $param1
+              SET this1.name = $param2
             }
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
-                WHERE this3.name = $param3
-                WITH this2, collect(DISTINCT this3) AS var4
-                CALL (var4) {
-                    UNWIND var4 AS var5
-                    DETACH DELETE var5
-                }
+              OPTIONAL MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
+              WHERE this3.name = $param3
+              WITH this2, collect(DISTINCT this3) AS var4
+              CALL (var4) {
+                UNWIND var4 AS var5
+                DETACH DELETE var5
+              }
             }
             WITH this
             RETURN this { .id } AS this"
@@ -711,13 +706,13 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE this1.name = $param1
-                WITH this0, collect(DISTINCT this1) AS var2
-                CALL (var2) {
-                    UNWIND var2 AS var3
-                    DETACH DELETE var3
-                }
+              OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              WHERE this1.name = $param1
+              WITH this0, collect(DISTINCT this1) AS var2
+              CALL (var2) {
+                UNWIND var2 AS var3
+                DETACH DELETE var3
+              }
             }
             WITH this
             RETURN this { .id } AS this"
@@ -761,23 +756,23 @@ describe("Cypher Update", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE this1.name = $param1
-                WITH *
-                CALL (*) {
-                    OPTIONAL MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
-                    WHERE this3.id = $param2
-                    WITH this2, collect(DISTINCT this3) AS var4
-                    CALL (var4) {
-                        UNWIND var4 AS var5
-                        DETACH DELETE var5
-                    }
+              OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              WHERE this1.name = $param1
+              WITH *
+              CALL (*) {
+                OPTIONAL MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
+                WHERE this3.id = $param2
+                WITH this2, collect(DISTINCT this3) AS var4
+                CALL (var4) {
+                  UNWIND var4 AS var5
+                  DETACH DELETE var5
                 }
-                WITH this0, collect(DISTINCT this1) AS var6
-                CALL (var6) {
-                    UNWIND var6 AS var7
-                    DETACH DELETE var7
-                }
+              }
+              WITH this0, collect(DISTINCT this1) AS var6
+              CALL (var6) {
+                UNWIND var6 AS var7
+                DETACH DELETE var7
+              }
             }
             WITH this
             RETURN this { .id } AS this"

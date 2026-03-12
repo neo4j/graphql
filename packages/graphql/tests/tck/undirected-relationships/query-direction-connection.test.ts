@@ -51,9 +51,9 @@ describe("QueryDirection in relationships connection", () => {
             "CYPHER 5
             MATCH (this:User)
             CALL (this) {
-                MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
-                WITH count(this1) AS totalCount
-                RETURN { totalCount: totalCount } AS var2
+              MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
+              WITH count(this1) AS totalCount
+              RETURN {totalCount: totalCount} AS var2
             }
             RETURN this { friendsConnection: var2 } AS this"
         `);
@@ -88,9 +88,9 @@ describe("QueryDirection in relationships connection", () => {
             "CYPHER 5
             MATCH (this:User)
             CALL (this) {
-                MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
-                WITH count(this1) AS totalCount
-                RETURN { totalCount: totalCount } AS var2
+              MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
+              WITH count(this1) AS totalCount
+              RETURN {totalCount: totalCount} AS var2
             }
             RETURN this { friendsConnection: var2 } AS this"
         `);

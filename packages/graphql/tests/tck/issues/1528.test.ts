@@ -72,25 +72,25 @@ describe("https://github.com/neo4j/graphql/issues/1528", () => {
             "CYPHER 5
             MATCH (this:Genre)
             CALL (this) {
-                MATCH (this)<-[this0:IS_GENRE]-(this1:Movie)
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1, edge.relationship AS this0
-                    CALL (this1) {
-                        CALL (this1) {
-                            WITH this1 AS this
-                            MATCH (this)<-[:ACTED_IN]-(ac:Person)
-                            RETURN count(ac) as res
-                        }
-                        WITH res AS this2
-                        RETURN this2 AS var3
-                    }
-                    WITH *
-                    ORDER BY var3 DESC
-                    RETURN collect({ node: { title: this1.title, actorsCount: var3, __resolveType: \\"Movie\\" } }) AS var4
+              MATCH (this)<-[this0:IS_GENRE]-(this1:Movie)
+              WITH collect({node: this1, relationship: this0}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this1, edge.relationship AS this0
+                CALL (this1) {
+                  CALL (this1) {
+                    WITH this1 AS this
+                    MATCH (this)<-[:ACTED_IN]-(ac:Person)
+                    RETURN count(ac) as res
+                  }
+                  WITH res AS this2
+                  RETURN this2 AS var3
                 }
-                RETURN { edges: var4 } AS var5
+                WITH *
+                ORDER BY var3 DESC
+                RETURN collect({node: {title: this1.title, actorsCount: var3, __resolveType: 'Movie'}}) AS var4
+              }
+              RETURN {edges: var4} AS var5
             }
             RETURN this { moviesConnection: var5 } AS this"
         `);

@@ -73,12 +73,12 @@ describe("Field Level Aggregations", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WITH DISTINCT this0
-                    RETURN { min: min(this0.screentime), max: max(this0.screentime), average: avg(this0.screentime), sum: sum(this0.screentime) } AS var2
-                }
-                RETURN { aggregate: { edge: { screentime: var2 } } } AS var3
+              CALL (this) {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH DISTINCT this0
+                RETURN {min: min(this0.screentime), max: max(this0.screentime), average: avg(this0.screentime), sum: sum(this0.screentime)} AS var2
+              }
+              RETURN {aggregate: {edge: {screentime: var2}}} AS var3
             }
             RETURN this { actorsConnection: var3 } AS this"
         `);

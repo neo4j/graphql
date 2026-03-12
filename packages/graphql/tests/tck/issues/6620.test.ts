@@ -209,11 +209,11 @@ describe("https://github.com/neo4j/graphql/issues/6620", () => {
             WHERE this.name = $param0
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this0:CarManufacturer)
-                    WHERE ((this0.accessibleBy IS NULL OR ($jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP IS NOT NULL AND this0.accessibleBy IN $jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP)) AND this0.name = $param2)
-                    CREATE (this)<-[this1:CAR_IS_PRODUCED_BY_CARMANUFACTURER]-(this0)
-                }
+              CALL (this) {
+                MATCH (this0:CarManufacturer)
+                WHERE ((this0.accessibleBy IS NULL OR ($jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP IS NOT NULL AND this0.accessibleBy IN $jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP)) AND this0.name = $param2)
+                CREATE (this)<-[this1:CAR_IS_PRODUCED_BY_CARMANUFACTURER]-(this0)
+              }
             }
             FINISH"
         `);
@@ -243,15 +243,14 @@ describe("https://github.com/neo4j/graphql/issues/6620", () => {
             MATCH (this:Car)
             WITH *
             WHERE (this.name = $param0 AND (this.accessibleBy IS NULL OR ($jwt.permission_Car_node_UPDATE IS NOT NULL AND this.accessibleBy IN $jwt.permission_Car_node_UPDATE)))
-            SET
-                this.name = $param2
+            SET this.name = $param2
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this0:CarManufacturer)
-                    WHERE ((this0.accessibleBy IS NULL OR ($jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP IS NOT NULL AND this0.accessibleBy IN $jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP)) AND this0.name = $param3)
-                    CREATE (this)<-[this1:CAR_IS_PRODUCED_BY_CARMANUFACTURER]-(this0)
-                }
+              CALL (this) {
+                MATCH (this0:CarManufacturer)
+                WHERE ((this0.accessibleBy IS NULL OR ($jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP IS NOT NULL AND this0.accessibleBy IN $jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP)) AND this0.name = $param3)
+                CREATE (this)<-[this1:CAR_IS_PRODUCED_BY_CARMANUFACTURER]-(this0)
+              }
             }
             FINISH"
         `);
@@ -447,16 +446,16 @@ describe("https://github.com/neo4j/graphql/issues/6620 validate", () => {
             WHERE this.name = $param0
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this0:CarManufacturer)
-                    WHERE this0.name = $param1
-                    CALL apoc.util.validate(NOT (this0.accessibleBy IS NULL OR ($jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP IS NOT NULL AND this0.accessibleBy IN $jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    CREATE (this)<-[this1:CAR_IS_PRODUCED_BY_CARMANUFACTURER]-(this0)
-                    WITH *
-                    CALL apoc.util.validate(NOT (this0.accessibleBy IS NULL OR ($jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP IS NOT NULL AND this0.accessibleBy IN $jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH *
-                    CALL apoc.util.validate(NOT (this.accessibleBy IS NULL OR ($jwt.permission_Car_node_CREATE_RELATIONSHIP IS NOT NULL AND this.accessibleBy IN $jwt.permission_Car_node_CREATE_RELATIONSHIP)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                }
+              CALL (this) {
+                MATCH (this0:CarManufacturer)
+                WHERE this0.name = $param1
+                CALL apoc.util.validate(NOT (this0.accessibleBy IS NULL OR ($jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP IS NOT NULL AND this0.accessibleBy IN $jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP)), '@neo4j/graphql/FORBIDDEN', [])
+                CREATE (this)<-[this1:CAR_IS_PRODUCED_BY_CARMANUFACTURER]-(this0)
+                WITH *
+                CALL apoc.util.validate(NOT (this0.accessibleBy IS NULL OR ($jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP IS NOT NULL AND this0.accessibleBy IN $jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP)), '@neo4j/graphql/FORBIDDEN', [])
+                WITH *
+                CALL apoc.util.validate(NOT (this.accessibleBy IS NULL OR ($jwt.permission_Car_node_CREATE_RELATIONSHIP IS NOT NULL AND this.accessibleBy IN $jwt.permission_Car_node_CREATE_RELATIONSHIP)), '@neo4j/graphql/FORBIDDEN', [])
+              }
             }
             FINISH"
         `);
@@ -487,25 +486,24 @@ describe("https://github.com/neo4j/graphql/issues/6620 validate", () => {
             WITH *
             WHERE this.name = $param0
             WITH *
-            CALL apoc.util.validate(NOT (this.accessibleBy IS NULL OR ($jwt.permission_Car_node_UPDATE IS NOT NULL AND this.accessibleBy IN $jwt.permission_Car_node_UPDATE)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (this.accessibleBy IS NULL OR ($jwt.permission_Car_node_UPDATE IS NOT NULL AND this.accessibleBy IN $jwt.permission_Car_node_UPDATE)), '@neo4j/graphql/FORBIDDEN', [])
             WITH *
-            SET
-                this.name = $param2
+            SET this.name = $param2
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this0:CarManufacturer)
-                    WHERE this0.name = $param3
-                    CALL apoc.util.validate(NOT (this0.accessibleBy IS NULL OR ($jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP IS NOT NULL AND this0.accessibleBy IN $jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    CREATE (this)<-[this1:CAR_IS_PRODUCED_BY_CARMANUFACTURER]-(this0)
-                    WITH *
-                    CALL apoc.util.validate(NOT (this0.accessibleBy IS NULL OR ($jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP IS NOT NULL AND this0.accessibleBy IN $jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH *
-                    CALL apoc.util.validate(NOT (this.accessibleBy IS NULL OR ($jwt.permission_Car_node_CREATE_RELATIONSHIP IS NOT NULL AND this.accessibleBy IN $jwt.permission_Car_node_CREATE_RELATIONSHIP)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                }
+              CALL (this) {
+                MATCH (this0:CarManufacturer)
+                WHERE this0.name = $param3
+                CALL apoc.util.validate(NOT (this0.accessibleBy IS NULL OR ($jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP IS NOT NULL AND this0.accessibleBy IN $jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP)), '@neo4j/graphql/FORBIDDEN', [])
+                CREATE (this)<-[this1:CAR_IS_PRODUCED_BY_CARMANUFACTURER]-(this0)
+                WITH *
+                CALL apoc.util.validate(NOT (this0.accessibleBy IS NULL OR ($jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP IS NOT NULL AND this0.accessibleBy IN $jwt.permission_CarManufacturer_node_CREATE_RELATIONSHIP)), '@neo4j/graphql/FORBIDDEN', [])
+                WITH *
+                CALL apoc.util.validate(NOT (this.accessibleBy IS NULL OR ($jwt.permission_Car_node_CREATE_RELATIONSHIP IS NOT NULL AND this.accessibleBy IN $jwt.permission_Car_node_CREATE_RELATIONSHIP)), '@neo4j/graphql/FORBIDDEN', [])
+              }
             }
             WITH *
-            CALL apoc.util.validate(NOT (this.accessibleBy IS NULL OR ($jwt.permission_Car_node_UPDATE IS NOT NULL AND this.accessibleBy IN $jwt.permission_Car_node_UPDATE)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT (this.accessibleBy IS NULL OR ($jwt.permission_Car_node_UPDATE IS NOT NULL AND this.accessibleBy IN $jwt.permission_Car_node_UPDATE)), '@neo4j/graphql/FORBIDDEN', [])
             FINISH"
         `);
     });

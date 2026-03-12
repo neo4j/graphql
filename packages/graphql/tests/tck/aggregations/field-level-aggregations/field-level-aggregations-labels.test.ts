@@ -70,14 +70,14 @@ describe("Field Level Aggregations Alias", () => {
             "CYPHER 5
             MATCH (this:Film)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                    WITH DISTINCT this1
-                    ORDER BY size(this1.name) DESC
-                    WITH collect(this1.name) AS list
-                    RETURN { shortest: last(list) } AS var2
-                }
-                RETURN { aggregate: { node: { name: var2 } } } AS var3
+              CALL (this) {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                WITH DISTINCT this1
+                ORDER BY size(this1.name) DESC
+                WITH collect(this1.name) AS list
+                RETURN {shortest: last(list)} AS var2
+              }
+              RETURN {aggregate: {node: {name: var2}}} AS var3
             }
             RETURN this { actorsConnection: var3 } AS this"
         `);

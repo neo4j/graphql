@@ -60,17 +60,17 @@ describe("Cypher Aggregations where with count", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                CALL (this1) {
-                    MATCH (this1)-[this2:HAS_POST]->(this3:Post)
-                    WITH DISTINCT this3
-                    RETURN count(this3) = $param0 AS var4
-                }
-                WITH *
-                WHERE var4 = true
-                WITH this1 { .name } AS this1
-                RETURN collect(this1) AS var5
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              CALL (this1) {
+                MATCH (this1)-[this2:HAS_POST]->(this3:Post)
+                WITH DISTINCT this3
+                RETURN count(this3) = $param0 AS var4
+              }
+              WITH *
+              WHERE var4 = true
+              WITH this1 { .name } AS this1
+              RETURN collect(this1) AS var5
             }
             RETURN this { .content, likes: var5 } AS this"
         `);
@@ -103,17 +103,17 @@ describe("Cypher Aggregations where with count", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                CALL (this1) {
-                    MATCH (this1)-[this2:HAS_POST]->(this3:Post)
-                    WITH DISTINCT this3
-                    RETURN count(this3) < $param0 AS var4
-                }
-                WITH *
-                WHERE var4 = true
-                WITH this1 { .name } AS this1
-                RETURN collect(this1) AS var5
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              CALL (this1) {
+                MATCH (this1)-[this2:HAS_POST]->(this3:Post)
+                WITH DISTINCT this3
+                RETURN count(this3) < $param0 AS var4
+              }
+              WITH *
+              WHERE var4 = true
+              WITH this1 { .name } AS this1
+              RETURN collect(this1) AS var5
             }
             RETURN this { .content, likes: var5 } AS this"
         `);
@@ -146,17 +146,17 @@ describe("Cypher Aggregations where with count", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                CALL (this1) {
-                    MATCH (this1)-[this2:HAS_POST]->(this3:Post)
-                    WITH DISTINCT this3
-                    RETURN count(this3) <= $param0 AS var4
-                }
-                WITH *
-                WHERE var4 = true
-                WITH this1 { .name } AS this1
-                RETURN collect(this1) AS var5
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              CALL (this1) {
+                MATCH (this1)-[this2:HAS_POST]->(this3:Post)
+                WITH DISTINCT this3
+                RETURN count(this3) <= $param0 AS var4
+              }
+              WITH *
+              WHERE var4 = true
+              WITH this1 { .name } AS this1
+              RETURN collect(this1) AS var5
             }
             RETURN this { .content, likes: var5 } AS this"
         `);
@@ -189,17 +189,17 @@ describe("Cypher Aggregations where with count", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                CALL (this1) {
-                    MATCH (this1)-[this2:HAS_POST]->(this3:Post)
-                    WITH DISTINCT this3
-                    RETURN count(this3) > $param0 AS var4
-                }
-                WITH *
-                WHERE var4 = true
-                WITH this1 { .name } AS this1
-                RETURN collect(this1) AS var5
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              CALL (this1) {
+                MATCH (this1)-[this2:HAS_POST]->(this3:Post)
+                WITH DISTINCT this3
+                RETURN count(this3) > $param0 AS var4
+              }
+              WITH *
+              WHERE var4 = true
+              WITH this1 { .name } AS this1
+              RETURN collect(this1) AS var5
             }
             RETURN this { .content, likes: var5 } AS this"
         `);
@@ -232,17 +232,17 @@ describe("Cypher Aggregations where with count", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                CALL (this1) {
-                    MATCH (this1)-[this2:HAS_POST]->(this3:Post)
-                    WITH DISTINCT this3
-                    RETURN count(this3) >= $param0 AS var4
-                }
-                WITH *
-                WHERE var4 = true
-                WITH this1 { .name } AS this1
-                RETURN collect(this1) AS var5
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              CALL (this1) {
+                MATCH (this1)-[this2:HAS_POST]->(this3:Post)
+                WITH DISTINCT this3
+                RETURN count(this3) >= $param0 AS var4
+              }
+              WITH *
+              WHERE var4 = true
+              WITH this1 { .name } AS this1
+              RETURN collect(this1) AS var5
             }
             RETURN this { .content, likes: var5 } AS this"
         `);
@@ -275,17 +275,17 @@ describe("Cypher Aggregations where with count", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                CALL (this1) {
-                    MATCH (this1)-[this2:HAS_POST]->(this3:Post)
-                    WITH DISTINCT this3
-                    RETURN count(this3) IN $param0 AS var4
-                }
-                WITH *
-                WHERE var4 = true
-                WITH this1 { .name } AS this1
-                RETURN collect(this1) AS var5
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              CALL (this1) {
+                MATCH (this1)-[this2:HAS_POST]->(this3:Post)
+                WITH DISTINCT this3
+                RETURN count(this3) IN $param0 AS var4
+              }
+              WITH *
+              WHERE var4 = true
+              WITH this1 { .name } AS this1
+              RETURN collect(this1) AS var5
             }
             RETURN this { .content, likes: var5 } AS this"
         `);

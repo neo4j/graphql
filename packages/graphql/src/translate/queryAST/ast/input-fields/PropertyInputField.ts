@@ -81,7 +81,7 @@ export class PropertyInputField extends InputField {
             }
             const comprehensionVar = new Cypher.Variable();
             const mapPoint = Cypher.point(comprehensionVar);
-            return new Cypher.ListComprehension(comprehensionVar, variable).map(mapPoint);
+            return new Cypher.ListComprehension(comprehensionVar).in(variable).map(mapPoint);
         }
 
         if (this.attribute.typeHelper.isDateTime()) {
@@ -90,7 +90,7 @@ export class PropertyInputField extends InputField {
             }
             const comprehensionVar = new Cypher.Variable();
             const mapDateTime = Cypher.datetime(comprehensionVar);
-            return new Cypher.ListComprehension(comprehensionVar, variable).map(mapDateTime);
+            return new Cypher.ListComprehension(comprehensionVar).in(variable).map(mapDateTime);
         }
 
         if (this.attribute.typeHelper.isTime()) {
@@ -99,7 +99,7 @@ export class PropertyInputField extends InputField {
             }
             const comprehensionVar = new Cypher.Variable();
             const mapTime = Cypher.time(comprehensionVar);
-            return new Cypher.ListComprehension(comprehensionVar, variable).map(mapTime);
+            return new Cypher.ListComprehension(comprehensionVar).in(variable).map(mapTime);
         }
 
         return variable;

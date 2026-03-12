@@ -80,15 +80,15 @@ describe("https://github.com/neo4j/graphql/issues/4095", () => {
             "CYPHER 5
             MATCH (this:Family)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
-                    WHERE ($isAuthenticated = true AND EXISTS {
-                        MATCH (this1)<-[:CREATOR_OF]-(this2:User)
-                        WHERE ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid)
-                    })
-                    RETURN { nodes: count(DISTINCT this1) } AS var3
-                }
-                RETURN { aggregate: { count: var3 } } AS var4
+              CALL (this) {
+                MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
+                WHERE ($isAuthenticated = true AND EXISTS {
+                  MATCH (this1)<-[:CREATOR_OF]-(this2:User)
+                  WHERE ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid)
+                })
+                RETURN {nodes: count(DISTINCT this1)} AS var3
+              }
+              RETURN {aggregate: {count: var3}} AS var4
             }
             RETURN this { .id, membersConnection: var4 } AS this"
         `);

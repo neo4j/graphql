@@ -56,11 +56,11 @@ describe("Cypher Aggregations DateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {min: apoc.date.convertFormat(toString(min(this.createdAt)), 'iso_zoned_date_time', 'iso_offset_date_time')} AS var0
             }
-            RETURN { aggregate: { node: { createdAt: var0 } } } AS this"
+            RETURN {aggregate: {node: {createdAt: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -86,11 +86,11 @@ describe("Cypher Aggregations DateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {max: apoc.date.convertFormat(toString(max(this.createdAt)), 'iso_zoned_date_time', 'iso_offset_date_time')} AS var0
             }
-            RETURN { aggregate: { node: { createdAt: var0 } } } AS this"
+            RETURN {aggregate: {node: {createdAt: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -117,11 +117,11 @@ describe("Cypher Aggregations DateTime", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {min: apoc.date.convertFormat(toString(min(this.createdAt)), 'iso_zoned_date_time', 'iso_offset_date_time'), max: apoc.date.convertFormat(toString(max(this.createdAt)), 'iso_zoned_date_time', 'iso_offset_date_time')} AS var0
             }
-            RETURN { aggregate: { node: { createdAt: var0 } } } AS this"
+            RETURN {aggregate: {node: {createdAt: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

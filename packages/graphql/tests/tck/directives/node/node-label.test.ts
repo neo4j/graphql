@@ -81,10 +81,10 @@ describe("Label in Node directive", () => {
             "CYPHER 5
             MATCH (this:Film)
             CALL (this) {
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                WITH DISTINCT this1
-                WITH this1 { .name } AS this1
-                RETURN collect(this1) AS var2
+              MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+              WITH DISTINCT this1
+              WITH this1 { .name } AS this1
+              RETURN collect(this1) AS var2
             }
             RETURN this { .title, actors: var2 } AS this"
         `);
@@ -114,14 +114,14 @@ describe("Label in Node directive", () => {
             "CYPHER 5
             MATCH (this:Film)
             CALL (this) {
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
-                }
-                RETURN { edges: var2 } AS var3
+              MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+              WITH collect({node: this1, relationship: this0}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this1, edge.relationship AS this0
+                RETURN collect({node: {name: this1.name, __resolveType: 'Actor'}}) AS var2
+              }
+              RETURN {edges: var2} AS var3
             }
             RETURN this { .title, actorsConnection: var3 } AS this"
         `);
@@ -146,10 +146,9 @@ describe("Label in Node directive", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Film)
-                SET
-                    create_this1.id = create_var0.id
-                RETURN create_this1
+              CREATE (create_this1:Film)
+              SET create_this1.id = create_var0.id
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
         `);
@@ -187,19 +186,17 @@ describe("Label in Node directive", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Film)
-                SET
-                    create_this1.id = create_var0.id
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.actors.create AS create_var2
-                    CREATE (create_this3:Person)
-                    SET
-                        create_this3.name = create_var2.node.name
-                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
-                    RETURN collect(NULL) AS create_var5
-                }
-                RETURN create_this1
+              CREATE (create_this1:Film)
+              SET create_this1.id = create_var0.id
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.actors.create AS create_var2
+                CREATE (create_this3:Person)
+                SET create_this3.name = create_var2.node.name
+                MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
+                RETURN collect(NULL) AS create_var5
+              }
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
         `);
@@ -254,8 +251,7 @@ describe("Label in Node directive", () => {
             MATCH (this:Film)
             WITH *
             WHERE this.id = $param0
-            SET
-                this.id = $param1
+            SET this.id = $param1
             WITH this
             RETURN this { .id } AS this"
         `);
@@ -300,11 +296,10 @@ describe("Label in Node directive", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                WITH *
-                WHERE this1.name = $param1
-                SET
-                    this1.name = $param2
+              MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+              WITH *
+              WHERE this1.name = $param1
+              SET this1.name = $param2
             }
             WITH this
             RETURN this { .id } AS this"
@@ -342,11 +337,11 @@ describe("Label in Node directive", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this0:Person)
-                    WHERE this0.name = $param1
-                    CREATE (this)<-[this1:ACTED_IN]-(this0)
-                }
+              CALL (this) {
+                MATCH (this0:Person)
+                WHERE this0.name = $param1
+                CREATE (this)<-[this1:ACTED_IN]-(this0)
+              }
             }
             WITH this
             RETURN this { .id } AS this"
@@ -383,12 +378,12 @@ describe("Label in Node directive", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                CALL (this) {
-                    OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                    WHERE this1.name = $param1
-                    WITH *
-                    DELETE this0
-                }
+              CALL (this) {
+                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                WHERE this1.name = $param1
+                WITH *
+                DELETE this0
+              }
             }
             WITH this
             RETURN this { .id } AS this"
@@ -447,13 +442,13 @@ describe("Label in Node directive", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                WHERE this1.name = $param1
-                WITH this0, collect(DISTINCT this1) AS var2
-                CALL (var2) {
-                    UNWIND var2 AS var3
-                    DETACH DELETE var3
-                }
+              OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+              WHERE this1.name = $param1
+              WITH this0, collect(DISTINCT this1) AS var2
+              CALL (var2) {
+                UNWIND var2 AS var3
+                DETACH DELETE var3
+              }
             }
             WITH *
             DETACH DELETE this"
@@ -482,8 +477,8 @@ describe("Label in Node directive", () => {
             "CYPHER 5
             MATCH (this:Film)
             WHERE EXISTS {
-                MATCH (this)<-[:ACTED_IN]-(this0:Person)
-                WHERE this0.name = $param0
+              MATCH (this)<-[:ACTED_IN]-(this0:Person)
+              WHERE this0.name = $param0
             }
             DETACH DELETE this"
         `);

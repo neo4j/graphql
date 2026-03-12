@@ -65,31 +65,31 @@ describe("cypher directive filtering - Auth", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN \\"hello world!\\" AS s
-                }
-                WITH s AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN \\"hello world!\\" AS s
+              }
+              WITH s AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE (var1 = $param0 AND EXISTS {
-                MATCH (this)<-[:ACTED_IN]-(this2:Actor)
-                WHERE this2.name = $param1
+              MATCH (this)<-[:ACTED_IN]-(this2:Actor)
+              WHERE this2.name = $param1
             })
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN \\"hello world!\\" AS s
-                }
-                WITH s AS this3
-                RETURN this3 AS var4
+              CALL (this) {
+                WITH this AS this
+                RETURN \\"hello world!\\" AS s
+              }
+              WITH s AS this3
+              RETURN this3 AS var4
             }
             CALL (this) {
-                MATCH (this)<-[this5:ACTED_IN]-(this6:Actor)
-                WITH DISTINCT this6
-                WITH this6 { .name } AS this6
-                RETURN collect(this6) AS var7
+              MATCH (this)<-[this5:ACTED_IN]-(this6:Actor)
+              WITH DISTINCT this6
+              WITH this6 { .name } AS this6
+              RETURN collect(this6) AS var7
             }
             RETURN this { .title, custom_field: var4, actors: var7 } AS this"
         `);
@@ -143,20 +143,20 @@ describe("cypher directive filtering - Auth", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WITH DISTINCT this1
+              MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+              WITH DISTINCT this1
+              CALL (this1) {
                 CALL (this1) {
-                    CALL (this1) {
-                        WITH this1 AS this
-                        RETURN \\"hello world!\\" AS s
-                    }
-                    WITH s AS this2
-                    RETURN this2 AS var3
+                  WITH this1 AS this
+                  RETURN \\"hello world!\\" AS s
                 }
-                WITH *
-                WHERE var3 = $param0
-                WITH this1 { .title } AS this1
-                RETURN collect(this1) AS var4
+                WITH s AS this2
+                RETURN this2 AS var3
+              }
+              WITH *
+              WHERE var3 = $param0
+              WITH this1 { .title } AS this1
+              RETURN collect(this1) AS var4
             }
             RETURN this { .name, movies: var4 } AS this"
         `);
@@ -209,21 +209,21 @@ describe("cypher directive filtering - Auth", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN \\"hello world!\\" AS s
-                }
-                WITH s AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN \\"hello world!\\" AS s
+              }
+              WITH s AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE var1 = $param0
             CALL (this) {
-                MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
-                WHERE this3.name = $param1
-                WITH DISTINCT this3
-                WITH this3 { .name } AS this3
-                RETURN collect(this3) AS var4
+              MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
+              WHERE this3.name = $param1
+              WITH DISTINCT this3
+              WITH this3 { .name } AS this3
+              RETURN collect(this3) AS var4
             }
             RETURN this { .title, actors: var4 } AS this"
         `);
@@ -291,28 +291,28 @@ describe("cypher directive filtering - Auth", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN \\"hello world!\\" AS s
-                }
-                WITH s AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN \\"hello world!\\" AS s
+              }
+              WITH s AS this0
+              RETURN this0 AS var1
             }
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN 100 AS i
-                }
-                WITH i AS this2
-                RETURN this2 AS var3
+              CALL (this) {
+                WITH this AS this
+                RETURN 100 AS i
+              }
+              WITH i AS this2
+              RETURN this2 AS var3
             }
             WITH *
             WHERE (var1 = $param0 AND var3 > $param1)
             CALL (this) {
-                MATCH (this)<-[this4:ACTED_IN]-(this5:Actor)
-                WITH DISTINCT this5
-                WITH this5 { .name } AS this5
-                RETURN collect(this5) AS var6
+              MATCH (this)<-[this4:ACTED_IN]-(this5:Actor)
+              WITH DISTINCT this5
+              WITH this5 { .name } AS this5
+              RETURN collect(this5) AS var6
             }
             RETURN this { .title, actors: var6 } AS this"
         `);
@@ -376,30 +376,30 @@ describe("cypher directive filtering - Auth", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN \\"hello world!\\" AS s
-                }
-                WITH s AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN \\"hello world!\\" AS s
+              }
+              WITH s AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE var1 = $param0
             CALL (this) {
-                MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
-                WITH DISTINCT this3
+              MATCH (this)<-[this2:ACTED_IN]-(this3:Actor)
+              WITH DISTINCT this3
+              CALL (this3) {
                 CALL (this3) {
-                    CALL (this3) {
-                        WITH this3 AS this
-                        RETURN \\"goodbye!\\" AS s
-                    }
-                    WITH s AS this4
-                    RETURN this4 AS var5
+                  WITH this3 AS this
+                  RETURN \\"goodbye!\\" AS s
                 }
-                WITH *
-                WHERE (this3.name = $param1 AND var5 = $param2)
-                WITH this3 { .name } AS this3
-                RETURN collect(this3) AS var6
+                WITH s AS this4
+                RETURN this4 AS var5
+              }
+              WITH *
+              WHERE (this3.name = $param1 AND var5 = $param2)
+              WITH this3 { .name } AS this3
+              RETURN collect(this3) AS var6
             }
             RETURN this { .title, actors: var6 } AS this"
         `);

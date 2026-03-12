@@ -97,23 +97,23 @@ describe("@auth allow on specific interface implementation", () => {
             "CYPHER 5
             MATCH (this:User)
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                    WITH this1 { .id, .content, __resolveType: \\"Comment\\", __id: id(this1) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this3:HAS_CONTENT]->(this4:Post)
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                        MATCH (this4)<-[:HAS_CONTENT]-(this5:User)
-                        WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)
-                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this4 { .id, .content, __resolveType: \\"Post\\", __id: id(this4) } AS var2
-                    RETURN var2
-                }
-                WITH var2
-                RETURN collect(var2) AS var2
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                WITH this1 { .id, .content, __resolveType: 'Comment', __id: elementId(this1) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)-[this3:HAS_CONTENT]->(this4:Post)
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                  MATCH (this4)<-[:HAS_CONTENT]-(this5:User)
+                  WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)
+                }), '@neo4j/graphql/FORBIDDEN', [])
+                WITH this4 { .id, .content, __resolveType: 'Post', __id: elementId(this4) } AS var2
+                RETURN var2
+              }
+              WITH var2
+              RETURN collect(var2) AS var2
             }
             RETURN this { .id, content: var2 } AS this"
         `);
@@ -157,32 +157,32 @@ describe("@auth allow on specific interface implementation", () => {
             MATCH (this:User)
             WHERE this.id = $param0
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                    WHERE this1.id = $param1
-                    WITH this1 { __resolveType: \\"Comment\\", __id: id(this1) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this3:HAS_CONTENT]->(this4:Post)
-                    WHERE this4.id = $param2
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                        MATCH (this4)<-[:HAS_CONTENT]-(this5:User)
-                        WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)
-                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    CALL (this4) {
-                        MATCH (this4)-[this6:HAS_COMMENT]->(this7:Comment)
-                        WHERE this7.id = $param5
-                        WITH DISTINCT this7
-                        WITH this7 { .content } AS this7
-                        RETURN collect(this7) AS var8
-                    }
-                    WITH this4 { comments: var8, __resolveType: \\"Post\\", __id: id(this4) } AS var2
-                    RETURN var2
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                WHERE this1.id = $param1
+                WITH this1 { __resolveType: 'Comment', __id: elementId(this1) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)-[this3:HAS_CONTENT]->(this4:Post)
+                WHERE this4.id = $param2
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                  MATCH (this4)<-[:HAS_CONTENT]-(this5:User)
+                  WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)
+                }), '@neo4j/graphql/FORBIDDEN', [])
+                CALL (this4) {
+                  MATCH (this4)-[this6:HAS_COMMENT]->(this7:Comment)
+                  WHERE this7.id = $param5
+                  WITH DISTINCT this7
+                  WITH this7 { .content } AS this7
+                  RETURN collect(this7) AS var8
                 }
-                WITH var2
-                RETURN collect(var2) AS var2
+                WITH this4 { comments: var8, __resolveType: 'Post', __id: elementId(this4) } AS var2
+                RETURN var2
+              }
+              WITH var2
+              RETURN collect(var2) AS var2
             }
             RETURN this { .id, content: var2 } AS this"
         `);
@@ -233,43 +233,41 @@ describe("@auth allow on specific interface implementation", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                WITH *
-                SET
-                    this1.id = $param1
+              MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+              WITH *
+              SET this1.id = $param1
             }
             WITH *
             CALL (*) {
-                MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
-                WITH *
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                    WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH *
-                SET
-                    this3.id = $param4
+              MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
+              WITH *
+              WITH *
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+              }), '@neo4j/graphql/FORBIDDEN', [])
+              WITH *
+              SET this3.id = $param4
             }
             WITH this
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this5:HAS_CONTENT]->(this6:Comment)
-                    WITH this6 { .id, __resolveType: \\"Comment\\", __id: id(this6) } AS var7
-                    RETURN var7
-                    UNION
-                    WITH *
-                    MATCH (this)-[this8:HAS_CONTENT]->(this9:Post)
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                        MATCH (this9)<-[:HAS_CONTENT]-(this10:User)
-                        WHERE ($jwt.sub IS NOT NULL AND this10.id = $jwt.sub)
-                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this9 { .id, __resolveType: \\"Post\\", __id: id(this9) } AS var7
-                    RETURN var7
-                }
-                WITH var7
-                RETURN collect(var7) AS var7
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this5:HAS_CONTENT]->(this6:Comment)
+                WITH this6 { .id, __resolveType: 'Comment', __id: elementId(this6) } AS var7
+                RETURN var7
+                UNION
+                WITH *
+                MATCH (this)-[this8:HAS_CONTENT]->(this9:Post)
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                  MATCH (this9)<-[:HAS_CONTENT]-(this10:User)
+                  WHERE ($jwt.sub IS NOT NULL AND this10.id = $jwt.sub)
+                }), '@neo4j/graphql/FORBIDDEN', [])
+                WITH this9 { .id, __resolveType: 'Post', __id: elementId(this9) } AS var7
+                RETURN var7
+              }
+              WITH var7
+              RETURN collect(var7) AS var7
             }
             RETURN this { .id, content: var7 } AS this"
         `);
@@ -313,26 +311,26 @@ describe("@auth allow on specific interface implementation", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                WHERE this1.id = $param1
-                WITH this0, collect(DISTINCT this1) AS var2
-                CALL (var2) {
-                    UNWIND var2 AS var3
-                    DETACH DELETE var3
-                }
+              OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+              WHERE this1.id = $param1
+              WITH this0, collect(DISTINCT this1) AS var2
+              CALL (var2) {
+                UNWIND var2 AS var3
+                DETACH DELETE var3
+              }
             }
             CALL (*) {
-                OPTIONAL MATCH (this)-[this4:HAS_CONTENT]->(this5:Post)
-                WHERE this5.id = $param2
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this5)<-[:HAS_CONTENT]-(this6:User)
-                    WHERE ($jwt.sub IS NOT NULL AND this6.id = $jwt.sub)
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this4, collect(DISTINCT this5) AS var7
-                CALL (var7) {
-                    UNWIND var7 AS var8
-                    DETACH DELETE var8
-                }
+              OPTIONAL MATCH (this)-[this4:HAS_CONTENT]->(this5:Post)
+              WHERE this5.id = $param2
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this5)<-[:HAS_CONTENT]-(this6:User)
+                WHERE ($jwt.sub IS NOT NULL AND this6.id = $jwt.sub)
+              }), '@neo4j/graphql/FORBIDDEN', [])
+              WITH this4, collect(DISTINCT this5) AS var7
+              CALL (var7) {
+                UNWIND var7 AS var8
+                DETACH DELETE var8
+              }
             }
             WITH *
             DETACH DELETE this"

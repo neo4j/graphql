@@ -127,22 +127,22 @@ describe("https://github.com/neo4j/graphql/issues/5080", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH(s:Car)
-                WHERE (s.id = $param0.carId)
-                REMOVE s:Car
-                SET s:DeletedCar
-                SET s.reason = $param0.reason
-                RETURN s AS s
+              MATCH(s:Car)
+              WHERE (s.id = $param0.carId)
+              REMOVE s:Car
+              SET s:DeletedCar
+              SET s.reason = $param0.reason
+              RETURN s AS s
             }
             WITH s AS this0
             WITH *
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                MATCH (this0)-[:OWNED_BY]->(this1:Tenant)
-                WHERE EXISTS {
-                    MATCH (this1)<-[:ADMIN_IN]-(this2:User)
-                    WHERE ($jwt.id IS NOT NULL AND this2.userId = $jwt.id)
-                }
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+              MATCH (this0)-[:OWNED_BY]->(this1:Tenant)
+              WHERE EXISTS {
+                MATCH (this1)<-[:ADMIN_IN]-(this2:User)
+                WHERE ($jwt.id IS NOT NULL AND this2.userId = $jwt.id)
+              }
+            }), '@neo4j/graphql/FORBIDDEN', [])
             WITH this0 { .id } AS this0
             RETURN this0 AS this"
         `);

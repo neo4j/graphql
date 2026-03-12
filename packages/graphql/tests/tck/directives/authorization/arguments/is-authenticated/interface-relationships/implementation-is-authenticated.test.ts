@@ -81,11 +81,11 @@ describe("Cypher Auth isAuthenticated", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Post)
-                SET
-                    create_this1.id = create_var0.id,
-                    create_this1.content = create_var0.content
-                RETURN create_this1
+              CREATE (create_this1:Post)
+              SET
+                create_this1.id = create_var0.id,
+                create_this1.content = create_var0.content
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
         `);
@@ -122,11 +122,11 @@ describe("Cypher Auth isAuthenticated", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Comment)
-                SET
-                    create_this1.id = create_var0.id,
-                    create_this1.content = create_var0.content
-                RETURN create_this1
+              CREATE (create_this1:Comment)
+              SET
+                create_this1.id = create_var0.id,
+                create_this1.content = create_var0.content
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
         `);
@@ -164,8 +164,7 @@ describe("Cypher Auth isAuthenticated", () => {
             MATCH (this:Post)
             WITH *
             WHERE this.id = $param0
-            SET
-                this.id = $param1
+            SET this.id = $param1
             WITH this
             RETURN this { .id } AS this"
         `);
@@ -199,8 +198,7 @@ describe("Cypher Auth isAuthenticated", () => {
             MATCH (this:Comment)
             WITH *
             WHERE this.id = $param0
-            SET
-                this.id = $param1
+            SET this.id = $param1
             WITH this
             RETURN this { .id } AS this"
         `);
@@ -278,20 +276,20 @@ describe("Cypher Auth isAuthenticated", () => {
             MATCH (this:User)
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                WITH this0, collect(DISTINCT this1) AS var2
-                CALL (var2) {
-                    UNWIND var2 AS var3
-                    DETACH DELETE var3
-                }
+              OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+              WITH this0, collect(DISTINCT this1) AS var2
+              CALL (var2) {
+                UNWIND var2 AS var3
+                DETACH DELETE var3
+              }
             }
             CALL (*) {
-                OPTIONAL MATCH (this)-[this4:HAS_CONTENT]->(this5:Post)
-                WITH this4, collect(DISTINCT this5) AS var6
-                CALL (var6) {
-                    UNWIND var6 AS var7
-                    DETACH DELETE var7
-                }
+              OPTIONAL MATCH (this)-[this4:HAS_CONTENT]->(this5:Post)
+              WITH this4, collect(DISTINCT this5) AS var6
+              CALL (var6) {
+                UNWIND var6 AS var7
+                DETACH DELETE var7
+              }
             }
             WITH *
             DETACH DELETE this"

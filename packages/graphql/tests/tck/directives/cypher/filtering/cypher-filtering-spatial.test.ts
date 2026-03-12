@@ -57,22 +57,22 @@ describe("cypher directive filtering - Auth", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN point({ longitude: 1.0, latitude: 1.0 }) AS l
-                }
-                WITH l AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN point({ longitude: 1.0, latitude: 1.0 }) AS l
+              }
+              WITH l AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE point.distance(var1, point($param0.point)) = $param0.distance
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN point({ longitude: 1.0, latitude: 1.0 }) AS l
-                }
-                WITH l AS this2
-                RETURN this2 AS var3
+              CALL (this) {
+                WITH this AS this
+                RETURN point({ longitude: 1.0, latitude: 1.0 }) AS l
+              }
+              WITH l AS this2
+              RETURN this2 AS var3
             }
             RETURN this { .title, special_location: var3 } AS this"
         `);
@@ -127,22 +127,22 @@ describe("cypher directive filtering - Auth", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN point({ x: 1.0, y: 1.0, z: 1.0 }) AS l
-                }
-                WITH l AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN point({ x: 1.0, y: 1.0, z: 1.0 }) AS l
+              }
+              WITH l AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE point.distance(var1, point($param0.point)) = $param0.distance
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN point({ x: 1.0, y: 1.0, z: 1.0 }) AS l
-                }
-                WITH l AS this2
-                RETURN this2 AS var3
+              CALL (this) {
+                WITH this AS this
+                RETURN point({ x: 1.0, y: 1.0, z: 1.0 }) AS l
+              }
+              WITH l AS this2
+              RETURN this2 AS var3
             }
             RETURN this { .title, special_location: var3 } AS this"
         `);

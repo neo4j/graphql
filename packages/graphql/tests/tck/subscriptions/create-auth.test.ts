@@ -71,12 +71,11 @@ describe("Subscriptions metadata on create", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Actor)
-                SET
-                    create_this1.id = create_var0.id
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this1.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN create_this1
+              CREATE (create_this1:Actor)
+              SET create_this1.id = create_var0.id
+              WITH *
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this1.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
         `);

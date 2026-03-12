@@ -56,11 +56,11 @@ describe("Cypher Aggregations Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { min: min(this.createdAt) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {min: min(this.createdAt)} AS var0
             }
-            RETURN { aggregate: { node: { createdAt: var0 } } } AS this"
+            RETURN {aggregate: {node: {createdAt: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -86,11 +86,11 @@ describe("Cypher Aggregations Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { max: max(this.createdAt) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {max: max(this.createdAt)} AS var0
             }
-            RETURN { aggregate: { node: { createdAt: var0 } } } AS this"
+            RETURN {aggregate: {node: {createdAt: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -117,11 +117,11 @@ describe("Cypher Aggregations Time", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { min: min(this.createdAt), max: max(this.createdAt) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {min: min(this.createdAt), max: max(this.createdAt)} AS var0
             }
-            RETURN { aggregate: { node: { createdAt: var0 } } } AS this"
+            RETURN {aggregate: {node: {createdAt: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

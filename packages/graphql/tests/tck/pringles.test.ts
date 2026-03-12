@@ -108,72 +108,72 @@ describe("Cypher Create Pringles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Product)
-                SET
-                    this0.id = $param0,
-                    this0.name = $param1
-                WITH *
-                CREATE (this1:Size)
-                MERGE (this0)-[this2:HAS_SIZE]->(this1)
-                SET
-                    this1.id = $param2,
-                    this1.name = $param3
-                WITH *
-                CREATE (this3:Size)
-                MERGE (this0)-[this4:HAS_SIZE]->(this3)
-                SET
-                    this3.id = $param4,
-                    this3.name = $param5
-                WITH *
-                CREATE (this5:Color)
-                MERGE (this0)-[this6:HAS_COLOR]->(this5)
-                SET
-                    this5.id = $param6,
-                    this5.name = $param7
-                WITH *
-                CREATE (this7:Color)
-                MERGE (this0)-[this8:HAS_COLOR]->(this7)
-                SET
-                    this7.id = $param8,
-                    this7.name = $param9
-                WITH *
-                CREATE (this9:Photo)
-                MERGE (this0)-[this10:HAS_PHOTO]->(this9)
-                SET
-                    this9.id = $param10,
-                    this9.description = $param11,
-                    this9.url = $param12
-                WITH *
-                CREATE (this11:Photo)
-                WITH *
-                CALL (this11) {
-                    MATCH (this12:Color)
-                    WHERE this12.id = $param13
-                    CREATE (this11)-[this13:OF_COLOR]->(this12)
-                }
-                MERGE (this0)-[this14:HAS_PHOTO]->(this11)
-                SET
-                    this11.id = $param14,
-                    this11.description = $param15,
-                    this11.url = $param16
-                WITH *
-                CREATE (this15:Photo)
-                WITH *
-                CALL (this15) {
-                    MATCH (this16:Color)
-                    WHERE this16.id = $param17
-                    CREATE (this15)-[this17:OF_COLOR]->(this16)
-                }
-                MERGE (this0)-[this18:HAS_PHOTO]->(this15)
-                SET
-                    this15.id = $param18,
-                    this15.description = $param19,
-                    this15.url = $param20
-                RETURN this0 AS this
+              CREATE (this0:Product)
+              SET
+                this0.id = $param0,
+                this0.name = $param1
+              WITH *
+              CREATE (this1:Size)
+              MERGE (this0)-[this2:HAS_SIZE]->(this1)
+              SET
+                this1.id = $param2,
+                this1.name = $param3
+              WITH *
+              CREATE (this3:Size)
+              MERGE (this0)-[this4:HAS_SIZE]->(this3)
+              SET
+                this3.id = $param4,
+                this3.name = $param5
+              WITH *
+              CREATE (this5:Color)
+              MERGE (this0)-[this6:HAS_COLOR]->(this5)
+              SET
+                this5.id = $param6,
+                this5.name = $param7
+              WITH *
+              CREATE (this7:Color)
+              MERGE (this0)-[this8:HAS_COLOR]->(this7)
+              SET
+                this7.id = $param8,
+                this7.name = $param9
+              WITH *
+              CREATE (this9:Photo)
+              MERGE (this0)-[this10:HAS_PHOTO]->(this9)
+              SET
+                this9.id = $param10,
+                this9.description = $param11,
+                this9.url = $param12
+              WITH *
+              CREATE (this11:Photo)
+              WITH *
+              CALL (this11) {
+                MATCH (this12:Color)
+                WHERE this12.id = $param13
+                CREATE (this11)-[this13:OF_COLOR]->(this12)
+              }
+              MERGE (this0)-[this14:HAS_PHOTO]->(this11)
+              SET
+                this11.id = $param14,
+                this11.description = $param15,
+                this11.url = $param16
+              WITH *
+              CREATE (this15:Photo)
+              WITH *
+              CALL (this15) {
+                MATCH (this16:Color)
+                WHERE this16.id = $param17
+                CREATE (this15)-[this17:OF_COLOR]->(this16)
+              }
+              MERGE (this0)-[this18:HAS_PHOTO]->(this15)
+              SET
+                this15.id = $param18,
+                this15.description = $param19,
+                this15.url = $param20
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .id } AS var19
+              RETURN this { .id } AS var19
             }
             RETURN collect(var19) AS data"
         `);
@@ -243,28 +243,27 @@ describe("Cypher Create Pringles", () => {
             WHERE this.name = $param0
             WITH *
             CALL (*) {
-                MATCH (this)-[this0:HAS_PHOTO]->(this1:Photo)
-                WITH *
-                WHERE this1.description = $param1
-                SET
-                    this1.description = $param2
-                WITH *
-                CALL (*) {
-                    CALL (this1) {
-                        MATCH (this2:Color)
-                        WHERE this2.name = $param3
-                        CREATE (this1)-[this3:OF_COLOR]->(this2)
-                    }
+              MATCH (this)-[this0:HAS_PHOTO]->(this1:Photo)
+              WITH *
+              WHERE this1.description = $param1
+              SET this1.description = $param2
+              WITH *
+              CALL (*) {
+                CALL (this1) {
+                  MATCH (this2:Color)
+                  WHERE this2.name = $param3
+                  CREATE (this1)-[this3:OF_COLOR]->(this2)
                 }
-                WITH *
-                CALL (*) {
-                    CALL (this1) {
-                        OPTIONAL MATCH (this1)-[this4:OF_COLOR]->(this5:Color)
-                        WHERE this5.name = $param4
-                        WITH *
-                        DELETE this4
-                    }
+              }
+              WITH *
+              CALL (*) {
+                CALL (this1) {
+                  OPTIONAL MATCH (this1)-[this4:OF_COLOR]->(this5:Color)
+                  WHERE this5.name = $param4
+                  WITH *
+                  DELETE this4
                 }
+              }
             }
             WITH this
             RETURN this { .id } AS this"

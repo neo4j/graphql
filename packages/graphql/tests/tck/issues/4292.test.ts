@@ -214,77 +214,77 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
             MATCH (this:Group)
             WHERE this.id = $param0
             CALL (this) {
-                MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
-                WITH DISTINCT this1
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND (EXISTS {
-                    MATCH (this1)<-[:CREATOR_OF]-(this2:User)
-                    WHERE ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid)
-                } OR EXISTS {
-                    MATCH (this1)-[:MEMBER_OF]->(this3:Group)
-                    WHERE EXISTS {
-                        MATCH (this3)<-[:ADMIN_OF]-(this4:Admin)
-                        WHERE EXISTS {
-                            MATCH (this4)-[:IS_USER]->(this5:User)
-                            WHERE ($jwt.uid IS NOT NULL AND this5.id = $jwt.uid)
-                        }
-                    }
-                } OR EXISTS {
-                    MATCH (this1)-[:MEMBER_OF]->(this6:Group)
-                    WHERE EXISTS {
-                        MATCH (this6)<-[:CONTRIBUTOR_TO]-(this7:Contributor)
-                        WHERE EXISTS {
-                            MATCH (this7)-[:IS_USER]->(this8:User)
-                            WHERE ($jwt.uid IS NOT NULL AND this8.id = $jwt.uid)
-                        }
-                    }
-                } OR EXISTS {
-                    MATCH (this1)-[:MEMBER_OF]->(this9:Group)
-                    WHERE EXISTS {
-                        MATCH (this9)<-[:CREATOR_OF]-(this10:User)
-                        WHERE ($jwt.uid IS NOT NULL AND this10.id = $jwt.uid)
-                    }
-                })), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                CALL (this1) {
-                    MATCH (this1)-[this11:PARTNER_OF]-(this12:Person)
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND (EXISTS {
-                        MATCH (this12)<-[:CREATOR_OF]-(this13:User)
-                        WHERE ($jwt.uid IS NOT NULL AND this13.id = $jwt.uid)
-                    } OR EXISTS {
-                        MATCH (this12)-[:MEMBER_OF]->(this14:Group)
-                        WHERE EXISTS {
-                            MATCH (this14)<-[:ADMIN_OF]-(this15:Admin)
-                            WHERE EXISTS {
-                                MATCH (this15)-[:IS_USER]->(this16:User)
-                                WHERE ($jwt.uid IS NOT NULL AND this16.id = $jwt.uid)
-                            }
-                        }
-                    } OR EXISTS {
-                        MATCH (this12)-[:MEMBER_OF]->(this17:Group)
-                        WHERE EXISTS {
-                            MATCH (this17)<-[:CONTRIBUTOR_TO]-(this18:Contributor)
-                            WHERE EXISTS {
-                                MATCH (this18)-[:IS_USER]->(this19:User)
-                                WHERE ($jwt.uid IS NOT NULL AND this19.id = $jwt.uid)
-                            }
-                        }
-                    } OR EXISTS {
-                        MATCH (this12)-[:MEMBER_OF]->(this20:Group)
-                        WHERE EXISTS {
-                            MATCH (this20)<-[:CREATOR_OF]-(this21:User)
-                            WHERE ($jwt.uid IS NOT NULL AND this21.id = $jwt.uid)
-                        }
-                    })), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH collect({ node: this12, relationship: this11 }) AS edges
-                    CALL (edges) {
-                        UNWIND edges AS edge
-                        WITH edge.node AS this12, edge.relationship AS this11
-                        RETURN collect({ properties: { active: this11.active, firstDay: this11.firstDay, lastDay: this11.lastDay, __resolveType: \\"PartnerOf\\" }, node: { __id: id(this12), __resolveType: \\"Person\\" } }) AS var22
-                    }
-                    RETURN { edges: var22 } AS var23
+              MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
+              WITH DISTINCT this1
+              WITH *
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND (EXISTS {
+                MATCH (this1)<-[:CREATOR_OF]-(this2:User)
+                WHERE ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid)
+              } OR EXISTS {
+                MATCH (this1)-[:MEMBER_OF]->(this3:Group)
+                WHERE EXISTS {
+                  MATCH (this3)<-[:ADMIN_OF]-(this4:Admin)
+                  WHERE EXISTS {
+                    MATCH (this4)-[:IS_USER]->(this5:User)
+                    WHERE ($jwt.uid IS NOT NULL AND this5.id = $jwt.uid)
+                  }
                 }
-                WITH this1 { .id, .name, partnersConnection: var23 } AS this1
-                RETURN collect(this1) AS var24
+              } OR EXISTS {
+                MATCH (this1)-[:MEMBER_OF]->(this6:Group)
+                WHERE EXISTS {
+                  MATCH (this6)<-[:CONTRIBUTOR_TO]-(this7:Contributor)
+                  WHERE EXISTS {
+                    MATCH (this7)-[:IS_USER]->(this8:User)
+                    WHERE ($jwt.uid IS NOT NULL AND this8.id = $jwt.uid)
+                  }
+                }
+              } OR EXISTS {
+                MATCH (this1)-[:MEMBER_OF]->(this9:Group)
+                WHERE EXISTS {
+                  MATCH (this9)<-[:CREATOR_OF]-(this10:User)
+                  WHERE ($jwt.uid IS NOT NULL AND this10.id = $jwt.uid)
+                }
+              })), '@neo4j/graphql/FORBIDDEN', [])
+              CALL (this1) {
+                MATCH (this1)-[this11:PARTNER_OF]-(this12:Person)
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND (EXISTS {
+                  MATCH (this12)<-[:CREATOR_OF]-(this13:User)
+                  WHERE ($jwt.uid IS NOT NULL AND this13.id = $jwt.uid)
+                } OR EXISTS {
+                  MATCH (this12)-[:MEMBER_OF]->(this14:Group)
+                  WHERE EXISTS {
+                    MATCH (this14)<-[:ADMIN_OF]-(this15:Admin)
+                    WHERE EXISTS {
+                      MATCH (this15)-[:IS_USER]->(this16:User)
+                      WHERE ($jwt.uid IS NOT NULL AND this16.id = $jwt.uid)
+                    }
+                  }
+                } OR EXISTS {
+                  MATCH (this12)-[:MEMBER_OF]->(this17:Group)
+                  WHERE EXISTS {
+                    MATCH (this17)<-[:CONTRIBUTOR_TO]-(this18:Contributor)
+                    WHERE EXISTS {
+                      MATCH (this18)-[:IS_USER]->(this19:User)
+                      WHERE ($jwt.uid IS NOT NULL AND this19.id = $jwt.uid)
+                    }
+                  }
+                } OR EXISTS {
+                  MATCH (this12)-[:MEMBER_OF]->(this20:Group)
+                  WHERE EXISTS {
+                    MATCH (this20)<-[:CREATOR_OF]-(this21:User)
+                    WHERE ($jwt.uid IS NOT NULL AND this21.id = $jwt.uid)
+                  }
+                })), '@neo4j/graphql/FORBIDDEN', [])
+                WITH collect({node: this12, relationship: this11}) AS edges
+                CALL (edges) {
+                  UNWIND edges AS edge
+                  WITH edge.node AS this12, edge.relationship AS this11
+                  RETURN collect({properties: {active: this11.active, firstDay: this11.firstDay, lastDay: this11.lastDay, __resolveType: 'PartnerOf'}, node: {__id: elementId(this12), __resolveType: 'Person'}}) AS var22
+                }
+                RETURN {edges: var22} AS var23
+              }
+              WITH this1 { .id, .name, partnersConnection: var23 } AS this1
+              RETURN collect(this1) AS var24
             }
             RETURN this { .id, .name, members: var24 } AS this"
         `);

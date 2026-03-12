@@ -100,13 +100,13 @@ describe("Cypher Sort tests", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                    RETURN count(DISTINCT genre) as result
-                }
-                WITH result AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+                RETURN count(DISTINCT genre) as result
+              }
+              WITH result AS this0
+              RETURN this0 AS var1
             }
             WITH *
             ORDER BY var1 DESC
@@ -131,13 +131,13 @@ describe("Cypher Sort tests", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                    RETURN count(DISTINCT genre) as result
-                }
-                WITH result AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+                RETURN count(DISTINCT genre) as result
+              }
+              WITH result AS this0
+              RETURN this0 AS var1
             }
             WITH *
             ORDER BY var1 DESC
@@ -163,21 +163,21 @@ describe("Cypher Sort tests", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
-                }
-                WITH count AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
+              }
+              WITH count AS this0
+              RETURN this0 AS var1
             }
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:HAS_GENRE]->(genre:Genre)
-                    RETURN count(DISTINCT genre) as result
-                }
-                WITH result AS this2
-                RETURN this2 AS var3
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:HAS_GENRE]->(genre:Genre)
+                RETURN count(DISTINCT genre) as result
+              }
+              WITH result AS this2
+              RETURN this2 AS var3
             }
             WITH *
             ORDER BY var1 DESC, var3 ASC
@@ -209,12 +209,12 @@ describe("Cypher Sort tests", () => {
             MATCH (this:Movie)
             WHERE this.title = $param0
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
-                }
-                WITH count AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH (actor:Actor)-[:ACTED_IN]->(this) RETURN count(actor) as count
+              }
+              WITH count AS this0
+              RETURN this0 AS var1
             }
             WITH *
             ORDER BY var1 DESC, this.title ASC
@@ -255,20 +255,20 @@ describe("Cypher Sort tests", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
-                WITH DISTINCT this1
+              MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
+              WITH DISTINCT this1
+              CALL (this1) {
                 CALL (this1) {
-                    CALL (this1) {
-                        WITH this1 AS this
-                        MATCH (this)<-[:HAS_GENRE]-(movie:Movie)
-                        RETURN count(DISTINCT movie) as result
-                    }
-                    WITH result AS this2
-                    RETURN this2 AS var3
+                  WITH this1 AS this
+                  MATCH (this)<-[:HAS_GENRE]-(movie:Movie)
+                  RETURN count(DISTINCT movie) as result
                 }
-                WITH this1 { .name, totalMovies: var3 } AS this1
-                ORDER BY var3 ASC
-                RETURN collect(this1) AS var4
+                WITH result AS this2
+                RETURN this2 AS var3
+              }
+              WITH this1 { .name, totalMovies: var3 } AS this1
+              ORDER BY var3 ASC
+              RETURN collect(this1) AS var4
             }
             RETURN this { genres: var4 } AS this"
         `);
