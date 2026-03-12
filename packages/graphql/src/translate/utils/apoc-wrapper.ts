@@ -11,7 +11,7 @@ export const apocWrapper = {
     validate(
         predicate: Cypher.Predicate,
         message: string,
-        params: Cypher.List | Cypher.Literal | Cypher.Map = new Cypher.Map()
+        params: Cypher.List | Cypher.Literal | Cypher.Map = new Cypher.List([])
     ): Cypher.VoidProcedure {
         return new Cypher.VoidProcedure("apoc.util.validate", [predicate, new Cypher.Literal(message), params]);
     },
