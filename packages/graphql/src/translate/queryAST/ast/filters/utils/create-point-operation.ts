@@ -70,7 +70,7 @@ function createPointListComprehension(
 ): Cypher.ListComprehension {
     const comprehensionVar = new Cypher.Variable();
     const mapPoint = Cypher.point(comprehensionVar);
-    return new Cypher.ListComprehension(comprehensionVar, param).map(mapPoint);
+    return new Cypher.ListComprehension(comprehensionVar).in(param).map(mapPoint);
 }
 
 function createPointDistanceExpression(

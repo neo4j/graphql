@@ -19,6 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import { AUTH_FORBIDDEN_ERROR } from "../../../../../constants";
+import { apocWrapper } from "../../../../utils/apoc-wrapper";
 import type { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { Filter } from "../Filter";
@@ -57,7 +58,7 @@ export class AuthorizationFiltersDeprecated extends Filter {
             const predicate = this.conditionForEvaluation
                 ? Cypher.and(this.conditionForEvaluation, Cypher.not(validateInnerPredicate))
                 : Cypher.not(validateInnerPredicate);
-            validatePredicate = Cypher.apoc.util.validatePredicate(predicate, AUTH_FORBIDDEN_ERROR);
+            validatePredicate = apocWrapper.validatePredicate(predicate, AUTH_FORBIDDEN_ERROR);
         }
 
         return Cypher.and(wherePredicate, validatePredicate);

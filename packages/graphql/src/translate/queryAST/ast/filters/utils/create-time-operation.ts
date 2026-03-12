@@ -67,5 +67,5 @@ function createTimeListComprehension(
 ): Cypher.ListComprehension {
     const comprehensionVar = new Cypher.Variable();
     const mapTime = Cypher.time(comprehensionVar);
-    return new Cypher.ListComprehension(comprehensionVar, param).map(mapTime);
+    return new Cypher.ListComprehension(comprehensionVar).in(param).map(mapTime);
 }
