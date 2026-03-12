@@ -67,11 +67,11 @@ describe("Field Level Aggregations", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    RETURN { nodes: count(DISTINCT this1), edges: count(DISTINCT this0) } AS var2
-                }
-                RETURN { aggregate: { count: var2 } } AS var3
+              CALL (this) {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                RETURN {nodes: count(DISTINCT this1), edges: count(DISTINCT this0)} AS var2
+              }
+              RETURN {aggregate: {count: var2}} AS var3
             }
             RETURN this { .title, actorsConnection: var3 } AS this"
         `);
@@ -106,18 +106,18 @@ describe("Field Level Aggregations", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    RETURN { nodes: count(DISTINCT this1) } AS var2
-                }
-                CALL (this) {
-                    MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
-                    WITH DISTINCT this4
-                    ORDER BY size(this4.name) DESC
-                    WITH collect(this4.name) AS list
-                    RETURN { longest: head(list), shortest: last(list) } AS var5
-                }
-                RETURN { aggregate: { count: var2, node: { name: var5 } } } AS var6
+              CALL (this) {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                RETURN {nodes: count(DISTINCT this1)} AS var2
+              }
+              CALL (this) {
+                MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
+                WITH DISTINCT this4
+                ORDER BY size(this4.name) DESC
+                WITH collect(this4.name) AS list
+                RETURN {longest: head(list), shortest: last(list)} AS var5
+              }
+              RETURN {aggregate: {count: var2, node: {name: var5}}} AS var6
             }
             RETURN this { actorsConnection: var6 } AS this"
         `);
@@ -151,12 +151,12 @@ describe("Field Level Aggregations", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WITH DISTINCT this1
-                    RETURN { min: min(this1.age), max: max(this1.age), average: avg(this1.age), sum: sum(this1.age) } AS var2
-                }
-                RETURN { aggregate: { node: { age: var2 } } } AS var3
+              CALL (this) {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH DISTINCT this1
+                RETURN {min: min(this1.age), max: max(this1.age), average: avg(this1.age), sum: sum(this1.age)} AS var2
+              }
+              RETURN {aggregate: {node: {age: var2}}} AS var3
             }
             RETURN this { actorsConnection: var3 } AS this"
         `);
@@ -189,14 +189,14 @@ describe("Field Level Aggregations", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WITH DISTINCT this1
-                    ORDER BY size(this1.name) DESC
-                    WITH collect(this1.name) AS list
-                    RETURN { longest: head(list), shortest: last(list) } AS var2
-                }
-                RETURN { aggregate: { node: { name: var2 } } } AS var3
+              CALL (this) {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH DISTINCT this1
+                ORDER BY size(this1.name) DESC
+                WITH collect(this1.name) AS list
+                RETURN {longest: head(list), shortest: last(list)} AS var2
+              }
+              RETURN {aggregate: {node: {name: var2}}} AS var3
             }
             RETURN this { .title, actorsConnection: var3 } AS this"
         `);
@@ -227,12 +227,12 @@ describe("Field Level Aggregations", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WITH DISTINCT this1
-                    RETURN { min: apoc.date.convertFormat(toString(min(this1.released)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
-                }
-                RETURN { aggregate: { node: { released: var2 } } } AS var3
+              CALL (this) {
+                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WITH DISTINCT this1
+                RETURN {min: apoc.date.convertFormat(toString(min(this1.released)), 'iso_zoned_date_time', 'iso_offset_date_time')} AS var2
+              }
+              RETURN {aggregate: {node: {released: var2}}} AS var3
             }
             RETURN this { moviesConnection: var3 } AS this"
         `);
@@ -270,19 +270,19 @@ describe("Field Level Aggregations", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WITH DISTINCT this1
-                    ORDER BY size(this1.name) DESC
-                    WITH collect(this1.name) AS list
-                    RETURN { longest: head(list), shortest: last(list) } AS var2
-                }
-                CALL (this) {
-                    MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
-                    WITH DISTINCT this4
-                    RETURN { min: min(this4.age), max: max(this4.age), average: avg(this4.age), sum: sum(this4.age) } AS var5
-                }
-                RETURN { aggregate: { node: { name: var2, age: var5 } } } AS var6
+              CALL (this) {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH DISTINCT this1
+                ORDER BY size(this1.name) DESC
+                WITH collect(this1.name) AS list
+                RETURN {longest: head(list), shortest: last(list)} AS var2
+              }
+              CALL (this) {
+                MATCH (this)<-[this3:ACTED_IN]-(this4:Actor)
+                WITH DISTINCT this4
+                RETURN {min: min(this4.age), max: max(this4.age), average: avg(this4.age), sum: sum(this4.age)} AS var5
+              }
+              RETURN {aggregate: {node: {name: var2, age: var5}}} AS var6
             }
             RETURN this { actorsConnection: var6 } AS this"
         `);

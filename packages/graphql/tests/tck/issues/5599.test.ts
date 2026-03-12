@@ -70,13 +70,13 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
             WITH *
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:LeadActor)
-                WHERE this1.name = $param0
-                WITH this0, collect(DISTINCT this1) AS var2
-                CALL (var2) {
-                    UNWIND var2 AS var3
-                    DETACH DELETE var3
-                }
+              OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:LeadActor)
+              WHERE this1.name = $param0
+              WITH this0, collect(DISTINCT this1) AS var2
+              CALL (var2) {
+                UNWIND var2 AS var3
+                DETACH DELETE var3
+              }
             }
             WITH this
             RETURN this { .title } AS this"
@@ -115,23 +115,23 @@ describe("https://github.com/neo4j/graphql/issues/5599", () => {
             WITH *
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:LeadActor)
-                WHERE this1.name = $param0
-                WITH this0, collect(DISTINCT this1) AS var2
-                CALL (var2) {
-                    UNWIND var2 AS var3
-                    DETACH DELETE var3
-                }
+              OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:LeadActor)
+              WHERE this1.name = $param0
+              WITH this0, collect(DISTINCT this1) AS var2
+              CALL (var2) {
+                UNWIND var2 AS var3
+                DETACH DELETE var3
+              }
             }
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)<-[this4:ACTED_IN]-(this5:Extra)
-                WHERE this5.name = $param1
-                WITH this4, collect(DISTINCT this5) AS var6
-                CALL (var6) {
-                    UNWIND var6 AS var7
-                    DETACH DELETE var7
-                }
+              OPTIONAL MATCH (this)<-[this4:ACTED_IN]-(this5:Extra)
+              WHERE this5.name = $param1
+              WITH this4, collect(DISTINCT this5) AS var6
+              CALL (var6) {
+                UNWIND var6 AS var7
+                DETACH DELETE var7
+              }
             }
             WITH this
             RETURN this { .title } AS this"

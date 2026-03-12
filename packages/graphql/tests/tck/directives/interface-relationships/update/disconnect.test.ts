@@ -79,18 +79,18 @@ describe("Interface Relationships - Update disconnect", () => {
             WITH *
             WITH *
             CALL (*) {
-                CALL (this) {
-                    OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WHERE this1.title STARTS WITH $param0
-                    WITH *
-                    DELETE this0
-                }
-                CALL (this) {
-                    OPTIONAL MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                    WHERE this3.title STARTS WITH $param1
-                    WITH *
-                    DELETE this2
-                }
+              CALL (this) {
+                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WHERE this1.title STARTS WITH $param0
+                WITH *
+                DELETE this0
+              }
+              CALL (this) {
+                OPTIONAL MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                WHERE this3.title STARTS WITH $param1
+                WITH *
+                DELETE this2
+              }
             }
             WITH this
             RETURN this { .name } AS this"
@@ -132,34 +132,34 @@ describe("Interface Relationships - Update disconnect", () => {
             WITH *
             WITH *
             CALL (*) {
-                CALL (this) {
-                    OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WHERE this1.title STARTS WITH $param0
-                    CALL (this1) {
-                        CALL (this1) {
-                            OPTIONAL MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
-                            WHERE this3.name = $param1
-                            WITH *
-                            DELETE this2
-                        }
-                    }
+              CALL (this) {
+                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WHERE this1.title STARTS WITH $param0
+                CALL (this1) {
+                  CALL (this1) {
+                    OPTIONAL MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
+                    WHERE this3.name = $param1
                     WITH *
-                    DELETE this0
+                    DELETE this2
+                  }
                 }
-                CALL (this) {
-                    OPTIONAL MATCH (this)-[this4:ACTED_IN]->(this5:Series)
-                    WHERE this5.title STARTS WITH $param2
-                    CALL (this5) {
-                        CALL (this5) {
-                            OPTIONAL MATCH (this5)<-[this6:ACTED_IN]-(this7:Actor)
-                            WHERE this7.name = $param3
-                            WITH *
-                            DELETE this6
-                        }
-                    }
+                WITH *
+                DELETE this0
+              }
+              CALL (this) {
+                OPTIONAL MATCH (this)-[this4:ACTED_IN]->(this5:Series)
+                WHERE this5.title STARTS WITH $param2
+                CALL (this5) {
+                  CALL (this5) {
+                    OPTIONAL MATCH (this5)<-[this6:ACTED_IN]-(this7:Actor)
+                    WHERE this7.name = $param3
                     WITH *
-                    DELETE this4
+                    DELETE this6
+                  }
                 }
+                WITH *
+                DELETE this4
+              }
             }
             WITH this
             RETURN this { .name } AS this"

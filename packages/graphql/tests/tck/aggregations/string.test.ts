@@ -57,13 +57,13 @@ describe("Cypher Aggregations String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                ORDER BY size(this.title) DESC
-                WITH collect(this.title) AS list
-                RETURN { shortest: last(list) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              ORDER BY size(this.title) DESC
+              WITH collect(this.title) AS list
+              RETURN {shortest: last(list)} AS var0
             }
-            RETURN { aggregate: { node: { title: var0 } } } AS this"
+            RETURN {aggregate: {node: {title: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -89,13 +89,13 @@ describe("Cypher Aggregations String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                ORDER BY size(this.title) DESC
-                WITH collect(this.title) AS list
-                RETURN { longest: head(list) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              ORDER BY size(this.title) DESC
+              WITH collect(this.title) AS list
+              RETURN {longest: head(list)} AS var0
             }
-            RETURN { aggregate: { node: { title: var0 } } } AS this"
+            RETURN {aggregate: {node: {title: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -122,13 +122,13 @@ describe("Cypher Aggregations String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                ORDER BY size(this.title) DESC
-                WITH collect(this.title) AS list
-                RETURN { longest: head(list), shortest: last(list) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              ORDER BY size(this.title) DESC
+              WITH collect(this.title) AS list
+              RETURN {longest: head(list), shortest: last(list)} AS var0
             }
-            RETURN { aggregate: { node: { title: var0 } } } AS this"
+            RETURN {aggregate: {node: {title: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -154,14 +154,14 @@ describe("Cypher Aggregations String", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WHERE this.testId = $param0
-                WITH DISTINCT this
-                ORDER BY size(this.title) DESC
-                WITH collect(this.title) AS list
-                RETURN { shortest: last(list) } AS var0
+              MATCH (this:Movie)
+              WHERE this.testId = $param0
+              WITH DISTINCT this
+              ORDER BY size(this.title) DESC
+              WITH collect(this.title) AS list
+              RETURN {shortest: last(list)} AS var0
             }
-            RETURN { aggregate: { node: { title: var0 } } } AS this"
+            RETURN {aggregate: {node: {title: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

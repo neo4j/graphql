@@ -69,13 +69,12 @@ describe("Cypher Auth Projection", () => {
             MATCH (this:User)
             WITH *
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
             WITH *
-            SET
-                this.id = $param2
+            SET this.id = $param2
             WITH this
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
             RETURN this { .id } AS this"
         `);
 
@@ -113,10 +112,9 @@ describe("Cypher Auth Projection", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:User)
-                SET
-                    create_this1.id = create_var0.id
-                RETURN create_this1
+              CREATE (create_this1:User)
+              SET create_this1.id = create_var0.id
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
         `);

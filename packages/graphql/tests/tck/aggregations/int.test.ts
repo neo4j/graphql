@@ -56,11 +56,11 @@ describe("Cypher Aggregations Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { min: min(this.imdbRating) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {min: min(this.imdbRating)} AS var0
             }
-            RETURN { aggregate: { node: { imdbRating: var0 } } } AS this"
+            RETURN {aggregate: {node: {imdbRating: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -86,11 +86,11 @@ describe("Cypher Aggregations Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { max: max(this.imdbRating) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {max: max(this.imdbRating)} AS var0
             }
-            RETURN { aggregate: { node: { imdbRating: var0 } } } AS this"
+            RETURN {aggregate: {node: {imdbRating: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -116,11 +116,11 @@ describe("Cypher Aggregations Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { average: avg(this.imdbRating) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {average: avg(this.imdbRating)} AS var0
             }
-            RETURN { aggregate: { node: { imdbRating: var0 } } } AS this"
+            RETURN {aggregate: {node: {imdbRating: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -146,11 +146,11 @@ describe("Cypher Aggregations Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { sum: sum(this.imdbRating) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {sum: sum(this.imdbRating)} AS var0
             }
-            RETURN { aggregate: { node: { imdbRating: var0 } } } AS this"
+            RETURN {aggregate: {node: {imdbRating: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -179,11 +179,11 @@ describe("Cypher Aggregations Int", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating), sum: sum(this.imdbRating) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {min: min(this.imdbRating), max: max(this.imdbRating), average: avg(this.imdbRating), sum: sum(this.imdbRating)} AS var0
             }
-            RETURN { aggregate: { node: { imdbRating: var0 } } } AS this"
+            RETURN {aggregate: {node: {imdbRating: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

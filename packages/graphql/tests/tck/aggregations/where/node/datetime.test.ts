@@ -59,8 +59,8 @@ describe("Cypher Aggregations where node with DateTime", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someDateTime) = datetime($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN min(this1.someDateTime) = datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -91,8 +91,8 @@ describe("Cypher Aggregations where node with DateTime", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someDateTime) > datetime($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN min(this1.someDateTime) > datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -123,8 +123,8 @@ describe("Cypher Aggregations where node with DateTime", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someDateTime) >= datetime($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN min(this1.someDateTime) >= datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -155,8 +155,8 @@ describe("Cypher Aggregations where node with DateTime", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someDateTime) < datetime($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN min(this1.someDateTime) < datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -187,8 +187,8 @@ describe("Cypher Aggregations where node with DateTime", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this1.someDateTime) <= datetime($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN min(this1.someDateTime) <= datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -219,8 +219,8 @@ describe("Cypher Aggregations where node with DateTime", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someDateTime) = datetime($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN max(this1.someDateTime) = datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -251,8 +251,8 @@ describe("Cypher Aggregations where node with DateTime", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someDateTime) > datetime($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN max(this1.someDateTime) > datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -283,8 +283,8 @@ describe("Cypher Aggregations where node with DateTime", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someDateTime) >= datetime($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN max(this1.someDateTime) >= datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -315,8 +315,8 @@ describe("Cypher Aggregations where node with DateTime", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someDateTime) < datetime($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN max(this1.someDateTime) < datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -347,8 +347,8 @@ describe("Cypher Aggregations where node with DateTime", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this1.someDateTime) <= datetime($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN max(this1.someDateTime) <= datetime($param0) AS var2
             }
             WITH *
             WHERE var2 = true

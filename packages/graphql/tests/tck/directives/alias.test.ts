@@ -68,10 +68,10 @@ describe("Cypher alias directive", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WITH DISTINCT this1
-                WITH this1 { .title, rating: this1.ratingPropInDb } AS this1
-                RETURN collect(this1) AS var2
+              MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+              WITH DISTINCT this1
+              WITH this1 { .title, rating: this1.ratingPropInDb } AS this1
+              RETURN collect(this1) AS var2
             }
             RETURN this { .name, city: this.cityPropInDb, actedIn: var2 } AS this"
         `);
@@ -107,14 +107,14 @@ describe("Cypher alias directive", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ properties: { character: this0.characterPropInDb, screenTime: this0.screenTime, __resolveType: \\"ActorActedInProps\\" }, node: { title: this1.title, rating: this1.ratingPropInDb, __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN { edges: var2 } AS var3
+              MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+              WITH collect({node: this1, relationship: this0}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this1, edge.relationship AS this0
+                RETURN collect({properties: {character: this0.characterPropInDb, screenTime: this0.screenTime, __resolveType: 'ActorActedInProps'}, node: {title: this1.title, rating: this1.ratingPropInDb, __resolveType: 'Movie'}}) AS var2
+              }
+              RETURN {edges: var2} AS var3
             }
             RETURN this { .name, city: this.cityPropInDb, actedInConnection: var3 } AS this"
         `);
@@ -169,40 +169,40 @@ describe("Cypher alias directive", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Actor)
+              CREATE (create_this1:Actor)
+              SET
+                create_this1.name = create_var0.name,
+                create_this1.cityPropInDb = create_var0.city
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.actedIn.create AS create_var2
+                CREATE (create_this3:Movie)
                 SET
-                    create_this1.name = create_var0.name,
-                    create_this1.cityPropInDb = create_var0.city
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.actedIn.create AS create_var2
-                    CREATE (create_this3:Movie)
-                    SET
-                        create_this3.title = create_var2.node.title,
-                        create_this3.ratingPropInDb = create_var2.node.rating
-                    MERGE (create_this1)-[create_this4:ACTED_IN]->(create_this3)
-                    SET
-                        create_this4.characterPropInDb = create_var2.edge.character,
-                        create_this4.screenTime = create_var2.edge.screenTime
-                    RETURN collect(NULL) AS create_var5
-                }
-                RETURN create_this1
+                  create_this3.title = create_var2.node.title,
+                  create_this3.ratingPropInDb = create_var2.node.rating
+                MERGE (create_this1)-[create_this4:ACTED_IN]->(create_this3)
+                SET
+                  create_this4.characterPropInDb = create_var2.edge.character,
+                  create_this4.screenTime = create_var2.edge.screenTime
+                RETURN collect(NULL) AS create_var5
+              }
+              RETURN create_this1
             }
             CALL (create_this1) {
-                MATCH (create_this1)-[create_this6:ACTED_IN]->(create_this7:Movie)
-                WITH DISTINCT create_this7
-                WITH create_this7 { .title, rating: create_this7.ratingPropInDb } AS create_this7
-                RETURN collect(create_this7) AS create_var8
+              MATCH (create_this1)-[create_this6:ACTED_IN]->(create_this7:Movie)
+              WITH DISTINCT create_this7
+              WITH create_this7 { .title, rating: create_this7.ratingPropInDb } AS create_this7
+              RETURN collect(create_this7) AS create_var8
             }
             CALL (create_this1) {
-                MATCH (create_this1)-[create_this9:ACTED_IN]->(create_this10:Movie)
-                WITH collect({ node: create_this10, relationship: create_this9 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS create_this10, edge.relationship AS create_this9
-                    RETURN collect({ properties: { character: create_this9.characterPropInDb, screenTime: create_this9.screenTime, __resolveType: \\"ActorActedInProps\\" }, node: { title: create_this10.title, rating: create_this10.ratingPropInDb, __resolveType: \\"Movie\\" } }) AS create_var11
-                }
-                RETURN { edges: create_var11 } AS create_var12
+              MATCH (create_this1)-[create_this9:ACTED_IN]->(create_this10:Movie)
+              WITH collect({node: create_this10, relationship: create_this9}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS create_this10, edge.relationship AS create_this9
+                RETURN collect({properties: {character: create_this9.characterPropInDb, screenTime: create_this9.screenTime, __resolveType: 'ActorActedInProps'}, node: {title: create_this10.title, rating: create_this10.ratingPropInDb, __resolveType: 'Movie'}}) AS create_var11
+              }
+              RETURN {edges: create_var11} AS create_var12
             }
             RETURN collect(create_this1 { .name, city: create_this1.cityPropInDb, actedIn: create_var8, actedInConnection: create_var12 }) AS data"
         `);

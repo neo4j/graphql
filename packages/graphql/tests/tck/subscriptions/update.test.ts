@@ -64,8 +64,7 @@ describe("Subscriptions metadata on update", () => {
             MATCH (this:Movie)
             WITH *
             WHERE this.id = $param0
-            SET
-                this.id = $param1
+            SET this.id = $param1
             WITH this
             RETURN this { .id } AS this"
         `);
@@ -104,15 +103,13 @@ describe("Subscriptions metadata on update", () => {
             MATCH (this:Movie)
             WITH *
             WHERE this.id = $param0
-            SET
-                this.id = $param1
+            SET this.id = $param1
             WITH *
             CALL (*) {
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH *
-                WHERE this1.name = $param2
-                SET
-                    this1.name = $param3
+              MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              WITH *
+              WHERE this1.name = $param2
+              SET this1.name = $param3
             }
             WITH this
             RETURN this { .id } AS this"

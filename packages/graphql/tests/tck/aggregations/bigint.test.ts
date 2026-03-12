@@ -56,11 +56,11 @@ describe("Cypher Aggregations BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:File)
-                WITH DISTINCT this
-                RETURN { min: min(this.size) } AS var0
+              MATCH (this:File)
+              WITH DISTINCT this
+              RETURN {min: min(this.size)} AS var0
             }
-            RETURN { aggregate: { node: { size: var0 } } } AS this"
+            RETURN {aggregate: {node: {size: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -86,11 +86,11 @@ describe("Cypher Aggregations BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:File)
-                WITH DISTINCT this
-                RETURN { max: max(this.size) } AS var0
+              MATCH (this:File)
+              WITH DISTINCT this
+              RETURN {max: max(this.size)} AS var0
             }
-            RETURN { aggregate: { node: { size: var0 } } } AS this"
+            RETURN {aggregate: {node: {size: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -116,11 +116,11 @@ describe("Cypher Aggregations BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:File)
-                WITH DISTINCT this
-                RETURN { average: avg(this.size) } AS var0
+              MATCH (this:File)
+              WITH DISTINCT this
+              RETURN {average: avg(this.size)} AS var0
             }
-            RETURN { aggregate: { node: { size: var0 } } } AS this"
+            RETURN {aggregate: {node: {size: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -146,11 +146,11 @@ describe("Cypher Aggregations BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:File)
-                WITH DISTINCT this
-                RETURN { sum: sum(this.size) } AS var0
+              MATCH (this:File)
+              WITH DISTINCT this
+              RETURN {sum: sum(this.size)} AS var0
             }
-            RETURN { aggregate: { node: { size: var0 } } } AS this"
+            RETURN {aggregate: {node: {size: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -179,11 +179,11 @@ describe("Cypher Aggregations BigInt", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:File)
-                WITH DISTINCT this
-                RETURN { min: min(this.size), max: max(this.size), average: avg(this.size), sum: sum(this.size) } AS var0
+              MATCH (this:File)
+              WITH DISTINCT this
+              RETURN {min: min(this.size), max: max(this.size), average: avg(this.size), sum: sum(this.size)} AS var0
             }
-            RETURN { aggregate: { node: { size: var0 } } } AS this"
+            RETURN {aggregate: {node: {size: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

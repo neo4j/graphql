@@ -56,11 +56,11 @@ describe("Cypher Aggregations Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { min: min(this.screenTime) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {min: min(this.screenTime)} AS var0
             }
-            RETURN { aggregate: { node: { screenTime: var0 } } } AS this"
+            RETURN {aggregate: {node: {screenTime: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -86,11 +86,11 @@ describe("Cypher Aggregations Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { max: max(this.screenTime) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {max: max(this.screenTime)} AS var0
             }
-            RETURN { aggregate: { node: { screenTime: var0 } } } AS this"
+            RETURN {aggregate: {node: {screenTime: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -117,11 +117,11 @@ describe("Cypher Aggregations Duration", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { min: min(this.screenTime), max: max(this.screenTime) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {min: min(this.screenTime), max: max(this.screenTime)} AS var0
             }
-            RETURN { aggregate: { node: { screenTime: var0 } } } AS this"
+            RETURN {aggregate: {node: {screenTime: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

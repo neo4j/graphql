@@ -70,11 +70,11 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             WITH *
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this0:Target)
-                    WHERE this0.id = $param0
-                    CREATE (this)-[this1:HAS_TARGET]->(this0)
-                }
+              CALL (this) {
+                MATCH (this0:Target)
+                WHERE this0.id = $param0
+                CREATE (this)-[this1:HAS_TARGET]->(this0)
+              }
             }
             WITH this
             RETURN this { .id } AS this"
@@ -135,14 +135,14 @@ describe("https://github.com/neo4j/graphql/issues/1132", () => {
             WITH *
             WITH *
             CALL (*) {
-                CALL (this) {
-                    OPTIONAL MATCH (this)-[this0:HAS_TARGET]->(this1:Target)
-                    WHERE this1.id = $param0
-                    WITH *
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH *
-                    DELETE this0
-                }
+              CALL (this) {
+                OPTIONAL MATCH (this)-[this0:HAS_TARGET]->(this1:Target)
+                WHERE this1.id = $param0
+                WITH *
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+                WITH *
+                DELETE this0
+              }
             }
             WITH this
             RETURN this { .id } AS this"

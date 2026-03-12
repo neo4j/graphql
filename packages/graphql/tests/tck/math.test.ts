@@ -77,12 +77,11 @@ describe("Math operators", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            SET
-                this.viewers = (this.viewers + $param0)
+            SET this.viewers = (this.viewers + $param0)
             WITH *
             CALL (*) {
-                CALL apoc.util.validate(this.viewers IS NULL, \\"Cannot %s %s to Nan\\", [\\"increment\\", $param0])
-                CALL apoc.util.validate((this.viewers + $param0) > ((2 ^ 31) - 1), \\"Overflow: Value returned from operator %s is larger than %s bit\\", [\\"increment\\", 32])
+              CALL apoc.util.validate(this.viewers IS NULL, 'Cannot %s %s to Nan', ['increment', $param0])
+              CALL apoc.util.validate((this.viewers + $param0) > ((2 ^ 31) - 1), 'Overflow: Value returned from operator %s is larger than %s bit', ['increment', 32])
             }
             WITH this
             RETURN this { .id, .viewers } AS this"
@@ -115,12 +114,11 @@ describe("Math operators", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            SET
-                this.revenue = (this.revenue * $param0)
+            SET this.revenue = (this.revenue * $param0)
             WITH *
             CALL (*) {
-                CALL apoc.util.validate(this.revenue IS NULL, \\"Cannot %s %s to Nan\\", [\\"multiply\\", $param0])
-                CALL apoc.util.validate((this.revenue * $param0) > ((2 ^ 63) - 1), \\"Overflow: Value returned from operator %s is larger than %s bit\\", [\\"multiply\\", 64])
+              CALL apoc.util.validate(this.revenue IS NULL, 'Cannot %s %s to Nan', ['multiply', $param0])
+              CALL apoc.util.validate((this.revenue * $param0) > ((2 ^ 63) - 1), 'Overflow: Value returned from operator %s is larger than %s bit', ['multiply', 64])
             }
             WITH this
             RETURN this { .id, .revenue } AS this"
@@ -154,22 +152,21 @@ describe("Math operators", () => {
             WITH *
             WITH *
             CALL (*) {
-                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WITH *
-                SET
-                    this1.viewers = (this1.viewers + $param0)
-                WITH *
-                CALL (*) {
-                    CALL apoc.util.validate(this1.viewers IS NULL, \\"Cannot %s %s to Nan\\", [\\"increment\\", $param0])
-                    CALL apoc.util.validate((this1.viewers + $param0) > ((2 ^ 31) - 1), \\"Overflow: Value returned from operator %s is larger than %s bit\\", [\\"increment\\", 32])
-                }
+              MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+              WITH *
+              SET this1.viewers = (this1.viewers + $param0)
+              WITH *
+              CALL (*) {
+                CALL apoc.util.validate(this1.viewers IS NULL, 'Cannot %s %s to Nan', ['increment', $param0])
+                CALL apoc.util.validate((this1.viewers + $param0) > ((2 ^ 31) - 1), 'Overflow: Value returned from operator %s is larger than %s bit', ['increment', 32])
+              }
             }
             WITH this
             CALL (this) {
-                MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
-                WITH DISTINCT this3
-                WITH this3 { .viewers } AS this3
-                RETURN collect(this3) AS var4
+              MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
+              WITH DISTINCT this3
+              WITH this3 { .viewers } AS this3
+              RETURN collect(this3) AS var4
             }
             RETURN this { .name, actedIn: var4 } AS this"
         `);
@@ -212,32 +209,31 @@ describe("Math operators", () => {
             WITH *
             WITH *
             CALL (*) {
-                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WITH *
-                SET
-                    this0.pay = (this0.pay + $param0)
-                WITH *
-                CALL (*) {
-                    CALL apoc.util.validate(this0.pay IS NULL, \\"Cannot %s %s to Nan\\", [\\"add\\", $param0])
-                    CALL apoc.util.validate((this0.pay + $param0) > ((2 ^ 63) - 1), \\"Overflow: Value returned from operator %s is larger than %s bit\\", [\\"add\\", 64])
-                }
+              MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+              WITH *
+              SET this0.pay = (this0.pay + $param0)
+              WITH *
+              CALL (*) {
+                CALL apoc.util.validate(this0.pay IS NULL, 'Cannot %s %s to Nan', ['add', $param0])
+                CALL apoc.util.validate((this0.pay + $param0) > ((2 ^ 63) - 1), 'Overflow: Value returned from operator %s is larger than %s bit', ['add', 64])
+              }
             }
             WITH this
             CALL (this) {
-                MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
-                WITH DISTINCT this3
-                WITH this3 { .title } AS this3
-                RETURN collect(this3) AS var4
+              MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
+              WITH DISTINCT this3
+              WITH this3 { .title } AS this3
+              RETURN collect(this3) AS var4
             }
             CALL (this) {
-                MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
-                WITH collect({ node: this6, relationship: this5 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this6, edge.relationship AS this5
-                    RETURN collect({ properties: { pay: this5.pay, __resolveType: \\"ActedIn\\" }, node: { __id: id(this6), __resolveType: \\"Movie\\" } }) AS var7
-                }
-                RETURN { edges: var7 } AS var8
+              MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
+              WITH collect({node: this6, relationship: this5}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this6, edge.relationship AS this5
+                RETURN collect({properties: {pay: this5.pay, __resolveType: 'ActedIn'}, node: {__id: elementId(this6), __resolveType: 'Movie'}}) AS var7
+              }
+              RETURN {edges: var7} AS var8
             }
             RETURN this { .name, actedIn: var4, actedInConnection: var8 } AS this"
         `);
@@ -270,26 +266,25 @@ describe("Math operators", () => {
             WITH *
             WITH *
             CALL (*) {
-                MATCH (this)-[this0:MARRIED_WITH]->(this1:Star)
-                WITH *
-                SET
-                    this1.marriageLength = (this1.marriageLength + $param0)
-                WITH *
-                CALL (*) {
-                    CALL apoc.util.validate(this1.marriageLength IS NULL, \\"Cannot %s %s to Nan\\", [\\"increment\\", $param0])
-                    CALL apoc.util.validate((this1.marriageLength + $param0) > ((2 ^ 31) - 1), \\"Overflow: Value returned from operator %s is larger than %s bit\\", [\\"increment\\", 32])
-                }
+              MATCH (this)-[this0:MARRIED_WITH]->(this1:Star)
+              WITH *
+              SET this1.marriageLength = (this1.marriageLength + $param0)
+              WITH *
+              CALL (*) {
+                CALL apoc.util.validate(this1.marriageLength IS NULL, 'Cannot %s %s to Nan', ['increment', $param0])
+                CALL apoc.util.validate((this1.marriageLength + $param0) > ((2 ^ 31) - 1), 'Overflow: Value returned from operator %s is larger than %s bit', ['increment', 32])
+              }
             }
             WITH this
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this2:MARRIED_WITH]->(this3:Star)
-                    WITH this3 { .marriageLength, __resolveType: \\"Star\\", __id: id(this3) } AS var4
-                    RETURN var4
-                }
-                WITH var4
-                RETURN collect(var4) AS var4
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this2:MARRIED_WITH]->(this3:Star)
+                WITH this3 { .marriageLength, __resolveType: 'Star', __id: elementId(this3) } AS var4
+                RETURN var4
+              }
+              WITH var4
+              RETURN collect(var4) AS var4
             }
             RETURN this { .name, marriedWith: var4 } AS this"
         `);

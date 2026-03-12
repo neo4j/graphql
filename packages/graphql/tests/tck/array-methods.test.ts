@@ -51,9 +51,8 @@ describe("Arrays Methods", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0])
-            SET
-                this.ratings = (this.ratings + $param0)
+            WHERE apoc.util.validatePredicate(this.ratings IS NULL, 'Property ratings cannot be NULL', [0])
+            SET this.ratings = (this.ratings + $param0)
             WITH this
             RETURN this { .title, .ratings } AS this"
         `);
@@ -98,10 +97,10 @@ describe("Arrays Methods", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE (apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0]) AND apoc.util.validatePredicate(this.scores IS NULL, \\"Property scores cannot be NULL\\", [0]))
+            WHERE (apoc.util.validatePredicate(this.ratings IS NULL, 'Property ratings cannot be NULL', [0]) AND apoc.util.validatePredicate(this.scores IS NULL, 'Property scores cannot be NULL', [0]))
             SET
-                this.ratings = (this.ratings + $param0),
-                this.scores = (this.scores + $param1)
+              this.ratings = (this.ratings + $param0),
+              this.scores = (this.scores + $param1)
             WITH this
             RETURN this { .title, .ratings, .scores } AS this"
         `);
@@ -159,9 +158,8 @@ describe("Arrays Methods", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE apoc.util.validatePredicate(this.filmingLocations IS NULL, \\"Property filmingLocations cannot be NULL\\", [0])
-            SET
-                this.filmingLocations = (this.filmingLocations + [var0 IN $param0 | point(var0)])
+            WHERE apoc.util.validatePredicate(this.filmingLocations IS NULL, 'Property filmingLocations cannot be NULL', [0])
+            SET this.filmingLocations = (this.filmingLocations + [var0 IN $param0 | point(var0)])
             WITH this
             RETURN this { .title, .filmingLocations } AS this"
         `);
@@ -218,14 +216,13 @@ describe("Arrays Methods", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0])
+            WHERE apoc.util.validatePredicate(this.ratings IS NULL, 'Property ratings cannot be NULL', [0])
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             WITH *
-            SET
-                this.ratings = (this.ratings + $param3)
+            SET this.ratings = (this.ratings + $param3)
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             WITH this
             RETURN this { .title, .ratings } AS this"
         `);
@@ -274,9 +271,8 @@ describe("Arrays Methods", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0])
-            SET
-                this.ratings = this.ratings[0..-$param0]
+            WHERE apoc.util.validatePredicate(this.ratings IS NULL, 'Property ratings cannot be NULL', [0])
+            SET this.ratings = this.ratings[0..-$param0]
             WITH this
             RETURN this { .title, .ratings } AS this"
         `);
@@ -322,10 +318,10 @@ describe("Arrays Methods", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE (apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0]) AND apoc.util.validatePredicate(this.scores IS NULL, \\"Property scores cannot be NULL\\", [0]))
+            WHERE (apoc.util.validatePredicate(this.ratings IS NULL, 'Property ratings cannot be NULL', [0]) AND apoc.util.validatePredicate(this.scores IS NULL, 'Property scores cannot be NULL', [0]))
             SET
-                this.ratings = this.ratings[0..-$param0],
-                this.scores = this.scores[0..-$param1]
+              this.ratings = this.ratings[0..-$param0],
+              this.scores = this.scores[0..-$param1]
             WITH this
             RETURN this { .title, .ratings, .scores } AS this"
         `);
@@ -383,14 +379,13 @@ describe("Arrays Methods", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0])
+            WHERE apoc.util.validatePredicate(this.ratings IS NULL, 'Property ratings cannot be NULL', [0])
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             WITH *
-            SET
-                this.ratings = this.ratings[0..-$param3]
+            SET this.ratings = this.ratings[0..-$param3]
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             WITH this
             RETURN this { .title, .ratings } AS this"
         `);
@@ -442,10 +437,10 @@ describe("Arrays Methods", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            WHERE (apoc.util.validatePredicate(this.ratings IS NULL, \\"Property ratings cannot be NULL\\", [0]) AND apoc.util.validatePredicate(this.scores IS NULL, \\"Property scores cannot be NULL\\", [0]))
+            WHERE (apoc.util.validatePredicate(this.ratings IS NULL, 'Property ratings cannot be NULL', [0]) AND apoc.util.validatePredicate(this.scores IS NULL, 'Property scores cannot be NULL', [0]))
             SET
-                this.ratings = (this.ratings + $param0),
-                this.scores = this.scores[0..-$param1]
+              this.ratings = (this.ratings + $param0),
+              this.scores = this.scores[0..-$param1]
             WITH this
             RETURN this { .title, .ratings, .scores } AS this"
         `);
@@ -514,28 +509,27 @@ describe("Arrays Methods", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WITH *
-                WHERE apoc.util.validatePredicate(this0.pay IS NULL, \\"Property pay cannot be NULL\\", [0])
-                SET
-                    this0.pay = (this0.pay + $param1)
+              MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+              WITH *
+              WHERE apoc.util.validatePredicate(this0.pay IS NULL, 'Property pay cannot be NULL', [0])
+              SET this0.pay = (this0.pay + $param1)
             }
             WITH this
             CALL (this) {
-                MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
-                WITH DISTINCT this3
-                WITH this3 { .title } AS this3
-                RETURN collect(this3) AS var4
+              MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
+              WITH DISTINCT this3
+              WITH this3 { .title } AS this3
+              RETURN collect(this3) AS var4
             }
             CALL (this) {
-                MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
-                WITH collect({ node: this6, relationship: this5 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this6, edge.relationship AS this5
-                    RETURN collect({ properties: { pay: this5.pay, __resolveType: \\"ActedIn\\" }, node: { __id: id(this6), __resolveType: \\"Movie\\" } }) AS var7
-                }
-                RETURN { edges: var7 } AS var8
+              MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
+              WITH collect({node: this6, relationship: this5}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this6, edge.relationship AS this5
+                RETURN collect({properties: {pay: this5.pay, __resolveType: 'ActedIn'}, node: {__id: elementId(this6), __resolveType: 'Movie'}}) AS var7
+              }
+              RETURN {edges: var7} AS var8
             }
             RETURN this { .name, actedIn: var4, actedInConnection: var8 } AS this"
         `);
@@ -601,28 +595,27 @@ describe("Arrays Methods", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WITH *
-                WHERE apoc.util.validatePredicate(this0.pay IS NULL, \\"Property pay cannot be NULL\\", [0])
-                SET
-                    this0.pay = this0.pay[0..-$param1]
+              MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+              WITH *
+              WHERE apoc.util.validatePredicate(this0.pay IS NULL, 'Property pay cannot be NULL', [0])
+              SET this0.pay = this0.pay[0..-$param1]
             }
             WITH this
             CALL (this) {
-                MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
-                WITH DISTINCT this3
-                WITH this3 { .title } AS this3
-                RETURN collect(this3) AS var4
+              MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
+              WITH DISTINCT this3
+              WITH this3 { .title } AS this3
+              RETURN collect(this3) AS var4
             }
             CALL (this) {
-                MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
-                WITH collect({ node: this6, relationship: this5 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this6, edge.relationship AS this5
-                    RETURN collect({ properties: { pay: this5.pay, __resolveType: \\"ActedIn\\" }, node: { __id: id(this6), __resolveType: \\"Movie\\" } }) AS var7
-                }
-                RETURN { edges: var7 } AS var8
+              MATCH (this)-[this5:ACTED_IN]->(this6:Movie)
+              WITH collect({node: this6, relationship: this5}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this6, edge.relationship AS this5
+                RETURN collect({properties: {pay: this5.pay, __resolveType: 'ActedIn'}, node: {__id: elementId(this6), __resolveType: 'Movie'}}) AS var7
+              }
+              RETURN {edges: var7} AS var8
             }
             RETURN this { .name, actedIn: var4, actedInConnection: var8 } AS this"
         `);

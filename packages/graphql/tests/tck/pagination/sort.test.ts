@@ -166,11 +166,11 @@ describe("Sort", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
-                WITH DISTINCT this1
-                WITH this1 { .name } AS this1
-                ORDER BY this1.name ASC
-                RETURN collect(this1) AS var2
+              MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
+              WITH DISTINCT this1
+              WITH this1 { .name } AS this1
+              ORDER BY this1.name ASC
+              RETURN collect(this1) AS var2
             }
             RETURN this { genres: var2 } AS this"
         `);
@@ -195,11 +195,11 @@ describe("Sort", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
-                WITH DISTINCT this1
-                WITH this1 { .name } AS this1
-                ORDER BY this1.name DESC
-                RETURN collect(this1) AS var2
+              MATCH (this)-[this0:HAS_GENRE]->(this1:Genre)
+              WITH DISTINCT this1
+              WITH this1 { .name } AS this1
+              ORDER BY this1.name DESC
+              RETURN collect(this1) AS var2
             }
             RETURN this { genres: var2 } AS this"
         `);

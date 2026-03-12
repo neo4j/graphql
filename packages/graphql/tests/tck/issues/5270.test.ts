@@ -97,16 +97,16 @@ describe("https://github.com/neo4j/graphql/issues/5270", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                OPTIONAL MATCH (u:User {id: $jwt.sub}) RETURN u
+              OPTIONAL MATCH (u:User {id: $jwt.sub}) RETURN u
             }
             WITH u AS this0
             WITH *
             WHERE ($isAuthenticated = true AND NOT (EXISTS {
-                MATCH (this0)-[:HAS_BLOCKED]->(this1:UserBlockedUser)
-                WHERE EXISTS {
-                    MATCH (this1)-[:IS_BLOCKING]->(this2:User)
-                    WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
-                }
+              MATCH (this0)-[:HAS_BLOCKED]->(this1:UserBlockedUser)
+              WHERE EXISTS {
+                MATCH (this1)-[:IS_BLOCKING]->(this2:User)
+                WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+              }
             }))
             WITH this0 { .id } AS this0
             RETURN this0 AS this"

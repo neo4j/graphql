@@ -62,9 +62,9 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH DISTINCT this1
-                RETURN count(this1) = $param0 AS var2
+              MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              WITH DISTINCT this1
+              RETURN count(this1) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -97,17 +97,17 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WITH DISTINCT this1
-                CALL (this1) {
-                    MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
-                    WITH DISTINCT this3
-                    RETURN count(this3) = $param0 AS var4
-                }
-                WITH *
-                WHERE var4 = true
-                WITH this1 { .title } AS this1
-                RETURN collect(this1) AS var5
+              MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+              WITH DISTINCT this1
+              CALL (this1) {
+                MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
+                WITH DISTINCT this3
+                RETURN count(this3) = $param0 AS var4
+              }
+              WITH *
+              WHERE var4 = true
+              WITH this1 { .title } AS this1
+              RETURN collect(this1) AS var5
             }
             RETURN this { movies: var5 } AS this"
         `);
@@ -140,19 +140,19 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             CALL (this0) {
-                MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
-                WITH DISTINCT this2
-                RETURN count(this2) = $param0 AS var3
+              MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+              WITH DISTINCT this2
+              RETURN count(this2) = $param0 AS var3
             }
             WITH *
             WHERE var3 = true
-            WITH collect({ node: this0 }) AS edges
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var4
             }
-            RETURN { edges: var4 } AS this"
+            RETURN {edges: var4} AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                         "{
@@ -190,30 +190,30 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:Actor)
-            WITH collect({ node: this0 }) AS edges
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                CALL (this0) {
-                    MATCH (this0)-[this1:ACTED_IN]->(this2:Movie)
-                    CALL (this2, this1) {
-                        MATCH (this2)<-[this3:ACTED_IN]-(this4:Actor)
-                        WITH DISTINCT this4
-                        RETURN count(this4) = $param0 AS var5
-                    }
-                    WITH *
-                    WHERE var5 = true
-                    WITH collect({ node: this2, relationship: this1 }) AS edges
-                    CALL (edges) {
-                        UNWIND edges AS edge
-                        WITH edge.node AS this2, edge.relationship AS this1
-                        RETURN collect({ node: { title: this2.title, __resolveType: \\"Movie\\" } }) AS var6
-                    }
-                    RETURN { edges: var6 } AS var7
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              CALL (this0) {
+                MATCH (this0)-[this1:ACTED_IN]->(this2:Movie)
+                CALL (this2, this1) {
+                  MATCH (this2)<-[this3:ACTED_IN]-(this4:Actor)
+                  WITH DISTINCT this4
+                  RETURN count(this4) = $param0 AS var5
                 }
-                RETURN collect({ node: { moviesConnection: var7, __resolveType: \\"Actor\\" } }) AS var8
+                WITH *
+                WHERE var5 = true
+                WITH collect({node: this2, relationship: this1}) AS edges
+                CALL (edges) {
+                  UNWIND edges AS edge
+                  WITH edge.node AS this2, edge.relationship AS this1
+                  RETURN collect({node: {title: this2.title, __resolveType: 'Movie'}}) AS var6
+                }
+                RETURN {edges: var6} AS var7
+              }
+              RETURN collect({node: {moviesConnection: var7, __resolveType: 'Actor'}}) AS var8
             }
-            RETURN { edges: var8 } AS this"
+            RETURN {edges: var8} AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
                 "{

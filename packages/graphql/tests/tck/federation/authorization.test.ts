@@ -204,8 +204,8 @@ describe("Federation and authorization", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:AUTHORED]-(this1:User)
-                RETURN count(this1) > $param0 AS var2
+              MATCH (this)<-[this0:AUTHORED]-(this1:User)
+              RETURN count(this1) > $param0 AS var2
             }
             WITH *
             WHERE (this.id = $param1 AND ($isAuthenticated = true AND var2 = true))

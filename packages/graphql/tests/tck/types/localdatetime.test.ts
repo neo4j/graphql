@@ -120,10 +120,9 @@ describe("Cypher LocalDateTime", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.localDT = create_var0.localDT
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.localDT = create_var0.localDT
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .localDT }) AS data"
         `);
@@ -165,8 +164,7 @@ describe("Cypher LocalDateTime", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            SET
-                this.localDT = $param0
+            SET this.localDT = $param0
             WITH this
             RETURN this { .id, .localDT } AS this"
         `);

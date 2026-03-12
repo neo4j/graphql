@@ -172,68 +172,68 @@ describe("https://github.com/neo4j/graphql/issues/4214", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:TransactionItem)
-                SET
-                    this0.name = $param0,
-                    this0.price = $param1,
-                    this0.quantity = $param2
+              CREATE (this0:TransactionItem)
+              SET
+                this0.name = $param0,
+                this0.price = $param1,
+                this0.quantity = $param2
+              WITH *
+              CALL (this0) {
+                MATCH (this1:Transaction)
+                WHERE ((($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)) OR ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param7 IN $jwt.roles)) AND EXISTS {
+                  MATCH (this1)-[:TRANSACTION]->(this2:Store)
+                  WHERE ($jwt.store IS NOT NULL AND this2.id = $jwt.store)
+                })) AND this1.id = $param8)
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param9 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param10 IN $jwt.roles)) AND EXISTS {
+                  MATCH (this1)-[:TRANSACTION]->(this3:Store)
+                  WHERE ($jwt.store IS NOT NULL AND this3.id = $jwt.store)
+                }), '@neo4j/graphql/FORBIDDEN', [])
+                CREATE (this0)-[this4:ITEM_TRANSACTED]->(this1)
                 WITH *
-                CALL (this0) {
-                    MATCH (this1:Transaction)
-                    WHERE ((($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)) OR ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param7 IN $jwt.roles)) AND EXISTS {
-                        MATCH (this1)-[:TRANSACTION]->(this2:Store)
-                        WHERE ($jwt.store IS NOT NULL AND this2.id = $jwt.store)
-                    })) AND this1.id = $param8)
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param9 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param10 IN $jwt.roles)) AND EXISTS {
-                        MATCH (this1)-[:TRANSACTION]->(this3:Store)
-                        WHERE ($jwt.store IS NOT NULL AND this3.id = $jwt.store)
-                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    CREATE (this0)-[this4:ITEM_TRANSACTED]->(this1)
-                    WITH *
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param11 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param12 IN $jwt.roles)) AND EXISTS {
-                        MATCH (this1)-[:TRANSACTION]->(this5:Store)
-                        WHERE ($jwt.store IS NOT NULL AND this5.id = $jwt.store)
-                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH *
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param13 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param14 IN $jwt.roles)) AND EXISTS {
-                        MATCH (this0)-[:ITEM_TRANSACTED]->(this6:Transaction)
-                        WHERE EXISTS {
-                            MATCH (this6)-[:TRANSACTION]->(this7:Store)
-                            WHERE ($jwt.store IS NOT NULL AND this7.id = $jwt.store)
-                        }
-                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                }
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param11 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param12 IN $jwt.roles)) AND EXISTS {
+                  MATCH (this1)-[:TRANSACTION]->(this5:Store)
+                  WHERE ($jwt.store IS NOT NULL AND this5.id = $jwt.store)
+                }), '@neo4j/graphql/FORBIDDEN', [])
                 WITH *
-                CALL (*) {
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param15 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param16 IN $jwt.roles)) AND EXISTS {
-                        MATCH (this0)-[:ITEM_TRANSACTED]->(this8:Transaction)
-                        WHERE EXISTS {
-                            MATCH (this8)-[:TRANSACTION]->(this9:Store)
-                            WHERE ($jwt.store IS NOT NULL AND this9.id = $jwt.store)
-                        }
-                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                }
-                RETURN this0 AS this
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param13 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param14 IN $jwt.roles)) AND EXISTS {
+                  MATCH (this0)-[:ITEM_TRANSACTED]->(this6:Transaction)
+                  WHERE EXISTS {
+                    MATCH (this6)-[:TRANSACTION]->(this7:Store)
+                    WHERE ($jwt.store IS NOT NULL AND this7.id = $jwt.store)
+                  }
+                }), '@neo4j/graphql/FORBIDDEN', [])
+              }
+              WITH *
+              CALL (*) {
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param15 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param16 IN $jwt.roles)) AND EXISTS {
+                  MATCH (this0)-[:ITEM_TRANSACTED]->(this8:Transaction)
+                  WHERE EXISTS {
+                    MATCH (this8)-[:TRANSACTION]->(this9:Store)
+                    WHERE ($jwt.store IS NOT NULL AND this9.id = $jwt.store)
+                  }
+                }), '@neo4j/graphql/FORBIDDEN', [])
+              }
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)-[this10:ITEM_TRANSACTED]->(this11:Transaction)
-                    WHERE (($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param17 IN $jwt.roles)) OR ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param18 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param19 IN $jwt.roles)) AND EXISTS {
-                        MATCH (this11)-[:TRANSACTION]->(this12:Store)
-                        WHERE ($jwt.store IS NOT NULL AND this12.id = $jwt.store)
-                    }))
-                    WITH DISTINCT this11
-                    CALL (this11) {
-                        MATCH (this11)-[this13:TRANSACTION]->(this14:Store)
-                        WITH DISTINCT this14
-                        WITH this14 { .name } AS this14
-                        RETURN collect(this14) AS var15
-                    }
-                    WITH this11 { .id, store: var15 } AS this11
-                    RETURN collect(this11) AS var16
+              CALL (this) {
+                MATCH (this)-[this10:ITEM_TRANSACTED]->(this11:Transaction)
+                WHERE (($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param17 IN $jwt.roles)) OR ($isAuthenticated = true AND (($jwt.roles IS NOT NULL AND $param18 IN $jwt.roles) OR ($jwt.roles IS NOT NULL AND $param19 IN $jwt.roles)) AND EXISTS {
+                  MATCH (this11)-[:TRANSACTION]->(this12:Store)
+                  WHERE ($jwt.store IS NOT NULL AND this12.id = $jwt.store)
+                }))
+                WITH DISTINCT this11
+                CALL (this11) {
+                  MATCH (this11)-[this13:TRANSACTION]->(this14:Store)
+                  WITH DISTINCT this14
+                  WITH this14 { .name } AS this14
+                  RETURN collect(this14) AS var15
                 }
-                RETURN this { .name, transaction: var16 } AS var17
+                WITH this11 { .id, store: var15 } AS this11
+                RETURN collect(this11) AS var16
+              }
+              RETURN this { .name, transaction: var16 } AS var17
             }
             RETURN collect(var17) AS data"
         `);

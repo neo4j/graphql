@@ -573,8 +573,8 @@ describe("Cypher Advanced Filtering - deprecated", () => {
                 "CYPHER 5
                 MATCH (this:Movie)
                 WHERE EXISTS {
-                    MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                    WHERE this0.name = $param0
+                  MATCH (this)-[:IN_GENRE]->(this0:Genre)
+                  WHERE this0.name = $param0
                 }
                 RETURN this { .actorCount } AS this"
             `);
@@ -601,8 +601,8 @@ describe("Cypher Advanced Filtering - deprecated", () => {
                 "CYPHER 5
                 MATCH (this:Movie)
                 WHERE NOT (EXISTS {
-                    MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                    WHERE this0.name = $param0
+                  MATCH (this)-[:IN_GENRE]->(this0:Genre)
+                  WHERE this0.name = $param0
                 })
                 RETURN this { .actorCount } AS this"
             `);
@@ -634,11 +634,11 @@ describe("Cypher Advanced Filtering - deprecated", () => {
                     "CYPHER 5
                     MATCH (this:Movie)
                     WHERE (EXISTS {
-                        MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                        WHERE this0.name = $param0
+                      MATCH (this)-[:IN_GENRE]->(this0:Genre)
+                      WHERE this0.name = $param0
                     } AND NOT (EXISTS {
-                        MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                        WHERE NOT (this0.name = $param0)
+                      MATCH (this)-[:IN_GENRE]->(this0:Genre)
+                      WHERE NOT (this0.name = $param0)
                     }))
                     RETURN this { .actorCount } AS this"
                 `);
@@ -657,8 +657,8 @@ describe("Cypher Advanced Filtering - deprecated", () => {
                     "CYPHER 5
                     MATCH (this:Movie)
                     WHERE NOT (EXISTS {
-                        MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                        WHERE this0.name = $param0
+                      MATCH (this)-[:IN_GENRE]->(this0:Genre)
+                      WHERE this0.name = $param0
                     })
                     RETURN this { .actorCount } AS this"
                 `);
@@ -694,8 +694,8 @@ describe("Cypher Advanced Filtering - deprecated", () => {
                     "CYPHER 5
                     MATCH (this:Movie)
                     WHERE EXISTS {
-                        MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                        WHERE this0.name = $param0
+                      MATCH (this)-[:IN_GENRE]->(this0:Genre)
+                      WHERE this0.name = $param0
                     }
                     RETURN this { .actorCount } AS this"
                 `);
@@ -724,8 +724,8 @@ describe("Cypher Advanced Filtering - deprecated", () => {
                 "CYPHER 5
                 MATCH (this:Movie)
                 WHERE EXISTS {
-                    MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                    WHERE this1.name = $param0
+                  MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
+                  WHERE this1.name = $param0
                 }
                 RETURN this { .actorCount } AS this"
             `);
@@ -752,8 +752,8 @@ describe("Cypher Advanced Filtering - deprecated", () => {
                 "CYPHER 5
                 MATCH (this:Movie)
                 WHERE NOT (EXISTS {
-                    MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                    WHERE this1.name = $param0
+                  MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
+                  WHERE this1.name = $param0
                 })
                 RETURN this { .actorCount } AS this"
             `);
@@ -785,11 +785,11 @@ describe("Cypher Advanced Filtering - deprecated", () => {
                     "CYPHER 5
                     MATCH (this:Movie)
                     WHERE (EXISTS {
-                        MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                        WHERE this1.name = $param0
+                      MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
+                      WHERE this1.name = $param0
                     } AND NOT (EXISTS {
-                        MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                        WHERE NOT (this1.name = $param0)
+                      MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
+                      WHERE NOT (this1.name = $param0)
                     }))
                     RETURN this { .actorCount } AS this"
                 `);
@@ -808,8 +808,8 @@ describe("Cypher Advanced Filtering - deprecated", () => {
                     "CYPHER 5
                     MATCH (this:Movie)
                     WHERE NOT (EXISTS {
-                        MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                        WHERE this1.name = $param0
+                      MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
+                      WHERE this1.name = $param0
                     })
                     RETURN this { .actorCount } AS this"
                 `);
@@ -845,8 +845,8 @@ describe("Cypher Advanced Filtering - deprecated", () => {
                     "CYPHER 5
                     MATCH (this:Movie)
                     WHERE EXISTS {
-                        MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                        WHERE this1.name = $param0
+                      MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
+                      WHERE this1.name = $param0
                     }
                     RETURN this { .actorCount } AS this"
                 `);

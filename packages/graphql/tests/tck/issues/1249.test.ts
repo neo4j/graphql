@@ -82,22 +82,22 @@ describe("https://github.com/neo4j/graphql/issues/1249", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            MATCH (this:Bulk:BULK)
+            MATCH (this:Bulk&BULK)
             CALL (this) {
-                MATCH (this)-[this0:MATERIAL_BULK]->(this1:Material)
-                WITH DISTINCT this1
-                CALL (this1) {
-                    MATCH (this1)-[this2:MATERIAL_SUPPLIER]->(this3:Supplier)
-                    WITH collect({ node: this3, relationship: this2 }) AS edges
-                    CALL (edges) {
-                        UNWIND edges AS edge
-                        WITH edge.node AS this3, edge.relationship AS this2
-                        RETURN collect({ properties: { supplierMaterialNumber: this2.supplierMaterialNumber, __resolveType: \\"RelationMaterialSupplier\\" }, node: { supplierId: this3.supplierId, __resolveType: \\"Supplier\\" } }) AS var4
-                    }
-                    RETURN { edges: var4 } AS var5
+              MATCH (this)-[this0:MATERIAL_BULK]->(this1:Material)
+              WITH DISTINCT this1
+              CALL (this1) {
+                MATCH (this1)-[this2:MATERIAL_SUPPLIER]->(this3:Supplier)
+                WITH collect({node: this3, relationship: this2}) AS edges
+                CALL (edges) {
+                  UNWIND edges AS edge
+                  WITH edge.node AS this3, edge.relationship AS this2
+                  RETURN collect({properties: {supplierMaterialNumber: this2.supplierMaterialNumber, __resolveType: 'RelationMaterialSupplier'}, node: {supplierId: this3.supplierId, __resolveType: 'Supplier'}}) AS var4
                 }
-                WITH this1 { .id, suppliersConnection: var5 } AS this1
-                RETURN collect(this1) AS var6
+                RETURN {edges: var4} AS var5
+              }
+              WITH this1 { .id, suppliersConnection: var5 } AS this1
+              RETURN collect(this1) AS var6
             }
             RETURN this { .supplierMaterialNumber, material: var6 } AS this"
         `);

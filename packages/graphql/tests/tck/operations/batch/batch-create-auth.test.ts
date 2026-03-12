@@ -85,12 +85,11 @@ describe("Batch Create, Auth", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.id = create_var0.id
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.id = create_var0.id
+              WITH *
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
         `);
@@ -141,31 +140,29 @@ describe("Batch Create, Auth", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
+              CREATE (create_this1:Movie)
+              SET create_this1.id = create_var0.id
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.actors.create AS create_var2
+                CREATE (create_this3:Actor)
                 SET
-                    create_this1.id = create_var0.id
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.actors.create AS create_var2
-                    CREATE (create_this3:Actor)
-                    SET
-                        create_this3.id = randomUUID(),
-                        create_this3.name = create_var2.node.name
-                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
-                    SET
-                        create_this4.year = create_var2.edge.year
-                    RETURN collect(NULL) AS create_var5
-                }
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN create_this1
+                  create_this3.id = randomUUID(),
+                  create_this3.name = create_var2.node.name
+                MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
+                SET create_this4.year = create_var2.edge.year
+                RETURN collect(NULL) AS create_var5
+              }
+              WITH *
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+              RETURN create_this1
             }
             CALL (create_this1) {
-                MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
-                WITH DISTINCT create_this7
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this7.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH create_this7 { .name } AS create_this7
-                RETURN collect(create_this7) AS create_var8
+              MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
+              WITH DISTINCT create_this7
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND create_this7.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+              WITH create_this7 { .name } AS create_this7
+              RETURN collect(create_this7) AS create_var8
             }
             RETURN collect(create_this1 { .id, actors: create_var8 }) AS data"
         `);

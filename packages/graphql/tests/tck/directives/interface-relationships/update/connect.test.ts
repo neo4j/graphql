@@ -83,20 +83,18 @@ describe("Interface Relationships - Update connect", () => {
             WITH *
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this0:Movie)
-                    WHERE this0.title STARTS WITH $param0
-                    CREATE (this)-[this1:ACTED_IN]->(this0)
-                    SET
-                        this1.screenTime = $param1
-                }
-                CALL (this) {
-                    MATCH (this2:Series)
-                    WHERE this2.title STARTS WITH $param2
-                    CREATE (this)-[this3:ACTED_IN]->(this2)
-                    SET
-                        this3.screenTime = $param3
-                }
+              CALL (this) {
+                MATCH (this0:Movie)
+                WHERE this0.title STARTS WITH $param0
+                CREATE (this)-[this1:ACTED_IN]->(this0)
+                SET this1.screenTime = $param1
+              }
+              CALL (this) {
+                MATCH (this2:Series)
+                WHERE this2.title STARTS WITH $param2
+                CREATE (this)-[this3:ACTED_IN]->(this2)
+                SET this3.screenTime = $param3
+              }
             }
             WITH this
             RETURN this { .name } AS this"
@@ -152,34 +150,30 @@ describe("Interface Relationships - Update connect", () => {
             WITH *
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this0:Movie)
-                    WHERE this0.title STARTS WITH $param0
-                    CALL (this0) {
-                        MATCH (this1:Actor)
-                        WHERE this1.name = $param1
-                        CREATE (this0)<-[this2:ACTED_IN]-(this1)
-                        SET
-                            this2.screenTime = $param2
-                    }
-                    CREATE (this)-[this3:ACTED_IN]->(this0)
-                    SET
-                        this3.screenTime = $param3
+              CALL (this) {
+                MATCH (this0:Movie)
+                WHERE this0.title STARTS WITH $param0
+                CALL (this0) {
+                  MATCH (this1:Actor)
+                  WHERE this1.name = $param1
+                  CREATE (this0)<-[this2:ACTED_IN]-(this1)
+                  SET this2.screenTime = $param2
                 }
-                CALL (this) {
-                    MATCH (this4:Series)
-                    WHERE this4.title STARTS WITH $param4
-                    CALL (this4) {
-                        MATCH (this5:Actor)
-                        WHERE this5.name = $param5
-                        CREATE (this4)<-[this6:ACTED_IN]-(this5)
-                        SET
-                            this6.screenTime = $param6
-                    }
-                    CREATE (this)-[this7:ACTED_IN]->(this4)
-                    SET
-                        this7.screenTime = $param7
+                CREATE (this)-[this3:ACTED_IN]->(this0)
+                SET this3.screenTime = $param3
+              }
+              CALL (this) {
+                MATCH (this4:Series)
+                WHERE this4.title STARTS WITH $param4
+                CALL (this4) {
+                  MATCH (this5:Actor)
+                  WHERE this5.name = $param5
+                  CREATE (this4)<-[this6:ACTED_IN]-(this5)
+                  SET this6.screenTime = $param6
                 }
+                CREATE (this)-[this7:ACTED_IN]->(this4)
+                SET this7.screenTime = $param7
+              }
             }
             WITH this
             RETURN this { .name } AS this"

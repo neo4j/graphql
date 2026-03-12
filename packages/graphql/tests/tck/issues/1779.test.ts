@@ -61,17 +61,17 @@ describe("https://github.com/neo4j/graphql/issues/1779", () => {
             "CYPHER 5
             MATCH (this:Person)
             CALL (this) {
-                MATCH (this)-[this0:attends]->(this1:School)
-                WHERE (EXISTS {
-                    MATCH (this1)<-[:attends]-(this2:Person)
-                    WHERE this2.age > $param0
-                } AND NOT (EXISTS {
-                    MATCH (this1)<-[:attends]-(this2:Person)
-                    WHERE NOT (this2.age > $param0)
-                }))
-                WITH DISTINCT this1
-                WITH this1 { .name } AS this1
-                RETURN collect(this1) AS var3
+              MATCH (this)-[this0:attends]->(this1:School)
+              WHERE (EXISTS {
+                MATCH (this1)<-[:attends]-(this2:Person)
+                WHERE this2.age > $param0
+              } AND NOT (EXISTS {
+                MATCH (this1)<-[:attends]-(this2:Person)
+                WHERE NOT (this2.age > $param0)
+              }))
+              WITH DISTINCT this1
+              WITH this1 { .name } AS this1
+              RETURN collect(this1) AS var3
             }
             RETURN this { .name, attends: var3 } AS this"
         `);

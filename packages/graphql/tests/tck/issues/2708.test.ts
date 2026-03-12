@@ -66,14 +66,14 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN count(this2) = $param0 AS var3
+              }
+              WITH *
+              WHERE var3 = true
+              RETURN count(this0) > 0 AS var4
             }
             WITH *
             WHERE var4 = true
@@ -105,14 +105,14 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN count(this2) < $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN count(this2) < $param0 AS var3
+              }
+              WITH *
+              WHERE var3 = true
+              RETURN count(this0) > 0 AS var4
             }
             WITH *
             WHERE var4 = true
@@ -144,14 +144,14 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN count(this2) > $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN count(this2) > $param0 AS var3
+              }
+              WITH *
+              WHERE var3 = true
+              RETURN count(this0) > 0 AS var4
             }
             WITH *
             WHERE var4 = true
@@ -185,14 +185,14 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN min(size(this2.title)) = $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN min(size(this2.title)) = $param0 AS var3
+              }
+              WITH *
+              WHERE var3 = true
+              RETURN count(this0) > 0 AS var4
             }
             WITH *
             WHERE var4 = true
@@ -226,14 +226,14 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN avg(size(this2.title)) = $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN avg(size(this2.title)) = $param0 AS var3
+              }
+              WITH *
+              WHERE var3 = true
+              RETURN count(this0) > 0 AS var4
             }
             WITH *
             WHERE var4 = true
@@ -262,14 +262,14 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN max(this1.intValue) < $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN max(this1.intValue) < $param0 AS var3
+              }
+              WITH *
+              WHERE var3 = true
+              RETURN count(this0) > 0 AS var4
             }
             WITH *
             WHERE var4 = true
@@ -301,14 +301,14 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN min(this1.intValue) = $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN min(this1.intValue) = $param0 AS var3
+              }
+              WITH *
+              WHERE var3 = true
+              RETURN count(this0) > 0 AS var4
             }
             WITH *
             WHERE var4 = true
@@ -340,14 +340,14 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN count(this2) = $param0 AS var3
+              }
+              WITH *
+              WHERE var3 = true
+              RETURN count(this0) > 0 AS var4
             }
             WITH *
             WHERE var4 = true
@@ -379,14 +379,14 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN count(this2) = $param0 AS var3
+              }
+              WITH *
+              WHERE var3 = true
+              RETURN count(this0) > 0 AS var4
             }
             WITH *
             WHERE var4 = false
@@ -418,24 +418,24 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN count(this2) = $param0 AS var3
+              }
+              WITH *
+              WHERE var3 = true
+              RETURN count(this0) > 0 AS var4
             }
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this5:IN_GENRE]-(this6:Movie)
-                    RETURN count(this6) = $param1 AS var7
-                }
-                WITH *
-                WHERE NOT (var7 = true)
-                RETURN count(this0) > 0 AS var8
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this5:IN_GENRE]-(this6:Movie)
+                RETURN count(this6) = $param1 AS var7
+              }
+              WITH *
+              WHERE NOT (var7 = true)
+              RETURN count(this0) > 0 AS var8
             }
             WITH *
             WHERE (var8 = false AND var4 = true)
@@ -471,14 +471,14 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) = 1 AS var4
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN count(this2) = $param0 AS var3
+              }
+              WITH *
+              WHERE var3 = true
+              RETURN count(this0) = 1 AS var4
             }
             WITH *
             WHERE var4 = true
@@ -510,24 +510,24 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN count(this2) = $param0 AS var3
+              }
+              WITH *
+              WHERE var3 = true
+              RETURN count(this0) > 0 AS var4
             }
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this5:IN_GENRE]-(this6:Movie)
-                    RETURN count(this6) = $param1 AS var7
-                }
-                WITH *
-                WHERE NOT (var7 = true)
-                RETURN count(this0) > 0 AS var8
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this5:IN_GENRE]-(this6:Movie)
+                RETURN count(this6) = $param1 AS var7
+              }
+              WITH *
+              WHERE NOT (var7 = true)
+              RETURN count(this0) > 0 AS var8
             }
             WITH *
             WHERE (var8 = false AND var4 = true)
@@ -574,18 +574,18 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                CALL (this0) {
-                    MATCH (this0)<-[this4:IN_GENRE]-(this5:Series)
-                    RETURN min(size(this5.name)) = $param1 AS var6
-                }
-                WITH *
-                WHERE (var3 = true AND var6 = true)
-                RETURN count(this0) > 0 AS var7
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN count(this2) = $param0 AS var3
+              }
+              CALL (this0) {
+                MATCH (this0)<-[this4:IN_GENRE]-(this5:Series)
+                RETURN min(size(this5.name)) = $param1 AS var6
+              }
+              WITH *
+              WHERE (var3 = true AND var6 = true)
+              RETURN count(this0) > 0 AS var7
             }
             WITH *
             WHERE var7 = true
@@ -632,18 +632,18 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                CALL (this0) {
-                    MATCH (this0)<-[this4:IN_GENRE]-(this5:Series)
-                    RETURN min(size(this5.name)) = $param1 AS var6
-                }
-                WITH *
-                WHERE (var3 = true OR var6 = true)
-                RETURN count(this0) > 0 AS var7
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN count(this2) = $param0 AS var3
+              }
+              CALL (this0) {
+                MATCH (this0)<-[this4:IN_GENRE]-(this5:Series)
+                RETURN min(size(this5.name)) = $param1 AS var6
+              }
+              WITH *
+              WHERE (var3 = true OR var6 = true)
+              RETURN count(this0) > 0 AS var7
             }
             WITH *
             WHERE var7 = true
@@ -688,18 +688,18 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                CALL (this0) {
-                    MATCH (this0)<-[this4:IN_GENRE]-(this5:Series)
-                    RETURN min(size(this5.name)) = $param1 AS var6
-                }
-                WITH *
-                WHERE (var3 = true AND var6 = true)
-                RETURN count(this0) > 0 AS var7
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN count(this2) = $param0 AS var3
+              }
+              CALL (this0) {
+                MATCH (this0)<-[this4:IN_GENRE]-(this5:Series)
+                RETURN min(size(this5.name)) = $param1 AS var6
+              }
+              WITH *
+              WHERE (var3 = true AND var6 = true)
+              RETURN count(this0) > 0 AS var7
             }
             WITH *
             WHERE var7 = true
@@ -740,18 +740,18 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN count(this2) = $param0 AS var3
+              }
+              WITH *
+              WHERE var3 = true
+              RETURN count(this0) > 0 AS var4
             }
             CALL (this) {
-                MATCH (this)-[this5:IN_GENRE]->(this6:Genre)
-                RETURN count(this6) = $param1 AS var7
+              MATCH (this)-[this5:IN_GENRE]->(this6:Genre)
+              RETURN count(this6) = $param1 AS var7
             }
             WITH *
             WHERE (var4 = true AND var7 = true)
@@ -798,32 +798,32 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                CALL (this0) {
-                    MATCH (this0)<-[this4:IN_GENRE]-(this5:Series)
-                    RETURN count(this5) = $param1 AS var6
-                }
-                WITH *
-                WHERE (var3 = true OR var6 = true)
-                RETURN count(this0) > 0 AS var7
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN count(this2) = $param0 AS var3
+              }
+              CALL (this0) {
+                MATCH (this0)<-[this4:IN_GENRE]-(this5:Series)
+                RETURN count(this5) = $param1 AS var6
+              }
+              WITH *
+              WHERE (var3 = true OR var6 = true)
+              RETURN count(this0) > 0 AS var7
             }
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this8:IN_GENRE]-(this9:Movie)
-                    RETURN count(this9) = $param2 AS var10
-                }
-                CALL (this0) {
-                    MATCH (this0)<-[this11:IN_GENRE]-(this12:Series)
-                    RETURN count(this12) = $param3 AS var13
-                }
-                WITH *
-                WHERE NOT (var10 = true OR var13 = true)
-                RETURN count(this0) > 0 AS var14
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this8:IN_GENRE]-(this9:Movie)
+                RETURN count(this9) = $param2 AS var10
+              }
+              CALL (this0) {
+                MATCH (this0)<-[this11:IN_GENRE]-(this12:Series)
+                RETURN count(this12) = $param3 AS var13
+              }
+              WITH *
+              WHERE NOT (var10 = true OR var13 = true)
+              RETURN count(this0) > 0 AS var14
             }
             WITH *
             WHERE (var14 = false AND var7 = true)
@@ -876,32 +876,32 @@ describe("https://github.com/neo4j/graphql/issues/2708", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                CALL (this0) {
-                    MATCH (this0)<-[this4:IN_GENRE]-(this5:Series)
-                    RETURN count(this5) = $param1 AS var6
-                }
-                WITH *
-                WHERE ((var3 = true OR this0.name = $param2) AND var6 = true)
-                RETURN count(this0) > 0 AS var7
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this1:IN_GENRE]-(this2:Movie)
+                RETURN count(this2) = $param0 AS var3
+              }
+              CALL (this0) {
+                MATCH (this0)<-[this4:IN_GENRE]-(this5:Series)
+                RETURN count(this5) = $param1 AS var6
+              }
+              WITH *
+              WHERE ((var3 = true OR this0.name = $param2) AND var6 = true)
+              RETURN count(this0) > 0 AS var7
             }
             CALL (this) {
-                MATCH (this)-[:IN_GENRE]->(this0:Genre)
-                CALL (this0) {
-                    MATCH (this0)<-[this8:IN_GENRE]-(this9:Movie)
-                    RETURN count(this9) = $param3 AS var10
-                }
-                CALL (this0) {
-                    MATCH (this0)<-[this11:IN_GENRE]-(this12:Series)
-                    RETURN count(this12) = $param4 AS var13
-                }
-                WITH *
-                WHERE NOT ((var10 = true OR this0.name = $param5) AND var13 = true)
-                RETURN count(this0) > 0 AS var14
+              MATCH (this)-[:IN_GENRE]->(this0:Genre)
+              CALL (this0) {
+                MATCH (this0)<-[this8:IN_GENRE]-(this9:Movie)
+                RETURN count(this9) = $param3 AS var10
+              }
+              CALL (this0) {
+                MATCH (this0)<-[this11:IN_GENRE]-(this12:Series)
+                RETURN count(this12) = $param4 AS var13
+              }
+              WITH *
+              WHERE NOT ((var10 = true OR this0.name = $param5) AND var13 = true)
+              RETURN count(this0) > 0 AS var14
             }
             WITH *
             WHERE (var14 = false AND var7 = true)

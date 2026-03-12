@@ -103,21 +103,21 @@ describe("https://github.com/neo4j/graphql/issues/4115", () => {
             "CYPHER 5
             MATCH (this:Family)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
-                    WHERE ($isAuthenticated = true AND (EXISTS {
-                        MATCH (this1)<-[:CREATOR_OF]-(this2:User)
-                        WHERE ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid)
-                    } AND EXISTS {
-                        MATCH (this1)-[:MEMBER_OF]->(this3:Family)
-                        WHERE EXISTS {
-                            MATCH (this3)<-[:CREATOR_OF]-(this4:User)
-                            WHERE ($param2 IS NOT NULL AND $param2 IN this4.roles)
-                        }
-                    }))
-                    RETURN { nodes: count(DISTINCT this1) } AS var5
-                }
-                RETURN { aggregate: { count: var5 } } AS var6
+              CALL (this) {
+                MATCH (this)<-[this0:MEMBER_OF]-(this1:Person)
+                WHERE ($isAuthenticated = true AND (EXISTS {
+                  MATCH (this1)<-[:CREATOR_OF]-(this2:User)
+                  WHERE ($jwt.uid IS NOT NULL AND this2.id = $jwt.uid)
+                } AND EXISTS {
+                  MATCH (this1)-[:MEMBER_OF]->(this3:Family)
+                  WHERE EXISTS {
+                    MATCH (this3)<-[:CREATOR_OF]-(this4:User)
+                    WHERE ($param2 IS NOT NULL AND $param2 IN this4.roles)
+                  }
+                }))
+                RETURN {nodes: count(DISTINCT this1)} AS var5
+              }
+              RETURN {aggregate: {count: var5}} AS var6
             }
             RETURN this { .id, membersConnection: var6 } AS this"
         `);

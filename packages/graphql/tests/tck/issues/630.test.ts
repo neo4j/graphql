@@ -69,19 +69,19 @@ describe("Cypher directive", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (m:Movie {title: NULL})
-                    RETURN m
-                }
-                WITH m AS this0
-                CALL (this0) {
-                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
-                    WITH count(this2) AS totalCount
-                    RETURN { totalCount: totalCount } AS var3
-                }
-                WITH this0 { actorsConnection: var3 } AS this0
-                RETURN collect(this0) AS var4
+              CALL (this) {
+                WITH this AS this
+                MATCH (m:Movie {title: NULL})
+                RETURN m
+              }
+              WITH m AS this0
+              CALL (this0) {
+                MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                WITH count(this2) AS totalCount
+                RETURN {totalCount: totalCount} AS var3
+              }
+              WITH this0 { actorsConnection: var3 } AS this0
+              RETURN collect(this0) AS var4
             }
             RETURN this { movies: var4 } AS this"
         `);
