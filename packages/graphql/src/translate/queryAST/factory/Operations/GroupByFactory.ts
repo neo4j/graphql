@@ -12,7 +12,7 @@ export class GroupByFactory {
                 return fieldName;
             });
         return new GroupByField({
-            alias: resolveTree.alias,
+            alias: "groupBy", // Top level should be groupBy, as the alias is handled by GraphQL
             by: filterByFields,
         });
     }
