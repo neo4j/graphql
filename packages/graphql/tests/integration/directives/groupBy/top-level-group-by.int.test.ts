@@ -32,7 +32,7 @@ describe("@groupBy directive top level", () => {
             type ${Movie} @node {
                 title: String!
                 year: Int! @groupBy 
-                rating: Int! @groupBy 
+                rating: Int @groupBy 
             }
         `;
 
@@ -153,9 +153,69 @@ describe("@groupBy directive top level", () => {
         });
     });
 
+    test("groupBy in top level query for nullable field", async () => {
+        await testHelper.executeCypher(`
+            CREATE (:${Movie} {title: "The Matrix", year: 1999, rating: 5})
+            CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001, rating: 5})
+            CREATE (:${Movie} {title: "Another Movie", year: 1999})
+            CREATE (:${Movie} {title: "Another Movie 2", year: 1999})
+        `);
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.operations.connection} {
+                    groupBy(fields: {rating: true}) {
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeUndefined();
+        expect(result.data).toEqual({
+            [Movie.operations.connection]: {
+                groupBy: expect.toIncludeSameMembers([
+                    {
+                        edges: expect.toIncludeSameMembers([
+                            {
+                                node: {
+                                    title: "Another Movie 2",
+                                },
+                            },
+                            {
+                                node: {
+                                    title: "Another Movie",
+                                },
+                            },
+                        ]),
+                    },
+                    {
+                        edges: expect.toIncludeSameMembers([
+                            {
+                                node: {
+                                    title: "The Matrix Reloaded",
+                                },
+                            },
+                            {
+                                node: {
+                                    title: "The Matrix",
+                                },
+                            },
+                        ]),
+                    },
+                ]),
+            },
+        });
+    });
+
     // This is not supported, same issue as in edges: https://github.com/neo4j/graphql/issues/5584
     // eslint-disable-next-line jest/no-disabled-tests
-    test.skip("mulitple aliased groupBy in top level query without projection", async () => {
+    test.skip("multitple aliased groupBy in top level query without projection", async () => {
         await testHelper.executeCypher(`
             CREATE (:${Movie} {title: "The Matrix", year: 1999, rating: 10})
             CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001, rating: 7})
@@ -172,14 +232,13 @@ describe("@groupBy directive top level", () => {
                             }
                         }
                     }
-
-                    # groupByRating: groupBy(fields: {rating: true}) {
-                    #     edges {
-                    #         node {
-                    #             title
-                    #         }
-                    #     }
-                    # }
+                    groupByRating: groupBy(fields: {rating: true}) {
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+                    }
                 }
             }
         `;
@@ -213,31 +272,31 @@ describe("@groupBy directive top level", () => {
                         ]),
                     },
                 ]),
-                // groupByRating: expect.toIncludeSameMembers([
-                //     {
-                //         edges: expect.toIncludeSameMembers([
-                //             {
-                //                 node: {
-                //                     title: "The Matrix",
-                //                 },
-                //             },
-                //             {
-                //                 node: {
-                //                     title: "Another Movie",
-                //                 },
-                //             },
-                //         ]),
-                //     },
-                //     {
-                //         edges: [
-                //             {
-                //                 node: {
-                //                     title: "The Matrix Reloaded",
-                //                 },
-                //             },
-                //         ],
-                //     },
-                // ]),
+                groupByRating: expect.toIncludeSameMembers([
+                    {
+                        edges: expect.toIncludeSameMembers([
+                            {
+                                node: {
+                                    title: "The Matrix",
+                                },
+                            },
+                            {
+                                node: {
+                                    title: "Another Movie",
+                                },
+                            },
+                        ]),
+                    },
+                    {
+                        edges: [
+                            {
+                                node: {
+                                    title: "The Matrix Reloaded",
+                                },
+                            },
+                        ],
+                    },
+                ]),
             },
         });
     });
