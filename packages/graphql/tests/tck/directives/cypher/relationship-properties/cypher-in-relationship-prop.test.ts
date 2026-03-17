@@ -78,22 +78,22 @@ describe("cypher directive in relationship properties", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1, edge.relationship AS this0
-                    CALL (this0) {
-                        CALL (this0) {
-                            WITH this0 AS this
-                            RETURN this.screenTimeMinutes / 60 AS c
-                        }
-                        WITH c AS this2
-                        RETURN this2 AS var3
-                    }
-                    RETURN collect({ properties: { screenTimeHours: var3, __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var4
+              MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              WITH collect({node: this1, relationship: this0}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this1, edge.relationship AS this0
+                CALL (this0) {
+                  CALL (this0) {
+                    WITH this0 AS this
+                    RETURN this.screenTimeMinutes / 60 AS c
+                  }
+                  WITH c AS this2
+                  RETURN this2 AS var3
                 }
-                RETURN { edges: var4 } AS var5
+                RETURN collect({properties: {screenTimeHours: var3, __resolveType: 'ActedIn'}, node: {name: this1.name, __resolveType: 'Actor'}}) AS var4
+              }
+              RETURN {edges: var4} AS var5
             }
             RETURN this { .title, actorsConnection: var5 } AS this"
         `);

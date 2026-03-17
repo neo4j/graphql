@@ -66,13 +66,13 @@ describe("cypher directive filtering - Relationship", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this0
-                RETURN collect(this0) AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this0
+              RETURN collect(this0) AS this1
             }
             WITH *
             WHERE NOT (any(this2 IN this1 WHERE this2.name = $param0))
@@ -130,13 +130,13 @@ describe("cypher directive filtering - Relationship", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this0
-                RETURN collect(this0) AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this0
+              RETURN collect(this0) AS this1
             }
             WITH *
             WHERE all(this2 IN this1 WHERE this2.name = $param0)
@@ -194,13 +194,13 @@ describe("cypher directive filtering - Relationship", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this0
-                RETURN collect(this0) AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this0
+              RETURN collect(this0) AS this1
             }
             WITH *
             WHERE single(this2 IN this1 WHERE this2.name = $param0)
@@ -258,13 +258,13 @@ describe("cypher directive filtering - Relationship", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this0
-                RETURN collect(this0) AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this0
+              RETURN collect(this0) AS this1
             }
             WITH *
             WHERE any(this2 IN this1 WHERE this2.name = $param0)
@@ -321,13 +321,13 @@ describe("cypher directive filtering - Relationship", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this0
-                RETURN collect(this0) AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this0
+              RETURN collect(this0) AS this1
             }
             WITH *
             WHERE none(this2 IN this1 WHERE this2.name = $param0)
@@ -412,22 +412,22 @@ describe("cypher directive filtering - Relationship", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this0
-                RETURN collect(this0) AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this0
+              RETURN collect(this0) AS this1
             }
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:IN_GENRE]->(g:Genre)
-                    RETURN g
-                }
-                WITH g AS this2
-                RETURN collect(this2) AS this3
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:IN_GENRE]->(g:Genre)
+                RETURN g
+              }
+              WITH g AS this2
+              RETURN collect(this2) AS this3
             }
             WITH *
             WHERE (any(this4 IN this1 WHERE this4.name = $param0) OR any(this5 IN this3 WHERE this5.name = $param1))

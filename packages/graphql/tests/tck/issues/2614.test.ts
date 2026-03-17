@@ -74,21 +74,21 @@ describe("https://github.com/neo4j/graphql/issues/2614", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this0:ACTED_IN]->(this1:Film)
-                    WHERE this1.title = $param0
-                    WITH this1 { .title, __resolveType: \\"Movie\\", __id: id(this1) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                    WHERE this4.title = $param1
-                    WITH this4 { .title, __resolveType: \\"Series\\", __id: id(this4) } AS var2
-                    RETURN var2
-                }
-                WITH var2
-                RETURN collect(var2) AS var2
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this0:ACTED_IN]->(this1:Film)
+                WHERE this1.title = $param0
+                WITH this1 { .title, __resolveType: 'Movie', __id: elementId(this1) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)-[this3:ACTED_IN]->(this4:Series)
+                WHERE this4.title = $param1
+                WITH this4 { .title, __resolveType: 'Series', __id: elementId(this4) } AS var2
+                RETURN var2
+              }
+              WITH var2
+              RETURN collect(var2) AS var2
             }
             RETURN this { actedIn: var2 } AS this"
         `);

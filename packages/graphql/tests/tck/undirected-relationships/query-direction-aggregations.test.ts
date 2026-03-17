@@ -55,11 +55,11 @@ describe("QueryDirection in relationships aggregations", () => {
             "CYPHER 5
             MATCH (this:User)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
-                    RETURN { nodes: count(DISTINCT this1) } AS var2
-                }
-                RETURN { aggregate: { count: var2 } } AS var3
+              CALL (this) {
+                MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
+                RETURN {nodes: count(DISTINCT this1)} AS var2
+              }
+              RETURN {aggregate: {count: var2}} AS var3
             }
             RETURN this { friendsConnection: var3 } AS this"
         `);
@@ -97,11 +97,11 @@ describe("QueryDirection in relationships aggregations", () => {
             "CYPHER 5
             MATCH (this:User)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
-                    RETURN { nodes: count(DISTINCT this1) } AS var2
-                }
-                RETURN { aggregate: { count: var2 } } AS var3
+              CALL (this) {
+                MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
+                RETURN {nodes: count(DISTINCT this1)} AS var2
+              }
+              RETURN {aggregate: {count: var2}} AS var3
             }
             RETURN this { friendsConnection: var3 } AS this"
         `);

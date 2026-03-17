@@ -60,21 +60,19 @@ describe("info", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.title = create_var0.title
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.actors.create AS create_var2
-                    CREATE (create_this3:Actor)
-                    SET
-                        create_this3.name = create_var2.node.name
-                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
-                    RETURN collect(NULL) AS create_var5
-                }
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.title = create_var0.title
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.actors.create AS create_var2
+                CREATE (create_this3:Actor)
+                SET create_this3.name = create_var2.node.name
+                MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
+                RETURN collect(NULL) AS create_var5
+              }
+              RETURN create_this1
             }
-            RETURN \\"Query cannot conclude with CALL\\""
+            RETURN 'Query cannot conclude with CALL'"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

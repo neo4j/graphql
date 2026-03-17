@@ -416,7 +416,7 @@ export class UpdateFactory {
                                         entity: target,
                                     });
                                 } else {
-                                    for (const op of Object.keys(edgeInput[k][fieldName])) {
+                                    for (const op of Object.keys(edgeInput[k])) {
                                         const paramInputField = this.getInputField(
                                             "relationship",
                                             op,

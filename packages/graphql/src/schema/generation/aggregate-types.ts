@@ -270,7 +270,6 @@ export function withAggregateInputType({
     }
     return aggregateWhereInput;
 }
-
 function withAggregationWhereInputType({
     relationshipAdapter,
     entityAdapter,
@@ -302,6 +301,11 @@ function withAggregationWhereInputType({
     if (!aggregationFields.length) {
         return;
     }
+    const aggrFields = makeAggregationFields(aggregationFields, userDefinedDirectivesOnTargetFields, features);
+
+    if (Object.keys(aggrFields).length === 0) {
+        return;
+    }
     const aggregationInput = composer.createInputTC({
         name: aggregationInputName,
         fields: {},
@@ -310,10 +314,8 @@ function withAggregationWhereInputType({
         AND: aggregationInput.NonNull.List,
         OR: aggregationInput.NonNull.List,
         NOT: aggregationInput,
+        ...aggrFields,
     });
-
-    const aggrFields = makeAggregationFields(aggregationFields, userDefinedDirectivesOnTargetFields, features);
-    aggregationInput.addFields(aggrFields);
     return aggregationInput;
 }
 

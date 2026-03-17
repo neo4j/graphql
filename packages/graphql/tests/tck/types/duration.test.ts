@@ -114,10 +114,9 @@ describe("Cypher Duration", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.duration = create_var0.duration
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.duration = create_var0.duration
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .duration }) AS data"
         `);
@@ -156,8 +155,7 @@ describe("Cypher Duration", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            SET
-                this.duration = $param0
+            SET this.duration = $param0
             WITH this
             RETURN this { .id, .duration } AS this"
         `);

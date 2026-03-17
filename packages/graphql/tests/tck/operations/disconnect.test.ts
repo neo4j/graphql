@@ -108,66 +108,66 @@ describe("Cypher Disconnect", () => {
             MATCH (this:Product)
             WITH *
             SET
-                this.id = $param0,
-                this.name = $param1
+              this.id = $param0,
+              this.name = $param1
             WITH *
             CALL (*) {
-                CALL (this) {
-                    OPTIONAL MATCH (this)-[this0:HAS_COLOR]->(this1:Color)
-                    WHERE this1.name = $param2
-                    CALL (this1) {
-                        CALL (this1) {
-                            OPTIONAL MATCH (this1)<-[this2:OF_COLOR]-(this3:Photo)
-                            WHERE this3.id = $param3
-                            CALL (this3) {
-                                CALL (this3) {
-                                    OPTIONAL MATCH (this3)-[this4:OF_COLOR]->(this5:Color)
-                                    WHERE this5.id = $param4
-                                    WITH *
-                                    DELETE this4
-                                }
-                            }
-                            WITH *
-                            DELETE this2
-                        }
+              CALL (this) {
+                OPTIONAL MATCH (this)-[this0:HAS_COLOR]->(this1:Color)
+                WHERE this1.name = $param2
+                CALL (this1) {
+                  CALL (this1) {
+                    OPTIONAL MATCH (this1)<-[this2:OF_COLOR]-(this3:Photo)
+                    WHERE this3.id = $param3
+                    CALL (this3) {
+                      CALL (this3) {
+                        OPTIONAL MATCH (this3)-[this4:OF_COLOR]->(this5:Color)
+                        WHERE this5.id = $param4
+                        WITH *
+                        DELETE this4
+                      }
                     }
                     WITH *
-                    DELETE this0
+                    DELETE this2
+                  }
                 }
+                WITH *
+                DELETE this0
+              }
             }
             WITH *
             CALL (*) {
-                CALL (this) {
-                    OPTIONAL MATCH (this)-[this6:HAS_PHOTO]->(this7:Photo)
-                    WHERE this7.id = $param5
-                    CALL (this7) {
-                        CALL (this7) {
-                            OPTIONAL MATCH (this7)-[this8:OF_COLOR]->(this9:Color)
-                            WHERE this9.name = $param6
-                            WITH *
-                            DELETE this8
-                        }
-                    }
+              CALL (this) {
+                OPTIONAL MATCH (this)-[this6:HAS_PHOTO]->(this7:Photo)
+                WHERE this7.id = $param5
+                CALL (this7) {
+                  CALL (this7) {
+                    OPTIONAL MATCH (this7)-[this8:OF_COLOR]->(this9:Color)
+                    WHERE this9.name = $param6
                     WITH *
-                    DELETE this6
+                    DELETE this8
+                  }
                 }
+                WITH *
+                DELETE this6
+              }
             }
             WITH *
             CALL (*) {
-                CALL (this) {
-                    OPTIONAL MATCH (this)-[this10:HAS_PHOTO]->(this11:Photo)
-                    WHERE this11.id = $param7
-                    CALL (this11) {
-                        CALL (this11) {
-                            OPTIONAL MATCH (this11)-[this12:OF_COLOR]->(this13:Color)
-                            WHERE this13.name = $param8
-                            WITH *
-                            DELETE this12
-                        }
-                    }
+              CALL (this) {
+                OPTIONAL MATCH (this)-[this10:HAS_PHOTO]->(this11:Photo)
+                WHERE this11.id = $param7
+                CALL (this11) {
+                  CALL (this11) {
+                    OPTIONAL MATCH (this11)-[this12:OF_COLOR]->(this13:Color)
+                    WHERE this13.name = $param8
                     WITH *
-                    DELETE this10
+                    DELETE this12
+                  }
                 }
+                WITH *
+                DELETE this10
+              }
             }
             WITH this
             RETURN this { .id } AS this"

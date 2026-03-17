@@ -79,18 +79,18 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            CALL db.index.fulltext.queryNodes('MovieTitle', $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND ($isAuthenticated = true AND EXISTS {
-                MATCH (this0)<-[:DIRECTED]-(this2:Person)
-                WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+              MATCH (this0)<-[:DIRECTED]-(this2:Person)
+              WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
             }))
-            WITH collect({ node: this0 }) AS edges
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var3
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var3
             }
-            RETURN { edges: var3 } AS this"
+            RETURN {edges: var3} AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
@@ -150,19 +150,19 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            CALL db.index.fulltext.queryNodes('MovieTitle', $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                MATCH (this0)<-[:DIRECTED]-(this2:Person)
-                WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH collect({ node: this0 }) AS edges
+              MATCH (this0)<-[:DIRECTED]-(this2:Person)
+              WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+            }), '@neo4j/graphql/FORBIDDEN', [])
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var3
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var3
             }
-            RETURN { edges: var3 } AS this"
+            RETURN {edges: var3} AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
@@ -222,22 +222,22 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            CALL db.index.fulltext.queryNodes('MovieTitle', $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND (EXISTS {
-                MATCH (this0)<-[:DIRECTED]-(this2:Person)
-                WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+              MATCH (this0)<-[:DIRECTED]-(this2:Person)
+              WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
             } AND NOT (EXISTS {
-                MATCH (this0)<-[:DIRECTED]-(this2:Person)
-                WHERE NOT ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
-            }))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH collect({ node: this0 }) AS edges
+              MATCH (this0)<-[:DIRECTED]-(this2:Person)
+              WHERE NOT ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+            }))), '@neo4j/graphql/FORBIDDEN', [])
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var3
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var3
             }
-            RETURN { edges: var3 } AS this"
+            RETURN {edges: var3} AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
@@ -302,19 +302,19 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            CALL db.index.fulltext.queryNodes('MovieTitle', $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
-                WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH collect({ node: this0 }) AS edges
+              MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
+              WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
+            }), '@neo4j/graphql/FORBIDDEN', [])
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var4
             }
-            RETURN { edges: var4 } AS this"
+            RETURN {edges: var4} AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
@@ -379,22 +379,22 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            CALL db.index.fulltext.queryNodes('MovieTitle', $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND (EXISTS {
-                MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
-                WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
+              MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
+              WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
             } AND NOT (EXISTS {
-                MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
-                WHERE NOT ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
-            }))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH collect({ node: this0 }) AS edges
+              MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
+              WHERE NOT ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
+            }))), '@neo4j/graphql/FORBIDDEN', [])
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var4
             }
-            RETURN { edges: var4 } AS this"
+            RETURN {edges: var4} AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
@@ -463,19 +463,19 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            CALL db.index.fulltext.queryNodes('MovieTitle', $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
-                WHERE ($param3 IS NOT NULL AND this2.year = $param3)
-            }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH collect({ node: this0 }) AS edges
+              MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
+              WHERE ($param3 IS NOT NULL AND this2.year = $param3)
+            }), '@neo4j/graphql/FORBIDDEN', [])
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var4
             }
-            RETURN { edges: var4 } AS this"
+            RETURN {edges: var4} AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`
@@ -541,22 +541,22 @@ describe("Cypher -> fulltext -> Auth", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            CALL db.index.fulltext.queryNodes('MovieTitle', $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND (EXISTS {
-                MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
-                WHERE ($param3 IS NOT NULL AND this2.year = $param3)
+              MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
+              WHERE ($param3 IS NOT NULL AND this2.year = $param3)
             } AND NOT (EXISTS {
-                MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
-                WHERE NOT ($param3 IS NOT NULL AND this2.year = $param3)
-            }))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH collect({ node: this0 }) AS edges
+              MATCH (this0)<-[this2:DIRECTED]-(this3:Person)
+              WHERE NOT ($param3 IS NOT NULL AND this2.year = $param3)
+            }))), '@neo4j/graphql/FORBIDDEN', [])
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var4
             }
-            RETURN { edges: var4 } AS this"
+            RETURN {edges: var4} AS this"
         `);
 
         expect(result.params).toMatchInlineSnapshot(`

@@ -54,24 +54,24 @@ describe("cypher directive filtering", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (m:Movie)
-                    RETURN count(m) as c
-                }
-                WITH c AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH (m:Movie)
+                RETURN count(m) as c
+              }
+              WITH c AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE (this.title = $param0 AND var1 >= $param1)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (m:Movie)
-                    RETURN count(m) as c
-                }
-                WITH c AS this2
-                RETURN this2 AS var3
+              CALL (this) {
+                WITH this AS this
+                MATCH (m:Movie)
+                RETURN count(m) as c
+              }
+              WITH c AS this2
+              RETURN this2 AS var3
             }
             RETURN this { special_count: var3 } AS this"
         `);
@@ -120,24 +120,24 @@ describe("cypher directive filtering", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (m:Movie)
-                    RETURN count(m) as c
-                }
-                WITH c AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH (m:Movie)
+                RETURN count(m) as c
+              }
+              WITH c AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE (this.title = $param0 AND var1 >= $param1)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (m:Movie)
-                    RETURN count(m) as c
-                }
-                WITH c AS this2
-                RETURN this2 AS var3
+              CALL (this) {
+                WITH this AS this
+                MATCH (m:Movie)
+                RETURN count(m) as c
+              }
+              WITH c AS this2
+              RETURN this2 AS var3
             }
             RETURN this { special_count: var3 } AS this"
         `);
@@ -186,13 +186,13 @@ describe("cypher directive filtering", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (m:Movie)
-                    RETURN count(m) as c
-                }
-                WITH c AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH (m:Movie)
+                RETURN count(m) as c
+              }
+              WITH c AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE var1 >= $param0
@@ -248,12 +248,12 @@ describe("cypher directive filtering", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN \\"Toyota\\" as s
-                }
-                WITH s AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN \\"Toyota\\" as s
+              }
+              WITH s AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE toLower(var1) = toLower($param0)
@@ -306,12 +306,12 @@ describe("cypher directive filtering", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN \\"Toyota\\" as s
-                }
-                WITH s AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN \\"Toyota\\" as s
+              }
+              WITH s AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE toLower(var1) CONTAINS toLower($param0)
@@ -364,12 +364,12 @@ describe("cypher directive filtering", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN \\"Toyota\\" as s
-                }
-                WITH s AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN \\"Toyota\\" as s
+              }
+              WITH s AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE toLower(var1) STARTS WITH toLower($param0)
@@ -422,12 +422,12 @@ describe("cypher directive filtering", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN \\"Toyota\\" as s
-                }
-                WITH s AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN \\"Toyota\\" as s
+              }
+              WITH s AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE toLower(var1) ENDS WITH toLower($param0)
@@ -480,12 +480,12 @@ describe("cypher directive filtering", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN \\"Toyota\\" as s
-                }
-                WITH s AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN \\"Toyota\\" as s
+              }
+              WITH s AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE toLower(var1) IN [var2 IN $param0 | toLower(var2)]

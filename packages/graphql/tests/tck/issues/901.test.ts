@@ -96,23 +96,23 @@ describe("https://github.com/neo4j/graphql/issues/901", () => {
             "CYPHER 5
             MATCH (this:Series)
             WHERE (EXISTS {
-                MATCH (this)-[this0:HAS_MANUFACTURER]->(this1:Series)
-                WHERE (this1.name = $param0 AND this0.current = $param1)
+              MATCH (this)-[this0:HAS_MANUFACTURER]->(this1:Series)
+              WHERE (this1.name = $param0 AND this0.current = $param1)
             } OR EXISTS {
-                MATCH (this)-[this2:HAS_BRAND]->(this3:Series)
-                WHERE (this3.name = $param2 AND this2.current = $param3)
+              MATCH (this)-[this2:HAS_BRAND]->(this3:Series)
+              WHERE (this3.name = $param2 AND this2.current = $param3)
             })
             CALL (this) {
-                MATCH (this)-[this4:HAS_BRAND]->(this5:Series)
-                WITH DISTINCT this5
-                WITH this5 { .name } AS this5
-                RETURN collect(this5) AS var6
+              MATCH (this)-[this4:HAS_BRAND]->(this5:Series)
+              WITH DISTINCT this5
+              WITH this5 { .name } AS this5
+              RETURN collect(this5) AS var6
             }
             CALL (this) {
-                MATCH (this)-[this7:HAS_MANUFACTURER]->(this8:Series)
-                WITH DISTINCT this8
-                WITH this8 { .name } AS this8
-                RETURN collect(this8) AS var9
+              MATCH (this)-[this7:HAS_MANUFACTURER]->(this8:Series)
+              WITH DISTINCT this8
+              WITH this8 { .name } AS this8
+              RETURN collect(this8) AS var9
             }
             RETURN this { .name, brand: var6, manufacturer: var9 } AS this"
         `);

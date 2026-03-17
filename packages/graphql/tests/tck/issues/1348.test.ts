@@ -79,24 +79,24 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
             "CYPHER 5
             MATCH (this:ProgrammeItem)
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this0:RELATES_TO]-(this1:Series)
-                    WITH this1 { .productTitle, __resolveType: \\"Series\\", __id: id(this1) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this3:RELATES_TO]-(this4:Season)
-                    WITH this4 { .productTitle, __resolveType: \\"Season\\", __id: id(this4) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this5:RELATES_TO]-(this6:ProgrammeItem)
-                    WITH this6 { .productTitle, __resolveType: \\"ProgrammeItem\\", __id: id(this6) } AS var2
-                    RETURN var2
-                }
-                WITH var2
-                RETURN collect(var2) AS var2
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this0:RELATES_TO]-(this1:Series)
+                WITH this1 { .productTitle, __resolveType: 'Series', __id: elementId(this1) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)-[this3:RELATES_TO]-(this4:Season)
+                WITH this4 { .productTitle, __resolveType: 'Season', __id: elementId(this4) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)-[this5:RELATES_TO]-(this6:ProgrammeItem)
+                WITH this6 { .productTitle, __resolveType: 'ProgrammeItem', __id: elementId(this6) } AS var2
+                RETURN var2
+              }
+              WITH var2
+              RETURN collect(var2) AS var2
             }
             RETURN this { .productTitle, .episodeNumber, releatsTo: var2 } AS this"
         `);
@@ -135,28 +135,28 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
             "CYPHER 5
             MATCH (this:ProgrammeItem)
             CALL (this) {
+              CALL (this) {
                 CALL (this) {
-                    CALL (this) {
-                        WITH this
-                        MATCH (this)-[this0:RELATES_TO]-(this1:Series)
-                        WITH { node: { __resolveType: \\"Series\\", __id: id(this1), productTitle: this1.productTitle } } AS edge
-                        RETURN edge
-                        UNION
-                        WITH this
-                        MATCH (this)-[this2:RELATES_TO]-(this3:Season)
-                        WITH { node: { __resolveType: \\"Season\\", __id: id(this3), productTitle: this3.productTitle } } AS edge
-                        RETURN edge
-                        UNION
-                        WITH this
-                        MATCH (this)-[this4:RELATES_TO]-(this5:ProgrammeItem)
-                        WITH { node: { __resolveType: \\"ProgrammeItem\\", __id: id(this5), productTitle: this5.productTitle } } AS edge
-                        RETURN edge
-                    }
-                    RETURN collect(edge) AS edges
+                  WITH this
+                  MATCH (this)-[this0:RELATES_TO]-(this1:Series)
+                  WITH {node: {__resolveType: 'Series', __id: elementId(this1), productTitle: this1.productTitle}} AS edge
+                  RETURN edge
+                  UNION
+                  WITH this
+                  MATCH (this)-[this2:RELATES_TO]-(this3:Season)
+                  WITH {node: {__resolveType: 'Season', __id: elementId(this3), productTitle: this3.productTitle}} AS edge
+                  RETURN edge
+                  UNION
+                  WITH this
+                  MATCH (this)-[this4:RELATES_TO]-(this5:ProgrammeItem)
+                  WITH {node: {__resolveType: 'ProgrammeItem', __id: elementId(this5), productTitle: this5.productTitle}} AS edge
+                  RETURN edge
                 }
-                WITH edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var6
+                RETURN collect(edge) AS edges
+              }
+              WITH edges
+              WITH edges, size(edges) AS totalCount
+              RETURN {edges: edges, totalCount: totalCount} AS var6
             }
             RETURN this { .productTitle, .episodeNumber, releatsToConnection: var6 } AS this"
         `);

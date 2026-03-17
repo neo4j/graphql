@@ -80,31 +80,28 @@ describe("Relationship Properties Create Cypher", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.title = create_var0.title
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.actors.create AS create_var2
-                    CREATE (create_this3:Actor)
-                    SET
-                        create_this3.name = create_var2.node.name
-                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
-                    SET
-                        create_this4.screenTime = create_var2.edge.screenTime
-                    RETURN collect(NULL) AS create_var5
-                }
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.title = create_var0.title
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.actors.create AS create_var2
+                CREATE (create_this3:Actor)
+                SET create_this3.name = create_var2.node.name
+                MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
+                SET create_this4.screenTime = create_var2.edge.screenTime
+                RETURN collect(NULL) AS create_var5
+              }
+              RETURN create_this1
             }
             CALL (create_this1) {
-                MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
-                WITH collect({ node: create_this7, relationship: create_this6 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS create_this7, edge.relationship AS create_this6
-                    RETURN collect({ properties: { screenTime: create_this6.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this7.name, __resolveType: \\"Actor\\" } }) AS create_var8
-                }
-                RETURN { edges: create_var8 } AS create_var9
+              MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
+              WITH collect({node: create_this7, relationship: create_this6}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS create_this7, edge.relationship AS create_this6
+                RETURN collect({properties: {screenTime: create_this6.screenTime, __resolveType: 'ActedIn'}, node: {name: create_this7.name, __resolveType: 'Actor'}}) AS create_var8
+              }
+              RETURN {edges: create_var8} AS create_var9
             }
             RETURN collect(create_this1 { .title, actorsConnection: create_var9 }) AS data"
         `);

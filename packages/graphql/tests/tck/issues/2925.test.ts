@@ -58,8 +58,8 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
             "CYPHER 5
             MATCH (this:User)
             WHERE EXISTS {
-                MATCH (this)-[:HAS_GROUP]->(this0:Group)
-                WHERE this0.name IN $param0
+              MATCH (this)-[:HAS_GROUP]->(this0:Group)
+              WHERE this0.name IN $param0
             }
             RETURN this { .name } AS this"
         `);
@@ -88,11 +88,11 @@ describe("https://github.com/neo4j/graphql/issues/2925", () => {
             "CYPHER 5
             MATCH (this:Group)
             WHERE EXISTS {
-                MATCH (this)<-[:HAS_GROUP]-(this0:User)
-                WHERE EXISTS {
-                    MATCH (this0)-[:HAS_GROUP]->(this1:Group)
-                    WHERE this1.name IN $param0
-                }
+              MATCH (this)<-[:HAS_GROUP]-(this0:User)
+              WHERE EXISTS {
+                MATCH (this0)-[:HAS_GROUP]->(this1:Group)
+                WHERE this1.name IN $param0
+              }
             }
             RETURN this { .name } AS this"
         `);

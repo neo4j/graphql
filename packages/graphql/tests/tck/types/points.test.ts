@@ -157,10 +157,9 @@ describe("Cypher Points", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:PointContainer)
-                SET
-                    create_this1.points = [create_var2 IN create_var0.points | point(create_var2)]
-                RETURN create_this1
+              CREATE (create_this1:PointContainer)
+              SET create_this1.points = [create_var2 IN create_var0.points | point(create_var2)]
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .points }) AS data"
         `);
@@ -206,8 +205,7 @@ describe("Cypher Points", () => {
             MATCH (this:PointContainer)
             WITH *
             WHERE this.id = $param0
-            SET
-                this.points = [var0 IN $param1 | point(var0)]
+            SET this.points = [var0 IN $param1 | point(var0)]
             WITH this
             RETURN this { .points } AS this"
         `);

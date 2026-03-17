@@ -79,25 +79,25 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Test_Item)
+              CREATE (create_this1:Test_Item)
+              SET
+                create_this1.uuid = randomUUID(),
+                create_this1.int = create_var0.int,
+                create_this1.str = create_var0.str,
+                create_this1.bool = create_var0.bool
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.feedback.create AS create_var2
+                CREATE (create_this3:Test_Feedback)
                 SET
-                    create_this1.uuid = randomUUID(),
-                    create_this1.int = create_var0.int,
-                    create_this1.str = create_var0.str,
-                    create_this1.bool = create_var0.bool
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.feedback.create AS create_var2
-                    CREATE (create_this3:Test_Feedback)
-                    SET
-                        create_this3.uuid = randomUUID(),
-                        create_this3.str = create_var2.node.str
-                    MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
-                    RETURN collect(NULL) AS create_var5
-                }
-                RETURN create_this1
+                  create_this3.uuid = randomUUID(),
+                  create_this3.str = create_var2.node.str
+                MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
+                RETURN collect(NULL) AS create_var5
+              }
+              RETURN create_this1
             }
-            RETURN \\"Query cannot conclude with CALL\\""
+            RETURN 'Query cannot conclude with CALL'"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -154,25 +154,25 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Test_Item)
+              CREATE (create_this1:Test_Item)
+              SET
+                create_this1.uuid = randomUUID(),
+                create_this1.int = create_var0.int,
+                create_this1.str = create_var0.str,
+                create_this1.bool = create_var0.bool
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.feedback.create AS create_var2
+                CREATE (create_this3:Test_Feedback)
                 SET
-                    create_this1.uuid = randomUUID(),
-                    create_this1.int = create_var0.int,
-                    create_this1.str = create_var0.str,
-                    create_this1.bool = create_var0.bool
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.feedback.create AS create_var2
-                    CREATE (create_this3:Test_Feedback)
-                    SET
-                        create_this3.uuid = randomUUID(),
-                        create_this3.str = create_var2.node.str
-                    MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
-                    RETURN collect(NULL) AS create_var5
-                }
-                RETURN create_this1
+                  create_this3.uuid = randomUUID(),
+                  create_this3.str = create_var2.node.str
+                MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
+                RETURN collect(NULL) AS create_var5
+              }
+              RETURN create_this1
             }
-            RETURN \\"Query cannot conclude with CALL\\""
+            RETURN 'Query cannot conclude with CALL'"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -247,40 +247,40 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Test_Item)
+              CREATE (create_this1:Test_Item)
+              SET
+                create_this1.uuid = randomUUID(),
+                create_this1.int = create_var0.int,
+                create_this1.str = create_var0.str,
+                create_this1.bool = create_var0.bool
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.feedback.create AS create_var2
+                CREATE (create_this3:Test_Feedback)
                 SET
-                    create_this1.uuid = randomUUID(),
-                    create_this1.int = create_var0.int,
-                    create_this1.str = create_var0.str,
-                    create_this1.bool = create_var0.bool
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.feedback.create AS create_var2
-                    CREATE (create_this3:Test_Feedback)
-                    SET
-                        create_this3.uuid = randomUUID(),
-                        create_this3.str = create_var2.node.str
-                    MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
-                    RETURN collect(NULL) AS create_var5
-                }
-                RETURN create_this1
+                  create_this3.uuid = randomUUID(),
+                  create_this3.str = create_var2.node.str
+                MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
+                RETURN collect(NULL) AS create_var5
+              }
+              RETURN create_this1
             }
             CALL (create_this1) {
-                CALL (create_this1) {
-                    WITH create_this1 AS this
-                    OPTIONAL MATCH (this)<-[:TEST_RELATIONSHIP]-(t:Test_Feedback)
-                    RETURN t
-                    LIMIT 1
-                }
-                WITH t AS create_this6
-                WITH create_this6 { .bool, .str, .int, .uuid } AS create_this6
-                RETURN head(collect(create_this6)) AS create_var7
+              CALL (create_this1) {
+                WITH create_this1 AS this
+                OPTIONAL MATCH (this)<-[:TEST_RELATIONSHIP]-(t:Test_Feedback)
+                RETURN t
+                LIMIT 1
+              }
+              WITH t AS create_this6
+              WITH create_this6 { .bool, .str, .int, .uuid } AS create_this6
+              RETURN head(collect(create_this6)) AS create_var7
             }
             CALL (create_this1) {
-                MATCH (create_this1)<-[create_this8:TEST_RELATIONSHIP]-(create_this9:Test_Feedback)
-                WITH DISTINCT create_this9
-                WITH create_this9 { .uuid, .int, .str, .bool } AS create_this9
-                RETURN collect(create_this9) AS create_var10
+              MATCH (create_this1)<-[create_this8:TEST_RELATIONSHIP]-(create_this9:Test_Feedback)
+              WITH DISTINCT create_this9
+              WITH create_this9 { .uuid, .int, .str, .bool } AS create_this9
+              RETURN collect(create_this9) AS create_var10
             }
             RETURN collect(create_this1 { .bool, .int, .str, .uuid, feedbackCypher: create_var7, feedback: create_var10 }) AS data"
         `);
@@ -351,29 +351,29 @@ describe("https://github.com/neo4j/graphql/issues/2189", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Test_Item)
+              CREATE (create_this1:Test_Item)
+              SET
+                create_this1.uuid = randomUUID(),
+                create_this1.int = create_var0.int,
+                create_this1.str = create_var0.str,
+                create_this1.bool = create_var0.bool
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.feedback.create AS create_var2
+                CREATE (create_this3:Test_Feedback)
                 SET
-                    create_this1.uuid = randomUUID(),
-                    create_this1.int = create_var0.int,
-                    create_this1.str = create_var0.str,
-                    create_this1.bool = create_var0.bool
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.feedback.create AS create_var2
-                    CREATE (create_this3:Test_Feedback)
-                    SET
-                        create_this3.uuid = randomUUID(),
-                        create_this3.str = create_var2.node.str
-                    MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
-                    RETURN collect(NULL) AS create_var5
-                }
-                RETURN create_this1
+                  create_this3.uuid = randomUUID(),
+                  create_this3.str = create_var2.node.str
+                MERGE (create_this1)<-[create_this4:TEST_RELATIONSHIP]-(create_this3)
+                RETURN collect(NULL) AS create_var5
+              }
+              RETURN create_this1
             }
             CALL (create_this1) {
-                MATCH (create_this1)<-[create_this6:TEST_RELATIONSHIP]-(create_this7:Test_Feedback)
-                WITH DISTINCT create_this7
-                WITH create_this7 { .uuid, .int, .str, .bool } AS create_this7
-                RETURN collect(create_this7) AS create_var8
+              MATCH (create_this1)<-[create_this6:TEST_RELATIONSHIP]-(create_this7:Test_Feedback)
+              WITH DISTINCT create_this7
+              WITH create_this7 { .uuid, .int, .str, .bool } AS create_this7
+              RETURN collect(create_this7) AS create_var8
             }
             RETURN collect(create_this1 { .bool, .int, .str, .uuid, feedback: create_var8 }) AS data"
         `);

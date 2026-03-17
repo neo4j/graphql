@@ -74,10 +74,10 @@ describe("Plural directive", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Tech)
-                RETURN { nodes: count(DISTINCT this) } AS var0
+              MATCH (this:Tech)
+              RETURN {nodes: count(DISTINCT this)} AS var0
             }
-            RETURN { aggregate: { count: var0 } } AS this"
+            RETURN {aggregate: {count: var0}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -100,10 +100,9 @@ describe("Plural directive", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Tech)
-                SET
-                    create_this1.name = create_var0.name
-                RETURN create_this1
+              CREATE (create_this1:Tech)
+              SET create_this1.name = create_var0.name
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .name }) AS data"
         `);
@@ -136,8 +135,7 @@ describe("Plural directive", () => {
             "CYPHER 5
             MATCH (this:Tech)
             WITH *
-            SET
-                this.name = $param0
+            SET this.name = $param0
             WITH this
             RETURN this { .name } AS this"
         `);

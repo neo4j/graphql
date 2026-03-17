@@ -91,13 +91,13 @@ describe("Subscriptions metadata on delete", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE this1.name = $param1
-                WITH this0, collect(DISTINCT this1) AS var2
-                CALL (var2) {
-                    UNWIND var2 AS var3
-                    DETACH DELETE var3
-                }
+              OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              WHERE this1.name = $param1
+              WITH this0, collect(DISTINCT this1) AS var2
+              CALL (var2) {
+                UNWIND var2 AS var3
+                DETACH DELETE var3
+              }
             }
             WITH *
             DETACH DELETE this"
@@ -140,33 +140,33 @@ describe("Subscriptions metadata on delete", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE this1.name = $param1
+              OPTIONAL MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              WHERE this1.name = $param1
+              WITH *
+              CALL (*) {
+                OPTIONAL MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
+                WHERE this3.id = $param2
                 WITH *
                 CALL (*) {
-                    OPTIONAL MATCH (this1)-[this2:ACTED_IN]->(this3:Movie)
-                    WHERE this3.id = $param2
-                    WITH *
-                    CALL (*) {
-                        OPTIONAL MATCH (this3)<-[this4:ACTED_IN]-(this5:Actor)
-                        WHERE this5.name = $param3
-                        WITH this4, collect(DISTINCT this5) AS var6
-                        CALL (var6) {
-                            UNWIND var6 AS var7
-                            DETACH DELETE var7
-                        }
-                    }
-                    WITH this2, collect(DISTINCT this3) AS var8
-                    CALL (var8) {
-                        UNWIND var8 AS var9
-                        DETACH DELETE var9
-                    }
+                  OPTIONAL MATCH (this3)<-[this4:ACTED_IN]-(this5:Actor)
+                  WHERE this5.name = $param3
+                  WITH this4, collect(DISTINCT this5) AS var6
+                  CALL (var6) {
+                    UNWIND var6 AS var7
+                    DETACH DELETE var7
+                  }
                 }
-                WITH this0, collect(DISTINCT this1) AS var10
-                CALL (var10) {
-                    UNWIND var10 AS var11
-                    DETACH DELETE var11
+                WITH this2, collect(DISTINCT this3) AS var8
+                CALL (var8) {
+                  UNWIND var8 AS var9
+                  DETACH DELETE var9
                 }
+              }
+              WITH this0, collect(DISTINCT this1) AS var10
+              CALL (var10) {
+                UNWIND var10 AS var11
+                DETACH DELETE var11
+              }
             }
             WITH *
             DETACH DELETE this"

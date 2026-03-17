@@ -79,15 +79,15 @@ describe("Field Level Aggregations Edge Filters", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WHERE (this1.title = $param0 AND this0.screentime = $param1)
-                    WITH DISTINCT this1
-                    ORDER BY size(this1.title) DESC
-                    WITH collect(this1.title) AS list
-                    RETURN { longest: head(list) } AS var2
-                }
-                RETURN { aggregate: { node: { title: var2 } } } AS var3
+              CALL (this) {
+                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WHERE (this1.title = $param0 AND this0.screentime = $param1)
+                WITH DISTINCT this1
+                ORDER BY size(this1.title) DESC
+                WITH collect(this1.title) AS list
+                RETURN {longest: head(list)} AS var2
+              }
+              RETURN {aggregate: {node: {title: var2}}} AS var3
             }
             RETURN this { moviesConnection: var3 } AS this"
         `);
@@ -126,42 +126,42 @@ describe("Field Level Aggregations Edge Filters", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
+              CALL (this) {
                 CALL (this) {
-                    CALL (this) {
-                        WITH this
-                        MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                        WHERE (this1.title = $param0 AND this0.screentime = $param1)
-                        WITH { node: { __resolveType: \\"Movie\\", __id: id(this1) } } AS edge
-                        RETURN edge
-                        UNION
-                        WITH this
-                        MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                        WHERE (this3.title = $param2 AND this2.screentime = $param3)
-                        WITH { node: { __resolveType: \\"Series\\", __id: id(this3) } } AS edge
-                        RETURN edge
-                    }
-                    RETURN collect(edge) AS edges
+                  WITH this
+                  MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                  WHERE (this1.title = $param0 AND this0.screentime = $param1)
+                  WITH {node: {__resolveType: 'Movie', __id: elementId(this1)}} AS edge
+                  RETURN edge
+                  UNION
+                  WITH this
+                  MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                  WHERE (this3.title = $param2 AND this2.screentime = $param3)
+                  WITH {node: {__resolveType: 'Series', __id: elementId(this3)}} AS edge
+                  RETURN edge
                 }
-                CALL (this) {
-                    CALL {
-                        WITH this
-                        MATCH (this)-[this4:ACTED_IN]->(this5:Movie)
-                        RETURN this5 AS node, this4 AS edge
-                        UNION
-                        WITH this
-                        MATCH (this)-[this6:ACTED_IN]->(this7:Series)
-                        RETURN this7 AS node, this6 AS edge
-                    }
-                    WITH *
-                    WHERE (node.title = $param4 AND edge.screentime = $param5)
-                    WITH DISTINCT node
-                    ORDER BY size(node.title) DESC
-                    WITH collect(node.title) AS list
-                    RETURN { longest: head(list) } AS this8
+                RETURN collect(edge) AS edges
+              }
+              CALL (this) {
+                CALL {
+                  WITH this
+                  MATCH (this)-[this4:ACTED_IN]->(this5:Movie)
+                  RETURN this5 AS node, this4 AS edge
+                  UNION
+                  WITH this
+                  MATCH (this)-[this6:ACTED_IN]->(this7:Series)
+                  RETURN this7 AS node, this6 AS edge
                 }
-                WITH edges, { node: { title: this8 } } AS var9
-                WITH edges, size(edges) AS totalCount, var9
-                RETURN { edges: edges, totalCount: totalCount, aggregate: var9 } AS var10
+                WITH *
+                WHERE (node.title = $param4 AND edge.screentime = $param5)
+                WITH DISTINCT node
+                ORDER BY size(node.title) DESC
+                WITH collect(node.title) AS list
+                RETURN {longest: head(list)} AS this8
+              }
+              WITH edges, {node: {title: this8}} AS var9
+              WITH edges, size(edges) AS totalCount, var9
+              RETURN {edges: edges, totalCount: totalCount, aggregate: var9} AS var10
             }
             RETURN this { actedInConnection: var10 } AS this"
         `);

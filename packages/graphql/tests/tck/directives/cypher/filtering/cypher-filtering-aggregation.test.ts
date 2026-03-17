@@ -60,24 +60,24 @@ describe("cypher directive filtering - Aggregation", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
+              MATCH (this:Movie)
+              CALL (this) {
                 CALL (this) {
-                    CALL (this) {
-                        WITH this AS this
-                        MATCH (this)
-                        RETURN this.custom_field as s
-                    }
-                    WITH s AS this0
-                    RETURN this0 AS var1
+                  WITH this AS this
+                  MATCH (this)
+                  RETURN this.custom_field as s
                 }
-                WITH *
-                WHERE var1 STARTS WITH $param0
-                WITH DISTINCT this
-                ORDER BY size(this.title) DESC
-                WITH collect(this.title) AS list
-                RETURN { shortest: last(list) } AS var2
+                WITH s AS this0
+                RETURN this0 AS var1
+              }
+              WITH *
+              WHERE var1 STARTS WITH $param0
+              WITH DISTINCT this
+              ORDER BY size(this.title) DESC
+              WITH collect(this.title) AS list
+              RETURN {shortest: last(list)} AS var2
             }
-            RETURN { aggregate: { node: { title: var2 } } } AS this"
+            RETURN {aggregate: {node: {title: var2}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -126,22 +126,22 @@ describe("cypher directive filtering - Aggregation", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
+              MATCH (this:Movie)
+              CALL (this) {
                 CALL (this) {
-                    CALL (this) {
-                        WITH this AS this
-                        MATCH (this)
-                        RETURN this.custom_field as s
-                    }
-                    WITH s AS this0
-                    RETURN this0 AS var1
+                  WITH this AS this
+                  MATCH (this)
+                  RETURN this.custom_field as s
                 }
-                WITH *
-                WHERE var1 > $param0
-                WITH DISTINCT this
-                RETURN { min: min(this.released) } AS var2
+                WITH s AS this0
+                RETURN this0 AS var1
+              }
+              WITH *
+              WHERE var1 > $param0
+              WITH DISTINCT this
+              RETURN {min: min(this.released)} AS var2
             }
-            RETURN { aggregate: { node: { released: var2 } } } AS this"
+            RETURN {aggregate: {node: {released: var2}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -193,25 +193,25 @@ describe("cypher directive filtering - Aggregation", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
+              MATCH (this:Movie)
+              CALL (this) {
                 CALL (this) {
-                    CALL (this) {
-                        WITH this AS this
-                        MATCH (this)
-                        RETURN this.custom_field as s
-                    }
-                    UNWIND s AS var0
-                    WITH var0 AS this1
-                    RETURN collect(this1) AS var2
+                  WITH this AS this
+                  MATCH (this)
+                  RETURN this.custom_field as s
                 }
-                WITH *
-                WHERE $param0 IN var2
-                WITH DISTINCT this
-                ORDER BY size(this.title) DESC
-                WITH collect(this.title) AS list
-                RETURN { longest: head(list) } AS var3
+                UNWIND s AS var0
+                WITH var0 AS this1
+                RETURN collect(this1) AS var2
+              }
+              WITH *
+              WHERE $param0 IN var2
+              WITH DISTINCT this
+              ORDER BY size(this.title) DESC
+              WITH collect(this.title) AS list
+              RETURN {longest: head(list)} AS var3
             }
-            RETURN { aggregate: { node: { title: var3 } } } AS this"
+            RETURN {aggregate: {node: {title: var3}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -260,25 +260,25 @@ describe("cypher directive filtering - Aggregation", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
+              MATCH (this:Movie)
+              CALL (this) {
                 CALL (this) {
-                    CALL (this) {
-                        WITH this AS this
-                        MATCH (this)
-                        RETURN this.custom_field as s
-                    }
-                    UNWIND s AS var0
-                    WITH var0 AS this1
-                    RETURN collect(this1) AS var2
+                  WITH this AS this
+                  MATCH (this)
+                  RETURN this.custom_field as s
                 }
-                WITH *
-                WHERE $param0 IN var2
-                WITH DISTINCT this
-                ORDER BY size(this.title) DESC
-                WITH collect(this.title) AS list
-                RETURN { longest: head(list) } AS var3
+                UNWIND s AS var0
+                WITH var0 AS this1
+                RETURN collect(this1) AS var2
+              }
+              WITH *
+              WHERE $param0 IN var2
+              WITH DISTINCT this
+              ORDER BY size(this.title) DESC
+              WITH collect(this.title) AS list
+              RETURN {longest: head(list)} AS var3
             }
-            RETURN { aggregate: { node: { title: var3 } } } AS this"
+            RETURN {aggregate: {node: {title: var3}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

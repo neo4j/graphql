@@ -255,19 +255,19 @@ describe("@customResolver directive", () => {
                 "CYPHER 5
                 MATCH (this:Author)
                 CALL (this) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this)-[this0:WROTE]->(this1:Book)
-                        WITH this1 { .title, __resolveType: \\"Book\\", __id: id(this1) } AS var2
-                        RETURN var2
-                        UNION
-                        WITH *
-                        MATCH (this)-[this3:WROTE]->(this4:Journal)
-                        WITH this4 { .subject, __resolveType: \\"Journal\\", __id: id(this4) } AS var2
-                        RETURN var2
-                    }
-                    WITH var2
-                    RETURN collect(var2) AS var2
+                  CALL (*) {
+                    WITH *
+                    MATCH (this)-[this0:WROTE]->(this1:Book)
+                    WITH this1 { .title, __resolveType: 'Book', __id: elementId(this1) } AS var2
+                    RETURN var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[this3:WROTE]->(this4:Journal)
+                    WITH this4 { .subject, __resolveType: 'Journal', __id: elementId(this4) } AS var2
+                    RETURN var2
+                  }
+                  WITH var2
+                  RETURN collect(var2) AS var2
                 }
                 RETURN this { .name, publications: var2 } AS this"
             `);
@@ -315,19 +315,19 @@ describe("@customResolver directive", () => {
                 "CYPHER 5
                 MATCH (this:Author)
                 CALL (this) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this)-[this0:WROTE]->(this1:Book)
-                        WITH this1 { .title, __resolveType: \\"Book\\", __id: id(this1) } AS var2
-                        RETURN var2
-                        UNION
-                        WITH *
-                        MATCH (this)-[this3:WROTE]->(this4:Journal)
-                        WITH this4 { .subject, __resolveType: \\"Journal\\", __id: id(this4) } AS var2
-                        RETURN var2
-                    }
-                    WITH var2
-                    RETURN collect(var2) AS var2
+                  CALL (*) {
+                    WITH *
+                    MATCH (this)-[this0:WROTE]->(this1:Book)
+                    WITH this1 { .title, __resolveType: 'Book', __id: elementId(this1) } AS var2
+                    RETURN var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[this3:WROTE]->(this4:Journal)
+                    WITH this4 { .subject, __resolveType: 'Journal', __id: elementId(this4) } AS var2
+                    RETURN var2
+                  }
+                  WITH var2
+                  RETURN collect(var2) AS var2
                 }
                 RETURN this { .name, publications: var2 } AS this"
             `);
@@ -350,19 +350,19 @@ describe("@customResolver directive", () => {
                 "CYPHER 5
                 MATCH (this:Author)
                 CALL (this) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this)-[this0:WROTE]->(this1:Book)
-                        WITH this1 { .title, __resolveType: \\"Book\\", __id: id(this1) } AS var2
-                        RETURN var2
-                        UNION
-                        WITH *
-                        MATCH (this)-[this3:WROTE]->(this4:Journal)
-                        WITH this4 { .subject, __resolveType: \\"Journal\\", __id: id(this4) } AS var2
-                        RETURN var2
-                    }
-                    WITH var2
-                    RETURN collect(var2) AS var2
+                  CALL (*) {
+                    WITH *
+                    MATCH (this)-[this0:WROTE]->(this1:Book)
+                    WITH this1 { .title, __resolveType: 'Book', __id: elementId(this1) } AS var2
+                    RETURN var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[this3:WROTE]->(this4:Journal)
+                    WITH this4 { .subject, __resolveType: 'Journal', __id: elementId(this4) } AS var2
+                    RETURN var2
+                  }
+                  WITH var2
+                  RETURN collect(var2) AS var2
                 }
                 RETURN this { .name, publications: var2 } AS this"
             `);
@@ -437,19 +437,19 @@ describe("@customResolver directive", () => {
                 "CYPHER 5
                 MATCH (this:Author)
                 CALL (this) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this)-[this0:WROTE]->(this1:Book)
-                        WITH this1 { .publicationYear, .title, __resolveType: \\"Book\\", __id: id(this1) } AS var2
-                        RETURN var2
-                        UNION
-                        WITH *
-                        MATCH (this)-[this3:WROTE]->(this4:Journal)
-                        WITH this4 { .publicationYear, .subject, __resolveType: \\"Journal\\", __id: id(this4) } AS var2
-                        RETURN var2
-                    }
-                    WITH var2
-                    RETURN collect(var2) AS var2
+                  CALL (*) {
+                    WITH *
+                    MATCH (this)-[this0:WROTE]->(this1:Book)
+                    WITH this1 { .publicationYear, .title, __resolveType: 'Book', __id: elementId(this1) } AS var2
+                    RETURN var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[this3:WROTE]->(this4:Journal)
+                    WITH this4 { .publicationYear, .subject, __resolveType: 'Journal', __id: elementId(this4) } AS var2
+                    RETURN var2
+                  }
+                  WITH var2
+                  RETURN collect(var2) AS var2
                 }
                 RETURN this { .name, publications: var2 } AS this"
             `);
@@ -497,19 +497,19 @@ describe("@customResolver directive", () => {
                 "CYPHER 5
                 MATCH (this:Author)
                 CALL (this) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this)-[this0:WROTE]->(this1:Book)
-                        WITH this1 { .publicationYear, .title, __resolveType: \\"Book\\", __id: id(this1) } AS var2
-                        RETURN var2
-                        UNION
-                        WITH *
-                        MATCH (this)-[this3:WROTE]->(this4:Journal)
-                        WITH this4 { .publicationYear, .subject, __resolveType: \\"Journal\\", __id: id(this4) } AS var2
-                        RETURN var2
-                    }
-                    WITH var2
-                    RETURN collect(var2) AS var2
+                  CALL (*) {
+                    WITH *
+                    MATCH (this)-[this0:WROTE]->(this1:Book)
+                    WITH this1 { .publicationYear, .title, __resolveType: 'Book', __id: elementId(this1) } AS var2
+                    RETURN var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[this3:WROTE]->(this4:Journal)
+                    WITH this4 { .publicationYear, .subject, __resolveType: 'Journal', __id: elementId(this4) } AS var2
+                    RETURN var2
+                  }
+                  WITH var2
+                  RETURN collect(var2) AS var2
                 }
                 RETURN this { .name, publications: var2 } AS this"
             `);
@@ -532,19 +532,19 @@ describe("@customResolver directive", () => {
                 "CYPHER 5
                 MATCH (this:Author)
                 CALL (this) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this)-[this0:WROTE]->(this1:Book)
-                        WITH this1 { .publicationYear, .title, __resolveType: \\"Book\\", __id: id(this1) } AS var2
-                        RETURN var2
-                        UNION
-                        WITH *
-                        MATCH (this)-[this3:WROTE]->(this4:Journal)
-                        WITH this4 { .publicationYear, .subject, __resolveType: \\"Journal\\", __id: id(this4) } AS var2
-                        RETURN var2
-                    }
-                    WITH var2
-                    RETURN collect(var2) AS var2
+                  CALL (*) {
+                    WITH *
+                    MATCH (this)-[this0:WROTE]->(this1:Book)
+                    WITH this1 { .publicationYear, .title, __resolveType: 'Book', __id: elementId(this1) } AS var2
+                    RETURN var2
+                    UNION
+                    WITH *
+                    MATCH (this)-[this3:WROTE]->(this4:Journal)
+                    WITH this4 { .publicationYear, .subject, __resolveType: 'Journal', __id: elementId(this4) } AS var2
+                    RETURN var2
+                  }
+                  WITH var2
+                  RETURN collect(var2) AS var2
                 }
                 RETURN this { .name, publications: var2 } AS this"
             `);

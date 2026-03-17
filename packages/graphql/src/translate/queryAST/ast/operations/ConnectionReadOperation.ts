@@ -341,7 +341,7 @@ export class ConnectionReadOperation extends Operation {
         const projectionMap = this.generateProjectionMapForFields(this.nodeFields, context.target);
         if (projectionMap.size === 0) {
             projectionMap.set({
-                __id: Cypher.id(context.target),
+                __id: Cypher.elementId(context.target),
             });
         }
         projectionMap.set({

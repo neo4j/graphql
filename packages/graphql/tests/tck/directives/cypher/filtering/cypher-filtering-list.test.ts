@@ -53,13 +53,13 @@ describe("cypher directive filtering - Lists", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN ['a', 'b', 'c'] as list
-                }
-                UNWIND list AS var0
-                WITH var0 AS this1
-                RETURN collect(this1) AS var2
+              CALL (this) {
+                WITH this AS this
+                RETURN ['a', 'b', 'c'] as list
+              }
+              UNWIND list AS var0
+              WITH var0 AS this1
+              RETURN collect(this1) AS var2
             }
             WITH *
             WHERE $param0 IN var2

@@ -62,10 +62,10 @@ describe("Disable escaping", () => {
             "CYPHER 5
             MATCH (this:\`Movie:Film\`)
             CALL (this) {
-                MATCH (this)<-[this0:ACTED_IN|PATICIPATED]-(this1:Actor)
-                WITH DISTINCT this1
-                WITH this1 { .name } AS this1
-                RETURN collect(this1) AS var2
+              MATCH (this)<-[this0:ACTED_IN|PATICIPATED]-(this1:Actor)
+              WITH DISTINCT this1
+              WITH this1 { .name } AS this1
+              RETURN collect(this1) AS var2
             }
             RETURN this { actors: var2 } AS this"
         `);
@@ -98,10 +98,10 @@ describe("Disable escaping", () => {
             "CYPHER 5
             MATCH (this:Movie:Film)
             CALL (this) {
-                MATCH (this)<-[this0:\`ACTED_IN|PATICIPATED\`]-(this1:Actor)
-                WITH DISTINCT this1
-                WITH this1 { .name } AS this1
-                RETURN collect(this1) AS var2
+              MATCH (this)<-[this0:\`ACTED_IN|PATICIPATED\`]-(this1:Actor)
+              WITH DISTINCT this1
+              WITH this1 { .name } AS this1
+              RETURN collect(this1) AS var2
             }
             RETURN this { actors: var2 } AS this"
         `);

@@ -116,14 +116,14 @@ describe("Cypher directive", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (a:Actor)
-                    RETURN a
-                }
-                WITH a AS this0
-                WITH this0 { .name } AS this0
-                RETURN head(collect(this0)) AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH (a:Actor)
+                RETURN a
+              }
+              WITH a AS this0
+              WITH this0 { .name } AS this0
+              RETURN head(collect(this0)) AS var1
             }
             RETURN this { .title, topActor: var1 } AS this"
         `);
@@ -146,12 +146,12 @@ describe("Cypher directive", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN rand() as res
-                }
-                WITH res AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN rand() as res
+              }
+              WITH res AS this0
+              RETURN this0 AS var1
             }
             RETURN this { randomNumber: var1 } AS this"
         `);
@@ -176,12 +176,12 @@ describe("Cypher directive", () => {
             WITH *
             LIMIT $param0
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN rand() as res
-                }
-                WITH res AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN rand() as res
+              }
+              WITH res AS this0
+              RETURN this0 AS var1
             }
             RETURN this { randomNumber: var1 } AS this"
         `);
@@ -211,12 +211,12 @@ describe("Cypher directive", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN rand() as res
-                }
-                WITH res AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN rand() as res
+              }
+              WITH res AS this0
+              RETURN this0 AS var1
             }
             WITH *
             ORDER BY var1 ASC
@@ -255,24 +255,24 @@ describe("Cypher directive", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (a:Actor)
-                    RETURN a
-                }
-                WITH a AS this0
+              CALL (this) {
+                WITH this AS this
+                MATCH (a:Actor)
+                RETURN a
+              }
+              WITH a AS this0
+              CALL (this0) {
                 CALL (this0) {
-                    CALL (this0) {
-                        WITH this0 AS this
-                        MATCH (m:Movie {title: $param0})
-                        RETURN m
-                    }
-                    WITH m AS this1
-                    WITH this1 { .title } AS this1
-                    RETURN collect(this1) AS var2
+                  WITH this0 AS this
+                  MATCH (m:Movie {title: $param0})
+                  RETURN m
                 }
-                WITH this0 { .name, movies: var2 } AS this0
-                RETURN head(collect(this0)) AS var3
+                WITH m AS this1
+                WITH this1 { .title } AS this1
+                RETURN collect(this1) AS var2
+              }
+              WITH this0 { .name, movies: var2 } AS this0
+              RETURN head(collect(this0)) AS var3
             }
             RETURN this { .title, topActor: var3 } AS this"
         `);
@@ -311,44 +311,44 @@ describe("Cypher directive", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
+              CALL (this) {
+                WITH this AS this
+                MATCH (a:Actor)
+                RETURN a
+              }
+              WITH a AS this0
+              CALL (this0) {
+                CALL (this0) {
+                  WITH this0 AS this
+                  MATCH (m:Movie {title: $param0})
+                  RETURN m
+                }
+                WITH m AS this1
+                CALL (this1) {
+                  CALL (this1) {
+                    WITH this1 AS this
                     MATCH (a:Actor)
                     RETURN a
-                }
-                WITH a AS this0
-                CALL (this0) {
-                    CALL (this0) {
-                        WITH this0 AS this
-                        MATCH (m:Movie {title: $param0})
-                        RETURN m
+                  }
+                  WITH a AS this2
+                  CALL (this2) {
+                    CALL (this2) {
+                      WITH this2 AS this
+                      MATCH (m:Movie {title: $param1})
+                      RETURN m
                     }
-                    WITH m AS this1
-                    CALL (this1) {
-                        CALL (this1) {
-                            WITH this1 AS this
-                            MATCH (a:Actor)
-                            RETURN a
-                        }
-                        WITH a AS this2
-                        CALL (this2) {
-                            CALL (this2) {
-                                WITH this2 AS this
-                                MATCH (m:Movie {title: $param1})
-                                RETURN m
-                            }
-                            WITH m AS this3
-                            WITH this3 { .title } AS this3
-                            RETURN collect(this3) AS var4
-                        }
-                        WITH this2 { .name, movies: var4 } AS this2
-                        RETURN head(collect(this2)) AS var5
-                    }
-                    WITH this1 { .title, topActor: var5 } AS this1
-                    RETURN collect(this1) AS var6
+                    WITH m AS this3
+                    WITH this3 { .title } AS this3
+                    RETURN collect(this3) AS var4
+                  }
+                  WITH this2 { .name, movies: var4 } AS this2
+                  RETURN head(collect(this2)) AS var5
                 }
-                WITH this0 { .name, movies: var6 } AS this0
-                RETURN head(collect(this0)) AS var7
+                WITH this1 { .title, topActor: var5 } AS this1
+                RETURN collect(this1) AS var6
+              }
+              WITH this0 { .name, movies: var6 } AS this0
+              RETURN head(collect(this0)) AS var7
             }
             RETURN this { .title, topActor: var7 } AS this"
         `);
@@ -382,24 +382,24 @@ describe("Cypher directive", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (a:Actor)
-                    RETURN a
-                }
-                WITH a AS this0
+              CALL (this) {
+                WITH this AS this
+                MATCH (a:Actor)
+                RETURN a
+              }
+              WITH a AS this0
+              CALL (this0) {
                 CALL (this0) {
-                    CALL (this0) {
-                        WITH this0 AS this
-                        MATCH (m:Movie {title: $param0})
-                        RETURN m
-                    }
-                    WITH m AS this1
-                    WITH this1 { .title } AS this1
-                    RETURN collect(this1) AS var2
+                  WITH this0 AS this
+                  MATCH (m:Movie {title: $param0})
+                  RETURN m
                 }
-                WITH this0 { .name, movies: var2 } AS this0
-                RETURN head(collect(this0)) AS var3
+                WITH m AS this1
+                WITH this1 { .title } AS this1
+                RETURN collect(this1) AS var2
+              }
+              WITH this0 { .name, movies: var2 } AS this0
+              RETURN head(collect(this0)) AS var3
             }
             RETURN this { .title, topActor: var3 } AS this"
         `);
@@ -454,15 +454,15 @@ describe("Cypher directive", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 CALL {
-                    MATCH (m:Movie {title: $param0})
-                    RETURN m
+                  MATCH (m:Movie {title: $param0})
+                  RETURN m
                 }
                 WITH m AS this0
                 CALL (this0) {
-                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
-                    WITH DISTINCT this2
-                    WITH this2 { .name } AS this2
-                    RETURN collect(this2) AS var3
+                  MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                  WITH DISTINCT this2
+                  WITH this2 { .name } AS this2
+                  RETURN collect(this2) AS var3
                 }
                 WITH this0 { .title, actors: var3 } AS this0
                 RETURN this0 AS this"
@@ -517,15 +517,15 @@ describe("Cypher directive", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 CALL {
-                    MATCH (m:Movie {title: $param0})
-                    RETURN m
+                  MATCH (m:Movie {title: $param0})
+                  RETURN m
                 }
                 WITH m AS this0
                 CALL (this0) {
-                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
-                    WITH DISTINCT this2
-                    WITH this2 { .name } AS this2
-                    RETURN collect(this2) AS var3
+                  MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                  WITH DISTINCT this2
+                  WITH this2 { .name } AS this2
+                  RETURN collect(this2) AS var3
                 }
                 WITH this0 { .title, actors: var3 } AS this0
                 RETURN this0 AS this"
@@ -580,20 +580,20 @@ describe("Cypher directive", () => {
                 "CYPHER 5
                 MATCH (this:Movie)
                 CALL (this) {
-                    CALL (this) {
-                        WITH this AS this
-                        MATCH (m:Movie {title: $param0})
-                        RETURN m
-                    }
-                    WITH m AS this0
-                    CALL (this0) {
-                        MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
-                        WITH DISTINCT this2
-                        WITH this2 { .name } AS this2
-                        RETURN collect(this2) AS var3
-                    }
-                    WITH this0 { .title, actors: var3 } AS this0
-                    RETURN collect(this0) AS var4
+                  CALL (this) {
+                    WITH this AS this
+                    MATCH (m:Movie {title: $param0})
+                    RETURN m
+                  }
+                  WITH m AS this0
+                  CALL (this0) {
+                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                    WITH DISTINCT this2
+                    WITH this2 { .name } AS this2
+                    RETURN collect(this2) AS var3
+                  }
+                  WITH this0 { .title, actors: var3 } AS this0
+                  RETURN collect(this0) AS var4
                 }
                 RETURN this { custom: var4 } AS this"
             `);

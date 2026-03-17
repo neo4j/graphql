@@ -72,30 +72,30 @@ describe("https://github.com/neo4j/graphql/issues/2766", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[]-(m:Movie {title: $param0})
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[]-(m:Movie {title: $param0})
+                RETURN m
+              }
+              WITH m AS this0
+              CALL (this0) {
+                MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
+                WITH DISTINCT this2
+                CALL (this2) {
+                  CALL (this2) {
+                    WITH this2 AS this
+                    MATCH (this)-[]-(m:Movie {title: $param1})
                     RETURN m
+                  }
+                  WITH m AS this3
+                  WITH this3 { .title } AS this3
+                  RETURN collect(this3) AS var4
                 }
-                WITH m AS this0
-                CALL (this0) {
-                    MATCH (this0)<-[this1:ACTED_IN]-(this2:Actor)
-                    WITH DISTINCT this2
-                    CALL (this2) {
-                        CALL (this2) {
-                            WITH this2 AS this
-                            MATCH (this)-[]-(m:Movie {title: $param1})
-                            RETURN m
-                        }
-                        WITH m AS this3
-                        WITH this3 { .title } AS this3
-                        RETURN collect(this3) AS var4
-                    }
-                    WITH this2 { .name, movies: var4 } AS this2
-                    RETURN collect(this2) AS var5
-                }
-                WITH this0 { .title, actors: var5 } AS this0
-                RETURN collect(this0) AS var6
+                WITH this2 { .name, movies: var4 } AS this2
+                RETURN collect(this2) AS var5
+              }
+              WITH this0 { .title, actors: var5 } AS this0
+              RETURN collect(this0) AS var6
             }
             RETURN this { .name, movies: var6 } AS this"
         `);

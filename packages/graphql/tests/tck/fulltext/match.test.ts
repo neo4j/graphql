@@ -55,15 +55,15 @@ describe("Cypher -> fulltext -> Match", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            CALL db.index.fulltext.queryNodes('MovieTitle', $param0) YIELD node AS this0, score AS var1
             WHERE $param1 IN labels(this0)
-            WITH collect({ node: this0 }) AS edges
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var2
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var2
             }
-            RETURN { edges: var2 } AS this"
+            RETURN {edges: var2} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -91,15 +91,15 @@ describe("Cypher -> fulltext -> Match", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            CALL db.index.fulltext.queryNodes(\\"MovieTitle\\", $param0) YIELD node AS this0, score AS var1
+            CALL db.index.fulltext.queryNodes('MovieTitle', $param0) YIELD node AS this0, score AS var1
             WHERE ($param1 IN labels(this0) AND this0.title = $param2)
-            WITH collect({ node: this0 }) AS edges
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var2
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var2
             }
-            RETURN { edges: var2 } AS this"
+            RETURN {edges: var2} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

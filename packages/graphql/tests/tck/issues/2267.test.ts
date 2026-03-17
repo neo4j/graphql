@@ -72,19 +72,19 @@ describe("https://github.com/neo4j/graphql/issues/2267", () => {
             WITH *
             ORDER BY this.displayName ASC
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)<-[this0:ACTIVITY]-(this1:Post)
-                    WITH this1 { .name, __resolveType: \\"Post\\", __id: id(this1) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)<-[this3:ACTIVITY]-(this4:Story)
-                    WITH this4 { .name, __resolveType: \\"Story\\", __id: id(this4) } AS var2
-                    RETURN var2
-                }
-                WITH var2
-                RETURN collect(var2) AS var2
+              CALL (*) {
+                WITH *
+                MATCH (this)<-[this0:ACTIVITY]-(this1:Post)
+                WITH this1 { .name, __resolveType: 'Post', __id: elementId(this1) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)<-[this3:ACTIVITY]-(this4:Story)
+                WITH this4 { .name, __resolveType: 'Story', __id: elementId(this4) } AS var2
+                RETURN var2
+              }
+              WITH var2
+              RETURN collect(var2) AS var2
             }
             RETURN this { .displayName, activity: var2 } AS this"
         `);

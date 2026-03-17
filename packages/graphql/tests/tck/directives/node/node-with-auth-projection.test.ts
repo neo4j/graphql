@@ -77,20 +77,20 @@ describe("Cypher Auth Projection On Connections", () => {
             "CYPHER 5
             MATCH (this:Person)
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
             CALL (this) {
-                MATCH (this)-[this0:HAS_POST]->(this1:Comment)
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this1)<-[:HAS_POST]-(this2:Person)
-                    WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { content: this1.content, __resolveType: \\"Post\\" } }) AS var3
-                }
-                RETURN { edges: var3 } AS var4
+              MATCH (this)-[this0:HAS_POST]->(this1:Comment)
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this1)<-[:HAS_POST]-(this2:Person)
+                WHERE ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)
+              }), '@neo4j/graphql/FORBIDDEN', [])
+              WITH collect({node: this1, relationship: this0}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this1, edge.relationship AS this0
+                RETURN collect({node: {content: this1.content, __resolveType: 'Post'}}) AS var3
+              }
+              RETURN {edges: var3} AS var4
             }
             RETURN this { .name, postsConnection: var4 } AS this"
         `);

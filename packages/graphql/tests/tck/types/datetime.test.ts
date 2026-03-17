@@ -52,7 +52,7 @@ describe("Cypher DateTime", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE this.datetime = datetime($param0)
-            RETURN this { datetime: apoc.date.convertFormat(toString(this.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
+            RETURN this { datetime: apoc.date.convertFormat(toString(this.datetime), 'iso_zoned_date_time', 'iso_offset_date_time') } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -79,12 +79,11 @@ describe("Cypher DateTime", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.datetime = datetime(create_var0.datetime)
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.datetime = datetime(create_var0.datetime)
+              RETURN create_this1
             }
-            RETURN collect(create_this1 { datetime: apoc.date.convertFormat(toString(create_this1.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") }) AS data"
+            RETURN collect(create_this1 { datetime: apoc.date.convertFormat(toString(create_this1.datetime), 'iso_zoned_date_time', 'iso_offset_date_time') }) AS data"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -116,10 +115,9 @@ describe("Cypher DateTime", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            SET
-                this.datetime = datetime($param0)
+            SET this.datetime = datetime($param0)
             WITH this
-            RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
+            RETURN this { .id, datetime: apoc.date.convertFormat(toString(this.datetime), 'iso_zoned_date_time', 'iso_offset_date_time') } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

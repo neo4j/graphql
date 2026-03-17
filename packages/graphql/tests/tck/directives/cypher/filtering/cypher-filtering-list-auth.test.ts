@@ -70,26 +70,26 @@ describe("cypher directive filtering - List Auth", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)
-                    RETURN this.custom_field as list
-                }
-                UNWIND list AS var0
-                WITH var0 AS this1
-                RETURN collect(this1) AS var2
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)
+                RETURN this.custom_field as list
+              }
+              UNWIND list AS var0
+              WITH var0 AS this1
+              RETURN collect(this1) AS var2
             }
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var2 IS NOT NULL AND $jwt.custom_value IN var2))
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)
-                    RETURN this.custom_field as list
-                }
-                UNWIND list AS var3
-                WITH var3 AS this4
-                RETURN collect(this4) AS var5
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)
+                RETURN this.custom_field as list
+              }
+              UNWIND list AS var3
+              WITH var3 AS this4
+              RETURN collect(this4) AS var5
             }
             RETURN this { custom_list: var5 } AS this"
         `);
@@ -153,14 +153,14 @@ describe("cypher directive filtering - List Auth", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)
-                    RETURN this.custom_field as list
-                }
-                UNWIND list AS var0
-                WITH var0 AS this1
-                RETURN collect(this1) AS var2
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)
+                RETURN this.custom_field as list
+              }
+              UNWIND list AS var0
+              WITH var0 AS this1
+              RETURN collect(this1) AS var2
             }
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var2 IS NOT NULL AND $jwt.custom_value IN var2))
@@ -225,26 +225,26 @@ describe("cypher directive filtering - List Auth", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)
-                    RETURN this.custom_field as list
-                }
-                UNWIND list AS var0
-                WITH var0 AS this1
-                RETURN collect(this1) AS var2
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)
+                RETURN this.custom_field as list
+              }
+              UNWIND list AS var0
+              WITH var0 AS this1
+              RETURN collect(this1) AS var2
             }
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var2 IS NOT NULL AND $jwt.custom_value IN var2))
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)
-                    RETURN this.custom_field as list
-                }
-                UNWIND list AS var3
-                WITH var3 AS this4
-                RETURN collect(this4) AS var5
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)
+                RETURN this.custom_field as list
+              }
+              UNWIND list AS var3
+              WITH var3 AS this4
+              RETURN collect(this4) AS var5
             }
             RETURN this { custom_list: var5 } AS this"
         `);
@@ -362,20 +362,20 @@ describe("cypher directive filtering - List Auth", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                MATCH (this)-[:ACTED_IN]->(this0:Movie)
+              MATCH (this)-[:ACTED_IN]->(this0:Movie)
+              CALL (this0) {
                 CALL (this0) {
-                    CALL (this0) {
-                        WITH this0 AS this
-                        MATCH (this)
-                        RETURN this.custom_field as list
-                    }
-                    UNWIND list AS var1
-                    WITH var1 AS this2
-                    RETURN collect(this2) AS var3
+                  WITH this0 AS this
+                  MATCH (this)
+                  RETURN this.custom_field as list
                 }
-                WITH *
-                WHERE ($jwt.custom_value IS NOT NULL AND var3 IS NOT NULL AND var3 = $jwt.custom_value)
-                RETURN count(this0) > 0 AS var4
+                UNWIND list AS var1
+                WITH var1 AS this2
+                RETURN collect(this2) AS var3
+              }
+              WITH *
+              WHERE ($jwt.custom_value IS NOT NULL AND var3 IS NOT NULL AND var3 = $jwt.custom_value)
+              RETURN count(this0) > 0 AS var4
             }
             WITH *
             WHERE ($isAuthenticated = true AND var4 = true)
@@ -440,14 +440,14 @@ describe("cypher directive filtering - List Auth", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)
-                    RETURN this.custom_field as list
-                }
-                UNWIND list AS var0
-                WITH var0 AS this1
-                RETURN collect(this1) AS var2
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)
+                RETURN this.custom_field as list
+              }
+              UNWIND list AS var0
+              WITH var0 AS this1
+              RETURN collect(this1) AS var2
             }
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var2 IS NOT NULL AND $jwt.custom_value IN var2))
@@ -513,17 +513,17 @@ describe("cypher directive filtering - List Auth", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)
-                    RETURN ['a', 'b', 'c'] as list
-                }
-                UNWIND list AS var0
-                WITH var0 AS this1
-                RETURN collect(this1) AS var2
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)
+                RETURN ['a', 'b', 'c'] as list
+              }
+              UNWIND list AS var0
+              WITH var0 AS this1
+              RETURN collect(this1) AS var2
             }
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var2 IS NOT NULL AND $jwt.custom_value IN var2)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND var2 IS NOT NULL AND $jwt.custom_value IN var2)), '@neo4j/graphql/FORBIDDEN', [])
             RETURN this { .title } AS this"
         `);
 

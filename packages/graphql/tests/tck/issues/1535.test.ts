@@ -81,19 +81,19 @@ describe("https://github.com/neo4j/graphql/issues/1535", () => {
             "CYPHER 5
             MATCH (this:Tenant)
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)<-[this0:HOSTED_BY]-(this1:Screening)
-                    WITH this1 { .id, __resolveType: \\"Screening\\", __id: id(this1) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)<-[this3:HOSTED_BY]-(this4:Booking)
-                    WITH this4 { .id, __resolveType: \\"Booking\\", __id: id(this4) } AS var2
-                    RETURN var2
-                }
-                WITH var2
-                RETURN collect(var2) AS var2
+              CALL (*) {
+                WITH *
+                MATCH (this)<-[this0:HOSTED_BY]-(this1:Screening)
+                WITH this1 { .id, __resolveType: 'Screening', __id: elementId(this1) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)<-[this3:HOSTED_BY]-(this4:Booking)
+                WITH this4 { .id, __resolveType: 'Booking', __id: elementId(this4) } AS var2
+                RETURN var2
+              }
+              WITH var2
+              RETURN collect(var2) AS var2
             }
             RETURN this { .id, .name, events232: var2 } AS this"
         `);

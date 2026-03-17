@@ -146,7 +146,7 @@ export class CompositeReadPartial extends ReadOperation {
         const targetNodeName = this.target.name;
         projection.set({
             __resolveType: new Cypher.Literal(targetNodeName),
-            __id: Cypher.id(context.target),
+            __id: Cypher.elementId(context.target),
         });
 
         const withClause = new Cypher.With([projection, returnVariable]);
