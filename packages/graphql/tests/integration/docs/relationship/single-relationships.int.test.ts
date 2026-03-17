@@ -24,14 +24,14 @@ import { TestHelper } from "../../../utils/tests-helper";
 describe("Single Relationships", () => {
     let Person: UniqueType;
     let Movie: UniqueType;
-
     const testHelper = new TestHelper();
 
-    beforeAll(async () => {
-        Person = testHelper.createUniqueType("Person");
-        Movie = testHelper.createUniqueType("Movie");
+    describe("Queries", () => {
+        beforeEach(async () => {
+            Person = testHelper.createUniqueType("Person");
+            Movie = testHelper.createUniqueType("Movie");
 
-        const typeDefs = /* GraphQL */ `
+            const typeDefs = /* GraphQL */ `
             type ${Movie}  @node {
                 title: String!
                 released: Int!
@@ -43,33 +43,23 @@ describe("Single Relationships", () => {
             }
         `;
 
-        await testHelper.initNeo4jGraphQL({
-            typeDefs,
-        });
-    });
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+            });
 
-    afterAll(async () => {
-        await testHelper.close();
-    });
-
-    describe("Queries", () => {
-        const JoelCoen = `Joel Coen ${generate({
-            charset: "alphabetic",
-        }).toLowerCase()}`;
-        const NoCountryForOldMen = `No Country for Old Men ${generate({
-            charset: "alphabetic",
-        }).toLowerCase()}`;
-
-        beforeAll(async () => {
-            // set-up for queries
             await testHelper.executeCypher(`
-                CREATE (:${Person} {name: "${JoelCoen}"})-[:DIRECTED]->(:${Movie} {title: "${NoCountryForOldMen}", released: 2007})
+                CREATE (:${Person} {name: "Joel Coen"})-[:DIRECTED]->(:${Movie} {title: "No Country for Old Men", released: 2007})
             `);
         });
+
+        afterEach(async () => {
+            await testHelper.close();
+        });
+
         test("example 1: Get Movie by title with related Person through DIRECTED relationship", async () => {
             const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { title: { eq: "${NoCountryForOldMen}" } }) {
+                ${Movie.plural}(where: { title: { eq: "No Country for Old Men" } }) {
                     title
                     director {
                         name
@@ -83,9 +73,9 @@ describe("Single Relationships", () => {
             expect(result.data).toEqual({
                 [Movie.plural]: [
                     {
-                        title: NoCountryForOldMen,
+                        title: "No Country for Old Men",
                         director: {
-                            name: JoelCoen,
+                            name: "Joel Coen",
                         },
                     },
                 ],
@@ -99,7 +89,7 @@ describe("Single Relationships", () => {
         `);
             const query = /* GraphQL */ `
             query {
-                ${Movie.plural}(where: { director: { name: { eq: "${JoelCoen}" } } }) {
+                ${Movie.plural}(where: { director: { name: { eq: "Joel Coen" } } }) {
                     title
                 }
             }
@@ -110,7 +100,7 @@ describe("Single Relationships", () => {
             expect(result.data).toEqual({
                 [Movie.plural]: [
                     {
-                        title: NoCountryForOldMen,
+                        title: "No Country for Old Men",
                     },
                 ],
             });
@@ -119,31 +109,41 @@ describe("Single Relationships", () => {
 
     describe("Mutations", () => {
         beforeEach(async () => {
-            // clean-up for mutations
-            await testHelper.executeCypher(`
-                MATCH (p:${Person} )
-                MATCH (a:${Movie} )
-                DETACH DELETE p,a
-            `);
-        });
-        test("example 3: Create a Movie node and connect it to an inline created Person node through the DIRECTED relationship", async () => {
-            const JoelCoen = `Joel Coen ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const NoCountryForOldMen = `No Country for Old Men ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
+            Person = testHelper.createUniqueType("Person");
+            Movie = testHelper.createUniqueType("Movie");
 
+            const typeDefs = /* GraphQL */ `
+            type ${Movie}  @node {
+                title: String!
+                released: Int!
+                director: ${Person} @relationship(type: "DIRECTED", direction: IN)
+            }
+            type ${Person} @node {
+                name: String!
+                directed: [${Movie}!]! @relationship(type: "DIRECTED", direction: OUT)
+            }
+        `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+            });
+        });
+
+        afterEach(async () => {
+            await testHelper.close();
+        });
+
+        test("example 3: Create a Movie node and connect it to an inline created Person node through the DIRECTED relationship", async () => {
             const query = /* GraphQL */ `
             mutation CreateActorAndProductions {
                 ${Movie.operations.create}(
                     input: [
                         {
-                            title: "${NoCountryForOldMen}", 
+                            title: "No Country for Old Men", 
                             released: 2007, 
                             director: { 
                                 create: { 
-                                    node: { name: "${JoelCoen}" }
+                                    node: { name: "Joel Coen" }
                                 } 
                             }  
                         }
@@ -162,7 +162,7 @@ describe("Single Relationships", () => {
                 [Movie.operations.create]: {
                     [Movie.plural]: [
                         {
-                            title: NoCountryForOldMen,
+                            title: "No Country for Old Men",
                         },
                     ],
                 },
@@ -171,10 +171,10 @@ describe("Single Relationships", () => {
             await testHelper.expectRelationship(Person, Movie, "DIRECTED").toIncludeSameMembers([
                 {
                     from: {
-                        name: JoelCoen,
+                        name: "Joel Coen",
                     },
                     to: {
-                        title: NoCountryForOldMen,
+                        title: "No Country for Old Men",
                         released: 2007,
                     },
                     relationship: {},
@@ -183,23 +183,16 @@ describe("Single Relationships", () => {
         });
 
         test("example 4: Create a Movie node and connect it to an existing Person node through the DIRECTED relationship", async () => {
-            const JoelCoen = `Joel Coen ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const NoCountryForOldMen = `No Country for Old Men ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-
-            // has to exist
+            // setup
             await testHelper.executeCypher(`
-            CREATE (:${Person} {name: "${JoelCoen}"})
+            CREATE (:${Person} {name: "Joel Coen"})
         `);
             const createQuery = /* GraphQL */ `
             mutation  {
                 ${Movie.operations.create}(
                     input: [
                         {
-                            title: "${NoCountryForOldMen}"
+                            title: "No Country for Old Men"
                             released: 2007
                         }
                     ]
@@ -217,7 +210,7 @@ describe("Single Relationships", () => {
                 [Movie.operations.create]: {
                     [Movie.plural]: [
                         {
-                            title: NoCountryForOldMen,
+                            title: "No Country for Old Men",
                         },
                     ],
                 },
@@ -226,11 +219,11 @@ describe("Single Relationships", () => {
             const connectQuery = /* GraphQL */ `
             mutation  {
                 ${Person.operations.update}(
-                    where: { name: { eq: "${JoelCoen}" } }
+                    where: { name: { eq: "Joel Coen" } }
                     update: { 
                         directed: { 
                             connect: { 
-                                where: { node: { title: { eq: "${NoCountryForOldMen}" } } }
+                                where: { node: { title: { eq: "No Country for Old Men" } } }
                             } 
                         } 
                     }
@@ -255,10 +248,10 @@ describe("Single Relationships", () => {
             await testHelper.expectRelationship(Person, Movie, "DIRECTED").toIncludeSameMembers([
                 {
                     from: {
-                        name: JoelCoen,
+                        name: "Joel Coen",
                     },
                     to: {
-                        title: NoCountryForOldMen,
+                        title: "No Country for Old Men",
                         released: 2007,
                     },
                     relationship: {},
@@ -267,24 +260,17 @@ describe("Single Relationships", () => {
         });
 
         test("example 5: Delete Movie and Person nodes that are connected through the DIRECTED relationship", async () => {
-            const JoelCoen = `Joel Coen ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const NoCountryForOldMen = `No Country for Old Men ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-
             // setup
             await testHelper.executeCypher(`
-            CREATE (:${Movie} {title: "${NoCountryForOldMen}"})<-[:DIRECTED]-(:${Person} {name: "${JoelCoen}"})
+            CREATE (:${Movie} {title: "No Country for Old Men"})<-[:DIRECTED]-(:${Person} {name: "Joel Coen"})
         `);
             const query = /* GraphQL */ `
             mutation  {
                 ${Movie.operations.delete}(
-                    where: { title: { eq: "${NoCountryForOldMen}" } },
+                    where: { title: { eq: "No Country for Old Men" } },
                     delete: {
                         director: { 
-                            where: { node: { name: { eq: "${JoelCoen}" } } }
+                            where: { node: { name: { eq: "Joel Coen" } } }
                         } 
                     }
                 ) {
@@ -307,25 +293,18 @@ describe("Single Relationships", () => {
         });
 
         test("example 6: Delete an existing DIRECTED relationship between a Movie and a Person node", async () => {
-            const JoelCoen = `Joel Coen ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const NoCountryForOldMen = `No Country for Old Men ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-
             // setup
             await testHelper.executeCypher(`
-            CREATE (:${Movie} {title: "${NoCountryForOldMen}"})<-[:DIRECTED]-(:${Person} {name: "${JoelCoen}"})
+            CREATE (:${Movie} {title: "No Country for Old Men"})<-[:DIRECTED]-(:${Person} {name: "Joel Coen"})
         `);
             const query = /* GraphQL */ `
             mutation  {
                 ${Person.operations.update}(
-                    where: { name: { eq: "${JoelCoen}" } }
+                    where: { name: { eq: "Joel Coen" } }
                     update: {
                         directed: [{
                             disconnect: { 
-                                where: { node: { title: { eq: "${NoCountryForOldMen}" } } },
+                                where: { node: { title: { eq: "No Country for Old Men" } } },
                             } 
                         }]
                     }
@@ -351,21 +330,11 @@ describe("Single Relationships", () => {
         });
 
         test("example 7+8: Create a Movie node and connect it to 2 Person nodes through the DIRECTED relationship", async () => {
-            const JoelCoen = `Joel Coen ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const EthanCoen = `Ethan Coen ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const NoCountryForOldMen = `No Country for Old Men ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-
             // setup
             await testHelper.executeCypher(`
-           CREATE (:${Movie} { title: "${NoCountryForOldMen}", released: 2007 })
-           CREATE (:${Person} { name: "${JoelCoen}" })
-           CREATE (:${Person} { name: "${EthanCoen}" })
+           CREATE (:${Movie} { title: "No Country for Old Men", released: 2007 })
+           CREATE (:${Person} { name: "Joel Coen" })
+           CREATE (:${Person} { name: "Ethan Coen" })
         `);
             const query = /* GraphQL */ `
             mutation  {
@@ -374,7 +343,7 @@ describe("Single Relationships", () => {
                     update: {
                         directed: [{
                             connect: { 
-                                where: { node: { title: { eq: "${NoCountryForOldMen}" } } },
+                                where: { node: { title: { eq: "No Country for Old Men" } } },
                             } 
                         }]
                     }
@@ -399,20 +368,20 @@ describe("Single Relationships", () => {
             await testHelper.expectRelationship(Person, Movie, "DIRECTED").toIncludeSameMembers([
                 {
                     from: {
-                        name: JoelCoen,
+                        name: "Joel Coen",
                     },
                     to: {
-                        title: NoCountryForOldMen,
+                        title: "No Country for Old Men",
                         released: 2007,
                     },
                     relationship: {},
                 },
                 {
                     from: {
-                        name: EthanCoen,
+                        name: "Ethan Coen",
                     },
                     to: {
-                        title: NoCountryForOldMen,
+                        title: "No Country for Old Men",
                         released: 2007,
                     },
                     relationship: {},

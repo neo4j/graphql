@@ -28,12 +28,13 @@ describe("Union", () => {
 
     const testHelper = new TestHelper();
 
-    beforeAll(async () => {
-        Blog = testHelper.createUniqueType("Blog");
-        Post = testHelper.createUniqueType("Post");
-        User = testHelper.createUniqueType("User");
+    describe("Queries", () => {
+        beforeEach(async () => {
+            Blog = testHelper.createUniqueType("Blog");
+            Post = testHelper.createUniqueType("Post");
+            User = testHelper.createUniqueType("User");
 
-        const typeDefs = /* GraphQL */ `
+            const typeDefs = /* GraphQL */ `
             union Content = ${Blog} | ${Post}
 
             type ${Blog} @node {
@@ -51,46 +52,27 @@ describe("Union", () => {
             }
         `;
 
-        await testHelper.initNeo4jGraphQL({
-            typeDefs,
-        });
-    });
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+            });
 
-    afterAll(async () => {
-        await testHelper.close();
-    });
-
-    describe("Queries", () => {
-        const Alice = `Alice ${generate({
-            charset: "alphabetic",
-        }).toLowerCase()}`;
-        const Bob = `Bob ${generate({
-            charset: "alphabetic",
-        }).toLowerCase()}`;
-        const AlicePost = `Alice's Post ${generate({
-            charset: "alphabetic",
-        }).toLowerCase()}`;
-        const BobPost = `Bob's Post ${generate({
-            charset: "alphabetic",
-        }).toLowerCase()}`;
-        const OurBlog = `Our Blog ${generate({
-            charset: "alphabetic",
-        }).toLowerCase()}`;
-
-        beforeAll(async () => {
             // set-up for queries
             await testHelper.executeCypher(`
-            CREATE (u:${User} {name: "${Alice}"})
-            CREATE (u2:${User} {name: "${Bob}"})
-            CREATE (b:${Blog} {title: "${OurBlog}"})
-            CREATE (p:${Post} {content: "${AlicePost}"})
-            CREATE (p2:${Post} {content: "${BobPost}"})
+            CREATE (u:${User} {name: "Alice"})
+            CREATE (u2:${User} {name: "Bob"})
+            CREATE (b:${Blog} {title: "Our Blog"})
+            CREATE (p:${Post} {content: "Alice's Post"})
+            CREATE (p2:${Post} {content: "Bob's Post"})
             CREATE (u)-[:HAS_CONTENT]->(b)
             CREATE (u)-[:HAS_CONTENT]->(p)
             CREATE (u2)-[:HAS_CONTENT]->(p2)
             CREATE (b)-[:HAS_POST]->(p)
             CREATE (b)-[:HAS_POST]->(p2)
             `);
+        });
+
+        afterEach(async () => {
+            await testHelper.close();
         });
 
         test("example 1: Get User nodes with related Content nodes with inline fragments for all concrete member types", async () => {
@@ -113,27 +95,27 @@ describe("Union", () => {
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
             expect(result.data).toEqual({
-                [User.plural]: [
+                [User.plural]: expect.toIncludeSameMembers([
                     {
-                        name: Alice,
-                        content: [
+                        name: "Alice",
+                        content: expect.toIncludeSameMembers([
                             {
-                                title: OurBlog,
+                                title: "Our Blog",
                             },
                             {
-                                content: AlicePost,
+                                content: "Alice's Post",
+                            },
+                        ]),
+                    },
+                    {
+                        name: "Bob",
+                        content: [
+                            {
+                                content: "Bob's Post",
                             },
                         ],
                     },
-                    {
-                        name: Bob,
-                        content: [
-                            {
-                                content: BobPost,
-                            },
-                        ],
-                    },
-                ],
+                ]),
             });
         });
 
@@ -154,21 +136,21 @@ describe("Union", () => {
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
             expect(result.data).toEqual({
-                [User.plural]: [
+                [User.plural]: expect.toIncludeSameMembers([
                     {
-                        name: Alice,
-                        content: [
+                        name: "Alice",
+                        content: expect.toIncludeSameMembers([
                             {
-                                title: OurBlog,
+                                title: "Our Blog",
                             },
                             {},
-                        ],
+                        ]),
                     },
                     {
-                        name: Bob,
+                        name: "Bob",
                         content: [{}],
                     },
-                ],
+                ]),
             });
         });
 
@@ -189,67 +171,74 @@ describe("Union", () => {
             const result = await testHelper.executeGraphQL(query);
             expect(result.errors).toBeUndefined();
             expect(result.data).toEqual({
-                [User.plural]: [
+                [User.plural]: expect.toIncludeSameMembers([
                     {
-                        name: Alice,
+                        name: "Alice",
                         content: [
                             {
-                                title: OurBlog,
+                                title: "Our Blog",
                             },
                         ],
                     },
                     {
-                        name: Bob,
+                        name: "Bob",
                         content: [],
                     },
-                ],
+                ]),
             });
         });
     });
 
     describe("Mutations", () => {
         beforeEach(async () => {
-            // clean-up for mutations
-            await testHelper.executeCypher(`
-                MATCH (p:${User} )
-                MATCH (a:${Blog} )
-                MATCH (b:${Post})
-                DETACH DELETE p,a,b
-            `);
-        });
-        test("example 4: Create User nodes with HAS_CONTENT relationship to Blog nodes", async () => {
-            const Alice = `Alice ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const Bob = `Bob ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const AlicePost = `Alice's Post ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const BobPost = `Bob's Post ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const OurBlog = `Our Blog ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
+            Blog = testHelper.createUniqueType("Blog");
+            Post = testHelper.createUniqueType("Post");
+            User = testHelper.createUniqueType("User");
 
+            const typeDefs = /* GraphQL */ `
+            union Content = ${Blog} | ${Post}
+
+            type ${Blog} @node {
+                title: String
+                posts: [${Post}!]! @relationship(type: "HAS_POST", direction: OUT)
+            }
+
+            type ${Post} @node {
+                content: String
+            }
+
+            type ${User} @node {
+                name: String
+                content: [Content!]! @relationship(type: "HAS_CONTENT", direction: OUT)
+            }
+        `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+            });
+        });
+
+        afterEach(async () => {
+            await testHelper.close();
+        });
+
+        test("example 4: Create User nodes with HAS_CONTENT relationship to Blog nodes", async () => {
             const query = /* GraphQL */ `
             mutation {
                 ${User.operations.create}(
                     input: [
                         {
-                            name: "${Alice}"
+                            name: "Alice"
                             content: {
                                 ${Blog}: {
                                     create: [
                                         {
                                             node: {
-                                                title: "${OurBlog}"
+                                                title: "Our Blog"
                                                 posts: { 
                                                     create: [
-                                                        { node: { content: "${AlicePost}" } },
-                                                        { node: { content: "${BobPost}" } }
+                                                        { node: { content: "Alice's Post" } },
+                                                        { node: { content: "Bob's Post" } }
                                                     ]
                                                 }
                                             }
@@ -258,7 +247,7 @@ describe("Union", () => {
                                 }
                             }
                         },
-                        { name: "${Bob}" }
+                        { name: "Bob" }
                     ]
                 ) {
                     ${User.plural} {
@@ -274,10 +263,10 @@ describe("Union", () => {
             await testHelper.expectRelationship(User, Blog, "HAS_CONTENT").toEqual([
                 {
                     from: {
-                        name: Alice,
+                        name: "Alice",
                     },
                     to: {
-                        title: OurBlog,
+                        title: "Our Blog",
                     },
                     relationship: {},
                 },
@@ -288,19 +277,19 @@ describe("Union", () => {
             await testHelper.expectRelationship(Blog, Post, "HAS_POST").toIncludeSameMembers([
                 {
                     from: {
-                        title: OurBlog,
+                        title: "Our Blog",
                     },
                     to: {
-                        content: AlicePost,
+                        content: "Alice's Post",
                     },
                     relationship: {},
                 },
                 {
                     from: {
-                        title: OurBlog,
+                        title: "Our Blog",
                     },
                     to: {
-                        content: BobPost,
+                        content: "Bob's Post",
                     },
                     relationship: {},
                 },
@@ -308,36 +297,23 @@ describe("Union", () => {
         });
 
         test("example 5: Update User nodes with HAS_CONTENT relationships to Post nodes", async () => {
-            const Alice = `Alice ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const Bob = `Bob ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const AlicePost = `Alice's Post ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const BobPost = `Bob's Post ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-
             await testHelper.executeCypher(`
-            CREATE (:${User} {name: "${Alice}"})
-            CREATE (:${Post} {content: "${AlicePost}"})
-            CREATE (:${User} {name: "${Bob}"})
-            CREATE (:${Post} {content: "${BobPost}"})
+            CREATE (:${User} {name: "Alice"})
+            CREATE (:${Post} {content: "Alice's Post"})
+            CREATE (:${User} {name: "Bob"})
+            CREATE (:${Post} {content: "Bob's Post"})
         `);
             const queryAlice = /* GraphQL */ `
             mutation {
                 ${User.operations.update}(
-                   where: { name: { eq: "${Alice}" } }
+                   where: { name: { eq: "Alice" } }
                    update: {
                        content: {
                             ${Post}: [
                                 {
                                     connect: [
                                         {
-                                            where: { node: { content: { eq: "${AlicePost}" } } }
+                                            where: { node: { content: { eq: "Alice's Post" } } }
                                         }
                                     ]
                                 }
@@ -357,14 +333,14 @@ describe("Union", () => {
             const queryBob = /* GraphQL */ `
             mutation {
                 ${User.operations.update}(
-                   where: { name: { eq: "${Bob}" } }
+                   where: { name: { eq: "Bob" } }
                    update: {
                        content: {
                             ${Post}: [
                                 {
                                     connect: [
                                         {
-                                            where: { node: { content: { eq: "${BobPost}" } } }
+                                            where: { node: { content: { eq: "Bob's Post" } } }
                                         }
                                     ]
                                 }
@@ -384,19 +360,19 @@ describe("Union", () => {
             await testHelper.expectRelationship(User, Post, "HAS_CONTENT").toIncludeSameMembers([
                 {
                     from: {
-                        name: Alice,
+                        name: "Alice",
                     },
                     to: {
-                        content: AlicePost,
+                        content: "Alice's Post",
                     },
                     relationship: {},
                 },
                 {
                     from: {
-                        name: Bob,
+                        name: "Bob",
                     },
                     to: {
-                        content: BobPost,
+                        content: "Bob's Post",
                     },
                     relationship: {},
                 },

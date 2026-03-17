@@ -343,14 +343,14 @@ describe("1-* relationships involving Union type", () => {
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeFalsy();
         expect(result.data).toEqual({
-            [Movie.plural]: [
+            [Movie.plural]: expect.toIncludeSameMembers([
                 {
                     title: "The Matrix",
                 },
                 {
                     title: "The Apartment",
                 },
-            ],
+            ]),
         });
     });
 

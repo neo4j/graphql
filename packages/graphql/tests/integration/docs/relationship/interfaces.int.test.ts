@@ -28,12 +28,13 @@ describe("Interfaces", () => {
 
     const testHelper = new TestHelper();
 
-    beforeAll(async () => {
-        Person = testHelper.createUniqueType("Person");
-        Movie = testHelper.createUniqueType("Movie");
-        Series = testHelper.createUniqueType("Series");
+    describe("Queries", () => {
+        beforeEach(async () => {
+            Person = testHelper.createUniqueType("Person");
+            Movie = testHelper.createUniqueType("Movie");
+            Series = testHelper.createUniqueType("Series");
 
-        const typeDefs = /* GraphQL */ `
+            const typeDefs = /* GraphQL */ `
             interface Production {
                 title: String!
                 actors: [${Person}!]! @declareRelationship
@@ -66,45 +67,25 @@ describe("Interfaces", () => {
             }
         `;
 
-        await testHelper.initNeo4jGraphQL({
-            typeDefs,
-        });
-    });
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+            });
 
-    afterAll(async () => {
-        await testHelper.close();
-    });
-
-    describe("Queries", () => {
-        const BenAffleck = `Ben Affleck ${generate({
-            charset: "alphabetic",
-        }).toLowerCase()}`;
-        const Argo = `Argo ${generate({
-            charset: "alphabetic",
-        }).toLowerCase()}`;
-        const GoneGirl = `Gone Girl ${generate({
-            charset: "alphabetic",
-        }).toLowerCase()}`;
-        const BuffyTheVampireSlayer = `Buffy the Vampire Slayer ${generate({
-            charset: "alphabetic",
-        }).toLowerCase()}`;
-        const TheVoyageOfTheMimi = `The Voyage of the Mimi ${generate({
-            charset: "alphabetic",
-        }).toLowerCase()}`;
-
-        beforeAll(async () => {
-            // set-up for queries
             await testHelper.executeCypher(`
-                CREATE (p:${Person} {name: "${BenAffleck}"})
-                CREATE (a:${Movie} {title: "${Argo}", released: 2012})
-                CREATE (g:${Movie} {title: "${GoneGirl}", released: 2014})
-                CREATE (b:${Series} {title: "${BuffyTheVampireSlayer}", episodes: 144})
-                CREATE (t:${Series} {title: "${TheVoyageOfTheMimi}", episodes: 7})
+                CREATE (p:${Person} {name: "Ben Affleck"})
+                CREATE (a:${Movie} {title: "Argo", released: 2012})
+                CREATE (g:${Movie} {title: "Gone Girl", released: 2014})
+                CREATE (b:${Series} {title: "Buffy The Vampire Slayer", episodes: 144})
+                CREATE (t:${Series} {title: "The Voyage Of The Mimi", episodes: 7})
                 MERGE (p)-[:ACTED_IN {roles: ["Tony Mendez"]}]->(a)
                 MERGE (p)-[:ACTED_IN {roles: ["Nick Dunne"]}]->(g)
                 MERGE (p)-[:ACTED_IN {roles: ["Basketball Player #10"], episodes: 1}]->(b)
                 MERGE (p)-[:ACTED_IN {roles: ["C.T. Granville"], episodes: 7}]->(t)
             `);
+        });
+
+        afterEach(async () => {
+            await testHelper.close();
         });
 
         test("example 1: Get Production nodes with related Actor nodes", async () => {
@@ -127,36 +108,36 @@ describe("Interfaces", () => {
             expect(result.data).toEqual({
                 productions: [
                     {
-                        title: Argo,
+                        title: "Argo",
                         released: 2012,
                         actors: [
                             {
-                                name: BenAffleck,
+                                name: "Ben Affleck",
                             },
                         ],
                     },
                     {
-                        title: BuffyTheVampireSlayer,
+                        title: "Buffy The Vampire Slayer",
                         actors: [
                             {
-                                name: BenAffleck,
+                                name: "Ben Affleck",
                             },
                         ],
                     },
                     {
-                        title: GoneGirl,
+                        title: "Gone Girl",
                         released: 2014,
                         actors: [
                             {
-                                name: BenAffleck,
+                                name: "Ben Affleck",
                             },
                         ],
                     },
                     {
-                        title: TheVoyageOfTheMimi,
+                        title: "The Voyage Of The Mimi",
                         actors: [
                             {
-                                name: BenAffleck,
+                                name: "Ben Affleck",
                             },
                         ],
                     },
@@ -200,12 +181,12 @@ describe("Interfaces", () => {
                     edges: expect.toIncludeSameMembers([
                         {
                             node: {
-                                title: Argo,
+                                title: "Argo",
                                 actorsConnection: {
                                     edges: [
                                         {
                                             node: {
-                                                name: BenAffleck,
+                                                name: "Ben Affleck",
                                             },
                                             properties: {
                                                 roles: ["Tony Mendez"],
@@ -217,12 +198,12 @@ describe("Interfaces", () => {
                         },
                         {
                             node: {
-                                title: BuffyTheVampireSlayer,
+                                title: "Buffy The Vampire Slayer",
                                 actorsConnection: {
                                     edges: [
                                         {
                                             node: {
-                                                name: BenAffleck,
+                                                name: "Ben Affleck",
                                             },
                                             properties: {
                                                 roles: ["Basketball Player #10"],
@@ -235,12 +216,12 @@ describe("Interfaces", () => {
                         },
                         {
                             node: {
-                                title: GoneGirl,
+                                title: "Gone Girl",
                                 actorsConnection: {
                                     edges: [
                                         {
                                             node: {
-                                                name: BenAffleck,
+                                                name: "Ben Affleck",
                                             },
                                             properties: {
                                                 roles: ["Nick Dunne"],
@@ -252,12 +233,12 @@ describe("Interfaces", () => {
                         },
                         {
                             node: {
-                                title: TheVoyageOfTheMimi,
+                                title: "The Voyage Of The Mimi",
                                 actorsConnection: {
                                     edges: [
                                         {
                                             node: {
-                                                name: BenAffleck,
+                                                name: "Ben Affleck",
                                             },
                                             properties: {
                                                 roles: ["C.T. Granville"],
@@ -296,22 +277,22 @@ describe("Interfaces", () => {
             expect(result.data).toEqual({
                 [Person.plural]: [
                     {
-                        name: BenAffleck,
+                        name: "Ben Affleck",
                         actedIn: expect.toIncludeSameMembers([
                             {
-                                title: Argo,
+                                title: "Argo",
                                 released: 2012,
                             },
                             {
-                                title: BuffyTheVampireSlayer,
+                                title: "Buffy The Vampire Slayer",
                                 episodes: 144,
                             },
                             {
-                                title: GoneGirl,
+                                title: "Gone Girl",
                                 released: 2014,
                             },
                             {
-                                title: TheVoyageOfTheMimi,
+                                title: "The Voyage Of The Mimi",
                                 episodes: 7,
                             },
                         ]),
@@ -340,14 +321,14 @@ describe("Interfaces", () => {
             expect(result.data).toEqual({
                 [Person.plural]: [
                     {
-                        name: BenAffleck,
+                        name: "Ben Affleck",
                         actedIn: expect.toIncludeSameMembers([
                             {
-                                title: Argo,
+                                title: "Argo",
                                 released: 2012,
                             },
                             {
-                                title: GoneGirl,
+                                title: "Gone Girl",
                                 released: 2014,
                             },
                         ]),
@@ -359,55 +340,76 @@ describe("Interfaces", () => {
 
     describe("Mutations", () => {
         beforeEach(async () => {
-            // clean-up for mutations
-            await testHelper.executeCypher(`
-                MATCH (p:${Person} )
-                MATCH (a:${Movie} )
-                MATCH (b:${Series})
-                DETACH DELETE p,a,b
-            `);
+            Person = testHelper.createUniqueType("Person");
+            Movie = testHelper.createUniqueType("Movie");
+            Series = testHelper.createUniqueType("Series");
+
+            const typeDefs = /* GraphQL */ `
+            interface Production {
+                title: String!
+                actors: [${Person}!]! @declareRelationship
+            }
+
+            type ${Movie} implements Production @node {
+                title: String!
+                released: Int!
+                actors: [${Person}!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
+            }
+
+            type ${Series} implements Production @node {
+                title: String!
+                episodes: Int!
+                actors: [${Person}!]! @relationship(type: "ACTED_IN", properties: "ActedInSeries", direction: IN)
+            }
+
+            type ActedIn @relationshipProperties {
+                roles: [String!]!
+            }
+
+            type ActedInSeries @relationshipProperties {
+                roles: [String!]!
+                episodes: Int
+            }
+
+            type ${Person} @node {
+                name: String!
+                actedIn: [Production!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+            }
+        `;
+
+            await testHelper.initNeo4jGraphQL({
+                typeDefs,
+            });
+        });
+
+        afterEach(async () => {
+            await testHelper.close();
         });
 
         test("example 5: Create a Person node with related Production nodes", async () => {
-            const BenAffleck = `Ben Affleck ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const Argo = `Argo ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const GoneGirl = `Gone Girl ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const BuffyTheVampireSlayer = `Buffy the Vampire Slayer ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const TheVoyageOfTheMimi = `The Voyage of the Mimi ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-
             const query = /* GraphQL */ `
             mutation CreateActorAndProductions {
                 ${Person.operations.create}(
                     input: [
                         {
-                            name: "${BenAffleck}"
+                            name: "Ben Affleck"
                             actedIn: {
                                 create: [
                                     {
                                         edge: { roles: ["Tony Mendez"] }
-                                        node: { ${Movie}: { title: "${Argo}", released: 2012 } }
+                                        node: { ${Movie}: { title: "Argo", released: 2012 } }
                                     }
                                     {
                                         edge: { roles: ["Nick Dunne"] }
-                                        node: { ${Movie}: { title: "${GoneGirl}", released: 2014 } }
+                                        node: { ${Movie}: { title: "Gone Girl", released: 2014 } }
                                     }
                                     {
                                         edge: { roles: ["Basketball Player #10"] }
-                                        node: { ${Series}: { title: "${BuffyTheVampireSlayer}", episodes: 144 } }
+                                        node: { ${Series}: { title: "Buffy the Vampire Slayer", episodes: 144 } }
                                     }
                                     {
                                         edge: { roles: ["C.T. Granville"] }
-                                        node: { ${Series}: { title: "${TheVoyageOfTheMimi}", episodes: 7 } }
+                                        node: { ${Series}: { title: "The Voyage of the Mimi", episodes: 7 } }
                                     }
                                 ]
                             }
@@ -427,7 +429,7 @@ describe("Interfaces", () => {
                 [Person.operations.create]: {
                     [Person.plural]: [
                         {
-                            name: BenAffleck,
+                            name: "Ben Affleck",
                         },
                     ],
                 },
@@ -436,10 +438,10 @@ describe("Interfaces", () => {
             await testHelper.expectRelationship(Person, Movie, "ACTED_IN").toIncludeSameMembers([
                 {
                     from: {
-                        name: BenAffleck,
+                        name: "Ben Affleck",
                     },
                     to: {
-                        title: Argo,
+                        title: "Argo",
                         released: 2012,
                     },
                     relationship: {
@@ -448,10 +450,10 @@ describe("Interfaces", () => {
                 },
                 {
                     from: {
-                        name: BenAffleck,
+                        name: "Ben Affleck",
                     },
                     to: {
-                        title: GoneGirl,
+                        title: "Gone Girl",
                         released: 2014,
                     },
                     relationship: {
@@ -462,10 +464,10 @@ describe("Interfaces", () => {
             await testHelper.expectRelationship(Person, Series, "ACTED_IN").toIncludeSameMembers([
                 {
                     from: {
-                        name: BenAffleck,
+                        name: "Ben Affleck",
                     },
                     to: {
-                        title: BuffyTheVampireSlayer,
+                        title: "Buffy the Vampire Slayer",
                         episodes: 144,
                     },
                     relationship: {
@@ -474,10 +476,10 @@ describe("Interfaces", () => {
                 },
                 {
                     from: {
-                        name: BenAffleck,
+                        name: "Ben Affleck",
                     },
                     to: {
-                        title: TheVoyageOfTheMimi,
+                        title: "The Voyage of the Mimi",
                         episodes: 7,
                     },
                     relationship: {
@@ -488,24 +490,17 @@ describe("Interfaces", () => {
         });
 
         test("example 6: Update Person nodes and create ACTED_IN relationships to Production nodes filtered by Movie type", async () => {
-            const JaceNorman = `Jace Norman ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const HenryDanger = `Henry Danger ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-
             await testHelper.executeCypher(`
-            CREATE (p:${Person} {name: "${JaceNorman}"})
-            CREATE (h:${Movie} {title: "${HenryDanger}", released: 2025})
-            CREATE (hs:${Series} {title: "${HenryDanger}", released: 2010})
+            CREATE (p:${Person} {name: "Jace Norman"})
+            CREATE (h:${Movie} {title: "Henry Danger", released: 2025})
+            CREATE (hs:${Series} {title: "Henry Danger", released: 2010})
             MERGE (p)-[:ACTED_IN {roles: ["Henry Danger"]}]->(hs)
         `);
 
             const query = /* GraphQL */ `
             mutation {
                 ${Person.operations.update}(
-                    where: { name: { eq: "${JaceNorman}" } }
+                    where: { name: { eq: "Jace Norman" } }
                     update: {
                         actedIn: [
                             {
@@ -515,7 +510,7 @@ describe("Interfaces", () => {
                                         where: {
                                             node: {
                                                 typename: [${Movie}],
-                                                title: { eq: "${HenryDanger}" }
+                                                title: { eq: "Henry Danger" }
                                             },
                                         },
                                     },
@@ -544,10 +539,10 @@ describe("Interfaces", () => {
             await testHelper.expectRelationship(Person, Movie, "ACTED_IN").toIncludeSameMembers([
                 {
                     from: {
-                        name: JaceNorman,
+                        name: "Jace Norman",
                     },
                     to: {
-                        title: HenryDanger,
+                        title: "Henry Danger",
                         released: 2025,
                     },
                     relationship: {
@@ -558,28 +553,23 @@ describe("Interfaces", () => {
         });
 
         test("example 7: Update Person nodes and update the ACTED_IN relationships to any Production nodes with relationship properties based on the properties type", async () => {
-            const JaceNorman = `Jace Norman ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
-            const HenryDanger = `Henry Danger ${generate({
-                charset: "alphabetic",
-            }).toLowerCase()}`;
+            //  setup
             await testHelper.executeCypher(`
-            CREATE (p:${Person} {name: "${JaceNorman}"})
-            CREATE (h:${Movie} {title: "${HenryDanger}", released: 2025})
-            CREATE (hs:${Series} {title: "${HenryDanger}", released: 2010})
+            CREATE (p:${Person} {name: "Jace Norman"})
+            CREATE (h:${Movie} {title: "Henry Danger", released: 2025})
+            CREATE (hs:${Series} {title: "Henry Danger", released: 2010})
             MERGE (p)-[:ACTED_IN {roles: ["Henry Danger"]}]->(hs)
             MERGE (p)-[:ACTED_IN {roles: ["Henry Danger"]}]->(h)
         `);
             const query = /* GraphQL */ `
             mutation {
                 ${Person.operations.update}(
-                    where: { name: { eq: "${JaceNorman}" } }
+                    where: { name: { eq: "Jace Norman" } }
                     update: {
                         actedIn: [
                             {
                                 update: {
-                                    where: { node:  { title:  { eq: "${HenryDanger}" } } }
+                                    where: { node:  { title:  { eq: "Henry Danger" } } }
                                     node: {
                                         actors: [
                                             {
@@ -617,10 +607,10 @@ describe("Interfaces", () => {
             await testHelper.expectRelationship(Person, Movie, "ACTED_IN").toIncludeSameMembers([
                 {
                     from: {
-                        name: JaceNorman,
+                        name: "Jace Norman",
                     },
                     to: {
-                        title: HenryDanger,
+                        title: "Henry Danger",
                         released: 2025,
                     },
                     relationship: {

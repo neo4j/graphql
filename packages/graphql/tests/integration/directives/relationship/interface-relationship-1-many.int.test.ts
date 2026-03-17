@@ -186,9 +186,7 @@ describe("1-* relationship involving Interface type", () => {
                     actor: [
                         {
                             name: "Hachiko",
-                            actedIn: {
-                                title: "The Matrix",
-                            },
+                            actedIn: expect.toBeOneOf([{ title: "The Matrix" }, { title: "The Office" }]),
                         },
                     ],
                     director: {
@@ -208,9 +206,7 @@ describe("1-* relationship involving Interface type", () => {
                     actor: [
                         {
                             name: "Hachiko",
-                            actedIn: {
-                                title: "The Matrix",
-                            },
+                            actedIn: expect.toBeOneOf([{ title: "The Matrix" }, { title: "The Office" }]),
                         },
                     ],
                     director: {

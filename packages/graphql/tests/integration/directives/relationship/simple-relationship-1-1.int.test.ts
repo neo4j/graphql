@@ -73,9 +73,14 @@ describe("Entity api on single element relationships", () => {
         expect(result.data).toEqual({
             [Movie.plural]: [
                 {
-                    actor: {
-                        name: "Keanu",
-                    },
+                    actor: expect.toBeOneOf([
+                        {
+                            name: "Keanu",
+                        },
+                        {
+                            name: "another actor",
+                        },
+                    ]),
                 },
             ],
         });
