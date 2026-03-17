@@ -62,6 +62,9 @@ import { validateRelationshipDirective } from "./custom-rules/directives/relatio
 import { validateRelayIdDirective } from "./custom-rules/directives/relay-id";
 import { validateSubscriptionAuthorizationDirective } from "./custom-rules/directives/subscriptionAuthorization";
 import { validateTimestampDirective } from "./custom-rules/directives/timestamp";
+import { validateVectorDirective } from "./custom-rules/directives/vector";
+
+import { validateGroupByDirective } from "./custom-rules/directives/group-by";
 import { ErrorIfSingleRelationships } from "./custom-rules/error-single-relationships";
 import { ValidJwtDirectives } from "./custom-rules/features/valid-jwt-directives";
 import { ValidRelationshipDeclaration } from "./custom-rules/features/valid-relationship-declaration";
@@ -84,7 +87,6 @@ import { WarnObjectFieldsWithoutResolver } from "./custom-rules/warnings/object-
 import { WarnIfSubscriptionsAuthorizationMissing } from "./custom-rules/warnings/subscriptions-authorization-missing";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
 import { validateSDL } from "./validate-sdl";
-import { validateVectorDirective } from "./custom-rules/directives/vector";
 
 function filterDocument(document: DocumentNode, filterDirectives: boolean = false): DocumentNode {
     const nodeNames = document.definitions
@@ -258,12 +260,14 @@ function runValidationRulesOnFilteredDocument({
             validateTimestampDirective,
             validateSubscriptionAuthorizationDirective,
             validateVectorDirective,
+            validateGroupByDirective,
         ],
         schema,
         features?.populatedBy?.callbacks
     );
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
     if (filteredErrors.length) {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
         throw filteredErrors;
     }
 }
@@ -320,6 +324,7 @@ function validateDocument({
     const errors = validateSchema(schema);
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
     if (filteredErrors.length) {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
         throw filteredErrors;
     }
 
