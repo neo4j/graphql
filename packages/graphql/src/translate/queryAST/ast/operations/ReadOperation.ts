@@ -101,14 +101,18 @@ export class ReadOperation extends Operation {
         }
         const projection = this.getProjectionMap(context);
 
-        const aggregationExpr = Cypher.collect(context.target);
+        let aggregationExpr: Cypher.Expr = Cypher.collect(context.target);
 
         const withClause = new Cypher.With([projection, context.target]);
         if (this.sortFields.length > 0 || this.pagination) {
             this.addSortToClause(context, context.target, withClause);
         }
 
-        return withClause.return([aggregationExpr, returnVariable]);
+        if (this.relationship?.isList === false) {
+            aggregationExpr = Cypher.head(aggregationExpr);
+        }
+        const returnClause = withClause.return([aggregationExpr, returnVariable]);
+        return returnClause;
     }
 
     protected getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {

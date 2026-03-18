@@ -17,10 +17,10 @@
  * limitations under the License.
  */
 
-import { Neo4jGraphQL } from "../../../src";
-import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../../../src";
+import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
 
-describe("Cypher relationship", () => {
+describe("many-to-many relationships", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 

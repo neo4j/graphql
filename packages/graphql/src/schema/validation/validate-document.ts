@@ -65,7 +65,7 @@ import { validateTimestampDirective } from "./custom-rules/directives/timestamp"
 import { validateVectorDirective } from "./custom-rules/directives/vector";
 
 import { validateGroupByDirective } from "./custom-rules/directives/group-by";
-import { ErrorIfSingleRelationships } from "./custom-rules/error-single-relationships";
+import { ErrorIfSingleRelationshipNonNullable } from "./custom-rules/error-single-relationships-non-nullable";
 import { ValidJwtDirectives } from "./custom-rules/features/valid-jwt-directives";
 import { ValidRelationshipDeclaration } from "./custom-rules/features/valid-relationship-declaration";
 import { ValidRelationshipProperties } from "./custom-rules/features/valid-relationship-properties";
@@ -237,8 +237,8 @@ function runValidationRulesOnFilteredDocument({
             ValidUnionType,
             ValidDirectiveInheritance,
             ValidateNeo4jDirectiveArgumentsValue,
+            ErrorIfSingleRelationshipNonNullable,
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
-            ErrorIfSingleRelationships,
             WarnIfAMaxLimitCanBeBypassedThroughInterface(),
             WarnObjectFieldsWithoutResolver({
                 customResolvers: asArray(userCustomResolvers ?? []),

@@ -202,14 +202,18 @@ export function withCreateFieldInputType({
     if (composer.has(createName)) {
         return composer.getITC(createName);
     }
+    const fields = makeCreateFieldInputTypeFields({
+        relationshipAdapter,
+        composer,
+        ifUnionMemberEntity,
+        userDefinedFieldDirectives,
+    });
+    if (!Object.keys(fields).length) {
+        return undefined;
+    }
     const createFieldInput = composer.createInputTC({
         name: createName,
-        fields: makeCreateFieldInputTypeFields({
-            relationshipAdapter,
-            composer,
-            ifUnionMemberEntity,
-            userDefinedFieldDirectives,
-        }),
+        fields,
     });
     return createFieldInput;
 }

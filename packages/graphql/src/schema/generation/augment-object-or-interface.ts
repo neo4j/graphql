@@ -61,6 +61,10 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField({
         }
     }
 
+    if (!relationshipAdapter.isList) {
+        generateRelFieldArgs = false;
+    }
+
     if (generateRelFieldArgs) {
         const relationshipTarget =
             relationshipAdapter instanceof RelationshipAdapter && relationshipAdapter.originalTarget
@@ -71,9 +75,11 @@ export function augmentObjectOrInterfaceTypeWithRelationshipField({
 
         const nodeFieldsArgs = {
             where: whereTypeName,
-            limit: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
-            offset: GraphQLInt,
         };
+
+        nodeFieldsArgs["limit"] = features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt;
+        nodeFieldsArgs["offset"] = GraphQLInt;
+
         if (!(relationshipTarget instanceof UnionEntityAdapter)) {
             const sortConfig = makeSortInput({
                 entityAdapter: relationshipTarget,
@@ -107,24 +113,30 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
         )
     );
 
-    const composeNodeArgs: ObjectTypeComposerArgumentConfigMapDefinition = {
-        where: makeConnectionWhereInputType({
-            relationshipAdapter,
-            composer: schemaComposer,
-        }),
-        first: {
-            type: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
-        },
-        after: {
-            type: GraphQLString,
-        },
-    };
-    const connectionSortITC = withConnectionSortInputType({
+    const composeNodeArgs: ObjectTypeComposerArgumentConfigMapDefinition = {};
+
+    // we want this type to be created for single relationships, but don't want to set the argument
+    const connectionWhereInput = makeConnectionWhereInputType({
         relationshipAdapter,
         composer: schemaComposer,
     });
-    if (connectionSortITC) {
-        composeNodeArgs.sort = connectionSortITC.NonNull.List;
+
+    if (relationshipAdapter.isList) {
+        composeNodeArgs.where = connectionWhereInput;
+        composeNodeArgs.first = {
+            type: features?.limitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
+        };
+        composeNodeArgs.after = {
+            type: GraphQLString,
+        };
+
+        const connectionSortITC = withConnectionSortInputType({
+            relationshipAdapter,
+            composer: schemaComposer,
+        });
+        if (connectionSortITC) {
+            composeNodeArgs.sort = connectionSortITC.NonNull.List;
+        }
     }
     const isTargetUnion = relationshipAdapter.target instanceof UnionEntityAdapter;
     const isSourceInterface = relationshipAdapter.source instanceof InterfaceEntityAdapter;
