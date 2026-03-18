@@ -49,7 +49,7 @@ export function withConnectionObjectType({
     const isTargetUnion = relationshipAdapter.target instanceof UnionEntityAdapter;
     const isSourceInterface = relationshipAdapter.source instanceof InterfaceEntityAdapter;
 
-    if (relationshipAdapter.aggregate && !isTargetUnion && !isSourceInterface) {
+    if (relationshipAdapter.isList && relationshipAdapter.aggregate && !isTargetUnion && !isSourceInterface) {
         const connectionObjectType = composer.getOrCreateOTC(typeName);
         connectionObjectType.addFields({
             aggregate: composer.getOTC(relationshipAdapter.operations.getAggregateFieldTypename()).NonNull,

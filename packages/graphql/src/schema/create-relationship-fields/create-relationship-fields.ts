@@ -192,12 +192,6 @@ export function createRelationshipFields({
             return;
         }
 
-        if (!relationshipAdapter.isList) {
-            throw new Error(
-                `@relationship on non-list field [${relationshipAdapter.source.name}.${relationshipAdapter.name}] not supported`
-            );
-        }
-
         // TODO: find a way to merge these 2 into 1 RelationshipProperties generation function
         if (relationshipAdapter instanceof RelationshipDeclarationAdapter) {
             doForRelationshipDeclaration({
@@ -334,25 +328,12 @@ function createRelationshipFieldsForTarget({
         )
     );
 
-    withRelationInputType({
-        relationshipAdapter,
-        composer,
-        deprecatedDirectives,
-        userDefinedFieldDirectives,
-    });
-
     augmentCreateInputTypeWithRelationshipsInput({
         relationshipAdapter,
         composer,
         deprecatedDirectives,
         userDefinedFieldDirectives,
         features,
-    });
-
-    augmentConnectInputTypeWithConnectFieldInput({
-        relationshipAdapter,
-        composer,
-        deprecatedDirectives,
     });
 
     augmentDeleteInputTypeWithDeleteFieldInput({
@@ -362,18 +343,33 @@ function createRelationshipFieldsForTarget({
         features,
     });
 
-    augmentDisconnectInputTypeWithDisconnectFieldInput({
-        relationshipAdapter,
-        composer,
-        deprecatedDirectives,
-        features,
-    });
+    if (relationshipAdapter.isList) {
+        withRelationInputType({
+            relationshipAdapter,
+            composer,
+            deprecatedDirectives,
+            userDefinedFieldDirectives,
+        });
 
-    augmentUpdateInputTypeWithUpdateFieldInput({
-        relationshipAdapter,
-        composer,
-        deprecatedDirectives,
-        userDefinedFieldDirectives,
-        features,
-    });
+        augmentConnectInputTypeWithConnectFieldInput({
+            relationshipAdapter,
+            composer,
+            deprecatedDirectives,
+        });
+
+        augmentDisconnectInputTypeWithDisconnectFieldInput({
+            relationshipAdapter,
+            composer,
+            deprecatedDirectives,
+            features,
+        });
+
+        augmentUpdateInputTypeWithUpdateFieldInput({
+            relationshipAdapter,
+            composer,
+            deprecatedDirectives,
+            userDefinedFieldDirectives,
+            features,
+        });
+    }
 }
