@@ -1,5 +1,13 @@
 # @neo4j/graphql
 
+## 7.4.4
+
+### Patch Changes
+
+- [#7090](https://github.com/neo4j/graphql/pull/7090) [`d26c9a6`](https://github.com/neo4j/graphql/commit/d26c9a61c26ee4f87a152c373aad80e3e80c3812) Thanks [@a-alle](https://github.com/a-alle)! - Fix path to operator in update edge properties for declared relationships
+
+- [#7082](https://github.com/neo4j/graphql/pull/7082) [`1591e6e`](https://github.com/neo4j/graphql/commit/1591e6e192bcf4d506a9a36a3848840dfc701177) Thanks [@a-alle](https://github.com/a-alle)! - Fix aggregationWhereInput does not exist
+
 ## 7.4.3
 
 ### Patch Changes
