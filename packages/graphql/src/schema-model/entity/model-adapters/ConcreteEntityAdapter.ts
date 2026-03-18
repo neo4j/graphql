@@ -153,6 +153,7 @@ export class ConcreteEntityAdapter {
 
     public get relatedEntities(): EntityAdapter[] {
         if (!this._relatedEntities) {
+            // TODO: remove array destructuring with Node 20
             this._relatedEntities = [...this.relationships.values()].map((relationship) => relationship.target);
         }
         return this._relatedEntities;
@@ -265,6 +266,7 @@ export class ConcreteEntityAdapter {
     }
 
     public hasListRelationship(): boolean {
+        // TODO: remove array destructuring with Node 20
         return !![...this.relationships.values()].find((r) => r.isList);
     }
 
