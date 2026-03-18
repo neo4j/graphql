@@ -57,9 +57,9 @@ describe("Cypher Aggregations where node with Time", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                RETURN min(this1.someTime) = time($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              RETURN min(this1.someTime) = time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -88,9 +88,9 @@ describe("Cypher Aggregations where node with Time", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                RETURN min(this1.someTime) > time($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              RETURN min(this1.someTime) > time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -119,9 +119,9 @@ describe("Cypher Aggregations where node with Time", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                RETURN min(this1.someTime) >= time($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              RETURN min(this1.someTime) >= time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -150,9 +150,9 @@ describe("Cypher Aggregations where node with Time", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                RETURN min(this1.someTime) < time($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              RETURN min(this1.someTime) < time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -181,9 +181,9 @@ describe("Cypher Aggregations where node with Time", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                RETURN min(this1.someTime) <= time($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              RETURN min(this1.someTime) <= time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -212,9 +212,9 @@ describe("Cypher Aggregations where node with Time", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                RETURN max(this1.someTime) = time($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              RETURN max(this1.someTime) = time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -243,9 +243,9 @@ describe("Cypher Aggregations where node with Time", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                RETURN max(this1.someTime) > time($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              RETURN max(this1.someTime) > time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -274,9 +274,9 @@ describe("Cypher Aggregations where node with Time", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                RETURN max(this1.someTime) >= time($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              RETURN max(this1.someTime) >= time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -305,9 +305,9 @@ describe("Cypher Aggregations where node with Time", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                RETURN max(this1.someTime) < time($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              RETURN max(this1.someTime) < time($param0) AS var2
             }
             WITH *
             WHERE var2 = true
@@ -336,9 +336,9 @@ describe("Cypher Aggregations where node with Time", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                WITH DISTINCT this1
-                RETURN max(this1.someTime) <= time($param0) AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              WITH DISTINCT this1
+              RETURN max(this1.someTime) <= time($param0) AS var2
             }
             WITH *
             WHERE var2 = true

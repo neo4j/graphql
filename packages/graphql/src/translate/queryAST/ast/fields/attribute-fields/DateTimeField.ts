@@ -18,6 +18,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import { apocWrapper } from "../../../../utils/apoc-wrapper";
 import { coalesceValueIfNeeded } from "../../filters/utils/coalesce-if-needed";
 import { AttributeField } from "./AttributeField";
 
@@ -49,6 +50,6 @@ export class DateTimeField extends AttributeField {
     }
 
     private createApocConvertFormat(variableOrProperty: Cypher.Variable | Cypher.Property): Cypher.Function {
-        return Cypher.apoc.date.convertFormat(variableOrProperty, "iso_zoned_date_time", "iso_offset_date_time");
+        return apocWrapper.convertFormat(variableOrProperty, "iso_zoned_date_time", "iso_offset_date_time");
     }
 }

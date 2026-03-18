@@ -67,12 +67,12 @@ describe("Field Level Aggregations Where", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                    WHERE this1.age > $param0
-                    RETURN { nodes: count(DISTINCT this1) } AS var2
-                }
-                RETURN { aggregate: { count: var2 } } AS var3
+              CALL (this) {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                WHERE this1.age > $param0
+                RETURN {nodes: count(DISTINCT this1)} AS var2
+              }
+              RETURN {aggregate: {count: var2}} AS var3
             }
             RETURN this { .title, actorsConnection: var3 } AS this"
         `);
@@ -116,20 +116,20 @@ describe("Field Level Aggregations Where", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                    WHERE this1.name CONTAINS $param0
-                    RETURN { nodes: count(DISTINCT this1) } AS var2
-                }
-                RETURN { aggregate: { count: var2 } } AS var3
+              CALL (this) {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                WHERE this1.name CONTAINS $param0
+                RETURN {nodes: count(DISTINCT this1)} AS var2
+              }
+              RETURN {aggregate: {count: var2}} AS var3
             }
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)<-[this4:DIRECTED]-(this5:Person)
-                    WHERE this5.name CONTAINS $param1
-                    RETURN { nodes: count(DISTINCT this5) } AS var6
-                }
-                RETURN { aggregate: { count: var6 } } AS var7
+              CALL (this) {
+                MATCH (this)<-[this4:DIRECTED]-(this5:Person)
+                WHERE this5.name CONTAINS $param1
+                RETURN {nodes: count(DISTINCT this5)} AS var6
+              }
+              RETURN {aggregate: {count: var6}} AS var7
             }
             RETURN this { .title, actorsConnection: var3, directorsConnection: var7 } AS this"
         `);

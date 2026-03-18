@@ -83,18 +83,18 @@ describe("https://github.com/neo4j/graphql/issues/1751", () => {
             WHERE this.title = $param0
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)-[this0:HAS_ADMINISTRATOR]->(this1:Admin)
-                CALL (this1) {
-                    MATCH (this1)<-[this2:HAS_ADMINISTRATOR]-(this3:Organization)
-                    RETURN count(this3) = $param1 AS var4
-                }
-                WITH *
-                WHERE var4 = true
-                WITH this0, collect(DISTINCT this1) AS var5
-                CALL (var5) {
-                    UNWIND var5 AS var6
-                    DETACH DELETE var6
-                }
+              OPTIONAL MATCH (this)-[this0:HAS_ADMINISTRATOR]->(this1:Admin)
+              CALL (this1) {
+                MATCH (this1)<-[this2:HAS_ADMINISTRATOR]-(this3:Organization)
+                RETURN count(this3) = $param1 AS var4
+              }
+              WITH *
+              WHERE var4 = true
+              WITH this0, collect(DISTINCT this1) AS var5
+              CALL (var5) {
+                UNWIND var5 AS var6
+                DETACH DELETE var6
+              }
             }
             WITH *
             DETACH DELETE this"

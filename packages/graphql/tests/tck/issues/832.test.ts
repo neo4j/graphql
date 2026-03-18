@@ -85,69 +85,69 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Interaction)
-                SET
-                    this0.id = randomUUID(),
-                    this0.kind = $param0
-                WITH *
-                CALL (this0) {
-                    MATCH (this1:Person)
-                    WHERE this1.id IN $param1
-                    CREATE (this0)<-[this2:ACTED_IN]-(this1)
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this3:Place)
-                    WHERE this3.id IN $param2
-                    CREATE (this0)<-[this4:ACTED_IN]-(this3)
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this5:Person)
-                    WHERE this5.id IN $param3
-                    CREATE (this0)-[this6:ACTED_IN]->(this5)
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this7:Place)
-                    WHERE this7.id IN $param4
-                    CREATE (this0)-[this8:ACTED_IN]->(this7)
-                }
-                RETURN this0 AS this
-                UNION
-                CREATE (this9:Interaction)
-                SET
-                    this9.id = randomUUID(),
-                    this9.kind = $param5
-                WITH *
-                CALL (this9) {
-                    MATCH (this10:Person)
-                    WHERE this10.id IN $param6
-                    CREATE (this9)<-[this11:ACTED_IN]-(this10)
-                }
-                WITH *
-                CALL (this9) {
-                    MATCH (this12:Place)
-                    WHERE this12.id IN $param7
-                    CREATE (this9)<-[this13:ACTED_IN]-(this12)
-                }
-                WITH *
-                CALL (this9) {
-                    MATCH (this14:Person)
-                    WHERE this14.id IN $param8
-                    CREATE (this9)-[this15:ACTED_IN]->(this14)
-                }
-                WITH *
-                CALL (this9) {
-                    MATCH (this16:Place)
-                    WHERE this16.id IN $param9
-                    CREATE (this9)-[this17:ACTED_IN]->(this16)
-                }
-                RETURN this9 AS this
+              CREATE (this0:Interaction)
+              SET
+                this0.id = randomUUID(),
+                this0.kind = $param0
+              WITH *
+              CALL (this0) {
+                MATCH (this1:Person)
+                WHERE this1.id IN $param1
+                CREATE (this0)<-[this2:ACTED_IN]-(this1)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this3:Place)
+                WHERE this3.id IN $param2
+                CREATE (this0)<-[this4:ACTED_IN]-(this3)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this5:Person)
+                WHERE this5.id IN $param3
+                CREATE (this0)-[this6:ACTED_IN]->(this5)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this7:Place)
+                WHERE this7.id IN $param4
+                CREATE (this0)-[this8:ACTED_IN]->(this7)
+              }
+              RETURN this0 AS this
+              UNION
+              CREATE (this9:Interaction)
+              SET
+                this9.id = randomUUID(),
+                this9.kind = $param5
+              WITH *
+              CALL (this9) {
+                MATCH (this10:Person)
+                WHERE this10.id IN $param6
+                CREATE (this9)<-[this11:ACTED_IN]-(this10)
+              }
+              WITH *
+              CALL (this9) {
+                MATCH (this12:Place)
+                WHERE this12.id IN $param7
+                CREATE (this9)<-[this13:ACTED_IN]-(this12)
+              }
+              WITH *
+              CALL (this9) {
+                MATCH (this14:Person)
+                WHERE this14.id IN $param8
+                CREATE (this9)-[this15:ACTED_IN]->(this14)
+              }
+              WITH *
+              CALL (this9) {
+                MATCH (this16:Place)
+                WHERE this16.id IN $param9
+                CREATE (this9)-[this17:ACTED_IN]->(this16)
+              }
+              RETURN this9 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .id } AS var18
+              RETURN this { .id } AS var18
             }
             RETURN collect(var18) AS data"
         `);
@@ -215,39 +215,39 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Interaction)
-                SET
-                    this0.id = randomUUID(),
-                    this0.kind = $param0
-                WITH *
-                CALL (this0) {
-                    MATCH (this1:Person)
-                    WHERE this1.id IN $param1
-                    CREATE (this0)<-[this2:ACTED_IN]-(this1)
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this3:Place)
-                    WHERE this3.id IN $param2
-                    CREATE (this0)<-[this4:ACTED_IN]-(this3)
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this5:Person)
-                    WHERE this5.id IN $param3
-                    CREATE (this0)-[this6:ACTED_IN]->(this5)
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this7:Place)
-                    WHERE this7.id IN $param4
-                    CREATE (this0)-[this8:ACTED_IN]->(this7)
-                }
-                RETURN this0 AS this
+              CREATE (this0:Interaction)
+              SET
+                this0.id = randomUUID(),
+                this0.kind = $param0
+              WITH *
+              CALL (this0) {
+                MATCH (this1:Person)
+                WHERE this1.id IN $param1
+                CREATE (this0)<-[this2:ACTED_IN]-(this1)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this3:Place)
+                WHERE this3.id IN $param2
+                CREATE (this0)<-[this4:ACTED_IN]-(this3)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this5:Person)
+                WHERE this5.id IN $param3
+                CREATE (this0)-[this6:ACTED_IN]->(this5)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this7:Place)
+                WHERE this7.id IN $param4
+                CREATE (this0)-[this8:ACTED_IN]->(this7)
+              }
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .id } AS var9
+              RETURN this { .id } AS var9
             }
             RETURN collect(var9) AS data"
         `);
@@ -300,39 +300,39 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Interaction)
-                SET
-                    this0.id = randomUUID(),
-                    this0.kind = $param0
-                WITH *
-                CALL (this0) {
-                    MATCH (this1:Person)
-                    WHERE this1.id IN $param1
-                    CREATE (this0)<-[this2:ACTED_IN]-(this1)
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this3:Place)
-                    WHERE this3.id IN $param2
-                    CREATE (this0)<-[this4:ACTED_IN]-(this3)
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this5:Person)
-                    WHERE this5.id IN $param3
-                    CREATE (this0)-[this6:ACTED_IN]->(this5)
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this7:Place)
-                    WHERE this7.id IN $param4
-                    CREATE (this0)-[this8:ACTED_IN]->(this7)
-                }
-                RETURN this0 AS this
+              CREATE (this0:Interaction)
+              SET
+                this0.id = randomUUID(),
+                this0.kind = $param0
+              WITH *
+              CALL (this0) {
+                MATCH (this1:Person)
+                WHERE this1.id IN $param1
+                CREATE (this0)<-[this2:ACTED_IN]-(this1)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this3:Place)
+                WHERE this3.id IN $param2
+                CREATE (this0)<-[this4:ACTED_IN]-(this3)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this5:Person)
+                WHERE this5.id IN $param3
+                CREATE (this0)-[this6:ACTED_IN]->(this5)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this7:Place)
+                WHERE this7.id IN $param4
+                CREATE (this0)-[this8:ACTED_IN]->(this7)
+              }
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .id } AS var9
+              RETURN this { .id } AS var9
             }
             RETURN collect(var9) AS data"
         `);
@@ -396,99 +396,99 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Interaction)
-                SET
-                    this0.id = randomUUID(),
-                    this0.kind = $param0
-                WITH *
-                CALL (this0) {
-                    MATCH (this1:Person)
-                    WHERE this1.id IN $param1
-                    CREATE (this0)<-[this2:ACTED_IN]-(this1)
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this3:Place)
-                    WHERE this3.id IN $param2
-                    CREATE (this0)<-[this4:ACTED_IN]-(this3)
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this5:Person)
-                    WHERE this5.id IN $param3
-                    CREATE (this0)-[this6:ACTED_IN]->(this5)
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this7:Place)
-                    WHERE this7.id IN $param4
-                    CREATE (this0)-[this8:ACTED_IN]->(this7)
-                }
-                RETURN this0 AS this
-                UNION
-                CREATE (this9:Interaction)
-                SET
-                    this9.id = randomUUID(),
-                    this9.kind = $param5
-                WITH *
-                CALL (this9) {
-                    MATCH (this10:Person)
-                    WHERE this10.id IN $param6
-                    CREATE (this9)<-[this11:ACTED_IN]-(this10)
-                }
-                WITH *
-                CALL (this9) {
-                    MATCH (this12:Place)
-                    WHERE this12.id IN $param7
-                    CREATE (this9)<-[this13:ACTED_IN]-(this12)
-                }
-                WITH *
-                CALL (this9) {
-                    MATCH (this14:Person)
-                    WHERE this14.id IN $param8
-                    CREATE (this9)-[this15:ACTED_IN]->(this14)
-                }
-                WITH *
-                CALL (this9) {
-                    MATCH (this16:Place)
-                    WHERE this16.id IN $param9
-                    CREATE (this9)-[this17:ACTED_IN]->(this16)
-                }
-                RETURN this9 AS this
+              CREATE (this0:Interaction)
+              SET
+                this0.id = randomUUID(),
+                this0.kind = $param0
+              WITH *
+              CALL (this0) {
+                MATCH (this1:Person)
+                WHERE this1.id IN $param1
+                CREATE (this0)<-[this2:ACTED_IN]-(this1)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this3:Place)
+                WHERE this3.id IN $param2
+                CREATE (this0)<-[this4:ACTED_IN]-(this3)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this5:Person)
+                WHERE this5.id IN $param3
+                CREATE (this0)-[this6:ACTED_IN]->(this5)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this7:Place)
+                WHERE this7.id IN $param4
+                CREATE (this0)-[this8:ACTED_IN]->(this7)
+              }
+              RETURN this0 AS this
+              UNION
+              CREATE (this9:Interaction)
+              SET
+                this9.id = randomUUID(),
+                this9.kind = $param5
+              WITH *
+              CALL (this9) {
+                MATCH (this10:Person)
+                WHERE this10.id IN $param6
+                CREATE (this9)<-[this11:ACTED_IN]-(this10)
+              }
+              WITH *
+              CALL (this9) {
+                MATCH (this12:Place)
+                WHERE this12.id IN $param7
+                CREATE (this9)<-[this13:ACTED_IN]-(this12)
+              }
+              WITH *
+              CALL (this9) {
+                MATCH (this14:Person)
+                WHERE this14.id IN $param8
+                CREATE (this9)-[this15:ACTED_IN]->(this14)
+              }
+              WITH *
+              CALL (this9) {
+                MATCH (this16:Place)
+                WHERE this16.id IN $param9
+                CREATE (this9)-[this17:ACTED_IN]->(this16)
+              }
+              RETURN this9 AS this
             }
             WITH this
             CALL (this) {
-                CALL (this) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this)<-[this18:ACTED_IN]-(this19:Person)
-                        WITH this19 { .id, __resolveType: \\"Person\\", __id: id(this19) } AS var20
-                        RETURN var20
-                        UNION
-                        WITH *
-                        MATCH (this)<-[this21:ACTED_IN]-(this22:Place)
-                        WITH this22 { .id, __resolveType: \\"Place\\", __id: id(this22) } AS var20
-                        RETURN var20
-                    }
-                    WITH var20
-                    RETURN collect(var20) AS var20
+              CALL (this) {
+                CALL (*) {
+                  WITH *
+                  MATCH (this)<-[this18:ACTED_IN]-(this19:Person)
+                  WITH this19 { .id, __resolveType: 'Person', __id: elementId(this19) } AS var20
+                  RETURN var20
+                  UNION
+                  WITH *
+                  MATCH (this)<-[this21:ACTED_IN]-(this22:Place)
+                  WITH this22 { .id, __resolveType: 'Place', __id: elementId(this22) } AS var20
+                  RETURN var20
                 }
-                CALL (this) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this)-[this23:ACTED_IN]->(this24:Person)
-                        WITH this24 { .id, __resolveType: \\"Person\\", __id: id(this24) } AS var25
-                        RETURN var25
-                        UNION
-                        WITH *
-                        MATCH (this)-[this26:ACTED_IN]->(this27:Place)
-                        WITH this27 { .id, __resolveType: \\"Place\\", __id: id(this27) } AS var25
-                        RETURN var25
-                    }
-                    WITH var25
-                    RETURN collect(var25) AS var25
+                WITH var20
+                RETURN collect(var20) AS var20
+              }
+              CALL (this) {
+                CALL (*) {
+                  WITH *
+                  MATCH (this)-[this23:ACTED_IN]->(this24:Person)
+                  WITH this24 { .id, __resolveType: 'Person', __id: elementId(this24) } AS var25
+                  RETURN var25
+                  UNION
+                  WITH *
+                  MATCH (this)-[this26:ACTED_IN]->(this27:Place)
+                  WITH this27 { .id, __resolveType: 'Place', __id: elementId(this27) } AS var25
+                  RETURN var25
                 }
-                RETURN this { .id, subjects: var20, objects: var25 } AS var28
+                WITH var25
+                RETURN collect(var25) AS var25
+              }
+              RETURN this { .id, subjects: var20, objects: var25 } AS var28
             }
             RETURN collect(var28) AS data"
         `);
@@ -556,33 +556,33 @@ describe("https://github.com/neo4j/graphql/issues/832", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Interaction)
-                SET
-                    this0.id = randomUUID(),
-                    this0.kind = $param0
-                WITH *
-                CALL (this0) {
-                    MATCH (this1:Person)
-                    WHERE this1.id IN $param1
-                    CREATE (this0)<-[this2:ACTED_IN]-(this1)
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this3:Place)
-                    WHERE this3.id IN $param2
-                    CREATE (this0)<-[this4:ACTED_IN]-(this3)
-                }
-                RETURN this0 AS this
-                UNION
-                CREATE (this5:Interaction)
-                SET
-                    this5.id = randomUUID(),
-                    this5.kind = $param3
-                RETURN this5 AS this
+              CREATE (this0:Interaction)
+              SET
+                this0.id = randomUUID(),
+                this0.kind = $param0
+              WITH *
+              CALL (this0) {
+                MATCH (this1:Person)
+                WHERE this1.id IN $param1
+                CREATE (this0)<-[this2:ACTED_IN]-(this1)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this3:Place)
+                WHERE this3.id IN $param2
+                CREATE (this0)<-[this4:ACTED_IN]-(this3)
+              }
+              RETURN this0 AS this
+              UNION
+              CREATE (this5:Interaction)
+              SET
+                this5.id = randomUUID(),
+                this5.kind = $param3
+              RETURN this5 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .id } AS var6
+              RETURN this { .id } AS var6
             }
             RETURN collect(var6) AS data"
         `);

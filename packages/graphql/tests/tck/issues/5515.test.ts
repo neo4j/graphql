@@ -89,11 +89,11 @@ describe("https://github.com/neo4j/graphql/issues/5515", () => {
             "CYPHER 5
             MATCH (this:Category)
             WHERE (this.id = $param0 AND ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_CATEGORY]-(this0:Cabinet)
-                WHERE EXISTS {
-                    MATCH (this0)<-[:HAS_CABINET]-(this1:User)
-                    WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)
-                }
+              MATCH (this)<-[:HAS_CATEGORY]-(this0:Cabinet)
+              WHERE EXISTS {
+                MATCH (this0)<-[:HAS_CABINET]-(this1:User)
+                WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)
+              }
             }))
             DETACH DELETE this"
         `);

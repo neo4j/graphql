@@ -60,11 +60,11 @@ describe("#288", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:USER)
-                SET
-                    create_this1.USERID = create_var0.USERID,
-                    create_this1.COMPANYID = create_var0.COMPANYID
-                RETURN create_this1
+              CREATE (create_this1:USER)
+              SET
+                create_this1.USERID = create_var0.USERID,
+                create_this1.COMPANYID = create_var0.COMPANYID
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .USERID, .COMPANYID }) AS data"
         `);
@@ -100,8 +100,7 @@ describe("#288", () => {
             MATCH (this:USER)
             WITH *
             WHERE this.USERID = $param0
-            SET
-                this.COMPANYID = $param1
+            SET this.COMPANYID = $param1
             WITH this
             RETURN this { .USERID, .COMPANYID } AS this"
         `);

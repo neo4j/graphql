@@ -80,22 +80,22 @@ describe("Top level interface connections", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL () {
-                CALL () {
-                    MATCH (this0:Movie)
-                    WHERE this0.title = $param0
-                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this0), cost: this0.cost, title: this0.title } } AS edge
-                    RETURN edge
-                    UNION
-                    MATCH (this1:Series)
-                    WHERE this1.title = $param1
-                    WITH { node: { __resolveType: \\"Series\\", __id: id(this1), title: this1.title } } AS edge
-                    RETURN edge
-                }
-                RETURN collect(edge) AS edges
+              CALL () {
+                MATCH (this0:Movie)
+                WHERE this0.title = $param0
+                WITH {node: {__resolveType: 'Movie', __id: elementId(this0), cost: this0.cost, title: this0.title}} AS edge
+                RETURN edge
+                UNION
+                MATCH (this1:Series)
+                WHERE this1.title = $param1
+                WITH {node: {__resolveType: 'Series', __id: elementId(this1), title: this1.title}} AS edge
+                RETURN edge
+              }
+              RETURN collect(edge) AS edges
             }
             WITH edges
             WITH edges, size(edges) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN {edges: edges, totalCount: totalCount} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -126,28 +126,28 @@ describe("Top level interface connections", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL () {
-                CALL () {
-                    MATCH (this0:Movie)
-                    WHERE this0.title = $param0
-                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this0), cost: this0.cost, title: this0.title } } AS edge
-                    RETURN edge
-                    UNION
-                    MATCH (this1:Series)
-                    WHERE this1.title = $param1
-                    WITH { node: { __resolveType: \\"Series\\", __id: id(this1), title: this1.title } } AS edge
-                    RETURN edge
-                }
-                RETURN collect(edge) AS edges
+              CALL () {
+                MATCH (this0:Movie)
+                WHERE this0.title = $param0
+                WITH {node: {__resolveType: 'Movie', __id: elementId(this0), cost: this0.cost, title: this0.title}} AS edge
+                RETURN edge
+                UNION
+                MATCH (this1:Series)
+                WHERE this1.title = $param1
+                WITH {node: {__resolveType: 'Series', __id: elementId(this1), title: this1.title}} AS edge
+                RETURN edge
+              }
+              RETURN collect(edge) AS edges
             }
             WITH edges
             WITH edges, size(edges) AS totalCount
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge
-                LIMIT $param2
-                RETURN collect(edge) AS var2
+              UNWIND edges AS edge
+              WITH edge
+              LIMIT $param2
+              RETURN collect(edge) AS var2
             }
-            RETURN { edges: var2, totalCount: totalCount } AS this"
+            RETURN {edges: var2, totalCount: totalCount} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

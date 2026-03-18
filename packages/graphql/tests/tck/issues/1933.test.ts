@@ -84,22 +84,22 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
             "CYPHER 5
             MATCH (this:Employee)
             CALL (this) {
-                MATCH (this)-[this0:PARTICIPATES]->(this1:Project)
-                RETURN sum(this0.allocation) <= $param0 AS var2
+              MATCH (this)-[this0:PARTICIPATES]->(this1:Project)
+              RETURN sum(this0.allocation) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)-[this3:PARTICIPATES]->(this4:Project)
-                    RETURN { nodes: count(DISTINCT this4) } AS var5
-                }
-                CALL (this) {
-                    MATCH (this)-[this6:PARTICIPATES]->(this7:Project)
-                    WITH DISTINCT this6
-                    RETURN { min: min(this6.allocation), max: max(this6.allocation), average: avg(this6.allocation), sum: sum(this6.allocation) } AS var8
-                }
-                RETURN { aggregate: { count: var5, edge: { allocation: var8 } } } AS var9
+              CALL (this) {
+                MATCH (this)-[this3:PARTICIPATES]->(this4:Project)
+                RETURN {nodes: count(DISTINCT this4)} AS var5
+              }
+              CALL (this) {
+                MATCH (this)-[this6:PARTICIPATES]->(this7:Project)
+                WITH DISTINCT this6
+                RETURN {min: min(this6.allocation), max: max(this6.allocation), average: avg(this6.allocation), sum: sum(this6.allocation)} AS var8
+              }
+              RETURN {aggregate: {count: var5, edge: {allocation: var8}}} AS var9
             }
             RETURN this { .employeeId, .firstName, .lastName, projectsConnection: var9 } AS this"
         `);

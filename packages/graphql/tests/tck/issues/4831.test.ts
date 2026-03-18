@@ -54,12 +54,12 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                 "CYPHER 5
                 MATCH (this:Test)
                 CALL (this) {
-                    CALL (this) {
-                        WITH this AS this
-                        RETURN $param0 as value
-                    }
-                    WITH value AS this0
-                    RETURN this0 AS var1
+                  CALL (this) {
+                    WITH this AS this
+                    RETURN $param0 as value
+                  }
+                  WITH value AS this0
+                  RETURN this0 AS var1
                 }
                 RETURN this { testBoolean: var1 } AS this"
             `);
@@ -86,12 +86,12 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                 "CYPHER 5
                 MATCH (this:Test)
                 CALL (this) {
-                    CALL (this) {
-                        WITH this AS this
-                        RETURN $param0 as value
-                    }
-                    WITH value AS this0
-                    RETURN this0 AS var1
+                  CALL (this) {
+                    WITH this AS this
+                    RETURN $param0 as value
+                  }
+                  WITH value AS this0
+                  RETURN this0 AS var1
                 }
                 RETURN this { testBoolean: var1 } AS this"
             `);
@@ -118,12 +118,12 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                 "CYPHER 5
                 MATCH (this:Test)
                 CALL (this) {
-                    CALL (this) {
-                        WITH this AS this
-                        RETURN NULL as value
-                    }
-                    WITH value AS this0
-                    RETURN this0 AS var1
+                  CALL (this) {
+                    WITH this AS this
+                    RETURN NULL as value
+                  }
+                  WITH value AS this0
+                  RETURN this0 AS var1
                 }
                 RETURN this { testBoolean: var1 } AS this"
             `);
@@ -146,12 +146,12 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                 "CYPHER 5
                 MATCH (this:Test)
                 CALL (this) {
-                    CALL (this) {
-                        WITH this AS this
-                        RETURN NULL as value
-                    }
-                    WITH value AS this0
-                    RETURN this0 AS var1
+                  CALL (this) {
+                    WITH this AS this
+                    RETURN NULL as value
+                  }
+                  WITH value AS this0
+                  RETURN this0 AS var1
                 }
                 RETURN this { testBoolean: var1 } AS this"
             `);
@@ -176,12 +176,12 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                 "CYPHER 5
                 MATCH (this:Test)
                 CALL (this) {
-                    CALL (this) {
-                        WITH this AS this
-                        RETURN $param0 as value
-                    }
-                    WITH value AS this0
-                    RETURN this0 AS var1
+                  CALL (this) {
+                    WITH this AS this
+                    RETURN $param0 as value
+                  }
+                  WITH value AS this0
+                  RETURN this0 AS var1
                 }
                 RETURN this { testString: var1 } AS this"
             `);
@@ -208,12 +208,12 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                 "CYPHER 5
                 MATCH (this:Test)
                 CALL (this) {
-                    CALL (this) {
-                        WITH this AS this
-                        RETURN $param0 as value
-                    }
-                    WITH value AS this0
-                    RETURN this0 AS var1
+                  CALL (this) {
+                    WITH this AS this
+                    RETURN $param0 as value
+                  }
+                  WITH value AS this0
+                  RETURN this0 AS var1
                 }
                 RETURN this { testString: var1 } AS this"
             `);
@@ -240,12 +240,12 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                 "CYPHER 5
                 MATCH (this:Test)
                 CALL (this) {
-                    CALL (this) {
-                        WITH this AS this
-                        RETURN NULL as value
-                    }
-                    WITH value AS this0
-                    RETURN this0 AS var1
+                  CALL (this) {
+                    WITH this AS this
+                    RETURN NULL as value
+                  }
+                  WITH value AS this0
+                  RETURN this0 AS var1
                 }
                 RETURN this { testString: var1 } AS this"
             `);
@@ -268,12 +268,12 @@ describe("https://github.com/neo4j/graphql/issues/4831", () => {
                 "CYPHER 5
                 MATCH (this:Test)
                 CALL (this) {
-                    CALL (this) {
-                        WITH this AS this
-                        RETURN NULL as value
-                    }
-                    WITH value AS this0
-                    RETURN this0 AS var1
+                  CALL (this) {
+                    WITH this AS this
+                    RETURN NULL as value
+                  }
+                  WITH value AS this0
+                  RETURN this0 AS var1
                 }
                 RETURN this { testString: var1 } AS this"
             `);

@@ -93,21 +93,21 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
             "CYPHER 5
             MATCH (this:Author)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:AUTHORED_BOOK]->(b:Book) RETURN b AS result ORDER BY b.year DESC LIMIT 1
-                }
-                WITH result AS this0
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:AUTHORED_BOOK]->(b:Book) RETURN b AS result ORDER BY b.year DESC LIMIT 1
+              }
+              WITH result AS this0
+              CALL (this0) {
                 CALL (this0) {
-                    CALL (this0) {
-                        WITH this0 AS this
-                        OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result
-                    }
-                    WITH result AS this1
-                    RETURN this1 AS var2
+                  WITH this0 AS this
+                  OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result
                 }
-                WITH this0 { .name, .year, soldCopies: var2 } AS this0
-                RETURN head(collect(this0)) AS var3
+                WITH result AS this1
+                RETURN this1 AS var2
+              }
+              WITH this0 { .name, .year, soldCopies: var2 } AS this0
+              RETURN head(collect(this0)) AS var3
             }
             RETURN this { .name, mostRecentBook: var3 } AS this"
         `);
@@ -134,21 +134,21 @@ describe("https://github.com/neo4j/graphql/issues/2581", () => {
             "CYPHER 5
             MATCH (this:Author)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:AUTHORED_BOOK]->(b:Book) RETURN b AS result ORDER BY b.year DESC LIMIT 1
-                }
-                WITH result AS this0
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:AUTHORED_BOOK]->(b:Book) RETURN b AS result ORDER BY b.year DESC LIMIT 1
+              }
+              WITH result AS this0
+              CALL (this0) {
                 CALL (this0) {
-                    CALL (this0) {
-                        WITH this0 AS this
-                        OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result
-                    }
-                    WITH result AS this1
-                    RETURN this1 AS var2
+                  WITH this0 AS this
+                  OPTIONAL MATCH(sales:Sales) WHERE this.refID = sales.refID WITH count(sales) as result RETURN result as result
                 }
-                WITH this0 { .name, .year, soldCopiesWithoutColumnName: var2 } AS this0
-                RETURN head(collect(this0)) AS var3
+                WITH result AS this1
+                RETURN this1 AS var2
+              }
+              WITH this0 { .name, .year, soldCopiesWithoutColumnName: var2 } AS this0
+              RETURN head(collect(this0)) AS var3
             }
             RETURN this { .name, mostRecentBook: var3 } AS this"
         `);

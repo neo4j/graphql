@@ -41,6 +41,9 @@ function withConnectInputType({
     composer: SchemaComposer;
 }): InputTypeComposer | undefined {
     if (entityAdapter instanceof ConcreteEntityAdapter) {
+        if (!entityAdapter.hasListRelationship()) {
+            return undefined;
+        }
         return composer.getOrCreateITC(entityAdapter.operations.connectInputTypeName);
     }
 
@@ -194,9 +197,14 @@ export function withConnectFieldInputType({
         return composer.getITC(typeName);
     }
 
+    const fields = makeConnectFieldInputTypeFields({ relationshipAdapter, composer, ifUnionMemberEntity });
+    if (!relationshipAdapter.isList) {
+        return undefined;
+    }
+
     const connectFieldInput = composer.createInputTC({
         name: typeName,
-        fields: makeConnectFieldInputTypeFields({ relationshipAdapter, composer, ifUnionMemberEntity }),
+        fields,
     });
     return connectFieldInput;
 }

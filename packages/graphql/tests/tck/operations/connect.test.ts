@@ -108,53 +108,53 @@ describe("Cypher Connect", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Product)
-                SET
-                    this0.id = $param0,
-                    this0.name = $param1
-                WITH *
-                CALL (this0) {
-                    MATCH (this1:Color)
-                    WHERE this1.name = $param2
-                    CALL (this1) {
-                        MATCH (this2:Photo)
-                        WHERE this2.id = $param3
-                        CALL (this2) {
-                            MATCH (this3:Color)
-                            WHERE this3.id = $param4
-                            CREATE (this2)-[this4:OF_COLOR]->(this3)
-                        }
-                        CREATE (this1)<-[this5:OF_COLOR]-(this2)
-                    }
-                    CREATE (this0)-[this6:HAS_COLOR]->(this1)
+              CREATE (this0:Product)
+              SET
+                this0.id = $param0,
+                this0.name = $param1
+              WITH *
+              CALL (this0) {
+                MATCH (this1:Color)
+                WHERE this1.name = $param2
+                CALL (this1) {
+                  MATCH (this2:Photo)
+                  WHERE this2.id = $param3
+                  CALL (this2) {
+                    MATCH (this3:Color)
+                    WHERE this3.id = $param4
+                    CREATE (this2)-[this4:OF_COLOR]->(this3)
+                  }
+                  CREATE (this1)<-[this5:OF_COLOR]-(this2)
                 }
-                WITH *
-                CALL (this0) {
-                    MATCH (this7:Photo)
-                    WHERE this7.id = $param5
-                    CALL (this7) {
-                        MATCH (this8:Color)
-                        WHERE this8.name = $param6
-                        CREATE (this7)-[this9:OF_COLOR]->(this8)
-                    }
-                    CREATE (this0)-[this10:HAS_PHOTO]->(this7)
+                CREATE (this0)-[this6:HAS_COLOR]->(this1)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this7:Photo)
+                WHERE this7.id = $param5
+                CALL (this7) {
+                  MATCH (this8:Color)
+                  WHERE this8.name = $param6
+                  CREATE (this7)-[this9:OF_COLOR]->(this8)
                 }
-                WITH *
-                CALL (this0) {
-                    MATCH (this11:Photo)
-                    WHERE this11.id = $param7
-                    CALL (this11) {
-                        MATCH (this12:Color)
-                        WHERE this12.name = $param8
-                        CREATE (this11)-[this13:OF_COLOR]->(this12)
-                    }
-                    CREATE (this0)-[this14:HAS_PHOTO]->(this11)
+                CREATE (this0)-[this10:HAS_PHOTO]->(this7)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this11:Photo)
+                WHERE this11.id = $param7
+                CALL (this11) {
+                  MATCH (this12:Color)
+                  WHERE this12.name = $param8
+                  CREATE (this11)-[this13:OF_COLOR]->(this12)
                 }
-                RETURN this0 AS this
+                CREATE (this0)-[this14:HAS_PHOTO]->(this11)
+              }
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .id } AS var15
+              RETURN this { .id } AS var15
             }
             RETURN collect(var15) AS data"
         `);

@@ -56,7 +56,7 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            MATCH (this:Film:Multimedia)
+            MATCH (this:Film&Multimedia)
             RETURN this { .title } AS this"
         `);
 
@@ -79,12 +79,12 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            MATCH (this:Film:Multimedia)
+            MATCH (this:Film&Multimedia)
             CALL (this) {
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor:Person)
-                WITH DISTINCT this1
-                WITH this1 { .name } AS this1
-                RETURN collect(this1) AS var2
+              MATCH (this)<-[this0:ACTED_IN]-(this1:Actor&Person)
+              WITH DISTINCT this1
+              WITH this1 { .name } AS this1
+              RETURN collect(this1) AS var2
             }
             RETURN this { .title, actors: var2 } AS this"
         `);
@@ -114,19 +114,17 @@ describe("Node directive with additionalLabels", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Film:Multimedia)
-                SET
-                    create_this1.id = create_var0.id
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.actors.create AS create_var2
-                    CREATE (create_this3:Actor:Person)
-                    SET
-                        create_this3.name = create_var2.node.name
-                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
-                    RETURN collect(NULL) AS create_var5
-                }
-                RETURN create_this1
+              CREATE (create_this1:Film&Multimedia)
+              SET create_this1.id = create_var0.id
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.actors.create AS create_var2
+                CREATE (create_this3:Actor&Person)
+                SET create_this3.name = create_var2.node.name
+                MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
+                RETURN collect(NULL) AS create_var5
+              }
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
         `);
@@ -176,7 +174,7 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            MATCH (this:Film:Multimedia)
+            MATCH (this:Film&Multimedia)
             WHERE this.id = $param0
             DETACH DELETE this"
         `);
@@ -203,11 +201,10 @@ describe("Node directive with additionalLabels", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            MATCH (this:Film:Multimedia)
+            MATCH (this:Film&Multimedia)
             WITH *
             WHERE this.id = $param0
-            SET
-                this.id = $param1
+            SET this.id = $param1
             WITH this
             RETURN this { .id } AS this"
         `);

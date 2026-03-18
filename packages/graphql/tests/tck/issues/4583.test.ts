@@ -90,30 +90,27 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Actor)
-                SET
-                    this0.name = $param0
-                WITH *
-                CALL (this0) {
-                    MATCH (this1:Movie)
-                    WHERE (this1.title = $param1 AND this1:Movie)
-                    CREATE (this0)-[this2:ACTED_IN]->(this1)
-                    SET
-                        this2.screenTime = $param2
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this3:Series)
-                    WHERE (this3.title = $param3 AND this3:Movie)
-                    CREATE (this0)-[this4:ACTED_IN]->(this3)
-                    SET
-                        this4.screenTime = $param4
-                }
-                RETURN this0 AS this
+              CREATE (this0:Actor)
+              SET this0.name = $param0
+              WITH *
+              CALL (this0) {
+                MATCH (this1:Movie)
+                WHERE (this1.title = $param1 AND this1:Movie)
+                CREATE (this0)-[this2:ACTED_IN]->(this1)
+                SET this2.screenTime = $param2
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this3:Series)
+                WHERE (this3.title = $param3 AND this3:Movie)
+                CREATE (this0)-[this4:ACTED_IN]->(this3)
+                SET this4.screenTime = $param4
+              }
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .name } AS var5
+              RETURN this { .name } AS var5
             }
             RETURN collect(var5) AS data"
         `);
@@ -163,30 +160,27 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Actor)
-                SET
-                    this0.name = $param0
-                WITH *
-                CALL (this0) {
-                    MATCH (this1:Movie)
-                    WHERE (this1.title = $param1 OR this1:Movie)
-                    CREATE (this0)-[this2:ACTED_IN]->(this1)
-                    SET
-                        this2.screenTime = $param2
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this3:Series)
-                    WHERE (this3.title = $param3 OR this3:Movie)
-                    CREATE (this0)-[this4:ACTED_IN]->(this3)
-                    SET
-                        this4.screenTime = $param4
-                }
-                RETURN this0 AS this
+              CREATE (this0:Actor)
+              SET this0.name = $param0
+              WITH *
+              CALL (this0) {
+                MATCH (this1:Movie)
+                WHERE (this1.title = $param1 OR this1:Movie)
+                CREATE (this0)-[this2:ACTED_IN]->(this1)
+                SET this2.screenTime = $param2
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this3:Series)
+                WHERE (this3.title = $param3 OR this3:Movie)
+                CREATE (this0)-[this4:ACTED_IN]->(this3)
+                SET this4.screenTime = $param4
+              }
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .name } AS var5
+              RETURN this { .name } AS var5
             }
             RETURN collect(var5) AS data"
         `);
@@ -242,44 +236,39 @@ describe("https://github.com/neo4j/graphql/issues/4583", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Actor)
-                SET
-                    this0.name = $param0
-                WITH *
-                CALL (this0) {
-                    MATCH (this1:Movie)
-                    WHERE (this1.title = $param1 AND this1:Movie)
-                    CALL (this1) {
-                        MATCH (this2:Actor)
-                        WHERE this2.name = $param2
-                        CREATE (this1)<-[this3:ACTED_IN]-(this2)
-                        SET
-                            this3.screenTime = $param3
-                    }
-                    CREATE (this0)-[this4:ACTED_IN]->(this1)
-                    SET
-                        this4.screenTime = $param4
+              CREATE (this0:Actor)
+              SET this0.name = $param0
+              WITH *
+              CALL (this0) {
+                MATCH (this1:Movie)
+                WHERE (this1.title = $param1 AND this1:Movie)
+                CALL (this1) {
+                  MATCH (this2:Actor)
+                  WHERE this2.name = $param2
+                  CREATE (this1)<-[this3:ACTED_IN]-(this2)
+                  SET this3.screenTime = $param3
                 }
-                WITH *
-                CALL (this0) {
-                    MATCH (this5:Series)
-                    WHERE (this5.title = $param5 AND this5:Movie)
-                    CALL (this5) {
-                        MATCH (this6:Actor)
-                        WHERE this6.name = $param6
-                        CREATE (this5)<-[this7:ACTED_IN]-(this6)
-                        SET
-                            this7.episodeNr = $param7
-                    }
-                    CREATE (this0)-[this8:ACTED_IN]->(this5)
-                    SET
-                        this8.screenTime = $param8
+                CREATE (this0)-[this4:ACTED_IN]->(this1)
+                SET this4.screenTime = $param4
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this5:Series)
+                WHERE (this5.title = $param5 AND this5:Movie)
+                CALL (this5) {
+                  MATCH (this6:Actor)
+                  WHERE this6.name = $param6
+                  CREATE (this5)<-[this7:ACTED_IN]-(this6)
+                  SET this7.episodeNr = $param7
                 }
-                RETURN this0 AS this
+                CREATE (this0)-[this8:ACTED_IN]->(this5)
+                SET this8.screenTime = $param8
+              }
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .name } AS var9
+              RETURN this { .name } AS var9
             }
             RETURN collect(var9) AS data"
         `);

@@ -83,23 +83,23 @@ describe("cypher directive filtering - relationship auth filter", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             CALL (this0) {
-                CALL (this0) {
-                    WITH this0 AS this
-                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this1
-                RETURN collect(this1) AS this2
+              CALL (this0) {
+                WITH this0 AS this
+                MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this1
+              RETURN collect(this1) AS this2
             }
             WITH *
             WHERE (this0.rating < $param0 AND ($isAuthenticated = true AND any(this3 IN this2 WHERE ($jwt.custom_value IS NOT NULL AND this3.name = $jwt.custom_value))))
-            WITH collect({ node: this0 }) AS edges
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var4
             }
-            RETURN { edges: var4 } AS this"
+            RETURN {edges: var4} AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -174,23 +174,23 @@ describe("cypher directive filtering - relationship auth filter", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             CALL (this0) {
-                CALL (this0) {
-                    WITH this0 AS this
-                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this1
-                RETURN collect(this1) AS this2
+              CALL (this0) {
+                WITH this0 AS this
+                MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this1
+              RETURN collect(this1) AS this2
             }
             WITH *
             WHERE (this0.rating < $param0 AND ($isAuthenticated = true AND any(this3 IN this2 WHERE ($jwt.custom_value IS NOT NULL AND this3.name = $jwt.custom_value))))
-            WITH collect({ node: this0 }) AS edges
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var4
             }
-            RETURN { edges: var4 } AS this"
+            RETURN {edges: var4} AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -265,24 +265,24 @@ describe("cypher directive filtering - relationship auth filter", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             CALL (this0) {
-                CALL (this0) {
-                    WITH this0 AS this
-                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this1
-                RETURN collect(this1) AS this2
+              CALL (this0) {
+                WITH this0 AS this
+                MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this1
+              RETURN collect(this1) AS this2
             }
             WITH *
             WHERE this0.rating < $param0
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND any(this3 IN this2 WHERE ($jwt.custom_value IS NOT NULL AND this3.name = $jwt.custom_value))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH collect({ node: this0 }) AS edges
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND any(this3 IN this2 WHERE ($jwt.custom_value IS NOT NULL AND this3.name = $jwt.custom_value))), '@neo4j/graphql/FORBIDDEN', [])
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var4
             }
-            RETURN { edges: var4 } AS this"
+            RETURN {edges: var4} AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
@@ -357,24 +357,24 @@ describe("cypher directive filtering - relationship auth filter", () => {
             "CYPHER 5
             MATCH (this0:Movie)
             CALL (this0) {
-                CALL (this0) {
-                    WITH this0 AS this
-                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this1
-                RETURN collect(this1) AS this2
+              CALL (this0) {
+                WITH this0 AS this
+                MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this1
+              RETURN collect(this1) AS this2
             }
             WITH *
             WHERE this0.rating > $param0
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND any(this3 IN this2 WHERE ($jwt.custom_value IS NOT NULL AND this3.name = $jwt.custom_value))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            WITH collect({ node: this0 }) AS edges
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND any(this3 IN this2 WHERE ($jwt.custom_value IS NOT NULL AND this3.name = $jwt.custom_value))), '@neo4j/graphql/FORBIDDEN', [])
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN collect({ node: { title: this0.title, __resolveType: \\"Movie\\" } }) AS var4
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var4
             }
-            RETURN { edges: var4 } AS this"
+            RETURN {edges: var4} AS this"
         `);
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{

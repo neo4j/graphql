@@ -141,26 +141,26 @@ describe("Cypher directive on interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (n)
-                WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
-                RETURN n
+              MATCH (n)
+              WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
+              RETURN n
             }
             WITH n AS this0
             CALL (this0) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:TVShow
-                    WITH this0 { .title, __resolveType: \\"TVShow\\", __id: id(this0) } AS var1
-                    RETURN var1
-                    UNION
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:Movie
-                    WITH this0 { .title, __resolveType: \\"Movie\\", __id: id(this0) } AS var1
-                    RETURN var1
-                }
+              CALL (*) {
+                WITH *
+                MATCH (this0)
+                WHERE this0:TVShow
+                WITH this0 { .title, __resolveType: 'TVShow', __id: elementId(this0) } AS var1
                 RETURN var1
+                UNION
+                WITH *
+                MATCH (this0)
+                WHERE this0:Movie
+                WITH this0 { .title, __resolveType: 'Movie', __id: elementId(this0) } AS var1
+                RETURN var1
+              }
+              RETURN var1
             }
             RETURN var1 AS this0"
         `);
@@ -186,26 +186,26 @@ describe("Cypher directive on interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (n)
-                WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
-                RETURN n
+              MATCH (n)
+              WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
+              RETURN n
             }
             WITH n AS this0
             CALL (this0) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:TVShow
-                    WITH this0 { __resolveType: \\"TVShow\\", __id: id(this0) } AS var1
-                    RETURN var1
-                    UNION
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:Movie
-                    WITH this0 { __resolveType: \\"Movie\\", __id: id(this0) } AS var1
-                    RETURN var1
-                }
+              CALL (*) {
+                WITH *
+                MATCH (this0)
+                WHERE this0:TVShow
+                WITH this0 { __resolveType: 'TVShow', __id: elementId(this0) } AS var1
                 RETURN var1
+                UNION
+                WITH *
+                MATCH (this0)
+                WHERE this0:Movie
+                WITH this0 { __resolveType: 'Movie', __id: elementId(this0) } AS var1
+                RETURN var1
+              }
+              RETURN var1
             }
             RETURN var1 AS this0"
         `);
@@ -244,53 +244,53 @@ describe("Cypher directive on interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (n)
-                WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
-                RETURN n
+              MATCH (n)
+              WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
+              RETURN n
             }
             WITH n AS this0
             CALL (this0) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:TVShow
-                    CALL (this0) {
-                        CALL (this0) {
-                            WITH this0 AS this
-                            MATCH (a:Actor)
-                            RETURN a
-                        }
-                        WITH a AS this1
-                        CALL (this1) {
-                            CALL (this1) {
-                                WITH this1 AS this
-                                MATCH (m:Movie {title: $param1})
-                                RETURN m
-                            }
-                            WITH m AS this2
-                            WITH this2 { .title } AS this2
-                            RETURN collect(this2) AS var3
-                        }
-                        WITH this1 { .name, movies: var3 } AS this1
-                        RETURN collect(this1) AS var4
+              CALL (*) {
+                WITH *
+                MATCH (this0)
+                WHERE this0:TVShow
+                CALL (this0) {
+                  CALL (this0) {
+                    WITH this0 AS this
+                    MATCH (a:Actor)
+                    RETURN a
+                  }
+                  WITH a AS this1
+                  CALL (this1) {
+                    CALL (this1) {
+                      WITH this1 AS this
+                      MATCH (m:Movie {title: $param1})
+                      RETURN m
                     }
-                    WITH this0 { .title, actors: var4, __resolveType: \\"TVShow\\", __id: id(this0) } AS var5
-                    RETURN var5
-                    UNION
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:Movie
-                    CALL (this0) {
-                        MATCH (this0)<-[this6:ACTED_IN]-(this7:Actor)
-                        WHERE this7.name = $param2
-                        WITH DISTINCT this7
-                        WITH this7 { .name } AS this7
-                        RETURN collect(this7) AS var8
-                    }
-                    WITH this0 { .title, actors: var8, __resolveType: \\"Movie\\", __id: id(this0) } AS var5
-                    RETURN var5
+                    WITH m AS this2
+                    WITH this2 { .title } AS this2
+                    RETURN collect(this2) AS var3
+                  }
+                  WITH this1 { .name, movies: var3 } AS this1
+                  RETURN collect(this1) AS var4
                 }
+                WITH this0 { .title, actors: var4, __resolveType: 'TVShow', __id: elementId(this0) } AS var5
                 RETURN var5
+                UNION
+                WITH *
+                MATCH (this0)
+                WHERE this0:Movie
+                CALL (this0) {
+                  MATCH (this0)<-[this6:ACTED_IN]-(this7:Actor)
+                  WHERE this7.name = $param2
+                  WITH DISTINCT this7
+                  WITH this7 { .name } AS this7
+                  RETURN collect(this7) AS var8
+                }
+                WITH this0 { .title, actors: var8, __resolveType: 'Movie', __id: elementId(this0) } AS var5
+                RETURN var5
+              }
+              RETURN var5
             }
             RETURN var5 AS this0"
         `);
@@ -318,27 +318,27 @@ describe("Cypher directive on interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (n)
-                WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
-                RETURN n
-                LIMIT 1
+              MATCH (n)
+              WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
+              RETURN n
+              LIMIT 1
             }
             WITH n AS this0
             CALL (this0) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:TVShow
-                    WITH this0 { .title, __resolveType: \\"TVShow\\", __id: id(this0) } AS var1
-                    RETURN var1
-                    UNION
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:Movie
-                    WITH this0 { .title, __resolveType: \\"Movie\\", __id: id(this0) } AS var1
-                    RETURN var1
-                }
+              CALL (*) {
+                WITH *
+                MATCH (this0)
+                WHERE this0:TVShow
+                WITH this0 { .title, __resolveType: 'TVShow', __id: elementId(this0) } AS var1
                 RETURN var1
+                UNION
+                WITH *
+                MATCH (this0)
+                WHERE this0:Movie
+                WITH this0 { .title, __resolveType: 'Movie', __id: elementId(this0) } AS var1
+                RETURN var1
+              }
+              RETURN var1
             }
             RETURN var1 AS this0"
         `);
@@ -364,27 +364,27 @@ describe("Cypher directive on interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (n)
-                WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
-                RETURN n
-                LIMIT 1
+              MATCH (n)
+              WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
+              RETURN n
+              LIMIT 1
             }
             WITH n AS this0
             CALL (this0) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:TVShow
-                    WITH this0 { __resolveType: \\"TVShow\\", __id: id(this0) } AS var1
-                    RETURN var1
-                    UNION
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:Movie
-                    WITH this0 { __resolveType: \\"Movie\\", __id: id(this0) } AS var1
-                    RETURN var1
-                }
+              CALL (*) {
+                WITH *
+                MATCH (this0)
+                WHERE this0:TVShow
+                WITH this0 { __resolveType: 'TVShow', __id: elementId(this0) } AS var1
                 RETURN var1
+                UNION
+                WITH *
+                MATCH (this0)
+                WHERE this0:Movie
+                WITH this0 { __resolveType: 'Movie', __id: elementId(this0) } AS var1
+                RETURN var1
+              }
+              RETURN var1
             }
             RETURN var1 AS this0"
         `);
@@ -423,53 +423,53 @@ describe("Cypher directive on interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (n)
-                WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
-                RETURN n
+              MATCH (n)
+              WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
+              RETURN n
             }
             WITH n AS this0
             CALL (this0) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:TVShow
-                    CALL (this0) {
-                        CALL (this0) {
-                            WITH this0 AS this
-                            MATCH (a:Actor)
-                            RETURN a
-                        }
-                        WITH a AS this1
-                        CALL (this1) {
-                            CALL (this1) {
-                                WITH this1 AS this
-                                MATCH (m:Movie {title: $param1})
-                                RETURN m
-                            }
-                            WITH m AS this2
-                            WITH this2 { .title } AS this2
-                            RETURN collect(this2) AS var3
-                        }
-                        WITH this1 { .name, movies: var3 } AS this1
-                        RETURN collect(this1) AS var4
+              CALL (*) {
+                WITH *
+                MATCH (this0)
+                WHERE this0:TVShow
+                CALL (this0) {
+                  CALL (this0) {
+                    WITH this0 AS this
+                    MATCH (a:Actor)
+                    RETURN a
+                  }
+                  WITH a AS this1
+                  CALL (this1) {
+                    CALL (this1) {
+                      WITH this1 AS this
+                      MATCH (m:Movie {title: $param1})
+                      RETURN m
                     }
-                    WITH this0 { .title, actors: var4, __resolveType: \\"TVShow\\", __id: id(this0) } AS var5
-                    RETURN var5
-                    UNION
-                    WITH *
-                    MATCH (this0)
-                    WHERE this0:Movie
-                    CALL (this0) {
-                        MATCH (this0)<-[this6:ACTED_IN]-(this7:Actor)
-                        WHERE this7.name = $param2
-                        WITH DISTINCT this7
-                        WITH this7 { .name } AS this7
-                        RETURN collect(this7) AS var8
-                    }
-                    WITH this0 { .title, actors: var8, __resolveType: \\"Movie\\", __id: id(this0) } AS var5
-                    RETURN var5
+                    WITH m AS this2
+                    WITH this2 { .title } AS this2
+                    RETURN collect(this2) AS var3
+                  }
+                  WITH this1 { .name, movies: var3 } AS this1
+                  RETURN collect(this1) AS var4
                 }
+                WITH this0 { .title, actors: var4, __resolveType: 'TVShow', __id: elementId(this0) } AS var5
                 RETURN var5
+                UNION
+                WITH *
+                MATCH (this0)
+                WHERE this0:Movie
+                CALL (this0) {
+                  MATCH (this0)<-[this6:ACTED_IN]-(this7:Actor)
+                  WHERE this7.name = $param2
+                  WITH DISTINCT this7
+                  WITH this7 { .name } AS this7
+                  RETURN collect(this7) AS var8
+                }
+                WITH this0 { .title, actors: var8, __resolveType: 'Movie', __id: elementId(this0) } AS var5
+                RETURN var5
+              }
+              RETURN var5
             }
             RETURN var5 AS this0"
         `);
@@ -513,57 +513,57 @@ describe("Cypher directive on interface", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (n)
-                    WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
-                    RETURN n
-                }
-                WITH n AS this0
-                CALL (this0) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this0)
-                        WHERE this0:TVShow
-                        CALL (this0) {
-                            CALL (this0) {
-                                WITH this0 AS this
-                                MATCH (a:Actor)
-                                RETURN a
-                            }
-                            WITH a AS this1
-                            CALL (this1) {
-                                CALL (this1) {
-                                    WITH this1 AS this
-                                    MATCH (m:Movie {title: $param1})
-                                    RETURN m
-                                }
-                                WITH m AS this2
-                                WITH this2 { .title } AS this2
-                                RETURN collect(this2) AS var3
-                            }
-                            WITH this1 { .name, movies: var3 } AS this1
-                            RETURN collect(this1) AS var4
-                        }
-                        WITH this0 { .title, actors: var4, __resolveType: \\"TVShow\\", __id: id(this0) } AS var5
-                        RETURN var5
-                        UNION
-                        WITH *
-                        MATCH (this0)
-                        WHERE this0:Movie
-                        CALL (this0) {
-                            MATCH (this0)<-[this6:ACTED_IN]-(this7:Actor)
-                            WHERE this7.name = $param2
-                            WITH DISTINCT this7
-                            WITH this7 { .name } AS this7
-                            RETURN collect(this7) AS var8
-                        }
-                        WITH this0 { .title, actors: var8, __resolveType: \\"Movie\\", __id: id(this0) } AS var5
-                        RETURN var5
+              CALL (this) {
+                WITH this AS this
+                MATCH (n)
+                WHERE (n:TVShow OR n:Movie) AND ($param0 IS NULL OR n.title = $param0)
+                RETURN n
+              }
+              WITH n AS this0
+              CALL (this0) {
+                CALL (*) {
+                  WITH *
+                  MATCH (this0)
+                  WHERE this0:TVShow
+                  CALL (this0) {
+                    CALL (this0) {
+                      WITH this0 AS this
+                      MATCH (a:Actor)
+                      RETURN a
                     }
-                    RETURN var5
+                    WITH a AS this1
+                    CALL (this1) {
+                      CALL (this1) {
+                        WITH this1 AS this
+                        MATCH (m:Movie {title: $param1})
+                        RETURN m
+                      }
+                      WITH m AS this2
+                      WITH this2 { .title } AS this2
+                      RETURN collect(this2) AS var3
+                    }
+                    WITH this1 { .name, movies: var3 } AS this1
+                    RETURN collect(this1) AS var4
+                  }
+                  WITH this0 { .title, actors: var4, __resolveType: 'TVShow', __id: elementId(this0) } AS var5
+                  RETURN var5
+                  UNION
+                  WITH *
+                  MATCH (this0)
+                  WHERE this0:Movie
+                  CALL (this0) {
+                    MATCH (this0)<-[this6:ACTED_IN]-(this7:Actor)
+                    WHERE this7.name = $param2
+                    WITH DISTINCT this7
+                    WITH this7 { .name } AS this7
+                    RETURN collect(this7) AS var8
+                  }
+                  WITH this0 { .title, actors: var8, __resolveType: 'Movie', __id: elementId(this0) } AS var5
+                  RETURN var5
                 }
-                RETURN collect(var5) AS this0
+                RETURN var5
+              }
+              RETURN collect(var5) AS this0
             }
             RETURN this { moviesOrTVShows: this0 } AS this"
         `);

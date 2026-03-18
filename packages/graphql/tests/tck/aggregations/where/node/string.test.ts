@@ -57,8 +57,8 @@ describe("Cypher Aggregations where node with String", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(size(this1.name)) = $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN min(size(this1.name)) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -90,8 +90,8 @@ describe("Cypher Aggregations where node with String", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(size(this1.name)) > $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN min(size(this1.name)) > $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -123,8 +123,8 @@ describe("Cypher Aggregations where node with String", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(size(this1.name)) >= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN min(size(this1.name)) >= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -156,8 +156,8 @@ describe("Cypher Aggregations where node with String", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(size(this1.name)) < $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN min(size(this1.name)) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -189,8 +189,8 @@ describe("Cypher Aggregations where node with String", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(size(this1.name)) <= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN min(size(this1.name)) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -222,8 +222,8 @@ describe("Cypher Aggregations where node with String", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(size(this1.name)) = $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN max(size(this1.name)) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -255,8 +255,8 @@ describe("Cypher Aggregations where node with String", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(size(this1.name)) > $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN max(size(this1.name)) > $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -288,8 +288,8 @@ describe("Cypher Aggregations where node with String", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(size(this1.name)) >= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN max(size(this1.name)) >= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -321,8 +321,8 @@ describe("Cypher Aggregations where node with String", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(size(this1.name)) < $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN max(size(this1.name)) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -354,8 +354,8 @@ describe("Cypher Aggregations where node with String", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(size(this1.name)) <= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN max(size(this1.name)) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -387,8 +387,8 @@ describe("Cypher Aggregations where node with String", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN avg(size(this1.name)) = $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN avg(size(this1.name)) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -417,8 +417,8 @@ describe("Cypher Aggregations where node with String", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN avg(size(this1.name)) > $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN avg(size(this1.name)) > $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -447,8 +447,8 @@ describe("Cypher Aggregations where node with String", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN avg(size(this1.name)) >= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN avg(size(this1.name)) >= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -477,8 +477,8 @@ describe("Cypher Aggregations where node with String", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN avg(size(this1.name)) < $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN avg(size(this1.name)) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -507,8 +507,8 @@ describe("Cypher Aggregations where node with String", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN avg(size(this1.name)) <= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN avg(size(this1.name)) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -570,9 +570,9 @@ describe("Cypher Aggregations where node with String interface relationships of 
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:User:Employee OR this1:Person)
-                RETURN min(size(this1.name)) = $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1)
+              WHERE (this1:User&Employee OR this1:Person)
+              RETURN min(size(this1.name)) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -604,9 +604,9 @@ describe("Cypher Aggregations where node with String interface relationships of 
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:User:Employee OR this1:Person)
-                RETURN min(size(this1.name)) > $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1)
+              WHERE (this1:User&Employee OR this1:Person)
+              RETURN min(size(this1.name)) > $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -638,9 +638,9 @@ describe("Cypher Aggregations where node with String interface relationships of 
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:User:Employee OR this1:Person)
-                RETURN min(size(this1.name)) >= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1)
+              WHERE (this1:User&Employee OR this1:Person)
+              RETURN min(size(this1.name)) >= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -672,9 +672,9 @@ describe("Cypher Aggregations where node with String interface relationships of 
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:User:Employee OR this1:Person)
-                RETURN min(size(this1.name)) < $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1)
+              WHERE (this1:User&Employee OR this1:Person)
+              RETURN min(size(this1.name)) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -706,9 +706,9 @@ describe("Cypher Aggregations where node with String interface relationships of 
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:User:Employee OR this1:Person)
-                RETURN min(size(this1.name)) <= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1)
+              WHERE (this1:User&Employee OR this1:Person)
+              RETURN min(size(this1.name)) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -740,9 +740,9 @@ describe("Cypher Aggregations where node with String interface relationships of 
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:User:Employee OR this1:Person)
-                RETURN max(size(this1.name)) = $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1)
+              WHERE (this1:User&Employee OR this1:Person)
+              RETURN max(size(this1.name)) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -774,9 +774,9 @@ describe("Cypher Aggregations where node with String interface relationships of 
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:User:Employee OR this1:Person)
-                RETURN max(size(this1.name)) > $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1)
+              WHERE (this1:User&Employee OR this1:Person)
+              RETURN max(size(this1.name)) > $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -808,9 +808,9 @@ describe("Cypher Aggregations where node with String interface relationships of 
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:User:Employee OR this1:Person)
-                RETURN max(size(this1.name)) >= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1)
+              WHERE (this1:User&Employee OR this1:Person)
+              RETURN max(size(this1.name)) >= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -842,9 +842,9 @@ describe("Cypher Aggregations where node with String interface relationships of 
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:User:Employee OR this1:Person)
-                RETURN max(size(this1.name)) < $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1)
+              WHERE (this1:User&Employee OR this1:Person)
+              RETURN max(size(this1.name)) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -876,9 +876,9 @@ describe("Cypher Aggregations where node with String interface relationships of 
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:User:Employee OR this1:Person)
-                RETURN max(size(this1.name)) <= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1)
+              WHERE (this1:User&Employee OR this1:Person)
+              RETURN max(size(this1.name)) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -910,9 +910,9 @@ describe("Cypher Aggregations where node with String interface relationships of 
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:User:Employee OR this1:Person)
-                RETURN avg(size(this1.name)) = $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1)
+              WHERE (this1:User&Employee OR this1:Person)
+              RETURN avg(size(this1.name)) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -941,9 +941,9 @@ describe("Cypher Aggregations where node with String interface relationships of 
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:User:Employee OR this1:Person)
-                RETURN avg(size(this1.name)) > $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1)
+              WHERE (this1:User&Employee OR this1:Person)
+              RETURN avg(size(this1.name)) > $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -972,9 +972,9 @@ describe("Cypher Aggregations where node with String interface relationships of 
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:User:Employee OR this1:Person)
-                RETURN avg(size(this1.name)) >= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1)
+              WHERE (this1:User&Employee OR this1:Person)
+              RETURN avg(size(this1.name)) >= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -1003,9 +1003,9 @@ describe("Cypher Aggregations where node with String interface relationships of 
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:User:Employee OR this1:Person)
-                RETURN avg(size(this1.name)) < $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1)
+              WHERE (this1:User&Employee OR this1:Person)
+              RETURN avg(size(this1.name)) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -1034,9 +1034,9 @@ describe("Cypher Aggregations where node with String interface relationships of 
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1)
-                WHERE (this1:User:Employee OR this1:Person)
-                RETURN avg(size(this1.name)) <= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1)
+              WHERE (this1:User&Employee OR this1:Person)
+              RETURN avg(size(this1.name)) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true

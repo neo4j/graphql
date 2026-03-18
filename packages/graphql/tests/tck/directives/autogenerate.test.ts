@@ -55,11 +55,11 @@ describe("Cypher autogenerate directive", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.id = randomUUID(),
-                    create_this1.name = create_var0.name
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET
+                create_this1.id = randomUUID(),
+                create_this1.name = create_var0.name
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .id, .name }) AS data"
         `);
@@ -93,8 +93,7 @@ describe("Cypher autogenerate directive", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            SET
-                this.name = $param0
+            SET this.name = $param0
             WITH this
             RETURN this { .id, .name } AS this"
         `);

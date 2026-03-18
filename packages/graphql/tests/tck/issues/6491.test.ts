@@ -66,27 +66,27 @@ describe("https://github.com/neo4j/graphql/issues/6491", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL (*) {
-                MATCH (this0:SVG:VectorGraphic)
+              MATCH (this0:SVG&VectorGraphic)
+              CALL (this0) {
                 CALL (this0) {
-                    CALL (this0) {
-                        WITH this0 AS this
-                        RETURN this['name'] = 'test' AS result
-                    }
-                    WITH result AS this1
-                    RETURN this1 AS var2
+                  WITH this0 AS this
+                  RETURN this['name'] = 'test' AS result
                 }
-                WITH *
-                WHERE var2 = $param0
+                WITH result AS this1
+                RETURN this1 AS var2
+              }
+              WITH *
+              WHERE var2 = $param0
+              CALL (this0) {
                 CALL (this0) {
-                    CALL (this0) {
-                        WITH this0 AS this
-                        RETURN this['name'] = 'test' AS result
-                    }
-                    WITH result AS this3
-                    RETURN this3 AS var4
+                  WITH this0 AS this
+                  RETURN this['name'] = 'test' AS result
                 }
-                WITH this0 { .name, cypherTest: var4, __resolveType: \\"SVG\\", __id: id(this0) } AS this
-                RETURN this
+                WITH result AS this3
+                RETURN this3 AS var4
+              }
+              WITH this0 { .name, cypherTest: var4, __resolveType: 'SVG', __id: elementId(this0) } AS this
+              RETURN this
             }
             WITH this
             RETURN this AS this"

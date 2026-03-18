@@ -55,10 +55,10 @@ describe("queryDirection in relationships", () => {
                 "CYPHER 5
                 MATCH (this:User)
                 CALL (this) {
-                    MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
-                    WITH DISTINCT this1
-                    WITH this1 { .name } AS this1
-                    RETURN collect(this1) AS var2
+                  MATCH (this)-[this0:FRIENDS_WITH]->(this1:User)
+                  WITH DISTINCT this1
+                  WITH this1 { .name } AS this1
+                  RETURN collect(this1) AS var2
                 }
                 RETURN this { .name, friends: var2 } AS this"
             `);
@@ -84,14 +84,14 @@ describe("queryDirection in relationships", () => {
                 "CYPHER 5
                 MATCH (this:User)
                 WHERE EXISTS {
-                    MATCH (this)-[:FRIENDS_WITH]->(this0:User)
-                    WHERE this0.name = $param0
+                  MATCH (this)-[:FRIENDS_WITH]->(this0:User)
+                  WHERE this0.name = $param0
                 }
                 CALL (this) {
-                    MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
-                    WITH DISTINCT this2
-                    WITH this2 { .name } AS this2
-                    RETURN collect(this2) AS var3
+                  MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
+                  WITH DISTINCT this2
+                  WITH this2 { .name } AS this2
+                  RETURN collect(this2) AS var3
                 }
                 RETURN this { .name, friends: var3 } AS this"
             `);
@@ -127,24 +127,24 @@ describe("queryDirection in relationships", () => {
                 MATCH (this:User)
                 WITH *
                 WHERE EXISTS {
-                    MATCH (this)-[:FRIENDS_WITH]->(this0:User)
-                    WHERE this0.name = $param0
+                  MATCH (this)-[:FRIENDS_WITH]->(this0:User)
+                  WHERE this0.name = $param0
                 }
                 WITH *
                 CALL (*) {
-                    CALL (this) {
-                        OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
-                        WHERE this2.name = $param1
-                        WITH *
-                        DELETE this1
-                    }
+                  CALL (this) {
+                    OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
+                    WHERE this2.name = $param1
+                    WITH *
+                    DELETE this1
+                  }
                 }
                 WITH this
                 CALL (this) {
-                    MATCH (this)-[this3:FRIENDS_WITH]->(this4:User)
-                    WITH DISTINCT this4
-                    WITH this4 { .name } AS this4
-                    RETURN collect(this4) AS var5
+                  MATCH (this)-[this3:FRIENDS_WITH]->(this4:User)
+                  WITH DISTINCT this4
+                  WITH this4 { .name } AS this4
+                  RETURN collect(this4) AS var5
                 }
                 RETURN this { .name, friends: var5 } AS this"
             `);
@@ -181,25 +181,25 @@ describe("queryDirection in relationships", () => {
                 MATCH (this:User)
                 WITH *
                 WHERE EXISTS {
-                    MATCH (this)-[:FRIENDS_WITH]->(this0:User)
-                    WHERE this0.name = $param0
+                  MATCH (this)-[:FRIENDS_WITH]->(this0:User)
+                  WHERE this0.name = $param0
                 }
                 WITH *
                 CALL (*) {
-                    OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
-                    WHERE this2.name = $param1
-                    WITH this1, collect(DISTINCT this2) AS var3
-                    CALL (var3) {
-                        UNWIND var3 AS var4
-                        DETACH DELETE var4
-                    }
+                  OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
+                  WHERE this2.name = $param1
+                  WITH this1, collect(DISTINCT this2) AS var3
+                  CALL (var3) {
+                    UNWIND var3 AS var4
+                    DETACH DELETE var4
+                  }
                 }
                 WITH this
                 CALL (this) {
-                    MATCH (this)-[this5:FRIENDS_WITH]->(this6:User)
-                    WITH DISTINCT this6
-                    WITH this6 { .name } AS this6
-                    RETURN collect(this6) AS var7
+                  MATCH (this)-[this5:FRIENDS_WITH]->(this6:User)
+                  WITH DISTINCT this6
+                  WITH this6 { .name } AS this6
+                  RETURN collect(this6) AS var7
                 }
                 RETURN this { .name, friends: var7 } AS this"
             `);
@@ -243,23 +243,22 @@ describe("queryDirection in relationships", () => {
                 MATCH (this:User)
                 WITH *
                 WHERE EXISTS {
-                    MATCH (this)-[:FRIENDS_WITH]->(this0:User)
-                    WHERE this0.name = $param0
+                  MATCH (this)-[:FRIENDS_WITH]->(this0:User)
+                  WHERE this0.name = $param0
                 }
                 WITH *
                 CALL (*) {
-                    MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
-                    WITH *
-                    WHERE this2.name = $param1
-                    SET
-                        this2.name = $param2
+                  MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
+                  WITH *
+                  WHERE this2.name = $param1
+                  SET this2.name = $param2
                 }
                 WITH this
                 CALL (this) {
-                    MATCH (this)-[this3:FRIENDS_WITH]->(this4:User)
-                    WITH DISTINCT this4
-                    WITH this4 { .name } AS this4
-                    RETURN collect(this4) AS var5
+                  MATCH (this)-[this3:FRIENDS_WITH]->(this4:User)
+                  WITH DISTINCT this4
+                  WITH this4 { .name } AS this4
+                  RETURN collect(this4) AS var5
                 }
                 RETURN this { .name, friends: var5 } AS this"
             `);
@@ -291,18 +290,18 @@ describe("queryDirection in relationships", () => {
                 "CYPHER 5
                 MATCH (this:User)
                 WHERE EXISTS {
-                    MATCH (this)-[:FRIENDS_WITH]->(this0:User)
-                    WHERE this0.name = $param0
+                  MATCH (this)-[:FRIENDS_WITH]->(this0:User)
+                  WHERE this0.name = $param0
                 }
                 WITH *
                 CALL (*) {
-                    OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
-                    WHERE this2.name = $param1
-                    WITH this1, collect(DISTINCT this2) AS var3
-                    CALL (var3) {
-                        UNWIND var3 AS var4
-                        DETACH DELETE var4
-                    }
+                  OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]->(this2:User)
+                  WHERE this2.name = $param1
+                  WITH this1, collect(DISTINCT this2) AS var3
+                  CALL (var3) {
+                    UNWIND var3 AS var4
+                    DETACH DELETE var4
+                  }
                 }
                 WITH *
                 DETACH DELETE this"
@@ -351,10 +350,10 @@ describe("queryDirection in relationships", () => {
                 "CYPHER 5
                 MATCH (this:User)
                 CALL (this) {
-                    MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
-                    WITH DISTINCT this1
-                    WITH this1 { .name } AS this1
-                    RETURN collect(this1) AS var2
+                  MATCH (this)-[this0:FRIENDS_WITH]-(this1:User)
+                  WITH DISTINCT this1
+                  WITH this1 { .name } AS this1
+                  RETURN collect(this1) AS var2
                 }
                 RETURN this { .name, friends: var2 } AS this"
             `);
@@ -380,14 +379,14 @@ describe("queryDirection in relationships", () => {
                 "CYPHER 5
                 MATCH (this:User)
                 WHERE EXISTS {
-                    MATCH (this)-[:FRIENDS_WITH]-(this0:User)
-                    WHERE this0.name = $param0
+                  MATCH (this)-[:FRIENDS_WITH]-(this0:User)
+                  WHERE this0.name = $param0
                 }
                 CALL (this) {
-                    MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
-                    WITH DISTINCT this2
-                    WITH this2 { .name } AS this2
-                    RETURN collect(this2) AS var3
+                  MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
+                  WITH DISTINCT this2
+                  WITH this2 { .name } AS this2
+                  RETURN collect(this2) AS var3
                 }
                 RETURN this { .name, friends: var3 } AS this"
             `);
@@ -423,24 +422,24 @@ describe("queryDirection in relationships", () => {
                 MATCH (this:User)
                 WITH *
                 WHERE EXISTS {
-                    MATCH (this)-[:FRIENDS_WITH]-(this0:User)
-                    WHERE this0.name = $param0
+                  MATCH (this)-[:FRIENDS_WITH]-(this0:User)
+                  WHERE this0.name = $param0
                 }
                 WITH *
                 CALL (*) {
-                    CALL (this) {
-                        OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
-                        WHERE this2.name = $param1
-                        WITH *
-                        DELETE this1
-                    }
+                  CALL (this) {
+                    OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
+                    WHERE this2.name = $param1
+                    WITH *
+                    DELETE this1
+                  }
                 }
                 WITH this
                 CALL (this) {
-                    MATCH (this)-[this3:FRIENDS_WITH]-(this4:User)
-                    WITH DISTINCT this4
-                    WITH this4 { .name } AS this4
-                    RETURN collect(this4) AS var5
+                  MATCH (this)-[this3:FRIENDS_WITH]-(this4:User)
+                  WITH DISTINCT this4
+                  WITH this4 { .name } AS this4
+                  RETURN collect(this4) AS var5
                 }
                 RETURN this { .name, friends: var5 } AS this"
             `);
@@ -477,25 +476,25 @@ describe("queryDirection in relationships", () => {
                 MATCH (this:User)
                 WITH *
                 WHERE EXISTS {
-                    MATCH (this)-[:FRIENDS_WITH]-(this0:User)
-                    WHERE this0.name = $param0
+                  MATCH (this)-[:FRIENDS_WITH]-(this0:User)
+                  WHERE this0.name = $param0
                 }
                 WITH *
                 CALL (*) {
-                    OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
-                    WHERE this2.name = $param1
-                    WITH this1, collect(DISTINCT this2) AS var3
-                    CALL (var3) {
-                        UNWIND var3 AS var4
-                        DETACH DELETE var4
-                    }
+                  OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
+                  WHERE this2.name = $param1
+                  WITH this1, collect(DISTINCT this2) AS var3
+                  CALL (var3) {
+                    UNWIND var3 AS var4
+                    DETACH DELETE var4
+                  }
                 }
                 WITH this
                 CALL (this) {
-                    MATCH (this)-[this5:FRIENDS_WITH]-(this6:User)
-                    WITH DISTINCT this6
-                    WITH this6 { .name } AS this6
-                    RETURN collect(this6) AS var7
+                  MATCH (this)-[this5:FRIENDS_WITH]-(this6:User)
+                  WITH DISTINCT this6
+                  WITH this6 { .name } AS this6
+                  RETURN collect(this6) AS var7
                 }
                 RETURN this { .name, friends: var7 } AS this"
             `);
@@ -539,23 +538,22 @@ describe("queryDirection in relationships", () => {
                 MATCH (this:User)
                 WITH *
                 WHERE EXISTS {
-                    MATCH (this)-[:FRIENDS_WITH]-(this0:User)
-                    WHERE this0.name = $param0
+                  MATCH (this)-[:FRIENDS_WITH]-(this0:User)
+                  WHERE this0.name = $param0
                 }
                 WITH *
                 CALL (*) {
-                    MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
-                    WITH *
-                    WHERE this2.name = $param1
-                    SET
-                        this2.name = $param2
+                  MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
+                  WITH *
+                  WHERE this2.name = $param1
+                  SET this2.name = $param2
                 }
                 WITH this
                 CALL (this) {
-                    MATCH (this)-[this3:FRIENDS_WITH]-(this4:User)
-                    WITH DISTINCT this4
-                    WITH this4 { .name } AS this4
-                    RETURN collect(this4) AS var5
+                  MATCH (this)-[this3:FRIENDS_WITH]-(this4:User)
+                  WITH DISTINCT this4
+                  WITH this4 { .name } AS this4
+                  RETURN collect(this4) AS var5
                 }
                 RETURN this { .name, friends: var5 } AS this"
             `);
@@ -587,18 +585,18 @@ describe("queryDirection in relationships", () => {
                 "CYPHER 5
                 MATCH (this:User)
                 WHERE EXISTS {
-                    MATCH (this)-[:FRIENDS_WITH]-(this0:User)
-                    WHERE this0.name = $param0
+                  MATCH (this)-[:FRIENDS_WITH]-(this0:User)
+                  WHERE this0.name = $param0
                 }
                 WITH *
                 CALL (*) {
-                    OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
-                    WHERE this2.name = $param1
-                    WITH this1, collect(DISTINCT this2) AS var3
-                    CALL (var3) {
-                        UNWIND var3 AS var4
-                        DETACH DELETE var4
-                    }
+                  OPTIONAL MATCH (this)-[this1:FRIENDS_WITH]-(this2:User)
+                  WHERE this2.name = $param1
+                  WITH this1, collect(DISTINCT this2) AS var3
+                  CALL (var3) {
+                    UNWIND var3 AS var4
+                    DETACH DELETE var4
+                  }
                 }
                 WITH *
                 DETACH DELETE this"

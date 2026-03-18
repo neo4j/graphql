@@ -54,10 +54,10 @@ describe("Cypher Aggregations Count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                RETURN { nodes: count(DISTINCT this) } AS var0
+              MATCH (this:Movie)
+              RETURN {nodes: count(DISTINCT this)} AS var0
             }
-            RETURN { aggregate: { count: var0 } } AS this"
+            RETURN {aggregate: {count: var0}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -81,11 +81,11 @@ describe("Cypher Aggregations Count", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WHERE this.title = $param0
-                RETURN { nodes: count(DISTINCT this) } AS var0
+              MATCH (this:Movie)
+              WHERE this.title = $param0
+              RETURN {nodes: count(DISTINCT this)} AS var0
             }
-            RETURN { aggregate: { count: var0 } } AS this"
+            RETURN {aggregate: {count: var0}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

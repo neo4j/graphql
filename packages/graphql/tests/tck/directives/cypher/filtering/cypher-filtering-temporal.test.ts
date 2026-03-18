@@ -54,22 +54,22 @@ describe("cypher directive filtering - Auth", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN datetime(\\"2024-09-03T15:30:00Z\\") AS t
-                }
-                WITH t AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN datetime(\\"2024-09-03T15:30:00Z\\") AS t
+              }
+              WITH t AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE var1 > datetime($param0)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN datetime(\\"2024-09-03T15:30:00Z\\") AS t
-                }
-                WITH t AS this2
-                RETURN this2 AS var3
+              CALL (this) {
+                WITH this AS this
+                RETURN datetime(\\"2024-09-03T15:30:00Z\\") AS t
+              }
+              WITH t AS this2
+              RETURN this2 AS var3
             }
             RETURN this { .title, special_time: var3 } AS this"
         `);
@@ -112,12 +112,12 @@ describe("cypher directive filtering - Auth", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    RETURN duration('P14DT16H12M') AS d
-                }
-                WITH d AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                RETURN duration('P14DT16H12M') AS d
+              }
+              WITH d AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE var1 = $param0

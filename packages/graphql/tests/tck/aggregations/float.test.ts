@@ -56,11 +56,11 @@ describe("Cypher Aggregations Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { min: min(this.actorCount) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {min: min(this.actorCount)} AS var0
             }
-            RETURN { aggregate: { node: { actorCount: var0 } } } AS this"
+            RETURN {aggregate: {node: {actorCount: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -86,11 +86,11 @@ describe("Cypher Aggregations Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { max: max(this.actorCount) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {max: max(this.actorCount)} AS var0
             }
-            RETURN { aggregate: { node: { actorCount: var0 } } } AS this"
+            RETURN {aggregate: {node: {actorCount: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -116,11 +116,11 @@ describe("Cypher Aggregations Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { average: avg(this.actorCount) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {average: avg(this.actorCount)} AS var0
             }
-            RETURN { aggregate: { node: { actorCount: var0 } } } AS this"
+            RETURN {aggregate: {node: {actorCount: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -146,11 +146,11 @@ describe("Cypher Aggregations Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { sum: sum(this.actorCount) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {sum: sum(this.actorCount)} AS var0
             }
-            RETURN { aggregate: { node: { actorCount: var0 } } } AS this"
+            RETURN {aggregate: {node: {actorCount: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -179,11 +179,11 @@ describe("Cypher Aggregations Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } AS var0
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount)} AS var0
             }
-            RETURN { aggregate: { node: { actorCount: var0 } } } AS this"
+            RETURN {aggregate: {node: {actorCount: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -215,15 +215,15 @@ describe("Cypher Aggregations Float", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Movie)
-                RETURN { nodes: count(DISTINCT this) } AS var0
+              MATCH (this:Movie)
+              RETURN {nodes: count(DISTINCT this)} AS var0
             }
             CALL {
-                MATCH (this:Movie)
-                WITH DISTINCT this
-                RETURN { min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount) } AS var1
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              RETURN {min: min(this.actorCount), max: max(this.actorCount), average: avg(this.actorCount), sum: sum(this.actorCount)} AS var1
             }
-            RETURN { aggregate: { count: var0, node: { actorCount: var1 } } } AS this"
+            RETURN {aggregate: {count: var0, node: {actorCount: var1}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

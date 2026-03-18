@@ -54,18 +54,17 @@ describe("https://github.com/neo4j/graphql/issues/2789", () => {
             MATCH (this:User)
             WITH *
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param1 IS NOT NULL AND this.id = $param1)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param2 IS NOT NULL AND this.id = $param2)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param1 IS NOT NULL AND this.id = $param1)), '@neo4j/graphql/FORBIDDEN', [])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param2 IS NOT NULL AND this.id = $param2)), '@neo4j/graphql/FORBIDDEN', [])
             WITH *
-            SET
-                this.password = $param3
+            SET this.password = $param3
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param4 IS NOT NULL AND this.id = $param4)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param5 IS NOT NULL AND this.id = $param5)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param4 IS NOT NULL AND this.id = $param4)), '@neo4j/graphql/FORBIDDEN', [])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param5 IS NOT NULL AND this.id = $param5)), '@neo4j/graphql/FORBIDDEN', [])
             WITH this
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param6 IS NOT NULL AND this.id = $param6)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param7 IS NOT NULL AND this.id = $param7)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param6 IS NOT NULL AND this.id = $param6)), '@neo4j/graphql/FORBIDDEN', [])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($param7 IS NOT NULL AND this.id = $param7)), '@neo4j/graphql/FORBIDDEN', [])
             RETURN this { .password } AS this"
         `);
 
