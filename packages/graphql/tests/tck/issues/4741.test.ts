@@ -64,25 +64,25 @@ describe("https://github.com/neo4j/graphql/issues/4741", () => {
             "CYPHER 5
             MATCH (this0:Opportunity)
             CALL (this0) {
-                MATCH (this0)-[this1:HAS_LIST]->(this2:ListOli)
-                RETURN count(this2) > $param0 AS var3
+              MATCH (this0)-[this1:HAS_LIST]->(this2:ListOli)
+              RETURN count(this2) > $param0 AS var3
             }
             WITH *
             WHERE var3 = true
-            WITH collect({ node: this0 }) AS edges
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                WITH *
-                LIMIT $param1
-                CALL (this0) {
-                    MATCH (this0)-[this4:HAS_LIST]->(this5:ListOli)
-                    WITH count(this5) AS totalCount
-                    RETURN { totalCount: totalCount } AS var6
-                }
-                RETURN collect({ node: { country: this0.country, listsOlisConnection: var6, __resolveType: \\"Opportunity\\" } }) AS var7
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              WITH *
+              LIMIT $param1
+              CALL (this0) {
+                MATCH (this0)-[this4:HAS_LIST]->(this5:ListOli)
+                WITH count(this5) AS totalCount
+                RETURN {totalCount: totalCount} AS var6
+              }
+              RETURN collect({node: {country: this0.country, listsOlisConnection: var6, __resolveType: 'Opportunity'}}) AS var7
             }
-            RETURN { edges: var7 } AS this"
+            RETURN {edges: var7} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

@@ -160,11 +160,11 @@ describe("tck/rfcs/query-limits", () => {
                 WITH *
                 LIMIT $param0
                 CALL (this) {
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                    WITH DISTINCT this1
-                    WITH this1 { .id } AS this1
-                    LIMIT $param1
-                    RETURN collect(this1) AS var2
+                  MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                  WITH DISTINCT this1
+                  WITH this1 { .id } AS this1
+                  LIMIT $param1
+                  RETURN collect(this1) AS var2
                 }
                 RETURN this { .id, actors: var2 } AS this"
             `);
@@ -207,16 +207,16 @@ describe("tck/rfcs/query-limits", () => {
                 WITH *
                 LIMIT $param0
                 CALL (this) {
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                    WITH collect({ node: this1, relationship: this0 }) AS edges
-                    CALL (edges) {
-                        UNWIND edges AS edge
-                        WITH edge.node AS this1, edge.relationship AS this0
-                        WITH *
-                        LIMIT $param1
-                        RETURN collect({ node: { id: this1.id, __resolveType: \\"Person\\" } }) AS var2
-                    }
-                    RETURN { edges: var2 } AS var3
+                  MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                  WITH collect({node: this1, relationship: this0}) AS edges
+                  CALL (edges) {
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH *
+                    LIMIT $param1
+                    RETURN collect({node: {id: this1.id, __resolveType: 'Person'}}) AS var2
+                  }
+                  RETURN {edges: var2} AS var3
                 }
                 RETURN this { .id, actorsConnection: var3 } AS this"
             `);
@@ -259,16 +259,16 @@ describe("tck/rfcs/query-limits", () => {
                 WITH *
                 LIMIT $param0
                 CALL (this) {
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                    WITH collect({ node: this1, relationship: this0 }) AS edges
-                    CALL (edges) {
-                        UNWIND edges AS edge
-                        WITH edge.node AS this1, edge.relationship AS this0
-                        WITH *
-                        LIMIT $param1
-                        RETURN collect({ node: { id: this1.id, __resolveType: \\"Person\\" } }) AS var2
-                    }
-                    RETURN { edges: var2 } AS var3
+                  MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                  WITH collect({node: this1, relationship: this0}) AS edges
+                  CALL (edges) {
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH *
+                    LIMIT $param1
+                    RETURN collect({node: {id: this1.id, __resolveType: 'Person'}}) AS var2
+                  }
+                  RETURN {edges: var2} AS var3
                 }
                 RETURN this { .id, actorsConnection: var3 } AS this"
             `);
@@ -309,16 +309,16 @@ describe("tck/rfcs/query-limits", () => {
                 "CYPHER 5
                 MATCH (this:Festival)
                 CALL (this) {
-                    MATCH (this)<-[this0:PART_OF]-(this1:Show)
-                    WITH collect({ node: this1, relationship: this0 }) AS edges
-                    CALL (edges) {
-                        UNWIND edges AS edge
-                        WITH edge.node AS this1, edge.relationship AS this0
-                        WITH *
-                        LIMIT $param0
-                        RETURN collect({ node: { id: this1.id, __resolveType: \\"Show\\" } }) AS var2
-                    }
-                    RETURN { edges: var2 } AS var3
+                  MATCH (this)<-[this0:PART_OF]-(this1:Show)
+                  WITH collect({node: this1, relationship: this0}) AS edges
+                  CALL (edges) {
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH *
+                    LIMIT $param0
+                    RETURN collect({node: {id: this1.id, __resolveType: 'Show'}}) AS var2
+                  }
+                  RETURN {edges: var2} AS var3
                 }
                 RETURN this { .name, showsConnection: var3 } AS this"
             `);
@@ -353,11 +353,11 @@ describe("tck/rfcs/query-limits", () => {
                 WITH *
                 LIMIT $param0
                 CALL (this) {
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                    WITH DISTINCT this1
-                    WITH this1 { .id } AS this1
-                    LIMIT $param1
-                    RETURN collect(this1) AS var2
+                  MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                  WITH DISTINCT this1
+                  WITH this1 { .id } AS this1
+                  LIMIT $param1
+                  RETURN collect(this1) AS var2
                 }
                 RETURN this { .id, actors: var2 } AS this"
             `);

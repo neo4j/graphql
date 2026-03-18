@@ -61,8 +61,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN avg(this0.someFloat) = $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN avg(this0.someFloat) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -91,8 +91,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN avg(this0.someFloat) > $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN avg(this0.someFloat) > $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -121,8 +121,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN avg(this0.someFloat) >= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN avg(this0.someFloat) >= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -151,8 +151,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN avg(this0.someFloat) < $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN avg(this0.someFloat) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -181,8 +181,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN avg(this0.someFloat) <= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN avg(this0.someFloat) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -211,8 +211,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN sum(this0.someFloat) = $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN sum(this0.someFloat) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -241,8 +241,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN sum(this0.someFloat) > $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN sum(this0.someFloat) > $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -271,8 +271,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN sum(this0.someFloat) >= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN sum(this0.someFloat) >= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -301,8 +301,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN sum(this0.someFloat) < $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN sum(this0.someFloat) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -331,8 +331,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN sum(this0.someFloat) <= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN sum(this0.someFloat) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -361,8 +361,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this0.someFloat) = $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN min(this0.someFloat) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -391,8 +391,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this0.someFloat) > $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN min(this0.someFloat) > $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -421,8 +421,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this0.someFloat) >= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN min(this0.someFloat) >= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -451,8 +451,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this0.someFloat) < $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN min(this0.someFloat) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -481,8 +481,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN min(this0.someFloat) <= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN min(this0.someFloat) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -511,8 +511,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this0.someFloat) = $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN max(this0.someFloat) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -541,8 +541,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this0.someFloat) > $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN max(this0.someFloat) > $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -571,8 +571,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this0.someFloat) >= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN max(this0.someFloat) >= $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -601,8 +601,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this0.someFloat) < $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN max(this0.someFloat) < $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -631,8 +631,8 @@ describe("Cypher Aggregations where edge with Float", () => {
             "CYPHER 5
             MATCH (this:Post)
             CALL (this) {
-                MATCH (this)<-[this0:LIKES]-(this1:User)
-                RETURN max(this0.someFloat) <= $param0 AS var2
+              MATCH (this)<-[this0:LIKES]-(this1:User)
+              RETURN max(this0.someFloat) <= $param0 AS var2
             }
             WITH *
             WHERE var2 = true

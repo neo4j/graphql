@@ -92,28 +92,28 @@ describe("Interface Relationships - Update create", () => {
             WITH *
             WITH *
             CALL (*) {
-                CREATE (this0:Movie)
-                MERGE (this)-[this1:ACTED_IN]->(this0)
-                SET
-                    this0.title = $param0,
-                    this0.runtime = $param1,
-                    this1.screenTime = $param2
+              CREATE (this0:Movie)
+              MERGE (this)-[this1:ACTED_IN]->(this0)
+              SET
+                this0.title = $param0,
+                this0.runtime = $param1,
+                this1.screenTime = $param2
             }
             WITH this
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
-                    WITH this3 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this3) } AS var4
-                    RETURN var4
-                    UNION
-                    WITH *
-                    MATCH (this)-[this5:ACTED_IN]->(this6:Series)
-                    WITH this6 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this6) } AS var4
-                    RETURN var4
-                }
-                WITH var4
-                RETURN collect(var4) AS var4
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
+                WITH this3 { .title, .runtime, __resolveType: 'Movie', __id: elementId(this3) } AS var4
+                RETURN var4
+                UNION
+                WITH *
+                MATCH (this)-[this5:ACTED_IN]->(this6:Series)
+                WITH this6 { .title, .episodes, __resolveType: 'Series', __id: elementId(this6) } AS var4
+                RETURN var4
+              }
+              WITH var4
+              RETURN collect(var4) AS var4
             }
             RETURN this { .name, actedIn: var4 } AS this"
         `);

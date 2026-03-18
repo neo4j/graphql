@@ -113,8 +113,8 @@ describe("Cypher Auth Where", () => {
             MATCH (this:Post)
             WITH *
             WHERE ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+              MATCH (this)<-[:HAS_CONTENT]-(this0:User)
+              WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
             })
             RETURN this { .id } AS this"
         `);
@@ -149,8 +149,8 @@ describe("Cypher Auth Where", () => {
             MATCH (this:Post)
             WITH *
             WHERE (this.content = $param0 AND ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+              MATCH (this)<-[:HAS_CONTENT]-(this0:User)
+              WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
             }))
             RETURN this { .id } AS this"
         `);
@@ -192,23 +192,23 @@ describe("Cypher Auth Where", () => {
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                    WITH this1 { __resolveType: \\"Comment\\", __id: id(this1) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this3:HAS_CONTENT]->(this4:Post)
-                    WHERE ($isAuthenticated = true AND EXISTS {
-                        MATCH (this4)<-[:HAS_CONTENT]-(this5:User)
-                        WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)
-                    })
-                    WITH this4 { .id, __resolveType: \\"Post\\", __id: id(this4) } AS var2
-                    RETURN var2
-                }
-                WITH var2
-                RETURN collect(var2) AS var2
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                WITH this1 { __resolveType: 'Comment', __id: elementId(this1) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)-[this3:HAS_CONTENT]->(this4:Post)
+                WHERE ($isAuthenticated = true AND EXISTS {
+                  MATCH (this4)<-[:HAS_CONTENT]-(this5:User)
+                  WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)
+                })
+                WITH this4 { .id, __resolveType: 'Post', __id: elementId(this4) } AS var2
+                RETURN var2
+              }
+              WITH var2
+              RETURN collect(var2) AS var2
             }
             RETURN this { .id, content: var2 } AS this"
         `);
@@ -253,27 +253,27 @@ describe("Cypher Auth Where", () => {
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             CALL (this) {
+              CALL (this) {
                 CALL (this) {
-                    CALL (this) {
-                        WITH this
-                        MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                        WITH { node: { __resolveType: \\"Comment\\", __id: id(this1) } } AS edge
-                        RETURN edge
-                        UNION
-                        WITH this
-                        MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
-                        WHERE ($isAuthenticated = true AND EXISTS {
-                            MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                            WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
-                        })
-                        WITH { node: { __resolveType: \\"Post\\", __id: id(this3), id: this3.id } } AS edge
-                        RETURN edge
-                    }
-                    RETURN collect(edge) AS edges
+                  WITH this
+                  MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                  WITH {node: {__resolveType: 'Comment', __id: elementId(this1)}} AS edge
+                  RETURN edge
+                  UNION
+                  WITH this
+                  MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
+                  WHERE ($isAuthenticated = true AND EXISTS {
+                    MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                  })
+                  WITH {node: {__resolveType: 'Post', __id: elementId(this3), id: this3.id}} AS edge
+                  RETURN edge
                 }
-                WITH edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var5
+                RETURN collect(edge) AS edges
+              }
+              WITH edges
+              WITH edges, size(edges) AS totalCount
+              RETURN {edges: edges, totalCount: totalCount} AS var5
             }
             RETURN this { .id, contentConnection: var5 } AS this"
         `);
@@ -318,28 +318,28 @@ describe("Cypher Auth Where", () => {
             WITH *
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             CALL (this) {
+              CALL (this) {
                 CALL (this) {
-                    CALL (this) {
-                        WITH this
-                        MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                        WHERE this1.id = $param2
-                        WITH { node: { __resolveType: \\"Comment\\", __id: id(this1) } } AS edge
-                        RETURN edge
-                        UNION
-                        WITH this
-                        MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
-                        WHERE (this3.id = $param3 AND ($isAuthenticated = true AND EXISTS {
-                            MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                            WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
-                        }))
-                        WITH { node: { __resolveType: \\"Post\\", __id: id(this3), id: this3.id } } AS edge
-                        RETURN edge
-                    }
-                    RETURN collect(edge) AS edges
+                  WITH this
+                  MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                  WHERE this1.id = $param2
+                  WITH {node: {__resolveType: 'Comment', __id: elementId(this1)}} AS edge
+                  RETURN edge
+                  UNION
+                  WITH this
+                  MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
+                  WHERE (this3.id = $param3 AND ($isAuthenticated = true AND EXISTS {
+                    MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                    WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                  }))
+                  WITH {node: {__resolveType: 'Post', __id: elementId(this3), id: this3.id}} AS edge
+                  RETURN edge
                 }
-                WITH edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var5
+                RETURN collect(edge) AS edges
+              }
+              WITH edges
+              WITH edges, size(edges) AS totalCount
+              RETURN {edges: edges, totalCount: totalCount} AS var5
             }
             RETURN this { .id, contentConnection: var5 } AS this"
         `);
@@ -378,16 +378,15 @@ describe("Cypher Auth Where", () => {
             MATCH (this:Post)
             WITH *
             WHERE ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+              MATCH (this)<-[:HAS_CONTENT]-(this0:User)
+              WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
             })
-            SET
-                this.content = $param2
+            SET this.content = $param2
             WITH this
             WITH *
             WHERE ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_CONTENT]-(this1:User)
-                WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)
+              MATCH (this)<-[:HAS_CONTENT]-(this1:User)
+              WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)
             })
             RETURN this { .id } AS this"
         `);
@@ -425,16 +424,15 @@ describe("Cypher Auth Where", () => {
             MATCH (this:Post)
             WITH *
             WHERE (this.content = $param0 AND ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+              MATCH (this)<-[:HAS_CONTENT]-(this0:User)
+              WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
             }))
-            SET
-                this.content = $param3
+            SET this.content = $param3
             WITH this
             WITH *
             WHERE ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_CONTENT]-(this1:User)
-                WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)
+              MATCH (this)<-[:HAS_CONTENT]-(this1:User)
+              WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)
             })
             RETURN this { .id } AS this"
         `);
@@ -474,21 +472,19 @@ describe("Cypher Auth Where", () => {
             WITH *
             WITH *
             CALL (*) {
-                MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                WITH *
-                SET
-                    this1.id = $param0
+              MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+              WITH *
+              SET this1.id = $param0
             }
             WITH *
             CALL (*) {
-                MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
-                WITH *
-                WHERE ($isAuthenticated = true AND EXISTS {
-                    MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                    WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
-                })
-                SET
-                    this3.id = $param3
+              MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
+              WITH *
+              WHERE ($isAuthenticated = true AND EXISTS {
+                MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+              })
+              SET this3.id = $param3
             }
             WITH this
             WITH *
@@ -527,8 +523,8 @@ describe("Cypher Auth Where", () => {
             "CYPHER 5
             MATCH (this:Post)
             WHERE ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+              MATCH (this)<-[:HAS_CONTENT]-(this0:User)
+              WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
             })
             DETACH DELETE this"
         `);
@@ -562,8 +558,8 @@ describe("Cypher Auth Where", () => {
             "CYPHER 5
             MATCH (this:Post)
             WHERE (this.content = $param0 AND ($isAuthenticated = true AND EXISTS {
-                MATCH (this)<-[:HAS_CONTENT]-(this0:User)
-                WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
+              MATCH (this)<-[:HAS_CONTENT]-(this0:User)
+              WHERE ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)
             }))
             DETACH DELETE this"
         `);
@@ -600,24 +596,24 @@ describe("Cypher Auth Where", () => {
             WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                WITH this0, collect(DISTINCT this1) AS var2
-                CALL (var2) {
-                    UNWIND var2 AS var3
-                    DETACH DELETE var3
-                }
+              OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+              WITH this0, collect(DISTINCT this1) AS var2
+              CALL (var2) {
+                UNWIND var2 AS var3
+                DETACH DELETE var3
+              }
             }
             CALL (*) {
-                OPTIONAL MATCH (this)-[this4:HAS_CONTENT]->(this5:Post)
-                WHERE ($isAuthenticated = true AND EXISTS {
-                    MATCH (this5)<-[:HAS_CONTENT]-(this6:User)
-                    WHERE ($jwt.sub IS NOT NULL AND this6.id = $jwt.sub)
-                })
-                WITH this4, collect(DISTINCT this5) AS var7
-                CALL (var7) {
-                    UNWIND var7 AS var8
-                    DETACH DELETE var8
-                }
+              OPTIONAL MATCH (this)-[this4:HAS_CONTENT]->(this5:Post)
+              WHERE ($isAuthenticated = true AND EXISTS {
+                MATCH (this5)<-[:HAS_CONTENT]-(this6:User)
+                WHERE ($jwt.sub IS NOT NULL AND this6.id = $jwt.sub)
+              })
+              WITH this4, collect(DISTINCT this5) AS var7
+              CALL (var7) {
+                UNWIND var7 AS var8
+                DETACH DELETE var8
+              }
             }
             WITH *
             DETACH DELETE this"
@@ -657,30 +653,30 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:User)
-                SET
-                    this0.id = $param0,
-                    this0.name = $param1,
-                    this0.password = $param2
-                WITH *
-                CALL (this0) {
-                    MATCH (this1:Comment)
-                    CREATE (this0)-[this2:HAS_CONTENT]->(this1)
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this3:Post)
-                    WHERE ($isAuthenticated = true AND EXISTS {
-                        MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                        WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
-                    })
-                    CREATE (this0)-[this5:HAS_CONTENT]->(this3)
-                }
-                RETURN this0 AS this
+              CREATE (this0:User)
+              SET
+                this0.id = $param0,
+                this0.name = $param1,
+                this0.password = $param2
+              WITH *
+              CALL (this0) {
+                MATCH (this1:Comment)
+                CREATE (this0)-[this2:HAS_CONTENT]->(this1)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this3:Post)
+                WHERE ($isAuthenticated = true AND EXISTS {
+                  MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                  WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                })
+                CREATE (this0)-[this5:HAS_CONTENT]->(this3)
+              }
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .id } AS var6
+              RETURN this { .id } AS var6
             }
             RETURN collect(var6) AS data"
         `);
@@ -727,31 +723,31 @@ describe("Cypher Auth Where", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:User)
-                SET
-                    this0.id = $param0,
-                    this0.name = $param1,
-                    this0.password = $param2
-                WITH *
-                CALL (this0) {
-                    MATCH (this1:Comment)
-                    WHERE this1.id = $param3
-                    CREATE (this0)-[this2:HAS_CONTENT]->(this1)
-                }
-                WITH *
-                CALL (this0) {
-                    MATCH (this3:Post)
-                    WHERE (($isAuthenticated = true AND EXISTS {
-                        MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                        WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
-                    }) AND this3.id = $param6)
-                    CREATE (this0)-[this5:HAS_CONTENT]->(this3)
-                }
-                RETURN this0 AS this
+              CREATE (this0:User)
+              SET
+                this0.id = $param0,
+                this0.name = $param1,
+                this0.password = $param2
+              WITH *
+              CALL (this0) {
+                MATCH (this1:Comment)
+                WHERE this1.id = $param3
+                CREATE (this0)-[this2:HAS_CONTENT]->(this1)
+              }
+              WITH *
+              CALL (this0) {
+                MATCH (this3:Post)
+                WHERE (($isAuthenticated = true AND EXISTS {
+                  MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                  WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                }) AND this3.id = $param6)
+                CREATE (this0)-[this5:HAS_CONTENT]->(this3)
+              }
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .id } AS var6
+              RETURN this { .id } AS var6
             }
             RETURN collect(var6) AS data"
         `);
@@ -794,18 +790,18 @@ describe("Cypher Auth Where", () => {
             WITH *
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this0:Comment)
-                    CREATE (this)-[this1:HAS_CONTENT]->(this0)
-                }
-                CALL (this) {
-                    MATCH (this2:Post)
-                    WHERE ($isAuthenticated = true AND EXISTS {
-                        MATCH (this2)<-[:HAS_CONTENT]-(this3:User)
-                        WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
-                    })
-                    CREATE (this)-[this4:HAS_CONTENT]->(this2)
-                }
+              CALL (this) {
+                MATCH (this0:Comment)
+                CREATE (this)-[this1:HAS_CONTENT]->(this0)
+              }
+              CALL (this) {
+                MATCH (this2:Post)
+                WHERE ($isAuthenticated = true AND EXISTS {
+                  MATCH (this2)<-[:HAS_CONTENT]-(this3:User)
+                  WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
+                })
+                CREATE (this)-[this4:HAS_CONTENT]->(this2)
+              }
             }
             WITH this
             WITH *
@@ -846,19 +842,19 @@ describe("Cypher Auth Where", () => {
             WITH *
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this0:Comment)
-                    WHERE this0.id = $param0
-                    CREATE (this)-[this1:HAS_CONTENT]->(this0)
-                }
-                CALL (this) {
-                    MATCH (this2:Post)
-                    WHERE (($isAuthenticated = true AND EXISTS {
-                        MATCH (this2)<-[:HAS_CONTENT]-(this3:User)
-                        WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
-                    }) AND this2.id = $param3)
-                    CREATE (this)-[this4:HAS_CONTENT]->(this2)
-                }
+              CALL (this) {
+                MATCH (this0:Comment)
+                WHERE this0.id = $param0
+                CREATE (this)-[this1:HAS_CONTENT]->(this0)
+              }
+              CALL (this) {
+                MATCH (this2:Post)
+                WHERE (($isAuthenticated = true AND EXISTS {
+                  MATCH (this2)<-[:HAS_CONTENT]-(this3:User)
+                  WHERE ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)
+                }) AND this2.id = $param3)
+                CREATE (this)-[this4:HAS_CONTENT]->(this2)
+              }
             }
             WITH this
             WITH *
@@ -901,20 +897,20 @@ describe("Cypher Auth Where", () => {
             WITH *
             WITH *
             CALL (*) {
-                CALL (this) {
-                    OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                    WITH *
-                    DELETE this0
-                }
-                CALL (this) {
-                    OPTIONAL MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
-                    WHERE ($isAuthenticated = true AND EXISTS {
-                        MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                        WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
-                    })
-                    WITH *
-                    DELETE this2
-                }
+              CALL (this) {
+                OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                WITH *
+                DELETE this0
+              }
+              CALL (this) {
+                OPTIONAL MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
+                WHERE ($isAuthenticated = true AND EXISTS {
+                  MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                  WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                })
+                WITH *
+                DELETE this2
+              }
             }
             WITH this
             WITH *
@@ -955,21 +951,21 @@ describe("Cypher Auth Where", () => {
             WITH *
             WITH *
             CALL (*) {
-                CALL (this) {
-                    OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
-                    WHERE this1.id = $param0
-                    WITH *
-                    DELETE this0
-                }
-                CALL (this) {
-                    OPTIONAL MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
-                    WHERE (($isAuthenticated = true AND EXISTS {
-                        MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
-                        WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
-                    }) AND this3.id = $param3)
-                    WITH *
-                    DELETE this2
-                }
+              CALL (this) {
+                OPTIONAL MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+                WHERE this1.id = $param0
+                WITH *
+                DELETE this0
+              }
+              CALL (this) {
+                OPTIONAL MATCH (this)-[this2:HAS_CONTENT]->(this3:Post)
+                WHERE (($isAuthenticated = true AND EXISTS {
+                  MATCH (this3)<-[:HAS_CONTENT]-(this4:User)
+                  WHERE ($jwt.sub IS NOT NULL AND this4.id = $jwt.sub)
+                }) AND this3.id = $param3)
+                WITH *
+                DELETE this2
+              }
             }
             WITH this
             WITH *

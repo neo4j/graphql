@@ -93,27 +93,27 @@ describe("interface relationships with aliased fields", () => {
             "CYPHER 5
             MATCH (this:Actor)
             WHERE EXISTS {
-                MATCH (this)-[this0:ACTED_IN]->(this1)
-                WHERE (CASE
-                    WHEN this1:Movie THEN this1.movieTitle
-                    WHEN this1:Series THEN this1.seriesTitle
-                    ELSE this1.title
-                END = $param0 AND (this1:Movie OR this1:Series))
+              MATCH (this)-[this0:ACTED_IN]->(this1)
+              WHERE (CASE
+                WHEN this1:Movie THEN this1.movieTitle
+                WHEN this1:Series THEN this1.seriesTitle
+                ELSE this1.title
+              END = $param0 AND (this1:Movie OR this1:Series))
             }
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
-                    WITH this3 { .runtime, title: this3.movieTitle, __resolveType: \\"Movie\\", __id: id(this3) } AS var4
-                    RETURN var4
-                    UNION
-                    WITH *
-                    MATCH (this)-[this5:ACTED_IN]->(this6:Series)
-                    WITH this6 { .episodes, title: this6.seriesTitle, __resolveType: \\"Series\\", __id: id(this6) } AS var4
-                    RETURN var4
-                }
-                WITH var4
-                RETURN collect(var4) AS var4
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
+                WITH this3 { .runtime, title: this3.movieTitle, __resolveType: 'Movie', __id: elementId(this3) } AS var4
+                RETURN var4
+                UNION
+                WITH *
+                MATCH (this)-[this5:ACTED_IN]->(this6:Series)
+                WITH this6 { .episodes, title: this6.seriesTitle, __resolveType: 'Series', __id: elementId(this6) } AS var4
+                RETURN var4
+              }
+              WITH var4
+              RETURN collect(var4) AS var4
             }
             RETURN this { .name, actedIn: var4 } AS this"
         `);
@@ -143,12 +143,12 @@ describe("interface relationships with aliased fields", () => {
             "CYPHER 5
             MATCH (this:Actor)
             WHERE EXISTS {
-                MATCH (this)-[this0:ACTED_IN]->(this1)
-                WHERE (CASE
-                    WHEN this1:Movie THEN this1.movieTitle
-                    WHEN this1:Series THEN this1.seriesTitle
-                    ELSE this1.title
-                END = $param0 AND (this1:Movie OR this1:Series))
+              MATCH (this)-[this0:ACTED_IN]->(this1)
+              WHERE (CASE
+                WHEN this1:Movie THEN this1.movieTitle
+                WHEN this1:Series THEN this1.seriesTitle
+                ELSE this1.title
+              END = $param0 AND (this1:Movie OR this1:Series))
             }
             DETACH DELETE this"
         `);
@@ -185,24 +185,24 @@ describe("interface relationships with aliased fields", () => {
             MATCH (this:ProtectedActor)
             WITH *
             CALL apoc.util.validate(NOT ($isAuthenticated = true AND size([(this)-[this1:ACTED_IN]->(this0) WHERE (($jwt.title IS NOT NULL AND CASE
-                WHEN this0:Movie THEN this0.movieTitle
-                WHEN this0:Series THEN this0.seriesTitle
-                ELSE this0.title
-            END = $jwt.title) AND (this0:Movie OR this0:Series)) | 1]) > 0), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+              WHEN this0:Movie THEN this0.movieTitle
+              WHEN this0:Series THEN this0.seriesTitle
+              ELSE this0.title
+            END = $jwt.title) AND (this0:Movie OR this0:Series)) | 1]) > 0), '@neo4j/graphql/FORBIDDEN', [])
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
-                    WITH this3 { .runtime, title: this3.movieTitle, __resolveType: \\"Movie\\", __id: id(this3) } AS var4
-                    RETURN var4
-                    UNION
-                    WITH *
-                    MATCH (this)-[this5:ACTED_IN]->(this6:Series)
-                    WITH this6 { .episodes, title: this6.seriesTitle, __resolveType: \\"Series\\", __id: id(this6) } AS var4
-                    RETURN var4
-                }
-                WITH var4
-                RETURN collect(var4) AS var4
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this2:ACTED_IN]->(this3:Movie)
+                WITH this3 { .runtime, title: this3.movieTitle, __resolveType: 'Movie', __id: elementId(this3) } AS var4
+                RETURN var4
+                UNION
+                WITH *
+                MATCH (this)-[this5:ACTED_IN]->(this6:Series)
+                WITH this6 { .episodes, title: this6.seriesTitle, __resolveType: 'Series', __id: elementId(this6) } AS var4
+                RETURN var4
+              }
+              WITH var4
+              RETURN collect(var4) AS var4
             }
             RETURN this { name: this.dbName, actedIn: var4 } AS this"
         `);

@@ -62,8 +62,8 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                RETURN count(this1) = $param0 AS var2
+              MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              RETURN count(this1) = $param0 AS var2
             }
             WITH *
             WHERE var2 = true
@@ -96,16 +96,16 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WITH DISTINCT this1
-                CALL (this1) {
-                    MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
-                    RETURN count(this3) = $param0 AS var4
-                }
-                WITH *
-                WHERE var4 = true
-                WITH this1 { .title } AS this1
-                RETURN collect(this1) AS var5
+              MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+              WITH DISTINCT this1
+              CALL (this1) {
+                MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
+                RETURN count(this3) = $param0 AS var4
+              }
+              WITH *
+              WHERE var4 = true
+              WITH this1 { .title } AS this1
+              RETURN collect(this1) AS var5
             }
             RETURN this { movies: var5 } AS this"
         `);
@@ -134,14 +134,14 @@ describe("https://github.com/neo4j/graphql/issues/6005", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)<-[:ACTED_IN]-(this0:Actor)
-                CALL (this0) {
-                    MATCH (this0)-[this1:ACTED_IN]->(this2:Movie)
-                    RETURN count(this2) = $param0 AS var3
-                }
-                WITH *
-                WHERE var3 = true
-                RETURN count(this0) > 0 AS var4
+              MATCH (this)<-[:ACTED_IN]-(this0:Actor)
+              CALL (this0) {
+                MATCH (this0)-[this1:ACTED_IN]->(this2:Movie)
+                RETURN count(this2) = $param0 AS var3
+              }
+              WITH *
+              WHERE var3 = true
+              RETURN count(this0) > 0 AS var4
             }
             WITH *
             WHERE var4 = true

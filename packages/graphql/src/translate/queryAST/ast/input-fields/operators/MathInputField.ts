@@ -19,6 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { apocWrapper } from "../../../../utils/apoc-wrapper";
 import { type QueryASTContext } from "../../QueryASTContext";
 import { ParamInputField } from "../ParamInputField";
 
@@ -63,12 +64,12 @@ export class MathInputField extends ParamInputField {
 
         return [
             Cypher.utils.concat(
-                Cypher.apoc.util.validate(
+                apocWrapper.validate(
                     Cypher.isNull(prop),
                     "Cannot %s %s to Nan",
                     new Cypher.List([new Cypher.Literal(this.operation), this.getParam()])
                 ),
-                Cypher.apoc.util.validate(
+                apocWrapper.validate(
                     Cypher.gt(rightExpr, maxBit),
                     "Overflow: Value returned from operator %s is larger than %s bit",
                     new Cypher.List([new Cypher.Literal(this.operation), new Cypher.Literal(bitSize)])

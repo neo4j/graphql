@@ -69,16 +69,16 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                     "CYPHER 5
                     MATCH (this:Post)
                     CALL (this) {
-                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                        RETURN count(this1) > $param0 AS var2
+                      MATCH (this)<-[this0:LIKES]-(this1:User)
+                      RETURN count(this1) > $param0 AS var2
                     }
                     CALL (this) {
-                        MATCH (this)<-[this3:LIKES]-(this4:User)
-                        RETURN count(this4) > $param1 AS var5
+                      MATCH (this)<-[this3:LIKES]-(this4:User)
+                      RETURN count(this4) > $param1 AS var5
                     }
                     CALL (this) {
-                        MATCH (this)<-[this6:LIKES]-(this7:User)
-                        RETURN count(this7) < $param2 AS var8
+                      MATCH (this)<-[this6:LIKES]-(this7:User)
+                      RETURN count(this7) < $param2 AS var8
                     }
                     WITH *
                     WHERE (var2 = true AND (var5 = true AND var8 = true))
@@ -118,16 +118,16 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                     "CYPHER 5
                     MATCH (this:Post)
                     CALL (this) {
-                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                        RETURN count(this1) > $param0 AS var2
+                      MATCH (this)<-[this0:LIKES]-(this1:User)
+                      RETURN count(this1) > $param0 AS var2
                     }
                     CALL (this) {
-                        MATCH (this)<-[this3:LIKES]-(this4:User)
-                        RETURN count(this4) > $param1 AS var5
+                      MATCH (this)<-[this3:LIKES]-(this4:User)
+                      RETURN count(this4) > $param1 AS var5
                     }
                     CALL (this) {
-                        MATCH (this)<-[this6:LIKES]-(this7:User)
-                        RETURN count(this7) < $param2 AS var8
+                      MATCH (this)<-[this6:LIKES]-(this7:User)
+                      RETURN count(this7) < $param2 AS var8
                     }
                     WITH *
                     WHERE (var2 = true AND (var5 = true AND var8 = true))
@@ -174,16 +174,16 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                     "CYPHER 5
                     MATCH (this:Post)
                     CALL (this) {
-                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                        RETURN count(this1) > $param0 AS var2
+                      MATCH (this)<-[this0:LIKES]-(this1:User)
+                      RETURN count(this1) > $param0 AS var2
                     }
                     CALL (this) {
-                        MATCH (this)<-[this3:LIKES]-(this4:User)
-                        RETURN count(this4) > $param1 AS var5
+                      MATCH (this)<-[this3:LIKES]-(this4:User)
+                      RETURN count(this4) > $param1 AS var5
                     }
                     CALL (this) {
-                        MATCH (this)<-[this6:LIKES]-(this7:User)
-                        RETURN count(this7) < $param2 AS var8
+                      MATCH (this)<-[this6:LIKES]-(this7:User)
+                      RETURN count(this7) < $param2 AS var8
                     }
                     WITH *
                     WHERE (var2 = true AND (var5 = true OR var8 = true))
@@ -230,20 +230,20 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                     "CYPHER 5
                     MATCH (this:Post)
                     CALL (this) {
-                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                        RETURN count(this1) > $param0 AS var2
+                      MATCH (this)<-[this0:LIKES]-(this1:User)
+                      RETURN count(this1) > $param0 AS var2
                     }
                     CALL (this) {
-                        MATCH (this)<-[this3:LIKES]-(this4:User)
-                        RETURN count(this4) > $param1 AS var5
+                      MATCH (this)<-[this3:LIKES]-(this4:User)
+                      RETURN count(this4) > $param1 AS var5
                     }
                     CALL (this) {
-                        MATCH (this)<-[this6:LIKES]-(this7:User)
-                        RETURN count(this7) <= $param2 AS var8
+                      MATCH (this)<-[this6:LIKES]-(this7:User)
+                      RETURN count(this7) <= $param2 AS var8
                     }
                     CALL (this) {
-                        MATCH (this)<-[this9:LIKES]-(this10:User)
-                        RETURN count(this10) < $param3 AS var11
+                      MATCH (this)<-[this9:LIKES]-(this10:User)
+                      RETURN count(this10) < $param3 AS var11
                     }
                     WITH *
                     WHERE (var2 = true AND ((var5 = true AND var8 = true) OR var11 = true))
@@ -297,20 +297,20 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                     "CYPHER 5
                     MATCH (this:Post)
                     CALL (this) {
-                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                        RETURN count(this1) > $param0 AS var2
+                      MATCH (this)<-[this0:LIKES]-(this1:User)
+                      RETURN count(this1) > $param0 AS var2
                     }
                     CALL (this) {
-                        MATCH (this)<-[this3:LIKES]-(this4:User)
-                        RETURN count(this4) > $param1 AS var5
+                      MATCH (this)<-[this3:LIKES]-(this4:User)
+                      RETURN count(this4) > $param1 AS var5
                     }
                     CALL (this) {
-                        MATCH (this)<-[this6:LIKES]-(this7:User)
-                        RETURN count(this7) <= $param2 AS var8
+                      MATCH (this)<-[this6:LIKES]-(this7:User)
+                      RETURN count(this7) <= $param2 AS var8
                     }
                     CALL (this) {
-                        MATCH (this)<-[this9:LIKES]-(this10:User)
-                        RETURN count(this10) < $param3 AS var11
+                      MATCH (this)<-[this9:LIKES]-(this10:User)
+                      RETURN count(this10) < $param3 AS var11
                     }
                     WITH *
                     WHERE (var2 = true AND ((var5 = true AND var8 = true) OR var11 = true))
@@ -368,16 +368,16 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                     "CYPHER 5
                     MATCH (this:Post)
                     CALL (this) {
-                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                        RETURN count(this1) > $param0 AS var2
+                      MATCH (this)<-[this0:LIKES]-(this1:User)
+                      RETURN count(this1) > $param0 AS var2
                     }
                     CALL (this) {
-                        MATCH (this)<-[this3:LIKES]-(this4:User)
-                        RETURN min(size(this4.name)) > $param1 AS var5
+                      MATCH (this)<-[this3:LIKES]-(this4:User)
+                      RETURN min(size(this4.name)) > $param1 AS var5
                     }
                     CALL (this) {
-                        MATCH (this)<-[this6:LIKES]-(this7:User)
-                        RETURN min(size(this7.name)) < $param2 AS var8
+                      MATCH (this)<-[this6:LIKES]-(this7:User)
+                      RETURN min(size(this7.name)) < $param2 AS var8
                     }
                     WITH *
                     WHERE (var2 = true AND (var5 = true AND var8 = true))
@@ -424,16 +424,16 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                     "CYPHER 5
                     MATCH (this:Post)
                     CALL (this) {
-                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                        RETURN count(this1) > $param0 AS var2
+                      MATCH (this)<-[this0:LIKES]-(this1:User)
+                      RETURN count(this1) > $param0 AS var2
                     }
                     CALL (this) {
-                        MATCH (this)<-[this3:LIKES]-(this4:User)
-                        RETURN min(size(this4.name)) > $param1 AS var5
+                      MATCH (this)<-[this3:LIKES]-(this4:User)
+                      RETURN min(size(this4.name)) > $param1 AS var5
                     }
                     CALL (this) {
-                        MATCH (this)<-[this6:LIKES]-(this7:User)
-                        RETURN min(size(this7.name)) < $param2 AS var8
+                      MATCH (this)<-[this6:LIKES]-(this7:User)
+                      RETURN min(size(this7.name)) < $param2 AS var8
                     }
                     WITH *
                     WHERE (var2 = true AND (var5 = true AND var8 = true))
@@ -485,16 +485,16 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                     "CYPHER 5
                     MATCH (this:Post)
                     CALL (this) {
-                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                        RETURN count(this1) > $param0 AS var2
+                      MATCH (this)<-[this0:LIKES]-(this1:User)
+                      RETURN count(this1) > $param0 AS var2
                     }
                     CALL (this) {
-                        MATCH (this)<-[this3:LIKES]-(this4:User)
-                        RETURN min(size(this4.name)) > $param1 AS var5
+                      MATCH (this)<-[this3:LIKES]-(this4:User)
+                      RETURN min(size(this4.name)) > $param1 AS var5
                     }
                     CALL (this) {
-                        MATCH (this)<-[this6:LIKES]-(this7:User)
-                        RETURN min(size(this7.name)) < $param2 AS var8
+                      MATCH (this)<-[this6:LIKES]-(this7:User)
+                      RETURN min(size(this7.name)) < $param2 AS var8
                     }
                     WITH *
                     WHERE (var2 = true AND (var5 = true OR var8 = true))
@@ -546,20 +546,20 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                     "CYPHER 5
                     MATCH (this:Post)
                     CALL (this) {
-                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                        RETURN count(this1) > $param0 AS var2
+                      MATCH (this)<-[this0:LIKES]-(this1:User)
+                      RETURN count(this1) > $param0 AS var2
                     }
                     CALL (this) {
-                        MATCH (this)<-[this3:LIKES]-(this4:User)
-                        RETURN min(size(this4.name)) > $param1 AS var5
+                      MATCH (this)<-[this3:LIKES]-(this4:User)
+                      RETURN min(size(this4.name)) > $param1 AS var5
                     }
                     CALL (this) {
-                        MATCH (this)<-[this6:LIKES]-(this7:User)
-                        RETURN min(size(this7.name)) < $param2 AS var8
+                      MATCH (this)<-[this6:LIKES]-(this7:User)
+                      RETURN min(size(this7.name)) < $param2 AS var8
                     }
                     CALL (this) {
-                        MATCH (this)<-[this9:LIKES]-(this10:User)
-                        RETURN min(size(this10.name)) >= $param3 AS var11
+                      MATCH (this)<-[this9:LIKES]-(this10:User)
+                      RETURN min(size(this10.name)) >= $param3 AS var11
                     }
                     WITH *
                     WHERE (var2 = true AND ((var5 = true AND var8 = true) OR var11 = true))
@@ -617,32 +617,32 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                     "CYPHER 5
                     MATCH (this:Post)
                     CALL (this) {
-                        MATCH (this)<-[this0:LIKES]-(this1:User)
-                        RETURN count(this1) > $param0 AS var2
+                      MATCH (this)<-[this0:LIKES]-(this1:User)
+                      RETURN count(this1) > $param0 AS var2
                     }
                     CALL (this) {
-                        MATCH (this)<-[this3:LIKES]-(this4:User)
-                        RETURN avg(size(this4.name)) > $param1 AS var5
+                      MATCH (this)<-[this3:LIKES]-(this4:User)
+                      RETURN avg(size(this4.name)) > $param1 AS var5
                     }
                     CALL (this) {
-                        MATCH (this)<-[this6:LIKES]-(this7:User)
-                        RETURN min(size(this6.someProp)) < $param2 AS var8
+                      MATCH (this)<-[this6:LIKES]-(this7:User)
+                      RETURN min(size(this6.someProp)) < $param2 AS var8
                     }
                     CALL (this) {
-                        MATCH (this)<-[this9:LIKES]-(this10:User)
-                        RETURN max(size(this9.someProp)) > $param3 AS var11
+                      MATCH (this)<-[this9:LIKES]-(this10:User)
+                      RETURN max(size(this9.someProp)) > $param3 AS var11
                     }
                     CALL (this) {
-                        MATCH (this)<-[this12:LIKES]-(this13:User)
-                        RETURN min(size(this13.name)) > $param4 AS var14
+                      MATCH (this)<-[this12:LIKES]-(this13:User)
+                      RETURN min(size(this13.name)) > $param4 AS var14
                     }
                     CALL (this) {
-                        MATCH (this)<-[this15:LIKES]-(this16:User)
-                        RETURN min(size(this15.someProp)) > $param5 AS var17
+                      MATCH (this)<-[this15:LIKES]-(this16:User)
+                      RETURN min(size(this15.someProp)) > $param5 AS var17
                     }
                     CALL (this) {
-                        MATCH (this)<-[this18:LIKES]-(this19:User)
-                        RETURN max(size(this18.someProp)) < $param6 AS var20
+                      MATCH (this)<-[this18:LIKES]-(this19:User)
+                      RETURN max(size(this18.someProp)) < $param6 AS var20
                     }
                     WITH *
                     WHERE (var2 = true AND ((var5 = true AND (var8 = true AND var11 = true)) OR var14 = true) AND (var17 = true AND var20 = true))
@@ -786,8 +786,8 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 "CYPHER 5
                 MATCH (this:Post)
                 WHERE EXISTS {
-                    MATCH (this)<-[:LIKES]-(this0:User)
-                    WHERE (this0.name = $param0 AND this0.otherName = $param1)
+                  MATCH (this)<-[:LIKES]-(this0:User)
+                  WHERE (this0.name = $param0 AND this0.otherName = $param1)
                 }
                 RETURN this { .content } AS this"
             `);
@@ -815,14 +815,14 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 "CYPHER 5
                 MATCH (this:Post)
                 WHERE ((EXISTS {
-                    MATCH (this)<-[:LIKES]-(this0:User)
-                    WHERE this0.otherName = $param0
+                  MATCH (this)<-[:LIKES]-(this0:User)
+                  WHERE this0.otherName = $param0
                 } AND NOT (EXISTS {
-                    MATCH (this)<-[:LIKES]-(this0:User)
-                    WHERE NOT (this0.otherName = $param0)
+                  MATCH (this)<-[:LIKES]-(this0:User)
+                  WHERE NOT (this0.otherName = $param0)
                 })) AND EXISTS {
-                    MATCH (this)<-[:LIKES]-(this1:User)
-                    WHERE this1.name = $param1
+                  MATCH (this)<-[:LIKES]-(this1:User)
+                  WHERE this1.name = $param1
                 })
                 RETURN this { .content } AS this"
             `);
@@ -858,17 +858,17 @@ describe("https://github.com/neo4j/graphql/issues/3765", () => {
                 "CYPHER 5
                 MATCH (this:Post)
                 WHERE (EXISTS {
-                    MATCH (this)<-[:LIKES]-(this0:User)
-                    WHERE this0.name = $param0
+                  MATCH (this)<-[:LIKES]-(this0:User)
+                  WHERE this0.name = $param0
                 } OR (EXISTS {
-                    MATCH (this)<-[:LIKES]-(this1:User)
-                    WHERE this1.otherName = $param1
+                  MATCH (this)<-[:LIKES]-(this1:User)
+                  WHERE this1.otherName = $param1
                 } AND NOT (EXISTS {
-                    MATCH (this)<-[:LIKES]-(this1:User)
-                    WHERE NOT (this1.otherName = $param1)
+                  MATCH (this)<-[:LIKES]-(this1:User)
+                  WHERE NOT (this1.otherName = $param1)
                 })) OR EXISTS {
-                    MATCH (this)<-[:LIKES]-(this2:User)
-                    WHERE this2.otherName = $param2
+                  MATCH (this)<-[:LIKES]-(this2:User)
+                  WHERE this2.otherName = $param2
                 })
                 RETURN this { .content } AS this"
             `);

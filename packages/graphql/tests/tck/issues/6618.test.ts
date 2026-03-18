@@ -52,7 +52,7 @@ describe("https://github.com/neo4j/graphql/issues/6618", () => {
             "CYPHER 5
             MATCH (this0:ProductInstance)
             WITH count(this0) AS totalCount
-            RETURN { totalCount: totalCount } AS this"
+            RETURN {totalCount: totalCount} AS this"
         `);
 
         expect(formatCypher(result.cypher)).not.toContain("collect");
@@ -73,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/6618", () => {
             "CYPHER 5
             MATCH (this0:Asset)
             WITH count(this0) AS totalCount
-            RETURN { totalCount: totalCount } AS this"
+            RETURN {totalCount: totalCount} AS this"
         `);
     });
 });

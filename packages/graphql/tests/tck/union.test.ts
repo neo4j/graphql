@@ -79,20 +79,20 @@ describe("Cypher Union", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this0:SEARCH]->(this1:Genre)
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this3:SEARCH]->(this4:Movie)
-                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this4) } AS var2
-                    RETURN var2
-                }
-                WITH var2
-                RETURN collect(var2) AS var2
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this0:SEARCH]->(this1:Genre)
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), '@neo4j/graphql/FORBIDDEN', [])
+                WITH this1 { .name, __resolveType: 'Genre', __id: elementId(this1) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)-[this3:SEARCH]->(this4:Movie)
+                WITH this4 { .title, __resolveType: 'Movie', __id: elementId(this4) } AS var2
+                RETURN var2
+              }
+              WITH var2
+              RETURN collect(var2) AS var2
             }
             RETURN this { search: var2 } AS this"
         `);
@@ -128,20 +128,20 @@ describe("Cypher Union", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this0:SEARCH]->(this1:Genre)
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this3:SEARCH]->(this4:Movie)
-                    WITH this4 { __resolveType: \\"Movie\\", __id: id(this4) } AS var2
-                    RETURN var2
-                }
-                WITH var2
-                RETURN collect(var2) AS var2
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this0:SEARCH]->(this1:Genre)
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), '@neo4j/graphql/FORBIDDEN', [])
+                WITH this1 { .name, __resolveType: 'Genre', __id: elementId(this1) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)-[this3:SEARCH]->(this4:Movie)
+                WITH this4 { __resolveType: 'Movie', __id: elementId(this4) } AS var2
+                RETURN var2
+              }
+              WITH var2
+              RETURN collect(var2) AS var2
             }
             RETURN this { search: var2 } AS this"
         `);
@@ -185,24 +185,24 @@ describe("Cypher Union", () => {
             MATCH (this:Movie)
             WHERE this.title = $param0
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this0:SEARCH]->(this1:Genre)
-                    WHERE this1.name = $param1
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this3:SEARCH]->(this4:Movie)
-                    WHERE this4.title = $param4
-                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this4) } AS var2
-                    RETURN var2
-                }
-                WITH var2
-                SKIP $param5
-                LIMIT $param6
-                RETURN collect(var2) AS var2
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this0:SEARCH]->(this1:Genre)
+                WHERE this1.name = $param1
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.jwtAllowedNamesExample IS NOT NULL AND this1.name = $jwt.jwtAllowedNamesExample)), '@neo4j/graphql/FORBIDDEN', [])
+                WITH this1 { .name, __resolveType: 'Genre', __id: elementId(this1) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)-[this3:SEARCH]->(this4:Movie)
+                WHERE this4.title = $param4
+                WITH this4 { .title, __resolveType: 'Movie', __id: elementId(this4) } AS var2
+                RETURN var2
+              }
+              WITH var2
+              SKIP $param5
+              LIMIT $param6
+              RETURN collect(var2) AS var2
             }
             RETURN this { search: var2 } AS this"
         `);
@@ -248,19 +248,17 @@ describe("Cypher Union", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Movie)
-                SET
-                    this0.title = $param0
-                WITH *
-                CREATE (this1:Genre)
-                MERGE (this0)-[this2:SEARCH]->(this1)
-                SET
-                    this1.name = $param1
-                RETURN this0 AS this
+              CREATE (this0:Movie)
+              SET this0.title = $param0
+              WITH *
+              CREATE (this1:Genre)
+              MERGE (this0)-[this2:SEARCH]->(this1)
+              SET this1.name = $param1
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .title } AS var3
+              RETURN this { .title } AS var3
             }
             RETURN collect(var3) AS data"
         `);
@@ -293,10 +291,9 @@ describe("Cypher Union", () => {
             WITH *
             WITH *
             CALL (*) {
-                CREATE (this0:Genre)
-                MERGE (this)-[this1:SEARCH]->(this0)
-                SET
-                    this0.name = $param0
+              CREATE (this0:Genre)
+              MERGE (this)-[this1:SEARCH]->(this0)
+              SET this0.name = $param0
             }
             WITH this
             RETURN this { .title } AS this"
@@ -333,20 +330,19 @@ describe("Cypher Union", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Movie)
-                SET
-                    this0.title = $param0
-                WITH *
-                CALL (this0) {
-                    MATCH (this1:Genre)
-                    WHERE this1.name = $param1
-                    CREATE (this0)-[this2:SEARCH]->(this1)
-                }
-                RETURN this0 AS this
+              CREATE (this0:Movie)
+              SET this0.title = $param0
+              WITH *
+              CALL (this0) {
+                MATCH (this1:Genre)
+                WHERE this1.name = $param1
+                CREATE (this0)-[this2:SEARCH]->(this1)
+              }
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .title } AS var3
+              RETURN this { .title } AS var3
             }
             RETURN collect(var3) AS data"
         `);
@@ -392,11 +388,10 @@ describe("Cypher Union", () => {
             WHERE this.title = $param0
             WITH *
             CALL (*) {
-                MATCH (this)-[this0:SEARCH]->(this1:Genre)
-                WITH *
-                WHERE this1.name = $param1
-                SET
-                    this1.name = $param2
+              MATCH (this)-[this0:SEARCH]->(this1:Genre)
+              WITH *
+              WHERE this1.name = $param1
+              SET this1.name = $param2
             }
             WITH this
             RETURN this { .title } AS this"
@@ -435,12 +430,12 @@ describe("Cypher Union", () => {
             WHERE this.title = $param0
             WITH *
             CALL (*) {
-                CALL (this) {
-                    OPTIONAL MATCH (this)-[this0:SEARCH]->(this1:Genre)
-                    WHERE this1.name = $param1
-                    WITH *
-                    DELETE this0
-                }
+              CALL (this) {
+                OPTIONAL MATCH (this)-[this0:SEARCH]->(this1:Genre)
+                WHERE this1.name = $param1
+                WITH *
+                DELETE this0
+              }
             }
             WITH this
             RETURN this { .title } AS this"
@@ -478,11 +473,11 @@ describe("Cypher Union", () => {
             WHERE this.title = $param0
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this0:Genre)
-                    WHERE this0.name = $param1
-                    CREATE (this)-[this1:SEARCH]->(this0)
-                }
+              CALL (this) {
+                MATCH (this0:Genre)
+                WHERE this0.name = $param1
+                CREATE (this)-[this1:SEARCH]->(this0)
+              }
             }
             WITH this
             RETURN this { .title } AS this"
@@ -520,13 +515,13 @@ describe("Cypher Union", () => {
             WHERE this.title = $param0
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)-[this0:SEARCH]->(this1:Genre)
-                WHERE this1.name = $param1
-                WITH this0, collect(DISTINCT this1) AS var2
-                CALL (var2) {
-                    UNWIND var2 AS var3
-                    DETACH DELETE var3
-                }
+              OPTIONAL MATCH (this)-[this0:SEARCH]->(this1:Genre)
+              WHERE this1.name = $param1
+              WITH this0, collect(DISTINCT this1) AS var2
+              CALL (var2) {
+                UNWIND var2 AS var3
+                DETACH DELETE var3
+              }
             }
             WITH this
             RETURN this { .title } AS this"

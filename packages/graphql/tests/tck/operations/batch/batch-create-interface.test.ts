@@ -82,10 +82,9 @@ describe("Batch Create, Interface", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.id = create_var0.id
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.id = create_var0.id
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
         `);
@@ -138,48 +137,46 @@ describe("Batch Create, Interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Movie)
-                SET
-                    this0.id = $param0
-                WITH *
-                CREATE (this1:Actor)
-                MERGE (this0)<-[this2:EMPLOYED]-(this1)
-                SET
-                    this1.id = $param1,
-                    this1.name = $param2,
-                    this2.year = $param3
-                RETURN this0 AS this
-                UNION
-                CREATE (this3:Movie)
-                SET
-                    this3.id = $param4
-                WITH *
-                CREATE (this4:Modeler)
-                MERGE (this3)<-[this5:EMPLOYED]-(this4)
-                SET
-                    this4.id = $param5,
-                    this4.name = $param6,
-                    this5.year = $param7
-                RETURN this3 AS this
+              CREATE (this0:Movie)
+              SET this0.id = $param0
+              WITH *
+              CREATE (this1:Actor)
+              MERGE (this0)<-[this2:EMPLOYED]-(this1)
+              SET
+                this1.id = $param1,
+                this1.name = $param2,
+                this2.year = $param3
+              RETURN this0 AS this
+              UNION
+              CREATE (this3:Movie)
+              SET this3.id = $param4
+              WITH *
+              CREATE (this4:Modeler)
+              MERGE (this3)<-[this5:EMPLOYED]-(this4)
+              SET
+                this4.id = $param5,
+                this4.name = $param6,
+                this5.year = $param7
+              RETURN this3 AS this
             }
             WITH this
             CALL (this) {
-                CALL (this) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this)<-[this6:EMPLOYED]-(this7:Actor)
-                        WITH this7 { .name, __resolveType: \\"Actor\\", __id: id(this7) } AS var8
-                        RETURN var8
-                        UNION
-                        WITH *
-                        MATCH (this)<-[this9:EMPLOYED]-(this10:Modeler)
-                        WITH this10 { .name, __resolveType: \\"Modeler\\", __id: id(this10) } AS var8
-                        RETURN var8
-                    }
-                    WITH var8
-                    RETURN collect(var8) AS var8
+              CALL (this) {
+                CALL (*) {
+                  WITH *
+                  MATCH (this)<-[this6:EMPLOYED]-(this7:Actor)
+                  WITH this7 { .name, __resolveType: 'Actor', __id: elementId(this7) } AS var8
+                  RETURN var8
+                  UNION
+                  WITH *
+                  MATCH (this)<-[this9:EMPLOYED]-(this10:Modeler)
+                  WITH this10 { .name, __resolveType: 'Modeler', __id: elementId(this10) } AS var8
+                  RETURN var8
                 }
-                RETURN this { .id, workers: var8 } AS var11
+                WITH var8
+                RETURN collect(var8) AS var8
+              }
+              RETURN this { .id, workers: var8 } AS var11
             }
             RETURN collect(var11) AS data"
         `);
@@ -243,81 +240,76 @@ describe("Batch Create, Interface", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Movie)
-                SET
-                    this0.id = $param0
-                WITH *
-                CREATE (this1:Actor)
-                MERGE (this0)<-[this2:EMPLOYED]-(this1)
-                SET
-                    this1.id = $param1,
-                    this1.name = $param2,
-                    this2.year = $param3
-                RETURN this0 AS this
-                UNION
-                CREATE (this3:Movie)
-                SET
-                    this3.id = $param4
-                WITH *
-                CREATE (this4:Actor)
-                MERGE (this3)<-[this5:EMPLOYED]-(this4)
-                SET
-                    this4.id = $param5,
-                    this4.name = $param6,
-                    this5.year = $param7
-                RETURN this3 AS this
-                UNION
-                CREATE (this6:Movie)
-                SET
-                    this6.id = $param8
-                WITH *
-                CREATE (this7:Website)
-                MERGE (this6)-[this8:HAS_WEBSITE]->(this7)
-                SET
-                    this7.address = $param9
-                RETURN this6 AS this
-                UNION
-                CREATE (this9:Movie)
-                SET
-                    this9.id = $param10
-                WITH *
-                CALL (this9) {
-                    MATCH (this10:Actor)
-                    WHERE this10.id = $param11
-                    CREATE (this9)<-[this11:EMPLOYED]-(this10)
-                }
-                WITH *
-                CALL (this9) {
-                    MATCH (this12:Modeler)
-                    WHERE this12.id = $param12
-                    CREATE (this9)<-[this13:EMPLOYED]-(this12)
-                }
-                RETURN this9 AS this
+              CREATE (this0:Movie)
+              SET this0.id = $param0
+              WITH *
+              CREATE (this1:Actor)
+              MERGE (this0)<-[this2:EMPLOYED]-(this1)
+              SET
+                this1.id = $param1,
+                this1.name = $param2,
+                this2.year = $param3
+              RETURN this0 AS this
+              UNION
+              CREATE (this3:Movie)
+              SET this3.id = $param4
+              WITH *
+              CREATE (this4:Actor)
+              MERGE (this3)<-[this5:EMPLOYED]-(this4)
+              SET
+                this4.id = $param5,
+                this4.name = $param6,
+                this5.year = $param7
+              RETURN this3 AS this
+              UNION
+              CREATE (this6:Movie)
+              SET this6.id = $param8
+              WITH *
+              CREATE (this7:Website)
+              MERGE (this6)-[this8:HAS_WEBSITE]->(this7)
+              SET this7.address = $param9
+              RETURN this6 AS this
+              UNION
+              CREATE (this9:Movie)
+              SET this9.id = $param10
+              WITH *
+              CALL (this9) {
+                MATCH (this10:Actor)
+                WHERE this10.id = $param11
+                CREATE (this9)<-[this11:EMPLOYED]-(this10)
+              }
+              WITH *
+              CALL (this9) {
+                MATCH (this12:Modeler)
+                WHERE this12.id = $param12
+                CREATE (this9)<-[this13:EMPLOYED]-(this12)
+              }
+              RETURN this9 AS this
             }
             WITH this
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)-[this14:HAS_WEBSITE]->(this15:Website)
-                    WITH DISTINCT this15
-                    WITH this15 { .address } AS this15
-                    RETURN collect(this15) AS var16
+              CALL (this) {
+                MATCH (this)-[this14:HAS_WEBSITE]->(this15:Website)
+                WITH DISTINCT this15
+                WITH this15 { .address } AS this15
+                RETURN collect(this15) AS var16
+              }
+              CALL (this) {
+                CALL (*) {
+                  WITH *
+                  MATCH (this)<-[this17:EMPLOYED]-(this18:Actor)
+                  WITH this18 { .name, __resolveType: 'Actor', __id: elementId(this18) } AS var19
+                  RETURN var19
+                  UNION
+                  WITH *
+                  MATCH (this)<-[this20:EMPLOYED]-(this21:Modeler)
+                  WITH this21 { .name, __resolveType: 'Modeler', __id: elementId(this21) } AS var19
+                  RETURN var19
                 }
-                CALL (this) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this)<-[this17:EMPLOYED]-(this18:Actor)
-                        WITH this18 { .name, __resolveType: \\"Actor\\", __id: id(this18) } AS var19
-                        RETURN var19
-                        UNION
-                        WITH *
-                        MATCH (this)<-[this20:EMPLOYED]-(this21:Modeler)
-                        WITH this21 { .name, __resolveType: \\"Modeler\\", __id: id(this21) } AS var19
-                        RETURN var19
-                    }
-                    WITH var19
-                    RETURN collect(var19) AS var19
-                }
-                RETURN this { .id, website: var16, workers: var19 } AS var22
+                WITH var19
+                RETURN collect(var19) AS var19
+              }
+              RETURN this { .id, website: var16, workers: var19 } AS var22
             }
             RETURN collect(var22) AS data"
         `);

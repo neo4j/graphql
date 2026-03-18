@@ -72,29 +72,29 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
             "CYPHER 5
             MATCH (this:Inventory)
             CALL (this) {
+              CALL (this) {
                 CALL (this) {
-                    CALL (this) {
-                        WITH this
-                        MATCH (this)-[this0:HasChildren]->(this1:Image)
-                        WITH { properties: { order: this0.order, __resolveType: \\"InventoryChildRelation\\" }, node: { __resolveType: \\"Image\\", __id: id(this1), id: this1.id } } AS edge
-                        RETURN edge
-                        UNION
-                        WITH this
-                        MATCH (this)-[this2:HasChildren]->(this3:Video)
-                        WITH { properties: { order: this2.order, __resolveType: \\"InventoryChildRelation\\" }, node: { __resolveType: \\"Video\\", __id: id(this3), id: this3.id } } AS edge
-                        RETURN edge
-                    }
-                    RETURN collect(edge) AS edges
+                  WITH this
+                  MATCH (this)-[this0:HasChildren]->(this1:Image)
+                  WITH {properties: {order: this0.order, __resolveType: 'InventoryChildRelation'}, node: {__resolveType: 'Image', __id: elementId(this1), id: this1.id}} AS edge
+                  RETURN edge
+                  UNION
+                  WITH this
+                  MATCH (this)-[this2:HasChildren]->(this3:Video)
+                  WITH {properties: {order: this2.order, __resolveType: 'InventoryChildRelation'}, node: {__resolveType: 'Video', __id: elementId(this3), id: this3.id}} AS edge
+                  RETURN edge
                 }
-                WITH edges
-                WITH edges, size(edges) AS totalCount
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge
-                    ORDER BY edge.properties.order ASC
-                    RETURN collect(edge) AS var4
-                }
-                RETURN { edges: var4, totalCount: totalCount } AS var5
+                RETURN collect(edge) AS edges
+              }
+              WITH edges
+              WITH edges, size(edges) AS totalCount
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge
+                ORDER BY edge.properties.order ASC
+                RETURN collect(edge) AS var4
+              }
+              RETURN {edges: var4, totalCount: totalCount} AS var5
             }
             RETURN this { .id, childrenConnection: var5 } AS this"
         `);

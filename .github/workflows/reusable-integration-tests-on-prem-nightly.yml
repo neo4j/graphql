@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Login to ECR
-        uses: aws-actions/amazon-ecr-login@062b18b96a7aff071d4dc91bc00c4c1a7945b076 # v2
+        uses: aws-actions/amazon-ecr-login@c962da2960ed15f492addc26fffa274485265950 # v2
         id: login-to-ecr
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -63,7 +63,7 @@ jobs:
           cache: yarn
           package-manager-cache: false
       - name: Login to ECR
-        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        uses: docker/login-action@b45d80f862d83dbcd57f89517bcf500b2ab88fb2 # v4
         with:
           registry: 535893049302.dkr.ecr.eu-west-1.amazonaws.com
           username: ${{ secrets.AWS_ACCESS_KEY_ID }}

@@ -19,6 +19,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
+import { apocWrapper } from "../../../../utils/apoc-wrapper";
 import { type QueryASTContext } from "../../QueryASTContext";
 import { ParamInputField } from "../ParamInputField";
 
@@ -37,10 +38,7 @@ export class PushInputField extends ParamInputField {
 
     public getPredicate(queryASTContext: QueryASTContext<Cypher.Node>): Cypher.Predicate | undefined {
         const expr = this.getLeftExpression(queryASTContext);
-        return Cypher.apoc.util.validatePredicate(
-            Cypher.isNull(expr),
-            `Property ${this.attribute.name} cannot be NULL`
-        );
+        return apocWrapper.validatePredicate(Cypher.isNull(expr), `Property ${this.attribute.name} cannot be NULL`);
     }
 
     protected getRightExpression(

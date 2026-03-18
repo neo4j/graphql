@@ -84,11 +84,11 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             "CYPHER 5
             MATCH (this:Employee)
             CALL (this) {
-                MATCH (this)-[this0:CAN_ACCESS]->(this1:Product)
-                WITH DISTINCT this1
-                WITH this1 { .description, id: this1.fg_item_id, partNumber: this1.fg_item } AS this1
-                ORDER BY this1.partNumber DESC
-                RETURN collect(this1) AS var2
+              MATCH (this)-[this0:CAN_ACCESS]->(this1:Product)
+              WITH DISTINCT this1
+              WITH this1 { .description, id: this1.fg_item_id, partNumber: this1.fg_item } AS this1
+              ORDER BY this1.partNumber DESC
+              RETURN collect(this1) AS var2
             }
             RETURN this { products: var2 } AS this"
         `);
@@ -116,15 +116,15 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "CYPHER 5
                 MATCH (this0:Product)
-                WITH collect({ node: this0 }) AS edges
+                WITH collect({node: this0}) AS edges
                 CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this0
-                    WITH *
-                    ORDER BY this0.fg_item DESC
-                    RETURN collect({ node: { id: this0.fg_item_id, partNumber: this0.fg_item, description: this0.description, __resolveType: \\"Product\\" } }) AS var1
+                  UNWIND edges AS edge
+                  WITH edge.node AS this0
+                  WITH *
+                  ORDER BY this0.fg_item DESC
+                  RETURN collect({node: {id: this0.fg_item_id, partNumber: this0.fg_item, description: this0.description, __resolveType: 'Product'}}) AS var1
                 }
-                RETURN { edges: var1 } AS this"
+                RETURN {edges: var1} AS this"
             `);
 
             expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -153,16 +153,16 @@ describe("https://github.com/neo4j/graphql/issues/3394", () => {
                 "CYPHER 5
                 MATCH (this:Employee)
                 CALL (this) {
-                    MATCH (this)-[this0:CAN_ACCESS]->(this1:Product)
-                    WITH collect({ node: this1, relationship: this0 }) AS edges
-                    CALL (edges) {
-                        UNWIND edges AS edge
-                        WITH edge.node AS this1, edge.relationship AS this0
-                        WITH *
-                        ORDER BY this1.fg_item DESC
-                        RETURN collect({ node: { id: this1.fg_item_id, partNumber: this1.fg_item, description: this1.description, __resolveType: \\"Product\\" } }) AS var2
-                    }
-                    RETURN { edges: var2 } AS var3
+                  MATCH (this)-[this0:CAN_ACCESS]->(this1:Product)
+                  WITH collect({node: this1, relationship: this0}) AS edges
+                  CALL (edges) {
+                    UNWIND edges AS edge
+                    WITH edge.node AS this1, edge.relationship AS this0
+                    WITH *
+                    ORDER BY this1.fg_item DESC
+                    RETURN collect({node: {id: this1.fg_item_id, partNumber: this1.fg_item, description: this1.description, __resolveType: 'Product'}}) AS var2
+                  }
+                  RETURN {edges: var2} AS var3
                 }
                 RETURN this { productsConnection: var3 } AS this"
             `);

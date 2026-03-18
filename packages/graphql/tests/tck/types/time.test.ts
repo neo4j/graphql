@@ -104,10 +104,9 @@ describe("Cypher Time", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.time = time(create_var0.time)
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.time = time(create_var0.time)
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .time }) AS data"
         `);
@@ -141,8 +140,7 @@ describe("Cypher Time", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WITH *
-            SET
-                this.time = time($param0)
+            SET this.time = time($param0)
             WITH this
             RETURN this { .id, .time } AS this"
         `);
@@ -171,10 +169,9 @@ describe("Cypher Time", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.time = time(create_var0.time)
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.time = time(create_var0.time)
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .time }) AS data"
         `);

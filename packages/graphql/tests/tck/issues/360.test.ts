@@ -66,7 +66,7 @@ describe("#360", () => {
             "CYPHER 5
             MATCH (this:Event)
             WHERE (this.start >= datetime($param0) AND this.start <= datetime($param1))
-            RETURN this { .activity, start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
+            RETURN this { .activity, start: apoc.date.convertFormat(toString(this.start), 'iso_zoned_date_time', 'iso_offset_date_time') } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -103,7 +103,7 @@ describe("#360", () => {
             "CYPHER 5
             MATCH (this:Event)
             WHERE (this.start >= datetime($param0) OR this.start <= datetime($param1))
-            RETURN this { .activity, start: apoc.date.convertFormat(toString(this.start), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS this"
+            RETURN this { .activity, start: apoc.date.convertFormat(toString(this.start), 'iso_zoned_date_time', 'iso_offset_date_time') } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

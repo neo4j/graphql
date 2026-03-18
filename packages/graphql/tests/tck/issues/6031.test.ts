@@ -74,22 +74,22 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL () {
-                CALL () {
-                    MATCH (this0:Series)
-                    WHERE this0:Movie
-                    WITH { node: { __resolveType: \\"Series\\", __id: id(this0), title: this0.title } } AS edge
-                    RETURN edge
-                    UNION
-                    MATCH (this1:Movie)
-                    WHERE this1:Movie
-                    WITH { node: { __resolveType: \\"Movie\\", __id: id(this1), title: this1.title } } AS edge
-                    RETURN edge
-                }
-                RETURN collect(edge) AS edges
+              CALL () {
+                MATCH (this0:Series)
+                WHERE this0:Movie
+                WITH {node: {__resolveType: 'Series', __id: elementId(this0), title: this0.title}} AS edge
+                RETURN edge
+                UNION
+                MATCH (this1:Movie)
+                WHERE this1:Movie
+                WITH {node: {__resolveType: 'Movie', __id: elementId(this1), title: this1.title}} AS edge
+                RETURN edge
+              }
+              RETURN collect(edge) AS edges
             }
             WITH edges
             WITH edges, size(edges) AS totalCount
-            RETURN { edges: edges, totalCount: totalCount } AS this"
+            RETURN {edges: edges, totalCount: totalCount} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -120,34 +120,34 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:Actor)
-            WITH collect({ node: this0 }) AS edges
+            WITH collect({node: this0}) AS edges
             CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              CALL (this0) {
                 CALL (this0) {
-                    CALL (this0) {
-                        CALL (this0) {
-                            WITH this0
-                            MATCH (this0)-[this1:ACTED_IN]->(this2:Series)
-                            WHERE this2:Movie
-                            WITH { node: { __resolveType: \\"Series\\", __id: id(this2), title: this2.title } } AS edge
-                            RETURN edge
-                            UNION
-                            WITH this0
-                            MATCH (this0)-[this3:ACTED_IN]->(this4:Movie)
-                            WHERE this4:Movie
-                            WITH { node: { __resolveType: \\"Movie\\", __id: id(this4), title: this4.title } } AS edge
-                            RETURN edge
-                        }
-                        RETURN collect(edge) AS edges
-                    }
-                    WITH edges
-                    WITH edges, size(edges) AS totalCount
-                    RETURN { edges: edges, totalCount: totalCount } AS var5
+                  CALL (this0) {
+                    WITH this0
+                    MATCH (this0)-[this1:ACTED_IN]->(this2:Series)
+                    WHERE this2:Movie
+                    WITH {node: {__resolveType: 'Series', __id: elementId(this2), title: this2.title}} AS edge
+                    RETURN edge
+                    UNION
+                    WITH this0
+                    MATCH (this0)-[this3:ACTED_IN]->(this4:Movie)
+                    WHERE this4:Movie
+                    WITH {node: {__resolveType: 'Movie', __id: elementId(this4), title: this4.title}} AS edge
+                    RETURN edge
+                  }
+                  RETURN collect(edge) AS edges
                 }
-                RETURN collect({ node: { name: this0.name, productionsConnection: var5, __resolveType: \\"Actor\\" } }) AS var6
+                WITH edges
+                WITH edges, size(edges) AS totalCount
+                RETURN {edges: edges, totalCount: totalCount} AS var5
+              }
+              RETURN collect({node: {name: this0.name, productionsConnection: var5, __resolveType: 'Actor'}}) AS var6
             }
-            RETURN { edges: var6 } AS this"
+            RETURN {edges: var6} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
