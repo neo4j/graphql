@@ -66,27 +66,24 @@ describe("1-to-many relationships on object types", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.title = create_var0.title
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.director.create AS create_var2
-                    CREATE (create_this3:Person)
-                    SET
-                        create_this3.name = create_var2.node.name
-                    MERGE (create_this1)<-[create_this4:DIRECTED]-(create_this3)
-                    SET
-                        create_this4.year = create_var2.edge.year
-                    RETURN collect(NULL) AS create_var5
-                }
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.title = create_var0.title
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.director.create AS create_var2
+                CREATE (create_this3:Person)
+                SET create_this3.name = create_var2.node.name
+                MERGE (create_this1)<-[create_this4:DIRECTED]-(create_this3)
+                SET create_this4.year = create_var2.edge.year
+                RETURN collect(NULL) AS create_var5
+              }
+              RETURN create_this1
             }
             CALL (create_this1) {
-                MATCH (create_this1)<-[create_this6:DIRECTED]-(create_this7:Person)
-                WITH DISTINCT create_this7
-                WITH create_this7 { .name } AS create_this7
-                RETURN head(collect(create_this7)) AS create_var8
+              MATCH (create_this1)<-[create_this6:DIRECTED]-(create_this7:Person)
+              WITH DISTINCT create_this7
+              WITH create_this7 { .name } AS create_this7
+              RETURN head(collect(create_this7)) AS create_var8
             }
             RETURN collect(create_this1 { .title, director: create_var8 }) AS data"
         `);
@@ -131,13 +128,13 @@ describe("1-to-many relationships on object types", () => {
             MATCH (this:Movie)
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)<-[this0:DIRECTED]-(this1:Person)
-                WHERE this1.name = $param0
-                WITH this0, collect(DISTINCT this1) AS var2
-                CALL (var2) {
-                    UNWIND var2 AS var3
-                    DETACH DELETE var3
-                }
+              OPTIONAL MATCH (this)<-[this0:DIRECTED]-(this1:Person)
+              WHERE this1.name = $param0
+              WITH this0, collect(DISTINCT this1) AS var2
+              CALL (var2) {
+                UNWIND var2 AS var3
+                DETACH DELETE var3
+              }
             }
             WITH *
             DETACH DELETE this"
@@ -167,10 +164,10 @@ describe("1-to-many relationships on object types", () => {
             "CYPHER 5
             MATCH (this:Person)
             CALL (this) {
-                MATCH (this)-[this0:DIRECTED]->(this1:Movie)
-                WITH DISTINCT this1
-                WITH this1 { .title } AS this1
-                RETURN collect(this1) AS var2
+              MATCH (this)-[this0:DIRECTED]->(this1:Movie)
+              WITH DISTINCT this1
+              WITH this1 { .title } AS this1
+              RETURN collect(this1) AS var2
             }
             RETURN this { directed: var2 } AS this"
         `);
@@ -195,14 +192,14 @@ describe("1-to-many relationships on object types", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE EXISTS {
-                MATCH (this)<-[:DIRECTED]-(this0:Person)
-                WHERE this0.name = $param0
+              MATCH (this)<-[:DIRECTED]-(this0:Person)
+              WHERE this0.name = $param0
             }
             CALL (this) {
-                MATCH (this)<-[this1:DIRECTED]-(this2:Person)
-                WITH DISTINCT this2
-                WITH this2 { .name } AS this2
-                RETURN head(collect(this2)) AS var3
+              MATCH (this)<-[this1:DIRECTED]-(this2:Person)
+              WITH DISTINCT this2
+              WITH this2 { .name } AS this2
+              RETURN head(collect(this2)) AS var3
             }
             RETURN this { director: var3 } AS this"
         `);
@@ -234,23 +231,23 @@ describe("1-to-many relationships on object types", () => {
             "CYPHER 5
             MATCH (this:Person)
             WHERE EXISTS {
-                MATCH (this)-[:DIRECTED]->(this0:Movie)
-                WHERE EXISTS {
-                    MATCH (this0)<-[:DIRECTED]-(this1:Person)
-                    WHERE this1.name = $param0
-                }
+              MATCH (this)-[:DIRECTED]->(this0:Movie)
+              WHERE EXISTS {
+                MATCH (this0)<-[:DIRECTED]-(this1:Person)
+                WHERE this1.name = $param0
+              }
             }
             CALL (this) {
-                MATCH (this)-[this2:DIRECTED]->(this3:Movie)
-                WITH DISTINCT this3
-                CALL (this3) {
-                    MATCH (this3)<-[this4:DIRECTED]-(this5:Person)
-                    WITH DISTINCT this5
-                    WITH this5 { .name } AS this5
-                    RETURN head(collect(this5)) AS var6
-                }
-                WITH this3 { .title, director: var6 } AS this3
-                RETURN collect(this3) AS var7
+              MATCH (this)-[this2:DIRECTED]->(this3:Movie)
+              WITH DISTINCT this3
+              CALL (this3) {
+                MATCH (this3)<-[this4:DIRECTED]-(this5:Person)
+                WITH DISTINCT this5
+                WITH this5 { .name } AS this5
+                RETURN head(collect(this5)) AS var6
+              }
+              WITH this3 { .title, director: var6 } AS this3
+              RETURN collect(this3) AS var7
             }
             RETURN this { directed: var7 } AS this"
         `);
@@ -286,18 +283,18 @@ describe("1-to-many relationships on object types", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE EXISTS {
-                MATCH (this)<-[this0:DIRECTED]-(this1:Person)
-                WHERE this0.year = $param0
+              MATCH (this)<-[this0:DIRECTED]-(this1:Person)
+              WHERE this0.year = $param0
             }
             CALL (this) {
-                MATCH (this)<-[this2:DIRECTED]-(this3:Person)
-                WITH collect({ node: this3, relationship: this2 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this3, edge.relationship AS this2
-                    RETURN collect({ properties: { year: this2.year, __resolveType: \\"Directed\\" }, node: { name: this3.name, __resolveType: \\"Person\\" } }) AS var4
-                }
-                RETURN { edges: var4 } AS var5
+              MATCH (this)<-[this2:DIRECTED]-(this3:Person)
+              WITH collect({node: this3, relationship: this2}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this3, edge.relationship AS this2
+                RETURN collect({properties: {year: this2.year, __resolveType: 'Directed'}, node: {name: this3.name, __resolveType: 'Person'}}) AS var4
+              }
+              RETURN {edges: var4} AS var5
             }
             RETURN this { directorConnection: var5 } AS this"
         `);
@@ -343,31 +340,31 @@ describe("1-to-many relationships on object types", () => {
             "CYPHER 5
             MATCH (this:Person)
             WHERE EXISTS {
-                MATCH (this)-[this0:DIRECTED]->(this1:Movie)
-                WHERE EXISTS {
-                    MATCH (this1)<-[this2:DIRECTED]-(this3:Person)
-                    WHERE (this2.year > $param0 OR this3.name STARTS WITH $param1)
-                }
+              MATCH (this)-[this0:DIRECTED]->(this1:Movie)
+              WHERE EXISTS {
+                MATCH (this1)<-[this2:DIRECTED]-(this3:Person)
+                WHERE (this2.year > $param0 OR this3.name STARTS WITH $param1)
+              }
             }
             CALL (this) {
-                MATCH (this)-[this4:DIRECTED]->(this5:Movie)
-                WITH collect({ node: this5, relationship: this4 }) AS edges
-                CALL (edges) {
+              MATCH (this)-[this4:DIRECTED]->(this5:Movie)
+              WITH collect({node: this5, relationship: this4}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this5, edge.relationship AS this4
+                CALL (this5) {
+                  MATCH (this5)<-[this6:DIRECTED]-(this7:Person)
+                  WITH collect({node: this7, relationship: this6}) AS edges
+                  CALL (edges) {
                     UNWIND edges AS edge
-                    WITH edge.node AS this5, edge.relationship AS this4
-                    CALL (this5) {
-                        MATCH (this5)<-[this6:DIRECTED]-(this7:Person)
-                        WITH collect({ node: this7, relationship: this6 }) AS edges
-                        CALL (edges) {
-                            UNWIND edges AS edge
-                            WITH edge.node AS this7, edge.relationship AS this6
-                            RETURN collect({ node: { name: this7.name, __resolveType: \\"Person\\" } }) AS var8
-                        }
-                        RETURN { edges: var8 } AS var9
-                    }
-                    RETURN collect({ properties: { year: this4.year, __resolveType: \\"Directed\\" }, node: { title: this5.title, directorConnection: var9, __resolveType: \\"Movie\\" } }) AS var10
+                    WITH edge.node AS this7, edge.relationship AS this6
+                    RETURN collect({node: {name: this7.name, __resolveType: 'Person'}}) AS var8
+                  }
+                  RETURN {edges: var8} AS var9
                 }
-                RETURN { edges: var10 } AS var11
+                RETURN collect({properties: {year: this4.year, __resolveType: 'Directed'}, node: {title: this5.title, directorConnection: var9, __resolveType: 'Movie'}}) AS var10
+              }
+              RETURN {edges: var10} AS var11
             }
             RETURN this { directedConnection: var11 } AS this"
         `);
