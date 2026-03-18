@@ -462,4 +462,68 @@ describe("@groupBy directive top level", () => {
             },
         });
     });
+
+    test("groupBy in top level query by multiple fields", async () => {
+        await testHelper.executeCypher(`
+            CREATE (:${Movie} {title: "The Matrix", year: 1999, rating: 5})
+            CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001, rating: 5})
+            CREATE (:${Movie} {title: "Another Movie", year: 1999, rating: 6})
+            CREATE (:${Movie} {title: "Another Movie 2", year: 1999, rating: 6})
+        `);
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.operations.connection} {
+                    groupBy(fields: {rating: true, year: true}) {
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeUndefined();
+        expect(result.data).toEqual({
+            [Movie.operations.connection]: {
+                groupBy: expect.toIncludeSameMembers([
+                    {
+                        edges: expect.toIncludeSameMembers([
+                            {
+                                node: {
+                                    title: "Another Movie 2",
+                                },
+                            },
+                            {
+                                node: {
+                                    title: "Another Movie",
+                                },
+                            },
+                        ]),
+                    },
+                    {
+                        edges: expect.toIncludeSameMembers([
+                            {
+                                node: {
+                                    title: "The Matrix",
+                                },
+                            },
+                        ]),
+                    },
+                    {
+                        edges: [
+                            {
+                                node: {
+                                    title: "The Matrix Reloaded",
+                                },
+                            },
+                        ],
+                    },
+                ]),
+            },
+        });
+    });
 });
