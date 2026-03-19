@@ -21,11 +21,24 @@ describe("limitRequired enabled", () => {
                 }
                 type Movie implements Production @node {
                     title: String
-                    actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: IN)
                     directors: [Actor!]! @relationship(type: "DIRECTED", direction: IN)
+                }
+                type Series implements Production @node {
+                    title: String
+                    actors: [Actor!]! @relationship(type: "ACTED_IN", properties: "ActedInSeries", direction: IN)
                 }
                 type Actor @node {
                     name: String
+                    movies: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedIn", direction: OUT)
+                }
+                type ActedIn @relationshipProperties {
+                    roles: [String!]!
+                }
+                type ActedInSeries @relationshipProperties {
+                    roles: [String!]!
+                    episodes: [Int!]!
+                    year: Int
                 }
          `;
 
@@ -53,12 +66,12 @@ describe("limitRequired enabled", () => {
         await server.close();
     });
 
-    test("movies  result", async () => {
+    test("movies result", async () => {
         const complexity = await server.computeQueryComplexity(
             parse(`
           query {
-            movies(limit: 9) {
-              title
+            movies(limit: 9) {  # 9 * 1 + 1
+              title             # 1
             }
           }
       `)
@@ -70,51 +83,102 @@ describe("limitRequired enabled", () => {
         const complexity = await server.computeQueryComplexity(
             parse(`
             query {
-              movies(limit: 5) {
-                title
-                actors(limit: 6) {
-                  name
+              movies(limit: 5) {    # (7 + 1) * 5 + 1 = 41
+                title               # 1
+                actors(limit: 6) {  # 6 * 1 + 1 = 7
+                  name              # 1
                 }
               }
             }
         `)
         );
-        expect(complexity).toBe(13);
+        expect(complexity).toBe(41);
     });
 
     test("movies with actors and directors result", async () => {
         const complexity = await server.computeQueryComplexity(
             parse(`
             query {
-              movies(limit: 5) {
-                title
-                actors(limit: 10) {
-                  name
+              movies(limit: 5) {        # (5 + 11 + 1) * 5 + 1 = 86
+                title                   # 1         
+                actors(limit: 10) {     # (10 * 1) + 1 = 11
+                  name                  # 1
                 }
-                directors(limit: 4) {
-                  name
+                directors(limit: 4) {   # (4 * 1) + 1 = 5
+                  name                  # 1
                 }
               }
             }
       `)
         );
-        expect(complexity).toBe(22);
+        expect(complexity).toBe(86);
+    });
+
+    test("movies with actors with nested movies result", async () => {
+        const complexity = await server.computeQueryComplexity(
+            parse(`
+            query {
+              movies(limit: 5) {      # (31 + 1) * 5 + 1 = 161
+                title                 # 1
+                actors(limit: 6) {    # (4 + 1) * 6 + 1 = 31
+                  name                # 1
+                  movies(limit: 3) {  # (3 * 1) + 1 = 4
+                    title             # 1
+                  }
+                }
+              }
+            }
+        `)
+        );
+        expect(complexity).toBe(161);
     });
 
     test("productions with actors and directors result", async () => {
         const complexity = await server.computeQueryComplexity(
             parse(`
             query {
-              productions(limit: 5) {
-                title
-                actors(limit: 10) {
-                  name
+              productions(limit: 5) { # (11 + 1) * 5) + 1 = 61
+                title                 # 1 
+                actors(limit: 10) {   # (10 * 1) + 1 = 11
+                  name                # 1
                 }
               }
             }
         `)
         );
-        expect(complexity).toBe(17);
+        expect(complexity).toBe(61);
+    });
+    test("connection query with fragments", async () => {
+        const document = parse(`
+            query {
+              productionsConnection(first: 10, sort: [{ title: ASC }]) {           # (12 + 2x) * 10 + 1 = 121 + 20x
+                edges {              # 12 + 2x
+                  node {             # 9 + 2x + 1 + 1 = 11 + 2x
+                    title            # 1              
+                    actorsConnection(first: 2, sort: { node: { name: ASC } }) {    # (4+x)*2+1 = 9 + 2x
+                      edges {        # 3 + x + 1 = 4 + x
+                        node {       # 2
+                          name       # 1
+                        }
+                        properties { # 1 + x; x = max nr of properties in below fragments
+                          ... on ActedIn {
+                            roles
+                          }
+                          ... on ActedInSeries {
+                            roles
+                            episodes
+                            year
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+        `);
+        const complexity = await server.computeQueryComplexity(document);
+        expect(complexity).toBe(181);
     });
 });
 
@@ -136,6 +200,7 @@ describe("limitRequired not enabled", () => {
               }
               type Actor @node {
                   name: String
+                  movies: [Movie!]! @relationship(type: "ACTED_IN", direction: OUT)
               }
        `;
 
@@ -175,6 +240,25 @@ describe("limitRequired not enabled", () => {
           }
         }
   `)
+        );
+        expect(complexity).toBe(6);
+    });
+
+    test("movies with actors with nested movies result", async () => {
+        const complexity = await server.computeQueryComplexity(
+            parse(`
+            query {
+              movies {      
+                title                 
+                actors {    
+                  name                
+                  movies {  
+                    title             
+                  }
+                }
+              }
+            }
+        `)
         );
         expect(complexity).toBe(6);
     });

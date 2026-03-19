@@ -10,8 +10,6 @@ import {
     GraphQLObjectType,
     Kind,
 } from "graphql";
-import type { ComplexityEstimator } from "graphql-query-complexity";
-import { fieldExtensionsEstimator, simpleEstimator } from "graphql-query-complexity";
 
 export class ComplexityEstimatorHelper {
     private objectTypeNameToFieldNamesMapForComplexityExtensions: Map<string, string[]>;
@@ -54,7 +52,7 @@ export class ComplexityEstimatorHelper {
                 ...f,
                 extensions: {
                     // COMPLEXITY FORMULA
-                    // c = c_child + lvl_limit * c_field, where
+                    // c = c_child * lvl_limit + c_field, where
                     // c_field = 1
                     // lvl_limit defaults to 1
                     // c_child comes from simpleEstimator
@@ -62,9 +60,9 @@ export class ComplexityEstimatorHelper {
                         const fieldDefaultComplexity = 1;
                         const defaultLimitIfNotProvided = 1;
                         if (args.limit ?? args.first) {
-                            return childComplexity + (args.limit ?? args.first) * fieldDefaultComplexity;
+                            return childComplexity * (args.limit ?? args.first) + fieldDefaultComplexity;
                         }
-                        return childComplexity + defaultLimitIfNotProvided;
+                        return childComplexity * defaultLimitIfNotProvided + fieldDefaultComplexity;
                     },
                 },
             };
@@ -87,13 +85,6 @@ export class ComplexityEstimatorHelper {
                 });
             }
         });
-    }
-
-    public getComplexityEstimators(): ComplexityEstimator[] {
-        if (!this.useComplexityEstimators) {
-            return [];
-        }
-        return [fieldExtensionsEstimator(), simpleEstimator({ defaultComplexity: 1 })];
     }
 
     private getFieldsForParentTypeName(parentObjectTypeNameOrInterfaceTypeName: string): string[] {
