@@ -74,10 +74,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     RETURN actor
                 }
                 WITH actor AS this0
-                RETURN head(collect(this0)) AS this1
+                WITH head(collect(this0)) AS this0
+                RETURN this0.name = $param0 AS this1
             }
             WITH *
-            WHERE this1.name = $param0
+            WHERE this1 = true
             RETURN this { .title } AS this"
         `);
 
@@ -141,22 +142,23 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     RETURN actor
                 }
                 WITH actor AS this0
-                RETURN head(collect(this0)) AS this1
+                WITH head(collect(this0)) AS this0
+                RETURN (this0.name = $param0 AND this0.age > $param1) AS this1
             }
             WITH *
-            WHERE (this.released = $param0 AND (this1.name = $param1 AND this1.age > $param2))
+            WHERE (this.released = $param2 AND this1 = true)
             RETURN this { .title } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": {
-                    \\"low\\": 2003,
+                \\"param0\\": \\"Keanu Reeves\\",
+                \\"param1\\": {
+                    \\"low\\": 30,
                     \\"high\\": 0
                 },
-                \\"param1\\": \\"Keanu Reeves\\",
                 \\"param2\\": {
-                    \\"low\\": 30,
+                    \\"low\\": 2003,
                     \\"high\\": 0
                 }
             }"
@@ -217,10 +219,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     RETURN actor
                 }
                 WITH actor AS this0
-                RETURN head(collect(this0)) AS this1
+                WITH head(collect(this0)) AS this0
+                RETURN this0.name = $param0 AS this1
             }
             WITH *
-            WHERE this1.name = $param0
+            WHERE this1 = true
             CALL (this) {
                 CALL (this) {
                     WITH this AS this
@@ -293,10 +296,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     RETURN actor
                 }
                 WITH actor AS this0
-                RETURN head(collect(this0)) AS this1
+                WITH head(collect(this0)) AS this0
+                RETURN this0 IS NULL AS this1
             }
             WITH *
-            WHERE (this.released = $param0 AND this1 IS NULL)
+            WHERE (this.released = $param0 AND this1 = true)
             RETURN this { .title } AS this"
         `);
 
@@ -362,10 +366,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     RETURN actor
                 }
                 WITH actor AS this0
-                RETURN head(collect(this0)) AS this1
+                WITH head(collect(this0)) AS this0
+                RETURN this0 IS NULL AS this1
             }
             WITH *
-            WHERE (this.released IN $param0 AND NOT (this1 IS NULL))
+            WHERE (this.released IN $param0 AND NOT (this1 = true))
             RETURN this { .title } AS this"
         `);
 
@@ -447,10 +452,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     RETURN movie
                 }
                 WITH movie AS this0
-                RETURN head(collect(this0)) AS this1
+                WITH head(collect(this0)) AS this0
+                RETURN this0.title = $param0 AS this1
             }
             WITH *
-            WHERE this1.title = $param0
+            WHERE this1 = true
             CALL (this) {
                 CALL (this) {
                     WITH this AS this
@@ -475,10 +481,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                         RETURN director
                     }
                     WITH director AS this5
-                    RETURN head(collect(this5)) AS this6
+                    WITH head(collect(this5)) AS this5
+                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
                 }
                 WITH *
-                WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value))
+                WHERE ($isAuthenticated = true AND this6 = true)
                 WITH this2 { .title, directed_by: var4 } AS this2
                 RETURN head(collect(this2)) AS var7
             }
@@ -488,11 +495,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"The Matrix\\",
-                \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"custom_value\\": \\"Lilly Wachowski\\"
-                }
+                },
+                \\"isAuthenticated\\": true
             }"
         `);
     });
@@ -563,10 +570,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     RETURN movie
                 }
                 WITH movie AS this0
-                RETURN head(collect(this0)) AS this1
+                WITH head(collect(this0)) AS this0
+                RETURN this0.title = $param0 AS this1
             }
             WITH *
-            WHERE this1.title = $param0
+            WHERE this1 = true
             CALL (this) {
                 CALL (this) {
                     WITH this AS this
@@ -591,10 +599,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                         RETURN director
                     }
                     WITH director AS this5
-                    RETURN head(collect(this5)) AS this6
+                    WITH head(collect(this5)) AS this5
+                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
                 }
                 WITH *
-                WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value))
+                WHERE ($isAuthenticated = true AND this6 = true)
                 WITH this2 { .title, directed_by: var4 } AS this2
                 RETURN head(collect(this2)) AS var7
             }
@@ -604,11 +613,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"The Matrix\\",
-                \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"custom_value\\": \\"Something Incorrect\\"
-                }
+                },
+                \\"isAuthenticated\\": true
             }"
         `);
     });
@@ -678,10 +687,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     RETURN movie
                 }
                 WITH movie AS this0
-                RETURN head(collect(this0)) AS this1
+                WITH head(collect(this0)) AS this0
+                RETURN this0.title = $param0 AS this1
             }
             WITH *
-            WHERE this1.title = $param0
+            WHERE this1 = true
             CALL (this) {
                 CALL (this) {
                     WITH this AS this
@@ -706,10 +716,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                         RETURN director
                     }
                     WITH director AS this5
-                    RETURN head(collect(this5)) AS this6
+                    WITH head(collect(this5)) AS this5
+                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
                 }
                 WITH *
-                WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value))
+                WHERE ($isAuthenticated = true AND this6 = true)
                 WITH this2 { .title, directed_by: var4 } AS this2
                 RETURN head(collect(this2)) AS var7
             }
@@ -719,11 +730,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"The Matrix\\",
-                \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"custom_value\\": \\"Lilly Wachowski\\"
-                }
+                },
+                \\"isAuthenticated\\": true
             }"
         `);
     });
@@ -793,10 +804,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     RETURN movie
                 }
                 WITH movie AS this0
-                RETURN head(collect(this0)) AS this1
+                WITH head(collect(this0)) AS this0
+                RETURN this0.title = $param0 AS this1
             }
             WITH *
-            WHERE this1.title = $param0
+            WHERE this1 = true
             CALL (this) {
                 CALL (this) {
                     WITH this AS this
@@ -821,10 +833,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                         RETURN director
                     }
                     WITH director AS this5
-                    RETURN head(collect(this5)) AS this6
+                    WITH head(collect(this5)) AS this5
+                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
                 }
                 WITH *
-                WHERE ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value))
+                WHERE ($isAuthenticated = true AND this6 = true)
                 WITH this2 { .title, directed_by: var4 } AS this2
                 RETURN head(collect(this2)) AS var7
             }
@@ -834,11 +847,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"The Matrix\\",
-                \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"custom_value\\": \\"Something Incorrect\\"
-                }
+                },
+                \\"isAuthenticated\\": true
             }"
         `);
     });
@@ -909,10 +922,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     RETURN movie
                 }
                 WITH movie AS this0
-                RETURN head(collect(this0)) AS this1
+                WITH head(collect(this0)) AS this0
+                RETURN this0.title = $param0 AS this1
             }
             WITH *
-            WHERE this1.title = $param0
+            WHERE this1 = true
             CALL (this) {
                 CALL (this) {
                     WITH this AS this
@@ -937,10 +951,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                         RETURN director
                     }
                     WITH director AS this5
-                    RETURN head(collect(this5)) AS this6
+                    WITH head(collect(this5)) AS this5
+                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
                 }
                 WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND this6 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this2 { .title, directed_by: var4 } AS this2
                 RETURN head(collect(this2)) AS var7
             }
@@ -950,11 +965,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"The Matrix\\",
-                \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"custom_value\\": \\"Lilly Wachowski\\"
-                }
+                },
+                \\"isAuthenticated\\": true
             }"
         `);
     });
@@ -1025,10 +1040,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     RETURN movie
                 }
                 WITH movie AS this0
-                RETURN head(collect(this0)) AS this1
+                WITH head(collect(this0)) AS this0
+                RETURN this0.title = $param0 AS this1
             }
             WITH *
-            WHERE this1.title = $param0
+            WHERE this1 = true
             CALL (this) {
                 CALL (this) {
                     WITH this AS this
@@ -1053,10 +1069,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                         RETURN director
                     }
                     WITH director AS this5
-                    RETURN head(collect(this5)) AS this6
+                    WITH head(collect(this5)) AS this5
+                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
                 }
                 WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND this6 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this2 { .title, directed_by: var4 } AS this2
                 RETURN head(collect(this2)) AS var7
             }
@@ -1066,11 +1083,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"The Matrix\\",
-                \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"custom_value\\": \\"Something Wrong\\"
-                }
+                },
+                \\"isAuthenticated\\": true
             }"
         `);
     });
@@ -1140,10 +1157,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     RETURN movie
                 }
                 WITH movie AS this0
-                RETURN head(collect(this0)) AS this1
+                WITH head(collect(this0)) AS this0
+                RETURN this0.title = $param0 AS this1
             }
             WITH *
-            WHERE this1.title = $param0
+            WHERE this1 = true
             CALL (this) {
                 CALL (this) {
                     WITH this AS this
@@ -1168,10 +1186,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                         RETURN director
                     }
                     WITH director AS this5
-                    RETURN head(collect(this5)) AS this6
+                    WITH head(collect(this5)) AS this5
+                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
                 }
                 WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND this6 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this2 { .title, directed_by: var4 } AS this2
                 RETURN head(collect(this2)) AS var7
             }
@@ -1181,11 +1200,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"The Matrix\\",
-                \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"custom_value\\": \\"Lilly Wachowski\\"
-                }
+                },
+                \\"isAuthenticated\\": true
             }"
         `);
     });
@@ -1255,10 +1274,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     RETURN movie
                 }
                 WITH movie AS this0
-                RETURN head(collect(this0)) AS this1
+                WITH head(collect(this0)) AS this0
+                RETURN this0.title = $param0 AS this1
             }
             WITH *
-            WHERE this1.title = $param0
+            WHERE this1 = true
             CALL (this) {
                 CALL (this) {
                     WITH this AS this
@@ -1283,10 +1303,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                         RETURN director
                     }
                     WITH director AS this5
-                    RETURN head(collect(this5)) AS this6
+                    WITH head(collect(this5)) AS this5
+                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
                 }
                 WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.custom_value IS NOT NULL AND this6.name = $jwt.custom_value)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND this6 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 WITH this2 { .title, directed_by: var4 } AS this2
                 RETURN head(collect(this2)) AS var7
             }
@@ -1296,11 +1317,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"The Matrix\\",
-                \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [],
                     \\"custom_value\\": \\"Something Wrong\\"
-                }
+                },
+                \\"isAuthenticated\\": true
             }"
         `);
     });
@@ -1373,10 +1394,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     RETURN movie
                 }
                 WITH movie AS this0
-                RETURN head(collect(this0)) AS this1
+                WITH head(collect(this0)) AS this0
+                RETURN this0.title = $param0 AS this1
             }
             WITH *
-            WHERE this1.title = $param0
+            WHERE this1 = true
             CALL (this) {
                 CALL (this) {
                     WITH this AS this
@@ -1490,10 +1512,11 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
                     RETURN director
                 }
                 WITH director AS this0
-                RETURN head(collect(this0)) AS this1
+                WITH head(collect(this0)) AS this0
+                RETURN this0.name = $param0 AS this1
             }
             WITH *
-            WHERE (this.title ENDS WITH $param0 AND this1.name = $param1)
+            WHERE (this.title ENDS WITH $param1 AND this1 = true)
             CALL (this) {
                 MATCH (this)<-[this2:ACTED_IN]-(this3:Person)
                 WITH collect({ node: this3, relationship: this2 }) AS edges, count(this3) AS totalCount
@@ -1509,8 +1532,8 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
-                \\"param0\\": \\"Matrix\\",
-                \\"param1\\": \\"Lilly Wachowski\\"
+                \\"param0\\": \\"Lilly Wachowski\\",
+                \\"param1\\": \\"Matrix\\"
             }"
         `);
     });
