@@ -5,7 +5,7 @@
 
 import type { Response } from "supertest";
 import supertest from "supertest";
-import { createJwtHeader } from "../../../../utils/create-jwt-request";
+import { createJwtHeader } from "../../../../utils/create-jwt-header";
 import type { UniqueType } from "../../../../utils/graphql-types";
 import { TestHelper } from "../../../../utils/tests-helper";
 import type { TestGraphQLServer } from "../../../setup/apollo-server";
