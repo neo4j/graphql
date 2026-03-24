@@ -21,9 +21,8 @@ export function makeConnectionGroupByType({
     composer: SchemaComposer;
 }): { type: ObjectTypeComposer; args: ObjectTypeComposerArgumentConfigMapDefinition } | undefined {
     const typeName = entityAdapter.operations.getConnectionGroupByTypename();
-    const groupByFields = entityAdapter.groupByFields;
 
-    if (groupByFields.length === 0) {
+    if (entityAdapter.groupByFields.length === 0) {
         return undefined;
     }
 

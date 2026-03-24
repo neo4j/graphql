@@ -410,7 +410,7 @@ export class ConnectionFactory {
             }
         }
 
-        operation.setFields([groupBy]);
+        operation.setGroupByFields([groupBy]);
     }
 
     // The current top-level Connection API is inconsistent with the rest of the API making the parsing more complex than it should be.

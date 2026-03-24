@@ -13,6 +13,7 @@ import type { QueryASTNode } from "../QueryASTNode";
 import type { ConnectionAggregationField } from "../fields/ConnectionAggregationField";
 import type { Field } from "../fields/Field";
 import { OperationField } from "../fields/OperationField";
+import type { GroupByField } from "../fields/group-by/GroupByField";
 import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { Pagination } from "../pagination/Pagination";
@@ -26,10 +27,9 @@ export class ConnectionReadOperation extends Operation {
     public readonly relationship: RelationshipAdapter | undefined;
     public readonly target: ConcreteEntityAdapter;
 
-    public fields: Field[] = []; // TODO: move edgeFields and nodeFields here?
-
+    public groupByFields: Field[] = []; // TODO: unify with nodeFields and edgeFields
     public nodeFields: Field[] = [];
-    public edgeFields: Field[] = []; // TODO: merge with attachedTo?
+    public edgeFields: Field[] = [];
     public filters: Filter[] = [];
     public skipConnection: boolean = false; // If set to true, skips the connection (use for aggregation only queries optimisation)
 
@@ -69,8 +69,8 @@ export class ConnectionReadOperation extends Operation {
         this.nodeFields = fields;
     }
 
-    public setFields(fields: Field[]) {
-        this.fields = fields;
+    public setGroupByFields(fields: GroupByField[]) {
+        this.groupByFields = fields;
     }
 
     public addFilters(...filters: Filter[]) {
@@ -107,7 +107,7 @@ export class ConnectionReadOperation extends Operation {
             this.selection,
             ...this.nodeFields,
             ...this.edgeFields,
-            ...this.fields,
+            ...this.groupByFields,
             this.aggregationField,
             ...this.filters,
             ...this.authFilters,
@@ -228,12 +228,12 @@ export class ConnectionReadOperation extends Operation {
             ...aggregationProjection,
         });
 
-        const groupBySubqueries = this.fields.flatMap((f) => {
+        const groupBySubqueries = this.groupByFields.flatMap((f) => {
             return f.getSubqueries(nestedContext);
         });
 
-        if (this.fields.length > 0) {
-            this.generateProjectionMapForFields(this.fields, context.target, projectionMap);
+        if (this.groupByFields.length > 0) {
+            this.generateProjectionMapForFields(this.groupByFields, context.target, projectionMap);
         }
 
         const returnClause = new Cypher.Return([projectionMap, context.returnVariable]);
@@ -288,7 +288,7 @@ export class ConnectionReadOperation extends Operation {
 
     /** Defines if the query should project edges */
     protected shouldProjectEdges(): boolean {
-        const hasFields = this.nodeFields.length + this.edgeFields.length + this.fields.length > 0;
+        const hasFields = this.nodeFields.length + this.edgeFields.length + this.groupByFields.length > 0;
 
         // Project edges when there are explicit node/edge projection fields or when pageInfo is requested.
         return hasFields || this.needsPageInfo;

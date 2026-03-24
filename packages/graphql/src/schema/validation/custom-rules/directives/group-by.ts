@@ -78,5 +78,4 @@ function isGroupByLocationValid(directiveLocationData: {
     }
 
     return fieldIsInNodeType(directiveLocationData);
-    // || fieldIsInRelationshipPropertiesType(directiveLocationData)
 }
