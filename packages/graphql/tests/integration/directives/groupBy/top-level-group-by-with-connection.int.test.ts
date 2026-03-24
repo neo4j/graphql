@@ -147,7 +147,7 @@ describe("@groupBy directive top level with nested connection", () => {
                                         node {
                                             name
                                         }
-                                    }
+                                    }º
                                 }
                             }
                         }
@@ -158,7 +158,6 @@ describe("@groupBy directive top level with nested connection", () => {
 
         const result = await testHelper.executeGraphQL(query);
 
-        console.log(result.data);
         expect(result.errors).toBeUndefined();
         expect(result.data).toEqual({
             [Movie.operations.connection]: {
