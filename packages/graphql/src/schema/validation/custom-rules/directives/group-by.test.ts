@@ -21,7 +21,7 @@ const additionalDefinitions = {
 };
 
 describe("@groupBy validation", () => {
-    test("@groupBy can't be used with a non-node target", () => {
+    test("@groupBy can't be used in a non-node type", () => {
         const doc = gql`
             type Movie {
                 year: Int! @groupBy
@@ -41,6 +41,82 @@ describe("@groupBy validation", () => {
         expect(errors[0]).toHaveProperty(
             "message",
             'Invalid directive usage: Directive "@groupBy" should be in a type with "@node"'
+        );
+        expect(errors[0]).toHaveProperty("path", ["Movie", "year", "@groupBy"]);
+    });
+
+    test("@groupBy can't be used with a type field", () => {
+        const doc = gql`
+            type Movie @node {
+                year: AnotherType! @groupBy
+            }
+
+            type AnotherType {
+                text: String!
+            }
+        `;
+
+        const executeValidate = () =>
+            validateDocument({
+                document: doc,
+                additionalDefinitions,
+                features: {},
+            });
+
+        const errors = getError(executeValidate);
+        expect(errors).toHaveLength(1);
+        expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+        expect(errors[0]).toHaveProperty(
+            "message",
+            'Invalid directive usage: Directive "@groupBy" can only be applied to primitive fields'
+        );
+        expect(errors[0]).toHaveProperty("path", ["Movie", "year", "@groupBy"]);
+    });
+
+    test("@groupBy can't be used with a nullable list field", () => {
+        const doc = gql`
+            type Movie @node {
+                year: [Int!]! @groupBy
+            }
+        `;
+
+        const executeValidate = () =>
+            validateDocument({
+                document: doc,
+                additionalDefinitions,
+                features: {},
+            });
+
+        const errors = getError(executeValidate);
+        expect(errors).toHaveLength(1);
+        expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+        expect(errors[0]).toHaveProperty(
+            "message",
+            'Invalid directive usage: Directive "@groupBy" cannot be applied to lists'
+        );
+        expect(errors[0]).toHaveProperty("path", ["Movie", "year", "@groupBy"]);
+    });
+
+    test("@groupBy can't be used with a non-null list field", () => {
+        const doc = gql`
+            type Movie @node {
+                year: [Int!] @groupBy
+            }
+        `;
+
+        const executeValidate = () =>
+            validateDocument({
+                document: doc,
+                additionalDefinitions,
+                features: {},
+            });
+
+        const errors = getError(executeValidate);
+        expect(errors).toHaveLength(1);
+        expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+        expect(errors[0]).toHaveProperty(
+            "message",
+            'Invalid directive usage: Directive "@groupBy" cannot be applied to lists'
         );
         expect(errors[0]).toHaveProperty("path", ["Movie", "year", "@groupBy"]);
     });

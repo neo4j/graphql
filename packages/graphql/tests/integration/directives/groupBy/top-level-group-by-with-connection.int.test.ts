@@ -133,7 +133,7 @@ describe("@groupBy directive top level with nested connection", () => {
                                         node {
                                             name
                                         }
-                                    }º
+                                    }
                                 }
                             }
                         }
