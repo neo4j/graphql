@@ -120,4 +120,33 @@ describe("@groupBy validation", () => {
         );
         expect(errors[0]).toHaveProperty("path", ["Movie", "year", "@groupBy"]);
     });
+
+    test("@groupBy can't be used with enum", () => {
+        const doc = gql`
+            enum MovieType {
+                HORROR
+                COMEDY
+            }
+
+            type Movie @node {
+                year: MovieType @groupBy
+            }
+        `;
+
+        const executeValidate = () =>
+            validateDocument({
+                document: doc,
+                additionalDefinitions,
+                features: {},
+            });
+
+        const errors = getError(executeValidate);
+        expect(errors).toHaveLength(1);
+        expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+        expect(errors[0]).toHaveProperty(
+            "message",
+            'Invalid directive usage: Directive "@groupBy" can only be applied to primitive fields'
+        );
+        expect(errors[0]).toHaveProperty("path", ["Movie", "year", "@groupBy"]);
+    });
 });
