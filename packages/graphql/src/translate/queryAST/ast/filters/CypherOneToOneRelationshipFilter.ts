@@ -69,18 +69,23 @@ export class CypherOneToOneRelationshipFilter extends Filter {
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const { selection, nestedContext } = this.selection.apply(context);
 
-        const cypherSubquery = selection.return([
-            Cypher.head(Cypher.collect(nestedContext.returnVariable)),
-            this.returnVariable,
-        ]);
+        const predicate = this.createRelationshipOperation(nestedContext);
+        if (!predicate) {
+            throw new Error("Unexpected missing predicate in CypherOneToOneRelationshipFilter");
+        }
+        const cypherSubqueries = Cypher.utils.concat(
+            selection.with([Cypher.head(Cypher.collect(nestedContext.target)), nestedContext.target]),
+            ...this.targetNodeFilters
+                .flatMap((f) => f.getSubqueries(nestedContext))
+                .map((clause) => new Cypher.Call(clause, [nestedContext.target])),
+            new Cypher.Return([predicate, this.returnVariable])
+        );
 
-        return [cypherSubquery];
+        return [cypherSubqueries];
     }
 
     public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        const context = queryASTContext.setTarget(this.returnVariable);
-
-        return this.createRelationshipOperation(context);
+        return Cypher.eq(this.returnVariable, Cypher.true);
     }
 
     private createRelationshipOperation(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
@@ -88,7 +93,7 @@ export class CypherOneToOneRelationshipFilter extends Filter {
         const innerPredicate = Cypher.and(...targetNodePredicates);
 
         if (this.isNull) {
-            return Cypher.and(innerPredicate, Cypher.isNull(this.returnVariable));
+            return Cypher.and(innerPredicate, Cypher.isNull(queryASTContext.target!));
         }
 
         return innerPredicate;

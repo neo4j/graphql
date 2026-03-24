@@ -35,7 +35,7 @@ describe("https://github.com/neo4j/graphql/issues/6917", () => {
             }
 
             type B @node {
-                hasC: C @cypher(statement: "MATCH (this)-[:HAS]->(c:c) RETURN c", columnName: "c")
+                hasC: C @cypher(statement: "MATCH (this)-[:HAS]->(c:C) RETURN c", columnName: "c")
             }
 
             type C @node {
