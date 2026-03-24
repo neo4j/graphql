@@ -1,25 +1,11 @@
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
- *
- * This file is part of Neo4j.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
+import { GraphQLError } from "graphql";
 import { generate } from "randomstring";
 import { TestHelper } from "../../utils/tests-helper";
-import { GraphQLError } from "graphql";
 
 const testLabel = generate({ charset: "alphabetic" });
 
@@ -28,6 +14,8 @@ describe("Limit required", () => {
     const movieType = testHelper.createUniqueType("Movie");
     const seriesType = testHelper.createUniqueType("Series");
     const actorType = testHelper.createUniqueType("Actor");
+    const telephoneType = testHelper.createUniqueType("Telephone");
+    const emailType = testHelper.createUniqueType("Email");
 
     const typeDefs = /* GraphQL */ `
         interface Production {
@@ -51,11 +39,11 @@ describe("Limit required", () => {
             actedIn: [Production!]! @declareRelationship
             contact: [Contact!]! @declareRelationship
         }
-        union Contact = Telephone | Email
-        type Telephone @node {
+        union Contact = ${telephoneType} | ${emailType}
+        type ${telephoneType} @node @limit(default: 2) {
             number: String!
         }
-        type Email @node {
+        type ${emailType} @node {
             address: String!
         }
         type ${actorType} implements Person @node {
@@ -114,7 +102,7 @@ describe("Limit required", () => {
             screenTime: {
                 [movies[1].id]: 1,
             },
-            phoneNumber:"123456",
+            phoneNumber: "123456",
         },
     ] as const;
 
@@ -141,8 +129,8 @@ describe("Limit required", () => {
                     MERGE (a1)-[:ACTED_IN {screenTime: $actors[0].screenTime[m2.id]}]->(m2)<-[:ACTED_IN {screenTime: $actors[1].screenTime[m2.id]}]-(a2)
                     MERGE (s1)<-[:ACTED_IN {screenTime: $actors[0].screenTime[s1.id]}]-(a1)-[:ACTED_IN {screenTime: $actors[0].screenTime[s2.id]}]->(s2)
                     
-                    MERGE (mail: Email {address: $actors[0].emailAddress})
-                    MERGE (phone: Phone {number: $actors[1].phoneNumber})
+                    MERGE (mail: ${emailType} {address: $actors[0].emailAddress})
+                    MERGE (phone: ${telephoneType} {number: $actors[1].phoneNumber})
                     MERGE (a1)-[:HAS_CONTACT]->(mail)
                     MERGE (a2)-[:HAS_CONTACT]->(phone)
                 `,
@@ -170,7 +158,9 @@ describe("Limit required", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult.data as any)[movieType.plural]).toEqual([{ actors: [{ name: actors[0].name }], title: "A" }]);
+            expect((gqlResult.data as any)[movieType.plural]).toEqual([
+                { actors: [{ name: actors[0].name }], title: "A" },
+            ]);
         });
 
         test("limit argument not provided", async () => {
@@ -188,9 +178,32 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(2);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "${movieType.plural}" argument "limit" of type "Int!" is required, but it was not provided.`),
-                new GraphQLError(`Field "actors" argument "limit" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "${movieType.plural}" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+                new GraphQLError(
+                    `Field "actors" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
+        });
+
+        test("type has default limit and limit argument not provided returns error", async () => {
+            const query = /* GraphQL */ `
+                query {
+                    ${telephoneType.plural} {
+                        number
+                    }
+                }
+            `;
+
+            const gqlResult = await testHelper.executeGraphQL(query);
+
+            expect(gqlResult.errors).toHaveLength(1);
+            expect(gqlResult.errors).toIncludeSameMembers([
+                new GraphQLError(
+                    `Field "${telephoneType.plural}" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
 
         test("limit argument provided only root level", async () => {
@@ -208,8 +221,10 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(1);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "actors" argument "limit" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "actors" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
     });
     describe("simple query field on object types - relationship to interface", () => {
@@ -228,7 +243,9 @@ describe("Limit required", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult.data as any)[actorType.plural]).toEqual([{ actedIn: [{ title: "A"}], name: actors[0].name  }]);
+            expect((gqlResult.data as any)[actorType.plural]).toEqual([
+                { actedIn: [{ title: "A" }], name: actors[0].name },
+            ]);
         });
 
         test("limit argument not provided", async () => {
@@ -246,9 +263,13 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(2);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "${actorType.plural}" argument "limit" of type "Int!" is required, but it was not provided.`),
-                new GraphQLError(`Field "actedIn" argument "limit" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "${actorType.plural}" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+                new GraphQLError(
+                    `Field "actedIn" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
 
         test("limit argument provided only root level", async () => {
@@ -266,8 +287,10 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(1);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "actedIn" argument "limit" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "actedIn" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
     });
     describe("simple query field on object types - relationship to union", () => {
@@ -277,10 +300,10 @@ describe("Limit required", () => {
                      ${actorType.plural}(limit: 1, sort: {name: ASC}) {
                         name
                         contact(limit: 1) {
-                            ... on Telephone {
+                            ... on ${telephoneType} {
                                 number
                             }
-                            ... on Email {
+                            ... on ${emailType} {
                                 address
                             }
                         }
@@ -291,7 +314,9 @@ describe("Limit required", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult.data as any)[ actorType.plural]).toEqual([{ contact: [{ address: "a@mail.com"}], name: actors[0].name  }]);
+            expect((gqlResult.data as any)[actorType.plural]).toEqual([
+                { contact: [{ address: "a@mail.com" }], name: actors[0].name },
+            ]);
         });
 
         test("limit argument not provided", async () => {
@@ -299,10 +324,10 @@ describe("Limit required", () => {
                 query {
                      ${actorType.plural} {
                          contact{
-                            ... on Telephone {
+                            ... on ${telephoneType} {
                                 number
                             }
-                            ... on Email {
+                            ... on ${emailType} {
                                 address
                             }
                         }
@@ -314,9 +339,13 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(2);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "${actorType.plural}" argument "limit" of type "Int!" is required, but it was not provided.`),
-                new GraphQLError(`Field "contact" argument "limit" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "${actorType.plural}" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+                new GraphQLError(
+                    `Field "contact" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
 
         test("limit argument provided only root level", async () => {
@@ -324,10 +353,10 @@ describe("Limit required", () => {
                 query {
                      ${actorType.plural}(limit: 1) {
                          contact {
-                            ... on Telephone {
+                            ... on ${telephoneType} {
                                 number
                             }
-                            ... on Email {
+                            ... on ${emailType} {
                                 address
                             }
                         }
@@ -339,17 +368,19 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(1);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "contact" argument "limit" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "contact" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
     });
     describe("simple query field on object types - interface relationship to another interface", () => {
         test("limit argument provided", async () => {
             const query = /* GraphQL */ `
                 query {
-                    people(limit: 1, sort: {name: ASC}) {
+                    people(limit: 1, sort: { name: ASC }) {
                         name
-                        actedIn(limit: 1, sort: {title: ASC}) {
+                        actedIn(limit: 1, sort: { title: ASC }) {
                             title
                         }
                     }
@@ -359,7 +390,7 @@ describe("Limit required", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult.data as any)["people"]).toEqual([{ actedIn: [{ title: "A"}], name: actors[0].name  }]);
+            expect((gqlResult.data as any)["people"]).toEqual([{ actedIn: [{ title: "A" }], name: actors[0].name }]);
         });
 
         test("limit argument not provided", async () => {
@@ -377,9 +408,13 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(2);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "people" argument "limit" of type "Int!" is required, but it was not provided.`),
-                new GraphQLError(`Field "actedIn" argument "limit" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "people" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+                new GraphQLError(
+                    `Field "actedIn" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
 
         test("limit argument provided only root level", async () => {
@@ -397,8 +432,10 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(1);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "actedIn" argument "limit" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "actedIn" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
     });
     describe("simple query field on object types - interface relationship to union", () => {
@@ -408,10 +445,10 @@ describe("Limit required", () => {
                     people(limit: 1, sort: {name: ASC}) {
                         name
                         contact(limit: 1) {
-                            ... on Telephone {
+                            ... on ${telephoneType} {
                                 number
                             }
-                            ... on Email {
+                            ... on ${emailType} {
                                 address
                             }
                         }
@@ -422,7 +459,9 @@ describe("Limit required", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult.data as any)["people"]).toEqual([{ contact: [{ address: "a@mail.com"}], name: actors[0].name  }]);
+            expect((gqlResult.data as any)["people"]).toEqual([
+                { contact: [{ address: "a@mail.com" }], name: actors[0].name },
+            ]);
         });
 
         test("limit argument not provided", async () => {
@@ -430,10 +469,10 @@ describe("Limit required", () => {
                 query {
                     people {
                          contact{
-                            ... on Telephone {
+                            ... on ${telephoneType} {
                                 number
                             }
-                            ... on Email {
+                            ... on ${emailType} {
                                 address
                             }
                         }
@@ -445,9 +484,13 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(2);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "people" argument "limit" of type "Int!" is required, but it was not provided.`),
-                new GraphQLError(`Field "contact" argument "limit" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "people" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+                new GraphQLError(
+                    `Field "contact" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
 
         test("limit argument provided only root level", async () => {
@@ -455,10 +498,10 @@ describe("Limit required", () => {
                 query {
                     people(limit: 1) {
                          contact {
-                            ... on Telephone {
+                            ... on ${telephoneType} {
                                 number
                             }
-                            ... on Email {
+                            ... on ${emailType} {
                                 address
                             }
                         }
@@ -470,8 +513,10 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(1);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "contact" argument "limit" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "contact" argument "limit" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
     });
     describe("connection query field on object types", () => {
@@ -500,11 +545,11 @@ describe("Limit required", () => {
             expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any)[movieType.operations.connection]["edges"]).toEqual([
                 {
-                    node: { actorsConnection: {edges: [{ node: { name: actors[0].name }}]}, title: "A" },
+                    node: { actorsConnection: { edges: [{ node: { name: actors[0].name } }] }, title: "A" },
                 },
             ]);
         });
-        
+
         test("limit argument not provided", async () => {
             const query = /* GraphQL */ `
                 query {
@@ -526,13 +571,16 @@ describe("Limit required", () => {
             `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
-      console.log(gqlResult.errors, 0,2)
+            console.log(gqlResult.errors, 0, 2);
             expect(gqlResult.errors).toHaveLength(2);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError("Field \"actorsConnection\" argument \"first\" of type \"Int!\" is required, but it was not provided."),
-                new GraphQLError(`Field "${movieType.operations.connection}" argument "first" of type "Int!" is required, but it was not provided.`),
+                new GraphQLError(
+                    'Field "actorsConnection" argument "first" of type "Int!" is required, but it was not provided.'
+                ),
+                new GraphQLError(
+                    `Field "${movieType.operations.connection}" argument "first" of type "Int!" is required, but it was not provided.`
+                ),
             ]);
-      
         });
 
         test("limit argument provided only root level", async () => {
@@ -555,12 +603,13 @@ describe("Limit required", () => {
             }
         `;
 
-        const gqlResult = await testHelper.executeGraphQL(query);
-
+            const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toHaveLength(1);
             expect(gqlResult.errors).toIncludeSameMembers([
-               new GraphQLError("Field \"actorsConnection\" argument \"first\" of type \"Int!\" is required, but it was not provided."),
+                new GraphQLError(
+                    'Field "actorsConnection" argument "first" of type "Int!" is required, but it was not provided.'
+                ),
             ]);
         });
     });
@@ -575,10 +624,10 @@ describe("Limit required", () => {
                                 contactConnection(first: 1) {
                                     edges {
                                         node {
-                                            ... on Telephone { 
+                                            ... on ${telephoneType} { 
                                                 number 
                                             } 
-                                            ... on Email { 
+                                            ... on ${emailType} { 
                                                 address 
                                             } 
                                         }
@@ -593,7 +642,9 @@ describe("Limit required", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult.data as any)[ actorType.operations.connection]["edges"]).toEqual([{ node: { contactConnection: {edges: [{node: { address: "a@mail.com"}}]}, name: actors[0].name  }}]);
+            expect((gqlResult.data as any)[actorType.operations.connection]["edges"]).toEqual([
+                { node: { contactConnection: { edges: [{ node: { address: "a@mail.com" } }] }, name: actors[0].name } },
+            ]);
         });
 
         test("limit argument not provided", async () => {
@@ -606,10 +657,10 @@ describe("Limit required", () => {
                                 contactConnection {
                                     edges {
                                         node {
-                                            ... on Telephone { 
+                                            ... on ${telephoneType} { 
                                                 number 
                                             } 
-                                            ... on Email { 
+                                            ... on ${emailType} { 
                                                 address 
                                             } 
                                         }
@@ -625,9 +676,13 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(2);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "${actorType.operations.connection}" argument "first" of type "Int!" is required, but it was not provided.`),
-                new GraphQLError(`Field "contactConnection" argument "first" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "${actorType.operations.connection}" argument "first" of type "Int!" is required, but it was not provided.`
+                ),
+                new GraphQLError(
+                    `Field "contactConnection" argument "first" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
 
         test("limit argument provided only root level", async () => {
@@ -640,10 +695,10 @@ describe("Limit required", () => {
                                 contactConnection {
                                     edges {
                                         node {
-                                            ... on Telephone { 
+                                            ... on ${telephoneType} { 
                                                 number 
                                             } 
-                                            ... on Email { 
+                                            ... on ${emailType} { 
                                                 address 
                                             } 
                                         }
@@ -659,8 +714,10 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(1);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "contactConnection" argument "first" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "contactConnection" argument "first" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
     });
     describe("connection query field on object types - interface relationship to another interface", () => {
@@ -687,7 +744,9 @@ describe("Limit required", () => {
             const gqlResult = await testHelper.executeGraphQL(query);
 
             expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult.data as any)["peopleConnection"]["edges"]).toEqual([{node: { actedInConnection: {edges: [{node: {title: "A"}}]}, name: actors[0].name  }}]);
+            expect((gqlResult.data as any)["peopleConnection"]["edges"]).toEqual([
+                { node: { actedInConnection: { edges: [{ node: { title: "A" } }] }, name: actors[0].name } },
+            ]);
         });
 
         test("limit argument not provided", async () => {
@@ -713,9 +772,13 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(2);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "peopleConnection" argument "first" of type "Int!" is required, but it was not provided.`),
-                new GraphQLError(`Field "actedInConnection" argument "first" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "peopleConnection" argument "first" of type "Int!" is required, but it was not provided.`
+                ),
+                new GraphQLError(
+                    `Field "actedInConnection" argument "first" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
 
         test("limit argument provided only root level", async () => {
@@ -723,16 +786,16 @@ describe("Limit required", () => {
                 query {
                     peopleConnection(first: 1) {
                         edges {
-                            node {  
+                            node {
                                 actedInConnection {
-                                    edges { 
+                                    edges {
                                         node {
                                             title
                                         }
                                     }
                                 }
                             }
-                        }   
+                        }
                     }
                 }
             `;
@@ -741,8 +804,10 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(1);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "actedInConnection" argument "first" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "actedInConnection" argument "first" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
     });
     describe("connection query field on object types - interface relationship to union", () => {
@@ -756,10 +821,10 @@ describe("Limit required", () => {
                                 contactConnection(first: 1) {
                                     edges {
                                         node {  
-                                            ... on Telephone {
+                                            ... on ${telephoneType} {
                                                 number
                                             }
-                                            ... on Email {
+                                            ... on ${emailType} {
                                                 address
                                             }
                                         }
@@ -776,15 +841,14 @@ describe("Limit required", () => {
             expect(gqlResult.errors).toBeUndefined();
             expect((gqlResult.data as any)["peopleConnection"]["edges"]).toEqual([
                 {
-                    node: { 
+                    node: {
                         name: actors[0].name,
                         contactConnection: {
-                            edges: [
-                                { node: { address: "a@mail.com"}},
-                            ],
+                            edges: [{ node: { address: "a@mail.com" } }],
                         },
                     },
-                }]);
+                },
+            ]);
         });
 
         test("limit argument not provided", async () => {
@@ -796,10 +860,10 @@ describe("Limit required", () => {
                                 contactConnection{
                                     edges {
                                         node {  
-                                            ... on Telephone {
+                                            ... on ${telephoneType} {
                                                 number
                                             }
-                                            ... on Email {
+                                            ... on ${emailType} {
                                                 address
                                             }
                                         }
@@ -815,9 +879,13 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(2);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "peopleConnection" argument "first" of type "Int!" is required, but it was not provided.`),
-                new GraphQLError(`Field "contactConnection" argument "first" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "peopleConnection" argument "first" of type "Int!" is required, but it was not provided.`
+                ),
+                new GraphQLError(
+                    `Field "contactConnection" argument "first" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
 
         test("limit argument provided only root level", async () => {
@@ -829,10 +897,10 @@ describe("Limit required", () => {
                                 contactConnection {
                                     edges {
                                         node {  
-                                            ... on Telephone {
+                                            ... on ${telephoneType} {
                                                 number
                                             }
-                                            ... on Email {
+                                            ... on ${emailType} {
                                                 address
                                             }
                                         }
@@ -848,9 +916,10 @@ describe("Limit required", () => {
 
             expect(gqlResult.errors).toHaveLength(1);
             expect(gqlResult.errors).toIncludeSameMembers([
-                new GraphQLError(`Field "contactConnection" argument "first" of type "Int!" is required, but it was not provided.`),
-             ]);
+                new GraphQLError(
+                    `Field "contactConnection" argument "first" of type "Int!" is required, but it was not provided.`
+                ),
+            ]);
         });
     });
 });
-
