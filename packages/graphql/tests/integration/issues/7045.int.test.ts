@@ -21,24 +21,28 @@ import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
 describe("https://github.com/neo4j/graphql/issues/6917", () => {
-    let Actor: UniqueType;
+    let A: UniqueType;
+    let B: UniqueType;
+    let C: UniqueType;
 
     const testHelper = new TestHelper();
 
     beforeAll(async () => {
-        Actor = testHelper.createUniqueType("Actor");
+        A = testHelper.createUniqueType("A");
+        B = testHelper.createUniqueType("B");
+        C = testHelper.createUniqueType("C");
 
         const typeDefs = /* GraphQL */ `
-            type A @node {
-                hasB: B @cypher(statement: "MATCH (this)-[:HAS]->(b:B) RETURN b", columnName: "b")
+            type ${A} @node {
+                hasB: ${B} @cypher(statement: "MATCH (this)-[:HAS]->(b:${B}) RETURN b", columnName: "b")
                 name: String!
             }
 
-            type B @node {
-                hasC: C @cypher(statement: "MATCH (this)-[:HAS]->(c:C) RETURN c", columnName: "c")
+            type ${B} @node {
+                hasC: ${C} @cypher(statement: "MATCH (this)-[:HAS]->(c:${C}) RETURN c", columnName: "c")
             }
 
-            type C @node {
+            type ${C} @node {
                 name: String!
             }
         `;
@@ -48,8 +52,8 @@ describe("https://github.com/neo4j/graphql/issues/6917", () => {
         });
 
         await testHelper.executeCypher(`
-            CREATE(:A {name: "A1"})-[:HAS]->(:B {name: "B1"})-[:HAS]->(:C {name: "C1"})
-            CREATE(:A {name: "A2"})-[:HAS]->(:B {name: "B2"})-[:HAS]->(:C {name: "test"})
+            CREATE(:${A} {name: "A1"})-[:HAS]->(:${B} {name: "B1"})-[:HAS]->(:${C} {name: "C1"})
+            CREATE(:${A} {name: "A2"})-[:HAS]->(:${B} {name: "B2"})-[:HAS]->(:${C} {name: "test"})
         `);
     });
 
@@ -57,10 +61,10 @@ describe("https://github.com/neo4j/graphql/issues/6917", () => {
         await testHelper.close();
     });
 
-    test("should return totalCount and aggregate, without edges", async () => {
+    test("should apply nested filters correctly", async () => {
         const query = /* GraphQL */ `
             query {
-                as(where: { hasB: { hasC: { name: { eq: "test" } } } }) {
+                ${A.plural}(where: { hasB: { hasC: { name: { eq: "test" } } } }) {
                     name
                 }
             }
@@ -69,7 +73,7 @@ describe("https://github.com/neo4j/graphql/issues/6917", () => {
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeUndefined();
         expect(result.data as any).toEqual({
-            as: [
+            [A.plural]: [
                 {
                     name: "A2",
                 },
