@@ -8,11 +8,10 @@ import { GRAPHQL_BUILTIN_SCALAR_TYPES } from "../../../../constants";
 import { groupByDirective } from "../../../../graphql/directives";
 import type { Neo4jValidationContext, TypeMapWithExtensions } from "../../Neo4jValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
-import { fieldIsList } from "../utils/location-helpers/field-is-list";
 import { fieldIsInNodeType } from "../utils/location-helpers/is-in-node-type";
 import { fieldIsInSubscriptionType } from "../utils/location-helpers/is-in-subscription-type";
 import { getPathToNode } from "../utils/path-parser";
-import { getInnerTypeName } from "../utils/utils";
+import { getInnerTypeName, isArrayType } from "../utils/utils";
 
 export function validateGroupByDirective(context: Neo4jValidationContext): ASTVisitor {
     const typeMapWithExtensions = context.typeMapWithExtensions;
@@ -38,7 +37,7 @@ export function validateGroupByDirective(context: Neo4jValidationContext): ASTVi
                     );
                 }
 
-                if (fieldIsList(fieldDefinitionNode.type)) {
+                if (isArrayType(fieldDefinitionNode)) {
                     throw new DocumentValidationError(
                         `Invalid directive usage: Directive "@${groupByDirective.name}" cannot be applied to lists`,
                         []
