@@ -1,20 +1,6 @@
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
- *
- * This file is part of Neo4j.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 import { upperFirst } from "graphql-compose";
@@ -153,6 +139,7 @@ export class ConcreteEntityAdapter {
 
     public get relatedEntities(): EntityAdapter[] {
         if (!this._relatedEntities) {
+            // TODO: remove array destructuring with Node 20
             this._relatedEntities = [...this.relationships.values()].map((relationship) => relationship.target);
         }
         return this._relatedEntities;
@@ -262,6 +249,11 @@ export class ConcreteEntityAdapter {
 
     public findRelationship(name: string): RelationshipAdapter | undefined {
         return this.relationships.get(name);
+    }
+
+    public hasListRelationship(): boolean {
+        // TODO: remove array destructuring with Node 20
+        return !![...this.relationships.values()].find((r) => r.isList);
     }
 
     // TODO: identify usage of old Node.[getLabels | getLabelsString] and migrate them if needed

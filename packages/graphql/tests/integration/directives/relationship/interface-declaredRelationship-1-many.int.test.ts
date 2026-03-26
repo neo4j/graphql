@@ -1,0 +1,461 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ */
+
+import type { UniqueType } from "../../../utils/graphql-types";
+import { TestHelper } from "../../../utils/tests-helper";
+
+describe("1-* relationship involving Interface type declared relationship", () => {
+    let Movie: UniqueType;
+    let Person: UniqueType;
+    let Dog: UniqueType;
+    let Series: UniqueType;
+
+    const testHelper = new TestHelper();
+
+    beforeEach(async () => {
+        Movie = testHelper.createUniqueType("Movie");
+        Person = testHelper.createUniqueType("Person");
+        Dog = testHelper.createUniqueType("Dog");
+        Series = testHelper.createUniqueType("Series");
+
+        const typeDefs = /* GraphQL */ `
+            interface Actor {
+                name: String!
+                actedIn: Production @declareRelationship
+                directed: [Production!]! @declareRelationship
+            }
+            interface Production {
+                title: String!
+                actor: [Actor!]! @declareRelationship
+                director: ${Person} @declareRelationship
+            }
+
+            type ${Movie} implements Production @node {
+                title: String!
+                actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedInMovie")
+                director: ${Person} @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+            }
+
+            type ${Series} implements Production @node {
+                title: String!
+                actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN , properties: "ActedInSeries")
+                director: ${Person} @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+            }
+
+            type ${Dog} implements Actor @node {
+                name: String!
+                actedIn: Production @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInMovie")
+                directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
+            }
+
+            type ${Person} implements Actor @node{
+                name: String!
+                actedIn: Production @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedInSeries")
+                directed: [Production!]! @relationship(type: "DIRECTED", direction: OUT, properties: "Directed")
+             }
+
+            type ActedInMovie @relationshipProperties {
+                screenTime: Int
+            }
+
+            type ActedInSeries @relationshipProperties {
+                episodes: Int
+            }
+
+            type Directed @relationshipProperties {
+                year: Int
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+        });
+    });
+
+    afterEach(async () => {
+        await testHelper.close();
+    });
+
+    test("create single relationship", async () => {
+        const query = `
+            mutation {
+                ${Dog.operations.create}(input: [{ name: "Hachiko", actedIn: { create: { node: { ${Movie}: { title: "The Matrix" } } } } }]) {
+                    ${Dog.plural} {
+                        name
+                        actedIn {
+                           title
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Dog.operations.create]: {
+                [Dog.plural]: [
+                    {
+                        name: "Hachiko",
+                        actedIn: {
+                            title: "The Matrix",
+                        },
+                    },
+                ],
+            },
+        });
+
+        await testHelper.expectRelationship(Dog, Movie, "ACTED_IN").toEqual([
+            {
+                from: {
+                    name: "Hachiko",
+                },
+                to: {
+                    title: "The Matrix",
+                },
+                relationship: {},
+            },
+        ]);
+    });
+
+    test("delete single relationship", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN]-(k:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director"})
+            CREATE(k)-[:DIRECTED]->(s:${Series} { title: "The Office"})
+            CREATE(s)<-[:ACTED_IN]-(d)
+            CREATE(m)<-[:ACTED_IN]-(d)
+            CREATE(a)-[:ACTED_IN]->(s)
+        `);
+        const query = `
+            mutation {
+                ${Person.operations.delete}(where: { name: { eq: "Director" } }, delete: { actedIn: { delete: { director: { where: { node: { name: { eq: "K" } } } } } } }) {
+                    nodesDeleted
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            [Person.operations.delete]: {
+                nodesDeleted: 3,
+            },
+        });
+
+        await testHelper.expectNode(Movie).toNotExist();
+        await testHelper.expectNode(Person).count(1);
+    });
+
+    test("returns all fields", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director"})
+            CREATE(d)-[:DIRECTED]->(s:${Series} { title: "The Office"})
+            CREATE(a)-[:ACTED_IN]->(s)
+        `);
+
+        const query = `
+            query {
+              productions {
+                    actor {
+                        name
+                        actedIn {
+                            title
+                        }
+                    }
+                    director {
+                       name
+                       directed {
+                            title
+                       }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            productions: [
+                {
+                    actor: [
+                        {
+                            name: "Hachiko",
+                            actedIn: {
+                                title: "The Matrix",
+                            },
+                        },
+                        {
+                            name: "Keanu",
+                            actedIn: {
+                                title: "The Matrix",
+                            },
+                        },
+                    ],
+                    director: {
+                        name: "Director",
+                        directed: [
+                            {
+                                title: "The Matrix",
+                            },
+                            { title: "The Office" },
+                        ],
+                    },
+                },
+                {
+                    actor: [
+                        {
+                            name: "Hachiko",
+                            actedIn: {
+                                title: "The Matrix",
+                            },
+                        },
+                    ],
+                    director: {
+                        name: "Director",
+                        directed: [
+                            {
+                                title: "The Matrix",
+                            },
+                            { title: "The Office" },
+                        ],
+                    },
+                },
+            ],
+        });
+    });
+
+    test("returns filtered fields", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director"})
+            CREATE(d)-[:DIRECTED]->(s:${Series} { title: "The Office"})
+            CREATE(a)-[:ACTED_IN]->(s)
+        `);
+
+        const query = `
+            query {
+              productions {
+                    actor(where: { name: { eq: "Hachiko" }}) {
+                        name
+                        actedIn {
+                            title
+                        }
+                    }
+                    director {
+                       name
+                       directed(where: { title: { eq: "The Office"} }) {
+                            title
+                       }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            productions: [
+                {
+                    actor: [
+                        {
+                            name: "Hachiko",
+                            actedIn: {
+                                title: "The Matrix",
+                            },
+                        },
+                    ],
+                    director: {
+                        name: "Director",
+                        directed: [{ title: "The Office" }],
+                    },
+                },
+                {
+                    actor: [
+                        {
+                            name: "Hachiko",
+                            actedIn: {
+                                title: "The Matrix",
+                            },
+                        },
+                    ],
+                    director: {
+                        name: "Director",
+                        directed: [{ title: "The Office" }],
+                    },
+                },
+            ],
+        });
+    });
+
+    test("nested filter", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director"})
+            CREATE(d)-[:DIRECTED]->(s:${Series} { title: "The Office"})
+            CREATE(a)-[:ACTED_IN]->(s)
+        `);
+
+        const query = `
+            query {
+               productions(where: { director: { name: { eq: "Director" } } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            productions: [
+                {
+                    title: "The Matrix",
+                },
+                {
+                    title: "The Office",
+                },
+            ],
+        });
+    });
+
+    test("double nested filter", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director"})
+            CREATE(d)-[:DIRECTED]->(s:${Series} { title: "The Office"})
+            CREATE(a)-[:ACTED_IN]->(s)
+        `);
+
+        const query = `
+            query {
+                actors(where: { actedIn: { director: { name: { eq: "Director" } } } }) {
+                    name
+                    actedIn {
+                        title
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            actors: [
+                {
+                    name: "Hachiko",
+                    actedIn: {
+                        title: "The Matrix",
+                    },
+                },
+                {
+                    name: "Keanu",
+                    actedIn: {
+                        title: "The Matrix",
+                    },
+                },
+            ],
+        });
+    });
+
+    test("nested filter with edge properties", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN {screenTime: 100}]-(a:${Dog} { name: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN {screenTime: 40, episodes: 2}]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED {year: 1992}]-(d:${Person} { name: "Director"})
+            CREATE(d)-[:DIRECTED {year: 2000}]->(s:${Series} { title: "The Office"})
+            CREATE(a)-[:ACTED_IN {screenTime: 20, episodes: 5}]->(s)
+        `);
+
+        const query = `
+            query {
+               productions(where: { directorConnection: { edge: { Directed: { year: { gt: 1992 } } } } }) {
+                    title
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            productions: [
+                {
+                    title: "The Office",
+                },
+            ],
+        });
+    });
+
+    test("double nested filter with edge properties", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN {screenTime: 100}]-(a:${Dog} { name: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN {screenTime: 40, episodes: 2}]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED {year: 1992}]-(d:${Person} { name: "Director"})
+            CREATE(d)-[:DIRECTED {year: 2000}]->(s:${Series} { title: "The Office"})
+            CREATE(a)-[:ACTED_IN {screenTime: 20, episodes: 5}]->(s)
+        `);
+
+        const query = `
+            query {
+               actors(where: { actedInConnection: { node: { directorConnection: { OR: [{ edge: { Directed: { year: { gt: 1996 } } } }, { node: { name: { eq: "Director" } } }] } } }  }) {
+                    name
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeFalsy();
+        expect(result.data).toEqual({
+            actors: [
+                {
+                    name: "Hachiko",
+                },
+                {
+                    name: "Keanu",
+                },
+            ],
+        });
+    });
+
+    test("no filter from the 1- relationship side", async () => {
+        await testHelper.executeCypher(`
+            CREATE(m:${Movie} { title: "The Matrix"})<-[:ACTED_IN]-(a:${Dog} { name: "Hachiko"})
+            CREATE(m)<-[:ACTED_IN]-(:${Person} { name: "Keanu"})
+            CREATE(m)<-[:DIRECTED]-(d:${Person} { name: "Director"})
+            CREATE(d)-[:DIRECTED]->(s:${Series} { title: "The Office"})
+            CREATE(a)-[:ACTED_IN]->(s)
+        `);
+
+        const query = `
+            query {
+              productions {
+                    actor {
+                        name
+                        actedIn {
+                            title
+                        }
+                    }
+                    director(where: { name: { eq: "Hachiko" }}) {
+                       name
+                       directed {
+                            title
+                       }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toHaveLength(1);
+        expect((result.errors?.[0] || { message: "" }).message).toBe(
+            `Unknown argument "where" on field "Production.director".`
+        );
+    });
+});

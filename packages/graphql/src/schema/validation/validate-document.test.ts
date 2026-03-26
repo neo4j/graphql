@@ -1,20 +1,6 @@
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
- *
- * This file is part of Neo4j.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 import {
@@ -858,7 +844,24 @@ describe("validation 2.0", () => {
                 expect(executeValidate).not.toThrow();
             });
 
-            test("Error on 1-1 relationships", () => {
+            test("1-1 nullable relationships allowed", () => {
+                const doc = gql`
+                    type Movie @node {
+                        id: ID
+                        actors: Actor @relationship(type: "ACTED_IN", direction: OUT)
+                    }
+
+                    type Actor @node {
+                        name: String
+                        movie: Movie @relationship(type: "ACTED_IN", direction: IN)
+                    }
+                `;
+
+                const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+                expect(executeValidate).not.toThrow();
+            });
+
+            test("1-1 non-nullable relationships should throw error", () => {
                 const doc = gql`
                     type Movie @node {
                         id: ID
@@ -873,17 +876,13 @@ describe("validation 2.0", () => {
 
                 const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
                 const errors = getError(executeValidate);
-                expect(errors).toHaveLength(2);
+                expect(errors).toHaveLength(1);
                 expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
-                expect(errors[1]).not.toBeInstanceOf(NoErrorThrownError);
                 expect(errors[0]).toHaveProperty(
                     "message",
-                    `Using @relationship directive on a non-list property "actors" is not supported.`
+                    'Non-list relationship property "movie" cannot have non-nullable type.'
                 );
-                expect(errors[1]).toHaveProperty(
-                    "message",
-                    `Using @relationship directive on a non-list property "movie" is not supported.`
-                );
+                expect(errors[0]).toHaveProperty("path", ["Actor", "movie"]);
             });
         });
     });
