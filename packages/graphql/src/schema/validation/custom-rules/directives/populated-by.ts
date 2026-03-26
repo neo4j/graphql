@@ -105,11 +105,10 @@ export function validatePopulatedByDirective(context: Neo4jValidationContext): A
                         GraphQLDuration.name,
                     ].includes(getInnerTypeName(fieldDefinitionNode.type))
                 ) {
-                    // could be enum
-                    if (
-                        typeMapWithExtensions[getInnerTypeName(fieldDefinitionNode.type)]?.definition.kind !==
-                        Kind.ENUM_TYPE_DEFINITION
-                    ) {
+                    const isEnum =
+                        typeMapWithExtensions[getInnerTypeName(fieldDefinitionNode.type)]?.definition.kind ===
+                        Kind.ENUM_TYPE_DEFINITION;
+                    if (!isEnum) {
                         throw new DocumentValidationError(
                             "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime, Duration or a defined Enum type.",
                             []
