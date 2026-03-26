@@ -68,14 +68,14 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:ACTED_IN]->(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this0
-                WITH head(collect(this0)) AS this0
-                RETURN this0.name = $param0 AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:ACTED_IN]->(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this0
+              WITH head(collect(this0)) AS this0
+              RETURN this0.name = $param0 AS this1
             }
             WITH *
             WHERE this1 = true
@@ -136,14 +136,14 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:ACTED_IN]->(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this0
-                WITH head(collect(this0)) AS this0
-                RETURN (this0.name = $param0 AND this0.age > $param1) AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:ACTED_IN]->(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this0
+              WITH head(collect(this0)) AS this0
+              RETURN (this0.name = $param0 AND this0.age > $param1) AS this1
             }
             WITH *
             WHERE (this.released = $param2 AND this1 = true)
@@ -213,14 +213,14 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this0
-                WITH head(collect(this0)) AS this0
-                RETURN this0.name = $param0 AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this0
+              WITH head(collect(this0)) AS this0
+              RETURN this0.name = $param0 AS this1
             }
             WITH *
             WHERE this1 = true
@@ -290,14 +290,14 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this0
-                WITH head(collect(this0)) AS this0
-                RETURN this0 IS NULL AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this0
+              WITH head(collect(this0)) AS this0
+              RETURN this0 IS NULL AS this1
             }
             WITH *
             WHERE (this.released = $param0 AND this1 = true)
@@ -360,14 +360,14 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this0
-                WITH head(collect(this0)) AS this0
-                RETURN this0 IS NULL AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this0
+              WITH head(collect(this0)) AS this0
+              RETURN this0 IS NULL AS this1
             }
             WITH *
             WHERE (this.released IN $param0 AND NOT (this1 = true))
@@ -446,14 +446,14 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             "CYPHER 5
             MATCH (this:Person)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this0
-                WITH head(collect(this0)) AS this0
-                RETURN this0.title = $param0 AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this0
+              WITH head(collect(this0)) AS this0
+              RETURN this0.title = $param0 AS this1
             }
             WITH *
             WHERE this1 = true
@@ -476,19 +476,18 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
               }
               CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this5
-                    WITH head(collect(this5)) AS this5
-                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
-                WITH *
-                WHERE ($isAuthenticated = true AND this6 = true)
-                WITH this2 { .title, directed_by: var4 } AS this2
-                RETURN head(collect(this2)) AS var7
+                WITH director AS this5
+                WITH head(collect(this5)) AS this5
+                RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+              }
+              WITH *
+              WHERE ($isAuthenticated = true AND this6 = true)
+              WITH this2 { .title, directed_by: var4 } AS this2
+              RETURN head(collect(this2)) AS var7
             }
             RETURN this { directed: var7 } AS this"
         `);
@@ -565,14 +564,14 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             "CYPHER 5
             MATCH (this:Person)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this0
-                WITH head(collect(this0)) AS this0
-                RETURN this0.title = $param0 AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this0
+              WITH head(collect(this0)) AS this0
+              RETURN this0.title = $param0 AS this1
             }
             WITH *
             WHERE this1 = true
@@ -595,19 +594,18 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
               }
               CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this5
-                    WITH head(collect(this5)) AS this5
-                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
-                WITH *
-                WHERE ($isAuthenticated = true AND this6 = true)
-                WITH this2 { .title, directed_by: var4 } AS this2
-                RETURN head(collect(this2)) AS var7
+                WITH director AS this5
+                WITH head(collect(this5)) AS this5
+                RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+              }
+              WITH *
+              WHERE ($isAuthenticated = true AND this6 = true)
+              WITH this2 { .title, directed_by: var4 } AS this2
+              RETURN head(collect(this2)) AS var7
             }
             RETURN this { directed: var7 } AS this"
         `);
@@ -683,14 +681,14 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             "CYPHER 5
             MATCH (this:Person)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this0
-                WITH head(collect(this0)) AS this0
-                RETURN this0.title = $param0 AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this0
+              WITH head(collect(this0)) AS this0
+              RETURN this0.title = $param0 AS this1
             }
             WITH *
             WHERE this1 = true
@@ -713,19 +711,18 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
               }
               CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this5
-                    WITH head(collect(this5)) AS this5
-                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
-                WITH *
-                WHERE ($isAuthenticated = true AND this6 = true)
-                WITH this2 { .title, directed_by: var4 } AS this2
-                RETURN head(collect(this2)) AS var7
+                WITH director AS this5
+                WITH head(collect(this5)) AS this5
+                RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+              }
+              WITH *
+              WHERE ($isAuthenticated = true AND this6 = true)
+              WITH this2 { .title, directed_by: var4 } AS this2
+              RETURN head(collect(this2)) AS var7
             }
             RETURN this { directed: var7 } AS this"
         `);
@@ -801,14 +798,14 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             "CYPHER 5
             MATCH (this:Person)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this0
-                WITH head(collect(this0)) AS this0
-                RETURN this0.title = $param0 AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this0
+              WITH head(collect(this0)) AS this0
+              RETURN this0.title = $param0 AS this1
             }
             WITH *
             WHERE this1 = true
@@ -831,19 +828,18 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
               }
               CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this5
-                    WITH head(collect(this5)) AS this5
-                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
-                WITH *
-                WHERE ($isAuthenticated = true AND this6 = true)
-                WITH this2 { .title, directed_by: var4 } AS this2
-                RETURN head(collect(this2)) AS var7
+                WITH director AS this5
+                WITH head(collect(this5)) AS this5
+                RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+              }
+              WITH *
+              WHERE ($isAuthenticated = true AND this6 = true)
+              WITH this2 { .title, directed_by: var4 } AS this2
+              RETURN head(collect(this2)) AS var7
             }
             RETURN this { directed: var7 } AS this"
         `);
@@ -920,14 +916,14 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             "CYPHER 5
             MATCH (this:Person)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this0
-                WITH head(collect(this0)) AS this0
-                RETURN this0.title = $param0 AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this0
+              WITH head(collect(this0)) AS this0
+              RETURN this0.title = $param0 AS this1
             }
             WITH *
             WHERE this1 = true
@@ -950,19 +946,18 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
               }
               CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this5
-                    WITH head(collect(this5)) AS this5
-                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND this6 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this2 { .title, directed_by: var4 } AS this2
-                RETURN head(collect(this2)) AS var7
+                WITH director AS this5
+                WITH head(collect(this5)) AS this5
+                RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+              }
+              WITH *
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND this6 = true), '@neo4j/graphql/FORBIDDEN', [])
+              WITH this2 { .title, directed_by: var4 } AS this2
+              RETURN head(collect(this2)) AS var7
             }
             RETURN this { directed: var7 } AS this"
         `);
@@ -1039,14 +1034,14 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             "CYPHER 5
             MATCH (this:Person)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this0
-                WITH head(collect(this0)) AS this0
-                RETURN this0.title = $param0 AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this0
+              WITH head(collect(this0)) AS this0
+              RETURN this0.title = $param0 AS this1
             }
             WITH *
             WHERE this1 = true
@@ -1069,19 +1064,18 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
               }
               CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this5
-                    WITH head(collect(this5)) AS this5
-                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND this6 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this2 { .title, directed_by: var4 } AS this2
-                RETURN head(collect(this2)) AS var7
+                WITH director AS this5
+                WITH head(collect(this5)) AS this5
+                RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+              }
+              WITH *
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND this6 = true), '@neo4j/graphql/FORBIDDEN', [])
+              WITH this2 { .title, directed_by: var4 } AS this2
+              RETURN head(collect(this2)) AS var7
             }
             RETURN this { directed: var7 } AS this"
         `);
@@ -1157,14 +1151,14 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             "CYPHER 5
             MATCH (this:Person)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this0
-                WITH head(collect(this0)) AS this0
-                RETURN this0.title = $param0 AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this0
+              WITH head(collect(this0)) AS this0
+              RETURN this0.title = $param0 AS this1
             }
             WITH *
             WHERE this1 = true
@@ -1187,19 +1181,18 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
               }
               CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this5
-                    WITH head(collect(this5)) AS this5
-                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND this6 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this2 { .title, directed_by: var4 } AS this2
-                RETURN head(collect(this2)) AS var7
+                WITH director AS this5
+                WITH head(collect(this5)) AS this5
+                RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+              }
+              WITH *
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND this6 = true), '@neo4j/graphql/FORBIDDEN', [])
+              WITH this2 { .title, directed_by: var4 } AS this2
+              RETURN head(collect(this2)) AS var7
             }
             RETURN this { directed: var7 } AS this"
         `);
@@ -1275,14 +1268,14 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             "CYPHER 5
             MATCH (this:Person)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this0
-                WITH head(collect(this0)) AS this0
-                RETURN this0.title = $param0 AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this0
+              WITH head(collect(this0)) AS this0
+              RETURN this0.title = $param0 AS this1
             }
             WITH *
             WHERE this1 = true
@@ -1305,19 +1298,18 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
               }
               CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this5
-                    WITH head(collect(this5)) AS this5
-                    RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND this6 = true), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this2 { .title, directed_by: var4 } AS this2
-                RETURN head(collect(this2)) AS var7
+                WITH director AS this5
+                WITH head(collect(this5)) AS this5
+                RETURN ($jwt.custom_value IS NOT NULL AND this5.name = $jwt.custom_value) AS this6
+              }
+              WITH *
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND this6 = true), '@neo4j/graphql/FORBIDDEN', [])
+              WITH this2 { .title, directed_by: var4 } AS this2
+              RETURN head(collect(this2)) AS var7
             }
             RETURN this { directed: var7 } AS this"
         `);
@@ -1396,14 +1388,14 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             "CYPHER 5
             MATCH (this:Person)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this0
-                WITH head(collect(this0)) AS this0
-                RETURN this0.title = $param0 AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this0
+              WITH head(collect(this0)) AS this0
+              RETURN this0.title = $param0 AS this1
             }
             WITH *
             WHERE this1 = true
@@ -1514,14 +1506,14 @@ describe("cypher directive filtering - One To One Relationship - deprecated", ()
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)<-[:DIRECTED]-(director:Person)
-                    RETURN director
-                }
-                WITH director AS this0
-                WITH head(collect(this0)) AS this0
-                RETURN this0.name = $param0 AS this1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)<-[:DIRECTED]-(director:Person)
+                RETURN director
+              }
+              WITH director AS this0
+              WITH head(collect(this0)) AS this0
+              RETURN this0.name = $param0 AS this1
             }
             WITH *
             WHERE (this.title ENDS WITH $param1 AND this1 = true)
