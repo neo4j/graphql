@@ -11,16 +11,18 @@ import {
     type GraphQLResolveInfo,
     type SelectionSetNode,
 } from "graphql";
-import type { InputTypeComposer, SchemaComposer } from "graphql-compose";
+import type { ObjectTypeComposerArgumentConfigDefinition, SchemaComposer } from "graphql-compose";
 import { PageInfo } from "../../../graphql/objects/PageInfo";
 import type { ConcreteEntityAdapter } from "../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { UnionEntityAdapter } from "../../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { Neo4jGraphQLSchemaModel } from "../../../schema-model/Neo4jGraphQLSchemaModel";
+import { isConcreteEntity } from "../../../translate/queryAST/utils/is-concrete-entity";
 import { translateRead } from "../../../translate/translate-read";
 import { execute } from "../../../utils";
 import getNeo4jResolveTree from "../../../utils/get-neo4j-resolve-tree";
 import { isNeoInt } from "../../../utils/utils";
+import { makeConnectionGroupByType } from "../../generation/connection-group-by";
 import { makeSortInput } from "../../generation/sort-and-options-input";
 import { createConnectionWithEdgeProperties } from "../../pagination";
 import { graphqlDirectivesToCompose } from "../../to-compose";
@@ -65,7 +67,7 @@ export function rootConnectionResolver({
 
         const connection = createConnectionWithEdgeProperties({
             selectionSet: resolveTree as unknown as SelectionSetNode,
-            source: { edges: record.edges, aggregate: record.aggregate },
+            source: { edges: record.edges, aggregate: record.aggregate, groupBy: record.groupBy },
             args: { first: args.first, after: args.after },
             totalCount,
         });
@@ -73,6 +75,7 @@ export function rootConnectionResolver({
         return {
             totalCount,
             edges: connection.edges,
+            groupBy: connection.groupBy,
             pageInfo: connection.pageInfo,
             aggregate: connection.aggregate,
         };
@@ -106,20 +109,35 @@ export function rootConnectionResolver({
         });
     }
 
+    if (isConcreteEntity(entityAdapter)) {
+        const groupByField = makeConnectionGroupByType({
+            entityAdapter,
+            composer,
+        });
+        if (groupByField) {
+            rootConnection.addFields({
+                groupBy: { type: groupByField.type.NonNull.List.NonNull, args: groupByField.args },
+            });
+        }
+    }
+
+    const args: Record<string, ObjectTypeComposerArgumentConfigDefinition> = {
+        first: isLimitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
+        after: GraphQLString,
+        where: entityAdapter.operations.whereInputTypeName,
+    };
+
     // since sort is not created when there is nothing to sort, we check for its existence
-    let sortArg: InputTypeComposer | undefined;
     if (!(entityAdapter instanceof UnionEntityAdapter)) {
-        sortArg = makeSortInput({ entityAdapter, userDefinedFieldDirectives: new Map(), composer });
+        const sortArg = makeSortInput({ entityAdapter, userDefinedFieldDirectives: new Map(), composer });
+        if (sortArg) {
+            args.sort = sortArg.NonNull.List;
+        }
     }
 
     return {
         type: rootConnection.NonNull,
         resolve,
-        args: {
-            first: isLimitRequired ? new GraphQLNonNull(GraphQLInt) : GraphQLInt,
-            after: GraphQLString,
-            where: entityAdapter.operations.whereInputTypeName,
-            ...(sortArg ? { sort: sortArg.NonNull.List } : {}),
-        },
+        args,
     };
 }

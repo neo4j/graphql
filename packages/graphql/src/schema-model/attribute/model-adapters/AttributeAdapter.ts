@@ -171,6 +171,10 @@ export class AttributeAdapter {
         );
     }
 
+    canGroupBy(): boolean {
+        return Boolean(this.annotations.groupBy);
+    }
+
     isAggregationWhereField(): boolean {
         if (
             this.typeHelper.isList() ||

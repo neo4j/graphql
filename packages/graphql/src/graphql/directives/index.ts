@@ -11,6 +11,7 @@ export { declareRelationshipDirective } from "./declare-relationship";
 export { defaultDirective } from "./default";
 export { filterableDirective } from "./filterable";
 export { fulltextDirective } from "./fulltext";
+export { groupByDirective } from "./group-by";
 export { idDirective } from "./id";
 export { jwtClaim } from "./jwt-claim";
 export { jwt } from "./jwt-payload";

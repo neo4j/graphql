@@ -108,6 +108,13 @@ export abstract class RelationshipBaseOperations<T extends RelationshipAdapter |
         return `${this.prefixForTypenameWithInheritance}${ifUnionRelationshipTargetEntity?.name || ""}ConnectionWhere`;
     }
 
+    public getConnectionGroupByTypename(): string {
+        return `${this.prefixForTypenameWithInheritance}GroupBy`;
+    }
+    public getConnectionGroupByEdgeTypename(): string {
+        return `${this.prefixForTypenameWithInheritance}GroupByEdge`;
+    }
+
     public getUpdateConnectionInputTypename(ifUnionRelationshipTargetEntity?: ConcreteEntityAdapter): string {
         return `${this.prefixForTypename}${ifUnionRelationshipTargetEntity?.name || ""}UpdateConnectionInput`;
     }

@@ -41,6 +41,18 @@ export class ConcreteEntityOperations extends ImplementingEntityOperations<Concr
         return `${this.entityAdapter.name}Edge`;
     }
 
+    public getConnectionGroupByInputTypename(): string {
+        return `${this.entityAdapter.name}GroupByInput`;
+    }
+
+    public getConnectionGroupByTypename(): string {
+        return `${this.entityAdapter.name}GroupBy`;
+    }
+
+    public getConnectionGroupByEdgeTypename(): string {
+        return `${this.entityAdapter.name}GroupByEdge`;
+    }
+
     public get rootTypeFieldNames(): RootTypeFieldNames {
         return {
             ...super.rootTypeFieldNames,

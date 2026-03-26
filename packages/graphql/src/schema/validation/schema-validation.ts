@@ -142,6 +142,7 @@ export function validateUserDefinition({
 
     const errors = validateSDL(validationDocument, rules, schemaToExtend);
     if (errors.length) {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
         throw errors;
     }
 }

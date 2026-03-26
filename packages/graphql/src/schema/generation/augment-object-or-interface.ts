@@ -98,6 +98,7 @@ export function augmentObjectOrInterfaceTypeWithConnectionField(
             (directive) => directive.name.value === DEPRECATED
         )
     );
+
     const composeNodeArgs: ObjectTypeComposerArgumentConfigMapDefinition = {};
 
     // we want this type to be created for single relationships, but don't want to set the argument

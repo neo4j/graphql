@@ -35,16 +35,19 @@ import { findFieldsByNameInFieldsByTypeNameField } from "../parsers/find-fields-
 import { getFieldsByTypeName } from "../parsers/get-fields-by-type-name";
 import { AggregateFactory } from "./AggregateFactory";
 import { FulltextFactory } from "./FulltextFactory";
+import { GroupByFactory } from "./GroupByFactory";
 
 export class ConnectionFactory {
     private queryASTFactory: QueryASTFactory;
     private fulltextFactory: FulltextFactory;
     private aggregateFactory: AggregateFactory;
+    private groupByFactory: GroupByFactory;
 
     constructor(queryASTFactory: QueryASTFactory) {
         this.queryASTFactory = queryASTFactory;
         this.fulltextFactory = new FulltextFactory(queryASTFactory);
         this.aggregateFactory = new AggregateFactory(queryASTFactory);
+        this.groupByFactory = new GroupByFactory();
     }
 
     public createCompositeConnectionOperationAST({
@@ -211,10 +214,6 @@ export class ConnectionFactory {
             selection,
         });
 
-        if (Object.keys(resolveTreeEdgeFields).length === 0 && !totalCountEdgeField && !pageInfoEdgeField) {
-            operation.skipConnection = true;
-        }
-
         this.hydrateConnectionOperationAST({
             relationship,
             target: target,
@@ -225,11 +224,13 @@ export class ConnectionFactory {
             resolveTreeEdgeFields,
         });
 
-        const resolveTreeAggregate = this.parseAggregateFields({
+        const resolveTreeConnectionFields = this.parseConnectionResolveTree({
             entityOrRel: relationship ?? target,
             target,
             resolveTree,
         });
+
+        const resolveTreeAggregate = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "aggregate");
 
         this.hydrateConnectionOperationWithAggregation({
             target,
@@ -239,6 +240,27 @@ export class ConnectionFactory {
             operation,
             whereArgs: resolveTreeWhere, // Cascades the filters from connection down to the aggregation generation, to appply them to aggregation match
         });
+
+        const resolveTreeGroupBy = findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "groupBy");
+        const hasGroupByFields = resolveTreeGroupBy.length > 0;
+
+        if (
+            Object.keys(resolveTreeEdgeFields).length === 0 &&
+            !totalCountEdgeField &&
+            !pageInfoEdgeField &&
+            !hasGroupByFields
+        ) {
+            operation.skipConnection = true;
+        }
+
+        if (resolveTreeGroupBy[0]) {
+            this.hydrateConnectionOperationWithGroupBy({
+                target,
+                resolveTreeGroupBy: resolveTreeGroupBy[0],
+                context,
+                operation,
+            });
+        }
 
         return operation;
     }
@@ -348,6 +370,47 @@ export class ConnectionFactory {
         }
 
         return operation;
+    }
+
+    private hydrateConnectionOperationWithGroupBy({
+        target,
+        resolveTreeGroupBy,
+        context,
+        operation,
+    }: {
+        target: ConcreteEntityAdapter;
+        resolveTreeGroupBy: ResolveTree;
+        context: Neo4jGraphQLTranslationContext;
+        operation: ConnectionReadOperation;
+    }): void {
+        const groupBy = this.groupByFactory.createGroupByField({
+            resolveTree: resolveTreeGroupBy,
+        });
+
+        const edgesResolveTree =
+            resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()]?.edges;
+        if (edgesResolveTree) {
+            const nodeResolveTree =
+                edgesResolveTree.fieldsByTypeName[target.operations.getConnectionGroupByEdgeTypename()]?.node;
+            if (nodeResolveTree) {
+                const resolveTreeNodeFieldsTypesNames = [
+                    target.name,
+                    ...target.compositeEntities.filter((e) => e instanceof InterfaceEntity).map((e) => e.name),
+                ];
+
+                const resolveTreeNodeFields = getFieldsByTypeName(nodeResolveTree, resolveTreeNodeFieldsTypesNames);
+
+                const nodeFields = this.queryASTFactory.fieldFactory.createFields(
+                    target,
+                    resolveTreeNodeFields,
+                    context
+                );
+
+                groupBy.setNodeFields(nodeFields);
+            }
+        }
+
+        operation.setGroupByFields([groupBy]);
     }
 
     // The current top-level Connection API is inconsistent with the rest of the API making the parsing more complex than it should be.
@@ -509,23 +572,6 @@ export class ConnectionFactory {
         operation.addAuthFilters(...authFilters);
 
         return operation;
-    }
-
-    private parseAggregateFields({
-        target,
-        resolveTree,
-        entityOrRel,
-    }: {
-        entityOrRel: RelationshipAdapter | ConcreteEntityAdapter;
-        target: ConcreteEntityAdapter;
-        resolveTree: ResolveTree;
-    }): ResolveTree[] {
-        const resolveTreeConnectionFields = this.parseConnectionResolveTree({
-            entityOrRel,
-            target,
-            resolveTree,
-        });
-        return findFieldsByNameInFieldsByTypeNameField(resolveTreeConnectionFields, "aggregate");
     }
 
     private parseConnectionFields({

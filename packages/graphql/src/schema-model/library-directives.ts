@@ -38,6 +38,7 @@ export const FIELD_DIRECTIVES = [
     "authorization",
     "coalesce",
     "customResolver",
+    "groupBy",
     "cypher",
     "default",
     "id",
