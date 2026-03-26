@@ -62,6 +62,7 @@ describe("https://github.com/neo4j/graphql/issues/7146", () => {
                     ${Product.plural} {
                         id
                         status
+                        statuses
                     }
                 }
             }
@@ -75,49 +76,14 @@ describe("https://github.com/neo4j/graphql/issues/7146", () => {
                 {
                     id: "123",
                     status: "ACTIVE",
-                },
-            ],
-        });
-
-        await testHelper.expectNode(Product).toEqual([
-            {
-                id: "123",
-                status: "ACTIVE",
-                statuses: ["ACTIVE", "DISABLED"],
-            },
-        ]);
-    });
-    test("should populate enum list field correctly", async () => {
-        const query = /* GraphQL */ `
-            mutation {
-                ${Product.operations.create}(input: [{id: "345"}]) {
-                    ${Product.plural} {
-                        id
-                        statuses
-                    }
-                }
-            }
-        `;
-
-        const result = await testHelper.executeGraphQL(query);
-
-        expect(result.errors).toBeFalsy();
-        expect(result?.data?.[Product.operations.create]).toEqual({
-            [Product.plural]: [
-                {
-                    id: "345",
                     statuses: ["ACTIVE", "DISABLED"],
                 },
             ],
         });
+
         await testHelper.expectNode(Product).toEqual([
             {
                 id: "123",
-                status: "ACTIVE",
-                statuses: ["ACTIVE", "DISABLED"],
-            },
-            {
-                id: "345",
                 status: "ACTIVE",
                 statuses: ["ACTIVE", "DISABLED"],
             },
