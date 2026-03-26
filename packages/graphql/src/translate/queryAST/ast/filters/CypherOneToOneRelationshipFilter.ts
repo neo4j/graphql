@@ -84,7 +84,7 @@ export class CypherOneToOneRelationshipFilter extends Filter {
         return [cypherSubqueries];
     }
 
-    public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+    public getPredicate(_queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
         return Cypher.eq(this.returnVariable, Cypher.true);
     }
 
