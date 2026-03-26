@@ -25,8 +25,10 @@ export function withConnectionObjectType({
     const connectionObjectType = composer.getOrCreateOTC(typeName);
 
     if (relationshipAdapter.isReadable()) {
+        const edgeType = withRelationshipObjectType({ relationshipAdapter, composer });
+
         connectionObjectType.addFields({
-            edges: withRelationshipObjectType({ relationshipAdapter, composer }).NonNull.List.NonNull,
+            edges: edgeType.NonNull.List.NonNull,
             totalCount: new GraphQLNonNull(GraphQLInt),
             pageInfo: new GraphQLNonNull(PageInfo),
         });

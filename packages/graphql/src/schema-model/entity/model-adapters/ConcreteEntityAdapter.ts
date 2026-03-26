@@ -161,6 +161,10 @@ export class ConcreteEntityAdapter {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregableField());
     }
 
+    public get groupByFields(): AttributeAdapter[] {
+        return Array.from(this.attributes.values()).filter((attribute) => attribute.canGroupBy());
+    }
+
     public get aggregationWhereFields(): AttributeAdapter[] {
         return Array.from(this.attributes.values()).filter((attribute) => attribute.isAggregationWhereField());
     }

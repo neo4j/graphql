@@ -49,6 +49,8 @@ import { validateRelayIdDirective } from "./custom-rules/directives/relay-id";
 import { validateSubscriptionAuthorizationDirective } from "./custom-rules/directives/subscriptionAuthorization";
 import { validateTimestampDirective } from "./custom-rules/directives/timestamp";
 import { validateVectorDirective } from "./custom-rules/directives/vector";
+
+import { validateGroupByDirective } from "./custom-rules/directives/group-by";
 import { ErrorIfSingleRelationshipNonNullable } from "./custom-rules/error-single-relationships-non-nullable";
 import { ValidJwtDirectives } from "./custom-rules/features/valid-jwt-directives";
 import { ValidRelationshipDeclaration } from "./custom-rules/features/valid-relationship-declaration";
@@ -244,12 +246,14 @@ function runValidationRulesOnFilteredDocument({
             validateTimestampDirective,
             validateSubscriptionAuthorizationDirective,
             validateVectorDirective,
+            validateGroupByDirective,
         ],
         schema,
         features?.populatedBy?.callbacks
     );
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
     if (filteredErrors.length) {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
         throw filteredErrors;
     }
 }
@@ -306,6 +310,7 @@ function validateDocument({
     const errors = validateSchema(schema);
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
     if (filteredErrors.length) {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
         throw filteredErrors;
     }
 
