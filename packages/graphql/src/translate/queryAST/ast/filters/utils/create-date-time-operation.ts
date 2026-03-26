@@ -67,5 +67,5 @@ function createDateTimeListComprehension(
 ): Cypher.ListComprehension {
     const comprehensionVar = new Cypher.Variable();
     const mapDateTime = Cypher.datetime(comprehensionVar);
-    return new Cypher.ListComprehension(comprehensionVar, param).map(mapDateTime);
+    return new Cypher.ListComprehension(comprehensionVar).in(param).map(mapDateTime);
 }

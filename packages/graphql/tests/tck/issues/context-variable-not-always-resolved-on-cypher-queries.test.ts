@@ -95,13 +95,13 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            MATCH (this:Exprlabel:test:Resource)
+            MATCH (this:Exprlabel&test&Resource)
             WHERE EXISTS {
-                MATCH (this)-[:realizationOf]->(this0:WorkLabel:test:Resource)
-                WHERE EXISTS {
-                    MATCH (this0)-[:hasResourceType]->(this1:ResourceType)
-                    WHERE this1.uri = $param0
-                }
+              MATCH (this)-[:realizationOf]->(this0:WorkLabel&test&Resource)
+              WHERE EXISTS {
+                MATCH (this0)-[:hasResourceType]->(this1:ResourceType)
+                WHERE this1.uri = $param0
+              }
             }
             WITH *
             LIMIT $param1
@@ -153,30 +153,30 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            MATCH (this:Exprlabel:test:Resource)
+            MATCH (this:Exprlabel&test&Resource)
             WHERE EXISTS {
-                MATCH (this)-[:realizationOf]->(this0:WorkLabel:test:Resource)
-                WHERE EXISTS {
-                    MATCH (this0)-[:hasResourceType]->(this1:ResourceType)
-                    WHERE this1.uri = $param0
-                }
+              MATCH (this)-[:realizationOf]->(this0:WorkLabel&test&Resource)
+              WHERE EXISTS {
+                MATCH (this0)-[:hasResourceType]->(this1:ResourceType)
+                WHERE this1.uri = $param0
+              }
             }
             WITH *
             LIMIT $param1
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this2:relToUnion]->(this3:coreRoot:Resource)
-                    WITH this3 { __resolveType: \\"coreRoot\\", __id: id(this3) } AS var4
-                    RETURN var4
-                    UNION
-                    WITH *
-                    MATCH (this)-[this5:relToUnion]->(this6:coreFrag:test:Resource)
-                    WITH this6 { iri: this6.uri, __resolveType: \\"coreFrag\\", __id: id(this6) } AS var4
-                    RETURN var4
-                }
-                WITH var4
-                RETURN collect(var4) AS var4
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this2:relToUnion]->(this3:coreRoot&Resource)
+                WITH this3 { __resolveType: 'coreRoot', __id: elementId(this3) } AS var4
+                RETURN var4
+                UNION
+                WITH *
+                MATCH (this)-[this5:relToUnion]->(this6:coreFrag&test&Resource)
+                WITH this6 { iri: this6.uri, __resolveType: 'coreFrag', __id: elementId(this6) } AS var4
+                RETURN var4
+              }
+              WITH var4
+              RETURN collect(var4) AS var4
             }
             RETURN this { iri: this.uri, relToUnion: var4 } AS this"
         `);
@@ -226,25 +226,25 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            MATCH (this:Exprlabel:test:Resource)
+            MATCH (this:Exprlabel&test&Resource)
             WHERE EXISTS {
-                MATCH (this)-[:realizationOf]->(this0:WorkLabel:test:Resource)
-                WHERE EXISTS {
-                    MATCH (this0)-[:hasResourceType]->(this1:ResourceType)
-                    WHERE this1.uri = $param0
-                }
+              MATCH (this)-[:realizationOf]->(this0:WorkLabel&test&Resource)
+              WHERE EXISTS {
+                MATCH (this0)-[:hasResourceType]->(this1:ResourceType)
+                WHERE this1.uri = $param0
+              }
             }
             WITH *
             LIMIT $param1
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this2:relToInterface]->(this3:coreFrag:test:Resource)
-                    WITH this3 { iri: this3.uri, __resolveType: \\"coreFrag\\", __id: id(this3) } AS var4
-                    RETURN var4
-                }
-                WITH var4
-                RETURN collect(var4) AS var4
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this2:relToInterface]->(this3:coreFrag&test&Resource)
+                WITH this3 { iri: this3.uri, __resolveType: 'coreFrag', __id: elementId(this3) } AS var4
+                RETURN var4
+              }
+              WITH var4
+              RETURN collect(var4) AS var4
             }
             RETURN this { iri: this.uri, relToInterface: var4 } AS this"
         `);

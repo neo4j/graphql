@@ -75,28 +75,28 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
             "CYPHER 5
             MATCH (this:Journalist)
             WHERE EXISTS {
-                MATCH (this)-[this0:HAS_KEYWORD]->(this1:Emoji)
-                WHERE this1.type = $param0
+              MATCH (this)-[this0:HAS_KEYWORD]->(this1:Emoji)
+              WHERE this1.type = $param0
             }
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this2:HAS_KEYWORD]->(this3:Emoji)
-                    WITH this3 { .id, .type, __resolveType: \\"Emoji\\", __id: id(this3) } AS var4
-                    RETURN var4
-                    UNION
-                    WITH *
-                    MATCH (this)-[this5:HAS_KEYWORD]->(this6:Hashtag)
-                    WITH this6 { __resolveType: \\"Hashtag\\", __id: id(this6) } AS var4
-                    RETURN var4
-                    UNION
-                    WITH *
-                    MATCH (this)-[this7:HAS_KEYWORD]->(this8:Text)
-                    WITH this8 { __resolveType: \\"Text\\", __id: id(this8) } AS var4
-                    RETURN var4
-                }
-                WITH var4
-                RETURN collect(var4) AS var4
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this2:HAS_KEYWORD]->(this3:Emoji)
+                WITH this3 { .id, .type, __resolveType: 'Emoji', __id: elementId(this3) } AS var4
+                RETURN var4
+                UNION
+                WITH *
+                MATCH (this)-[this5:HAS_KEYWORD]->(this6:Hashtag)
+                WITH this6 { __resolveType: 'Hashtag', __id: elementId(this6) } AS var4
+                RETURN var4
+                UNION
+                WITH *
+                MATCH (this)-[this7:HAS_KEYWORD]->(this8:Text)
+                WITH this8 { __resolveType: 'Text', __id: elementId(this8) } AS var4
+                RETURN var4
+              }
+              WITH var4
+              RETURN collect(var4) AS var4
             }
             RETURN this { .name, keywords: var4 } AS this"
         `);
@@ -129,28 +129,28 @@ describe("https://github.com/neo4j/graphql/issues/488", () => {
             "CYPHER 5
             MATCH (this:Journalist)
             WHERE NOT (EXISTS {
-                MATCH (this)-[this0:HAS_KEYWORD]->(this1:Emoji)
-                WHERE this1.type = $param0
+              MATCH (this)-[this0:HAS_KEYWORD]->(this1:Emoji)
+              WHERE this1.type = $param0
             })
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this2:HAS_KEYWORD]->(this3:Emoji)
-                    WITH this3 { .id, .type, __resolveType: \\"Emoji\\", __id: id(this3) } AS var4
-                    RETURN var4
-                    UNION
-                    WITH *
-                    MATCH (this)-[this5:HAS_KEYWORD]->(this6:Hashtag)
-                    WITH this6 { __resolveType: \\"Hashtag\\", __id: id(this6) } AS var4
-                    RETURN var4
-                    UNION
-                    WITH *
-                    MATCH (this)-[this7:HAS_KEYWORD]->(this8:Text)
-                    WITH this8 { __resolveType: \\"Text\\", __id: id(this8) } AS var4
-                    RETURN var4
-                }
-                WITH var4
-                RETURN collect(var4) AS var4
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this2:HAS_KEYWORD]->(this3:Emoji)
+                WITH this3 { .id, .type, __resolveType: 'Emoji', __id: elementId(this3) } AS var4
+                RETURN var4
+                UNION
+                WITH *
+                MATCH (this)-[this5:HAS_KEYWORD]->(this6:Hashtag)
+                WITH this6 { __resolveType: 'Hashtag', __id: elementId(this6) } AS var4
+                RETURN var4
+                UNION
+                WITH *
+                MATCH (this)-[this7:HAS_KEYWORD]->(this8:Text)
+                WITH this8 { __resolveType: 'Text', __id: elementId(this8) } AS var4
+                RETURN var4
+              }
+              WITH var4
+              RETURN collect(var4) AS var4
             }
             RETURN this { .name, keywords: var4 } AS this"
         `);

@@ -84,38 +84,38 @@ describe("https://github.com/neo4j/graphql/issues/387", () => {
             "CYPHER 5
             MATCH (this:Place)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    return '' + '' as result
-                }
-                WITH result AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                return '' + '' as result
+              }
+              WITH result AS this0
+              RETURN this0 AS var1
             }
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    return '' + '' as result
-                }
-                WITH result AS this2
-                RETURN this2 AS var3
+              CALL (this) {
+                WITH this AS this
+                return '' + '' as result
+              }
+              WITH result AS this2
+              RETURN this2 AS var3
             }
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    return ['' + ''] as result
-                }
-                UNWIND result AS var4
-                WITH var4 AS this5
-                RETURN collect(this5) AS var6
+              CALL (this) {
+                WITH this AS this
+                return ['' + ''] as result
+              }
+              UNWIND result AS var4
+              WITH var4 AS this5
+              RETURN collect(this5) AS var6
             }
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    return ['' + ''] as result
-                }
-                UNWIND result AS var7
-                WITH var7 AS this8
-                RETURN collect(this8) AS var9
+              CALL (this) {
+                WITH this AS this
+                return ['' + ''] as result
+              }
+              UNWIND result AS var7
+              WITH var7 AS this8
+              RETURN collect(this8) AS var9
             }
             RETURN this { url_works: var1, url_fails: var3, url_array_works: var6, url_array_fails: var9 } AS this"
         `);

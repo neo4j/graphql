@@ -105,19 +105,19 @@ describe("Cypher Fragment", () => {
             "CYPHER 5
             MATCH (this:User)
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this0:OWNS]->(this1:Tile)
-                    WITH this1 { .id, __resolveType: \\"Tile\\", __id: id(this1) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this3:OWNS]->(this4:Character)
-                    WITH this4 { .id, __resolveType: \\"Character\\", __id: id(this4) } AS var2
-                    RETURN var2
-                }
-                WITH var2
-                RETURN collect(var2) AS var2
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this0:OWNS]->(this1:Tile)
+                WITH this1 { .id, __resolveType: 'Tile', __id: elementId(this1) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)-[this3:OWNS]->(this4:Character)
+                WITH this4 { .id, __resolveType: 'Character', __id: elementId(this4) } AS var2
+                RETURN var2
+              }
+              WITH var2
+              RETURN collect(var2) AS var2
             }
             RETURN this { .id, owns: var2 } AS this"
         `);
@@ -215,19 +215,19 @@ describe("Cypher Fragment", () => {
             MATCH (this:Actor)
             WHERE this.name = $param0
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WITH this1 { .runtime, .title, __resolveType: \\"Movie\\", __id: id(this1) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                    WITH this4 { .runtime, .title, __resolveType: \\"Series\\", __id: id(this4) } AS var2
-                    RETURN var2
-                }
-                WITH var2
-                RETURN collect(var2) AS var2
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WITH this1 { .runtime, .title, __resolveType: 'Movie', __id: elementId(this1) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)-[this3:ACTED_IN]->(this4:Series)
+                WITH this4 { .runtime, .title, __resolveType: 'Series', __id: elementId(this4) } AS var2
+                RETURN var2
+              }
+              WITH var2
+              RETURN collect(var2) AS var2
             }
             RETURN this { .name, actedIn: var2 } AS this"
         `);

@@ -70,7 +70,7 @@ export class CompositeConnectionPartial extends ConnectionReadOperation {
         const targetNodeName = this.target.name;
         nodeProjectionMap.set({
             __resolveType: new Cypher.Literal(targetNodeName),
-            __id: Cypher.id(nestedContext.target),
+            __id: Cypher.elementId(nestedContext.target),
         });
 
         const nodeProjectionFields = this.nodeFields.map((f) => f.getProjectionField(nestedContext.target));

@@ -119,38 +119,36 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:User)
-                SET
-                    this0.id = $param0,
-                    this0.name = $param1
-                WITH *
-                CREATE (this1:Post)
-                WITH *
-                CREATE (this2:User)
-                MERGE (this1)<-[this3:HAS_CONTENT]-(this2)
-                SET
-                    this2.id = $param2
-                MERGE (this0)-[this4:HAS_CONTENT]->(this1)
-                SET
-                    this1.id = $param3
-                WITH *
-                CALL (*) {
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                }
-                CALL (*) {
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                        MATCH (this1)<-[:HAS_CONTENT]-(this5:User)
-                        WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)
-                    }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                }
-                CALL (*) {
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                }
-                RETURN this0 AS this
+              CREATE (this0:User)
+              SET
+                this0.id = $param0,
+                this0.name = $param1
+              WITH *
+              CREATE (this1:Post)
+              WITH *
+              CREATE (this2:User)
+              MERGE (this1)<-[this3:HAS_CONTENT]-(this2)
+              SET this2.id = $param2
+              MERGE (this0)-[this4:HAS_CONTENT]->(this1)
+              SET this1.id = $param3
+              WITH *
+              CALL (*) {
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+              }
+              CALL (*) {
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                  MATCH (this1)<-[:HAS_CONTENT]-(this5:User)
+                  WHERE ($jwt.sub IS NOT NULL AND this5.id = $jwt.sub)
+                }), '@neo4j/graphql/FORBIDDEN', [])
+              }
+              CALL (*) {
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+              }
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .id } AS var6
+              RETURN this { .id } AS var6
             }
             RETURN collect(var6) AS data"
         `);
@@ -210,32 +208,30 @@ describe("Cypher Auth Allow", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:User)
-                SET
-                    this0.id = $param0,
-                    this0.name = $param1
-                WITH *
-                CREATE (this1:Comment)
-                WITH *
-                CREATE (this2:User)
-                MERGE (this1)<-[this3:HAS_CONTENT]-(this2)
-                SET
-                    this2.id = $param2
-                MERGE (this0)-[this4:HAS_CONTENT]->(this1)
-                SET
-                    this1.id = $param3
-                WITH *
-                CALL (*) {
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                }
-                CALL (*) {
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                }
-                RETURN this0 AS this
+              CREATE (this0:User)
+              SET
+                this0.id = $param0,
+                this0.name = $param1
+              WITH *
+              CREATE (this1:Comment)
+              WITH *
+              CREATE (this2:User)
+              MERGE (this1)<-[this3:HAS_CONTENT]-(this2)
+              SET this2.id = $param2
+              MERGE (this0)-[this4:HAS_CONTENT]->(this1)
+              SET this1.id = $param3
+              WITH *
+              CALL (*) {
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+              }
+              CALL (*) {
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+              }
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                RETURN this { .id } AS var5
+              RETURN this { .id } AS var5
             }
             RETURN collect(var5) AS data"
         `);
@@ -290,38 +286,36 @@ describe("Cypher Auth Allow", () => {
             WHERE this.id = $param0
             WITH *
             CALL (*) {
-                MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+              MATCH (this)-[this0:HAS_CONTENT]->(this1:Comment)
+              WITH *
+              WHERE this1.id = $param1
+              WITH *
+              CALL (*) {
+                MATCH (this1)<-[this2:HAS_CONTENT]-(this3:User)
                 WITH *
-                WHERE this1.id = $param1
+                SET this3.id = $param2
                 WITH *
-                CALL (*) {
-                    MATCH (this1)<-[this2:HAS_CONTENT]-(this3:User)
-                    WITH *
-                    SET
-                        this3.id = $param2
-                    WITH *
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                }
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+              }
             }
             WITH *
             CALL (*) {
-                MATCH (this)-[this4:HAS_CONTENT]->(this5:Post)
+              MATCH (this)-[this4:HAS_CONTENT]->(this5:Post)
+              WITH *
+              WHERE this5.id = $param5
+              WITH *
+              CALL (*) {
+                MATCH (this5)<-[this6:HAS_CONTENT]-(this7:User)
                 WITH *
-                WHERE this5.id = $param5
+                SET this7.id = $param6
                 WITH *
-                CALL (*) {
-                    MATCH (this5)<-[this6:HAS_CONTENT]-(this7:User)
-                    WITH *
-                    SET
-                        this7.id = $param6
-                    WITH *
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this7.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                }
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                    MATCH (this5)<-[:HAS_CONTENT]-(this8:User)
-                    WHERE ($jwt.sub IS NOT NULL AND this8.id = $jwt.sub)
-                }), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this7.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+              }
+              WITH *
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
+                MATCH (this5)<-[:HAS_CONTENT]-(this8:User)
+                WHERE ($jwt.sub IS NOT NULL AND this8.id = $jwt.sub)
+              }), '@neo4j/graphql/FORBIDDEN', [])
             }
             WITH this
             RETURN this { .id } AS this"

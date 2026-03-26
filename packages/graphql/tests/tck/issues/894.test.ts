@@ -71,20 +71,20 @@ describe("https://github.com/neo4j/graphql/issues/894", () => {
             WHERE this.name = $param0
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this0:Organization)
-                    WHERE this0._id = $param1
-                    CREATE (this)-[this1:ACTIVELY_MANAGING]->(this0)
-                }
+              CALL (this) {
+                MATCH (this0:Organization)
+                WHERE this0._id = $param1
+                CREATE (this)-[this1:ACTIVELY_MANAGING]->(this0)
+              }
             }
             WITH *
             CALL (*) {
-                CALL (this) {
-                    OPTIONAL MATCH (this)-[this2:ACTIVELY_MANAGING]->(this3:Organization)
-                    WHERE NOT (this3._id = $param2)
-                    WITH *
-                    DELETE this2
-                }
+              CALL (this) {
+                OPTIONAL MATCH (this)-[this2:ACTIVELY_MANAGING]->(this3:Organization)
+                WHERE NOT (this3._id = $param2)
+                WITH *
+                DELETE this2
+              }
             }
             WITH this
             RETURN this { id: this._id } AS this"

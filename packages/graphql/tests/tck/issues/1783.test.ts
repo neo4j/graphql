@@ -129,44 +129,44 @@ describe("https://github.com/neo4j/graphql/issues/1783", () => {
             "CYPHER 5
             MATCH (this:Series)
             WHERE (this.current = $param0 AND single(this0 IN [(this)-[this3:ARCHITECTURE]->(this0:MasterData) WHERE (EXISTS {
-                MATCH (this0)-[this1:HAS_NAME]->(this2:NameDetails)
-                WHERE (this2.fullName = $param1 AND this1.current = $param2)
+              MATCH (this0)-[this1:HAS_NAME]->(this2:NameDetails)
+              WHERE (this2.fullName = $param1 AND this1.current = $param2)
             } AND this3.current = $param3) | 1] WHERE true) AND EXISTS {
-                MATCH (this)-[this4:HAS_NAME]->(this5:NameDetails)
-                WHERE (this5.fullName CONTAINS $param4 AND this4.current = $param5)
+              MATCH (this)-[this4:HAS_NAME]->(this5:NameDetails)
+              WHERE (this5.fullName CONTAINS $param4 AND this4.current = $param5)
             })
             CALL (this) {
-                MATCH (this)-[this6:HAS_NAME]->(this7:NameDetails)
-                WHERE this6.current = $param6
-                WITH collect({ node: this7, relationship: this6 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this7, edge.relationship AS this6
-                    RETURN collect({ node: { fullName: this7.fullName, __resolveType: \\"NameDetails\\" } }) AS var8
-                }
-                RETURN { edges: var8 } AS var9
+              MATCH (this)-[this6:HAS_NAME]->(this7:NameDetails)
+              WHERE this6.current = $param6
+              WITH collect({node: this7, relationship: this6}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this7, edge.relationship AS this6
+                RETURN collect({node: {fullName: this7.fullName, __resolveType: 'NameDetails'}}) AS var8
+              }
+              RETURN {edges: var8} AS var9
             }
             CALL (this) {
-                MATCH (this)-[this10:ARCHITECTURE]->(this11:MasterData)
-                WHERE this10.current = $param7
-                WITH collect({ node: this11, relationship: this10 }) AS edges
-                CALL (edges) {
+              MATCH (this)-[this10:ARCHITECTURE]->(this11:MasterData)
+              WHERE this10.current = $param7
+              WITH collect({node: this11, relationship: this10}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this11, edge.relationship AS this10
+                CALL (this11) {
+                  MATCH (this11)-[this12:HAS_NAME]->(this13:NameDetails)
+                  WHERE this12.current = $param8
+                  WITH collect({node: this13, relationship: this12}) AS edges
+                  CALL (edges) {
                     UNWIND edges AS edge
-                    WITH edge.node AS this11, edge.relationship AS this10
-                    CALL (this11) {
-                        MATCH (this11)-[this12:HAS_NAME]->(this13:NameDetails)
-                        WHERE this12.current = $param8
-                        WITH collect({ node: this13, relationship: this12 }) AS edges
-                        CALL (edges) {
-                            UNWIND edges AS edge
-                            WITH edge.node AS this13, edge.relationship AS this12
-                            RETURN collect({ node: { fullName: this13.fullName, __resolveType: \\"NameDetails\\" } }) AS var14
-                        }
-                        RETURN { edges: var14 } AS var15
-                    }
-                    RETURN collect({ node: { nameDetailsConnection: var15, __resolveType: \\"MasterData\\" } }) AS var16
+                    WITH edge.node AS this13, edge.relationship AS this12
+                    RETURN collect({node: {fullName: this13.fullName, __resolveType: 'NameDetails'}}) AS var14
+                  }
+                  RETURN {edges: var14} AS var15
                 }
-                RETURN { edges: var16 } AS var17
+                RETURN collect({node: {nameDetailsConnection: var15, __resolveType: 'MasterData'}}) AS var16
+              }
+              RETURN {edges: var16} AS var17
             }
             RETURN this { .id, nameDetailsConnection: var9, architectureConnection: var17 } AS this"
         `);

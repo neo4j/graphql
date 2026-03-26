@@ -64,11 +64,11 @@ describe("https://github.com/neo4j/graphql/issues/1687", () => {
             "CYPHER 5
             MATCH (this:Genre)
             WHERE (EXISTS {
-                MATCH (this)<-[this0:HAS_GENRE]-(this1)
-                WHERE (this1.title = $param0 AND this1:Movie)
+              MATCH (this)<-[this0:HAS_GENRE]-(this1)
+              WHERE (this1.title = $param0 AND this1:Movie)
             } AND NOT (EXISTS {
-                MATCH (this)<-[this0:HAS_GENRE]-(this1)
-                WHERE NOT (this1.title = $param0 AND this1:Movie)
+              MATCH (this)<-[this0:HAS_GENRE]-(this1)
+              WHERE NOT (this1.title = $param0 AND this1:Movie)
             }))
             RETURN this { .name } AS this"
         `);

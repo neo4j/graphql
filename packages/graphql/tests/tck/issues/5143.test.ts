@@ -81,18 +81,18 @@ describe("https://github.com/neo4j/graphql/issues/5143", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (video:Video)
-                RETURN video
-                LIMIT 1
+              MATCH (video:Video)
+              RETURN video
+              LIMIT 1
             }
             WITH video AS this0
             WITH *
             WHERE ($isAuthenticated = true AND (EXISTS {
-                MATCH (this0)<-[:PUBLISHER]-(this1:User)
-                WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)
+              MATCH (this0)<-[:PUBLISHER]-(this1:User)
+              WHERE ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)
             } AND NOT (EXISTS {
-                MATCH (this0)<-[:PUBLISHER]-(this1:User)
-                WHERE NOT ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)
+              MATCH (this0)<-[:PUBLISHER]-(this1:User)
+              WHERE NOT ($jwt.sub IS NOT NULL AND this1.id = $jwt.sub)
             })))
             WITH this0 { .id } AS this0
             RETURN this0 AS this"

@@ -117,7 +117,7 @@ describe("Cypher Auth Roles", () => {
             "CYPHER 5
             MATCH (this:User)
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             RETURN this { .id, .name } AS this"
         `);
 
@@ -155,8 +155,8 @@ describe("Cypher Auth Roles", () => {
             "CYPHER 5
             MATCH (this:User)
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             RETURN this { .id, .name, .password } AS this"
         `);
 
@@ -195,18 +195,18 @@ describe("Cypher Auth Roles", () => {
             "CYPHER 5
             MATCH (this:User)
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h
-                }
-                WITH h AS this0
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this0 { .url } AS this0
-                RETURN collect(this0) AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:HAS_HISTORY]->(h:History) RETURN h
+              }
+              WITH h AS this0
+              WITH *
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+              WITH this0 { .url } AS this0
+              RETURN collect(this0) AS var1
             }
             RETURN this { history: var1 } AS this"
         `);
@@ -247,13 +247,12 @@ describe("Cypher Auth Roles", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:User)
-                SET
-                    create_this1.id = create_var0.id
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                CALL apoc.util.validate((create_var0.password IS NOT NULL AND NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param4 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN create_this1
+              CREATE (create_this1:User)
+              SET create_this1.id = create_var0.id
+              WITH *
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+              CALL apoc.util.validate((create_var0.password IS NOT NULL AND NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param4 IN $jwt.roles))), '@neo4j/graphql/FORBIDDEN', [])
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
         `);
@@ -298,14 +297,14 @@ describe("Cypher Auth Roles", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:User)
-                SET
-                    create_this1.id = create_var0.id,
-                    create_this1.password = create_var0.password
-                WITH *
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                CALL apoc.util.validate((create_var0.password IS NOT NULL AND NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param4 IN $jwt.roles))), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN create_this1
+              CREATE (create_this1:User)
+              SET
+                create_this1.id = create_var0.id,
+                create_this1.password = create_var0.password
+              WITH *
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param3 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+              CALL apoc.util.validate((create_var0.password IS NOT NULL AND NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $create_param4 IN $jwt.roles))), '@neo4j/graphql/FORBIDDEN', [])
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
         `);
@@ -353,15 +352,14 @@ describe("Cypher Auth Roles", () => {
             WITH *
             WHERE this.id = $param0
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             WITH *
-            SET
-                this.id = $param4
+            SET this.id = $param4
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             WITH this
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             RETURN this { .id } AS this"
         `);
 
@@ -405,17 +403,16 @@ describe("Cypher Auth Roles", () => {
             WITH *
             WHERE this.id = $param0
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             WITH *
-            SET
-                this.password = $param5
+            SET this.password = $param5
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param7 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param7 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             WITH this
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param8 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param8 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             RETURN this { .id } AS this"
         `);
 
@@ -461,19 +458,19 @@ describe("Cypher Auth Roles", () => {
             WITH *
             WITH *
             CALL (*) {
-                CALL (this) {
-                    MATCH (this0:Post)
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    CREATE (this)-[this1:HAS_POST]->(this0)
-                    WITH *
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH *
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                }
+              CALL (this) {
+                MATCH (this0:Post)
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+                CREATE (this)-[this1:HAS_POST]->(this0)
+                WITH *
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+                WITH *
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+              }
             }
             WITH this
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             RETURN this { .id } AS this"
         `);
 
@@ -522,21 +519,21 @@ describe("Cypher Auth Roles", () => {
             WITH *
             WITH *
             CALL (*) {
-                MATCH (this)<-[this0:HAS_COMMENT]-(this1:Post)
-                WITH *
-                WITH *
-                CALL (*) {
-                    CALL (this1) {
-                        MATCH (this2:User)
-                        WHERE this2.id = $param0
-                        CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                        CREATE (this1)-[this3:HAS_POST]->(this2)
-                        WITH *
-                        CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                        WITH *
-                        CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    }
+              MATCH (this)<-[this0:HAS_COMMENT]-(this1:Post)
+              WITH *
+              WITH *
+              CALL (*) {
+                CALL (this1) {
+                  MATCH (this2:User)
+                  WHERE this2.id = $param0
+                  CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+                  CREATE (this1)-[this3:HAS_POST]->(this2)
+                  WITH *
+                  CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+                  WITH *
+                  CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
                 }
+              }
             }
             WITH this
             RETURN this { .content } AS this"
@@ -581,22 +578,22 @@ describe("Cypher Auth Roles", () => {
             WITH *
             WITH *
             CALL (*) {
-                CALL (this) {
-                    OPTIONAL MATCH (this)-[this0:HAS_POST]->(this1:Post)
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH *
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH *
-                    DELETE this0
-                    WITH *
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH *
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                }
+              CALL (this) {
+                OPTIONAL MATCH (this)-[this0:HAS_POST]->(this1:Post)
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+                WITH *
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+                WITH *
+                DELETE this0
+                WITH *
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+                WITH *
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+              }
             }
             WITH this
             WITH *
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             RETURN this { .id } AS this"
         `);
 
@@ -648,24 +645,24 @@ describe("Cypher Auth Roles", () => {
             WITH *
             WITH *
             CALL (*) {
-                MATCH (this)<-[this0:HAS_COMMENT]-(this1:Post)
-                WITH *
-                WITH *
-                CALL (*) {
-                    CALL (this1) {
-                        OPTIONAL MATCH (this1)-[this2:HAS_POST]->(this3:User)
-                        WHERE this3.id = $param0
-                        CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                        WITH *
-                        CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                        WITH *
-                        DELETE this2
-                        WITH *
-                        CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                        WITH *
-                        CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    }
+              MATCH (this)<-[this0:HAS_COMMENT]-(this1:Post)
+              WITH *
+              WITH *
+              CALL (*) {
+                CALL (this1) {
+                  OPTIONAL MATCH (this1)-[this2:HAS_POST]->(this3:User)
+                  WHERE this3.id = $param0
+                  CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+                  WITH *
+                  CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param4 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+                  WITH *
+                  DELETE this2
+                  WITH *
+                  CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param5 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+                  WITH *
+                  CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param6 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
                 }
+              }
             }
             WITH this
             RETURN this { .content } AS this"
@@ -706,7 +703,7 @@ describe("Cypher Auth Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             WITH *
             DETACH DELETE this"
         `);
@@ -742,16 +739,16 @@ describe("Cypher Auth Roles", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
+            CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param2 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)-[this0:HAS_POST]->(this1:Post)
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH this0, collect(DISTINCT this1) AS var2
-                CALL (var2) {
-                    UNWIND var2 AS var3
-                    DETACH DELETE var3
-                }
+              OPTIONAL MATCH (this)-[this0:HAS_POST]->(this1:Post)
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $param3 IN $jwt.roles)), '@neo4j/graphql/FORBIDDEN', [])
+              WITH this0, collect(DISTINCT this1) AS var2
+              CALL (var2) {
+                UNWIND var2 AS var3
+                DETACH DELETE var3
+              }
             }
             WITH *
             DETACH DELETE this"

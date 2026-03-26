@@ -65,14 +65,14 @@ describe("https://github.com/neo4j/graphql/issues/4004", () => {
             "CYPHER 5
             MATCH (this:Series)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH(this)<-[:IN_SERIES]-(episode:Episode)
-                    RETURN episode as n LIMIT $param0[0]
-                }
-                WITH n AS this0
-                WITH this0 { .id } AS this0
-                RETURN collect(this0) AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH(this)<-[:IN_SERIES]-(episode:Episode)
+                RETURN episode as n LIMIT $param0[0]
+              }
+              WITH n AS this0
+              WITH this0 { .id } AS this0
+              RETURN collect(this0) AS var1
             }
             RETURN this { allEpisodes: var1 } AS this"
         `);

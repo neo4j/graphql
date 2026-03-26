@@ -225,14 +225,14 @@ describe("cypher directive filtering - One To One Relationship", () => {
             WITH *
             WHERE this1 = true
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)<-[:ACTED_IN]-(actor:Actor)
-                    RETURN actor
-                }
-                WITH actor AS this2
-                WITH this2 { .name } AS this2
-                RETURN head(collect(this2)) AS var3
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)<-[:ACTED_IN]-(actor:Actor)
+                RETURN actor
+              }
+              WITH actor AS this2
+              WITH this2 { .name } AS this2
+              RETURN head(collect(this2)) AS var3
             }
             RETURN this { .title, actor: var3 } AS this"
         `);
@@ -458,22 +458,23 @@ describe("cypher directive filtering - One To One Relationship", () => {
             WITH *
             WHERE this1 = true
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this2
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this2
+              CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this3
-                    WITH this3 { .name } AS this3
-                    RETURN head(collect(this3)) AS var4
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
+                WITH director AS this3
+                WITH this3 { .name } AS this3
+                RETURN head(collect(this3)) AS var4
+              }
+              CALL (this2) {
                 CALL (this2) {
                     CALL (this2) {
                         WITH this2 AS this
@@ -576,22 +577,23 @@ describe("cypher directive filtering - One To One Relationship", () => {
             WITH *
             WHERE this1 = true
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this2
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this2
+              CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this3
-                    WITH this3 { .name } AS this3
-                    RETURN head(collect(this3)) AS var4
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
+                WITH director AS this3
+                WITH this3 { .name } AS this3
+                RETURN head(collect(this3)) AS var4
+              }
+              CALL (this2) {
                 CALL (this2) {
                     CALL (this2) {
                         WITH this2 AS this
@@ -695,22 +697,23 @@ describe("cypher directive filtering - One To One Relationship", () => {
             WITH *
             WHERE this1 = true
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this2
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this2
+              CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this3
-                    WITH this3 { .name } AS this3
-                    RETURN head(collect(this3)) AS var4
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
+                WITH director AS this3
+                WITH this3 { .name } AS this3
+                RETURN head(collect(this3)) AS var4
+              }
+              CALL (this2) {
                 CALL (this2) {
                     CALL (this2) {
                         WITH this2 AS this
@@ -814,22 +817,23 @@ describe("cypher directive filtering - One To One Relationship", () => {
             WITH *
             WHERE this1 = true
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this2
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this2
+              CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this3
-                    WITH this3 { .name } AS this3
-                    RETURN head(collect(this3)) AS var4
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
+                WITH director AS this3
+                WITH this3 { .name } AS this3
+                RETURN head(collect(this3)) AS var4
+              }
+              CALL (this2) {
                 CALL (this2) {
                     CALL (this2) {
                         WITH this2 AS this
@@ -934,22 +938,23 @@ describe("cypher directive filtering - One To One Relationship", () => {
             WITH *
             WHERE this1 = true
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this2
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this2
+              CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this3
-                    WITH this3 { .name } AS this3
-                    RETURN head(collect(this3)) AS var4
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
+                WITH director AS this3
+                WITH this3 { .name } AS this3
+                RETURN head(collect(this3)) AS var4
+              }
+              CALL (this2) {
                 CALL (this2) {
                     CALL (this2) {
                         WITH this2 AS this
@@ -1054,22 +1059,23 @@ describe("cypher directive filtering - One To One Relationship", () => {
             WITH *
             WHERE this1 = true
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this2
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this2
+              CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this3
-                    WITH this3 { .name } AS this3
-                    RETURN head(collect(this3)) AS var4
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
+                WITH director AS this3
+                WITH this3 { .name } AS this3
+                RETURN head(collect(this3)) AS var4
+              }
+              CALL (this2) {
                 CALL (this2) {
                     CALL (this2) {
                         WITH this2 AS this
@@ -1173,22 +1179,23 @@ describe("cypher directive filtering - One To One Relationship", () => {
             WITH *
             WHERE this1 = true
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this2
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this2
+              CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this3
-                    WITH this3 { .name } AS this3
-                    RETURN head(collect(this3)) AS var4
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
+                WITH director AS this3
+                WITH this3 { .name } AS this3
+                RETURN head(collect(this3)) AS var4
+              }
+              CALL (this2) {
                 CALL (this2) {
                     CALL (this2) {
                         WITH this2 AS this
@@ -1292,22 +1299,23 @@ describe("cypher directive filtering - One To One Relationship", () => {
             WITH *
             WHERE this1 = true
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this2
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this2
+              CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this3
-                    WITH this3 { .name } AS this3
-                    RETURN head(collect(this3)) AS var4
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
+                WITH director AS this3
+                WITH this3 { .name } AS this3
+                RETURN head(collect(this3)) AS var4
+              }
+              CALL (this2) {
                 CALL (this2) {
                     CALL (this2) {
                         WITH this2 AS this
@@ -1412,46 +1420,46 @@ describe("cypher directive filtering - One To One Relationship", () => {
             WITH *
             WHERE this1 = true
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (this)-[:DIRECTED]->(movie:Movie)
-                    RETURN movie
-                }
-                WITH movie AS this2
-                CALL (this2) {
-                    MATCH (this2)<-[this3:ACTED_IN]-(this4:Person)
-                    WITH DISTINCT this4
-                    CALL (this4) {
-                        MATCH (this4)-[this5:ACTED_IN]->(this6:Movie)
-                        WITH DISTINCT this6
-                        CALL (this6) {
-                            CALL (this6) {
-                                WITH this6 AS this
-                                MATCH (this)<-[:DIRECTED]-(director:Person)
-                                RETURN director
-                            }
-                            WITH director AS this7
-                            WITH this7 { .name } AS this7
-                            RETURN head(collect(this7)) AS var8
-                        }
-                        WITH this6 { .title, directed_by: var8 } AS this6
-                        RETURN collect(this6) AS var9
+              CALL (this) {
+                WITH this AS this
+                MATCH (this)-[:DIRECTED]->(movie:Movie)
+                RETURN movie
+              }
+              WITH movie AS this2
+              CALL (this2) {
+                MATCH (this2)<-[this3:ACTED_IN]-(this4:Person)
+                WITH DISTINCT this4
+                CALL (this4) {
+                  MATCH (this4)-[this5:ACTED_IN]->(this6:Movie)
+                  WITH DISTINCT this6
+                  CALL (this6) {
+                    CALL (this6) {
+                      WITH this6 AS this
+                      MATCH (this)<-[:DIRECTED]-(director:Person)
+                      RETURN director
                     }
-                    WITH this4 { .name, movies: var9 } AS this4
-                    RETURN collect(this4) AS var10
+                    WITH director AS this7
+                    WITH this7 { .name } AS this7
+                    RETURN head(collect(this7)) AS var8
+                  }
+                  WITH this6 { .title, directed_by: var8 } AS this6
+                  RETURN collect(this6) AS var9
                 }
+                WITH this4 { .name, movies: var9 } AS this4
+                RETURN collect(this4) AS var10
+              }
+              CALL (this2) {
                 CALL (this2) {
-                    CALL (this2) {
-                        WITH this2 AS this
-                        MATCH (this)<-[:DIRECTED]-(director:Person)
-                        RETURN director
-                    }
-                    WITH director AS this11
-                    WITH this11 { .name } AS this11
-                    RETURN head(collect(this11)) AS var12
+                  WITH this2 AS this
+                  MATCH (this)<-[:DIRECTED]-(director:Person)
+                  RETURN director
                 }
-                WITH this2 { .title, directed_by: var12, actors: var10 } AS this2
-                RETURN head(collect(this2)) AS var13
+                WITH director AS this11
+                WITH this11 { .name } AS this11
+                RETURN head(collect(this11)) AS var12
+              }
+              WITH this2 { .title, directed_by: var12, actors: var10 } AS this2
+              RETURN head(collect(this2)) AS var13
             }
             RETURN this { directed: var13 } AS this"
         `);
@@ -1530,14 +1538,14 @@ describe("cypher directive filtering - One To One Relationship", () => {
             WITH *
             WHERE (this.title ENDS WITH $param1 AND this1 = true)
             CALL (this) {
-                MATCH (this)<-[this2:ACTED_IN]-(this3:Person)
-                WITH collect({ node: this3, relationship: this2 }) AS edges, count(this3) AS totalCount
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this3, edge.relationship AS this2
-                    RETURN collect({ node: { name: this3.name, __resolveType: \\"Person\\" } }) AS var4
-                }
-                RETURN { edges: var4, totalCount: totalCount } AS var5
+              MATCH (this)<-[this2:ACTED_IN]-(this3:Person)
+              WITH collect({node: this3, relationship: this2}) AS edges, count(this3) AS totalCount
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this3, edge.relationship AS this2
+                RETURN collect({node: {name: this3.name, __resolveType: 'Person'}}) AS var4
+              }
+              RETURN {edges: var4, totalCount: totalCount} AS var5
             }
             RETURN this { actorsConnection: var5 } AS this"
         `);

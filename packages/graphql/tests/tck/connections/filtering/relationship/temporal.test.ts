@@ -77,15 +77,15 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Temporal", () =>
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE (this0.startDate > $param0 AND this0.endDateTime < datetime($param1))
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ properties: { startDate: this0.startDate, endDateTime: apoc.date.convertFormat(toString(this0.endDateTime), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), __resolveType: \\"ActedIn\\" }, node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var2
-                }
-                RETURN { edges: var2 } AS var3
+              MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              WHERE (this0.startDate > $param0 AND this0.endDateTime < datetime($param1))
+              WITH collect({node: this1, relationship: this0}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this1, edge.relationship AS this0
+                RETURN collect({properties: {startDate: this0.startDate, endDateTime: apoc.date.convertFormat(toString(this0.endDateTime), 'iso_zoned_date_time', 'iso_offset_date_time'), __resolveType: 'ActedIn'}, node: {name: this1.name, __resolveType: 'Actor'}}) AS var2
+              }
+              RETURN {edges: var2} AS var3
             }
             RETURN this { .title, actorsConnection: var3 } AS this"
         `);

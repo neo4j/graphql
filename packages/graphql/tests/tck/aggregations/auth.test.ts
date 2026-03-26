@@ -87,12 +87,12 @@ describe("Cypher Aggregations with Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:User)
-                WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN { nodes: count(DISTINCT this) } AS var0
+              MATCH (this:User)
+              WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+              RETURN {nodes: count(DISTINCT this)} AS var0
             }
-            RETURN { aggregate: { count: var0 } } AS this"
+            RETURN {aggregate: {count: var0}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -125,12 +125,12 @@ describe("Cypher Aggregations with Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:User)
-                WHERE (this.name = $param0 AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                RETURN { nodes: count(DISTINCT this) } AS var0
+              MATCH (this:User)
+              WHERE (this.name = $param0 AND ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)))
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+              RETURN {nodes: count(DISTINCT this)} AS var0
             }
-            RETURN { aggregate: { count: var0 } } AS this"
+            RETURN {aggregate: {count: var0}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -167,13 +167,13 @@ describe("Cypher Aggregations with Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:User)
-                WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH DISTINCT this
-                RETURN { min: min(this.imdbRatingInt), max: max(this.imdbRatingInt) } AS var0
+              MATCH (this:User)
+              WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+              WITH DISTINCT this
+              RETURN {min: min(this.imdbRatingInt), max: max(this.imdbRatingInt)} AS var0
             }
-            RETURN { aggregate: { node: { imdbRatingInt: var0 } } } AS this"
+            RETURN {aggregate: {node: {imdbRatingInt: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -209,13 +209,13 @@ describe("Cypher Aggregations with Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:User)
-                WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH DISTINCT this
-                RETURN { min: min(this.imdbRatingFloat), max: max(this.imdbRatingFloat) } AS var0
+              MATCH (this:User)
+              WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+              WITH DISTINCT this
+              RETURN {min: min(this.imdbRatingFloat), max: max(this.imdbRatingFloat)} AS var0
             }
-            RETURN { aggregate: { node: { imdbRatingFloat: var0 } } } AS this"
+            RETURN {aggregate: {node: {imdbRatingFloat: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -251,13 +251,13 @@ describe("Cypher Aggregations with Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:User)
-                WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH DISTINCT this
-                RETURN { min: min(this.imdbRatingBigInt), max: max(this.imdbRatingBigInt) } AS var0
+              MATCH (this:User)
+              WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+              WITH DISTINCT this
+              RETURN {min: min(this.imdbRatingBigInt), max: max(this.imdbRatingBigInt)} AS var0
             }
-            RETURN { aggregate: { node: { imdbRatingBigInt: var0 } } } AS this"
+            RETURN {aggregate: {node: {imdbRatingBigInt: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -293,15 +293,15 @@ describe("Cypher Aggregations with Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:User)
-                WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH DISTINCT this
-                ORDER BY size(this.name) DESC
-                WITH collect(this.name) AS list
-                RETURN { longest: head(list), shortest: last(list) } AS var0
+              MATCH (this:User)
+              WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+              WITH DISTINCT this
+              ORDER BY size(this.name) DESC
+              WITH collect(this.name) AS list
+              RETURN {longest: head(list), shortest: last(list)} AS var0
             }
-            RETURN { aggregate: { node: { name: var0 } } } AS this"
+            RETURN {aggregate: {node: {name: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -337,13 +337,13 @@ describe("Cypher Aggregations with Auth", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:User)
-                WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                WITH DISTINCT this
-                RETURN { min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var0
+              MATCH (this:User)
+              WHERE ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub))
+              CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+              WITH DISTINCT this
+              RETURN {min: apoc.date.convertFormat(toString(min(this.createdAt)), 'iso_zoned_date_time', 'iso_offset_date_time'), max: apoc.date.convertFormat(toString(max(this.createdAt)), 'iso_zoned_date_time', 'iso_offset_date_time')} AS var0
             }
-            RETURN { aggregate: { node: { createdAt: var0 } } } AS this"
+            RETURN {aggregate: {node: {createdAt: var0}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

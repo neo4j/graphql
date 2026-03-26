@@ -66,24 +66,24 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                CALL (this1) {
-                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
-                    RETURN count(this3) = $param0 AS var4
-                }
-                WITH *
-                WHERE var4 = true
-                RETURN count(this1) > 0 AS var5
+              MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
+              CALL (this1) {
+                MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
+                RETURN count(this3) = $param0 AS var4
+              }
+              WITH *
+              WHERE var4 = true
+              RETURN count(this1) > 0 AS var5
             }
             CALL (this) {
-                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                CALL (this1) {
-                    MATCH (this1)<-[this6:IN_GENRE]-(this7:Movie)
-                    RETURN count(this7) = $param1 AS var8
-                }
-                WITH *
-                WHERE NOT (var8 = true)
-                RETURN count(this1) > 0 AS var9
+              MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
+              CALL (this1) {
+                MATCH (this1)<-[this6:IN_GENRE]-(this7:Movie)
+                RETURN count(this7) = $param1 AS var8
+              }
+              WITH *
+              WHERE NOT (var8 = true)
+              RETURN count(this1) > 0 AS var9
             }
             WITH *
             WHERE (var9 = false AND var5 = true)
@@ -125,24 +125,24 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                CALL (this1) {
-                    MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
-                    RETURN count(this3) = $param0 AS var4
-                }
-                WITH *
-                WHERE (this1.name = $param1 AND var4 = true)
-                RETURN count(this1) > 0 AS var5
+              MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
+              CALL (this1) {
+                MATCH (this1)<-[this2:IN_GENRE]-(this3:Movie)
+                RETURN count(this3) = $param0 AS var4
+              }
+              WITH *
+              WHERE (this1.name = $param1 AND var4 = true)
+              RETURN count(this1) > 0 AS var5
             }
             CALL (this) {
-                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                CALL (this1) {
-                    MATCH (this1)<-[this6:IN_GENRE]-(this7:Movie)
-                    RETURN count(this7) = $param2 AS var8
-                }
-                WITH *
-                WHERE NOT (this1.name = $param3 AND var8 = true)
-                RETURN count(this1) > 0 AS var9
+              MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
+              CALL (this1) {
+                MATCH (this1)<-[this6:IN_GENRE]-(this7:Movie)
+                RETURN count(this7) = $param2 AS var8
+              }
+              WITH *
+              WHERE NOT (this1.name = $param3 AND var8 = true)
+              RETURN count(this1) > 0 AS var9
             }
             WITH *
             WHERE (var9 = false AND var5 = true)
@@ -180,11 +180,11 @@ describe("https://github.com/neo4j/graphql/issues/2713", () => {
             "CYPHER 5
             MATCH (this:Movie)
             WHERE (EXISTS {
-                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                WHERE this1.name = $param0
+              MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
+              WHERE this1.name = $param0
             } AND NOT (EXISTS {
-                MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
-                WHERE NOT (this1.name = $param0)
+              MATCH (this)-[this0:IN_GENRE]->(this1:Genre)
+              WHERE NOT (this1.name = $param0)
             }))
             RETURN this { .title } AS this"
         `);

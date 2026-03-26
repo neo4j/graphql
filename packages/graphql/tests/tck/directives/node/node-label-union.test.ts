@@ -70,23 +70,23 @@ describe("Node directive with unions", () => {
             MATCH (this:Film)
             WHERE this.title = $param0
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this0:SEARCH]->(this1:Category:ExtraLabel1:ExtraLabel2)
-                    WHERE this1.name = $param1
-                    WITH this1 { .name, __resolveType: \\"Genre\\", __id: id(this1) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this3:SEARCH]->(this4:Film)
-                    WHERE this4.title = $param2
-                    WITH this4 { .title, __resolveType: \\"Movie\\", __id: id(this4) } AS var2
-                    RETURN var2
-                }
-                WITH var2
-                SKIP $param3
-                LIMIT $param4
-                RETURN collect(var2) AS var2
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this0:SEARCH]->(this1:Category&ExtraLabel1&ExtraLabel2)
+                WHERE this1.name = $param1
+                WITH this1 { .name, __resolveType: 'Genre', __id: elementId(this1) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)-[this3:SEARCH]->(this4:Film)
+                WHERE this4.title = $param2
+                WITH this4 { .title, __resolveType: 'Movie', __id: elementId(this4) } AS var2
+                RETURN var2
+              }
+              WITH var2
+              SKIP $param3
+              LIMIT $param4
+              RETURN collect(var2) AS var2
             }
             RETURN this { search: var2 } AS this"
         `);

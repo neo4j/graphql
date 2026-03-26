@@ -70,14 +70,14 @@ describe("Field Level Aggregations Alias", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WITH DISTINCT this1
-                    ORDER BY size(this1.name) DESC
-                    WITH collect(this1.name) AS list
-                    RETURN { shortest: last(list) } AS var2
-                }
-                RETURN { aggregate: { node: { myName: var2 } } } AS var3
+              CALL (this) {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH DISTINCT this1
+                ORDER BY size(this1.name) DESC
+                WITH collect(this1.name) AS list
+                RETURN {shortest: last(list)} AS var2
+              }
+              RETURN {aggregate: {node: {myName: var2}}} AS var3
             }
             RETURN this { actorsConnection: var3 } AS this"
         `);
@@ -108,12 +108,12 @@ describe("Field Level Aggregations Alias", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                    WITH DISTINCT this0
-                    RETURN { max: max(this0.screentime) } AS var2
-                }
-                RETURN { aggregate: { edge: { time: var2 } } } AS var3
+              CALL (this) {
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+                WITH DISTINCT this0
+                RETURN {max: max(this0.screentime)} AS var2
+              }
+              RETURN {aggregate: {edge: {time: var2}}} AS var3
             }
             RETURN this { actorsConnection: var3 } AS this"
         `);

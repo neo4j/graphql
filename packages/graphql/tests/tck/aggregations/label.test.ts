@@ -76,23 +76,23 @@ describe("Cypher Aggregations Many while Alias fields", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Film)
-                WITH DISTINCT this
-                ORDER BY size(this.title) DESC
-                WITH collect(this.title) AS list
-                RETURN { _longest: head(list), _shortest: last(list) } AS var0
+              MATCH (this:Film)
+              WITH DISTINCT this
+              ORDER BY size(this.title) DESC
+              WITH collect(this.title) AS list
+              RETURN {_longest: head(list), _shortest: last(list)} AS var0
             }
             CALL {
-                MATCH (this:Film)
-                WITH DISTINCT this
-                RETURN { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) } AS var1
+              MATCH (this:Film)
+              WITH DISTINCT this
+              RETURN {_min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating)} AS var1
             }
             CALL {
-                MATCH (this:Film)
-                WITH DISTINCT this
-                RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
+              MATCH (this:Film)
+              WITH DISTINCT this
+              RETURN {_min: apoc.date.convertFormat(toString(min(this.createdAt)), 'iso_zoned_date_time', 'iso_offset_date_time'), _max: apoc.date.convertFormat(toString(max(this.createdAt)), 'iso_zoned_date_time', 'iso_offset_date_time')} AS var2
             }
-            RETURN { aggregate: { node: { _title: var0, _imdbRating: var1, _createdAt: var2 } } } AS this"
+            RETURN {aggregate: {node: {_title: var0, _imdbRating: var1, _createdAt: var2}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -128,23 +128,23 @@ describe("Cypher Aggregations Many while Alias fields", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                MATCH (this:Actor:Person:Alien)
-                WITH DISTINCT this
-                ORDER BY size(this.name) DESC
-                WITH collect(this.name) AS list
-                RETURN { _longest: head(list), _shortest: last(list) } AS var0
+              MATCH (this:Actor&Person&Alien)
+              WITH DISTINCT this
+              ORDER BY size(this.name) DESC
+              WITH collect(this.name) AS list
+              RETURN {_longest: head(list), _shortest: last(list)} AS var0
             }
             CALL {
-                MATCH (this:Actor:Person:Alien)
-                WITH DISTINCT this
-                RETURN { _min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating) } AS var1
+              MATCH (this:Actor&Person&Alien)
+              WITH DISTINCT this
+              RETURN {_min: min(this.imdbRating), _max: max(this.imdbRating), _average: avg(this.imdbRating)} AS var1
             }
             CALL {
-                MATCH (this:Actor:Person:Alien)
-                WITH DISTINCT this
-                RETURN { _min: apoc.date.convertFormat(toString(min(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\"), _max: apoc.date.convertFormat(toString(max(this.createdAt)), \\"iso_zoned_date_time\\", \\"iso_offset_date_time\\") } AS var2
+              MATCH (this:Actor&Person&Alien)
+              WITH DISTINCT this
+              RETURN {_min: apoc.date.convertFormat(toString(min(this.createdAt)), 'iso_zoned_date_time', 'iso_offset_date_time'), _max: apoc.date.convertFormat(toString(max(this.createdAt)), 'iso_zoned_date_time', 'iso_offset_date_time')} AS var2
             }
-            RETURN { aggregate: { node: { _name: var0, _imdbRating: var1, _createdAt: var2 } } } AS this"
+            RETURN {aggregate: {node: {_name: var0, _imdbRating: var1, _createdAt: var2}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);

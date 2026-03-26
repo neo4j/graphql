@@ -71,14 +71,14 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
             "CYPHER 5
             MATCH (this:Serie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (n:Video) RETURN n
-                    SKIP toInteger($param0.offset) LIMIT toInteger($param0.limit)
-                }
-                WITH n AS this0
-                WITH this0 { .id } AS this0
-                RETURN collect(this0) AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH (n:Video) RETURN n
+                SKIP toInteger($param0.offset) LIMIT toInteger($param0.limit)
+              }
+              WITH n AS this0
+              WITH this0 { .id } AS this0
+              RETURN collect(this0) AS var1
             }
             RETURN this { allEpisodes: var1 } AS this"
         `);
@@ -123,14 +123,14 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
             "CYPHER 5
             MATCH (this:Serie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (n:Video) RETURN n
-                    SKIP toInteger($param0.offset) LIMIT toInteger($param0.limit)
-                }
-                WITH n AS this0
-                WITH this0 { .id } AS this0
-                RETURN collect(this0) AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH (n:Video) RETURN n
+                SKIP toInteger($param0.offset) LIMIT toInteger($param0.limit)
+              }
+              WITH n AS this0
+              WITH this0 { .id } AS this0
+              RETURN collect(this0) AS var1
             }
             RETURN this { allEpisodes: var1 } AS this"
         `);
@@ -168,14 +168,14 @@ describe("https://github.com/neo4j/graphql/issues/4001", () => {
             "CYPHER 5
             MATCH (this:Serie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (n:Video) RETURN n
-                    SKIP toInteger($param0.offset) LIMIT toInteger($param0.limit)
-                }
-                WITH n AS this0
-                WITH this0 { .id } AS this0
-                RETURN collect(this0) AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH (n:Video) RETURN n
+                SKIP toInteger($param0.offset) LIMIT toInteger($param0.limit)
+              }
+              WITH n AS this0
+              WITH this0 { .id } AS this0
+              RETURN collect(this0) AS var1
             }
             RETURN this { allEpisodes: var1 } AS this"
         `);

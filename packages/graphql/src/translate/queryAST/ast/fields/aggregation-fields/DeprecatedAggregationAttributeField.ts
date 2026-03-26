@@ -20,6 +20,7 @@
 import Cypher from "@neo4j/cypher-builder";
 import type { AttributeAdapter } from "../../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import { filterFields, renameFields } from "../../../../../utils/utils";
+import { apocWrapper } from "../../../../utils/apoc-wrapper";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { AggregationField } from "./AggregationField";
 
@@ -128,6 +129,6 @@ export class DeprecatedAggregationAttributeField extends AggregationField {
     }
 
     private createDatetimeProjection(expr: Cypher.Expr) {
-        return Cypher.apoc.date.convertFormat(expr, "iso_zoned_date_time", "iso_offset_date_time");
+        return apocWrapper.convertFormat(expr, "iso_zoned_date_time", "iso_offset_date_time");
     }
 }

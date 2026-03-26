@@ -117,13 +117,13 @@ describe("Cypher Delete - union", () => {
             WHERE this.name = $param0
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WHERE this1.title = $param1
-                WITH this0, collect(DISTINCT this1) AS var2
-                CALL (var2) {
-                    UNWIND var2 AS var3
-                    DETACH DELETE var3
-                }
+              OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+              WHERE this1.title = $param1
+              WITH this0, collect(DISTINCT this1) AS var2
+              CALL (var2) {
+                UNWIND var2 AS var3
+                DETACH DELETE var3
+              }
             }
             WITH *
             DETACH DELETE this"
@@ -164,22 +164,22 @@ describe("Cypher Delete - union", () => {
             WHERE this.name = $param0
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WHERE this1.title = $param1
-                WITH this0, collect(DISTINCT this1) AS var2
-                CALL (var2) {
-                    UNWIND var2 AS var3
-                    DETACH DELETE var3
-                }
+              OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+              WHERE this1.title = $param1
+              WITH this0, collect(DISTINCT this1) AS var2
+              CALL (var2) {
+                UNWIND var2 AS var3
+                DETACH DELETE var3
+              }
             }
             CALL (*) {
-                OPTIONAL MATCH (this)-[this4:ACTED_IN]->(this5:Movie)
-                WHERE this5.title = $param2
-                WITH this4, collect(DISTINCT this5) AS var6
-                CALL (var6) {
-                    UNWIND var6 AS var7
-                    DETACH DELETE var7
-                }
+              OPTIONAL MATCH (this)-[this4:ACTED_IN]->(this5:Movie)
+              WHERE this5.title = $param2
+              WITH this4, collect(DISTINCT this5) AS var6
+              CALL (var6) {
+                UNWIND var6 AS var7
+                DETACH DELETE var7
+              }
             }
             WITH *
             DETACH DELETE this"
@@ -221,23 +221,23 @@ describe("Cypher Delete - union", () => {
             WHERE this.name = $param0
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WHERE this1.title = $param1
-                WITH *
-                CALL (*) {
-                    OPTIONAL MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
-                    WHERE this3.name = $param2
-                    WITH this2, collect(DISTINCT this3) AS var4
-                    CALL (var4) {
-                        UNWIND var4 AS var5
-                        DETACH DELETE var5
-                    }
+              OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+              WHERE this1.title = $param1
+              WITH *
+              CALL (*) {
+                OPTIONAL MATCH (this1)<-[this2:ACTED_IN]-(this3:Actor)
+                WHERE this3.name = $param2
+                WITH this2, collect(DISTINCT this3) AS var4
+                CALL (var4) {
+                  UNWIND var4 AS var5
+                  DETACH DELETE var5
                 }
-                WITH this0, collect(DISTINCT this1) AS var6
-                CALL (var6) {
-                    UNWIND var6 AS var7
-                    DETACH DELETE var7
-                }
+              }
+              WITH this0, collect(DISTINCT this1) AS var6
+              CALL (var6) {
+                UNWIND var6 AS var7
+                DETACH DELETE var7
+              }
             }
             WITH *
             DETACH DELETE this"
@@ -281,23 +281,23 @@ describe("Cypher Delete - union", () => {
             WHERE this.name = $param0
             WITH *
             CALL (*) {
-                OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WHERE this1.title = $param1
-                WITH *
-                CALL (*) {
-                    OPTIONAL MATCH (this1)<-[this2:WORKED_ON]-(this3:ScreenWriter)
-                    WHERE this3.name = $param2
-                    WITH this2, collect(DISTINCT this3) AS var4
-                    CALL (var4) {
-                        UNWIND var4 AS var5
-                        DETACH DELETE var5
-                    }
+              OPTIONAL MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+              WHERE this1.title = $param1
+              WITH *
+              CALL (*) {
+                OPTIONAL MATCH (this1)<-[this2:WORKED_ON]-(this3:ScreenWriter)
+                WHERE this3.name = $param2
+                WITH this2, collect(DISTINCT this3) AS var4
+                CALL (var4) {
+                  UNWIND var4 AS var5
+                  DETACH DELETE var5
                 }
-                WITH this0, collect(DISTINCT this1) AS var6
-                CALL (var6) {
-                    UNWIND var6 AS var7
-                    DETACH DELETE var7
-                }
+              }
+              WITH this0, collect(DISTINCT this1) AS var6
+              CALL (var6) {
+                UNWIND var6 AS var7
+                DETACH DELETE var7
+              }
             }
             WITH *
             DETACH DELETE this"

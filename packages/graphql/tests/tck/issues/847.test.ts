@@ -69,34 +69,34 @@ describe("https://github.com/neo4j/graphql/issues/847", () => {
             "CYPHER 5
             MATCH (this:Interaction)
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
-                    WITH this1 { .id, __resolveType: \\"Person\\", __id: id(this1) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)<-[this3:ACTED_IN]-(this4:Place)
-                    WITH this4 { .id, __resolveType: \\"Place\\", __id: id(this4) } AS var2
-                    RETURN var2
-                }
-                WITH var2
-                RETURN collect(var2) AS var2
+              CALL (*) {
+                WITH *
+                MATCH (this)<-[this0:ACTED_IN]-(this1:Person)
+                WITH this1 { .id, __resolveType: 'Person', __id: elementId(this1) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)<-[this3:ACTED_IN]-(this4:Place)
+                WITH this4 { .id, __resolveType: 'Place', __id: elementId(this4) } AS var2
+                RETURN var2
+              }
+              WITH var2
+              RETURN collect(var2) AS var2
             }
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this5:ACTED_IN]->(this6:Person)
-                    WITH this6 { .id, __resolveType: \\"Person\\", __id: id(this6) } AS var7
-                    RETURN var7
-                    UNION
-                    WITH *
-                    MATCH (this)-[this8:ACTED_IN]->(this9:Place)
-                    WITH this9 { .id, __resolveType: \\"Place\\", __id: id(this9) } AS var7
-                    RETURN var7
-                }
-                WITH var7
-                RETURN collect(var7) AS var7
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this5:ACTED_IN]->(this6:Person)
+                WITH this6 { .id, __resolveType: 'Person', __id: elementId(this6) } AS var7
+                RETURN var7
+                UNION
+                WITH *
+                MATCH (this)-[this8:ACTED_IN]->(this9:Place)
+                WITH this9 { .id, __resolveType: 'Place', __id: elementId(this9) } AS var7
+                RETURN var7
+              }
+              WITH var7
+              RETURN collect(var7) AS var7
             }
             RETURN this { .id, subjects: var2, objects: var7 } AS this"
         `);

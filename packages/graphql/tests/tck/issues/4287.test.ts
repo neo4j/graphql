@@ -70,25 +70,25 @@ describe("https://github.com/neo4j/graphql/issues/4287", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
+              CALL (this) {
                 CALL (this) {
-                    CALL (this) {
-                        WITH this
-                        MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                        WHERE (this1.title = $param0 OR this1.title = $param1)
-                        WITH { node: { __resolveType: \\"Movie\\", __id: id(this1), title: this1.title } } AS edge
-                        RETURN edge
-                        UNION
-                        WITH this
-                        MATCH (this)-[this2:ACTED_IN]->(this3:Series)
-                        WHERE (this3.title = $param2 OR this3.title = $param3)
-                        WITH { node: { __resolveType: \\"Series\\", __id: id(this3), title: this3.title } } AS edge
-                        RETURN edge
-                    }
-                    RETURN collect(edge) AS edges
+                  WITH this
+                  MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                  WHERE (this1.title = $param0 OR this1.title = $param1)
+                  WITH {node: {__resolveType: 'Movie', __id: elementId(this1), title: this1.title}} AS edge
+                  RETURN edge
+                  UNION
+                  WITH this
+                  MATCH (this)-[this2:ACTED_IN]->(this3:Series)
+                  WHERE (this3.title = $param2 OR this3.title = $param3)
+                  WITH {node: {__resolveType: 'Series', __id: elementId(this3), title: this3.title}} AS edge
+                  RETURN edge
                 }
-                WITH edges
-                WITH edges, size(edges) AS totalCount
-                RETURN { edges: edges, totalCount: totalCount } AS var4
+                RETURN collect(edge) AS edges
+              }
+              WITH edges
+              WITH edges, size(edges) AS totalCount
+              RETURN {edges: edges, totalCount: totalCount} AS var4
             }
             RETURN this { actedInConnection: var4 } AS this"
         `);

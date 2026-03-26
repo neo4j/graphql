@@ -73,11 +73,10 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             WHERE this.title = $param0
             WITH *
             CALL (*) {
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH *
-                WHERE this1.name = $param1
-                SET
-                    this0.screenTime = $param2
+              MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              WITH *
+              WHERE this1.name = $param1
+              SET this0.screenTime = $param2
             }
             WITH this
             RETURN this { .title } AS this"
@@ -128,12 +127,12 @@ describe("Cypher -> Connections -> Relationship Properties -> Update", () => {
             WHERE this.title = $param0
             WITH *
             CALL (*) {
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WITH *
-                WHERE this1.name = $param1
-                SET
-                    this1.name = $param2,
-                    this0.screenTime = $param3
+              MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              WITH *
+              WHERE this1.name = $param1
+              SET
+                this1.name = $param2,
+                this0.screenTime = $param3
             }
             WITH this
             RETURN this { .title } AS this"

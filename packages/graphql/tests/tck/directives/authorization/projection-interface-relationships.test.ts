@@ -91,20 +91,20 @@ describe("Auth projections for interface relationship fields", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                    WITH this1 { .title, .runtime, __resolveType: \\"Movie\\", __id: id(this1) } AS var2
-                    RETURN var2
-                    UNION
-                    WITH *
-                    MATCH (this)-[this3:ACTED_IN]->(this4:Series)
-                    CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this4.episodes = $jwt.sub)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
-                    WITH this4 { .title, .episodes, __resolveType: \\"Series\\", __id: id(this4) } AS var2
-                    RETURN var2
-                }
-                WITH var2
-                RETURN collect(var2) AS var2
+              CALL (*) {
+                WITH *
+                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+                WITH this1 { .title, .runtime, __resolveType: 'Movie', __id: elementId(this1) } AS var2
+                RETURN var2
+                UNION
+                WITH *
+                MATCH (this)-[this3:ACTED_IN]->(this4:Series)
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this4.episodes = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+                WITH this4 { .title, .episodes, __resolveType: 'Series', __id: elementId(this4) } AS var2
+                RETURN var2
+              }
+              WITH var2
+              RETURN collect(var2) AS var2
             }
             RETURN this { actedIn: var2 } AS this"
         `);

@@ -64,18 +64,18 @@ describe("Cypher -> Connections -> Filtering -> Node -> Relationship", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
-                WHERE EXISTS {
-                    MATCH (this1)-[:ACTED_IN]->(this2:Movie)
-                    WHERE this2.title = $param0
-                }
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { name: this1.name, __resolveType: \\"Actor\\" } }) AS var3
-                }
-                RETURN { edges: var3 } AS var4
+              MATCH (this)<-[this0:ACTED_IN]-(this1:Actor)
+              WHERE EXISTS {
+                MATCH (this1)-[:ACTED_IN]->(this2:Movie)
+                WHERE this2.title = $param0
+              }
+              WITH collect({node: this1, relationship: this0}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this1, edge.relationship AS this0
+                RETURN collect({node: {name: this1.name, __resolveType: 'Actor'}}) AS var3
+              }
+              RETURN {edges: var3} AS var4
             }
             RETURN this { .title, actorsConnection: var4 } AS this"
         `);

@@ -11336,4 +11336,32 @@ describe("Interface Relationships", () => {
             }"
         `);
     });
+    test("Interface Relationships - no aggregation where fields on edge properties should allow schema generation without input type", async () => {
+        const typeDefs = gql`
+            interface Show {
+                title: String!
+                actors: [Actor!]! @declareRelationship
+            }
+
+            type Movie implements Show @node {
+                title: String!
+                runtime: Int!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+            }
+
+            type ActedIn @relationshipProperties {
+                screenTime: [Int!]!
+            }
+
+            type Actor @node {
+                name: String!
+            }
+        `;
+
+        const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+        const schema = await neoSchema.getSchema();
+        const actedInAggregationWhereInput = schema.getType("ActedInAggregationWhereInput");
+        expect(actedInAggregationWhereInput).toBeUndefined();
+    });
 });

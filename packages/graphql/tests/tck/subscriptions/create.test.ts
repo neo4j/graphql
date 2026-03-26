@@ -104,31 +104,28 @@ describe("Subscriptions metadata on create", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.title = create_var0.title
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.actors.create AS create_var2
-                    CREATE (create_this3:Actor)
-                    SET
-                        create_this3.name = create_var2.node.name
-                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
-                    SET
-                        create_this4.screenTime = create_var2.edge.screenTime
-                    RETURN collect(NULL) AS create_var5
-                }
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.title = create_var0.title
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.actors.create AS create_var2
+                CREATE (create_this3:Actor)
+                SET create_this3.name = create_var2.node.name
+                MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
+                SET create_this4.screenTime = create_var2.edge.screenTime
+                RETURN collect(NULL) AS create_var5
+              }
+              RETURN create_this1
             }
             CALL (create_this1) {
-                MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
-                WITH collect({ node: create_this7, relationship: create_this6 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS create_this7, edge.relationship AS create_this6
-                    RETURN collect({ properties: { screenTime: create_this6.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this7.name, __resolveType: \\"Actor\\" } }) AS create_var8
-                }
-                RETURN { edges: create_var8 } AS create_var9
+              MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
+              WITH collect({node: create_this7, relationship: create_this6}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS create_this7, edge.relationship AS create_this6
+                RETURN collect({properties: {screenTime: create_this6.screenTime, __resolveType: 'ActedIn'}, node: {name: create_this7.name, __resolveType: 'Actor'}}) AS create_var8
+              }
+              RETURN {edges: create_var8} AS create_var9
             }
             RETURN collect(create_this1 { .title, actorsConnection: create_var9 }) AS data"
         `);
@@ -204,29 +201,27 @@ describe("Subscriptions metadata on create", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.title = create_var0.title
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.actors.create AS create_var2
-                    CREATE (create_this3:Actor)
-                    SET
-                        create_this3.name = create_var2.node.name
-                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
-                    RETURN collect(NULL) AS create_var5
-                }
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.title = create_var0.title
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.actors.create AS create_var2
+                CREATE (create_this3:Actor)
+                SET create_this3.name = create_var2.node.name
+                MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
+                RETURN collect(NULL) AS create_var5
+              }
+              RETURN create_this1
             }
             CALL (create_this1) {
-                MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
-                WITH collect({ node: create_this7, relationship: create_this6 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS create_this7, edge.relationship AS create_this6
-                    RETURN collect({ node: { name: create_this7.name, __resolveType: \\"Actor\\" } }) AS create_var8
-                }
-                RETURN { edges: create_var8 } AS create_var9
+              MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
+              WITH collect({node: create_this7, relationship: create_this6}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS create_this7, edge.relationship AS create_this6
+                RETURN collect({node: {name: create_this7.name, __resolveType: 'Actor'}}) AS create_var8
+              }
+              RETURN {edges: create_var8} AS create_var9
             }
             RETURN collect(create_this1 { .title, actorsConnection: create_var9 }) AS data"
         `);
@@ -320,42 +315,37 @@ describe("Subscriptions metadata on create", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.title = create_var0.title
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.actors.create AS create_var2
-                    CREATE (create_this3:Actor)
-                    SET
-                        create_this3.name = create_var2.node.name
-                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
-                    SET
-                        create_this4.screenTime = create_var2.edge.screenTime
-                    WITH create_this3, create_var2
-                    CALL (create_this3, create_var2) {
-                        UNWIND create_var2.node.movies.create AS create_var5
-                        CREATE (create_this6:Movie)
-                        SET
-                            create_this6.title = create_var5.node.title
-                        MERGE (create_this3)-[create_this7:ACTED_IN]->(create_this6)
-                        SET
-                            create_this7.screenTime = create_var5.edge.screenTime
-                        RETURN collect(NULL) AS create_var8
-                    }
-                    RETURN collect(NULL) AS create_var9
+              CREATE (create_this1:Movie)
+              SET create_this1.title = create_var0.title
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.actors.create AS create_var2
+                CREATE (create_this3:Actor)
+                SET create_this3.name = create_var2.node.name
+                MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
+                SET create_this4.screenTime = create_var2.edge.screenTime
+                WITH create_this3, create_var2
+                CALL (create_this3, create_var2) {
+                  UNWIND create_var2.node.movies.create AS create_var5
+                  CREATE (create_this6:Movie)
+                  SET create_this6.title = create_var5.node.title
+                  MERGE (create_this3)-[create_this7:ACTED_IN]->(create_this6)
+                  SET create_this7.screenTime = create_var5.edge.screenTime
+                  RETURN collect(NULL) AS create_var8
                 }
-                RETURN create_this1
+                RETURN collect(NULL) AS create_var9
+              }
+              RETURN create_this1
             }
             CALL (create_this1) {
-                MATCH (create_this1)<-[create_this10:ACTED_IN]-(create_this11:Actor)
-                WITH collect({ node: create_this11, relationship: create_this10 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS create_this11, edge.relationship AS create_this10
-                    RETURN collect({ properties: { screenTime: create_this10.screenTime, __resolveType: \\"ActedIn\\" }, node: { name: create_this11.name, __resolveType: \\"Actor\\" } }) AS create_var12
-                }
-                RETURN { edges: create_var12 } AS create_var13
+              MATCH (create_this1)<-[create_this10:ACTED_IN]-(create_this11:Actor)
+              WITH collect({node: create_this11, relationship: create_this10}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS create_this11, edge.relationship AS create_this10
+                RETURN collect({properties: {screenTime: create_this10.screenTime, __resolveType: 'ActedIn'}, node: {name: create_this11.name, __resolveType: 'Actor'}}) AS create_var12
+              }
+              RETURN {edges: create_var12} AS create_var13
             }
             RETURN collect(create_this1 { .title, actorsConnection: create_var13 }) AS data"
         `);
@@ -469,41 +459,40 @@ describe("Subscriptions metadata on create", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Movie)
-                SET
-                    this0.title = $param0
-                WITH *
-                CREATE (this1:Person)
-                MERGE (this0)<-[this2:DIRECTED]-(this1)
-                SET
-                    this1.name = $param1,
-                    this2.year = $param2
-                WITH *
-                CREATE (this3:Actor)
-                MERGE (this0)<-[this4:DIRECTED]-(this3)
-                SET
-                    this3.name = $param3,
-                    this4.year = $param4
-                RETURN this0 AS this
+              CREATE (this0:Movie)
+              SET this0.title = $param0
+              WITH *
+              CREATE (this1:Person)
+              MERGE (this0)<-[this2:DIRECTED]-(this1)
+              SET
+                this1.name = $param1,
+                this2.year = $param2
+              WITH *
+              CREATE (this3:Actor)
+              MERGE (this0)<-[this4:DIRECTED]-(this3)
+              SET
+                this3.name = $param3,
+                this4.year = $param4
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                CALL (this) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this)<-[this5:DIRECTED]-(this6:Person)
-                        WITH this6 { .name, __resolveType: \\"Person\\", __id: id(this6) } AS var7
-                        RETURN var7
-                        UNION
-                        WITH *
-                        MATCH (this)<-[this8:DIRECTED]-(this9:Actor)
-                        WITH this9 { .name, __resolveType: \\"Actor\\", __id: id(this9) } AS var7
-                        RETURN var7
-                    }
-                    WITH var7
-                    RETURN collect(var7) AS var7
+              CALL (this) {
+                CALL (*) {
+                  WITH *
+                  MATCH (this)<-[this5:DIRECTED]-(this6:Person)
+                  WITH this6 { .name, __resolveType: 'Person', __id: elementId(this6) } AS var7
+                  RETURN var7
+                  UNION
+                  WITH *
+                  MATCH (this)<-[this8:DIRECTED]-(this9:Actor)
+                  WITH this9 { .name, __resolveType: 'Actor', __id: elementId(this9) } AS var7
+                  RETURN var7
                 }
-                RETURN this { .title, directors: var7 } AS var10
+                WITH var7
+                RETURN collect(var7) AS var7
+              }
+              RETURN this { .title, directors: var7 } AS var10
             }
             RETURN collect(var10) AS data"
         `);
@@ -610,53 +599,52 @@ describe("Subscriptions metadata on create", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             CALL {
-                CREATE (this0:Movie)
-                SET
-                    this0.title = $param0
-                WITH *
-                CREATE (this1:Person)
-                MERGE (this0)<-[this2:DIRECTED]-(this1)
-                SET
-                    this1.name = $param1,
-                    this2.year = $param2
-                WITH *
-                CREATE (this3:Actor)
-                WITH *
-                CREATE (this4:Movie)
-                MERGE (this3)-[this5:ACTED_IN]->(this4)
-                SET
-                    this4.title = $param3,
-                    this5.screenTime = $param4
-                MERGE (this0)<-[this6:DIRECTED]-(this3)
-                SET
-                    this3.name = $param5,
-                    this6.year = $param6
-                RETURN this0 AS this
+              CREATE (this0:Movie)
+              SET this0.title = $param0
+              WITH *
+              CREATE (this1:Person)
+              MERGE (this0)<-[this2:DIRECTED]-(this1)
+              SET
+                this1.name = $param1,
+                this2.year = $param2
+              WITH *
+              CREATE (this3:Actor)
+              WITH *
+              CREATE (this4:Movie)
+              MERGE (this3)-[this5:ACTED_IN]->(this4)
+              SET
+                this4.title = $param3,
+                this5.screenTime = $param4
+              MERGE (this0)<-[this6:DIRECTED]-(this3)
+              SET
+                this3.name = $param5,
+                this6.year = $param6
+              RETURN this0 AS this
             }
             WITH this
             CALL (this) {
-                CALL (this) {
-                    CALL (*) {
-                        WITH *
-                        MATCH (this)<-[this7:DIRECTED]-(this8:Person)
-                        WITH this8 { .name, __resolveType: \\"Person\\", __id: id(this8) } AS var9
-                        RETURN var9
-                        UNION
-                        WITH *
-                        MATCH (this)<-[this10:DIRECTED]-(this11:Actor)
-                        CALL (this11) {
-                            MATCH (this11)-[this12:ACTED_IN]->(this13:Movie)
-                            WITH DISTINCT this13
-                            WITH this13 { .title } AS this13
-                            RETURN collect(this13) AS var14
-                        }
-                        WITH this11 { .name, movies: var14, __resolveType: \\"Actor\\", __id: id(this11) } AS var9
-                        RETURN var9
-                    }
-                    WITH var9
-                    RETURN collect(var9) AS var9
+              CALL (this) {
+                CALL (*) {
+                  WITH *
+                  MATCH (this)<-[this7:DIRECTED]-(this8:Person)
+                  WITH this8 { .name, __resolveType: 'Person', __id: elementId(this8) } AS var9
+                  RETURN var9
+                  UNION
+                  WITH *
+                  MATCH (this)<-[this10:DIRECTED]-(this11:Actor)
+                  CALL (this11) {
+                    MATCH (this11)-[this12:ACTED_IN]->(this13:Movie)
+                    WITH DISTINCT this13
+                    WITH this13 { .title } AS this13
+                    RETURN collect(this13) AS var14
+                  }
+                  WITH this11 { .name, movies: var14, __resolveType: 'Actor', __id: elementId(this11) } AS var9
+                  RETURN var9
                 }
-                RETURN this { .title, directors: var9 } AS var15
+                WITH var9
+                RETURN collect(var9) AS var9
+              }
+              RETURN this { .title, directors: var9 } AS var15
             }
             RETURN collect(var15) AS data"
         `);
@@ -699,10 +687,9 @@ describe("Subscriptions metadata on create", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.id = create_var0.id
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.id = create_var0.id
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
         `);
@@ -735,10 +722,9 @@ describe("Subscriptions metadata on create", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.id = create_var0.id
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.id = create_var0.id
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
         `);
@@ -777,25 +763,23 @@ describe("Subscriptions metadata on create", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.id = create_var0.id
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.actors.create AS create_var2
-                    CREATE (create_this3:Actor)
-                    SET
-                        create_this3.name = create_var2.node.name
-                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
-                    RETURN collect(NULL) AS create_var5
-                }
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.id = create_var0.id
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.actors.create AS create_var2
+                CREATE (create_this3:Actor)
+                SET create_this3.name = create_var2.node.name
+                MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
+                RETURN collect(NULL) AS create_var5
+              }
+              RETURN create_this1
             }
             CALL (create_this1) {
-                MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
-                WITH DISTINCT create_this7
-                WITH create_this7 { .name } AS create_this7
-                RETURN collect(create_this7) AS create_var8
+              MATCH (create_this1)<-[create_this6:ACTED_IN]-(create_this7:Actor)
+              WITH DISTINCT create_this7
+              WITH create_this7 { .name } AS create_this7
+              RETURN collect(create_this7) AS create_var8
             }
             RETURN collect(create_this1 { .id, actors: create_var8 }) AS data"
         `);
@@ -847,34 +831,31 @@ describe("Subscriptions metadata on create", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.id = create_var0.id
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.actors.create AS create_var2
-                    CREATE (create_this3:Actor)
-                    SET
-                        create_this3.name = create_var2.node.name
-                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
-                    WITH create_this3, create_var2
-                    CALL (create_this3, create_var2) {
-                        UNWIND create_var2.node.movies.create AS create_var5
-                        CREATE (create_this6:Movie)
-                        SET
-                            create_this6.id = create_var5.node.id
-                        MERGE (create_this3)-[create_this7:ACTED_IN]->(create_this6)
-                        RETURN collect(NULL) AS create_var8
-                    }
-                    RETURN collect(NULL) AS create_var9
+              CREATE (create_this1:Movie)
+              SET create_this1.id = create_var0.id
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.actors.create AS create_var2
+                CREATE (create_this3:Actor)
+                SET create_this3.name = create_var2.node.name
+                MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
+                WITH create_this3, create_var2
+                CALL (create_this3, create_var2) {
+                  UNWIND create_var2.node.movies.create AS create_var5
+                  CREATE (create_this6:Movie)
+                  SET create_this6.id = create_var5.node.id
+                  MERGE (create_this3)-[create_this7:ACTED_IN]->(create_this6)
+                  RETURN collect(NULL) AS create_var8
                 }
-                RETURN create_this1
+                RETURN collect(NULL) AS create_var9
+              }
+              RETURN create_this1
             }
             CALL (create_this1) {
-                MATCH (create_this1)<-[create_this10:ACTED_IN]-(create_this11:Actor)
-                WITH DISTINCT create_this11
-                WITH create_this11 { .name } AS create_this11
-                RETURN collect(create_this11) AS create_var12
+              MATCH (create_this1)<-[create_this10:ACTED_IN]-(create_this11:Actor)
+              WITH DISTINCT create_this11
+              WITH create_this11 { .name } AS create_this11
+              RETURN collect(create_this11) AS create_var12
             }
             RETURN collect(create_this1 { .id, actors: create_var12 }) AS data"
         `);
@@ -952,55 +933,51 @@ describe("Subscriptions metadata on create", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.id = create_var0.id
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.actors.create AS create_var2
-                    CREATE (create_this3:Actor)
-                    SET
-                        create_this3.name = create_var2.node.name
-                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
-                    WITH create_this3, create_var2
-                    CALL (create_this3, create_var2) {
-                        UNWIND create_var2.node.movies.create AS create_var5
-                        CREATE (create_this6:Movie)
-                        SET
-                            create_this6.id = create_var5.node.id
-                        MERGE (create_this3)-[create_this7:ACTED_IN]->(create_this6)
-                        WITH create_this6, create_var5
-                        CALL (create_this6, create_var5) {
-                            UNWIND create_var5.node.actors.create AS create_var8
-                            CREATE (create_this9:Actor)
-                            SET
-                                create_this9.name = create_var8.node.name
-                            MERGE (create_this6)<-[create_this10:ACTED_IN]-(create_this9)
-                            RETURN collect(NULL) AS create_var11
-                        }
-                        RETURN collect(NULL) AS create_var12
-                    }
-                    RETURN collect(NULL) AS create_var13
+              CREATE (create_this1:Movie)
+              SET create_this1.id = create_var0.id
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.actors.create AS create_var2
+                CREATE (create_this3:Actor)
+                SET create_this3.name = create_var2.node.name
+                MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
+                WITH create_this3, create_var2
+                CALL (create_this3, create_var2) {
+                  UNWIND create_var2.node.movies.create AS create_var5
+                  CREATE (create_this6:Movie)
+                  SET create_this6.id = create_var5.node.id
+                  MERGE (create_this3)-[create_this7:ACTED_IN]->(create_this6)
+                  WITH create_this6, create_var5
+                  CALL (create_this6, create_var5) {
+                    UNWIND create_var5.node.actors.create AS create_var8
+                    CREATE (create_this9:Actor)
+                    SET create_this9.name = create_var8.node.name
+                    MERGE (create_this6)<-[create_this10:ACTED_IN]-(create_this9)
+                    RETURN collect(NULL) AS create_var11
+                  }
+                  RETURN collect(NULL) AS create_var12
                 }
-                RETURN create_this1
+                RETURN collect(NULL) AS create_var13
+              }
+              RETURN create_this1
             }
             CALL (create_this1) {
-                MATCH (create_this1)<-[create_this14:ACTED_IN]-(create_this15:Actor)
-                WITH DISTINCT create_this15
-                CALL (create_this15) {
-                    MATCH (create_this15)-[create_this16:ACTED_IN]->(create_this17:Movie)
-                    WITH DISTINCT create_this17
-                    CALL (create_this17) {
-                        MATCH (create_this17)<-[create_this18:ACTED_IN]-(create_this19:Actor)
-                        WITH DISTINCT create_this19
-                        WITH create_this19 { .name } AS create_this19
-                        RETURN collect(create_this19) AS create_var20
-                    }
-                    WITH create_this17 { .id, actors: create_var20 } AS create_this17
-                    RETURN collect(create_this17) AS create_var21
+              MATCH (create_this1)<-[create_this14:ACTED_IN]-(create_this15:Actor)
+              WITH DISTINCT create_this15
+              CALL (create_this15) {
+                MATCH (create_this15)-[create_this16:ACTED_IN]->(create_this17:Movie)
+                WITH DISTINCT create_this17
+                CALL (create_this17) {
+                  MATCH (create_this17)<-[create_this18:ACTED_IN]-(create_this19:Actor)
+                  WITH DISTINCT create_this19
+                  WITH create_this19 { .name } AS create_this19
+                  RETURN collect(create_this19) AS create_var20
                 }
-                WITH create_this15 { .name, movies: create_var21 } AS create_this15
-                RETURN collect(create_this15) AS create_var22
+                WITH create_this17 { .id, actors: create_var20 } AS create_this17
+                RETURN collect(create_this17) AS create_var21
+              }
+              WITH create_this15 { .name, movies: create_var21 } AS create_this15
+              RETURN collect(create_this15) AS create_var22
             }
             RETURN collect(create_this1 { .id, actors: create_var22 }) AS data"
         `);
@@ -1071,28 +1048,25 @@ describe("Subscriptions metadata on create", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.id = create_var0.id
-                WITH create_this1, create_var0
-                CALL (create_this1, create_var0) {
-                    UNWIND create_var0.actors.create AS create_var2
-                    CREATE (create_this3:Actor)
-                    SET
-                        create_this3.name = create_var2.node.name
-                    MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
-                    WITH create_this3, create_var2
-                    CALL (create_this3, create_var2) {
-                        UNWIND create_var2.node.movies.create AS create_var5
-                        CREATE (create_this6:Movie)
-                        SET
-                            create_this6.id = create_var5.node.id
-                        MERGE (create_this3)-[create_this7:ACTED_IN]->(create_this6)
-                        RETURN collect(NULL) AS create_var8
-                    }
-                    RETURN collect(NULL) AS create_var9
+              CREATE (create_this1:Movie)
+              SET create_this1.id = create_var0.id
+              WITH create_this1, create_var0
+              CALL (create_this1, create_var0) {
+                UNWIND create_var0.actors.create AS create_var2
+                CREATE (create_this3:Actor)
+                SET create_this3.name = create_var2.node.name
+                MERGE (create_this1)<-[create_this4:ACTED_IN]-(create_this3)
+                WITH create_this3, create_var2
+                CALL (create_this3, create_var2) {
+                  UNWIND create_var2.node.movies.create AS create_var5
+                  CREATE (create_this6:Movie)
+                  SET create_this6.id = create_var5.node.id
+                  MERGE (create_this3)-[create_this7:ACTED_IN]->(create_this6)
+                  RETURN collect(NULL) AS create_var8
                 }
-                RETURN create_this1
+                RETURN collect(NULL) AS create_var9
+              }
+              RETURN create_this1
             }
             RETURN collect(create_this1 { .id }) AS data"
         `);
@@ -1164,12 +1138,11 @@ describe("Subscriptions metadata on create", () => {
             "CYPHER 5
             UNWIND $create_param0 AS create_var0
             CALL (create_var0) {
-                CREATE (create_this1:Movie)
-                SET
-                    create_this1.id = create_var0.id
-                RETURN create_this1
+              CREATE (create_this1:Movie)
+              SET create_this1.id = create_var0.id
+              RETURN create_this1
             }
-            RETURN \\"Query cannot conclude with CALL\\""
+            RETURN 'Query cannot conclude with CALL'"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

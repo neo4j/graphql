@@ -91,8 +91,8 @@ describe("Cypher coalesce()", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:User)
-            WHERE (coalesce(this.id, \\"00000000-00000000-00000000-00000000\\") = $param0 AND coalesce(this.name, \\"Jane Smith\\") =~ $param1 AND coalesce(this.numberOfFriends, 0) > $param2 AND coalesce(this.rating, 2.5) < $param3 AND this.fromInterface = $param4 AND coalesce(this.toBeOverridden, \\"Overridden\\") = $param5 AND NOT (coalesce(this.verified, false) = $param6))
-            RETURN this { name: coalesce(this.name, \\"Jane Smith\\") } AS this"
+            WHERE (coalesce(this.id, '00000000-00000000-00000000-00000000') = $param0 AND coalesce(this.name, 'Jane Smith') =~ $param1 AND coalesce(this.numberOfFriends, 0) > $param2 AND coalesce(this.rating, 2.5) < $param3 AND this.fromInterface = $param4 AND coalesce(this.toBeOverridden, 'Overridden') = $param5 AND NOT (coalesce(this.verified, false) = $param6))
+            RETURN this { name: coalesce(this.name, 'Jane Smith') } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -148,8 +148,8 @@ describe("Cypher coalesce()", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this:Movie)
-            WHERE coalesce(this.status, \\"ACTIVE\\") = $param0
-            RETURN this { .id, status: coalesce(this.status, \\"ACTIVE\\") } AS this"
+            WHERE coalesce(this.status, 'ACTIVE') = $param0
+            RETURN this { .id, status: coalesce(this.status, 'ACTIVE') } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -207,15 +207,15 @@ describe("Cypher coalesce()", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WHERE coalesce(this1.status, \\"ACTIVE\\") = $param0
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { id: this1.id, status: coalesce(this1.status, \\"ACTIVE\\"), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN { edges: var2 } AS var3
+              MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+              WHERE coalesce(this1.status, 'ACTIVE') = $param0
+              WITH collect({node: this1, relationship: this0}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this1, edge.relationship AS this0
+                RETURN collect({node: {id: this1.id, status: coalesce(this1.status, 'ACTIVE'), __resolveType: 'Movie'}}) AS var2
+              }
+              RETURN {edges: var2} AS var3
             }
             RETURN this { moviesConnection: var3 } AS this"
         `);
@@ -268,15 +268,15 @@ describe("Cypher coalesce()", () => {
             "CYPHER 5
             MATCH (this:Actor)
             CALL (this) {
-                MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
-                WHERE coalesce(this1.statuses, [\\"ACTIVE\\", \\"INACTIVE\\"]) = $param0
-                WITH collect({ node: this1, relationship: this0 }) AS edges
-                CALL (edges) {
-                    UNWIND edges AS edge
-                    WITH edge.node AS this1, edge.relationship AS this0
-                    RETURN collect({ node: { id: this1.id, statuses: coalesce(this1.statuses, [\\"ACTIVE\\", \\"INACTIVE\\"]), __resolveType: \\"Movie\\" } }) AS var2
-                }
-                RETURN { edges: var2 } AS var3
+              MATCH (this)-[this0:ACTED_IN]->(this1:Movie)
+              WHERE coalesce(this1.statuses, ['ACTIVE', 'INACTIVE']) = $param0
+              WITH collect({node: this1, relationship: this0}) AS edges
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this1, edge.relationship AS this0
+                RETURN collect({node: {id: this1.id, statuses: coalesce(this1.statuses, ['ACTIVE', 'INACTIVE']), __resolveType: 'Movie'}}) AS var2
+              }
+              RETURN {edges: var2} AS var3
             }
             RETURN this { moviesConnection: var3 } AS this"
         `);

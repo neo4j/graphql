@@ -54,24 +54,24 @@ describe("cypher directive filtering - deprecated", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (m:Movie)
-                    RETURN count(m) as c
-                }
-                WITH c AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH (m:Movie)
+                RETURN count(m) as c
+              }
+              WITH c AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE (this.title = $param0 AND var1 >= $param1)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (m:Movie)
-                    RETURN count(m) as c
-                }
-                WITH c AS this2
-                RETURN this2 AS var3
+              CALL (this) {
+                WITH this AS this
+                MATCH (m:Movie)
+                RETURN count(m) as c
+              }
+              WITH c AS this2
+              RETURN this2 AS var3
             }
             RETURN this { special_count: var3 } AS this"
         `);
@@ -120,24 +120,24 @@ describe("cypher directive filtering - deprecated", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (m:Movie)
-                    RETURN count(m) as c
-                }
-                WITH c AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH (m:Movie)
+                RETURN count(m) as c
+              }
+              WITH c AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE (this.title = $param0 AND var1 >= $param1)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (m:Movie)
-                    RETURN count(m) as c
-                }
-                WITH c AS this2
-                RETURN this2 AS var3
+              CALL (this) {
+                WITH this AS this
+                MATCH (m:Movie)
+                RETURN count(m) as c
+              }
+              WITH c AS this2
+              RETURN this2 AS var3
             }
             RETURN this { special_count: var3 } AS this"
         `);
@@ -186,13 +186,13 @@ describe("cypher directive filtering - deprecated", () => {
             "CYPHER 5
             MATCH (this:Movie)
             CALL (this) {
-                CALL (this) {
-                    WITH this AS this
-                    MATCH (m:Movie)
-                    RETURN count(m) as c
-                }
-                WITH c AS this0
-                RETURN this0 AS var1
+              CALL (this) {
+                WITH this AS this
+                MATCH (m:Movie)
+                RETURN count(m) as c
+              }
+              WITH c AS this0
+              RETURN this0 AS var1
             }
             WITH *
             WHERE var1 >= $param0

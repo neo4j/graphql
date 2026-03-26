@@ -26,6 +26,7 @@ import { filterTruthy } from "../utils/utils";
 import { getEntityLabels } from "./queryAST/utils/create-node-from-entity";
 import { isInterfaceEntity } from "./queryAST/utils/is-interface-entity";
 import { isUnionEntity } from "./queryAST/utils/is-union-entity";
+import { apocWrapper } from "./utils/apoc-wrapper";
 
 /**
  * Generate cardinality validation as the legacy method create-relationship-validation-string.ts but it uses CypherBuilder and the Schema Model
@@ -70,7 +71,7 @@ export function createRelationshipValidationClauses({
                     .to({ labels: getEntityLabels(target, context) })
             )
                 .with([Cypher.count(relVarnameCypher), cVariable])
-                .where(Cypher.apoc.util.validatePredicate(predicateCypher, errorMsg))
+                .where(apocWrapper.validatePredicate(predicateCypher, errorMsg))
                 .return([returnVar, new Cypher.Variable()]);
             return new Cypher.Call(match, [varName]);
         })

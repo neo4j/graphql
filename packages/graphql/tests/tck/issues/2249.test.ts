@@ -91,28 +91,28 @@ describe("https://github.com/neo4j/graphql/issues/2249", () => {
             WHERE this.title = $param0
             WITH *
             CALL (*) {
-                CREATE (this0:Person)
-                MERGE (this)<-[this1:REVIEWED]-(this0)
-                SET
-                    this0.name = $param1,
-                    this0.reputation = $param2,
-                    this1.score = $param3
+              CREATE (this0:Person)
+              MERGE (this)<-[this1:REVIEWED]-(this0)
+              SET
+                this0.name = $param1,
+                this0.reputation = $param2,
+                this1.score = $param3
             }
             WITH this
             CALL (this) {
-                CALL (*) {
-                    WITH *
-                    MATCH (this)<-[this2:REVIEWED]-(this3:Person)
-                    WITH this3 { .name, .reputation, __resolveType: \\"Person\\", __id: id(this3) } AS var4
-                    RETURN var4
-                    UNION
-                    WITH *
-                    MATCH (this)<-[this5:REVIEWED]-(this6:Influencer)
-                    WITH this6 { __resolveType: \\"Influencer\\", __id: id(this6) } AS var4
-                    RETURN var4
-                }
-                WITH var4
-                RETURN collect(var4) AS var4
+              CALL (*) {
+                WITH *
+                MATCH (this)<-[this2:REVIEWED]-(this3:Person)
+                WITH this3 { .name, .reputation, __resolveType: 'Person', __id: elementId(this3) } AS var4
+                RETURN var4
+                UNION
+                WITH *
+                MATCH (this)<-[this5:REVIEWED]-(this6:Influencer)
+                WITH this6 { __resolveType: 'Influencer', __id: elementId(this6) } AS var4
+                RETURN var4
+              }
+              WITH var4
+              RETURN collect(var4) AS var4
             }
             RETURN this { .title, reviewers: var4 } AS this"
         `);
