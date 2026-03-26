@@ -736,6 +736,27 @@ describe("validation 2.0", () => {
                 ).not.toThrow();
             });
 
+            test("@populatedBy works on enum types", () => {
+                const doc = gql`
+                    type User @node {
+                        name: Status @populatedBy(callback: "myCallback")
+                    }
+
+                    enum Status {
+                        ACTIVE
+                        DISABLED
+                    }
+                `;
+
+                const executeValidate = () =>
+                    validateDocument({
+                        document: doc,
+                        features: { populatedBy: { callbacks: { myCallback: () => "ACTIVE" } } },
+                        additionalDefinitions,
+                    });
+                expect(executeValidate).not.toThrow();
+            });
+
             test.each(["Point", "CartesianPoint"])(
                 "@populatedBy throws when used on invalid type %s",
                 (type: string) => {
@@ -752,7 +773,7 @@ describe("validation 2.0", () => {
                             additionalDefinitions,
                         });
                     expect(executeValidate).toThrow(
-                        "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime or Duration."
+                        "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime, Duration or a defined Enum type."
                     );
                 }
             );
@@ -773,7 +794,7 @@ describe("validation 2.0", () => {
                             additionalDefinitions,
                         });
                     expect(executeValidate).toThrow(
-                        "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime or Duration."
+                        "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime, Duration or a defined Enum type."
                     );
                 }
             );

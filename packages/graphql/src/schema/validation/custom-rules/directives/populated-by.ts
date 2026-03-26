@@ -19,10 +19,12 @@
 
 import {
     GraphQLBoolean,
+    GraphQLEnumType,
     GraphQLFloat,
     GraphQLID,
     GraphQLInt,
     GraphQLString,
+    Kind,
     type ASTVisitor,
     type FieldDefinitionNode,
 } from "graphql";
@@ -103,10 +105,16 @@ export function validatePopulatedByDirective(context: Neo4jValidationContext): A
                         GraphQLDuration.name,
                     ].includes(getInnerTypeName(fieldDefinitionNode.type))
                 ) {
-                    throw new DocumentValidationError(
-                        "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime or Duration.",
-                        []
-                    );
+                    // could be enum
+                    if (
+                        typeMapWithExtensions[getInnerTypeName(fieldDefinitionNode.type)]?.definition.kind !==
+                        Kind.ENUM_TYPE_DEFINITION
+                    ) {
+                        throw new DocumentValidationError(
+                            "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime, Duration or a defined Enum type.",
+                            []
+                        );
+                    }
                 }
             });
             const pathToNode = getPathToNode(path, ancestors);

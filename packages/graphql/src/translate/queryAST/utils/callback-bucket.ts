@@ -29,7 +29,7 @@ import {
     GraphQLLocalTime,
     GraphQLTime,
 } from "../../../graphql/scalars";
-import type { AttributeType } from "../../../schema-model/attribute/AttributeType";
+import { AttributeType, EnumType } from "../../../schema-model/attribute/AttributeType";
 import { ListType } from "../../../schema-model/attribute/AttributeType";
 import type { Neo4jGraphQLTranslationContext } from "../../../types/neo4j-graphql-translation-context";
 
@@ -103,6 +103,10 @@ export class CallbackBucket {
             }
 
             return result.map((r) => this.parseCallbackResult(r, type.ofType));
+        }
+
+        if (type instanceof EnumType) {
+            return GraphQLString.parseValue(result);
         }
 
         switch (type.name) {
