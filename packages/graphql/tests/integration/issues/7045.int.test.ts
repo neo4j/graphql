@@ -20,7 +20,7 @@
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
-describe("https://github.com/neo4j/graphql/issues/6917", () => {
+describe("https://github.com/neo4j/graphql/issues/7045", () => {
     let A: UniqueType;
     let B: UniqueType;
     let C: UniqueType;
@@ -72,7 +72,7 @@ describe("https://github.com/neo4j/graphql/issues/6917", () => {
 
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeUndefined();
-        expect(result.data as any).toEqual({
+        expect(result.data).toEqual({
             [A.plural]: [
                 {
                     name: "A2",

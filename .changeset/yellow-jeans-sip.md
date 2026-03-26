@@ -2,4 +2,4 @@
 "@neo4j/graphql": patch
 ---
 
-Fix nested cypher fields filters
+Fix nested `@cypher` fields filtering

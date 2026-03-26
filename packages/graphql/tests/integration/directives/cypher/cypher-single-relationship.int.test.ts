@@ -75,7 +75,7 @@ describe("Cypher directive modelling a single relationship", () => {
 
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeUndefined();
-        expect(result.data as any).toEqual({
+        expect(result.data).toEqual({
             [A.plural]: [],
         });
     });
@@ -91,7 +91,7 @@ describe("Cypher directive modelling a single relationship", () => {
 
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeUndefined();
-        expect(result.data as any).toEqual({
+        expect(result.data).toEqual({
             [A.plural]: [
                 {
                     name: "A2",
@@ -111,7 +111,7 @@ describe("Cypher directive modelling a single relationship", () => {
 
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeUndefined();
-        expect(result.data as any).toEqual({
+        expect(result.data).toEqual({
             [C.plural]: [
                 {
                     name: "test",
@@ -138,7 +138,7 @@ describe("Cypher directive modelling a single relationship", () => {
 
         const result = await testHelper.executeGraphQL(query);
         expect(result.errors).toBeUndefined();
-        expect(result.data as any).toEqual({
+        expect(result.data).toEqual({
             [C.plural]: [
                 {
                     someField: "test",
