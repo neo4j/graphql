@@ -515,7 +515,7 @@ function generateConcreteEntity(
         if (isRelationshipAttribute) {
             return;
         }
-        return parseAttribute(fieldDefinition, definitionCollection, definition.fields, userDefinedCustomResolvers);
+        return parseAttribute(fieldDefinition, definitionCollection, definition.fields, userDefinedCustomResolvers, definition.name.value);
     });
 
     // schema configuration directives are propagated onto concrete entities

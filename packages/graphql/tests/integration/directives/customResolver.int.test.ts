@@ -234,6 +234,17 @@ describe("@customResolver directive", () => {
 
             expect(warn).toHaveBeenCalledWith(`Custom resolver for ${customResolverField} has not been provided`);
         });
+
+        test("Check does not throws error if customResolver is provided", async () => {
+            const resolvers = {
+                [testType.name]: { [customResolverField]: ({ firstName, lastName }) => `${firstName} ${lastName}` },
+            };
+
+            const neoSchema = await testHelper.initNeo4jGraphQL({ typeDefs, resolvers });
+            await neoSchema.getSchema();
+
+            expect(warn).not.toHaveBeenCalled();
+        });
     });
 });
 
