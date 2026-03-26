@@ -1,5 +1,62 @@
 # @neo4j/graphql
 
+## 7.5.0
+
+### Minor Changes
+
+- [#7025](https://github.com/neo4j/graphql/pull/7025) [`879b5c4`](https://github.com/neo4j/graphql/commit/879b5c4d3595c9cd4fc6a33c3172d1165efe5cbe) Thanks [@angrykoala](https://github.com/angrykoala)! - Add support for single element relationships. For example:
+
+    ```graphql
+    type Movie @node {
+        title: String!
+        actor: [Actor!]! @relationship(type: "ACTED_IN", direction: IN, properties: "ActedIn")
+        director: Director! @relationship(type: "DIRECTED", direction: IN, properties: "Directed")
+    }
+    ```
+
+    It makes possible to model and query the data of single element relationships, with the following constraints:
+    - If multiple relationships exists, the first one will be returned. The relationship that will be returned will not be guaranteed
+    - Connections will maintain the many-to-many API, even if it is a single relationship. This is to maintain the relay spec
+    - Delete mutations will be available for nullable fields
+    - Create mutations will be available for both, nullable and non-nullable
+
+- [`4cc493b`](https://github.com/neo4j/graphql/commit/4cc493b580b827d5628ecf643be1f45233b7eba1) Thanks [@angrykoala](https://github.com/angrykoala)! - Add `groupBy` fields in connections for grouping results.
+
+    These can be enabled with the `@groupBy` directive:
+
+    ```graphql
+    type Movie {
+        title: String!
+        year: Int! @groupBy
+    }
+    ```
+
+    This enables queries such as:
+
+    ```graphql
+    moviesConnection {
+        groupBy(fields: {year: true}) {
+            edges {
+                node {
+                    title
+                }
+            }
+        }
+    }
+    ```
+
+    Which returns the movies, grouped by `year`
+
+### Patch Changes
+
+- [#7108](https://github.com/neo4j/graphql/pull/7108) [`abfc26b`](https://github.com/neo4j/graphql/commit/abfc26b2d42d8b04c3de0c138555b2cbcc847f9a) Thanks [@a-alle](https://github.com/a-alle)! - Change algorithm for query complexity calculation
+
+- [#7193](https://github.com/neo4j/graphql/pull/7193) [`6c8ab70`](https://github.com/neo4j/graphql/commit/6c8ab707dc45fc4cad458d83936594bf83825e80) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix incorrect `@customDirective` warning
+
+- [#7182](https://github.com/neo4j/graphql/pull/7182) [`fd76f30`](https://github.com/neo4j/graphql/commit/fd76f30522205573363c646dd4f4c18bebd96ef1) Thanks [@angrykoala](https://github.com/angrykoala)! - Update cypher-builder dependency to avoid using module system instead of cjs
+
+- [#7192](https://github.com/neo4j/graphql/pull/7192) [`a30812e`](https://github.com/neo4j/graphql/commit/a30812ee8584eebdefd232d71cd50b5eec8b01fd) Thanks [@a-alle](https://github.com/a-alle)! - Fix nested `@cypher` fields filtering
+
 ## 7.4.4
 
 ### Patch Changes
