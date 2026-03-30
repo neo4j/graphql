@@ -1,20 +1,6 @@
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
- *
- * This file is part of Neo4j.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 import { Kind, type FieldNode, type GraphQLResolveInfo, type SelectionSetNode } from "graphql";
@@ -93,6 +79,7 @@ export function createConnectionWithEdgeProperties({
 
     const edges: any[] = source?.edges || [];
     const aggregate: any = source?.aggregate || {};
+    const groupBy: any = source?.groupBy || [];
 
     const selections = selectionSet?.selections || [];
 
@@ -116,6 +103,7 @@ export function createConnectionWithEdgeProperties({
     const pageInfoKey = getAliasKey({ selectionSet, key: "pageInfo" });
     const edgesKey = getAliasKey({ selectionSet, key: "edges" });
     const aggregateKey = getAliasKey({ selectionSet, key: "aggregate" });
+    const groupByKey = getAliasKey({ selectionSet, key: "groupBy" });
     const pageInfoField = selections.find((x): x is FieldNode => x.kind === Kind.FIELD && x.name.value === "pageInfo");
     const pageInfoSelectionSet = pageInfoField?.selectionSet;
     const startCursorKey = getAliasKey({ selectionSet: pageInfoSelectionSet, key: "startCursor" });
@@ -126,6 +114,7 @@ export function createConnectionWithEdgeProperties({
     return {
         [edgesKey]: mappedEdges,
         [aggregateKey]: aggregate,
+        [groupByKey]: groupBy,
         [pageInfoKey]: {
             [startCursorKey]: startCursor,
             [endCursorKey]: endCursor,

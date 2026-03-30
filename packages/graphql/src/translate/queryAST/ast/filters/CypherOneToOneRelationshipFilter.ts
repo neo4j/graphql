@@ -1,20 +1,6 @@
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
- *
- * This file is part of Neo4j.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 import Cypher from "@neo4j/cypher-builder";
@@ -69,18 +55,23 @@ export class CypherOneToOneRelationshipFilter extends Filter {
     public getSubqueries(context: QueryASTContext): Cypher.Clause[] {
         const { selection, nestedContext } = this.selection.apply(context);
 
-        const cypherSubquery = selection.return([
-            Cypher.head(Cypher.collect(nestedContext.returnVariable)),
-            this.returnVariable,
-        ]);
+        const predicate = this.createRelationshipOperation(nestedContext);
+        if (!predicate) {
+            throw new Error("Unexpected missing predicate in CypherOneToOneRelationshipFilter");
+        }
+        const cypherSubqueries = Cypher.utils.concat(
+            selection.with([Cypher.head(Cypher.collect(nestedContext.target)), nestedContext.target]),
+            ...this.targetNodeFilters
+                .flatMap((f) => f.getSubqueries(nestedContext))
+                .map((clause) => new Cypher.Call(clause, [nestedContext.target])),
+            new Cypher.Return([predicate, this.returnVariable])
+        );
 
-        return [cypherSubquery];
+        return [cypherSubqueries];
     }
 
-    public getPredicate(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
-        const context = queryASTContext.setTarget(this.returnVariable);
-
-        return this.createRelationshipOperation(context);
+    public getPredicate(_queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        return Cypher.eq(this.returnVariable, Cypher.true);
     }
 
     private createRelationshipOperation(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
@@ -88,7 +79,7 @@ export class CypherOneToOneRelationshipFilter extends Filter {
         const innerPredicate = Cypher.and(...targetNodePredicates);
 
         if (this.isNull) {
-            return Cypher.and(innerPredicate, Cypher.isNull(this.returnVariable));
+            return Cypher.and(innerPredicate, Cypher.isNull(queryASTContext.target!));
         }
 
         return innerPredicate;

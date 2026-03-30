@@ -1,20 +1,6 @@
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
- *
- * This file is part of Neo4j.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 import type { DirectiveNode } from "graphql";
@@ -26,6 +12,7 @@ import { parseCypherAnnotation } from "../parser/annotations-parser/cypher-annot
 import { parseDefaultAnnotation } from "../parser/annotations-parser/default-annotation";
 import { parseFilterableAnnotation } from "../parser/annotations-parser/filterable-annotation";
 import { parseFulltextAnnotation } from "../parser/annotations-parser/full-text-annotation";
+import { parseGroupByAnnotation } from "../parser/annotations-parser/group-by-annotation";
 import { parseJWTClaimAnnotation } from "../parser/annotations-parser/jwt-claim-annotation";
 import { parseKeyAnnotation } from "../parser/annotations-parser/key-annotation";
 import { parseLimitAnnotation } from "../parser/annotations-parser/limit-annotation";
@@ -48,6 +35,7 @@ import type { CypherAnnotation } from "./CypherAnnotation";
 import type { DefaultAnnotation } from "./DefaultAnnotation";
 import type { FilterableAnnotation } from "./FilterableAnnotation";
 import type { FulltextAnnotation } from "./FulltextAnnotation";
+import type { GroupByAnnotation } from "./GroupByAnnotation";
 import { IDAnnotation } from "./IDAnnotation";
 import type { JWTClaimAnnotation } from "./JWTClaimAnnotation";
 import { JWTPayloadAnnotation } from "./JWTPayloadAnnotation";
@@ -98,6 +86,7 @@ export type Annotations = CheckAnnotationName<{
     query: QueryAnnotation;
     relayId: RelayIDAnnotation;
     selectable: SelectableAnnotation;
+    groupBy: GroupByAnnotation;
     settable: SettableAnnotation;
     sortable: SortableAnnotation;
     subscription: SubscriptionAnnotation;
@@ -132,6 +121,7 @@ export const annotationsParsers: { [key in keyof Annotations]: AnnotationParser<
     selectable: parseSelectableAnnotation,
     settable: parseSettableAnnotation,
     sortable: parseSortableAnnotation,
+    groupBy: parseGroupByAnnotation,
     subscription: parseSubscriptionAnnotation,
     subscriptionsAuthorization: parseSubscriptionsAuthorizationAnnotation,
     timestamp: parseTimestampAnnotation,

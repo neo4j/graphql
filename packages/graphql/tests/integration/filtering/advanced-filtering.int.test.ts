@@ -1,20 +1,6 @@
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
- *
- * This file is part of Neo4j.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 import { generate } from "randomstring";
@@ -652,6 +638,7 @@ describe("Advanced Filtering", () => {
     });
 
     describe.each(["Int", "Float"] as const)("%s Filtering", (type) => {
+        // NOTE: FLAKY https://github.com/neo4j/graphql/actions/runs/23420627072/job/68124740873
         test("should find Movies NOT number", async () => {
             const randomType = testHelper.createUniqueType("Movie");
 
@@ -666,17 +653,17 @@ describe("Advanced Filtering", () => {
             let property: number;
 
             if (type === "Int") {
-                property = Math.floor(Math.random() * 9999);
+                property = 10;
             } else {
-                property = Math.floor(Math.random() * 9999) + 0.5;
+                property = 10.5;
             }
 
             let notProperty: number;
 
             if (type === "Int") {
-                notProperty = Math.floor(Math.random() * 9999);
+                notProperty = 12;
             } else {
-                notProperty = Math.floor(Math.random() * 9999) + 0.5;
+                notProperty = 20.5;
             }
 
             await testHelper.executeCypher(
@@ -717,25 +704,25 @@ describe("Advanced Filtering", () => {
             let value: number;
 
             if (type === "Int") {
-                value = Math.floor(Math.random() * 9999);
+                value = 10;
             } else {
-                value = Math.floor(Math.random() * 9999) + 0.5;
+                value = 10.5;
             }
 
             let randomValue1: number;
 
             if (type === "Int") {
-                randomValue1 = Math.floor(Math.random() * 9999);
+                randomValue1 = 20;
             } else {
-                randomValue1 = Math.floor(Math.random() * 9999) + 0.5;
+                randomValue1 = 20.5;
             }
 
             let randomValue2: number;
 
             if (type === "Int") {
-                randomValue2 = Math.floor(Math.random() * 9999);
+                randomValue2 = 30;
             } else {
-                randomValue2 = Math.floor(Math.random() * 9999) + 0.5;
+                randomValue2 = 30.5;
             }
 
             await testHelper.executeCypher(
@@ -775,9 +762,9 @@ describe("Advanced Filtering", () => {
             let value: number;
 
             if (type === "Int") {
-                value = Math.floor(Math.random() * 9999);
+                value = 10;
             } else {
-                value = Math.floor(Math.random() * 9999) + 0.5;
+                value = 10.5;
             }
 
             const lessThanValue = value - (value + 1);
@@ -820,9 +807,9 @@ describe("Advanced Filtering", () => {
             let value: number;
 
             if (type === "Int") {
-                value = Math.floor(Math.random() * 9999);
+                value = 10;
             } else {
-                value = Math.floor(Math.random() * 9999) + 0.5;
+                value = 10.5;
             }
 
             const lessThanValue = value - (value + 1);
@@ -864,9 +851,9 @@ describe("Advanced Filtering", () => {
             let value: number;
 
             if (type === "Int") {
-                value = Math.floor(Math.random() * 9999);
+                value = 10;
             } else {
-                value = Math.floor(Math.random() * 9999) + 0.5;
+                value = 10.5;
             }
 
             const graterThanValue = value + 1;
@@ -909,9 +896,9 @@ describe("Advanced Filtering", () => {
             let value: number;
 
             if (type === "Int") {
-                value = Math.floor(Math.random() * 9999);
+                value = 10;
             } else {
-                value = Math.floor(Math.random() * 9999) + 0.5;
+                value = 10.5;
             }
 
             const greaterThan = value + 1;

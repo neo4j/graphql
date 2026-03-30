@@ -1,20 +1,6 @@
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
- *
- * This file is part of Neo4j.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 import Cypher from "@neo4j/cypher-builder";
@@ -27,6 +13,7 @@ import type { QueryASTNode } from "../QueryASTNode";
 import type { ConnectionAggregationField } from "../fields/ConnectionAggregationField";
 import type { Field } from "../fields/Field";
 import { OperationField } from "../fields/OperationField";
+import type { GroupByField } from "../fields/group-by/GroupByField";
 import type { Filter } from "../filters/Filter";
 import type { AuthorizationFilters } from "../filters/authorization-filters/AuthorizationFilters";
 import type { Pagination } from "../pagination/Pagination";
@@ -40,8 +27,9 @@ export class ConnectionReadOperation extends Operation {
     public readonly relationship: RelationshipAdapter | undefined;
     public readonly target: ConcreteEntityAdapter;
 
+    public groupByFields: Field[] = []; // TODO: unify with nodeFields and edgeFields
     public nodeFields: Field[] = [];
-    public edgeFields: Field[] = []; // TODO: merge with attachedTo?
+    public edgeFields: Field[] = [];
     public filters: Filter[] = [];
     public skipConnection: boolean = false; // If set to true, skips the connection (use for aggregation only queries optimisation)
 
@@ -81,6 +69,10 @@ export class ConnectionReadOperation extends Operation {
         this.nodeFields = fields;
     }
 
+    public setGroupByFields(fields: GroupByField[]) {
+        this.groupByFields = fields;
+    }
+
     public addFilters(...filters: Filter[]) {
         this.filters.push(...filters);
     }
@@ -115,6 +107,7 @@ export class ConnectionReadOperation extends Operation {
             this.selection,
             ...this.nodeFields,
             ...this.edgeFields,
+            ...this.groupByFields,
             this.aggregationField,
             ...this.filters,
             ...this.authFilters,
@@ -235,8 +228,17 @@ export class ConnectionReadOperation extends Operation {
             ...aggregationProjection,
         });
 
+        const groupBySubqueries = this.groupByFields.flatMap((f) => {
+            return f.getSubqueries(nestedContext);
+        });
+
+        if (this.groupByFields.length > 0) {
+            this.generateProjectionMapForFields(this.groupByFields, context.target, projectionMap);
+        }
+
         const returnClause = new Cypher.Return([projectionMap, context.returnVariable]);
         const validations = this.getValidations(nestedContext);
+
         let connectionClauses: Cypher.Clause = Cypher.utils.concat(
             ...extraMatches,
             selectionClause,
@@ -244,19 +246,12 @@ export class ConnectionReadOperation extends Operation {
             withWhere,
             ...validations,
             withCollectEdgesAndTotalCount,
-            unwindAndProjectionSubquery
+            unwindAndProjectionSubquery,
+            ...groupBySubqueries
         );
 
         if (aggregationSubqueries.length > 0) {
-            const returnClause = new Cypher.Return();
-            if (hasProjectionFields) {
-                returnClause.addColumns(edgesProjectionVar);
-            }
-            if (this.hasTotalCount) {
-                returnClause.addColumns(totalCount);
-            }
-
-            connectionClauses = new Cypher.Call(Cypher.utils.concat(connectionClauses, returnClause), "*"); // NOTE: this call is only needed when aggregate is used
+            connectionClauses = new Cypher.Call(Cypher.utils.concat(connectionClauses, new Cypher.Return("*")), "*");
         }
 
         return {
@@ -293,7 +288,7 @@ export class ConnectionReadOperation extends Operation {
 
     /** Defines if the query should project edges */
     protected shouldProjectEdges(): boolean {
-        const hasFields = this.nodeFields.length + this.edgeFields.length > 0;
+        const hasFields = this.nodeFields.length + this.edgeFields.length + this.groupByFields.length > 0;
 
         // Project edges when there are explicit node/edge projection fields or when pageInfo is requested.
         return hasFields || this.needsPageInfo;
@@ -320,15 +315,11 @@ export class ConnectionReadOperation extends Operation {
         edgeVar: Cypher.Variable,
         edgesVar: Cypher.Variable
     ): Cypher.With {
-        let unwindClause: Cypher.With;
+        const unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with([edgeVar.property("node"), context.target]);
         if (context.relationship) {
-            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with(
-                [edgeVar.property("node"), context.target],
-                [edgeVar.property("relationship"), context.relationship]
-            );
-        } else {
-            unwindClause = new Cypher.Unwind([edgesVar, edgeVar]).with([edgeVar.property("node"), context.target]);
+            unwindClause.addColumns([edgeVar.property("relationship"), context.relationship]);
         }
+
         return unwindClause;
     }
 
@@ -372,8 +363,18 @@ export class ConnectionReadOperation extends Operation {
         return edgeProjectionMap;
     }
 
-    protected generateProjectionMapForFields(fields: Field[], target: Cypher.Variable): Cypher.Map {
-        const projectionMap = new Cypher.Map();
+    /** Given a set of fields, generate a projection map.
+     * @param projectionMap - If provided, the new projection fields will be added to that map, instead of creating a new one
+     */
+    protected generateProjectionMapForFields(
+        fields: Field[],
+        target: Cypher.Variable,
+        projectionMap?: Cypher.Map
+    ): Cypher.Map {
+        if (!projectionMap) {
+            projectionMap = new Cypher.Map();
+        }
+
         fields
             .map((f) => f.getProjectionField(target))
             .forEach((p) => {

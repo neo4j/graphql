@@ -1,20 +1,6 @@
 /*
  * Copyright (c) "Neo4j"
  * Neo4j Sweden AB [http://neo4j.com]
- *
- * This file is part of Neo4j.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
 import { asArray, type IResolvers } from "@graphql-tools/utils";
@@ -62,7 +48,10 @@ import { validateRelationshipDirective } from "./custom-rules/directives/relatio
 import { validateRelayIdDirective } from "./custom-rules/directives/relay-id";
 import { validateSubscriptionAuthorizationDirective } from "./custom-rules/directives/subscriptionAuthorization";
 import { validateTimestampDirective } from "./custom-rules/directives/timestamp";
-import { ErrorIfSingleRelationships } from "./custom-rules/error-single-relationships";
+import { validateVectorDirective } from "./custom-rules/directives/vector";
+
+import { validateGroupByDirective } from "./custom-rules/directives/group-by";
+import { ErrorIfSingleRelationshipNonNullable } from "./custom-rules/error-single-relationships-non-nullable";
 import { ValidJwtDirectives } from "./custom-rules/features/valid-jwt-directives";
 import { ValidRelationshipDeclaration } from "./custom-rules/features/valid-relationship-declaration";
 import { ValidRelationshipProperties } from "./custom-rules/features/valid-relationship-properties";
@@ -84,7 +73,6 @@ import { WarnObjectFieldsWithoutResolver } from "./custom-rules/warnings/object-
 import { WarnIfSubscriptionsAuthorizationMissing } from "./custom-rules/warnings/subscriptions-authorization-missing";
 import { validateSchemaCustomizations } from "./validate-schema-customizations";
 import { validateSDL } from "./validate-sdl";
-import { validateVectorDirective } from "./custom-rules/directives/vector";
 
 function filterDocument(document: DocumentNode, filterDirectives: boolean = false): DocumentNode {
     const nodeNames = document.definitions
@@ -235,8 +223,8 @@ function runValidationRulesOnFilteredDocument({
             ValidUnionType,
             ValidDirectiveInheritance,
             ValidateNeo4jDirectiveArgumentsValue,
+            ErrorIfSingleRelationshipNonNullable,
             WarnIfAuthorizationFeatureDisabled(features?.authorization),
-            ErrorIfSingleRelationships,
             WarnIfAMaxLimitCanBeBypassedThroughInterface(),
             WarnObjectFieldsWithoutResolver({
                 customResolvers: asArray(userCustomResolvers ?? []),
@@ -258,12 +246,14 @@ function runValidationRulesOnFilteredDocument({
             validateTimestampDirective,
             validateSubscriptionAuthorizationDirective,
             validateVectorDirective,
+            validateGroupByDirective,
         ],
         schema,
         features?.populatedBy?.callbacks
     );
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
     if (filteredErrors.length) {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
         throw filteredErrors;
     }
 }
@@ -320,6 +310,7 @@ function validateDocument({
     const errors = validateSchema(schema);
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
     if (filteredErrors.length) {
+        // eslint-disable-next-line @typescript-eslint/only-throw-error
         throw filteredErrors;
     }
 
