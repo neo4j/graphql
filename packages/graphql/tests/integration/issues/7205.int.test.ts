@@ -17,7 +17,7 @@ describe("https://github.com/neo4j/graphql/issues/7205", () => {
         Person = testHelper.createUniqueType("Person");
         Employer = testHelper.createUniqueType("Employer");
 
-        const typeDefs = gql`
+        const typeDefs = /* GraphQL */ `
             type ${Person} @node {
                 name: String!
                 employer: ${Employer} @relationship(type: "WORKS_AT", direction: OUT)
@@ -31,7 +31,7 @@ describe("https://github.com/neo4j/graphql/issues/7205", () => {
         await testHelper.initNeo4jGraphQL({ typeDefs });
 
         await testHelper.executeCypher(`
-            CREATE (m:${Person.name} {name: "Bob"})
+            CREATE (m:${Person} {name: "Bob"})
             CREATE (:${Person.name} {name: "Alice"})-[:WORKS_AT]->(:${Employer.name} {name: "Some Inc"})
             `);
     });
