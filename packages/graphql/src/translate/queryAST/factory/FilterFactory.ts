@@ -302,6 +302,7 @@ export class FilterFactory {
         /**
          * The logic below can be confusing, but it's to handle the following cases:
          * 1. where: { actors: null } -> in this case we want to return an Exists filter as showed by tests packages/graphql/tests/tck/null.test.ts
+         *    1.1 where: { directors: null } -> this is single relationship case, and we want an Exists NONE as shown by tests packages/graphql/tests/integration/issues/7205.int.test.ts
          * 2. where: {} -> in this case we want to not apply any filter, as showed by tests packages/graphql/tests/tck/issues/402.test.ts
          **/
         const isNull = where === null;
@@ -312,10 +313,16 @@ export class FilterFactory {
         const filteredEntities = getConcreteEntities(relationship.target, where);
         const relationshipFilters: RelationshipFilter[] = [];
         for (const concreteEntity of filteredEntities) {
+            let defaultOperator: RelationshipWhereOperator = "SOME";
+            if (isNull && !relationship.isList) {
+                // Case 1.1 above
+                // TBD if we want to apply the same logic for list relationships
+                defaultOperator = "NONE";
+            }
             const relationshipFilter = this.createRelationshipFilterTreeNode({
                 relationship,
                 target: concreteEntity,
-                operator: operator ?? "SOME",
+                operator: operator ?? defaultOperator,
             });
 
             if (!isNull) {
