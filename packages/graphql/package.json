@@ -45,7 +45,7 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@apollo/gateway": "2.13.2",
+        "@apollo/gateway": "2.13.3",
         "@apollo/server": "5.2.0",
         "@types/deep-equal": "1.0.4",
         "@types/is-uuid": "1.0.2",
@@ -64,7 +64,7 @@
         "jest": "29.7.0",
         "jest-extended": "7.0.0",
         "jwks-rsa": "3.2.2",
-        "koa": "3.1.2",
+        "koa": "3.2.0",
         "koa-jwt": "4.0.4",
         "koa-router": "14.0.0",
         "mock-jwks": "3.3.5",
@@ -75,7 +75,7 @@
         "ts-jest": "29.4.6",
         "ts-node": "10.9.2",
         "typescript": "5.9.3",
-        "ws": "8.19.0"
+        "ws": "8.20.0"
     },
     "dependencies": {
         "@apollo/subgraph": "^2.2.3",
