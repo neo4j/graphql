@@ -44,7 +44,7 @@
         "@types/pluralize": "0.0.33",
         "jest": "29.7.0",
         "ts-jest": "29.4.6",
-        "typescript": "5.9.3"
+        "typescript": "6.0.2"
     },
     "dependencies": {
         "camelcase": "^6.3.0",
