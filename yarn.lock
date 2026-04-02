@@ -2809,7 +2809,7 @@ __metadata:
   languageName: node
   linkType: soft
 
-"@neo4j/graphql@npm:^7.0.0, @neo4j/graphql@npm:^7.5.0, @neo4j/graphql@workspace:packages/graphql":
+"@neo4j/graphql@npm:^7.0.0, @neo4j/graphql@npm:^7.5.1, @neo4j/graphql@workspace:packages/graphql":
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
@@ -5083,7 +5083,7 @@ __metadata:
     "@apollo/federation-subgraph-compatibility": "npm:2.2.2"
     "@apollo/server": "npm:^5.0.0"
     "@graphql-tools/wrap": "npm:^11.0.0"
-    "@neo4j/graphql": "npm:^7.5.0"
+    "@neo4j/graphql": "npm:^7.5.1"
     fork-ts-checker-webpack-plugin: "npm:9.1.0"
     graphql: "npm:16.13.2"
     graphql-tag: "npm:^2.12.6"
