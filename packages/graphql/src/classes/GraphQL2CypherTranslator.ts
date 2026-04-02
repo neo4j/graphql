@@ -18,7 +18,7 @@
  */
 
 import type { DocumentNode } from "graphql";
-import { execute, Kind, OperationTypeNode, parse } from "graphql";
+import { execute, Kind, parse } from "graphql";
 import type { GraphQLObjectType, GraphQLResolveInfo, GraphQLSchema } from "graphql/type";
 import Cypher from "@neo4j/cypher-builder";
 import getNeo4jResolveTree from "../utils/get-neo4j-resolve-tree";
@@ -456,10 +456,10 @@ export class GraphQL2CypherTranslator {
         }
         const targetFieldName = firstSelection.name.value;
 
-        switch (operationDef.operation) {
-            case OperationTypeNode.QUERY:
+        switch (operationDef.operation as string) {
+            case "query":
                 return { rootType: this.schema.getQueryType(), targetFieldName };
-            case OperationTypeNode.MUTATION:
+            case "mutation":
                 return { rootType: this.schema.getMutationType(), targetFieldName };
             default:
                 throw new Error(`Unsupported operation type "${operationDef.operation}"`);
