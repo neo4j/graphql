@@ -37,6 +37,7 @@ import { Neo4jGraphQLSubscriptionsCDCEngine } from "./subscription/Neo4jGraphQLS
 import { assertIndexesAndConstraints } from "./utils/asserts-indexes-and-constraints";
 import { generateResolverComposition } from "./utils/generate-resolvers-composition";
 import checkNeo4jCompat from "./utils/verify-database";
+import { GraphQL2CypherTranslator } from "./GraphQL2CypherTranslator";
 
 type TypeDefinitions = string | DocumentNode | TypeDefinitions[] | (() => TypeDefinitions);
 
@@ -71,6 +72,8 @@ class Neo4jGraphQL {
 
     private authorization?: Neo4jGraphQLAuthorization;
 
+    private translator?: GraphQL2CypherTranslator;
+
     private debug?: boolean;
     private validate: boolean;
 
@@ -95,6 +98,40 @@ class Neo4jGraphQL {
         }
 
         this.complexityEstimatorHelper = new ComplexityEstimatorHelper(!!this.features.complexityEstimators);
+    }
+
+    public async giveMeCypher(
+        queryString: string,
+        executableSchema?: GraphQLSchema,
+        variableValues?: Record<string, unknown>
+    ): Promise<{ cypher: string; params: Record<string, unknown> }> {
+        if (!executableSchema) {
+            executableSchema = await this.getExecutableSchema();
+        }
+
+        if (!this.schemaModel) {
+            throw new Error("Schema Model is not defined");
+        }
+
+        if (!this.driver) {
+            throw new Error("neo4j-driver Driver missing");
+        }
+
+        if (!this.dbInfo) {
+            this.dbInfo = await this.getNeo4jDatabaseInfo(this.driver);
+        }
+
+        if (!this.translator) {
+            this.translator = new GraphQL2CypherTranslator({
+                executableSchema,
+                schemaModel: this.schemaModel,
+                driver: this.driver,
+                features: this.features,
+                dbInfo: this.dbInfo,
+            });
+        }
+
+        return this.translator.graphql2cypher(queryString, variableValues);
     }
 
     public async getSchema(): Promise<GraphQLSchema> {
