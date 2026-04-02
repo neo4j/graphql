@@ -316,7 +316,6 @@ export class FilterFactory {
             let defaultOperator: RelationshipWhereOperator = "SOME";
             if (isNull && !relationship.isList) {
                 // Case 1.1 above
-                // TBD if we want to apply the same logic for list relationships
                 defaultOperator = "NONE";
             }
             const relationshipFilter = this.createRelationshipFilterTreeNode({
