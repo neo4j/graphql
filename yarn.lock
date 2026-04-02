@@ -2855,7 +2855,7 @@ __metadata:
     jest: "npm:29.7.0"
     jest-extended: "npm:7.0.0"
     jose: "npm:^5.0.0"
-    jwks-rsa: "npm:3.2.2"
+    jwks-rsa: "npm:4.0.1"
     koa: "npm:3.2.0"
     koa-jwt: "npm:4.0.4"
     koa-router: "npm:14.0.0"
@@ -12948,17 +12948,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jose@npm:^4.15.4":
-  version: 4.15.9
-  resolution: "jose@npm:4.15.9"
-  checksum: 10c0/4ed4ddf4a029db04bd167f2215f65d7245e4dc5f36d7ac3c0126aab38d66309a9e692f52df88975d99429e357e5fd8bab340ff20baab544d17684dd1d940a0f4
-  languageName: node
-  linkType: hard
-
 "jose@npm:^5.0.0":
   version: 5.10.0
   resolution: "jose@npm:5.10.0"
   checksum: 10c0/e20d9fc58d7e402f2e5f04e824b8897d5579aae60e64cb88ebdea1395311c24537bf4892f7de413fab1acf11e922797fb1b42269bc8fc65089a3749265ccb7b0
+  languageName: node
+  linkType: hard
+
+"jose@npm:^6.1.3":
+  version: 6.2.2
+  resolution: "jose@npm:6.2.2"
+  checksum: 10c0/201f4776d77eccd339de99fb3ba940fdf03db15e64be7a99b511e53c232e3f3818e3f21b95223d62f99315a2ab76b4251cedd94e067de56893e45273a8d2151b
   languageName: node
   linkType: hard
 
@@ -13252,16 +13252,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jwks-rsa@npm:3.2.2":
-  version: 3.2.2
-  resolution: "jwks-rsa@npm:3.2.2"
+"jwks-rsa@npm:4.0.1":
+  version: 4.0.1
+  resolution: "jwks-rsa@npm:4.0.1"
   dependencies:
     "@types/jsonwebtoken": "npm:^9.0.4"
     debug: "npm:^4.3.4"
-    jose: "npm:^4.15.4"
+    jose: "npm:^6.1.3"
     limiter: "npm:^1.1.5"
-    lru-memoizer: "npm:^2.2.0"
-  checksum: 10c0/a619ee0c5b342e1c9edcd69086d7beb86e3ef1dcce5b8aeb3ac6d0c0014309c90f00e5e7b0ce8143832628244fec8cdff51ecc38a5c3a95a4fcd810d60e79b1a
+    lru-memoizer: "npm:^3.0.0"
+  checksum: 10c0/aeca4b1de959707002150556f4f08ed3677fe9dd12bd0be0aa01220a86b88867357c7d2241f4975de9f53125d41cc3f5e4c5e929a8922f257b61634b208d7e3c
   languageName: node
   linkType: hard
 
@@ -13847,15 +13847,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-cache@npm:6.0.0, lru-cache@npm:^6.0.0":
-  version: 6.0.0
-  resolution: "lru-cache@npm:6.0.0"
-  dependencies:
-    yallist: "npm:^4.0.0"
-  checksum: 10c0/cb53e582785c48187d7a188d3379c181b5ca2a9c78d2bce3e7dee36f32761d1c42983da3fe12b55cb74e1779fa94cdc2e5367c028a9b35317184ede0c07a30a9
-  languageName: node
-  linkType: hard
-
 "lru-cache@npm:^10.0.0, lru-cache@npm:^10.0.1, lru-cache@npm:^10.2.0":
   version: 10.4.3
   resolution: "lru-cache@npm:10.4.3"
@@ -13867,6 +13858,13 @@ __metadata:
   version: 11.1.0
   resolution: "lru-cache@npm:11.1.0"
   checksum: 10c0/85c312f7113f65fae6a62de7985348649937eb34fb3d212811acbf6704dc322a421788aca253b62838f1f07049a84cc513d88f494e373d3756514ad263670a64
+  languageName: node
+  linkType: hard
+
+"lru-cache@npm:^11.0.1":
+  version: 11.2.7
+  resolution: "lru-cache@npm:11.2.7"
+  checksum: 10c0/549cdb59488baa617135fc12159cafb1a97f91079f35093bb3bcad72e849fc64ace636d244212c181dfdf1a99bbfa90757ff303f98561958ee4d0f885d9bd5f7
   languageName: node
   linkType: hard
 
@@ -13886,6 +13884,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"lru-cache@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "lru-cache@npm:6.0.0"
+  dependencies:
+    yallist: "npm:^4.0.0"
+  checksum: 10c0/cb53e582785c48187d7a188d3379c181b5ca2a9c78d2bce3e7dee36f32761d1c42983da3fe12b55cb74e1779fa94cdc2e5367c028a9b35317184ede0c07a30a9
+  languageName: node
+  linkType: hard
+
 "lru-cache@npm:^7.10.1, lru-cache@npm:^7.14.1":
   version: 7.18.3
   resolution: "lru-cache@npm:7.18.3"
@@ -13893,13 +13900,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lru-memoizer@npm:^2.2.0":
-  version: 2.3.0
-  resolution: "lru-memoizer@npm:2.3.0"
+"lru-memoizer@npm:^3.0.0":
+  version: 3.0.0
+  resolution: "lru-memoizer@npm:3.0.0"
   dependencies:
     lodash.clonedeep: "npm:^4.5.0"
-    lru-cache: "npm:6.0.0"
-  checksum: 10c0/13cf6bc9ff74cdb167078dbb66d4cf43adc802495da8f56097e6f388b4d7ccb91668beb809bdbc55b62d016c138d7c19a18c5883a2fdbcc7f508ad8a23ec7c65
+    lru-cache: "npm:^11.0.1"
+  checksum: 10c0/d4d1abedd56a79da6416e0c1ae736c6bc084155d45efe427182d4a8318a1054c5fbd9bba154e6dfe8a8b7de7630392186b81faa84f15746eb5459dc0567f181c
   languageName: node
   linkType: hard
 
