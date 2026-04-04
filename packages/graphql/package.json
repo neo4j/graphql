@@ -72,7 +72,7 @@
         "randomstring": "1.3.1",
         "rimraf": "6.1.3",
         "supertest": "7.2.2",
-        "ts-jest": "29.4.6",
+        "ts-jest": "29.4.9",
         "ts-node": "10.9.2",
         "typescript": "5.9.3",
         "ws": "8.20.0"
