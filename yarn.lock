@@ -2847,7 +2847,7 @@ __metadata:
     jose: "npm:^5.0.0"
     jsonwebtoken: "npm:9.0.3"
     jwks-rsa: "npm:3.2.2"
-    knip: "npm:6.1.1"
+    knip: "npm:6.2.0"
     koa: "npm:3.2.0"
     koa-jwt: "npm:4.0.4"
     koa-router: "npm:14.0.0"
@@ -2857,7 +2857,7 @@ __metadata:
     rimraf: "npm:6.1.3"
     semver: "npm:^7.5.4"
     supertest: "npm:7.2.2"
-    ts-jest: "npm:29.4.6"
+    ts-jest: "npm:29.4.9"
     ts-node: "npm:10.9.2"
     typescript: "npm:5.9.3"
     typescript-memoize: "npm:^1.1.1"
@@ -2880,7 +2880,7 @@ __metadata:
     debug: "npm:^4.3.4"
     jest: "npm:30.3.0"
     pluralize: "npm:^8.0.0"
-    ts-jest: "npm:29.4.6"
+    ts-jest: "npm:29.4.9"
     typescript: "npm:5.9.3"
   peerDependencies:
     neo4j-driver: ^5.8.0 || ^6.0.0
@@ -10149,9 +10149,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"handlebars@npm:^4.7.8":
-  version: 4.7.8
-  resolution: "handlebars@npm:4.7.8"
+"handlebars@npm:^4.7.9":
+  version: 4.7.9
+  resolution: "handlebars@npm:4.7.9"
   dependencies:
     minimist: "npm:^1.2.5"
     neo-async: "npm:^2.6.2"
@@ -10163,7 +10163,7 @@ __metadata:
       optional: true
   bin:
     handlebars: bin/handlebars
-  checksum: 10c0/7aff423ea38a14bb379316f3857fe0df3c5d66119270944247f155ba1f08e07a92b340c58edaa00cfe985c21508870ee5183e0634dcb53dd405f35c93ef7f10d
+  checksum: 10c0/22f8105a7e68e81aff2662bb434edf05f757d21d850731d71cec886d69c10cd33d3c43e34b2892968ec62de8241611851d3d0674c8ef324ea3e01dc66262faa9
   languageName: node
   linkType: hard
 
@@ -12732,9 +12732,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"knip@npm:6.1.1":
-  version: 6.1.1
-  resolution: "knip@npm:6.1.1"
+"knip@npm:6.2.0":
+  version: 6.2.0
+  resolution: "knip@npm:6.2.0"
   dependencies:
     "@nodelib/fs.walk": "npm:^1.2.3"
     fast-glob: "npm:^3.3.3"
@@ -12754,7 +12754,7 @@ __metadata:
   bin:
     knip: bin/knip.js
     knip-bun: bin/knip-bun.js
-  checksum: 10c0/dcc488ea47813cb1df53bba11567731eedea815c59c1431ea993efa4654b361766e730c3d00fbc62e1ed0e3520b5165cd01d9d082f5553c91bc0a7f0db36c0d4
+  checksum: 10c0/8745eed6d1f348e9a96a7dcea7197c2212833cb3d844d6daf9457cdb2201126310637aa5b5e16e796f047a23801b61edda133a93267e81d590551108e13523a4
   languageName: node
   linkType: hard
 
@@ -14288,7 +14288,7 @@ __metadata:
     prettier: "npm:3.8.1"
     prettier-2: "npm:prettier@2.8.8"
     set-tz: "npm:0.2.0"
-    ts-jest: "npm:29.4.6"
+    ts-jest: "npm:29.4.9"
     typescript: "npm:5.9.3"
   languageName: unknown
   linkType: soft
@@ -16602,7 +16602,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"semver@npm:^7.0.0, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.7.1, semver@npm:^7.7.2, semver@npm:^7.7.3":
+"semver@npm:^7.0.0, semver@npm:^7.3.2, semver@npm:^7.3.4, semver@npm:^7.3.5, semver@npm:^7.5.3, semver@npm:^7.5.4, semver@npm:^7.6.0, semver@npm:^7.7.1, semver@npm:^7.7.2, semver@npm:^7.7.3, semver@npm:^7.7.4":
   version: 7.7.4
   resolution: "semver@npm:7.7.4"
   bin:
@@ -17972,17 +17972,17 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:29.4.6":
-  version: 29.4.6
-  resolution: "ts-jest@npm:29.4.6"
+"ts-jest@npm:29.4.9":
+  version: 29.4.9
+  resolution: "ts-jest@npm:29.4.9"
   dependencies:
     bs-logger: "npm:^0.2.6"
     fast-json-stable-stringify: "npm:^2.1.0"
-    handlebars: "npm:^4.7.8"
+    handlebars: "npm:^4.7.9"
     json5: "npm:^2.2.3"
     lodash.memoize: "npm:^4.1.2"
     make-error: "npm:^1.3.6"
-    semver: "npm:^7.7.3"
+    semver: "npm:^7.7.4"
     type-fest: "npm:^4.41.0"
     yargs-parser: "npm:^21.1.1"
   peerDependencies:
@@ -17992,7 +17992,7 @@ __metadata:
     babel-jest: ^29.0.0 || ^30.0.0
     jest: ^29.0.0 || ^30.0.0
     jest-util: ^29.0.0 || ^30.0.0
-    typescript: ">=4.3 <6"
+    typescript: ">=4.3 <7"
   peerDependenciesMeta:
     "@babel/core":
       optional: true
@@ -18008,7 +18008,7 @@ __metadata:
       optional: true
   bin:
     ts-jest: cli.js
-  checksum: 10c0/013dda99ac938cd4b94bae9323ed1b633cd295976c256d596d01776866188078fe7b82b8b3ebd05deb401b27b5618d9d76208eded2568661240ecf9694a5c933
+  checksum: 10c0/901eb382817d1f48fc56b6c9b82de989f176660295695ae1fcd55f06f71d2c107766e1413ab24a59fa964c2ef79a60dd23ac1f382b05ae04f2b454fb4eb5ad4f
   languageName: node
   linkType: hard
 
