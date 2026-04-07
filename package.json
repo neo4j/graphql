@@ -17,7 +17,6 @@
         "build": "tsc --build tsconfig.production.json",
         "lint": "eslint --cache .",
         "test": "jest",
-        "test-docker": "docker-compose up --build --abort-on-container-exit",
         "changeset-version": "changeset version --since $BRANCH && yarn",
         "release-dev": "yarn build && changeset publish",
         "release-lts": "yarn build && changeset publish --tag lts",
