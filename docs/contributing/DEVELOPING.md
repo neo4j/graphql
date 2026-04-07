@@ -138,12 +138,6 @@ You can run all the TCK tests against the database to check that the Cypher gene
 VERIFY_TCK=true yarn test:tck
 ```
 
-### Testing using docker
-
-```bash
-npm run test-docker
-```
-
 ### Performance
 
 `packages/graphql` has several performance benchmarks built in. To run the benchmarks:
