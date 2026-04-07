@@ -16,7 +16,7 @@ describe("https://github.com/neo4j/graphql/issues/1933", () => {
         employeeType = testHelper.createUniqueType("Employee");
         projectType = testHelper.createUniqueType("Project");
 
-        const typeDefs = `
+        const typeDefs = /* GraphQL */ `
             type ${employeeType} @node {
                 employeeId: ID!
                 firstName: String! @settable(onCreate: false, onUpdate: false)
