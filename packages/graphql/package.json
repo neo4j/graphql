@@ -64,7 +64,7 @@
         "jest": "30.3.0",
         "jest-extended": "7.0.0",
         "jsonwebtoken": "9.0.3",
-        "jwks-rsa": "3.2.2",
+        "jwks-rsa": "4.0.1",
         "knip": "6.3.0",
         "koa": "3.2.0",
         "koa-jwt": "4.0.4",
