@@ -1,5 +1,13 @@
 # @neo4j/graphql
 
+## 7.5.1
+
+### Patch Changes
+
+- [#7210](https://github.com/neo4j/graphql/pull/7210) [`9d5a341`](https://github.com/neo4j/graphql/commit/9d5a3418e5e340d954a9d1186b4431c281f99e5d) Thanks [@a-alle](https://github.com/a-alle)! - Fix relationship existence filter on single relationships to take null check as a conceptual "no relationship exists"
+
+- [#7194](https://github.com/neo4j/graphql/pull/7194) [`6b76c68`](https://github.com/neo4j/graphql/commit/6b76c686870c8bc11d9509a8baaead62eedfe991) Thanks [@a-alle](https://github.com/a-alle)! - Adds support for `@populatedBy` on fields of type Enum
+
 ## 7.5.0
 
 ### Minor Changes
