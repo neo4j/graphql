@@ -3,8 +3,6 @@
  * Neo4j Sweden AB [http://neo4j.com]
  */
 
-import type { GraphQLResponse } from "@apollo/server";
-import { ApolloServer } from "@apollo/server";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
@@ -170,7 +168,7 @@ describe("https://github.com/neo4j/graphql/issues/4056", () => {
             console.log("CDC NOT AVAILABLE - SKIPPING");
             return;
         }
-        const neo4jGraphql = await testHelper.initNeo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 populatedBy: {
@@ -186,43 +184,28 @@ describe("https://github.com/neo4j/graphql/issues/4056", () => {
                 },
             },
         });
-        const apolloServer = new ApolloServer({
-            schema: await neo4jGraphql.getSchema(),
-            introspection: true,
-        });
 
-        const addTenantResponse = await apolloServer.executeOperation(
-            { query: ADD_TENANT, variables: tenantVariables },
-            { contextValue: { jwt: { id: myUserId, roles: ["overlord"] } } }
-        );
+        const addTenantResponse = await testHelper.executeGraphQL(ADD_TENANT, {
+            variableValues: tenantVariables,
+            contextValue: { jwt: { id: myUserId, roles: ["overlord"] } },
+        });
         expect(addTenantResponse).toMatchObject({
-            body: {
-                singleResult: {
-                    data: {
-                        [Tenant.operations.create]: {
-                            [Tenant.plural]: [{ id: expect.any(String), admins: [{ userId: myUserId }] }],
-                        },
-                    },
+            data: {
+                [Tenant.operations.create]: {
+                    [Tenant.plural]: [{ id: expect.any(String), admins: [{ userId: myUserId }] }],
                 },
             },
         });
 
-        const settingsId = (addTenantResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult
-            .data[Tenant.operations.create][Tenant.plural][0].settings.id;
-        const userId = (addTenantResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult.data[
-            Tenant.operations.create
-        ][Tenant.plural][0].admins[0].userId;
+        const settingsId = (addTenantResponse.data as any)[Tenant.operations.create][Tenant.plural][0].settings.id;
+        const userId = (addTenantResponse.data as any)[Tenant.operations.create][Tenant.plural][0].admins[0].userId;
 
-        const addOpeningDaysResponse = await apolloServer.executeOperation(
-            { query: ADD_OPENING_DAYS, variables: { input: openingDayInput(settingsId) } },
-            { contextValue: { jwt: { id: userId } } }
-        );
+        const addOpeningDaysResponse = await testHelper.executeGraphQL(ADD_OPENING_DAYS, {
+            variableValues: { input: openingDayInput(settingsId) },
+            contextValue: { jwt: { id: userId } },
+        });
         expect(addOpeningDaysResponse).toMatchObject({
-            body: {
-                singleResult: {
-                    data: { [OpeningDay.operations.create]: { [OpeningDay.plural]: [{ id: expect.any(String) }] } },
-                },
-            },
+            data: { [OpeningDay.operations.create]: { [OpeningDay.plural]: [{ id: expect.any(String) }] } },
         });
     });
 
@@ -231,7 +214,7 @@ describe("https://github.com/neo4j/graphql/issues/4056", () => {
             console.log("CDC NOT AVAILABLE - SKIPPING");
             return;
         }
-        const neo4jGraphql = await testHelper.initNeo4jGraphQL({
+        await testHelper.initNeo4jGraphQL({
             typeDefs,
             features: {
                 subscriptions: await testHelper.getSubscriptionEngine(),
@@ -248,43 +231,28 @@ describe("https://github.com/neo4j/graphql/issues/4056", () => {
                 },
             },
         });
-        const apolloServer = new ApolloServer({
-            schema: await neo4jGraphql.getSchema(),
-            introspection: true,
-        });
 
-        const addTenantResponse = await apolloServer.executeOperation(
-            { query: ADD_TENANT, variables: tenantVariables },
-            { contextValue: { jwt: { id: myUserId, roles: ["overlord"] } } }
-        );
+        const addTenantResponse = await testHelper.executeGraphQL(ADD_TENANT, {
+            variableValues: tenantVariables,
+            contextValue: { jwt: { id: myUserId, roles: ["overlord"] } },
+        });
         expect(addTenantResponse).toMatchObject({
-            body: {
-                singleResult: {
-                    data: {
-                        [Tenant.operations.create]: {
-                            [Tenant.plural]: [{ id: expect.any(String), admins: [{ userId: myUserId }] }],
-                        },
-                    },
+            data: {
+                [Tenant.operations.create]: {
+                    [Tenant.plural]: [{ id: expect.any(String), admins: [{ userId: myUserId }] }],
                 },
             },
         });
 
-        const settingsId = (addTenantResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult
-            .data[Tenant.operations.create][Tenant.plural][0].settings.id;
-        const userId = (addTenantResponse.body as GraphQLResponse["body"] & { singleResult: any }).singleResult.data[
-            Tenant.operations.create
-        ][Tenant.plural][0].admins[0].userId;
+        const settingsId = (addTenantResponse.data as any)[Tenant.operations.create][Tenant.plural][0].settings.id;
+        const userId = (addTenantResponse.data as any)[Tenant.operations.create][Tenant.plural][0].admins[0].userId;
 
-        const addOpeningDaysResponse = await apolloServer.executeOperation(
-            { query: ADD_OPENING_DAYS, variables: { input: openingDayInput(settingsId) } },
-            { contextValue: { jwt: { id: userId } } }
-        );
+        const addOpeningDaysResponse = await testHelper.executeGraphQL(ADD_OPENING_DAYS, {
+            variableValues: { input: openingDayInput(settingsId) },
+            contextValue: { jwt: { id: userId } },
+        });
         expect(addOpeningDaysResponse).toMatchObject({
-            body: {
-                singleResult: {
-                    data: { [OpeningDay.operations.create]: { [OpeningDay.plural]: [{ id: expect.any(String) }] } },
-                },
-            },
+            data: { [OpeningDay.operations.create]: { [OpeningDay.plural]: [{ id: expect.any(String) }] } },
         });
     });
 });
