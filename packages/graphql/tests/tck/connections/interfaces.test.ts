@@ -88,7 +88,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
               }
               WITH edges
               WITH edges, size(edges) AS totalCount
-              RETURN {edges: edges, totalCount: totalCount} AS var4
+              RETURN {edges: edges} AS var4
             }
             RETURN this { .name, actedInConnection: var4 } AS this"
         `);
@@ -145,7 +145,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
               }
               WITH edges
               WITH edges, size(edges) AS totalCount
-              RETURN {edges: edges, totalCount: totalCount} AS var4
+              RETURN {edges: edges} AS var4
             }
             RETURN this { .name, actedInConnection: var4 } AS this"
         `);
@@ -207,7 +207,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
               }
               WITH edges
               WITH edges, size(edges) AS totalCount
-              RETURN {edges: edges, totalCount: totalCount} AS var4
+              RETURN {edges: edges} AS var4
             }
             RETURN this { .name, actedInConnection: var4 } AS this"
         `);
@@ -281,7 +281,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         ORDER BY edge.properties.screenTime ASC
                         RETURN collect(edge) AS var4
                       }
-                      RETURN {edges: var4, totalCount: totalCount} AS var5
+                      RETURN {edges: var4} AS var5
                     }
                     RETURN this { .name, actedInConnection: var5 } AS this"
                 `);
@@ -342,7 +342,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         ORDER BY edge.node.title ASC
                         RETURN collect(edge) AS var4
                       }
-                      RETURN {edges: var4, totalCount: totalCount} AS var5
+                      RETURN {edges: var4} AS var5
                     }
                     RETURN this { .name, actedInConnection: var5 } AS this"
                 `);
@@ -402,7 +402,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         ORDER BY edge.properties.screenTime ASC
                         RETURN collect(edge) AS var4
                       }
-                      RETURN {edges: var4, totalCount: totalCount} AS var5
+                      RETURN {edges: var4} AS var5
                     }
                     RETURN this { .name, actedInConnection: var5 } AS this"
                 `);
@@ -462,7 +462,7 @@ describe("Cypher -> Connections -> Interfaces", () => {
                         ORDER BY edge.node.title ASC
                         RETURN collect(edge) AS var4
                       }
-                      RETURN {edges: var4, totalCount: totalCount} AS var5
+                      RETURN {edges: var4} AS var5
                     }
                     RETURN this { .name, actedInConnection: var5 } AS this"
                 `);

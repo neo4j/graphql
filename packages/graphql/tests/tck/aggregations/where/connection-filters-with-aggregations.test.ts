@@ -147,7 +147,7 @@ describe("Field Level Aggregations Edge Filters", () => {
               }
               WITH edges, {node: {title: this8}} AS var9
               WITH edges, size(edges) AS totalCount, var9
-              RETURN {edges: edges, totalCount: totalCount, aggregate: var9} AS var10
+              RETURN {aggregate: var9} AS var10
             }
             RETURN this { actedInConnection: var10 } AS this"
         `);

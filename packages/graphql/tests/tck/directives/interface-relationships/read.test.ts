@@ -187,7 +187,7 @@ describe("Interface Relationships", () => {
               }
               WITH edges
               WITH edges, size(edges) AS totalCount
-              RETURN {edges: edges, totalCount: totalCount} AS var4
+              RETURN {edges: edges} AS var4
             }
             RETURN this { actedInConnection: var4 } AS this"
         `);
@@ -245,7 +245,7 @@ describe("Interface Relationships", () => {
               }
               WITH edges
               WITH edges, size(edges) AS totalCount
-              RETURN {edges: edges, totalCount: totalCount} AS var4
+              RETURN {edges: edges} AS var4
             }
             RETURN this { actedInConnection: var4 } AS this"
         `);

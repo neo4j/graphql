@@ -105,7 +105,7 @@ describe("Cypher Auth Projection On Connections On Unions", () => {
               }
               WITH edges
               WITH edges, size(edges) AS totalCount
-              RETURN {edges: edges, totalCount: totalCount} AS var7
+              RETURN {edges: edges} AS var7
             }
             RETURN this { contentConnection: var7 } AS this"
         `);

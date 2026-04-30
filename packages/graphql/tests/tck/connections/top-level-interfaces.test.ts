@@ -81,7 +81,7 @@ describe("Top level interface connections", () => {
             }
             WITH edges
             WITH edges, size(edges) AS totalCount
-            RETURN {edges: edges, totalCount: totalCount} AS this"
+            RETURN {edges: edges} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -133,7 +133,7 @@ describe("Top level interface connections", () => {
               LIMIT $param2
               RETURN collect(edge) AS var2
             }
-            RETURN {edges: var2, totalCount: totalCount} AS this"
+            RETURN {edges: var2} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`

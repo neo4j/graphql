@@ -75,7 +75,7 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
             }
             WITH edges
             WITH edges, size(edges) AS totalCount
-            RETURN {edges: edges, totalCount: totalCount} AS this"
+            RETURN {edges: edges} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
@@ -129,7 +129,7 @@ describe("https://github.com/neo4j/graphql/issues/6031", () => {
                 }
                 WITH edges
                 WITH edges, size(edges) AS totalCount
-                RETURN {edges: edges, totalCount: totalCount} AS var5
+                RETURN {edges: edges} AS var5
               }
               RETURN collect({node: {name: this0.name, productionsConnection: var5, __resolveType: 'Actor'}}) AS var6
             }
