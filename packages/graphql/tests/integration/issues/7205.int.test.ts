@@ -3,7 +3,6 @@
  * Neo4j Sweden AB [http://neo4j.com]
  */
 
-import { gql } from "graphql-tag";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
@@ -32,7 +31,7 @@ describe("https://github.com/neo4j/graphql/issues/7205", () => {
 
         await testHelper.executeCypher(`
             CREATE (m:${Person} {name: "Bob"})
-            CREATE (:${Person.name} {name: "Alice"})-[:WORKS_AT]->(:${Employer.name} {name: "Some Inc"})
+            CREATE (:${Person} {name: "Alice"})-[:WORKS_AT]->(:${Employer} {name: "Some Inc"})
             `);
     });
 
