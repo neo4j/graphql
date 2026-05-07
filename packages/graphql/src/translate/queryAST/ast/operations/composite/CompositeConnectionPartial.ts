@@ -11,10 +11,10 @@ import { ConnectionReadOperation } from "../ConnectionReadOperation";
 import type { OperationTranspileResult } from "../operations";
 
 export class CompositeConnectionPartial extends ConnectionReadOperation {
-    get hasTotalCountValue(): boolean {
+    public get hasTotalCountValue(): boolean {
         return this.hasTotalCount;
     }
-    get shouldProjectEdgesValue(): boolean {
+    public get shouldProjectEdgesValue(): boolean {
         return this.shouldProjectEdges() || this.nodeFieldsRequested;
     }
 
