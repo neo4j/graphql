@@ -7,29 +7,13 @@ import type {
     ASTNode,
     ASTVisitor,
     DirectiveNode,
-    EnumTypeDefinitionNode,
-    EnumTypeExtensionNode,
-    EnumValueDefinitionNode,
     FieldDefinitionNode,
-    FieldNode,
-    FragmentDefinitionNode,
-    FragmentSpreadNode,
-    InlineFragmentNode,
-    InputObjectTypeDefinitionNode,
-    InputObjectTypeExtensionNode,
-    InputValueDefinitionNode,
     InterfaceTypeDefinitionNode,
     InterfaceTypeExtensionNode,
     ObjectTypeDefinitionNode,
     ObjectTypeExtensionNode,
-    OperationDefinitionNode,
-    ScalarTypeDefinitionNode,
-    ScalarTypeExtensionNode,
-    SchemaDefinitionNode,
-    SchemaExtensionNode,
     UnionTypeDefinitionNode,
     UnionTypeExtensionNode,
-    VariableDefinitionNode,
 } from "graphql";
 import { Kind, isTypeDefinitionNode, isTypeExtensionNode } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
@@ -43,35 +27,21 @@ import { DocumentValidationError, assertValid, createGraphQLError } from "../uti
 import type { ObjectOrInterfaceWithExtensions } from "../utils/path-parser";
 import { getPathToNode } from "../utils/path-parser";
 
-type ASTNodeWithDirectives =
-    | OperationDefinitionNode
-    | VariableDefinitionNode
-    | FieldNode
-    | FragmentSpreadNode
-    | InlineFragmentNode
-    | FragmentDefinitionNode
-    | SchemaDefinitionNode
-    | ScalarTypeDefinitionNode
-    | ObjectTypeDefinitionNode
+/** Nodes with directive that we care about */
+type ASTNodeWithValidDirective =
     | FieldDefinitionNode
-    | InputValueDefinitionNode
-    | InterfaceTypeDefinitionNode
-    | UnionTypeDefinitionNode
-    | EnumTypeDefinitionNode
-    | EnumValueDefinitionNode
-    | InputObjectTypeDefinitionNode
-    | SchemaExtensionNode
-    | ScalarTypeExtensionNode
+    | ObjectTypeDefinitionNode
     | ObjectTypeExtensionNode
     | InterfaceTypeExtensionNode
-    | UnionTypeExtensionNode
-    | EnumTypeExtensionNode
-    | InputObjectTypeExtensionNode;
+    | InterfaceTypeDefinitionNode
+    | UnionTypeDefinitionNode
+    | UnionTypeExtensionNode;
+
 export function DirectiveCombinationValid(context: SDLValidationContext): ASTVisitor {
     const typeToDirectivesPerFieldMap = new Map<string, Map<string, readonly DirectiveNode[]>>();
     const typeToDirectivesMap = new Map<string, readonly DirectiveNode[]>();
     const hydrateWithDirectives = function (
-        node: ASTNodeWithDirectives,
+        node: ASTNodeWithValidDirective,
         parentOfTraversedDef: ObjectOrInterfaceWithExtensions | undefined
     ) {
         if (
@@ -95,7 +65,7 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
         }
     };
     const getDirectiveCombinations = function (
-        node: ASTNodeWithDirectives,
+        node: ASTNodeWithValidDirective,
         parentOfTraversedDef: ObjectOrInterfaceWithExtensions | undefined
     ): DirectiveNode[][] {
         const directivesToCheck: DirectiveNode[] = [...(node.directives || [])];
@@ -118,7 +88,7 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
 
     return {
         enter(node: ASTNode, _key, _parent, path, ancestors) {
-            if (!("directives" in node) || !node.directives) {
+            if (!astNodeHasValidDirective(node)) {
                 return;
             }
             const [pathToNode, traversedDef, parentOfTraversedDef] = getPathToNode(path, ancestors);
@@ -142,6 +112,17 @@ export function DirectiveCombinationValid(context: SDLValidationContext): ASTVis
             }
         },
     };
+}
+
+/** Checks that an ASTNode is of a type we care about */
+function astNodeHasValidDirective(node: ASTNode): node is ASTNodeWithValidDirective {
+    return (
+        node.kind === Kind.OBJECT_TYPE_DEFINITION ||
+        node.kind === Kind.INTERFACE_TYPE_DEFINITION ||
+        node.kind === Kind.OBJECT_TYPE_EXTENSION ||
+        node.kind === Kind.INTERFACE_TYPE_EXTENSION ||
+        node.kind === Kind.FIELD_DEFINITION
+    );
 }
 
 function getInvalidCombinations(kind: ASTNode["kind"]): Record<PropertyKey, ReadonlyArray<unknown>> {
