@@ -259,7 +259,7 @@ describe("Cypher Auth Where", () => {
               }
               WITH edges
               WITH edges, size(edges) AS totalCount
-              RETURN {edges: edges, totalCount: totalCount} AS var5
+              RETURN {edges: edges} AS var5
             }
             RETURN this { .id, contentConnection: var5 } AS this"
         `);
@@ -325,7 +325,7 @@ describe("Cypher Auth Where", () => {
               }
               WITH edges
               WITH edges, size(edges) AS totalCount
-              RETURN {edges: edges, totalCount: totalCount} AS var5
+              RETURN {edges: edges} AS var5
             }
             RETURN this { .id, contentConnection: var5 } AS this"
         `);

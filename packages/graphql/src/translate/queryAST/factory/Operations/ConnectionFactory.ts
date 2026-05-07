@@ -513,6 +513,7 @@ export class ConnectionFactory {
         });
 
         operation.setHasTotalCount(Boolean(totalCount || pageInfo));
+        operation.setNodeFieldsRequested(nodeFieldsRaw.length > 0);
 
         // This is an edge-case where the client requests only the cursor field on the edge
         const selectedEdgeCursor = findFieldsByNameInFieldsByTypeNameField(resolveTreeEdgeFields, "cursor").length > 0;

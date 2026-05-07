@@ -39,7 +39,8 @@ export class ConnectionReadOperation extends Operation {
     protected needsPageInfo: boolean = false;
     protected selection: EntitySelection;
 
-    private hasTotalCount = false;
+    protected hasTotalCount = false;
+    protected nodeFieldsRequested = false;
     private aggregationField: ConnectionAggregationField | undefined;
 
     constructor({
@@ -55,6 +56,10 @@ export class ConnectionReadOperation extends Operation {
         this.relationship = relationship;
         this.target = target;
         this.selection = selection;
+    }
+
+    public setNodeFieldsRequested(value: boolean): void {
+        this.nodeFieldsRequested = value;
     }
 
     public setHasTotalCount(value: boolean): void {

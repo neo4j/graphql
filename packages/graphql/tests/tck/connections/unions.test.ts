@@ -85,7 +85,7 @@ describe("Cypher -> Connections -> Unions", () => {
               }
               WITH edges
               WITH edges, size(edges) AS totalCount
-              RETURN {edges: edges, totalCount: totalCount} AS var4
+              RETURN {edges: edges} AS var4
             }
             RETURN this { .name, publicationsConnection: var4 } AS this"
         `);
@@ -146,7 +146,7 @@ describe("Cypher -> Connections -> Unions", () => {
               }
               WITH edges
               WITH edges, size(edges) AS totalCount
-              RETURN {edges: edges, totalCount: totalCount} AS var4
+              RETURN {edges: edges} AS var4
             }
             RETURN this { .name, publicationsConnection: var4 } AS this"
         `);
@@ -209,7 +209,7 @@ describe("Cypher -> Connections -> Unions", () => {
               }
               WITH edges
               WITH edges, size(edges) AS totalCount
-              RETURN {edges: edges, totalCount: totalCount} AS var4
+              RETURN {edges: edges} AS var4
             }
             RETURN this { .name, publicationsConnection: var4 } AS this"
         `);
@@ -281,7 +281,7 @@ describe("Cypher -> Connections -> Unions", () => {
               }
               WITH edges
               WITH edges, size(edges) AS totalCount
-              RETURN {edges: edges, totalCount: totalCount} AS var4
+              RETURN {edges: edges} AS var4
             }
             RETURN this { .name, publicationsConnection: var4 } AS this"
         `);
@@ -354,7 +354,7 @@ describe("Cypher -> Connections -> Unions", () => {
                 ORDER BY edge.properties.words ASC
                 RETURN collect(edge) AS var4
               }
-              RETURN {edges: var4, totalCount: totalCount} AS var5
+              RETURN {edges: var4} AS var5
             }
             RETURN this { .name, publicationsConnection: var5 } AS this"
         `);

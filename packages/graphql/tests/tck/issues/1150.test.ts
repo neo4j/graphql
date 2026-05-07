@@ -124,7 +124,7 @@ describe("https://github.com/neo4j/graphql/issues/1150", () => {
                   }
                   WITH edges
                   WITH edges, size(edges) AS totalCount
-                  RETURN {edges: edges, totalCount: totalCount} AS var6
+                  RETURN {edges: edges} AS var6
                 }
                 RETURN collect({node: {driveComponentConnection: var6, __resolveType: 'DriveComposition'}}) AS var7
               }
