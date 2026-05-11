@@ -2762,6 +2762,7 @@ __metadata:
   resolution: "@neo4j/graphql-amqp-subscriptions-engine@workspace:packages/graphql-amqp-subscriptions-engine"
   dependencies:
     "@apollo/server": "npm:5.2.0"
+    "@as-integrations/express4": "npm:^1.1.2"
     "@neo4j/graphql": "npm:^5.0.0"
     "@types/amqplib": "npm:0.10.8"
     "@types/body-parser": "npm:1.19.6"
