@@ -154,18 +154,18 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
               SET this0.id = randomUUID()
               WITH *
               CREATE (this1:Settings)
-              WITH *
-              CREATE (this2:OpeningDay)
-              WITH *
-              CREATE (this3:OpeningHoursInterval)
-              MERGE (this2)-[this4:HAS_OPEN_INTERVALS]->(this3)
-              SET
-                this3.name = $param0,
-                this3.updatedBy = $param1
-              MERGE (this1)-[this5:VALID_OPENING_DAYS]->(this2)
-              SET this2.id = randomUUID()
-              MERGE (this0)-[this6:HAS_SETTINGS]->(this1)
+              MERGE (this0)-[this2:HAS_SETTINGS]->(this1)
               SET this1.id = randomUUID()
+              WITH *
+              CREATE (this3:OpeningDay)
+              MERGE (this1)-[this4:VALID_OPENING_DAYS]->(this3)
+              SET this3.id = randomUUID()
+              WITH *
+              CREATE (this5:OpeningHoursInterval)
+              MERGE (this3)-[this6:HAS_OPEN_INTERVALS]->(this5)
+              SET
+                this5.name = $param0,
+                this5.updatedBy = $param1
               WITH *
               CREATE (this7:User)
               MERGE (this0)<-[this8:ADMIN_IN]-(this7)
@@ -188,7 +188,7 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
               }
               CALL (*) {
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                  MATCH (this2)<-[:VALID_GARAGES]-(this12:Settings)
+                  MATCH (this3)<-[:VALID_GARAGES]-(this12:Settings)
                   WHERE EXISTS {
                     MATCH (this12)<-[:HAS_SETTINGS]-(this13:Tenant)
                     WHERE EXISTS {
@@ -200,7 +200,7 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
               }
               CALL (*) {
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                  MATCH (this3)<-[:HAS_OPEN_INTERVALS]-(this15:OpeningDay)
+                  MATCH (this5)<-[:HAS_OPEN_INTERVALS]-(this15:OpeningDay)
                   WHERE EXISTS {
                     MATCH (this15)<-[:VALID_GARAGES]-(this16:Settings)
                     WHERE EXISTS {

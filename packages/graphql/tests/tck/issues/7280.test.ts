@@ -106,18 +106,18 @@ describe("https://github.com/neo4j/graphql/issues/7280", () => {
               SET this0.id = $param0
               WITH *
               CREATE (this1:AssetVersion)
+              MERGE (this0)-[this2:ASSET_HAS_ASSETVERSION]->(this1)
+              SET this1.id = $param1
               WITH *
-              CREATE (this2:AssetDerivative)
+              CREATE (this3:AssetDerivative)
+              MERGE (this1)-[this4:ASSETVERSION_HAS_ASSETDERIVATIVE]->(this3)
+              SET this3.id = $param2
               WITH *
-              CALL (this2) {
-                MATCH (this3:AssetVersion)
-                WHERE this3.id = $param1
-                CREATE (this2)<-[this4:ASSETVERSION_HAS_THUMBNAIL_ASSETDERIVATIVE]-(this3)
+              CALL (this3) {
+                MATCH (this5:AssetVersion)
+                WHERE this5.id = $param3
+                CREATE (this3)<-[this6:ASSETVERSION_HAS_THUMBNAIL_ASSETDERIVATIVE]-(this5)
               }
-              MERGE (this1)-[this5:ASSETVERSION_HAS_ASSETDERIVATIVE]->(this2)
-              SET this2.id = $param2
-              MERGE (this0)-[this6:ASSET_HAS_ASSETVERSION]->(this1)
-              SET this1.id = $param3
               RETURN this0 AS this
             }
             FINISH"
