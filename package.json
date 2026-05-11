@@ -46,7 +46,7 @@
     },
     "packageManager": "yarn@4.14.1",
     "resolutions": {
-        "msw": "2.8.4"
+        "msw": "2.14.5"
     },
     "dependencies": {
         "@changesets/changelog-github": "0.7.0",

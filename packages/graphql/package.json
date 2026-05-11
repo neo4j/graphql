@@ -48,6 +48,7 @@
     "devDependencies": {
         "@apollo/gateway": "2.14.0",
         "@apollo/server": "5.5.1",
+        "@as-integrations/express4": "^1.1.2",
         "@types/is-uuid": "1.0.2",
         "@types/jest": "30.0.0",
         "@types/jsonwebtoken": "9.0.10",
@@ -80,12 +81,11 @@
     },
     "dependencies": {
         "@apollo/subgraph": "^2.2.3",
-        "@as-integrations/express4": "^1.1.2",
         "@graphql-tools/merge": "^9.0.0",
         "@graphql-tools/resolvers-composition": "^7.0.0",
         "@graphql-tools/schema": "^10.0.0",
         "@graphql-tools/utils": "^11.0.0",
-        "@neo4j/cypher-builder": "3.0.1",
+        "@neo4j/cypher-builder": "3.2.1",
         "camelcase": "^6.3.0",
         "debug": "^4.3.4",
         "dot-prop": "^6.0.1",
