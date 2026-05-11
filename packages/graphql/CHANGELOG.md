@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.5.2
+
+### Patch Changes
+
+- [#7281](https://github.com/neo4j/graphql/pull/7281) [`631b1ac`](https://github.com/neo4j/graphql/commit/631b1ac96159f39bb72569d2647d210e6a31ea2d) Thanks [@a-alle](https://github.com/a-alle)! - Conditionally return edges and totalCount when querying abstract types
+
 ## 7.5.1
 
 ### Patch Changes
