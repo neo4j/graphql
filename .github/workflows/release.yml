@@ -54,7 +54,7 @@ jobs:
 
       - name: Create release PR or release
         id: changesets
-        uses: changesets/action@6a0a831ff30acef54f2c6aa1cbbc1096b066edaf # v1.7.0
+        uses: changesets/action@63a615b9cd06ba9a3e6d13796c7fbcb080a60a0b # v1.8.0
         with:
           title: changesets for branch `${{ github.ref_name }}`
           version: yarn changeset-version
@@ -78,7 +78,7 @@ jobs:
     steps:
       - name: Send Slack announcement of release
         if: matrix.package.name == '@neo4j/graphql'
-        uses: slackapi/slack-github-action@af78098f536edbc4de71162a307590698245be95 # v3.0.1
+        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c # v3.0.3
         with:
           payload: |
             version: ${{ matrix.package.version }}
