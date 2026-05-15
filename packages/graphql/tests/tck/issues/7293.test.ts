@@ -143,34 +143,31 @@ describe("https://github.com/neo4j/graphql/issues/7293", () => {
                   WITH result AS this1
                   RETURN this1 AS var2
                 }
+                WITH *
+                WHERE this0.id = $param1
+                CALL apoc.util.validate(NOT (var2 = $param2), '@neo4j/graphql/FORBIDDEN', [])
+                CREATE (this)<-[this3:CONTINENT_HAS_COUNTRY]-(this0)
+                WITH *
                 CALL (this0) {
                   CALL (this0) {
                     WITH this0 AS this
                     RETURN \\"continentCreateRelationship\\" as result
                   }
-                  WITH result AS this3
-                  RETURN this3 AS var4
+                  WITH result AS this4
+                  RETURN this4 AS var5
                 }
-                WITH *
-                WHERE this0.id = $param1
                 CALL (this0) {
-                  WITH this0 AS this
-                  RETURN \\"continentCreateRelationship\\" as result
+                  CALL (this0) {
+                    WITH this0 AS this
+                    RETURN \\"countryCreateRelationship\\" as result
+                  }
+                  WITH result AS this6
+                  RETURN this6 AS var7
                 }
-                WITH result AS this5
-                RETURN this5 AS var2
-                CALL (this0) {
-                  WITH this0 AS this
-                  RETURN \\"continentCreateRelationship\\" as result
-                }
-                WITH result AS this6
-                RETURN this6 AS var4
-                CALL apoc.util.validate(NOT (var2 = $param2), '@neo4j/graphql/FORBIDDEN', [])
-                CREATE (this)<-[this7:CONTINENT_HAS_COUNTRY]-(this0)
                 WITH *
-                CALL apoc.util.validate(NOT (var4 = $param3), '@neo4j/graphql/FORBIDDEN', [])
+                CALL apoc.util.validate(NOT (var5 = $param3), '@neo4j/graphql/FORBIDDEN', [])
                 WITH *
-                CALL apoc.util.validate(NOT (var8 = $param4), '@neo4j/graphql/FORBIDDEN', [])
+                CALL apoc.util.validate(NOT (var7 = $param4), '@neo4j/graphql/FORBIDDEN', [])
               }
             }
             FINISH"
@@ -223,6 +220,12 @@ describe("https://github.com/neo4j/graphql/issues/7293", () => {
                   WITH result AS this2
                   RETURN this2 AS var3
                 }
+                WITH *
+                WHERE this1.id = $param1
+                CALL apoc.util.validate(NOT (var3 = $param2), '@neo4j/graphql/FORBIDDEN', [])
+                WITH *
+                DELETE this0
+                WITH *
                 CALL (this1) {
                   CALL (this1) {
                     WITH this1 AS this
@@ -231,23 +234,6 @@ describe("https://github.com/neo4j/graphql/issues/7293", () => {
                   WITH result AS this4
                   RETURN this4 AS var5
                 }
-                WITH *
-                WHERE this1.id = $param1
-                CALL (this1) {
-                  WITH this1 AS this
-                  RETURN \\"continentDeleteRelationship\\" as result
-                }
-                WITH result AS this6
-                RETURN this6 AS var3
-                CALL (this1) {
-                  WITH this1 AS this
-                  RETURN \\"continentDeleteRelationship\\" as result
-                }
-                WITH result AS this7
-                RETURN this7 AS var5
-                CALL apoc.util.validate(NOT (var3 = $param2), '@neo4j/graphql/FORBIDDEN', [])
-                WITH *
-                DELETE this0
                 WITH *
                 CALL apoc.util.validate(NOT (var5 = $param3), '@neo4j/graphql/FORBIDDEN', [])
               }
@@ -303,34 +289,31 @@ describe("https://github.com/neo4j/graphql/issues/7293", () => {
                   WITH result AS this2
                   RETURN this2 AS var3
                 }
+                WITH *
+                WHERE this1.id = $param2
+                CALL apoc.util.validate(NOT (var3 = $param3), '@neo4j/graphql/FORBIDDEN', [])
+                CREATE (this0)<-[this4:CONTINENT_HAS_COUNTRY]-(this1)
+                WITH *
                 CALL (this1) {
                   CALL (this1) {
                     WITH this1 AS this
                     RETURN \\"continentCreateRelationship\\" as result
                   }
-                  WITH result AS this4
-                  RETURN this4 AS var5
+                  WITH result AS this5
+                  RETURN this5 AS var6
                 }
-                WITH *
-                WHERE this1.id = $param2
                 CALL (this1) {
-                  WITH this1 AS this
-                  RETURN \\"continentCreateRelationship\\" as result
+                  CALL (this1) {
+                    WITH this1 AS this
+                    RETURN \\"countryCreateRelationship\\" as result
+                  }
+                  WITH result AS this7
+                  RETURN this7 AS var8
                 }
-                WITH result AS this6
-                RETURN this6 AS var3
-                CALL (this1) {
-                  WITH this1 AS this
-                  RETURN \\"continentCreateRelationship\\" as result
-                }
-                WITH result AS this7
-                RETURN this7 AS var5
-                CALL apoc.util.validate(NOT (var3 = $param3), '@neo4j/graphql/FORBIDDEN', [])
-                CREATE (this0)<-[this8:CONTINENT_HAS_COUNTRY]-(this1)
                 WITH *
-                CALL apoc.util.validate(NOT (var5 = $param4), '@neo4j/graphql/FORBIDDEN', [])
+                CALL apoc.util.validate(NOT (var6 = $param4), '@neo4j/graphql/FORBIDDEN', [])
                 WITH *
-                CALL apoc.util.validate(NOT (var9 = $param5), '@neo4j/graphql/FORBIDDEN', [])
+                CALL apoc.util.validate(NOT (var8 = $param5), '@neo4j/graphql/FORBIDDEN', [])
               }
               WITH *
               CALL (*) {
@@ -339,10 +322,10 @@ describe("https://github.com/neo4j/graphql/issues/7293", () => {
                     WITH this0 AS this
                     RETURN \\"countryCreate\\" as result
                   }
-                  WITH result AS this10
-                  RETURN this10 AS var11
+                  WITH result AS this9
+                  RETURN this9 AS var10
                 }
-                CALL apoc.util.validate(NOT (var11 = $param6), '@neo4j/graphql/FORBIDDEN', [])
+                CALL apoc.util.validate(NOT (var10 = $param6), '@neo4j/graphql/FORBIDDEN', [])
               }
               RETURN this0 AS this
             }

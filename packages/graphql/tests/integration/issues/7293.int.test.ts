@@ -7,7 +7,7 @@ import { gql } from "graphql-tag";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
-describe("https://github.com/neo4j/graphql/issues/7205", () => {
+describe("https://github.com/neo4j/graphql/issues/7293", () => {
     const testHelper = new TestHelper();
 
     let Continent: UniqueType;
@@ -42,7 +42,7 @@ describe("https://github.com/neo4j/graphql/issues/7205", () => {
                     @selectable(onRead: false, onAggregate: false)
                     @cypher(
                         statement: """
-                        RETURN "continentCreateRelationship" as result
+                        RETURN true as result
                         """
                         columnName: "result"
                     )
@@ -50,7 +50,7 @@ describe("https://github.com/neo4j/graphql/issues/7205", () => {
                     @selectable(onRead: false, onAggregate: false)
                     @cypher(
                         statement: """
-                        RETURN "continentDeleteRelationship" as result
+                        RETURN true as result
                         """
                         columnName: "result"
                     )
@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/7205", () => {
                     @selectable(onRead: false, onAggregate: false)
                     @cypher(
                         statement: """
-                        RETURN "countryCreate" as result
+                        RETURN true as result
                         """
                         columnName: "result"
                     )
@@ -89,7 +89,7 @@ describe("https://github.com/neo4j/graphql/issues/7205", () => {
                     @selectable(onRead: false, onAggregate: false)
                     @cypher(
                         statement: """
-                        RETURN "countryCreateRelationship" as result
+                        RETURN true as result
                         """
                         columnName: "result"
                     )
@@ -115,6 +115,10 @@ describe("https://github.com/neo4j/graphql/issues/7205", () => {
         await testHelper.close();
     });
     test("Update with inner connect should not error", async () => {
+        await testHelper.executeCypher(`
+            CREATE (c:${Country} { code: "DE", name_en: "Germany" })
+            CREATE (co:${Continent} { id: 5 })
+        `);
         const query = /* GraphQL */ `
             mutation {
                 ${Country.operations.update}(
@@ -153,11 +157,14 @@ describe("https://github.com/neo4j/graphql/issues/7205", () => {
     });
 
     test("Create with inner connect should not error", async () => {
+        await testHelper.executeCypher(`
+            CREATE (co:${Continent} { id: 5 })
+        `);
         const query = /* GraphQL */ `
             mutation {
                 ${Country.operations.create}(
                     input: [
-                        { code: "DE", name_en: "test", continent: { connect: { where: { node: { id: { eq: 1 } } } } } }
+                        { code: "DE", name_en: "test", continent: { connect: { where: { node: { id: { eq: 5 } } } } } }
                     ]
                 ) {
                     info {

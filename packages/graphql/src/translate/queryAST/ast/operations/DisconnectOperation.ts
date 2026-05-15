@@ -52,6 +52,7 @@ export class DisconnectOperation extends MutationOperation {
             this.selectionPattern,
             ...this.filters,
             ...this.authFilters,
+            ...this.sourceAuthFilters,
             ...this.inputFields.values(),
         ]);
     }
@@ -131,7 +132,37 @@ export class DisconnectOperation extends MutationOperation {
 
         const allFilters = [...this.authFilters, ...this.filters];
 
-        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, allFilters, [nestedContext.target]);
+        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
+        filterSubqueries.push(
+            ...this.authFilters
+                .flatMap((authFilter) => {
+                    const authSubqueries = authFilter.getSubqueriesBefore(nestedContext);
+                    return authSubqueries;
+                })
+                .map((sq) => {
+                    return new Cypher.Call(sq, [nestedContext.target]);
+                }),
+            // TODO: Subqueries for BEFORE auth on DELETE_RELATIONSHIP source node
+            ...this.sourceAuthFilters
+                .flatMap((authFilter) => {
+                    const authSubqueries = authFilter.getSubqueriesBefore(context);
+                    return authSubqueries;
+                })
+                .map((sq) => {
+                    return new Cypher.Call(sq, [context.target]);
+                })
+        );
+        const afterFilterSubqueries: Cypher.Clause[] = [...this.authFilters, ...this.sourceAuthFilters]
+            .flatMap((authFilter) => {
+                const authSubqueries = authFilter.getSubqueriesAfter(nestedContext);
+                return authSubqueries;
+            })
+            .map((sq) => {
+                return new Cypher.Call(sq, [nestedContext.target]);
+            });
+        if (afterFilterSubqueries.length > 0) {
+            afterFilterSubqueries.unshift(new Cypher.With("*"));
+        }
 
         const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
         let matchClause: Cypher.Clause;
@@ -163,6 +194,7 @@ export class DisconnectOperation extends MutationOperation {
             ...this.getSourceAuthorizationClauses(context, "BEFORE"),
             ...mutationSubqueries,
             deleteClause,
+            ...afterFilterSubqueries,
             ...this.getAuthorizationClausesAfter(nestedContext),
             ...this.getSourceAuthorizationClauses(context, "AFTER")
         );
@@ -180,7 +212,8 @@ export class DisconnectOperation extends MutationOperation {
         if (!validations.length) {
             return [];
         }
-        return [...subqueries, ...validations];
+        // return [...subqueries, ...validations];
+        return validations;
     }
 
     private getAuthorizationClausesAfter(context: QueryASTContext): Cypher.Clause[] {
