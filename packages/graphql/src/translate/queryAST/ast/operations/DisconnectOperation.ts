@@ -142,7 +142,6 @@ export class DisconnectOperation extends MutationOperation {
                 .map((sq) => {
                     return new Cypher.Call(sq, [nestedContext.target]);
                 }),
-            // TODO: Subqueries for BEFORE auth on DELETE_RELATIONSHIP source node
             ...this.sourceAuthFilters
                 .flatMap((authFilter) => {
                     const authSubqueries = authFilter.getSubqueriesBefore(context);
@@ -208,11 +207,10 @@ export class DisconnectOperation extends MutationOperation {
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
-        const { subqueries, validations } = this.transpileAuthClauses(context);
+        const { validations } = this.transpileAuthClauses(context);
         if (!validations.length) {
             return [];
         }
-        // return [...subqueries, ...validations];
         return validations;
     }
 
