@@ -3,7 +3,6 @@
  * Neo4j Sweden AB [http://neo4j.com]
  */
 
-import { gql } from "graphql-tag";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
