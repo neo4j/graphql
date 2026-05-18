@@ -131,10 +131,7 @@ export class AggregationPropertyFilter extends AggregationFilter {
         throw new Error("Transpilation error, relationship on filter not available");
     }
 
-    private getAggregateOperation(
-        property: Cypher.Property | Cypher.Function | Cypher.Case,
-        aggregationOperator: string
-    ): Cypher.Function {
+    private getAggregateOperation(property: Cypher.Expr, aggregationOperator: string): Cypher.Function {
         switch (aggregationOperator) {
             case "AVERAGE":
                 return Cypher.avg(property);
