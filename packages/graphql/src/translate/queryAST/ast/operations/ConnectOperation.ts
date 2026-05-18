@@ -139,21 +139,11 @@ export class ConnectOperation extends MutationOperation {
         filterSubqueries.push(
             ...this.authFilters
                 .flatMap((authFilter) => {
-                    const authSubqueries = authFilter.getSubqueriesBefore(nestedContext);
-                    return authSubqueries;
+                    return authFilter.getSubqueriesBefore(nestedContext);
                 })
                 .map((sq) => {
                     return new Cypher.Call(sq, [nestedContext.target]);
                 })
-            // TODO: Subqueries for BEFORE auth on CREATE_RELATIONSHIP source node
-            // ...this.sourceAuthFilters
-            //     .flatMap((authFilter) => {
-            //         const authSubqueries = authFilter.getSubqueriesBefore(context);
-            //         return authSubqueries;
-            //     })
-            //     .map((sq) => {
-            //         return new Cypher.Call(sq, [context.target]);
-            //     })
         );
         const afterFilterSubqueries: Cypher.Clause[] = [...this.authFilters, ...this.sourceAuthFilters]
             .flatMap((authFilter) => {
@@ -204,8 +194,6 @@ export class ConnectOperation extends MutationOperation {
         const clauses = Cypher.utils.concat(
             matchClause,
             ...this.getAuthorizationClauses(nestedContext), // THESE ARE "BEFORE" AUTH
-            // TODO: validations for BEFORE auth on CREATE_RELATIONSHIP source node
-            // ...this.getSourceAuthorizationClausesBefore(context), // THESE ARE "BEFORE" AUTH
             ...mutationSubqueries,
             connectClause,
             ...afterFilterSubqueries,
@@ -255,22 +243,6 @@ export class ConnectOperation extends MutationOperation {
 
         if (validationsAfter.length > 0) {
             return [new Cypher.With("*"), ...validationsAfter];
-        }
-        return [];
-    }
-
-    // TODO: source node BEFORE validations on CREATE_RELATIONSHIP ???
-    private getSourceAuthorizationClausesBefore(context: QueryASTContext): Cypher.Clause[] {
-        const validationsBefore: Cypher.VoidProcedure[] = [];
-        for (const authFilter of this.sourceAuthFilters) {
-            const validationBefore = authFilter.getValidation(context, "BEFORE");
-            if (validationBefore) {
-                validationsBefore.push(validationBefore);
-            }
-        }
-
-        if (validationsBefore.length > 0) {
-            return [new Cypher.With("*"), ...validationsBefore];
         }
         return [];
     }
