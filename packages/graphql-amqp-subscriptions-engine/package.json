@@ -55,7 +55,7 @@
         "supertest": "7.2.2",
         "ts-jest": "29.4.9",
         "typescript": "5.9.3",
-        "ws": "8.20.0"
+        "ws": "8.20.1"
     },
     "dependencies": {
         "amqplib": "0.10.9",
