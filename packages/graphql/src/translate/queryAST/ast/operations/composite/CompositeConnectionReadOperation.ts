@@ -100,14 +100,24 @@ export class CompositeConnectionReadOperation extends Operation {
             ...aggregateVariables
         );
 
-        const returnClause = new Cypher.Return([
-            new Cypher.Map({
-                edges: returnEdgesVar,
-                totalCount: totalCount,
-                ...aggregateReturnMap,
-            }),
-            context.returnVariable,
-        ]);
+        const shouldReturnTotalCount = this.children.find((x) => x.hasTotalCountValue);
+        const shouldReturnEdges = this.children.find((x) => x.shouldProjectEdgesValue);
+
+        const projectionMap = new Cypher.Map();
+
+        if (shouldReturnEdges) {
+            projectionMap.set("edges", returnEdgesVar);
+        }
+
+        if (shouldReturnTotalCount) {
+            projectionMap.set("totalCount", totalCount);
+        }
+
+        projectionMap.set({
+            ...aggregateReturnMap,
+        });
+
+        const returnClause = new Cypher.Return([projectionMap, context.returnVariable]);
 
         return {
             clauses: [

@@ -231,7 +231,7 @@ describe("Relay Cursor Connection projections", () => {
               }
               WITH edges
               WITH edges, size(edges) AS totalCount
-              RETURN {edges: edges, totalCount: totalCount} AS var4
+              RETURN {totalCount: totalCount} AS var4
             }
             RETURN this { .name, productionsConnection: var4 } AS this"
         `);

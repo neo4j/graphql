@@ -142,7 +142,7 @@ describe("https://github.com/neo4j/graphql/issues/1348", () => {
               }
               WITH edges
               WITH edges, size(edges) AS totalCount
-              RETURN {edges: edges, totalCount: totalCount} AS var6
+              RETURN {edges: edges} AS var6
             }
             RETURN this { .productTitle, .episodeNumber, releatsToConnection: var6 } AS this"
         `);

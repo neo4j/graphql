@@ -513,7 +513,7 @@ describe("Connection auth filter", () => {
                 }
                 WITH edges
                 WITH edges, size(edges) AS totalCount
-                RETURN {edges: edges, totalCount: totalCount} AS var4
+                RETURN {edges: edges} AS var4
               }
               RETURN collect({node: {id: this0.id, contentConnection: var4, __resolveType: 'User'}}) AS var5
             }
@@ -584,7 +584,7 @@ describe("Connection auth filter", () => {
                 }
                 WITH edges
                 WITH edges, size(edges) AS totalCount
-                RETURN {edges: edges, totalCount: totalCount} AS var4
+                RETURN {edges: edges} AS var4
               }
               RETURN collect({node: {id: this0.id, contentConnection: var4, __resolveType: 'User'}}) AS var5
             }

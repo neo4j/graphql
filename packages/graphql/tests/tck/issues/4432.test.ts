@@ -80,7 +80,7 @@ describe("https://github.com/neo4j/graphql/issues/4532", () => {
                 ORDER BY edge.properties.order ASC
                 RETURN collect(edge) AS var4
               }
-              RETURN {edges: var4, totalCount: totalCount} AS var5
+              RETURN {edges: var4} AS var5
             }
             RETURN this { .id, childrenConnection: var5 } AS this"
         `);

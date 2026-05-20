@@ -78,7 +78,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
                 }
                 WITH edges
                 WITH edges, size(edges) AS totalCount
-                RETURN {edges: edges, totalCount: totalCount} AS var5
+                RETURN {edges: edges} AS var5
               }
               WITH this0 { nextsConnection: var5, __resolveType: 'AStep', __id: elementId(this0) } AS this
               RETURN this
@@ -102,7 +102,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
                 }
                 WITH edges
                 WITH edges, size(edges) AS totalCount
-                RETURN {edges: edges, totalCount: totalCount} AS var11
+                RETURN {edges: edges} AS var11
               }
               WITH this6 { nextsConnection: var11, __resolveType: 'BStep', __id: elementId(this6) } AS this
               RETURN this
@@ -160,7 +160,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
                 }
                 WITH edges
                 WITH edges, size(edges) AS totalCount
-                RETURN {edges: edges, totalCount: totalCount} AS var5
+                RETURN {edges: edges} AS var5
               }
               WITH this0 { prevsConnection: var5, __resolveType: 'AStep', __id: elementId(this0) } AS this
               RETURN this
@@ -184,7 +184,7 @@ describe("https://github.com/neo4j/graphql/issues/4814", () => {
                 }
                 WITH edges
                 WITH edges, size(edges) AS totalCount
-                RETURN {edges: edges, totalCount: totalCount} AS var11
+                RETURN {edges: edges} AS var11
               }
               WITH this6 { prevsConnection: var11, __resolveType: 'BStep', __id: elementId(this6) } AS this
               RETURN this
