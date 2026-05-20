@@ -53,6 +53,7 @@ export class ConnectOperation extends MutationOperation {
             this.selectionPattern,
             ...this.filters,
             ...this.authFilters,
+            ...this.sourceAuthFilters,
             ...this.inputFields.values(),
         ]);
     }
@@ -104,7 +105,6 @@ export class ConnectOperation extends MutationOperation {
         if (!context.hasTarget()) {
             throw new Error("No parent node found!");
         }
-
         const { nestedContext } = this.selectionPattern.apply(context);
         this.nestedContext = nestedContext;
 
@@ -135,10 +135,29 @@ export class ConnectOperation extends MutationOperation {
             labels: getEntityLabels(this.target, context.neo4jGraphQLContext),
         });
 
+        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
+        filterSubqueries.push(
+            ...this.authFilters
+                .flatMap((authFilter) => {
+                    return authFilter.getSubqueriesBefore(nestedContext);
+                })
+                .map((sq) => {
+                    return new Cypher.Call(sq, [nestedContext.target]);
+                })
+        );
+        const afterFilterSubqueries: Cypher.Clause[] = [...this.authFilters, ...this.sourceAuthFilters]
+            .flatMap((authFilter) => {
+                const authSubqueries = authFilter.getSubqueriesAfter(nestedContext);
+                return authSubqueries;
+            })
+            .map((sq) => {
+                return new Cypher.Call(sq, [nestedContext.target]);
+            });
+        if (afterFilterSubqueries.length > 0) {
+            afterFilterSubqueries.unshift(new Cypher.With("*"));
+        }
+
         const allFilters = [...this.authFilters, ...this.filters];
-
-        const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, allFilters, [nestedContext.target]);
-
         const predicate = Cypher.and(...allFilters.map((f) => f.getPredicate(nestedContext)));
         let matchClause: Cypher.Clause;
         if (filterSubqueries.length > 0) {
@@ -177,6 +196,7 @@ export class ConnectOperation extends MutationOperation {
             ...this.getAuthorizationClauses(nestedContext), // THESE ARE "BEFORE" AUTH
             ...mutationSubqueries,
             connectClause,
+            ...afterFilterSubqueries,
             ...this.getAuthorizationClausesAfter(nestedContext), // THESE ARE "AFTER" AUTH
             ...this.getSourceAuthorizationClausesAfter(context) // ONLY RUN "AFTER" AUTH ON THE SOURCE NODE
         );
@@ -190,11 +210,11 @@ export class ConnectOperation extends MutationOperation {
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
-        const { subqueries, validations } = this.transpileAuthClauses(context);
+        const { validations } = this.transpileAuthClauses(context);
         if (!validations.length) {
             return [];
         }
-        return [...subqueries, ...validations];
+        return validations;
     }
 
     private getAuthorizationClausesAfter(context: QueryASTContext): Cypher.Clause[] {
@@ -253,6 +273,7 @@ export class ConnectOperation extends MutationOperation {
                 validations.push(validation);
             }
         }
+
         return { selections, subqueries, predicates, validations };
     }
 }
