@@ -149,8 +149,8 @@ export class CreateOperation extends MutationOperation {
 
         const clauses = Cypher.utils.concat(
             createClause,
-            ...mutationSubqueries.map((sq) => Cypher.utils.concat(new Cypher.With("*"), sq)),
-            mergeClause
+            mergeClause,
+            ...mutationSubqueries.map((sq) => Cypher.utils.concat(new Cypher.With("*"), sq))
         );
 
         return { projectionExpr: nestedContext.target, clauses: [clauses] };

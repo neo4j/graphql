@@ -111,12 +111,12 @@ describe("Cypher Auth Allow", () => {
                 this0.name = $param1
               WITH *
               CREATE (this1:Post)
+              MERGE (this0)-[this2:HAS_CONTENT]->(this1)
+              SET this1.id = $param2
               WITH *
-              CREATE (this2:User)
-              MERGE (this1)<-[this3:HAS_CONTENT]-(this2)
-              SET this2.id = $param2
-              MERGE (this0)-[this4:HAS_CONTENT]->(this1)
-              SET this1.id = $param3
+              CREATE (this3:User)
+              MERGE (this1)<-[this4:HAS_CONTENT]-(this3)
+              SET this3.id = $param3
               WITH *
               CALL (*) {
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
@@ -128,7 +128,7 @@ describe("Cypher Auth Allow", () => {
                 }), '@neo4j/graphql/FORBIDDEN', [])
               }
               CALL (*) {
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
               }
               RETURN this0 AS this
             }
@@ -143,8 +143,8 @@ describe("Cypher Auth Allow", () => {
             "{
                 \\"param0\\": \\"user-id\\",
                 \\"param1\\": \\"bob\\",
-                \\"param2\\": \\"some-user-id\\",
-                \\"param3\\": \\"post-id-1\\",
+                \\"param2\\": \\"post-id-1\\",
+                \\"param3\\": \\"some-user-id\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [
@@ -200,18 +200,18 @@ describe("Cypher Auth Allow", () => {
                 this0.name = $param1
               WITH *
               CREATE (this1:Comment)
+              MERGE (this0)-[this2:HAS_CONTENT]->(this1)
+              SET this1.id = $param2
               WITH *
-              CREATE (this2:User)
-              MERGE (this1)<-[this3:HAS_CONTENT]-(this2)
-              SET this2.id = $param2
-              MERGE (this0)-[this4:HAS_CONTENT]->(this1)
-              SET this1.id = $param3
+              CREATE (this3:User)
+              MERGE (this1)<-[this4:HAS_CONTENT]-(this3)
+              SET this3.id = $param3
               WITH *
               CALL (*) {
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this0.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
               }
               CALL (*) {
-                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this2.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
+                CALL apoc.util.validate(NOT ($isAuthenticated = true AND ($jwt.sub IS NOT NULL AND this3.id = $jwt.sub)), '@neo4j/graphql/FORBIDDEN', [])
               }
               RETURN this0 AS this
             }
@@ -226,8 +226,8 @@ describe("Cypher Auth Allow", () => {
             "{
                 \\"param0\\": \\"user-id\\",
                 \\"param1\\": \\"bob\\",
-                \\"param2\\": \\"some-user-id\\",
-                \\"param3\\": \\"post-id-1\\",
+                \\"param2\\": \\"post-id-1\\",
+                \\"param3\\": \\"some-user-id\\",
                 \\"isAuthenticated\\": true,
                 \\"jwt\\": {
                     \\"roles\\": [

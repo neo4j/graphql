@@ -131,30 +131,30 @@ describe("Cypher Create Pringles", () => {
                 this9.url = $param12
               WITH *
               CREATE (this11:Photo)
+              MERGE (this0)-[this12:HAS_PHOTO]->(this11)
+              SET
+                this11.id = $param13,
+                this11.description = $param14,
+                this11.url = $param15
               WITH *
               CALL (this11) {
-                MATCH (this12:Color)
-                WHERE this12.id = $param13
-                CREATE (this11)-[this13:OF_COLOR]->(this12)
+                MATCH (this13:Color)
+                WHERE this13.id = $param16
+                CREATE (this11)-[this14:OF_COLOR]->(this13)
               }
-              MERGE (this0)-[this14:HAS_PHOTO]->(this11)
-              SET
-                this11.id = $param14,
-                this11.description = $param15,
-                this11.url = $param16
               WITH *
               CREATE (this15:Photo)
+              MERGE (this0)-[this16:HAS_PHOTO]->(this15)
+              SET
+                this15.id = $param17,
+                this15.description = $param18,
+                this15.url = $param19
               WITH *
               CALL (this15) {
-                MATCH (this16:Color)
-                WHERE this16.id = $param17
-                CREATE (this15)-[this17:OF_COLOR]->(this16)
+                MATCH (this17:Color)
+                WHERE this17.id = $param20
+                CREATE (this15)-[this18:OF_COLOR]->(this17)
               }
-              MERGE (this0)-[this18:HAS_PHOTO]->(this15)
-              SET
-                this15.id = $param18,
-                this15.description = $param19,
-                this15.url = $param20
               RETURN this0 AS this
             }
             WITH this
@@ -179,14 +179,14 @@ describe("Cypher Create Pringles", () => {
                 \\"param10\\": \\"105\\",
                 \\"param11\\": \\"Outdoor photo\\",
                 \\"param12\\": \\"outdoor.png\\",
-                \\"param13\\": \\"102\\",
-                \\"param14\\": \\"106\\",
-                \\"param15\\": \\"Green photo\\",
-                \\"param16\\": \\"g.png\\",
-                \\"param17\\": \\"100\\",
-                \\"param18\\": \\"107\\",
-                \\"param19\\": \\"Red photo\\",
-                \\"param20\\": \\"r.png\\"
+                \\"param13\\": \\"106\\",
+                \\"param14\\": \\"Green photo\\",
+                \\"param15\\": \\"g.png\\",
+                \\"param16\\": \\"102\\",
+                \\"param17\\": \\"107\\",
+                \\"param18\\": \\"Red photo\\",
+                \\"param19\\": \\"r.png\\",
+                \\"param20\\": \\"100\\"
             }"
         `);
     });

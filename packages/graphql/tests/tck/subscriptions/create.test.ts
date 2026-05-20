@@ -595,16 +595,16 @@ describe("Subscriptions metadata on create", () => {
                 this2.year = $param2
               WITH *
               CREATE (this3:Actor)
+              MERGE (this0)<-[this4:DIRECTED]-(this3)
+              SET
+                this3.name = $param3,
+                this4.year = $param4
               WITH *
-              CREATE (this4:Movie)
-              MERGE (this3)-[this5:ACTED_IN]->(this4)
+              CREATE (this5:Movie)
+              MERGE (this3)-[this6:ACTED_IN]->(this5)
               SET
-                this4.title = $param3,
-                this5.screenTime = $param4
-              MERGE (this0)<-[this6:DIRECTED]-(this3)
-              SET
-                this3.name = $param5,
-                this6.year = $param6
+                this5.title = $param5,
+                this6.screenTime = $param6
               RETURN this0 AS this
             }
             WITH this
@@ -642,14 +642,14 @@ describe("Subscriptions metadata on create", () => {
                     \\"low\\": 1999,
                     \\"high\\": 0
                 },
-                \\"param3\\": \\"Funny movie\\",
+                \\"param3\\": \\"Keanu Reeves\\",
                 \\"param4\\": {
-                    \\"low\\": 190,
+                    \\"low\\": 2420,
                     \\"high\\": 0
                 },
-                \\"param5\\": \\"Keanu Reeves\\",
+                \\"param5\\": \\"Funny movie\\",
                 \\"param6\\": {
-                    \\"low\\": 2420,
+                    \\"low\\": 190,
                     \\"high\\": 0
                 }
             }"
