@@ -1,5 +1,13 @@
 # @neo4j/graphql
 
+## 7.5.3
+
+### Patch Changes
+
+- [#7298](https://github.com/neo4j/graphql/pull/7298) [`1bc67c9`](https://github.com/neo4j/graphql/commit/1bc67c92c195f08facc3d27be4e1b47f5475e5cb) Thanks [@a-alle](https://github.com/a-alle)! - Fix authorization validation rules for CREATE_RELATIONSHIP and DELETE_RELATIONSHIP rules
+
+- [#7291](https://github.com/neo4j/graphql/pull/7291) [`3e94929`](https://github.com/neo4j/graphql/commit/3e94929d1ae344127fe1164e501086db697a2906) Thanks [@angrykoala](https://github.com/angrykoala)! - Fix connect operations in nested create
+
 ## 7.5.2
 
 ### Patch Changes
