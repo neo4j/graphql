@@ -102,16 +102,16 @@ describe("1-many relationships with Interfaces and declared relationships", () =
               SET this0.name = $param0
               WITH *
               CREATE (this1:Movie)
+              MERGE (this0)-[this2:ACTED_IN]->(this1)
+              SET
+                this1.title = $param1,
+                this2.episodes = $param2
               WITH *
-              CREATE (this2:Person)
-              MERGE (this1)<-[this3:DIRECTED]-(this2)
+              CREATE (this3:Person)
+              MERGE (this1)<-[this4:DIRECTED]-(this3)
               SET
-                this2.name = $param1,
-                this3.year = $param2
-              MERGE (this0)-[this4:ACTED_IN]->(this1)
-              SET
-                this1.title = $param3,
-                this4.episodes = $param4
+                this3.name = $param3,
+                this4.year = $param4
               RETURN this0 AS this
             }
             WITH this
@@ -124,14 +124,14 @@ describe("1-many relationships with Interfaces and declared relationships", () =
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"Keanu\\",
-                \\"param1\\": \\"Director\\",
+                \\"param1\\": \\"The Matrix\\",
                 \\"param2\\": {
-                    \\"low\\": 1999,
+                    \\"low\\": 10,
                     \\"high\\": 0
                 },
-                \\"param3\\": \\"The Matrix\\",
+                \\"param3\\": \\"Director\\",
                 \\"param4\\": {
-                    \\"low\\": 10,
+                    \\"low\\": 1999,
                     \\"high\\": 0
                 }
             }"

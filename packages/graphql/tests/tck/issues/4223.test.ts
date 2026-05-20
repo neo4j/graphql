@@ -182,24 +182,24 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
               SET this0.id = randomUUID()
               WITH *
               CREATE (this1:Settings)
-              WITH *
-              CREATE (this2:OpeningDay)
-              WITH *
-              CREATE (this3:OpeningHoursInterval)
-              MERGE (this2)-[this4:HAS_OPEN_INTERVALS]->(this3)
-              SET
-                this3.name = $param0,
-                this3.updatedBy = $param1
-              MERGE (this1)-[this5:VALID_OPENING_DAYS]->(this2)
-              SET this2.id = randomUUID()
-              WITH *
-              CREATE (this6:MyWorkspace)
-              MERGE (this1)-[this7:HAS_WORKSPACE_SETTINGS]->(this6)
-              SET
-                this6.workspace = $param2,
-                this6.updatedBy = $param3
-              MERGE (this0)<-[this8:VEHICLECARD_OWNER]-(this1)
+              MERGE (this0)<-[this2:VEHICLECARD_OWNER]-(this1)
               SET this1.id = randomUUID()
+              WITH *
+              CREATE (this3:OpeningDay)
+              MERGE (this1)-[this4:VALID_OPENING_DAYS]->(this3)
+              SET this3.id = randomUUID()
+              WITH *
+              CREATE (this5:OpeningHoursInterval)
+              MERGE (this3)-[this6:HAS_OPEN_INTERVALS]->(this5)
+              SET
+                this5.name = $param0,
+                this5.updatedBy = $param1
+              WITH *
+              CREATE (this7:MyWorkspace)
+              MERGE (this1)-[this8:HAS_WORKSPACE_SETTINGS]->(this7)
+              SET
+                this7.workspace = $param2,
+                this7.updatedBy = $param3
               WITH *
               CREATE (this9:User)
               MERGE (this0)<-[this10:ADMIN_IN]-(this9)
@@ -222,7 +222,7 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
               }
               CALL (*) {
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                  MATCH (this2)<-[:VALID_GARAGES]-(this14:Settings)
+                  MATCH (this3)<-[:VALID_GARAGES]-(this14:Settings)
                   WHERE EXISTS {
                     MATCH (this14)<-[:HAS_SETTINGS]-(this15:Tenant)
                     WHERE EXISTS {
@@ -234,7 +234,7 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
               }
               CALL (*) {
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                  MATCH (this3)<-[:HAS_OPEN_INTERVALS]-(this17:OpeningDay)
+                  MATCH (this5)<-[:HAS_OPEN_INTERVALS]-(this17:OpeningDay)
                   WHERE EXISTS {
                     MATCH (this17)<-[:VALID_GARAGES]-(this18:Settings)
                     WHERE EXISTS {
@@ -249,7 +249,7 @@ describe("https://github.com/neo4j/graphql/issues/4223", () => {
               }
               CALL (*) {
                 CALL apoc.util.validate(NOT ($isAuthenticated = true AND EXISTS {
-                  MATCH (this6)<-[:HAS_WORKSPACE_SETTINGS]-(this21:Settings)
+                  MATCH (this7)<-[:HAS_WORKSPACE_SETTINGS]-(this21:Settings)
                   WHERE EXISTS {
                     MATCH (this21)<-[:HAS_SETTINGS]-(this22:Tenant)
                     WHERE EXISTS {
