@@ -113,18 +113,7 @@ export class Executor {
         sessionMode: SessionMode,
         info?: GraphQLResolveInfo
     ): Promise<QueryResult> {
-        // validate no overrides between ...this.cypherParams and ...parameters
-        const cypherParamsKeys = Object.keys(this.cypherParams ?? {});
-        const parametersKeys = Object.keys(parameters ?? {});
-        const intersection = cypherParamsKeys.filter((key) => parametersKeys.includes(key));
-        if (intersection.length > 0) {
-            throw new Error(
-                `Duplicate parameter keys detected between Executor.cypherParams and provided parameters: [${intersection.join(
-                    ", "
-                )}]`
-            );
-        }
-
+        this.validateAgainstConflictingParams(parameters);
         const params = { ...this.cypherParams, ...parameters };
         try {
             if (isDriverLike(this.executionContext)) {
@@ -287,5 +276,18 @@ export class Executor {
         debugCypherAndParams(debug, queryToRun, parameters);
 
         return transaction.run(queryToRun, parameters);
+    }
+
+    private validateAgainstConflictingParams(parameters: Record<string, any>) {
+        const cypherParamsKeys = Object.keys(this.cypherParams);
+        const parametersKeys = Object.keys(parameters);
+        const intersection = cypherParamsKeys.filter((key) => parametersKeys.includes(key));
+        if (intersection.length > 0) {
+            throw new Error(
+                `Duplicate parameter keys detected between Executor.cypherParams and provided parameters: [${intersection.join(
+                    ", "
+                )}]`
+            );
+        }
     }
 }
