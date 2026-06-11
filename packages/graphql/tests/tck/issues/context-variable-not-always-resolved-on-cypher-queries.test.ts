@@ -96,12 +96,12 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"tenant\\": \\"test\\",
                 \\"param0\\": \\"http://data.somesite.com/crown/test-id\\",
                 \\"param1\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
-                },
-                \\"tenant\\": \\"test\\"
+                }
             }"
         `);
     });
@@ -169,12 +169,12 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"tenant\\": \\"test\\",
                 \\"param0\\": \\"http://data.somesite.com/crown/test-id\\",
                 \\"param1\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
-                },
-                \\"tenant\\": \\"test\\"
+                }
             }"
         `);
     });
@@ -237,12 +237,12 @@ describe("context-variable-not-always-resolved-on-cypher-queries", () => {
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
+                \\"tenant\\": \\"test\\",
                 \\"param0\\": \\"http://data.somesite.com/crown/test-id\\",
                 \\"param1\\": {
                     \\"low\\": 1,
                     \\"high\\": 0
-                },
-                \\"tenant\\": \\"test\\"
+                }
             }"
         `);
     });
