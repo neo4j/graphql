@@ -1,5 +1,14 @@
 # @neo4j/graphql
 
+## 7.5.4
+
+### Patch Changes
+
+- [#7316](https://github.com/neo4j/graphql/pull/7316) [`a3e86fb`](https://github.com/neo4j/graphql/commit/a3e86fb03ed35bbb50920d3be10ccd33b995eef7) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - `@populatedBy` callback values for `Int` fields are now stored as Neo4j integers instead of floats (fixes [#7315](https://github.com/neo4j/graphql/issues/7315)).
+
+- [#7309](https://github.com/neo4j/graphql/pull/7309) [`b94071a`](https://github.com/neo4j/graphql/commit/b94071a2bcb898a485325f89759aa8a77333644e) Thanks [@MacondoExpress](https://github.com/MacondoExpress)! - Context.cypherParams properties no longer override resolver generated one.
+  In case of a conflict, an error is now thrown.
+
 ## 7.5.3
 
 ### Patch Changes
