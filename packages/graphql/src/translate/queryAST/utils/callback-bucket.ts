@@ -98,7 +98,7 @@ export class CallbackBucket {
 
         switch (type.name) {
             case "Int":
-                return neo4j.int(GraphQLInt.parseValue(result) as number);
+                return neo4j.int(GraphQLInt.parseValue(result));
             case "Float":
                 return GraphQLFloat.parseValue(result);
             case "String":
