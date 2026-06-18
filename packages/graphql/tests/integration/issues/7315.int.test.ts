@@ -119,7 +119,7 @@ describe("https://github.com/neo4j/graphql/issues/7315", () => {
 
         const mutation = /* GraphQL */ `
             mutation {
-                ${Movie.operations.update}(where: { id_EQ: "${movieId}" }, update: { id_SET: "${movieId}" }) {
+                ${Movie.operations.update}(where: { id: { eq: "${movieId}" } }, update: { id: { set: "${movieId}"} }) {
                     ${Movie.plural} {
                         id
                         callback
