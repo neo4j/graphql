@@ -18,7 +18,7 @@
         "lint": "eslint --cache .",
         "test": "jest",
         "test-docker": "docker-compose up --build --abort-on-container-exit",
-        "changeset-version": "changeset version --since $BRANCH && yarn",
+        "changeset-version": "changeset version && yarn",
         "release-dev": "yarn build && changeset publish",
         "release-lts": "yarn build && changeset publish --tag lts",
         "release-previous": "yarn build && changeset publish --tag previous"
