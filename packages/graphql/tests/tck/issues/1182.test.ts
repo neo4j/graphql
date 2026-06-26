@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/1182", () => {
             CREATE (this0:Movie)
             SET this0.id = randomUUID()
             SET this0.title = $this0_title
-            WITH this0
+            WITH *
             CALL {
                 WITH this0
                 MERGE (this0_actors_connectOrCreate0:Actor { id: $this0_actors_connectOrCreate_param0 })

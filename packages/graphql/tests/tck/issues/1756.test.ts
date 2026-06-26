@@ -84,7 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/1756", () => {
             CREATE (this0:Product)
             SET this0.id = $resolvedCallbacks.this0_id_nanoid
             SET this0.name = $this0_name
-            WITH this0
+            WITH *
             CALL {
                 WITH this0
                 MERGE (this0_genre_connectOrCreate0:Genre { value: $this0_genre_connectOrCreate_param0 })

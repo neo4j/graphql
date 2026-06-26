@@ -606,7 +606,7 @@ describe("Batch Create", () => {
             CALL {
             CREATE (this4:Movie)
             SET this4.id = $this4_id
-            WITH this4
+            WITH *
             CALL {
                 WITH this4
                 MERGE (this4_actors_connectOrCreate0:Actor { id: $this4_actors_connectOrCreate_param0 })
