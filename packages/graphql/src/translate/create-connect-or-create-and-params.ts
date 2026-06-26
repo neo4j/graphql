@@ -107,7 +107,7 @@ export function createConnectOrCreateAndParams({
             ? new Cypher.Return([new Cypher.NamedVariable("meta"), "update_meta"])
             : new Cypher.Return([Cypher.count(new Cypher.Raw("*")), "_"]);
 
-        const subqueryClause = new Cypher.With(...withVarsVariables)
+        const subqueryClause = new Cypher.With("*")
             .call(Cypher.utils.concat(statement, returnStatement))
             .importWith(...withVarsVariables);
 
