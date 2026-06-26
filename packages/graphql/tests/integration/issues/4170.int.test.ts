@@ -36,7 +36,7 @@ describe("https://github.com/neo4j/graphql/issues/4170", () => {
     let ADD_TENANT: string;
 
     beforeEach(() => {
-        myUserId = Math.random().toString(36).slice(2, 7);
+        myUserId = "myUserId-1";
 
         User = testHelper.createUniqueType("User");
         Tenant = testHelper.createUniqueType("Tenant");

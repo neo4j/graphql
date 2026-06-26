@@ -1,7 +1,7 @@
 {
     "name": "apollo-federation-subgraph-compatibility",
     "version": "1.0.0",
-    "packageManager": "yarn@4.9.4",
+    "packageManager": "yarn@4.14.1",
     "scripts": {
         "build": "webpack --config webpack.config.js",
         "test:docker": "yarn build && fedtest docker --compose docker-compose.yml --schema schema.graphql",
@@ -9,18 +9,18 @@
     },
     "dependencies": {
         "@apollo/server": "^5.0.0",
-        "@graphql-tools/wrap": "^10.0.0",
-        "@neo4j/graphql": "^5.12.9",
-        "graphql": "16.11.0",
+        "@graphql-tools/wrap": "^11.0.0",
+        "@neo4j/graphql": "^5.12.11",
+        "graphql": "16.13.2",
         "graphql-tag": "^2.12.6",
         "neo4j-driver": "^5.8.0"
     },
     "devDependencies": {
-        "@apollo/federation-subgraph-compatibility": "2.2.1",
+        "@apollo/federation-subgraph-compatibility": "2.2.2",
         "fork-ts-checker-webpack-plugin": "9.1.0",
-        "ts-loader": "9.5.4",
+        "ts-loader": "9.5.7",
         "tsconfig-paths-webpack-plugin": "4.2.0",
-        "typescript": "5.9.2",
-        "webpack": "5.101.3"
+        "typescript": "5.9.3",
+        "webpack": "5.106.2"
     }
 }

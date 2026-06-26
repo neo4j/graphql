@@ -59,7 +59,7 @@ jobs:
         id: check
       - name: Send Slack announcement of pipeline failure
         if: steps.check.outputs.status == 'failure' && github.event_name == 'schedule'
-        uses: slackapi/slack-github-action@91efab103c0de0a537f72a35f6b8cda0ee76bf0a # v2.1.1
+        uses: slackapi/slack-github-action@03ea5433c137af7c0495bc0cad1af10403fc800c # v3.0.2
         with:
           payload: |
             url: "https://github.com/neo4j/graphql/actions/runs/${{ github.run_id }}"

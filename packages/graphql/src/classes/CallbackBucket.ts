@@ -18,6 +18,7 @@
  */
 
 import { GraphQLBoolean, GraphQLError, GraphQLFloat, GraphQLID, GraphQLInt, GraphQLString } from "graphql";
+import neo4j from "neo4j-driver";
 import type { DateTime, Duration, Integer, LocalDateTime, LocalTime, Date as Neo4jDate, Time } from "neo4j-driver";
 import {
     GraphQLBigInt,
@@ -114,7 +115,7 @@ export class CallbackBucket {
 
         switch (type.name) {
             case "Int":
-                return GraphQLInt.parseValue(result);
+                return neo4j.int(GraphQLInt.parseValue(result));
             case "Float":
                 return GraphQLFloat.parseValue(result);
             case "String":

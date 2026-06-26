@@ -52,11 +52,12 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
-      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
           node-version: lts/*
           cache: yarn
+          package-manager-cache: false
       - name: Install dependencies
         run: yarn --immutable
       - name: Overwrite GraphQL version
@@ -72,7 +73,7 @@ jobs:
           NEO_URL: bolt://localhost:7687
       - if: ${{ !inputs.disable-coverage-archival && matrix.packages.package == 'graphql' }}
         name: Archive coverage report
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: integration-coverage-${{ matrix.packages.package }}-${{ matrix.neo4j-version }}-${{ matrix.graphql-version.coverage_path }}-${{ matrix.packages.coverage_name }}
           path: packages/${{ matrix.packages.package }}/coverage-${{ matrix.neo4j-version }}-${{ matrix.graphql-version.coverage_path }}/
@@ -83,7 +84,7 @@ jobs:
     steps:
       - if: ${{ !inputs.disable-coverage-archival }}
         name: Merge Artifacts
-        uses: actions/upload-artifact/merge@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact/merge@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
           name: integration-coverage
           pattern: integration-coverage-*

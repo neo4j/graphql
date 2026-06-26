@@ -22,7 +22,7 @@ jobs:
       name: sonarcloud
 
     steps:
-      - uses: actions/checkout@08c6903cd8c0fde910a37f88322edcfb5dd907a8 # v5
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0 # Shallow clones should be disabled for a better relevancy of analysis
       - name: Uppercase package name
@@ -31,7 +31,7 @@ jobs:
           lowercase_package=$(echo "$lowercase_package" | tr - _ | sed 's/plugins\///g')
           echo "SONAR_TOKEN_SECRET=SONAR_TOKEN_${lowercase_package^^}" >>"${GITHUB_ENV}"
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@master
+        uses: SonarSource/sonarcloud-github-action@ba3875ecf642b2129de2b589510c81a8b53dbf4e # master
         with:
           projectBaseDir: packages/${{ matrix.package }}
         env:

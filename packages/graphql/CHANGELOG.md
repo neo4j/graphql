@@ -1,5 +1,17 @@
 # @neo4j/graphql
 
+## 5.12.11
+
+### Patch Changes
+
+-   [#7321](https://github.com/neo4j/graphql/pull/7321) [`58e39fc`](https://github.com/neo4j/graphql/commit/58e39fc9664ccf81724364cafdcf58d0288bcf5d) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - `@populatedBy` callback values for `Int` fields are now stored as Neo4j integers instead of floats (fixes [#7315](https://github.com/neo4j/graphql/issues/7315)).
+
+## 5.12.10
+
+### Patch Changes
+
+-   [#6675](https://github.com/neo4j/graphql/pull/6675) [`84b884a`](https://github.com/neo4j/graphql/commit/84b884aeef47ede9a96f63a75161193d2e2b492d) Thanks [@angrykoala](https://github.com/angrykoala)! - Adds feature flag `cypherDirective.disableGeneratedLimit` to disable default limits to be applied on queries using `@cypher` directive
+
 ## 5.12.9
 
 ### Patch Changes

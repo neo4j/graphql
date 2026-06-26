@@ -18,17 +18,17 @@
         "lint": "eslint --cache .",
         "test": "jest",
         "test-docker": "docker-compose up --build --abort-on-container-exit",
-        "changeset-version": "changeset version --since $BRANCH && yarn",
+        "changeset-version": "changeset version && yarn",
         "release-dev": "yarn build && changeset publish",
         "release-lts": "yarn build && changeset publish --tag lts",
         "release-previous": "yarn build && changeset publish --tag previous"
     },
     "devDependencies": {
-        "@tsconfig/node22": "22.0.2",
-        "@typescript-eslint/eslint-plugin": "8.41.0",
-        "@typescript-eslint/parser": "8.41.0",
+        "@tsconfig/node24": "24.0.4",
+        "@typescript-eslint/eslint-plugin": "8.59.0",
+        "@typescript-eslint/parser": "8.59.0",
         "concurrently": "9.2.1",
-        "dotenv": "17.2.1",
+        "dotenv": "17.4.2",
         "eslint": "8.57.1",
         "eslint-config-prettier": "10.1.8",
         "eslint-formatter-summary": "2.0.2",
@@ -36,17 +36,20 @@
         "eslint-plugin-eslint-comments": "3.2.0",
         "eslint-plugin-import": "2.32.0",
         "eslint-plugin-jest": "28.14.0",
-        "graphql": "16.11.0",
+        "graphql": "16.13.2",
         "jest": "29.7.0",
-        "neo4j-driver": "5.28.1",
+        "neo4j-driver": "5.28.3",
         "prettier": "2.8.8",
         "set-tz": "0.2.0",
-        "ts-jest": "29.4.1",
-        "typescript": "5.9.2"
+        "ts-jest": "29.4.9",
+        "typescript": "5.9.3"
     },
-    "packageManager": "yarn@4.9.4",
+    "packageManager": "yarn@4.14.1",
+    "resolutions": {
+        "msw": "2.8.4"
+    },
     "dependencies": {
-        "@changesets/changelog-github": "0.5.1",
-        "@changesets/cli": "2.29.6"
+        "@changesets/changelog-github": "0.6.0",
+        "@changesets/cli": "2.31.0"
     }
 }
