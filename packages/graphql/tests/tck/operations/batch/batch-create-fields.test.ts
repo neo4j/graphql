@@ -528,7 +528,7 @@ describe("Batch Create, Scalar types", () => {
             CREATE (this4:Movie)
             SET this4.createdAt = datetime()
             SET this4.id = $this4_id
-            WITH *
+            WITH this4
             CALL {
                 WITH this4
                 MERGE (this4_actors_connectOrCreate0:Actor { id: $this4_actors_connectOrCreate_param0 })

@@ -81,7 +81,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "MATCH (this:Parent)
-            WITH *
+            WITH this
             CALL {
                 WITH this
                 MERGE (this_connectOrCreate_children0:Child { tcId: $this_connectOrCreate_children_param0 })
@@ -92,7 +92,7 @@ describe("https://github.com/neo4j/graphql/issues/1115", () => {
                 WHERE apoc.util.validatePredicate(NOT ($isAuthenticated = true AND ($jwt.roles IS NOT NULL AND $this_connectOrCreate_children_param4 IN $jwt.roles)), \\"@neo4j/graphql/FORBIDDEN\\", [0])
                 RETURN count(*) AS _
             }
-            WITH *
+            WITH this
             CALL {
                 WITH this
                 MERGE (this_connectOrCreate_children1:Child { tcId: $this_connectOrCreate_children_param5 })

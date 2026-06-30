@@ -76,7 +76,7 @@ describe("Create or Connect", () => {
                 "CALL {
                 CREATE (this0:Actor)
                 SET this0.name = $this0_name
-                WITH *
+                WITH this0
                 CALL {
                     WITH this0
                     MERGE (this0_movies_connectOrCreate0:Movie { title: $this0_movies_connectOrCreate_param0 })
@@ -138,7 +138,7 @@ describe("Create or Connect", () => {
                 "MATCH (this:Actor)
                 WHERE this.name = $param0
                 SET this.name = $this_update_name
-                WITH *
+                WITH this
                 CALL {
                     WITH this
                     MERGE (this_movies0_connectOrCreate0:Movie { title: $this_movies0_connectOrCreate_param0 })
@@ -225,7 +225,7 @@ describe("Create or Connect", () => {
                 "CALL {
                 CREATE (this0:Actor)
                 SET this0.name = $this0_name
-                WITH *
+                WITH this0
                 CALL {
                     WITH this0
                     MERGE (this0_movies_connectOrCreate0:Movie { title: $this0_movies_connectOrCreate_param0 })
@@ -290,7 +290,7 @@ describe("Create or Connect", () => {
                 "CALL {
                 CREATE (this0:Actor)
                 SET this0.name = $this0_name
-                WITH *
+                WITH this0
                 CALL {
                     WITH this0
                     MERGE (this0_movies_connectOrCreate0:Movie { id: $this0_movies_connectOrCreate_param0 })
@@ -353,7 +353,7 @@ describe("Create or Connect", () => {
                 "MATCH (this:Actor)
                 WHERE this.name = $param0
                 SET this.name = $this_update_name
-                WITH *
+                WITH this
                 CALL {
                     WITH this
                     MERGE (this_movies0_connectOrCreate0:Movie { title: $this_movies0_connectOrCreate_param0 })
@@ -412,7 +412,7 @@ describe("Create or Connect", () => {
                 "MATCH (this:Actor)
                 WHERE this.name = $param0
                 SET this.name = $this_update_name
-                WITH *
+                WITH this
                 CALL {
                     WITH this
                     MERGE (this_movies0_connectOrCreate0:Movie { id: $this_movies0_connectOrCreate_param0 })
@@ -501,7 +501,7 @@ describe("Create or Connect", () => {
                 "CALL {
                 CREATE (this0:Actor)
                 SET this0.name = $this0_name
-                WITH *
+                WITH this0
                 CALL {
                     WITH this0
                     MERGE (this0_movies_connectOrCreate0:Movie { title: $this0_movies_connectOrCreate_param0 })
@@ -565,7 +565,7 @@ describe("Create or Connect", () => {
                 "MATCH (this:Actor)
                 WHERE this.name = $param0
                 SET this.name = $this_update_name
-                WITH *
+                WITH this
                 CALL {
                     WITH this
                     MERGE (this_movies0_connectOrCreate0:Movie { title: $this_movies0_connectOrCreate_param0 })

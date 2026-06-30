@@ -99,7 +99,7 @@ describe("Create or connect with unions", () => {
             "CALL {
             CREATE (this0:Actor)
             SET this0.name = $this0_name
-            WITH *
+            WITH this0
             CALL {
                 WITH this0
                 MERGE (this0_actedIn_Movie_connectOrCreate0:Movie { isan: $this0_actedIn_Movie_connectOrCreate_param0 })
@@ -111,7 +111,7 @@ describe("Create or connect with unions", () => {
                     this0_actedIn_Movie_connectOrCreate_this0.screentime = $this0_actedIn_Movie_connectOrCreate_param3
                 RETURN count(*) AS _
             }
-            WITH *
+            WITH this0
             CALL {
                 WITH this0
                 MERGE (this0_actedIn_Series_connectOrCreate0:Series { isan: $this0_actedIn_Series_connectOrCreate_param0 })
@@ -195,7 +195,7 @@ describe("Create or connect with unions", () => {
             "MATCH (this:Actor)
             WHERE this.name = $param0
             SET this.name = $this_update_name
-            WITH *
+            WITH this
             CALL {
                 WITH this
                 MERGE (this_actedIn_Movie0_connectOrCreate0:Movie { isan: $this_actedIn_Movie0_connectOrCreate_param0 })
@@ -207,7 +207,7 @@ describe("Create or connect with unions", () => {
                     this_actedIn_Movie0_connectOrCreate_this0.screentime = $this_actedIn_Movie0_connectOrCreate_param3
                 RETURN count(*) AS _
             }
-            WITH *
+            WITH this
             CALL {
                 WITH this
                 MERGE (this_actedIn_Series0_connectOrCreate0:Series { isan: $this_actedIn_Series0_connectOrCreate_param0 })

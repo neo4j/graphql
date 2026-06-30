@@ -77,7 +77,7 @@ describe("connectOrCreate", () => {
                 "CALL {
                 CREATE (this0:Movie)
                 SET this0.title = $this0_title
-                WITH *
+                WITH this0
                 CALL {
                     WITH this0
                     MERGE (this0_genres_connectOrCreate0:Genre { name: $this0_genres_connectOrCreate_param0 })
@@ -125,7 +125,7 @@ describe("connectOrCreate", () => {
                 "CALL {
                 CREATE (this0:Movie)
                 SET this0.title = $this0_title
-                WITH *
+                WITH this0
                 CALL {
                     WITH this0
                     MERGE (this0_genres_connectOrCreate0:Genre { name: $this0_genres_connectOrCreate_param0 })
@@ -173,7 +173,7 @@ describe("connectOrCreate", () => {
                 "CALL {
                 CREATE (this0:Movie)
                 SET this0.title = $this0_title
-                WITH *
+                WITH this0
                 CALL {
                     WITH this0
                     MERGE (this0_genres_connectOrCreate0:Genre { name: $this0_genres_connectOrCreate_param0 })
@@ -221,7 +221,7 @@ describe("connectOrCreate", () => {
                 "CALL {
                 CREATE (this0:Movie)
                 SET this0.title = $this0_title
-                WITH *
+                WITH this0
                 CALL {
                     WITH this0
                     MERGE (this0_genres_connectOrCreate0:Genre { name: $this0_genres_connectOrCreate_param0 })
@@ -282,7 +282,7 @@ describe("connectOrCreate", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
-                WITH *
+                WITH this
                 CALL {
                     WITH this
                     MERGE (this_genres0_connectOrCreate0:Genre { name: $this_genres0_connectOrCreate_param0 })
@@ -323,7 +323,7 @@ describe("connectOrCreate", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
-                WITH *
+                WITH this
                 CALL {
                     WITH this
                     MERGE (this_genres0_connectOrCreate0:Genre { name: $this_genres0_connectOrCreate_param0 })
@@ -364,7 +364,7 @@ describe("connectOrCreate", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
-                WITH *
+                WITH this
                 CALL {
                     WITH this
                     MERGE (this_genres0_connectOrCreate0:Genre { name: $this_genres0_connectOrCreate_param0 })
@@ -405,7 +405,7 @@ describe("connectOrCreate", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
-                WITH *
+                WITH this
                 CALL {
                     WITH this
                     MERGE (this_genres0_connectOrCreate0:Genre { name: $this_genres0_connectOrCreate_param0 })
@@ -456,7 +456,7 @@ describe("connectOrCreate", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
-                WITH *
+                WITH this
                 CALL {
                     WITH this
                     MERGE (this_connectOrCreate_genres0:Genre { name: $this_connectOrCreate_genres_param0 })
@@ -498,7 +498,7 @@ describe("connectOrCreate", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
-                WITH *
+                WITH this
                 CALL {
                     WITH this
                     MERGE (this_connectOrCreate_genres0:Genre { name: $this_connectOrCreate_genres_param0 })
@@ -540,7 +540,7 @@ describe("connectOrCreate", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
-                WITH *
+                WITH this
                 CALL {
                     WITH this
                     MERGE (this_connectOrCreate_genres0:Genre { name: $this_connectOrCreate_genres_param0 })
@@ -582,7 +582,7 @@ describe("connectOrCreate", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
-                WITH *
+                WITH this
                 CALL {
                     WITH this
                     MERGE (this_connectOrCreate_genres0:Genre { name: $this_connectOrCreate_genres_param0 })
@@ -632,7 +632,7 @@ describe("connectOrCreate", () => {
             expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
                 "MATCH (this:Movie)
                 SET this.title = $this_update_title
-                WITH *
+                WITH this
                 CALL {
                     WITH this
                     MERGE (this_connectOrCreate_genres0:Genre { name: $this_connectOrCreate_genres_param0 })

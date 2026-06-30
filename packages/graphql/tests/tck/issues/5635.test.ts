@@ -79,7 +79,7 @@ describe("https://github.com/neo4j/graphql/issues/5635", () => {
             CREATE (this0:MyNode)
             SET this0.id = randomUUID()
             SET this0.name = $this0_name
-            WITH *
+            WITH this0
             CALL {
                 WITH this0
                 MERGE (this0_owner_connectOrCreate0:Owner { id: $this0_owner_connectOrCreate_param0 })

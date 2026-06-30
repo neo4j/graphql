@@ -84,7 +84,7 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
             "MATCH (this:BibliographicReference:Resource)
             WHERE this.uri = $param0
             SET this.prefLabel = $this_update_prefLabel
-            WITH *
+            WITH this
             CALL {
                 WITH this
                 MERGE (this_isInPublication0_connectOrCreate0:Concept:Resource { uri: $this_isInPublication0_connectOrCreate_param0 })
@@ -94,7 +94,7 @@ describe("https://github.com/neo4j/graphql/issues/1131", () => {
                 MERGE (this)-[this_isInPublication0_connectOrCreate_this0:isInPublication]->(this_isInPublication0_connectOrCreate0)
                 RETURN count(*) AS _
             }
-            WITH *
+            WITH this
             CALL {
                 WITH this
                 MERGE (this_isInPublication1_connectOrCreate0:Concept:Resource { uri: $this_isInPublication1_connectOrCreate_param0 })

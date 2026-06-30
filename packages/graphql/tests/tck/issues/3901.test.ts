@@ -138,12 +138,12 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             }
             WITH *
             CALL {
-            	WITH this0
+            	WITH this0, this0_seasons0_node
             	OPTIONAL MATCH (this0_publisher_connect0_node:User)
             	WHERE this0_publisher_connect0_node.id = $this0_publisher_connect0_node_param0
             	CALL {
             		WITH *
-            		WITH collect(this0_publisher_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		WITH this0_seasons0_node, collect(this0_publisher_connect0_node) as connectedNodes, collect(this0) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
@@ -151,7 +151,7 @@ describe("https://github.com/neo4j/graphql/issues/3901", () => {
             			MERGE (this0)<-[:PUBLISHER]-(this0_publisher_connect0_node)
             		}
             	}
-            WITH this0, this0_publisher_connect0_node
+            WITH this0, this0_seasons0_node, this0_publisher_connect0_node
             	RETURN count(*) AS connect_this0_publisher_connect_User0
             }
             WITH *

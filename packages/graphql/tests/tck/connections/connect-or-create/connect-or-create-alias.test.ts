@@ -84,7 +84,7 @@ describe("Connect or create with @alias", () => {
             "MATCH (this:BibliographicReference:Resource)
             WHERE this._uri = $param0
             SET this.prefLabel = $this_update_prefLabel
-            WITH *
+            WITH this
             CALL {
                 WITH this
                 MERGE (this_isInPublication0_connectOrCreate0:Concept:Resource { \`$_uri\`: $this_isInPublication0_connectOrCreate_param0 })
@@ -94,7 +94,7 @@ describe("Connect or create with @alias", () => {
                 MERGE (this)-[this_isInPublication0_connectOrCreate_this0:isInPublication]->(this_isInPublication0_connectOrCreate0)
                 RETURN count(*) AS _
             }
-            WITH *
+            WITH this
             CALL {
                 WITH this
                 MERGE (this_isInPublication1_connectOrCreate0:Concept:Resource { \`$_uri\`: $this_isInPublication1_connectOrCreate_param0 })

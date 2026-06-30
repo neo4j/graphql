@@ -151,12 +151,12 @@ describe("Cypher Create Pringles", () => {
             SET this0_photos1_node.url = $this0_photos1_node_url
             WITH *
             CALL {
-            	WITH this0, this0_photos1_node
+            	WITH this0, this0_sizes0_node, this0_sizes1_node, this0_colors0_node, this0_colors1_node, this0_photos0_node, this0_photos1_node
             	OPTIONAL MATCH (this0_photos1_node_color_connect0_node:Color)
             	WHERE this0_photos1_node_color_connect0_node.id = $this0_photos1_node_color_connect0_node_param0
             	CALL {
             		WITH *
-            		WITH this0, collect(this0_photos1_node_color_connect0_node) as connectedNodes, collect(this0_photos1_node) as parentNodes
+            		WITH this0, this0_sizes0_node, this0_sizes1_node, this0_colors0_node, this0_colors1_node, this0_photos0_node, collect(this0_photos1_node_color_connect0_node) as connectedNodes, collect(this0_photos1_node) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0_photos1_node
@@ -164,7 +164,7 @@ describe("Cypher Create Pringles", () => {
             			MERGE (this0_photos1_node)-[:OF_COLOR]->(this0_photos1_node_color_connect0_node)
             		}
             	}
-            WITH this0, this0_photos1_node, this0_photos1_node_color_connect0_node
+            WITH this0, this0_sizes0_node, this0_sizes1_node, this0_colors0_node, this0_colors1_node, this0_photos0_node, this0_photos1_node, this0_photos1_node_color_connect0_node
             	RETURN count(*) AS connect_this0_photos1_node_color_connect_Color0
             }
             MERGE (this0)-[:HAS_PHOTO]->(this0_photos1_node)
@@ -183,12 +183,12 @@ describe("Cypher Create Pringles", () => {
             SET this0_photos2_node.url = $this0_photos2_node_url
             WITH *
             CALL {
-            	WITH this0, this0_photos2_node
+            	WITH this0, this0_sizes0_node, this0_sizes1_node, this0_colors0_node, this0_colors1_node, this0_photos0_node, this0_photos1_node, this0_photos2_node
             	OPTIONAL MATCH (this0_photos2_node_color_connect0_node:Color)
             	WHERE this0_photos2_node_color_connect0_node.id = $this0_photos2_node_color_connect0_node_param0
             	CALL {
             		WITH *
-            		WITH this0, collect(this0_photos2_node_color_connect0_node) as connectedNodes, collect(this0_photos2_node) as parentNodes
+            		WITH this0, this0_sizes0_node, this0_sizes1_node, this0_colors0_node, this0_colors1_node, this0_photos0_node, this0_photos1_node, collect(this0_photos2_node_color_connect0_node) as connectedNodes, collect(this0_photos2_node) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0_photos2_node
@@ -196,7 +196,7 @@ describe("Cypher Create Pringles", () => {
             			MERGE (this0_photos2_node)-[:OF_COLOR]->(this0_photos2_node_color_connect0_node)
             		}
             	}
-            WITH this0, this0_photos2_node, this0_photos2_node_color_connect0_node
+            WITH this0, this0_sizes0_node, this0_sizes1_node, this0_colors0_node, this0_colors1_node, this0_photos0_node, this0_photos1_node, this0_photos2_node, this0_photos2_node_color_connect0_node
             	RETURN count(*) AS connect_this0_photos2_node_color_connect_Color0
             }
             MERGE (this0)-[:HAS_PHOTO]->(this0_photos2_node)
