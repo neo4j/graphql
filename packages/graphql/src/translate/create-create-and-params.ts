@@ -146,6 +146,7 @@ function createCreateAndParams({
                         const nodeName = `${baseName}_node`;
                         const propertiesName = `${baseName}_relationship`;
 
+                        withVars.push( nodeName);
                         const {
                             create: nestedCreate,
                             params,
@@ -157,7 +158,7 @@ function createCreateAndParams({
                             callbackBucket,
                             node: refNode,
                             varName: nodeName,
-                            withVars: [...withVars, nodeName],
+                            withVars,
                             includeRelationshipValidation: false,
                             topLevelNodeVariable,
                             authorizationPrefix: [...authorizationPrefix, reducerIndex, createIndex, refNodeIndex],
