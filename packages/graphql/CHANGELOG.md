@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.12.12
+
+### Patch Changes
+
+-   [#7324](https://github.com/neo4j/graphql/pull/7324) [`c9da1e4`](https://github.com/neo4j/graphql/commit/c9da1e4ee4c9144d1ebe596688130c8b73248c58) Thanks [@a-alle](https://github.com/a-alle)! - Fix connectOrCreate authorization rule cypher error when used in the same mutation as a create
+
 ## 5.12.11
 
 ### Patch Changes
