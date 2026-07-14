@@ -37,7 +37,7 @@
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
-        "@apollo/server": "5.2.0",
+        "@apollo/server": "5.5.0",
         "@as-integrations/express4": "^1.1.2",
         "@neo4j/graphql": "^5.0.0",
         "@types/amqplib": "0.10.8",
