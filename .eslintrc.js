@@ -7,7 +7,12 @@ const commaDangle = {
 };
 
 module.exports = {
-    extends: ["eslint:recommended", "plugin:eslint-comments/recommended", "plugin:import/recommended", "prettier"],
+    extends: [
+        "eslint:recommended",
+        "plugin:@eslint-community/eslint-comments/recommended",
+        "plugin:import/recommended",
+        "prettier",
+    ],
     root: true,
     env: {
         node: true,
@@ -15,7 +20,7 @@ module.exports = {
     },
     rules: {
         "comma-dangle": ["error", commaDangle],
-        "eslint-comments/no-unused-disable": "error",
+        "@eslint-community/eslint-comments/no-unused-disable": "error",
         // Expensive rules disabled below
         "import/default": "off",
         "import/namespace": "off",
