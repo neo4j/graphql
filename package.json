@@ -23,6 +23,7 @@
         "release-previous": "yarn build && changeset publish --tag previous"
     },
     "devDependencies": {
+        "@eslint-community/eslint-plugin-eslint-comments": "3.2.0",
         "@tsconfig/node24": "24.0.4",
         "@typescript-eslint/eslint-plugin": "8.59.2",
         "@typescript-eslint/parser": "8.59.2",
@@ -32,7 +33,6 @@
         "eslint-config-prettier": "10.1.8",
         "eslint-formatter-summary": "2.0.2",
         "eslint-import-resolver-typescript": "4.4.4",
-        "@eslint-community/eslint-plugin-eslint-comments": "3.2.0",
         "eslint-plugin-import": "2.32.0",
         "eslint-plugin-jest": "29.15.2",
         "graphql": "16.14.0",
