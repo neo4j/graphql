@@ -258,9 +258,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/server@npm:5.2.0":
-  version: 5.2.0
-  resolution: "@apollo/server@npm:5.2.0"
+"@apollo/server@npm:5.5.0":
+  version: 5.5.0
+  resolution: "@apollo/server@npm:5.5.0"
   dependencies:
     "@apollo/cache-control-types": "npm:^1.0.3"
     "@apollo/server-gateway-interface": "npm:^2.0.0"
@@ -274,7 +274,8 @@ __metadata:
     "@apollo/utils.withrequired": "npm:^3.0.0"
     "@graphql-tools/schema": "npm:^10.0.0"
     async-retry: "npm:^1.2.1"
-    body-parser: "npm:^2.2.0"
+    body-parser: "npm:^2.2.2"
+    content-type: "npm:^1.0.5"
     cors: "npm:^2.8.5"
     finalhandler: "npm:^2.1.0"
     loglevel: "npm:^1.6.8"
@@ -284,7 +285,7 @@ __metadata:
     whatwg-mimetype: "npm:^4.0.0"
   peerDependencies:
     graphql: ^16.11.0
-  checksum: 10c0/2500a8244bda60b65b11ba37711039e869c14d7cacae84ddc940b150e824ab684792be39424336c6aba0e8ca5332b945012cf9b05282fdad70ec2416333c484b
+  checksum: 10c0/9eb98384ceff0c979e9a7b280445c94b91baa2cfb7b84038a156c05303d1b5ee6013350d02fa850a5f3102ed4c17a3c2d23dbb6546a08fac97f589ce74bf06eb
   languageName: node
   linkType: hard
 
@@ -2769,7 +2770,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@neo4j/graphql-amqp-subscriptions-engine@workspace:packages/graphql-amqp-subscriptions-engine"
   dependencies:
-    "@apollo/server": "npm:5.2.0"
+    "@apollo/server": "npm:5.5.0"
     "@as-integrations/express4": "npm:^1.1.2"
     "@neo4j/graphql": "npm:^5.0.0"
     "@types/amqplib": "npm:0.10.8"
@@ -2833,7 +2834,7 @@ __metadata:
   resolution: "@neo4j/graphql@workspace:packages/graphql"
   dependencies:
     "@apollo/gateway": "npm:2.13.3"
-    "@apollo/server": "npm:5.2.0"
+    "@apollo/server": "npm:5.5.0"
     "@apollo/subgraph": "npm:^2.2.3"
     "@as-integrations/express4": "npm:^1.1.2"
     "@graphql-tools/merge": "npm:^9.0.0"
@@ -6032,7 +6033,7 @@ __metadata:
     "@graphql-tools/wrap": "npm:^11.0.0"
     "@neo4j/graphql": "npm:^5.12.12"
     fork-ts-checker-webpack-plugin: "npm:9.1.0"
-    graphql: "npm:16.13.2"
+    graphql: "npm:16.14.2"
     graphql-tag: "npm:^2.12.6"
     neo4j-driver: "npm:^5.8.0"
     ts-loader: "npm:9.5.7"
@@ -6614,7 +6615,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"body-parser@npm:^2.0.0, body-parser@npm:^2.2.0, body-parser@npm:^2.2.1, body-parser@npm:^2.2.2":
+"body-parser@npm:^2.0.0, body-parser@npm:^2.2.1, body-parser@npm:^2.2.2":
   version: 2.3.0
   resolution: "body-parser@npm:2.3.0"
   dependencies:
@@ -10999,14 +11000,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"graphql@npm:16.13.2":
-  version: 16.13.2
-  resolution: "graphql@npm:16.13.2"
-  checksum: 10c0/64e822a0a0e4398781e4bc9765b88d370c08261498b517add4b878038ef7be2005b6b394a79a5102b9379d57052f60bc7f23fec8f39808d101984a74772ebd9d
-  languageName: node
-  linkType: hard
-
-"graphql@npm:^16.6.0, graphql@npm:^16.8.1":
+"graphql@npm:16.14.2, graphql@npm:^16.6.0, graphql@npm:^16.8.1":
   version: 16.14.2
   resolution: "graphql@npm:16.14.2"
   checksum: 10c0/a95a96961eaff55cc9fe9d31fae6f33499ac988b972d07ea5085024cb1333f515b902f376e7393a5489aa82200a8aff3eb96580e4d1b69d702ed19b6eb1ce97a
@@ -14807,7 +14801,7 @@ __metadata:
     eslint-plugin-eslint-comments: "npm:3.2.0"
     eslint-plugin-import: "npm:2.32.0"
     eslint-plugin-jest: "npm:28.14.0"
-    graphql: "npm:16.13.2"
+    graphql: "npm:16.14.2"
     jest: "npm:29.7.0"
     neo4j-driver: "npm:5.28.3"
     prettier: "npm:2.8.8"
