@@ -95,7 +95,7 @@ describe("cypher directive filtering", () => {
             MERGE (this0)<-[:ACTED_IN]-(this0_actors0_node)
             WITH *
             CALL {
-            	WITH this0
+            	WITH this0, this0_actors0_node
             	OPTIONAL MATCH (this0_actors_connect0_node:Actor)
             CALL {
                 WITH this0_actors_connect0_node
@@ -114,7 +114,7 @@ describe("cypher directive filtering", () => {
             WITH *, aggregateWhereFiltervar0[0] AS this0_actors_connect0_node
             	CALL {
             		WITH *
-            		WITH collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
+            		WITH this0_actors0_node, collect(this0_actors_connect0_node) as connectedNodes, collect(this0) as parentNodes
             		CALL {
             			WITH connectedNodes, parentNodes
             			UNWIND parentNodes as this0
@@ -122,7 +122,7 @@ describe("cypher directive filtering", () => {
             			MERGE (this0)<-[:ACTED_IN]-(this0_actors_connect0_node)
             		}
             	}
-            WITH this0, this0_actors_connect0_node
+            WITH this0, this0_actors0_node, this0_actors_connect0_node
             	RETURN count(*) AS connect_this0_actors_connect_Actor0
             }
             RETURN this0
