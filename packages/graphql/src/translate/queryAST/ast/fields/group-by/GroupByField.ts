@@ -14,7 +14,9 @@ export class GroupByField extends Field {
     private by: string[];
 
     private nodeFields: Field[] = [];
+    private valuesFields: Field[] = [];
     private edgeFields: Field[] = []; // TODO: merge with attachedTo?
+    // private aggregationField: Field | undefined;
 
     private resultVariable = new Cypher.Variable();
 
@@ -36,13 +38,21 @@ export class GroupByField extends Field {
     public setNodeFields(fields: Field[]) {
         this.nodeFields = fields;
     }
+    public setValuesFields(fields: Field[]) {
+        this.valuesFields = fields;
+    }
 
     public setEdgeFields(fields: Field[]) {
         this.edgeFields = fields;
     }
+    // public setAggregationField(fields: Field) {
+    //     this.aggregationField = fields;
+    // }
 
     public getChildren(): QueryASTNode[] {
+        // ?? add valuesFields
         return [...this.nodeFields, ...this.edgeFields];
+        // ...(this.aggregationField ? [this.aggregationField] : [])];
     }
 
     public getSubqueries(context: QueryASTContext): Clause[] {
@@ -50,9 +60,12 @@ export class GroupByField extends Field {
             throw new Error("Invalid target");
         }
 
+        const valuesProjectionMap = this.createProjectionMapForValues(context as QueryASTContext<Cypher.Node>);
+
         const subqueries = wrapSubqueriesInCypherCalls(
             context,
             [...this.nodeFields, ...this.edgeFields],
+            // ...(this.aggregationField ? [this.aggregationField] : [])],
             [context.target]
         );
         const edgeProjectionMap = this.createProjectionMapForEdge(context as QueryASTContext<Cypher.Node>);
@@ -66,7 +79,10 @@ export class GroupByField extends Field {
         const sq = Cypher.utils.concat(
             ...subqueries,
             new Cypher.Return(...groupByFields, [
-                new Cypher.Map({ edges: Cypher.collect(edgeProjectionMap) }),
+                new Cypher.Map({
+                    edges: Cypher.collect(edgeProjectionMap),
+                    values: valuesProjectionMap,
+                }),
                 this.resultVariable,
             ])
         );
@@ -92,6 +108,14 @@ export class GroupByField extends Field {
         edgeProjectionMap.set("node", this.createProjectionMapForNode(context));
         // edgeProjectionMap.set("properties", this.createProjectionMapForNode(context));
         return edgeProjectionMap;
+    }
+
+    private createProjectionMapForValues(context: QueryASTContext<Cypher.Node>): Cypher.Map {
+        const projectionMap = this.generateProjectionMapForFields(this.valuesFields, context.target);
+        if (projectionMap.size === 0) {
+            projectionMap.set({});
+        }
+        return projectionMap;
     }
 
     private createProjectionMapForNode(context: QueryASTContext<Cypher.Node>): Cypher.Map {

@@ -409,6 +409,38 @@ export class ConnectionFactory {
                 groupBy.setNodeFields(nodeFields);
             }
         }
+        const valuesResolveTree =
+            resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()]?.values;
+        if (valuesResolveTree) {
+            const resolveTreeNodeFields = getFieldsByTypeName(
+                valuesResolveTree,
+                target.operations.getConnectionGroupByValuesTypename()
+            );
+
+            const valuesFields = this.queryASTFactory.fieldFactory.createFields(target, resolveTreeNodeFields, context);
+
+            groupBy.setValuesFields(valuesFields);
+        }
+        // const resolveTreeAggregate =
+        //     resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()]?.aggregate;
+
+        // if (resolveTreeAggregate) {
+        //     const aggregationOperation = this.aggregateFactory.createAggregationOperation({
+        //         entityOrRel: target,
+        //         resolveTree: resolveTreeAggregate,
+        //         context,
+        //         // extraWhereArgs: whereArgs,
+        //     });
+
+        //     const aggregationField = new ConnectionAggregationField({
+        //         alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
+        //         nodeAlias: "node",
+        //         operation: aggregationOperation,
+        //     });
+
+        //     groupBy.setAggregationField(aggregationField);
+        //     console.log("ALE", aggregationField);
+        // }
 
         operation.setGroupByFields([groupBy]);
     }
