@@ -63,13 +63,17 @@ export class VectorSelection extends EntitySelection {
             }
 
             const providerSettings = this.settings[this.vectorOptions.index.provider];
+            const providerSettingsParam = {
+                ...providerSettings,
+                token: new Cypher.Param(providerSettings.token),
+            };
             const asQueryVector = new Cypher.Variable();
             const vectorProcedure = Cypher.db.index.vector.queryNodes(indexName, 4, asQueryVector);
 
             const encodeFunction = Cypher.genai.vector.encode(
                 phraseParam,
                 this.vectorOptions.index.provider,
-                providerSettings
+                providerSettingsParam
             );
 
             vectorClause = new Cypher.With([encodeFunction, asQueryVector])
