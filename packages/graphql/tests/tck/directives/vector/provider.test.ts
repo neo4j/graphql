@@ -69,18 +69,18 @@ describe("provider settings - genAI plugin", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CYPHER 5
-            WITH genai.vector.encode($param0, 'OpenAI', {token: $param1, model: $param2, dimensions: $param3}) AS var0
-            CALL db.index.vector.queryNodes('movie_index', 4, var0) YIELD node AS this1, score AS var2
+            "WITH genai.vector.encode($param0, \\"OpenAI\\", { token: $param1, model: $param2, dimensions: $param3 }) AS var0
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, var0) YIELD node AS this1, score AS var2
             WHERE $param4 IN labels(this1)
-            WITH collect({node: this1, score: var2}) AS edges
+            WITH collect({ node: this1, score: var2 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL (edges) {
-              UNWIND edges AS edge
-              WITH edge.node AS this1, edge.score AS var2
-              RETURN collect({node: {title: this1.title, __resolveType: 'Movie'}, score: var2}) AS var3
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this1, edge.score AS var2
+                RETURN collect({ node: { title: this1.title, __resolveType: \\"Movie\\" }, score: var2 }) AS var3
             }
-            RETURN {edges: var3} AS this"
+            RETURN { edges: var3, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -138,18 +138,18 @@ describe("provider settings - genAI plugin", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CYPHER 5
-            WITH genai.vector.encode($param0, 'VertexAI', {token: $param1, projectId: $param2, model: $param3, region: $param4}) AS var0
-            CALL db.index.vector.queryNodes('movie_index', 4, var0) YIELD node AS this1, score AS var2
+            "WITH genai.vector.encode($param0, \\"VertexAI\\", { token: $param1, projectId: $param2, model: $param3, region: $param4 }) AS var0
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, var0) YIELD node AS this1, score AS var2
             WHERE $param5 IN labels(this1)
-            WITH collect({node: this1, score: var2}) AS edges
+            WITH collect({ node: this1, score: var2 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL (edges) {
-              UNWIND edges AS edge
-              WITH edge.node AS this1, edge.score AS var2
-              RETURN collect({node: {title: this1.title, __resolveType: 'Movie'}, score: var2}) AS var3
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this1, edge.score AS var2
+                RETURN collect({ node: { title: this1.title, __resolveType: \\"Movie\\" }, score: var2 }) AS var3
             }
-            RETURN {edges: var3} AS this"
+            RETURN { edges: var3, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -207,18 +207,18 @@ describe("provider settings - genAI plugin", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CYPHER 5
-            WITH genai.vector.encode($param0, 'AzureOpenAI', {token: $param1, resource: $param2, deployment: $param3}) AS var0
-            CALL db.index.vector.queryNodes('movie_index', 4, var0) YIELD node AS this1, score AS var2
+            "WITH genai.vector.encode($param0, \\"AzureOpenAI\\", { token: $param1, resource: $param2, deployment: $param3 }) AS var0
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, var0) YIELD node AS this1, score AS var2
             WHERE $param4 IN labels(this1)
-            WITH collect({node: this1, score: var2}) AS edges
+            WITH collect({ node: this1, score: var2 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL (edges) {
-              UNWIND edges AS edge
-              WITH edge.node AS this1, edge.score AS var2
-              RETURN collect({node: {title: this1.title, __resolveType: 'Movie'}, score: var2}) AS var3
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this1, edge.score AS var2
+                RETURN collect({ node: { title: this1.title, __resolveType: \\"Movie\\" }, score: var2 }) AS var3
             }
-            RETURN {edges: var3} AS this"
+            RETURN { edges: var3, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
@@ -276,18 +276,18 @@ describe("provider settings - genAI plugin", () => {
         });
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CYPHER 5
-            WITH genai.vector.encode($param0, 'Bedrock', {accessKeyId: $param1, secretAccessKey: $param2, model: $param3, region: $param4}) AS var0
-            CALL db.index.vector.queryNodes('movie_index', 4, var0) YIELD node AS this1, score AS var2
+            "WITH genai.vector.encode($param0, \\"Bedrock\\", { accessKeyId: $param1, secretAccessKey: $param2, model: $param3, region: $param4 }) AS var0
+            CALL db.index.vector.queryNodes(\\"movie_index\\", 4, var0) YIELD node AS this1, score AS var2
             WHERE $param5 IN labels(this1)
-            WITH collect({node: this1, score: var2}) AS edges
+            WITH collect({ node: this1, score: var2 }) AS edges
             WITH edges, size(edges) AS totalCount
-            CALL (edges) {
-              UNWIND edges AS edge
-              WITH edge.node AS this1, edge.score AS var2
-              RETURN collect({node: {title: this1.title, __resolveType: 'Movie'}, score: var2}) AS var3
+            CALL {
+                WITH edges
+                UNWIND edges AS edge
+                WITH edge.node AS this1, edge.score AS var2
+                RETURN collect({ node: { title: this1.title, __resolveType: \\"Movie\\" }, score: var2 }) AS var3
             }
-            RETURN {edges: var3} AS this"
+            RETURN { edges: var3, totalCount: totalCount } AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
