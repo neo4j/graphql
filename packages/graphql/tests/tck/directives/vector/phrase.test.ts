@@ -88,6 +88,11 @@ describe("phrase input - genAI plugin", () => {
             CALL db.index.vector.queryNodes(\\"movie_index\\", 4, var0) YIELD node AS this1, score AS var2
             WHERE $param1 IN labels(this1)
             WITH collect({ node: this1, score: var2 }) AS edges
+            "CYPHER 5
+            WITH genai.vector.encode($param0, 'OpenAI', {token: $param1, model: 'my-model', dimensions: 256}) AS var0
+            CALL db.index.vector.queryNodes('movie_index', 4, var0) YIELD node AS this1, score AS var2
+            WHERE $param2 IN labels(this1)
+            WITH collect({node: this1, score: var2}) AS edges
             WITH edges, size(edges) AS totalCount
             CALL {
                 WITH edges
@@ -101,7 +106,8 @@ describe("phrase input - genAI plugin", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": \\"test phrase\\",
-                \\"param1\\": \\"Movie\\"
+                \\"param1\\": \\"my-token\\",
+                \\"param2\\": \\"Movie\\"
             }"
         `);
     });
