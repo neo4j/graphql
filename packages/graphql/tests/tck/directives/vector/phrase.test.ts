@@ -72,9 +72,9 @@ describe("phrase input - genAI plugin", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            WITH genai.vector.encode($param0, 'OpenAI', {token: $param1, model: 'my-model', dimensions: 256}) AS var0
+            WITH genai.vector.encode($param0, 'OpenAI', {token: $param1, model: $param2, dimensions: $param3}) AS var0
             CALL db.index.vector.queryNodes('movie_index', 4, var0) YIELD node AS this1, score AS var2
-            WHERE $param2 IN labels(this1)
+            WHERE $param4 IN labels(this1)
             WITH collect({node: this1, score: var2}) AS edges
             WITH edges, size(edges) AS totalCount
             CALL (edges) {
@@ -89,7 +89,9 @@ describe("phrase input - genAI plugin", () => {
             "{
                 \\"param0\\": \\"test phrase\\",
                 \\"param1\\": \\"my-token\\",
-                \\"param2\\": \\"Movie\\"
+                \\"param2\\": \\"my-model\\",
+                \\"param3\\": 256,
+                \\"param4\\": \\"Movie\\"
             }"
         `);
     });
