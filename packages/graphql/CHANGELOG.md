@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.5.5
+
+### Patch Changes
+
+- [#7344](https://github.com/neo4j/graphql/pull/7344) [`56ae726`](https://github.com/neo4j/graphql/commit/56ae72613e88151c5111e124c8932affaf2d6338) Thanks [@vivientran42](https://github.com/vivientran42)! - Parameterise AI provider API keys.
+
 ## 7.5.4
 
 ### Patch Changes
