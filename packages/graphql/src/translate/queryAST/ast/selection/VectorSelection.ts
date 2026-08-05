@@ -77,13 +77,46 @@ export class VectorSelection extends EntitySelection {
             }
 
             const providerSettings = this.settings[this.vectorOptions.index.provider];
+
+            let providerSettingsParams = {};
+            if (this.vectorOptions.index.provider === "VertexAI") {
+                providerSettingsParams = {
+                    token: new Cypher.Param(providerSettings.token),
+                    projectId: new Cypher.Param(providerSettings.projectId),
+                    model: new Cypher.Param(providerSettings.model),
+                    region: new Cypher.Param(providerSettings.region),
+                };
+            }
+            if (this.vectorOptions.index.provider === "OpenAI") {
+                providerSettingsParams = {
+                    token: new Cypher.Param(providerSettings.token),
+                    model: new Cypher.Param(providerSettings.model),
+                    dimensions: new Cypher.Param(providerSettings.dimensions),
+                };
+            }
+            if (this.vectorOptions.index.provider === "AzureOpenAI") {
+                providerSettingsParams = {
+                    token: new Cypher.Param(providerSettings.token),
+                    resource: new Cypher.Param(providerSettings.resource),
+                    deployment: new Cypher.Param(providerSettings.deployment),
+                };
+            }
+            if (this.vectorOptions.index.provider === "Bedrock") {
+                providerSettingsParams = {
+                    accessKeyId: new Cypher.Param(providerSettings.accessKeyId),
+                    secretAccessKey: new Cypher.Param(providerSettings.secretAccessKey),
+                    model: new Cypher.Param(providerSettings.model),
+                    region: new Cypher.Param(providerSettings.region),
+                };
+            }
+
             const asQueryVector = new Cypher.Variable();
             const vectorProcedure = Cypher.db.index.vector.queryNodes(indexName, 4, asQueryVector);
 
             const encodeFunction = Cypher.genai.vector.encode(
                 phraseParam,
                 this.vectorOptions.index.provider,
-                providerSettings
+                providerSettingsParams
             );
 
             vectorClause = new Cypher.With([encodeFunction, asQueryVector])
