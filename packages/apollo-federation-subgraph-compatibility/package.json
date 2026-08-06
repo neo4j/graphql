@@ -1,6 +1,7 @@
 {
     "name": "apollo-federation-subgraph-compatibility",
     "version": "1.0.0",
+    "private": true,
     "packageManager": "yarn@4.14.1",
     "scripts": {
         "build": "webpack --config webpack.config.js",
