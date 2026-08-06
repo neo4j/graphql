@@ -60,7 +60,13 @@ export const wrapQueryAndMutation =
             context.executionContext = driver;
         }
 
-        const authorizationContext = await getAuthorizationContext(context, authorization, jwtPayloadFieldsMap);
+        const authorizationContext = await getAuthorizationContext(
+            context,
+            authorization,
+            jwtPayloadFieldsMap,
+            // `trustedJwt` is set by the server owner and therefore treated as ALREADY-VERIFIED.
+            context.jwt
+        );
         if (!context.jwt) {
             context.jwt = authorizationContext.jwt;
         }
