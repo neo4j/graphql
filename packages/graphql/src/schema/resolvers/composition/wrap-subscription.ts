@@ -56,13 +56,14 @@ export const wrapSubscription =
         const jwtClaimsMap = resolverArgs.jwtPayloadFieldsMap;
 
         const authorizationContext = await getAuthorizationContext(
-            context?.connectionParams || {},
+            context.connectionParams ?? {},
             authorization,
-            jwtClaimsMap
+            jwtClaimsMap,
+            // Take jwt from context (set by server owner) instead of context.connectionParams (coming from the request).
+            context.jwt
         );
-        if (!context.connectionParams?.jwt) {
-            context.connectionParams = { ...context.connectionParams, jwt: authorizationContext.jwt };
-        }
+        // Overwrite any client-supplied connectionParams.jwt as this can't be trusted.
+        context.connectionParams = { ...context.connectionParams, jwt: authorizationContext.jwt };
 
         const internalContext = {
             authorization: authorizationContext,

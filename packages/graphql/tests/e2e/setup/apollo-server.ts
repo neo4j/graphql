@@ -47,10 +47,12 @@ export class ApolloTestServer implements TestGraphQLServer {
     private _path?: string;
     private wsServer?: WebSocketServer;
     private customContext?: CustomContext;
+    private wsContext?: (ctx: any) => any;
 
-    constructor(schema: Neo4jGraphQL, customContext?: CustomContext) {
+    constructor(schema: Neo4jGraphQL, customContext?: CustomContext, wsContext?: (ctx: any) => any) {
         this.schema = schema;
         this.customContext = customContext;
+        this.wsContext = wsContext;
     }
 
     public get path(): string {
@@ -75,11 +77,12 @@ export class ApolloTestServer implements TestGraphQLServer {
 
         const schema = await this.schema.getSchema();
 
+        const wsContext = this.wsContext ?? ((ctx) => ctx);
         const serverCleanup = useServer(
             {
                 schema,
                 context: (ctx) => {
-                    return ctx;
+                    return wsContext(ctx);
                 },
             },
             wsServer

@@ -21,35 +21,31 @@ import { createBearerToken } from "../../../../../tests/utils/create-bearer-toke
 import { Neo4jGraphQLAuthorization } from "../../../../classes/authorization/Neo4jGraphQLAuthorization";
 import { getAuthorizationContext } from "./get-authorization-context";
 
+function createUnsignedToken(payload: Record<string, unknown>): string {
+    const header = Buffer.from(JSON.stringify({ alg: "none", typ: "JWT" })).toString("base64url");
+    const body = Buffer.from(JSON.stringify(payload)).toString("base64url");
+    return `Bearer ${header}.${body}.`;
+}
+
 describe("getAuthorizationContext", () => {
     const secret = "secret";
 
-    test("no authorization settings and token returns unauthorized context", async () => {
-        const context = await getAuthorizationContext({ token: createBearerToken(secret, { sub: "user" }) }, undefined);
-        expect(context.isAuthenticated).toBe(false);
-    });
-
-    test("no authorization settings and jwt returns authorized context", async () => {
+    test("does not trust a pre-decoded jwt supplied through the untrusted input channel", async () => {
         const context = await getAuthorizationContext({ jwt: { sub: "user" } }, undefined);
-        expect(context.isAuthenticated).toBe(true);
-        expect(context.jwt?.sub).toBe("user");
-    });
-
-    test("authorization settings but no jwt or token returns unauthorized context", async () => {
-        const context = await getAuthorizationContext({}, new Neo4jGraphQLAuthorization({ key: secret }));
         expect(context.isAuthenticated).toBe(false);
+        expect(context.jwt).toBeUndefined();
     });
 
-    test("decoded jwt returns authorized context", async () => {
+    test("does not trust a pre-decoded jwt from untrusted input even when authorization is configured", async () => {
         const context = await getAuthorizationContext(
             { jwt: { sub: "user" } },
             new Neo4jGraphQLAuthorization({ key: secret })
         );
-        expect(context.isAuthenticated).toBe(true);
-        expect(context.jwt?.sub).toBe("user");
+        expect(context.isAuthenticated).toBe(false);
+        expect(context.jwt).toBeUndefined();
     });
 
-    test("token returns authorized context", async () => {
+    test("verifies and honours a validly signed token", async () => {
         const context = await getAuthorizationContext(
             { token: createBearerToken(secret, { sub: "user" }) },
             new Neo4jGraphQLAuthorization({ key: secret })
@@ -58,12 +54,38 @@ describe("getAuthorizationContext", () => {
         expect(context.jwt?.sub).toBe("user");
     });
 
-    test("decoded jwt and token returns authorized context using jwt", async () => {
+    test("rejects an unsigned (alg:none) token", async () => {
         const context = await getAuthorizationContext(
-            { jwt: { sub: "user1" }, token: createBearerToken(secret, { sub: "user2" }) },
+            { token: createUnsignedToken({ sub: "user" }) },
             new Neo4jGraphQLAuthorization({ key: secret })
         );
+        expect(context.isAuthenticated).toBe(false);
+        expect(context.jwt).toBeUndefined();
+    });
+
+    test("rejects a token signed with the wrong key", async () => {
+        const context = await getAuthorizationContext(
+            { token: createBearerToken("wrong-secret", { sub: "user" }) },
+            new Neo4jGraphQLAuthorization({ key: secret })
+        );
+        expect(context.isAuthenticated).toBe(false);
+        expect(context.jwt).toBeUndefined();
+    });
+
+    test("returns an unauthenticated context when no token and no jwt are provided", async () => {
+        const context = await getAuthorizationContext({}, new Neo4jGraphQLAuthorization({ key: secret }));
+        expect(context.isAuthenticated).toBe(false);
+        expect(context.jwt).toBeUndefined();
+    });
+
+    test("returns an unauthenticated context for a token when authorization is not configured", async () => {
+        const context = await getAuthorizationContext({ token: createBearerToken(secret, { sub: "user" }) }, undefined);
+        expect(context.isAuthenticated).toBe(false);
+    });
+
+    test("honours a pre-decoded jwt supplied through the dedicated trusted channel", async () => {
+        const context = await getAuthorizationContext({}, undefined, undefined, { sub: "user" });
         expect(context.isAuthenticated).toBe(true);
-        expect(context.jwt?.sub).toBe("user1");
+        expect(context.jwt?.sub).toBe("user");
     });
 });

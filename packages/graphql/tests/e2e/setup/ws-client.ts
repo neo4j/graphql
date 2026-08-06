@@ -35,13 +35,13 @@ export class WebSocketTestClient {
     private path: string;
     private client: Client;
 
-    constructor(path: string, jwt?: string) {
+    constructor(path: string, jwt?: string, connectionParams?: Record<string, unknown>) {
         this.eventsEmitter.on(NEW_EVENT, () => this.counter++);
         this.path = path;
         this.client = createClient({
             url: this.path,
             webSocketImpl: ws,
-            connectionParams: {
+            connectionParams: connectionParams ?? {
                 token: jwt,
             },
         });
