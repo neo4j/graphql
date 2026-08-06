@@ -41,8 +41,8 @@ jobs:
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
 
-      - name: Update npm # Need at least 11.5.1 for OIDC publishing
-        run: npm install -g npm@latest
+      - name: Update npm # Need at least 11.5.1 for OIDC publishing. Pinned to v11: npm 12 changed `npm info --json` output and "already published" errors, breaking `changeset publish` (https://github.com/changesets/changesets/issues/2099)
+        run: npm install -g npm@11.19.0
 
       - name: Install Dependencies
         run: yarn
