@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.12.14
+
+### Patch Changes
+
+-   [`849316d`](https://github.com/neo4j/graphql/commit/849316d98bfb576b330e30f07430046557d9eb73) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fix an authentication and authorization bypass on GraphQL Subscriptions. A JWT supplied by the client in the WebSocket connection parameters was trusted without verification; subscriptions now authenticate only with a cryptographically verified `token`, and a pre-decoded JWT is trusted only when set on the server-side context.
+
 ## 5.12.13
 
 ### Patch Changes
