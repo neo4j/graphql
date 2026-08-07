@@ -3,8 +3,10 @@
  * Neo4j Sweden AB [http://neo4j.com]
  */
 
-import type { ASTVisitor, ObjectTypeDefinitionNode } from "graphql";
+import type { ASTVisitor, DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
 import { vectorDirective } from "../../../../graphql/directives/vector";
+import type { VectorField } from "../../../../schema-model/annotation/VectorAnnotation";
+import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
 import { asArray } from "../../../../utils/utils";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
@@ -24,19 +26,22 @@ export function validateVectorDirective(context: Neo4jValidationContext): ASTVis
                 return extensionNode.directives ?? [];
             });
             const allDirectives = [...(directives ?? []), ...extensionsDirectives];
-            const vectorDirectiveOnNode = allDirectives.find(
+            const vectorDirectivesOnNode = allDirectives.filter(
                 (directive) => directive.name.value === vectorDirective.name
             );
-            if (!vectorDirectiveOnNode) {
+            if (!vectorDirectivesOnNode.length) {
                 return;
             }
             const isValidLocation = typeIsANodeType({ objectTypeDefinitionNode, typeMapWithExtensions });
-            const { isValid, errorMsg } = assertValid(() => {
+            const { isValid, errorMsg, errorPath } = assertValid(() => {
                 if (!isValidLocation) {
                     throw new DocumentValidationError(
                         `Directive "@${vectorDirective.name}" must be in a type with "@node"`,
                         []
                     );
+                }
+                for (const vectorDirectiveOnNode of vectorDirectivesOnNode) {
+                    assertMaxPhraseLengthIsValid(vectorDirectiveOnNode);
                 }
             });
             const pathToNode = getPathToNode(path, ancestors);
@@ -44,11 +49,28 @@ export function validateVectorDirective(context: Neo4jValidationContext): ASTVis
                 context.reportError(
                     createGraphQLError({
                         nodes: [objectTypeDefinitionNode],
-                        path: [...pathToNode[0], objectTypeDefinitionNode.name.value],
+                        path: [...pathToNode[0], objectTypeDefinitionNode.name.value, ...errorPath],
                         errorMsg,
                     })
                 );
             }
         },
     };
+}
+
+function assertMaxPhraseLengthIsValid(vectorDirectiveOnNode: DirectiveNode): void {
+    const indexesArg = vectorDirectiveOnNode.arguments?.find((argument) => argument.name.value === "indexes");
+    if (!indexesArg) {
+        return;
+    }
+    const indexes = asArray(parseValueNode(indexesArg.value)) as VectorField[];
+    for (const index of indexes) {
+        const maxPhraseLength = index?.maxPhraseLength;
+        if (maxPhraseLength != null && maxPhraseLength < 1) {
+            throw new DocumentValidationError(
+                `@${vectorDirective.name}.indexes invalid value for maxPhraseLength: ${maxPhraseLength}. Must be at least 1.`,
+                ["indexes"]
+            );
+        }
+    }
 }
