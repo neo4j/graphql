@@ -6707,4 +6707,225 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["User"]);
         });
     });
+
+    describe("vector maxPhraseLength", () => {
+        test("valid when maxPhraseLength is 1", () => {
+            const doc = gql`
+                type User
+                    @node
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "UserIndex"
+                                embeddingProperty: "embedding"
+                                queryName: "userQuery"
+                                maxPhraseLength: 1
+                            }
+                        ]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("valid when maxPhraseLength is large", () => {
+            const doc = gql`
+                type User
+                    @node
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "UserIndex"
+                                embeddingProperty: "embedding"
+                                queryName: "userQuery"
+                                maxPhraseLength: 100000
+                            }
+                        ]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("valid when maxPhraseLength is omitted", () => {
+            const doc = gql`
+                type User
+                    @node
+                    @vector(
+                        indexes: [{ indexName: "UserIndex", embeddingProperty: "embedding", queryName: "userQuery" }]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("invalid when maxPhraseLength is 0", () => {
+            const doc = gql`
+                type User
+                    @node
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "UserIndex"
+                                embeddingProperty: "embedding"
+                                queryName: "userQuery"
+                                maxPhraseLength: 0
+                            }
+                        ]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "@vector.indexes invalid value for maxPhraseLength: 0. Must be at least 1."
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
+        });
+
+        test("invalid when maxPhraseLength is negative", () => {
+            const doc = gql`
+                type User
+                    @node
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "UserIndex"
+                                embeddingProperty: "embedding"
+                                queryName: "userQuery"
+                                maxPhraseLength: -5
+                            }
+                        ]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "@vector.indexes invalid value for maxPhraseLength: -5. Must be at least 1."
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
+        });
+
+        test("invalid when one of multiple indexes has an invalid maxPhraseLength", () => {
+            const doc = gql`
+                type User
+                    @node
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "UserIndex"
+                                embeddingProperty: "embedding"
+                                queryName: "userQuery"
+                                maxPhraseLength: 100
+                            }
+                            {
+                                indexName: "OtherIndex"
+                                embeddingProperty: "otherEmbedding"
+                                queryName: "otherQuery"
+                                maxPhraseLength: 0
+                            }
+                        ]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "@vector.indexes invalid value for maxPhraseLength: 0. Must be at least 1."
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
+        });
+
+        test("valid when maxPhraseLength is set on a type extension directive", () => {
+            const doc = gql`
+                type User @node {
+                    id: ID
+                    name: String
+                }
+                extend type User
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "UserIndex"
+                                embeddingProperty: "embedding"
+                                queryName: "userQuery"
+                                maxPhraseLength: 100
+                            }
+                        ]
+                    )
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("invalid when maxPhraseLength is set on a type extension directive", () => {
+            const doc = gql`
+                type User @node {
+                    id: ID
+                    name: String
+                }
+                extend type User
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "UserIndex"
+                                embeddingProperty: "embedding"
+                                queryName: "userQuery"
+                                maxPhraseLength: -1
+                            }
+                        ]
+                    )
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "@vector.indexes invalid value for maxPhraseLength: -1. Must be at least 1."
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
+        });
+    });
 });
