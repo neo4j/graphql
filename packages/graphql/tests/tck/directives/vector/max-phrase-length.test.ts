@@ -106,6 +106,32 @@ describe("@vector maxPhraseLength", () => {
             expect(errors?.[0]?.originalError).toBeInstanceOf(Neo4jGraphQLError);
         });
 
+        test("surrogate-pair phrase length is counted by code points, not UTF-16 code units", async () => {
+            // "😀" is a single code point but two UTF-16 code units, so 101 emoji are 101 characters
+            // (rejected) even though String.length would report 202.
+            await expect(
+                translateQuery(limitedSchema, query, {
+                    variableValues: {
+                        phrase: "😀".repeat(101),
+                    },
+                })
+            ).rejects.toThrow(
+                "Invalid vector query: phrase is 101 characters, but the maximum allowed length for this query is 100 characters."
+            );
+        });
+
+        test("surrogate-pair phrase at the limit is accepted (code-point count equals the limit)", async () => {
+            // 100 emoji are 100 code points (accepted) but 200 UTF-16 code units; the guard must not
+            // reject based on the UTF-16 length.
+            await expect(
+                translateQuery(limitedSchema, query, {
+                    variableValues: {
+                        phrase: "😀".repeat(100),
+                    },
+                })
+            ).resolves.toBeDefined();
+        });
+
         test("at-limit phrase translates to the same Cypher as an unlimited index", async () => {
             const phrase = "a".repeat(100);
 

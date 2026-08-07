@@ -42,7 +42,9 @@ export class VectorSelection extends EntitySelection {
     } {
         const maxPhraseLength = this.vectorOptions.index.maxPhraseLength;
         if (maxPhraseLength != null && this.vectorOptions.phrase != null) {
-            const phraseLength = this.vectorOptions.phrase.length;
+            // Count Unicode code points (spread) rather than UTF-16 code units (.length) so the
+            // "characters" limit matches user expectations for surrogate-pair characters (e.g. emoji).
+            const phraseLength = [...this.vectorOptions.phrase].length;
             if (phraseLength > maxPhraseLength) {
                 throw new Neo4jGraphQLError(
                     `Invalid vector query: phrase is ${phraseLength} characters, but the maximum allowed length for this query is ${maxPhraseLength} characters.`

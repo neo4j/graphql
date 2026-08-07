@@ -22,4 +22,4 @@ type Movie
 }
 ```
 
-Queries supplying a longer `phrase` are rejected with a `Neo4jGraphQLError` before any Cypher is generated or any embedding provider call is made, giving server owners a per-index guardrail against unbounded embedding costs. The limit is measured in characters (UTF-16 code units), must be at least 1, and does not affect the `vector` (list of `Float`) input.
+Queries supplying a longer `phrase` are rejected with a `Neo4jGraphQLError` before any Cypher is generated or any embedding provider call is made, giving server owners a per-index guardrail against unbounded embedding costs. The limit is measured in characters (Unicode code points), must be at least 1, and does not affect the `vector` (list of `Float`) input.
