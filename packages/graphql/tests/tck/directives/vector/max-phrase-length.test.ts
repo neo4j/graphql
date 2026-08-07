@@ -163,7 +163,7 @@ describe("@vector maxPhraseLength", () => {
     });
 
     describe("vector (float list) input", () => {
-        test("vector (float list) input is not subject to maxPhraseLength", async () => {
+        test("maxPhraseLength on a vector-only index (no provider or callback) is rejected at schema build time", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
                     @node
@@ -174,6 +174,37 @@ describe("@vector maxPhraseLength", () => {
                                 embeddingProperty: "movieVector"
                                 queryName: "${queryName}"
                                 maxPhraseLength: 2
+                            }
+                        ]
+                    ) {
+                    title: String!
+                }
+            `;
+
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+
+            const errors = (await neoSchema.getSchema().then(
+                () => [],
+                (e) => e as Error[]
+            )) as Error[];
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "@vector.indexes maxPhraseLength can only be set on an index with a provider or callback (used for query by phrase)."
+            );
+        });
+
+        test("vector (float list) input passes through on a vector-only index", async () => {
+            const typeDefs = /* GraphQL */ `
+                type Movie
+                    @node
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "movie_index"
+                                embeddingProperty: "movieVector"
+                                queryName: "${queryName}"
                             }
                         ]
                     ) {

@@ -6719,6 +6719,7 @@ describe("validation 2.0", () => {
                                 indexName: "UserIndex"
                                 embeddingProperty: "embedding"
                                 queryName: "userQuery"
+                                provider: OPEN_AI
                                 maxPhraseLength: 1
                             }
                         ]
@@ -6742,6 +6743,7 @@ describe("validation 2.0", () => {
                                 indexName: "UserIndex"
                                 embeddingProperty: "embedding"
                                 queryName: "userQuery"
+                                provider: OPEN_AI
                                 maxPhraseLength: 100000
                             }
                         ]
@@ -6845,12 +6847,14 @@ describe("validation 2.0", () => {
                                 indexName: "UserIndex"
                                 embeddingProperty: "embedding"
                                 queryName: "userQuery"
+                                provider: OPEN_AI
                                 maxPhraseLength: 100
                             }
                             {
                                 indexName: "OtherIndex"
                                 embeddingProperty: "otherEmbedding"
                                 queryName: "otherQuery"
+                                provider: OPEN_AI
                                 maxPhraseLength: 0
                             }
                         ]
@@ -6886,6 +6890,7 @@ describe("validation 2.0", () => {
                                 indexName: "UserIndex"
                                 embeddingProperty: "embedding"
                                 queryName: "userQuery"
+                                provider: OPEN_AI
                                 maxPhraseLength: 100
                             }
                         ]
@@ -6924,6 +6929,149 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty(
                 "message",
                 "@vector.indexes invalid value for maxPhraseLength: -1. Must be at least 1."
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
+        });
+
+        test("invalid when maxPhraseLength is set on an index without a provider or callback", () => {
+            const doc = gql`
+                type User
+                    @node
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "UserIndex"
+                                embeddingProperty: "embedding"
+                                queryName: "userQuery"
+                                maxPhraseLength: 10
+                            }
+                        ]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "@vector.indexes maxPhraseLength can only be set on an index with a provider or callback (used for query by phrase)."
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
+        });
+
+        test("valid when maxPhraseLength is set on a provider-backed index", () => {
+            const doc = gql`
+                type User
+                    @node
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "UserIndex"
+                                embeddingProperty: "embedding"
+                                queryName: "userQuery"
+                                provider: OPEN_AI
+                                maxPhraseLength: 10
+                            }
+                        ]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("valid when a vector-only index omits maxPhraseLength", () => {
+            const doc = gql`
+                type User
+                    @node
+                    @vector(
+                        indexes: [{ indexName: "UserIndex", embeddingProperty: "embedding", queryName: "userQuery" }]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            expect(executeValidate).not.toThrow();
+        });
+
+        test("invalid when a valid phrase index is mixed with an offending vector-only index that sets maxPhraseLength", () => {
+            const doc = gql`
+                type User
+                    @node
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "UserIndex"
+                                embeddingProperty: "embedding"
+                                queryName: "userQuery"
+                                provider: OPEN_AI
+                                maxPhraseLength: 100
+                            }
+                            {
+                                indexName: "OtherIndex"
+                                embeddingProperty: "otherEmbedding"
+                                queryName: "otherQuery"
+                                maxPhraseLength: 100
+                            }
+                        ]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "@vector.indexes maxPhraseLength can only be set on an index with a provider or callback (used for query by phrase)."
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
+        });
+
+        test("invalid when maxPhraseLength is set without a provider on a type extension directive", () => {
+            const doc = gql`
+                type User @node {
+                    id: ID
+                    name: String
+                }
+                extend type User
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "UserIndex"
+                                embeddingProperty: "embedding"
+                                queryName: "userQuery"
+                                maxPhraseLength: 10
+                            }
+                        ]
+                    )
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "@vector.indexes maxPhraseLength can only be set on an index with a provider or callback (used for query by phrase)."
             );
             expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
         });

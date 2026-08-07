@@ -66,9 +66,19 @@ function assertMaxPhraseLengthIsValid(vectorDirectiveOnNode: DirectiveNode): voi
     const indexes = asArray(parseValueNode(indexesArg.value)) as VectorField[];
     for (const index of indexes) {
         const maxPhraseLength = index?.maxPhraseLength;
-        if (maxPhraseLength != null && maxPhraseLength < 1) {
+        if (maxPhraseLength == null) {
+            continue;
+        }
+        if (maxPhraseLength < 1) {
             throw new DocumentValidationError(
                 `@${vectorDirective.name}.indexes invalid value for maxPhraseLength: ${maxPhraseLength}. Must be at least 1.`,
+                ["indexes"]
+            );
+        }
+        // Mirrors augment/vector.ts: the `phrase` argument (and thus maxPhraseLength) only exists when provider or callback is set.
+        if (index.provider == null && index.callback == null) {
+            throw new DocumentValidationError(
+                `@${vectorDirective.name}.indexes maxPhraseLength can only be set on an index with a provider or callback (used for query by phrase).`,
                 ["indexes"]
             );
         }
