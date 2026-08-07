@@ -119,7 +119,6 @@ describe("@vector directive - maxPhraseLength", () => {
                             indexName: "${Movie.name}FloatListIndex"
                             embeddingProperty: "embedding"
                             queryName: "${floatListQueryName}"
-                            maxPhraseLength: ${shortLimit}
                         }
                         {
                             indexName: "${Movie.name}ShortIndex"
@@ -366,7 +365,7 @@ describe("@vector directive - maxPhraseLength", () => {
         expect(longOverResult.errors?.[0]?.message).toBe(expectedLimitError(longLimit + 1, longLimit));
     });
 
-    test("vector (float list) input on a limited index queries the database unaffected by the limit", async () => {
+    test("vector (float list) query is not subject to a phrase limit and queries the database normally", async () => {
         // Skip if vector not supported
         if (!VECTOR_SUPPORT) {
             console.log("VECTOR SUPPORT NOT AVAILABLE - SKIPPING");

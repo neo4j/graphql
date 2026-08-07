@@ -163,7 +163,7 @@ describe("@vector maxPhraseLength", () => {
     });
 
     describe("vector (float list) input", () => {
-        test("maxPhraseLength on a vector-only index (no provider or callback) is rejected at schema build time", async () => {
+        test("maxPhraseLength on a vector-only index (no provider) is rejected at schema build time", async () => {
             const typeDefs = /* GraphQL */ `
                 type Movie
                     @node
@@ -191,7 +191,7 @@ describe("@vector maxPhraseLength", () => {
             expect(errors).toHaveLength(1);
             expect(errors[0]).toHaveProperty(
                 "message",
-                "@vector.indexes maxPhraseLength can only be set on an index with a provider or callback (used for query by phrase)."
+                "@vector.indexes maxPhraseLength can only be set on an index with a provider (used for query by phrase)."
             );
         });
 
