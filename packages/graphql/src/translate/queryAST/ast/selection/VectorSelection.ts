@@ -4,6 +4,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import { Neo4jGraphQLError } from "../../../../classes/Error";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { mapLabelsWithContext } from "../../../../schema-model/utils/map-labels-with-context";
 import type { Neo4jVectorSettings } from "../../../../types";
@@ -39,14 +40,12 @@ export class VectorSelection extends EntitySelection {
         nestedContext: QueryASTContext<Cypher.Node>;
         selection: SelectionClause;
     } {
-        console.log("VectorSelection.apply called with vectorOptions:", this.vectorOptions);
-        console.log(
-            `Checking phrase length: ${this.vectorOptions.phrase?.length} against maxPhraseLength: ${this.vectorOptions.index.maxPhraseLength}`
-        );
-        if (this.vectorOptions.index.maxPhraseLength && this.vectorOptions.phrase) {
-            if (this.vectorOptions.phrase.length > this.vectorOptions.index.maxPhraseLength) {
-                throw new Error(
-                    `The provided phrase exceeds the maximum length of ${this.vectorOptions.index.maxPhraseLength} characters.`
+        const maxPhraseLength = this.vectorOptions.index.maxPhraseLength;
+        if (maxPhraseLength != null && this.vectorOptions.phrase != null) {
+            const phraseLength = this.vectorOptions.phrase.length;
+            if (phraseLength > maxPhraseLength) {
+                throw new Neo4jGraphQLError(
+                    `Invalid vector query: phrase is ${phraseLength} characters, but the maximum allowed length for this query is ${maxPhraseLength} characters.`
                 );
             }
         }
