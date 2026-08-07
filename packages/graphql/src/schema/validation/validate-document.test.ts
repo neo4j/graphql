@@ -6933,7 +6933,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
         });
 
-        test("invalid when maxPhraseLength is set on an index without a provider or callback", () => {
+        test("invalid when maxPhraseLength is set on an index without a provider", () => {
             const doc = gql`
                 type User
                     @node
@@ -6960,7 +6960,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                "@vector.indexes maxPhraseLength can only be set on an index with a provider or callback (used for query by phrase)."
+                "@vector.indexes maxPhraseLength can only be set on an index with a provider (used for query by phrase)."
             );
             expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
         });
@@ -7039,7 +7039,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                "@vector.indexes maxPhraseLength can only be set on an index with a provider or callback (used for query by phrase)."
+                "@vector.indexes maxPhraseLength can only be set on an index with a provider (used for query by phrase)."
             );
             expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
         });
@@ -7071,7 +7071,7 @@ describe("validation 2.0", () => {
             expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
             expect(errors[0]).toHaveProperty(
                 "message",
-                "@vector.indexes maxPhraseLength can only be set on an index with a provider or callback (used for query by phrase)."
+                "@vector.indexes maxPhraseLength can only be set on an index with a provider (used for query by phrase)."
             );
             expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
         });

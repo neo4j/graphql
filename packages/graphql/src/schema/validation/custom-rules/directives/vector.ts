@@ -76,9 +76,10 @@ function assertMaxPhraseLengthIsValid(vectorDirectiveOnNode: DirectiveNode): voi
             );
         }
         // Mirrors augment/vector.ts: the `phrase` argument (and thus maxPhraseLength) only exists when provider or callback is set.
+        // The @vector directive has no callback argument, so callback is not currently populatable from type defs; the check is kept for parity with augment/vector.ts.
         if (index.provider == null && index.callback == null) {
             throw new DocumentValidationError(
-                `@${vectorDirective.name}.indexes maxPhraseLength can only be set on an index with a provider or callback (used for query by phrase).`,
+                `@${vectorDirective.name}.indexes maxPhraseLength can only be set on an index with a provider (used for query by phrase).`,
                 ["indexes"]
             );
         }
