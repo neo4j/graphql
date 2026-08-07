@@ -39,6 +39,18 @@ export class VectorSelection extends EntitySelection {
         nestedContext: QueryASTContext<Cypher.Node>;
         selection: SelectionClause;
     } {
+        console.log("VectorSelection.apply called with vectorOptions:", this.vectorOptions);
+        console.log(
+            `Checking phrase length: ${this.vectorOptions.phrase?.length} against maxPhraseLength: ${this.vectorOptions.index.maxPhraseLength}`
+        );
+        if (this.vectorOptions.index.maxPhraseLength && this.vectorOptions.phrase) {
+            if (this.vectorOptions.phrase.length > this.vectorOptions.index.maxPhraseLength) {
+                throw new Error(
+                    `The provided phrase exceeds the maximum length of ${this.vectorOptions.index.maxPhraseLength} characters.`
+                );
+            }
+        }
+
         const node = new Cypher.Node();
         const vectorParam = new Cypher.Param(this.vectorOptions.vector);
         const phraseParam = new Cypher.Param(this.vectorOptions.phrase);
