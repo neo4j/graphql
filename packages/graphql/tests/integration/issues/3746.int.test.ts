@@ -189,6 +189,55 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
         expect(gqlResult.errors?.[0]?.message).toBe("Unauthenticated");
     });
 
+    test("should apply both type-level and field-level authentication - throw unauthenticated", async () => {
+        const typeDefs = /* GraphQL */ `
+            type JWT @jwt {
+                roles: [String!]!
+            }
+
+            type ${User} @node {
+                customId: ID
+            }
+
+            type Query @authentication(operations: ["READ"]) {
+                me: ${User}
+                adminData: ${User} @authentication(jwt: { roles_INCLUDES: "admin" })
+            }
+        `;
+
+        const userId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = /* GraphQL */ `
+            {
+                adminData {
+                    customId
+                }
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            resolvers: {
+                Query: { me: () => ({}), adminData: () => ({}) },
+                [User.name]: { customId: (_, __, ctx) => ctx.jwt.sub },
+            },
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
+
+        const token = createBearerToken(secret, { sub: userId, roles: ["user"] });
+
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+        expect(gqlResult.errors).toHaveLength(1);
+        expect(gqlResult.errors?.[0]?.message).toBe("Unauthenticated");
+    });
+
     test("should apply field-level authentication to root field on Mutation - throw unauthenticated", async () => {
         const typeDefs = /* GraphQL */ `
             type ${User} @node {
