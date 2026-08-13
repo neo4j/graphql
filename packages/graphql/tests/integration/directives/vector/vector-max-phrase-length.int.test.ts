@@ -6,6 +6,7 @@
 import { Record as Neo4jRecord, type Driver, type Transaction } from "neo4j-driver";
 import { generate } from "randomstring";
 import type { Neo4jGraphQL } from "../../../../src/classes";
+import { Neo4jGraphQLError } from "../../../../src/classes/Error";
 import { DBMS_COMPONENTS_QUERY } from "../../../../src/constants";
 import type { UniqueType } from "../../../utils/graphql-types";
 import { isMultiDbUnsupportedError } from "../../../utils/is-multi-db-unsupported-error";
@@ -229,6 +230,44 @@ describe("@vector directive - maxPhraseLength", () => {
         expect(gqlResult.data).toBeNull();
         expect(gqlResult.errors).toHaveLength(1);
         expect(gqlResult.errors?.[0]?.message).toBe(expectedLimitError(shortLimit + 1, shortLimit));
+        expect(gqlResult.errors?.[0]?.originalError).toBeInstanceOf(Neo4jGraphQLError);
+    });
+
+    test("surrogate-pair phrase length is counted by code points, not UTF-16 code units", async () => {
+        // Skip if vector not supported
+        if (!VECTOR_SUPPORT) {
+            console.log("VECTOR SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
+        // Skip if multi-db not supported
+        if (!MULTIDB_SUPPORT) {
+            console.log("MULTIDB_SUPPORT NOT AVAILABLE - SKIPPING");
+            return;
+        }
+
+        // "😀" is a single code point but two UTF-16 code units, so a phrase one code point over the
+        // limit is rejected even though String.length would report double that.
+        const overLimitResult = await testHelper.executeGraphQL(phraseQuery(shortLimitQueryName), {
+            variableValues: { phrase: "😀".repeat(shortLimit + 1) },
+        });
+
+        expect(overLimitResult.data).toBeNull();
+        expect(overLimitResult.errors).toHaveLength(1);
+        expect(overLimitResult.errors?.[0]?.message).toBe(expectedLimitError(shortLimit + 1, shortLimit));
+
+        // A phrase at the code-point limit is accepted, even though its UTF-16 length is double that.
+        const atLimitResult = await testHelper.executeGraphQL(phraseQuery(shortLimitQueryName), {
+            variableValues: { phrase: "😀".repeat(shortLimit) },
+            contextValue: { executionContext: fakeExecutionContext() },
+        });
+
+        expect(atLimitResult.errors).toBeFalsy();
+        expect(atLimitResult.data).toEqual({
+            [shortLimitQueryName]: {
+                edges: [],
+            },
+        });
     });
 
     test("over-limit phrase supplied via variables is enforced identically to an inline literal", async () => {
