@@ -6,17 +6,18 @@
 import type { Clause, Expr, Variable } from "@neo4j/cypher-builder";
 import Cypher from "@neo4j/cypher-builder";
 import { wrapSubqueriesInCypherCalls } from "../../../utils/wrap-subquery-in-calls";
-import type { QueryASTContext } from "../../QueryASTContext";
+import { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { Field } from "../Field";
 
+// TODO: check print method
 export class GroupByField extends Field {
     private by: string[];
 
     private nodeFields: Field[] = [];
     private valuesFields: Field[] = [];
     private edgeFields: Field[] = []; // TODO: merge with attachedTo?
-    // private aggregationField: Field | undefined;
+    private aggregationField: Field | undefined;
 
     private resultVariable = new Cypher.Variable();
 
@@ -45,14 +46,13 @@ export class GroupByField extends Field {
     public setEdgeFields(fields: Field[]) {
         this.edgeFields = fields;
     }
-    // public setAggregationField(fields: Field) {
-    //     this.aggregationField = fields;
-    // }
+    public setAggregationField(fields: Field) {
+        this.aggregationField = fields;
+    }
 
     public getChildren(): QueryASTNode[] {
         // ?? add valuesFields
-        return [...this.nodeFields, ...this.edgeFields];
-        // ...(this.aggregationField ? [this.aggregationField] : [])];
+        return [...this.nodeFields, ...this.edgeFields, ...(this.aggregationField ? [this.aggregationField] : [])];
     }
 
     public getSubqueries(context: QueryASTContext): Clause[] {
@@ -62,30 +62,55 @@ export class GroupByField extends Field {
 
         const valuesProjectionMap = this.createProjectionMapForValues(context as QueryASTContext<Cypher.Node>);
 
-        const subqueries = wrapSubqueriesInCypherCalls(
+        const nodeAndEdgeSubqueries = wrapSubqueriesInCypherCalls(
             context,
             [...this.nodeFields, ...this.edgeFields],
-            // ...(this.aggregationField ? [this.aggregationField] : [])],
             [context.target]
         );
-        const edgeProjectionMap = this.createProjectionMapForEdge(context as QueryASTContext<Cypher.Node>);
 
+        const edgeProjectionMap = this.createProjectionMapForEdge(context as QueryASTContext<Cypher.Node>);
         const groupByFields: Array<[Cypher.Expr, string]> = this.by.map((prop) => {
             if (!context.target) {
                 throw new Error("target not available");
             }
             return [context.target.property(prop), prop];
         });
-        const sq = Cypher.utils.concat(
-            ...subqueries,
-            new Cypher.Return(...groupByFields, [
-                new Cypher.Map({
-                    edges: Cypher.collect(edgeProjectionMap),
-                    values: valuesProjectionMap,
-                }),
+
+        const groupedMapResult = new Cypher.Map({
+            edges: Cypher.collect(edgeProjectionMap),
+            values: valuesProjectionMap,
+        });
+
+        const subqueries: Cypher.Clause[] = [];
+        if (this.aggregationField) {
+            const aggregationContext = new QueryASTContext({ ...context, varTarget: this.resultVariable });
+            const aggregationSubqueries = wrapSubqueriesInCypherCalls(
+                aggregationContext,
+                [this.aggregationField],
+                [this.resultVariable]
+            );
+            groupedMapResult.set(
+                "aggregate",
+                Cypher.collect(this.createProjectionMapForEdgeWithNode(context as QueryASTContext<Cypher.Node>))
+            );
+            const aggregationProjection = this.aggregationField.getProjectionField(this.resultVariable);
+            const groupWithAggregate = new Cypher.MapProjection(
                 this.resultVariable,
-            ])
-        );
+                "*",
+                aggregationProjection as Record<string, Cypher.Expr>
+            );
+            subqueries.push(
+                ...nodeAndEdgeSubqueries,
+                new Cypher.With(...groupByFields, [groupedMapResult, this.resultVariable]),
+                ...aggregationSubqueries,
+                new Cypher.Return([groupWithAggregate, this.resultVariable])
+            );
+        } else {
+            subqueries.push(
+                ...nodeAndEdgeSubqueries,
+                new Cypher.Return(...groupByFields, [groupedMapResult, this.resultVariable])
+            );
+        }
 
         const edgeVar = new Cypher.NamedVariable("edge");
         const edgesVar = new Cypher.NamedVariable("edges");
@@ -94,11 +119,19 @@ export class GroupByField extends Field {
         return [
             new Cypher.With("*", [
                 new Cypher.Collect(
-                    new Cypher.Call(Cypher.utils.concat(unwindClause, sq), [edgesVar]).return(this.resultVariable)
+                    new Cypher.Call(Cypher.utils.concat(unwindClause, Cypher.utils.concat(...subqueries)), [
+                        edgesVar,
+                    ]).return(this.resultVariable)
                 ),
                 this.resultVariable,
             ]),
         ];
+    }
+
+    private createProjectionMapForEdgeWithNode(context: QueryASTContext<Cypher.Node>): Cypher.Map {
+        return new Cypher.Map({
+            node: context.target,
+        });
     }
 
     private createProjectionMapForEdge(context: QueryASTContext<Cypher.Node>): Cypher.Map {

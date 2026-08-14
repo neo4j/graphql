@@ -13,19 +13,23 @@ export class CountField extends AggregationField {
     public edgeVar: Cypher.Variable | undefined;
 
     private countFields: { nodes: boolean; edges: boolean };
+    private groupByMode: boolean;
 
     constructor({
         alias,
         entity,
         fields,
+        groupByMode = false,
     }: {
         alias: string;
         entity: Entity;
         fields: { nodes: boolean; edges: boolean };
+        groupByMode?: boolean;
     }) {
         super(alias);
         this.entity = entity;
         this.countFields = fields;
+        this.groupByMode = groupByMode;
     }
 
     public getChildren(): QueryASTNode[] {
@@ -37,7 +41,8 @@ export class CountField extends AggregationField {
     }
 
     public getAggregationExpr(variable: Cypher.Variable): Cypher.Expr {
-        return Cypher.count(variable).distinct();
+        // context.varTarget.property("edges");
+        return this.groupByMode ? Cypher.size(variable.property("aggregate")) : Cypher.count(variable).distinct();
     }
 
     public getAggregationProjection(target: Cypher.Variable, returnVar: Cypher.Variable): Cypher.Clause {

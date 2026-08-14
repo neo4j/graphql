@@ -770,7 +770,7 @@ describe("nested aggregation on interface", () => {
         `);
     });
 
-    test.only("aggregate false should generate the correct schema without aggregations", async () => {
+    test("aggregate false should generate the correct schema without aggregations", async () => {
         const typeDefs = `
           interface Production {
               title: String!
@@ -793,7 +793,7 @@ describe("nested aggregation on interface", () => {
               screenTime: Int!
           }
 
-          type Actor {
+          type Actor @node {
               name: String!
               actedIn: [Production!]! @relationship(type: "ACTED_IN", direction: OUT, properties: "ActedIn")
           }

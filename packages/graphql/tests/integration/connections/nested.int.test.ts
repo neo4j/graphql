@@ -7,6 +7,54 @@ import { gql } from "graphql-tag";
 import type { UniqueType } from "../../utils/graphql-types";
 import { TestHelper } from "../../utils/tests-helper";
 
+describe.only("ALE", () => {
+    const testHelper = new TestHelper();
+    test("should allow nested connections", async () => {
+        const typeDefs = gql`
+            type Movie @node {
+                title: String!
+                #@authorization(filter: [{ where: { node: { title: { eq: "$jwt.sub" } } } }])
+                released: Int!
+                actors: [Person!]! @relationship(type: "ACTED_IN", properties: "ActedInMovie", direction: IN)
+            }
+            type Person @node {
+                name: String!
+                born: Int!
+                actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedInMovie", direction: OUT)
+                directed: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
+            }
+
+            type ActedInMovie @relationshipProperties {
+                roles: [String!]!
+                role: String!
+            }
+        `;
+        await testHelper.initNeo4jGraphQL({ typeDefs });
+        await testHelper.executeCypher(`CREATE (movie:Movie {title: "test title", released: 2020})`);
+        const query = `
+            {
+                moviesConnection(first: 2) {
+                    edges {
+                        node {
+                            title
+                        }
+                        cursor
+                    }
+                    pageInfo {
+                        hasNextPage
+                        endCursor
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+
+        console.log(JSON.stringify(result.data, null, 2));
+        await testHelper.close();
+    });
+});
+
 describe("Connections Alias", () => {
     const testHelper = new TestHelper();
 

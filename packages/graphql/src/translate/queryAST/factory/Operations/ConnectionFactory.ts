@@ -36,6 +36,7 @@ import { getFieldsByTypeName } from "../parsers/get-fields-by-type-name";
 import { AggregateFactory } from "./AggregateFactory";
 import { FulltextFactory } from "./FulltextFactory";
 import { GroupByFactory } from "./GroupByFactory";
+import { UnwindSelection } from "../../ast/selection/UnwindSelection";
 
 export class ConnectionFactory {
     private queryASTFactory: QueryASTFactory;
@@ -421,26 +422,27 @@ export class ConnectionFactory {
 
             groupBy.setValuesFields(valuesFields);
         }
-        // const resolveTreeAggregate =
-        //     resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()]?.aggregate;
+        const resolveTreeAggregate =
+            resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()]?.aggregate;
 
-        // if (resolveTreeAggregate) {
-        //     const aggregationOperation = this.aggregateFactory.createAggregationOperation({
-        //         entityOrRel: target,
-        //         resolveTree: resolveTreeAggregate,
-        //         context,
-        //         // extraWhereArgs: whereArgs,
-        //     });
+        if (resolveTreeAggregate) {
+            const aggregationOperation = this.aggregateFactory.createAggregationOperation({
+                entityOrRel: target,
+                resolveTree: resolveTreeAggregate,
+                context,
+                groupByMode: true,
+                // extraWhereArgs: whereArgs,
+            });
 
-        //     const aggregationField = new ConnectionAggregationField({
-        //         alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
-        //         nodeAlias: "node",
-        //         operation: aggregationOperation,
-        //     });
+            const aggregationField = new ConnectionAggregationField({
+                alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
+                nodeAlias: "node",
+                operation: aggregationOperation,
+            });
 
-        //     groupBy.setAggregationField(aggregationField);
-        //     console.log("ALE", aggregationField);
-        // }
+            groupBy.setAggregationField(aggregationField);
+            console.log("ALE", aggregationField);
+        }
 
         operation.setGroupByFields([groupBy]);
     }

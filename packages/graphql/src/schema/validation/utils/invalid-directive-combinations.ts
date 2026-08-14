@@ -32,7 +32,7 @@ export const invalidFieldCombinations: InvalidFieldCombinations = {
         "sortable",
         "groupBy",
     ],
-    cypher: ["alias", "id", "relationship", "groupBy"],
+    cypher: ["alias", "id", "relationship"],
     default: ["jwtClaim", "populatedBy", "relationship"],
     id: ["jwtClaim", "cypher", "populatedBy", "customResolver", "relationship", "timestamp"],
     populatedBy: ["jwtClaim", "id", "default", "relationship", "groupBy"],
@@ -59,7 +59,7 @@ export const invalidFieldCombinations: InvalidFieldCombinations = {
     filterable: ["jwtClaim", "customResolver"],
     sortable: ["jwtClaim", "customResolver"],
     declareRelationship: ["jwtClaim"],
-    groupBy: ["customResolver", "jwtClaim", "relationship", "cypher", "populatedBy"],
+    groupBy: ["customResolver", "jwtClaim", "relationship", "populatedBy"],
 };
 
 type InvalidInterfaceCombinations = Record<InterfaceDirective, ReadonlyArray<InterfaceDirective>>;

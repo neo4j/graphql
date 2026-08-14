@@ -17,12 +17,14 @@ import type { AuthorizationFilters } from "../filters/authorization-filters/Auth
 import type { EntitySelection } from "../selection/EntitySelection";
 import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
+import { type UnwindSelection } from "../selection/UnwindSelection";
 
 // TODO: somewhat dupe of readOperation
 export class AggregationOperation extends Operation {
     public readonly entity: ConcreteEntityAdapter | RelationshipAdapter; // TODO: normal entities
-    private selection: EntitySelection;
+    private selection: EntitySelection | UnwindSelection;
     protected directed: boolean;
+    private groupByMode: boolean;
 
     public fields: AggregationField[] = []; // Aggregation fields
     public nodeFields: AggregationField[] = []; // Aggregation node fields
@@ -38,15 +40,18 @@ export class AggregationOperation extends Operation {
         entity,
         directed = true,
         selection,
+        groupByMode = false,
     }: {
         entity: ConcreteEntityAdapter | RelationshipAdapter;
         directed?: boolean;
-        selection: EntitySelection;
+        selection: EntitySelection | UnwindSelection;
+        groupByMode?: boolean;
     }) {
         super();
         this.entity = entity;
         this.directed = directed;
         this.selection = selection;
+        this.groupByMode = groupByMode;
     }
 
     public setFields(fields: AggregationField[]) {
@@ -214,14 +219,20 @@ export class AggregationOperation extends Operation {
             }
         }
 
+        let overwriteMatch: Cypher.With | undefined = undefined;
+        let overwriteTargetVar: Cypher.Variable | undefined = undefined;
         if (field instanceof CountField) {
             field.edgeVar = nestedContext.relationship;
+            if (this.groupByMode) {
+                overwriteMatch = new Cypher.With("*");
+                overwriteTargetVar = context.getVarTarget();
+            }
         }
 
-        const ret = this.getFieldProjectionClause(targetVar, returnVariable, field);
+        const ret = this.getFieldProjectionClause(overwriteTargetVar || targetVar, returnVariable, field);
 
         return Cypher.utils.concat(
-            matchClause,
+            overwriteMatch || matchClause,
             ...validations,
             ...selectionClauses,
             ...nestedSubqueries,
