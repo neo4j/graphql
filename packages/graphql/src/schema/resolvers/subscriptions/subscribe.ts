@@ -84,7 +84,10 @@ export function generateSubscribeMethod({
             // if (checkAuthenticationForAuthorizationRule && !context.authorization.jwt) {
             //     throw new Neo4jGraphQLError(AUTHORIZATION_UNAUTHENTICATED);
             // }
-            return payload[0]!;
+            if (payload === undefined || payload[0] === undefined) {
+                throw new Neo4jGraphQLError("Payload is undefined. Can't call subscriptions resolver directly.");
+            }
+            return payload[0];
         },
     };
 }
