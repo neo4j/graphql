@@ -63,7 +63,7 @@ jobs:
           cache: yarn
           package-manager-cache: false
       - name: Login to ECR
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4
+        uses: docker/login-action@dbcb813823bdd20940b903addbd779551569679f # v4
         with:
           registry: 535893049302.dkr.ecr.eu-west-1.amazonaws.com
           username: ${{ secrets.AWS_ACCESS_KEY_ID }}
