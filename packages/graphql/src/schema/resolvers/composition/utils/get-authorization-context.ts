@@ -34,6 +34,7 @@ export async function getAuthorizationContext(
     jwtClaimsMap?: Map<string, string>,
     trustedJwt?: JWTPayload
 ): Promise<AuthorizationContext> {
+    console.log("getAuthorizationContext");
     if (trustedJwt) {
         const isAuthenticated = true;
 

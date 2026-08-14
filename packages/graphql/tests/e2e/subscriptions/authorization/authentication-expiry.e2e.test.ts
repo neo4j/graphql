@@ -338,11 +338,7 @@ describe("Subscription authorization with expired token", () => {
         expect(wsClient.errors).toEqual([]);
     });
 
-    // TODO: subscriptionAuthorization is checked against authorization context in wrapSubscription (which is executed as wrapper of resolver fn)
-    // however, the authorization context is not updated when the subscriptionAuthorization is executed (this happens in the filterAsyncIterator callback in subscribe fn)
-    // Order of execution: subscription `subscribe` fn filterAsyncIterator cb -> subscriptionAuthorization (old auth context) -> wrapSubscription (auth context updated) -> subscription `resolver` fn (only checks authentication bc authorization is a filter and this fn cannot filter results)
-    // eslint-disable-next-line jest/no-disabled-tests
-    test.skip("expired jwt in subscription does not send events", async () => {
+    test("expired jwt in subscription does not send events", async () => {
         const expJwtToken = createBearerToken(secret, {
             roles: ["admin"],
             sub: "user1",
@@ -358,7 +354,6 @@ describe("Subscription authorization with expired token", () => {
                         }
                     }
                     `);
-
         const userCreatedInTime = await createUser("user1", server);
         expect(userCreatedInTime.body.errors).toBeUndefined();
 
@@ -380,8 +375,16 @@ describe("Subscription authorization with expired token", () => {
         expect(userCreatedAfterExpiry.body.errors).toBeUndefined();
 
         await waitForMaybeEvent(wsClient);
-        console.log(wsClient.events);
-        expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
+        expect(wsClient.events).toEqual([
+            {
+                [typeUser.operations.subscribe.created]: {
+                    [typeUser.operations.subscribe.payload.created]: {
+                        id: "user1",
+                    },
+                },
+            },
+        ]);
+        expect(wsClient.errors).toEqual([]);
     });
 
     async function createUser(id: string, graphQLServer: TestGraphQLServer): Promise<Response> {
