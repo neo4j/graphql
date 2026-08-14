@@ -4,6 +4,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import { Neo4jGraphQLError } from "../../../../classes/Error";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { mapLabelsWithContext } from "../../../../schema-model/utils/map-labels-with-context";
 import type { Neo4jVectorSettings } from "../../../../types";
@@ -39,6 +40,18 @@ export class VectorSelection extends EntitySelection {
         nestedContext: QueryASTContext<Cypher.Node>;
         selection: SelectionClause;
     } {
+        const maxPhraseLength = this.vectorOptions.index.maxPhraseLength;
+        if (maxPhraseLength != null && this.vectorOptions.phrase != null) {
+            // Count Unicode code points (spread) rather than UTF-16 code units (.length) so the
+            // "characters" limit matches user expectations for surrogate-pair characters (e.g. emoji).
+            const phraseLength = [...this.vectorOptions.phrase].length;
+            if (phraseLength > maxPhraseLength) {
+                throw new Neo4jGraphQLError(
+                    `Invalid vector query: phrase is ${phraseLength} characters, but the maximum allowed length for this query is ${maxPhraseLength} characters.`
+                );
+            }
+        }
+
         const node = new Cypher.Node();
         const vectorParam = new Cypher.Param(this.vectorOptions.vector);
         const phraseParam = new Cypher.Param(this.vectorOptions.phrase);
