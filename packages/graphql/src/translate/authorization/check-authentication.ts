@@ -88,13 +88,17 @@ export const isAuthenticated =
         }
 
         if (entity) {
-            const { fieldName } = info;
-            const annotation: AuthenticationAnnotation | undefined =
-                entity.annotations.authentication ||
-                (fieldName && entity.findUserResolvedAttributes(fieldName)?.annotations.authentication);
+            const typeAnnotation: AuthenticationAnnotation | undefined = entity.annotations.authentication;
+            if (typeAnnotation) {
+                applyAuthentication({ context, annotation: typeAnnotation, targetOperations });
+            }
 
-            if (annotation) {
-                applyAuthentication({ context, annotation, targetOperations });
+            const { fieldName } = info;
+            const fieldAnnotation: AuthenticationAnnotation | undefined = fieldName
+                ? entity.findUserResolvedAttributes(fieldName)?.annotations.authentication
+                : undefined;
+            if (fieldAnnotation) {
+                applyAuthentication({ context, annotation: fieldAnnotation, targetOperations });
             }
         }
 
