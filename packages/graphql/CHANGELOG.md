@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 5.12.15
+
+### Patch Changes
+
+-   [`bc91511`](https://github.com/neo4j/graphql/commit/bc91511eae17814ea3f00e80cab3ad2bd524bcce) Thanks [@risset](https://github.com/risset)! - Fix a privilege-escalation vulnerability where a field-level `@authentication` rule on a root custom-resolver field was silently ignored when the operation type also carried a type-level `@authentication` rule. Type-level and field-level `@authentication` are now enforced independently, so stricter per-field requirements (such as a required JWT role) are applied as declared.
+
 ## 5.12.14
 
 ### Patch Changes
