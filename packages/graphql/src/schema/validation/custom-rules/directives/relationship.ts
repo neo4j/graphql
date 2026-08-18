@@ -10,6 +10,7 @@ import {
     type ObjectTypeDefinitionNode,
     type ObjectTypeExtensionNode,
 } from "graphql";
+import { DEPRECATED } from "../../../../constants";
 import {
     declareRelationshipDirective,
     relationshipDirective,
@@ -39,6 +40,12 @@ export function validateRelationshipDirective(context: Neo4jValidationContext): 
             ).flatMap((extension) => extension.fields ?? []);
 
             [...(objectTypeDefinitionNode.fields ?? []), ...extensionsFields].forEach((field) => {
+                // don't count deprecated fields towards uniqueness
+                const isDeprecated = field.directives?.find((directive) => directive.name.value === DEPRECATED);
+                if (isDeprecated) {
+                    return;
+                }
+
                 const appliedRelationship = field.directives?.find(
                     (directive) => directive.name.value === relationshipDirective.name
                 );
