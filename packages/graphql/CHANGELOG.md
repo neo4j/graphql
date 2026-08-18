@@ -1,5 +1,35 @@
 # @neo4j/graphql
 
+## 7.6.0
+
+### Minor Changes
+
+- [#7353](https://github.com/neo4j/graphql/pull/7353) [`e3efbe4`](https://github.com/neo4j/graphql/commit/e3efbe442f47f3a4f4d1e3b936d8d25da975a567) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Add an optional `maxPhraseLength` argument to the indexes of the `@vector` directive, capping the character length of the `phrase` argument accepted by the generated vector query:
+
+    ```graphql
+    type Movie
+        @node
+        @vector(
+            indexes: [
+                {
+                    indexName: "movie_index"
+                    embeddingProperty: "movieVector"
+                    queryName: "moviesByPhrase"
+                    provider: OPEN_AI
+                    maxPhraseLength: 100
+                }
+            ]
+        ) {
+        title: String!
+    }
+    ```
+
+    Queries supplying a longer `phrase` are rejected with a `Neo4jGraphQLError` before any Cypher is generated or any embedding provider call is made, giving server owners a per-index guardrail against unbounded embedding costs. The limit is measured in characters (Unicode code points), must be at least 1, and does not affect the `vector` (list of `Float`) input. Because it caps the `phrase` argument, `maxPhraseLength` can only be set on a phrase-capable index (one with a `provider` or `callback`); setting it on a vector-only index fails at schema build time.
+
+### Patch Changes
+
+- [`1ed675f`](https://github.com/neo4j/graphql/commit/1ed675f04dd86ce77b2ba236e4cae5caa39aedd0) Thanks [@risset](https://github.com/risset)! - Fix a privilege-escalation vulnerability where a field-level `@authentication` rule on a root custom-resolver field was silently ignored when the operation type also carried a type-level `@authentication` rule. Type-level and field-level `@authentication` are now enforced independently, so stricter per-field requirements (such as a required JWT role) are applied as declared.
+
 ## 7.5.6
 
 ### Patch Changes
