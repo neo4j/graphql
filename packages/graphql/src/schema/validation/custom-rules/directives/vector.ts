@@ -12,6 +12,7 @@ import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { typeIsANodeType } from "../utils/location-helpers/is-node-type";
 import { getPathToNode } from "../utils/path-parser";
+import { Neo4jVectorSettings } from "src/types";
 
 export function validateVectorDirective(context: Neo4jValidationContext): ASTVisitor {
     const typeMapWithExtensions = context.typeMapWithExtensions;
@@ -42,6 +43,7 @@ export function validateVectorDirective(context: Neo4jValidationContext): ASTVis
                 }
                 for (const vectorDirectiveOnNode of vectorDirectivesOnNode) {
                     assertMaxPhraseLengthIsValid(vectorDirectiveOnNode);
+                    assertIndexProviderValid(vectorDirectiveOnNode, context.vectors);
                 }
             });
             const pathToNode = getPathToNode(path, ancestors);
@@ -56,6 +58,48 @@ export function validateVectorDirective(context: Neo4jValidationContext): ASTVis
             }
         },
     };
+}
+
+// When a provider is specified by an index, ensure that it has a valid configuration
+function assertIndexProviderValid(
+    vectorDirectiveOnNode: DirectiveNode,
+    vectors: Neo4jVectorSettings | undefined
+): void {
+    const indexesArg = vectorDirectiveOnNode.arguments?.find((argument) => argument.name.value === "indexes");
+    if (!indexesArg) {
+        return;
+    }
+
+    const indexes = asArray(parseValueNode(indexesArg.value)) as VectorField[];
+    for (const index of indexes) {
+        const provider = index?.provider;
+        if (provider == null) {
+            continue;
+        }
+
+        if (vectors === undefined) {
+            throw new DocumentValidationError(
+                `@${vectorDirective.name}.indexes specifies a provider, but no vector providers configuration exists.`,
+                ["indexes"]
+            );
+        }
+
+        const providerName = providerIdToName(provider);
+        if (providerName === undefined) {
+            throw new DocumentValidationError(
+                `@${vectorDirective.name}.indexes specifies a provider that doesn't exist in the vector providers configuration.`,
+                ["indexes"]
+            );
+        }
+
+        const providerHasConfig = providerName in vectors;
+        if (!providerHasConfig) {
+            throw new DocumentValidationError(
+                `@${vectorDirective.name}.indexes specifies a provider that doesn't exist in the vector providers configuration.`,
+                ["indexes"]
+            );
+        }
+    }
 }
 
 function assertMaxPhraseLengthIsValid(vectorDirectiveOnNode: DirectiveNode): void {
@@ -83,5 +127,19 @@ function assertMaxPhraseLengthIsValid(vectorDirectiveOnNode: DirectiveNode): voi
                 ["indexes"]
             );
         }
+    }
+}
+
+// Convert provider ID from @vector directive to names expected by user configuration
+function providerIdToName(id: string): string | undefined {
+    switch (id) {
+        case "OPEN_AI":
+            return "OpenAI";
+        case "BEDROCK":
+            return "Bedrock";
+        case "VERTEX_AI":
+            return "VertexAI";
+        case "AZURE_OPEN_AI":
+            return "AzureOpenAI";
     }
 }

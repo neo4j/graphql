@@ -19,6 +19,7 @@ import type {
 } from "graphql";
 import { Kind } from "graphql";
 import { SDLValidationContext } from "graphql/validation/ValidationContext";
+import { Neo4jVectorSettings } from "src/types";
 
 export type TypeMapWithExtensions = Record<
     string,
@@ -35,15 +36,18 @@ export class Neo4jValidationContext extends SDLValidationContext {
     public readonly typeMapWithExtensions?: TypeMapWithExtensions;
     public readonly interfacesMap?: Record<string, Array<ObjectTypeDefinitionNode>>;
     public readonly callbacks?: any;
+    public readonly vectors?: Neo4jVectorSettings;
 
     constructor(
         ast: DocumentNode,
         schema: Maybe<GraphQLSchema>,
         onError: (error: GraphQLError) => void,
-        callbacks?: any
+        callbacks?: any,
+        vectors?: Neo4jVectorSettings
     ) {
         super(ast, schema, onError);
         this.callbacks = callbacks;
+        this.vectors = vectors;
         this.typeMapWithExtensions = buildTypeMapWithExtensions(ast.definitions);
 
         this.interfacesMap = buildInterfacesMap(ast.definitions, this.typeMapWithExtensions);

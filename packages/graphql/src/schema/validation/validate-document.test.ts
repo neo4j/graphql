@@ -6729,7 +6729,12 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            const vector = {
+                OpenAI: { token: "" },
+            };
+
+            const executeValidate = () =>
+                validateDocument({ document: doc, features: { vector: vector }, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
 
@@ -6753,7 +6758,12 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            const vectors = {
+                OpenAI: { token: "" },
+            };
+
+            const executeValidate = () =>
+                validateDocument({ document: doc, features: { vector: vectors }, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
 
@@ -6897,7 +6907,12 @@ describe("validation 2.0", () => {
                     )
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            const vectors = {
+                OpenAI: { token: "" },
+            };
+
+            const executeValidate = () =>
+                validateDocument({ document: doc, features: { vector: vectors }, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
 
@@ -6985,7 +7000,12 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            const vectors = {
+                OpenAI: { token: "" },
+            };
+
+            const executeValidate = () =>
+                validateDocument({ document: doc, features: { vector: vectors }, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
 
@@ -7031,7 +7051,12 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+            const vectors = {
+                OpenAI: { token: "" },
+            };
+
+            const executeValidate = () =>
+                validateDocument({ document: doc, features: { vector: vectors }, additionalDefinitions });
 
             const errors = getError(executeValidate);
 
@@ -7072,6 +7097,78 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty(
                 "message",
                 "@vector.indexes maxPhraseLength can only be set on an index with a provider (used for query by phrase)."
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
+        });
+
+        test("invalid when provider is specified with no vector configurations in features", () => {
+            const doc = gql`
+                type User
+                    @node
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "UserIndex"
+                                embeddingProperty: "embedding"
+                                queryName: "userQuery"
+                                provider: OPEN_AI
+                            }
+                        ]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const executeValidate = () => validateDocument({ document: doc, features: {}, additionalDefinitions });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "@vector.indexes specifies a provider, but no vector providers configuration exists."
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
+        });
+
+        test("invalid when provider is specified without its provider present within vector configuration in features", () => {
+            const doc = gql`
+                type User
+                    @node
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "UserIndex"
+                                embeddingProperty: "embedding"
+                                queryName: "userQuery"
+                                provider: OPEN_AI
+                            }
+                        ]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const vector = {
+                Bedrock: {
+                    accessKeyId: "",
+                    secretAccessKey: "",
+                },
+            };
+
+            const executeValidate = () =>
+                validateDocument({ document: doc, features: { vector: vector }, additionalDefinitions });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "@vector.indexes specifies a provider that doesn't exist in the vector providers configuration."
             );
             expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
         });
