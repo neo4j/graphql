@@ -52,7 +52,7 @@ export function validateVectorDirective(context: Neo4jValidationContext): ASTVis
                     const indexes = asArray(parseValueNode(indexesArg.value)) as VectorField[];
 
                     assertMaxPhraseLengthIsValid(indexes);
-                    assertIndexProviderValid(indexes, context.vectors);
+                    assertIndexProviderIsValid(indexes, context.vectors);
                 }
             });
             const pathToNode = getPathToNode(path, ancestors);
@@ -70,7 +70,7 @@ export function validateVectorDirective(context: Neo4jValidationContext): ASTVis
 }
 
 // When a provider is specified by an index, ensure that it has a valid configuration
-function assertIndexProviderValid(indexes: VectorField[], vectors: Neo4jVectorSettings | undefined): void {
+function assertIndexProviderIsValid(indexes: VectorField[], vectors: Neo4jVectorSettings | undefined): void {
     for (const index of indexes) {
         const provider = index?.provider;
         if (provider == null) {
