@@ -4,7 +4,7 @@
  */
 
 import type { ASTVisitor, ObjectTypeDefinitionNode } from "graphql";
-import { vectorDirective } from "../../../../graphql/directives/vector";
+import { vectorDirective, vectorProviderNames } from "../../../../graphql/directives/vector";
 import type { VectorField } from "../../../../schema-model/annotation/VectorAnnotation";
 import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
 import { asArray } from "../../../../utils/utils";
@@ -84,7 +84,7 @@ function assertIndexProviderIsValid(indexes: VectorField[], vectors: Neo4jVector
             );
         }
 
-        const providerName = providerIdToName(provider);
+        const providerName = vectorProviderNames[provider];
         if (providerName === undefined) {
             throw new DocumentValidationError(
                 `@${vectorDirective.name}.indexes specifies a provider that doesn't exist in the vector providers configuration.`,
@@ -122,19 +122,5 @@ function assertMaxPhraseLengthIsValid(indexes: VectorField[]): void {
                 ["indexes"]
             );
         }
-    }
-}
-
-// Convert provider ID from @vector directive to names expected by user configuration
-function providerIdToName(id: string): string | undefined {
-    switch (id) {
-        case "OPEN_AI":
-            return "OpenAI";
-        case "BEDROCK":
-            return "Bedrock";
-        case "VERTEX_AI":
-            return "VertexAI";
-        case "AZURE_OPEN_AI":
-            return "AzureOpenAI";
     }
 }

@@ -14,7 +14,7 @@ import {
     GraphQLString,
 } from "graphql";
 
-const vectorProviderNames = {
+export const vectorProviderNames = {
     VERTEX_AI: "VertexAI",
     OPEN_AI: "OpenAI",
     AZURE_OPEN_AI: "AzureOpenAI",
