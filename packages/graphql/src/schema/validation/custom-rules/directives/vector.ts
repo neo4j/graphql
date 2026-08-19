@@ -4,9 +4,9 @@
  */
 
 import type { ASTVisitor, ObjectTypeDefinitionNode } from "graphql";
-import { vectorDirective, vectorProviderNames } from "../../../../graphql/directives/vector";
+import { vectorDirective } from "../../../../graphql/directives/vector";
 import type { VectorField } from "../../../../schema-model/annotation/VectorAnnotation";
-import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
+import { parseArguments } from "../../../../schema-model/parser/parse-arguments";
 import { asArray } from "../../../../utils/utils";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
@@ -42,14 +42,10 @@ export function validateVectorDirective(context: Neo4jValidationContext): ASTVis
                     );
                 }
                 for (const vectorDirectiveOnNode of vectorDirectivesOnNode) {
-                    const indexesArg = vectorDirectiveOnNode.arguments?.find(
-                        (argument) => argument.name.value === "indexes"
+                    const { indexes } = parseArguments<{ indexes: VectorField[] }>(
+                        vectorDirective,
+                        vectorDirectiveOnNode
                     );
-                    if (!indexesArg) {
-                        continue;
-                    }
-
-                    const indexes = asArray(parseValueNode(indexesArg.value)) as VectorField[];
 
                     assertMaxPhraseLengthIsValid(indexes);
                     assertIndexProviderIsValid(indexes, context.vectors);
@@ -84,16 +80,7 @@ function assertIndexProviderIsValid(indexes: VectorField[], vectors: Neo4jVector
             );
         }
 
-        const providerName = vectorProviderNames[provider];
-        if (providerName === undefined) {
-            throw new DocumentValidationError(
-                `@${vectorDirective.name}.indexes specifies a provider that doesn't exist in the vector providers configuration.`,
-                ["indexes"]
-            );
-        }
-
-        const providerHasConfig = providerName in vectors;
-        if (!providerHasConfig) {
+        if (!(provider in vectors)) {
             throw new DocumentValidationError(
                 `@${vectorDirective.name}.indexes specifies a provider that doesn't exist in the vector providers configuration.`,
                 ["indexes"]
