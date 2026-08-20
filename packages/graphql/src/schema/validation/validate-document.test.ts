@@ -6758,12 +6758,12 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const vectors = {
+            const vector = {
                 OpenAI: { token: "" },
             };
 
             const executeValidate = () =>
-                validateDocument({ document: doc, features: { vector: vectors }, additionalDefinitions });
+                validateDocument({ document: doc, features: { vector: vector }, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
 
@@ -6907,12 +6907,12 @@ describe("validation 2.0", () => {
                     )
             `;
 
-            const vectors = {
+            const vector = {
                 OpenAI: { token: "" },
             };
 
             const executeValidate = () =>
-                validateDocument({ document: doc, features: { vector: vectors }, additionalDefinitions });
+                validateDocument({ document: doc, features: { vector: vector }, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
 
@@ -7000,12 +7000,12 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const vectors = {
+            const vector = {
                 OpenAI: { token: "" },
             };
 
             const executeValidate = () =>
-                validateDocument({ document: doc, features: { vector: vectors }, additionalDefinitions });
+                validateDocument({ document: doc, features: { vector: vector }, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
 
@@ -7051,12 +7051,12 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const vectors = {
+            const vector = {
                 OpenAI: { token: "" },
             };
 
             const executeValidate = () =>
-                validateDocument({ document: doc, features: { vector: vectors }, additionalDefinitions });
+                validateDocument({ document: doc, features: { vector: vector }, additionalDefinitions });
 
             const errors = getError(executeValidate);
 
