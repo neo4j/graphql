@@ -186,4 +186,50 @@ describe("@relationship validation", () => {
         const errors = getError(executeValidate);
         expect(errors).toBeInstanceOf(NoErrorThrownError);
     });
+
+    test("@deprecated fields should be ignored by relationship uniqueness validation", () => {
+        const doc = gql`
+            type Movie @node {
+                someActors: [Person!]! @relationship(type: "ACTED_IN", direction: IN) @deprecated
+                newActors: [Person!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+
+            type Person @node {
+                name: String
+            }
+        `;
+
+        const executeValidate = () =>
+            validateDocument({
+                document: doc,
+                additionalDefinitions,
+                features: {},
+            });
+
+        const errors = getError(executeValidate);
+        expect(errors).toBeInstanceOf(NoErrorThrownError);
+    });
+
+    test("multiple @deprecated fields with the same direction and type should not be an error", () => {
+        const doc = gql`
+            type Movie @node {
+                someActors: [Person!]! @relationship(type: "ACTED_IN", direction: IN) @deprecated
+                newActors: [Person!]! @relationship(type: "ACTED_IN", direction: IN) @deprecated
+            }
+
+            type Person @node {
+                name: String
+            }
+        `;
+
+        const executeValidate = () =>
+            validateDocument({
+                document: doc,
+                additionalDefinitions,
+                features: {},
+            });
+
+        const errors = getError(executeValidate);
+        expect(errors).toBeInstanceOf(NoErrorThrownError);
+    });
 });
