@@ -19,7 +19,7 @@ import type {
 } from "graphql";
 import { Kind } from "graphql";
 import { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { Neo4jVectorSettings } from "../../types";
+import type { Neo4jVectorSettings } from "../../types";
 
 export type TypeMapWithExtensions = Record<
     string,

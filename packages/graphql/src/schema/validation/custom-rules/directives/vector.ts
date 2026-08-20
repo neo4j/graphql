@@ -7,12 +7,12 @@ import type { ASTVisitor, ObjectTypeDefinitionNode } from "graphql";
 import { vectorDirective } from "../../../../graphql/directives/vector";
 import type { VectorField } from "../../../../schema-model/annotation/VectorAnnotation";
 import { parseArguments } from "../../../../schema-model/parser/parse-arguments";
+import type { Neo4jVectorSettings } from "../../../../types";
 import { asArray } from "../../../../utils/utils";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
 import { typeIsANodeType } from "../utils/location-helpers/is-node-type";
 import { getPathToNode } from "../utils/path-parser";
-import { Neo4jVectorSettings } from "../../../../types";
 
 export function validateVectorDirective(context: Neo4jValidationContext): ASTVisitor {
     const typeMapWithExtensions = context.typeMapWithExtensions;
