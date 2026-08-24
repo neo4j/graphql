@@ -6729,12 +6729,12 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const vector = {
+            const vectorSettings = {
                 OpenAI: { token: "" },
             };
 
             const executeValidate = () =>
-                validateDocument({ document: doc, features: { vector: vector }, additionalDefinitions });
+                validateDocument({ document: doc, features: { vector: vectorSettings }, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
 
@@ -6758,12 +6758,12 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const vector = {
+            const vectorSettings = {
                 OpenAI: { token: "" },
             };
 
             const executeValidate = () =>
-                validateDocument({ document: doc, features: { vector: vector }, additionalDefinitions });
+                validateDocument({ document: doc, features: { vector: vectorSettings }, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
 
@@ -6907,12 +6907,12 @@ describe("validation 2.0", () => {
                     )
             `;
 
-            const vector = {
+            const vectorSettings = {
                 OpenAI: { token: "" },
             };
 
             const executeValidate = () =>
-                validateDocument({ document: doc, features: { vector: vector }, additionalDefinitions });
+                validateDocument({ document: doc, features: { vector: vectorSettings }, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
 
@@ -7000,12 +7000,12 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const vector = {
+            const vectorSettings = {
                 OpenAI: { token: "" },
             };
 
             const executeValidate = () =>
-                validateDocument({ document: doc, features: { vector: vector }, additionalDefinitions });
+                validateDocument({ document: doc, features: { vector: vectorSettings }, additionalDefinitions });
             expect(executeValidate).not.toThrow();
         });
 
@@ -7051,12 +7051,12 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const vector = {
+            const vectorSettings = {
                 OpenAI: { token: "" },
             };
 
             const executeValidate = () =>
-                validateDocument({ document: doc, features: { vector: vector }, additionalDefinitions });
+                validateDocument({ document: doc, features: { vector: vectorSettings }, additionalDefinitions });
 
             const errors = getError(executeValidate);
 
@@ -7152,7 +7152,7 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            const vector = {
+            const vectorSettings = {
                 Bedrock: {
                     accessKeyId: "",
                     secretAccessKey: "",
@@ -7160,7 +7160,7 @@ describe("validation 2.0", () => {
             };
 
             const executeValidate = () =>
-                validateDocument({ document: doc, features: { vector: vector }, additionalDefinitions });
+                validateDocument({ document: doc, features: { vector: vectorSettings }, additionalDefinitions });
 
             const errors = getError(executeValidate);
 

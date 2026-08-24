@@ -66,21 +66,21 @@ export function validateVectorDirective(context: Neo4jValidationContext): ASTVis
 }
 
 // When a provider is specified by an index, ensure that it has a valid configuration
-function assertIndexProviderIsValid(indexes: VectorField[], vectors: Neo4jVectorSettings | undefined): void {
+function assertIndexProviderIsValid(indexes: VectorField[], vectorSettings: Neo4jVectorSettings | undefined): void {
     for (const index of indexes) {
         const provider = index?.provider;
         if (provider == null) {
             continue;
         }
 
-        if (vectors === undefined) {
+        if (vectorSettings === undefined) {
             throw new DocumentValidationError(
                 `@${vectorDirective.name}.indexes specifies a provider, but no vector providers configuration exists.`,
                 ["indexes"]
             );
         }
 
-        if (!(provider in vectors)) {
+        if (!(provider in vectorSettings)) {
             throw new DocumentValidationError(
                 `@${vectorDirective.name}.indexes specifies a provider that doesn't exist in the vector providers configuration.`,
                 ["indexes"]
