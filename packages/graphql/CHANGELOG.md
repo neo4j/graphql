@@ -1,5 +1,17 @@
 # @neo4j/graphql
 
+## 7.6.1
+
+### Patch Changes
+
+- [#7370](https://github.com/neo4j/graphql/pull/7370) [`a9531c6`](https://github.com/neo4j/graphql/commit/a9531c66029faa25df3efbba633f20b9e36f5d8b) Thanks [@risset](https://github.com/risset)! - `@vector` provider configuration is now validated at schema build time.
+
+    Previously, when a `@vector` index declared a `provider` but no matching
+    configuration was supplied in `features.vector`, this only surfaced as an error
+    at query time.
+
+- [#7367](https://github.com/neo4j/graphql/pull/7367) [`d9a084e`](https://github.com/neo4j/graphql/commit/d9a084ece8a6f54a00de8073a387926a949d5f9d) Thanks [@risset](https://github.com/risset)! - Relax validation of @relationship field uniqueness when duplicate relationship has the @deprecated annotation
+
 ## 7.6.0
 
 ### Minor Changes
