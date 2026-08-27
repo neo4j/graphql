@@ -20,6 +20,7 @@ import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionAuthorization } from "./where/authorization";
 import { subscriptionWhere } from "./where/where";
 import { getAuthorizationContext } from "../composition/utils/get-authorization-context";
+import type { JwtPayload } from "jsonwebtoken";
 
 type SubscriptionArgs = {
     where?: Record<string, any>;
@@ -31,6 +32,14 @@ function isNodeSubscriptionEvent(event: SubscriptionsEvent | undefined): event i
     }
 
     return "typename" in event;
+}
+
+function isJwtExpired(jwt: JwtPayload): boolean {
+    const exp = jwt.exp;
+    if (exp && exp * 1000 < Date.now()) {
+        return true;
+    }
+    return false;
 }
 
 export function generateSubscribeMethod({
@@ -73,6 +82,14 @@ export function generateSubscribeMethod({
                     context.jwt
                 );
                 context.authorization = authorizationContext;
+
+                const jwt = context.connectionParams?.jwt;
+                if (jwt) {
+                    if (!authorizationContext.isAuthenticated && isJwtExpired(jwt)) {
+                        // if expired we don't want to send events
+                        return false;
+                    }
+                }
 
                 return (
                     data[0].typename === entityAdapter.name &&

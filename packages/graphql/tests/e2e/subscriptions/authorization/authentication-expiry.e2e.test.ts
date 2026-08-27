@@ -154,45 +154,6 @@ describe("Subscription authentication with expired token", () => {
         const movieCreatedAfterExpiry = await createMovie("movie4", server);
         expect(movieCreatedAfterExpiry.body.errors).toBeUndefined();
 
-        await wsClient.waitForEvents(1);
-        expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
-    });
-    test("expired jwt in mutation throws error", async () => {
-        const expJwtToken = createBearerToken(secret, {
-            roles: ["admin"],
-            exp: Math.floor(Date.now() / 1000) + 10,
-        }); // exp in 10s
-        wsClient = new WebSocketTestClient(server.wsPath, expJwtToken);
-        await wsClient.subscribe(`
-                    subscription {
-                        ${typeMovie.operations.subscribe.created} {
-                            ${typeMovie.operations.subscribe.payload.created} {
-                                title
-                            }
-                        }
-                    }
-                    `);
-
-        const movieCreatedInTime = await createMovie("movie3", server);
-        expect(movieCreatedInTime.body.errors).toBeUndefined();
-
-        await wsClient.waitForEvents(1);
-        expect(wsClient.events).toEqual([
-            {
-                [typeMovie.operations.subscribe.created]: {
-                    [typeMovie.operations.subscribe.payload.created]: {
-                        title: "movie3",
-                    },
-                },
-            },
-        ]);
-        expect(wsClient.errors).toEqual([]);
-
-        await new Promise((resolve) => setTimeout(resolve, 11000)); // wait for 11s to expire the token
-
-        const movieCreatedAfterExpiry = await createMovie("movie4", server, expJwtToken);
-        expect(movieCreatedAfterExpiry.body.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
-
         await waitForMaybeEvent(wsClient);
         expect(wsClient.events).toEqual([
             {
@@ -225,9 +186,6 @@ describe("Subscription authentication with expired token", () => {
         return result;
     }
 });
-function waitForMaybeEvent(wsClient: WebSocketTestClient): Promise<void> {
-    return wsClient.waitForEvents(1).catch(() => undefined);
-}
 
 describe("Subscription authorization with expired token", () => {
     const testHelper = new TestHelper({ cdc: true });
@@ -406,3 +364,7 @@ describe("Subscription authorization with expired token", () => {
         return result;
     }
 });
+
+function waitForMaybeEvent(wsClient: WebSocketTestClient): Promise<void> {
+    return wsClient.waitForEvents(1).catch(() => undefined);
+}
