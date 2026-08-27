@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.6.2
+
+### Patch Changes
+
+- [#7373](https://github.com/neo4j/graphql/pull/7373) [`56903f7`](https://github.com/neo4j/graphql/commit/56903f7e9bfb7464c905f4862bb36c89c017c235) Thanks [@a-alle](https://github.com/a-alle)! - Fix authorization rules not applied correctly on create relationship
+
 ## 7.6.1
 
 ### Patch Changes
