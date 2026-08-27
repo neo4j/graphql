@@ -3,10 +3,11 @@
  * Neo4j Sweden AB [http://neo4j.com]
  */
 
-import type { ASTVisitor, DirectiveNode, ObjectTypeDefinitionNode } from "graphql";
+import type { ASTVisitor, ObjectTypeDefinitionNode } from "graphql";
 import { vectorDirective } from "../../../../graphql/directives/vector";
 import type { VectorField } from "../../../../schema-model/annotation/VectorAnnotation";
-import { parseValueNode } from "../../../../schema-model/parser/parse-value-node";
+import { parseArguments } from "../../../../schema-model/parser/parse-arguments";
+import type { Neo4jVectorSettings } from "../../../../types";
 import { asArray } from "../../../../utils/utils";
 import type { Neo4jValidationContext } from "../../Neo4jValidationContext";
 import { assertValid, createGraphQLError, DocumentValidationError } from "../utils/document-validation-error";
@@ -41,7 +42,13 @@ export function validateVectorDirective(context: Neo4jValidationContext): ASTVis
                     );
                 }
                 for (const vectorDirectiveOnNode of vectorDirectivesOnNode) {
-                    assertMaxPhraseLengthIsValid(vectorDirectiveOnNode);
+                    const { indexes } = parseArguments<{ indexes: VectorField[] }>(
+                        vectorDirective,
+                        vectorDirectiveOnNode
+                    );
+
+                    assertMaxPhraseLengthIsValid(indexes);
+                    assertIndexProviderIsValid(indexes, context.vectors);
                 }
             });
             const pathToNode = getPathToNode(path, ancestors);
@@ -58,12 +65,31 @@ export function validateVectorDirective(context: Neo4jValidationContext): ASTVis
     };
 }
 
-function assertMaxPhraseLengthIsValid(vectorDirectiveOnNode: DirectiveNode): void {
-    const indexesArg = vectorDirectiveOnNode.arguments?.find((argument) => argument.name.value === "indexes");
-    if (!indexesArg) {
-        return;
+// When a provider is specified by an index, ensure that it has a valid configuration
+function assertIndexProviderIsValid(indexes: VectorField[], vectorSettings: Neo4jVectorSettings | undefined): void {
+    for (const index of indexes) {
+        const provider = index?.provider;
+        if (provider == null) {
+            continue;
+        }
+
+        if (vectorSettings === undefined) {
+            throw new DocumentValidationError(
+                `@${vectorDirective.name}.indexes specifies a provider, but no vector providers configuration exists.`,
+                ["indexes"]
+            );
+        }
+
+        if (!(provider in vectorSettings)) {
+            throw new DocumentValidationError(
+                `@${vectorDirective.name}.indexes specifies a provider that doesn't exist in the vector providers configuration.`,
+                ["indexes"]
+            );
+        }
     }
-    const indexes = asArray(parseValueNode(indexesArg.value)) as VectorField[];
+}
+
+function assertMaxPhraseLengthIsValid(indexes: VectorField[]): void {
     for (const index of indexes) {
         const maxPhraseLength = index?.maxPhraseLength;
         if (maxPhraseLength == null) {
