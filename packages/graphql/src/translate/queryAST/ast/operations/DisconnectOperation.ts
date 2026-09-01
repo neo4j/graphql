@@ -9,7 +9,7 @@ import type { RelationshipAdapter } from "../../../../schema-model/relationship/
 import { filterTruthy } from "../../../../utils/utils";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
-import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
+import { wrapAuthFiltersInCypherCalls, wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Filter } from "../filters/Filter";
@@ -134,12 +134,12 @@ export class DisconnectOperation extends MutationOperation {
 
         const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
         filterSubqueries.push(
-            ...this.getFiltersSubqueries(this.authFilters, "BEFORE", nestedContext),
-            ...this.getFiltersSubqueries(this.sourceAuthFilters, "BEFORE", context)
+            ...wrapAuthFiltersInCypherCalls(this.authFilters, "BEFORE", nestedContext),
+            ...wrapAuthFiltersInCypherCalls(this.sourceAuthFilters, "BEFORE", context)
         );
 
-        const afterFilterSubqueries = this.getFiltersSubqueries(this.authFilters, "AFTER", nestedContext);
-        afterFilterSubqueries.push(...this.getFiltersSubqueries(this.sourceAuthFilters, "AFTER", context));
+        const afterFilterSubqueries = wrapAuthFiltersInCypherCalls(this.authFilters, "AFTER", nestedContext);
+        afterFilterSubqueries.push(...wrapAuthFiltersInCypherCalls(this.sourceAuthFilters, "AFTER", context));
         if (afterFilterSubqueries.length > 0) {
             afterFilterSubqueries.unshift(new Cypher.With("*"));
         }
@@ -185,24 +185,6 @@ export class DisconnectOperation extends MutationOperation {
             projectionExpr: context.returnVariable,
             clauses: [callClause],
         };
-    }
-
-    private getFiltersSubqueries(
-        filters: AuthorizationFilters[],
-        when: "BEFORE" | "AFTER",
-        context: QueryASTContext<Cypher.Node>
-    ): Cypher.Clause[] {
-        return filters
-            .flatMap((authFilter) => {
-                if (when === "BEFORE") {
-                    return authFilter.getSubqueriesBefore(context);
-                }
-
-                return authFilter.getSubqueriesAfter(context);
-            })
-            .map((sq) => {
-                return new Cypher.Call(sq, [context.target]);
-            });
     }
 
     private getAuthorizationClauses(context: QueryASTContext): Cypher.Clause[] {
