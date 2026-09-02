@@ -582,7 +582,8 @@ function generateObjectType({
     ensureNonEmptyInput(composer, concreteEntityAdapter.operations.createInputTypeName);
     if (
         concreteEntityAdapter.isReadableFromConnectionRootQuery(schemaModel) ||
-        concreteEntityAdapter.isAggregable(schemaModel)
+        concreteEntityAdapter.isAggregable(schemaModel) ||
+        concreteEntityAdapter.isGroupable(schemaModel)
     ) {
         complexityEstimatorHelper.registerField(
             "Query",
@@ -616,7 +617,8 @@ function generateObjectType({
             graphqlDirectivesToCompose(propagatedDirectives)
         );
     }
-    if (concreteEntityAdapter.isAggregable(schemaModel)) {
+    // still need to generate aggregation types for field inside groupBy
+    if (concreteEntityAdapter.isAggregable(schemaModel) || concreteEntityAdapter.isGroupable(schemaModel)) {
         withAggregateSelectionType({
             entityAdapter: concreteEntityAdapter,
             aggregationTypesMapper,

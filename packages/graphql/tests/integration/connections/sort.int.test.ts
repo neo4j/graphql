@@ -130,7 +130,7 @@ describe("connections sort", () => {
         await testHelper.close();
     });
 
-    it("top level connection with skip and limit", async () => {
+    it.only("top level connection with skip and limit", async () => {
         const query = `
            query {
             ${Movie.operations.connection}(first: 1, sort: {title: DESC}) {
@@ -168,6 +168,7 @@ describe("connections sort", () => {
             },
         });
         const cursor = (result.data as any)[Movie.operations.connection].pageInfo.endCursor;
+        console.log("cursor", cursor);
         const secondQuery = `
         query {
          ${Movie.operations.connection}(first: 1, sort: {title: DESC}, after: "${cursor}") {

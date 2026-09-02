@@ -5,6 +5,7 @@
 
 import { DirectiveLocation, GraphQLBoolean, GraphQLDirective, GraphQLNonNull } from "graphql";
 
+// TODO: add sth for groupBy arg on Abstract Types - this will not be supported for now
 export const queryDirective = new GraphQLDirective({
     name: "query",
     description:
@@ -24,6 +25,11 @@ export const queryDirective = new GraphQLDirective({
             description: "Disable/Enabled aggregate operations from the connection read operations.",
             type: new GraphQLNonNull(GraphQLBoolean),
             defaultValue: false,
+        },
+        groupBy: {
+            description: "Disable/Enabled groupBy operations from the connection read operations.",
+            type: new GraphQLNonNull(GraphQLBoolean),
+            defaultValue: true,
         },
     },
     locations: [

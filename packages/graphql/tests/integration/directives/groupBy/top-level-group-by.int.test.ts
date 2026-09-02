@@ -31,6 +31,45 @@ describe("@groupBy directive top level", () => {
         await testHelper.close();
     });
 
+    test("groupBy in top level query values only", async () => {
+        await testHelper.executeCypher(`
+            CREATE (:${Movie} {title: "The Matrix", year: 1999})
+            CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001})
+            CREATE (:${Movie} {title: "Another Movie", year: 1999})
+        `);
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.operations.connection} {
+                    groupBy(fields: {year: true}) {
+                        values {
+                            year
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeUndefined();
+        expect(result.data).toEqual({
+            [Movie.operations.connection]: {
+                groupBy: expect.toIncludeSameMembers([
+                    {
+                        values: {
+                            year: 1999,
+                        },
+                    },
+                    {
+                        values: {
+                            year: 2001,
+                        },
+                    },
+                ]),
+            },
+        });
+    });
+
     test("groupBy in top level query without projection", async () => {
         await testHelper.executeCypher(`
             CREATE (:${Movie} {title: "The Matrix", year: 1999})
@@ -507,6 +546,131 @@ describe("@groupBy directive top level", () => {
                                 },
                             },
                         ],
+                    },
+                ]),
+            },
+        });
+    });
+
+    // test("groupBy alongside regular edges with pagination", async () => {
+    //     await testHelper.executeCypher(`
+    //         CREATE (:${Movie} {title: "The Matrix", year: 1999, rating: 5})
+    //         CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001, rating: 7})
+    //         CREATE (:${Movie} {title: "Another Movie", year: 1999, rating: 5})
+    //     `);
+
+    //     const query = /* GraphQL */ `
+    //         query {
+    //             ${Movie.operations.connection}(first: 2) {
+    //                 groupBy(fields: { year: true, rating: true }) {
+    //                     edges {
+    //                         node {
+    //                             title
+    //                         }
+    //                     }
+    //                 }
+    //                 edges {
+    //                     node {
+    //                         title
+    //                     }
+    //                     cursor
+    //                 }
+    //                 pageInfo {
+    //                     hasNextPage
+    //                     endCursor
+    //                 }
+    //             }
+    //         }
+    //     `;
+
+    //     const result = await testHelper.executeGraphQL(query);
+    //     expect(result.errors).toBeUndefined();
+
+    //     const connection = result.data?.[Movie.operations.connection];
+    //     // Regular edges are limited to 2
+    //     expect(connection.edges).toHaveLength(2);
+    //     expect(connection.pageInfo.hasNextPage).toBe(true);
+
+    //     // groupBy operates on all results regardless of pagination
+    //     expect(connection.groupBy).toIncludeSameMembers([
+    //         {
+    //             edges: expect.toIncludeSameMembers([
+    //                 { node: { title: "The Matrix" } },
+    //                 { node: { title: "Another Movie" } },
+    //             ]),
+    //         },
+    //         {
+    //             edges: [{ node: { title: "The Matrix Reloaded" } }],
+    //         },
+    //     ]);
+    // });
+
+    test("groupBy with aggregate inside group", async () => {
+        await testHelper.executeCypher(`
+            CREATE (:${Movie} {title: "The Matrix", year: 1999, rating: 5})
+            CREATE (:${Movie} {title: "Toy Story", year: 1999, rating: 5})
+            CREATE (:${Movie} {title: "Toy Story 2", year: 2001, rating: 5})
+            CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001, rating: 7})
+        `);
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.operations.connection}(first: 1) {
+                    groupBy(fields: { year: true, rating: true }) {
+                        values {
+                            year
+                            rating
+                        }
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                            node {
+                                title {
+                                    longest
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeUndefined();
+
+        expect(result.data).toEqual({
+            [Movie.operations.connection]: {
+                groupBy: expect.toIncludeSameMembers([
+                    {
+                        values: {
+                            year: 1999,
+                            rating: 5,
+                        },
+                        aggregate: {
+                            count: { nodes: 2 },
+                            node: { title: { longest: "The Matrix" } },
+                        },
+                    },
+                    {
+                        values: {
+                            year: 2001,
+                            rating: 7,
+                        },
+                        aggregate: {
+                            count: { nodes: 1 },
+                            node: { title: { longest: "The Matrix Reloaded" } },
+                        },
+                    },
+                    {
+                        values: {
+                            year: 2001,
+                            rating: 5,
+                        },
+                        aggregate: {
+                            count: { nodes: 1 },
+                            node: { title: { longest: "Toy Story 2" } },
+                        },
                     },
                 ]),
             },
