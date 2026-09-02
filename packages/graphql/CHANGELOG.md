@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.6.3
+
+### Patch Changes
+
+- [#7377](https://github.com/neo4j/graphql/pull/7377) [`4d6574e`](https://github.com/neo4j/graphql/commit/4d6574ea9289e8c3bcf426ea5d0bf83a333461e7) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Fix source authorization rules not applied to the source node on delete relationship
+
 ## 7.6.2
 
 ### Patch Changes
