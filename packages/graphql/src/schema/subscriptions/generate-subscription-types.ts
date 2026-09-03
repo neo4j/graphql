@@ -11,7 +11,8 @@ import type { Neo4jGraphQLSchemaModel } from "../../schema-model/Neo4jGraphQLSch
 import { ConcreteEntityAdapter } from "../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { Neo4jFeaturesSettings, NodeSubscriptionsEvent, SubscriptionsEvent } from "../../types";
 import { withWhereInputType } from "../generation/where-input";
-import { generateSubscribeMethod, subscriptionResolve } from "../resolvers/subscriptions/subscribe";
+import { generateSubscribeMethod } from "../resolvers/subscriptions/subscribe";
+import type { WrapSubscriptionArgs } from "../resolvers/composition/wrap-subscription";
 import { attributeAdapterToComposeFields } from "../to-compose";
 type SubscriptionEvents = {
     create: string;
@@ -25,11 +26,13 @@ export function generateSubscriptionTypes({
     schemaModel,
     userDefinedFieldDirectivesForNode,
     features,
+    wrapSubscriptionArgs,
 }: {
     schemaComposer: SchemaComposer;
     schemaModel: Neo4jGraphQLSchemaModel;
     userDefinedFieldDirectivesForNode: Map<string, Map<string, DirectiveNode[]>>;
     features: Neo4jFeaturesSettings | undefined;
+    wrapSubscriptionArgs?: WrapSubscriptionArgs;
 }): void {
     const subscriptionComposer = schemaComposer.Subscription;
 
@@ -125,8 +128,7 @@ export function generateSubscriptionTypes({
                 [entityAdapter.operations.rootTypeFieldNames.subscribe.created]: {
                     ...whereArgument,
                     type: nodeCreatedEvent.NonNull,
-                    subscribe: generateSubscribeMethod({ entityAdapter, type: "create" }),
-                    resolve: subscriptionResolve,
+                    ...generateSubscribeMethod({ entityAdapter, type: "create", wrapSubscriptionArgs }),
                 },
             });
         }
@@ -135,8 +137,7 @@ export function generateSubscriptionTypes({
                 [entityAdapter.operations.rootTypeFieldNames.subscribe.updated]: {
                     ...whereArgument,
                     type: nodeUpdatedEvent.NonNull,
-                    subscribe: generateSubscribeMethod({ entityAdapter, type: "update" }),
-                    resolve: subscriptionResolve,
+                    ...generateSubscribeMethod({ entityAdapter, type: "update", wrapSubscriptionArgs }),
                 },
             });
         }
@@ -146,8 +147,7 @@ export function generateSubscriptionTypes({
                 [entityAdapter.operations.rootTypeFieldNames.subscribe.deleted]: {
                     ...whereArgument,
                     type: nodeDeletedEvent.NonNull,
-                    subscribe: generateSubscribeMethod({ entityAdapter, type: "delete" }),
-                    resolve: subscriptionResolve,
+                    ...generateSubscribeMethod({ entityAdapter, type: "delete", wrapSubscriptionArgs }),
                 },
             });
         }
