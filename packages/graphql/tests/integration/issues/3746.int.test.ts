@@ -238,6 +238,218 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
         expect(gqlResult.errors?.[0]?.message).toBe("Unauthenticated");
     });
 
+    test("should apply field-level authentication annotation on @cypher fields - throw unauthenticated", async () => {
+        const typeDefs = /* GraphQL */ `
+            type JWT @jwt {
+                roles: [String!]!
+            }
+
+            type Query {
+                customField: Int
+                    @cypher(statement: "RETURN 1 as foo", columnName: "foo")
+                    @authentication(jwt: { roles_INCLUDES: "admin" })
+            }
+        `;
+
+        const userId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = /* GraphQL */ `
+            {
+                customField
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
+
+        const token = createBearerToken(secret, { sub: userId, roles: ["user"] });
+
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+        expect(gqlResult.errors).toHaveLength(1);
+        expect(gqlResult.errors?.[0]?.message).toBe("Unauthenticated");
+    });
+
+    test("should apply type-level authentication annotation on @cypher fields - throw unauthenticated", async () => {
+        const typeDefs = /* GraphQL */ `
+            type JWT @jwt {
+                roles: [String!]!
+            }
+
+            type Query @authentication(jwt: { roles_INCLUDES: "admin" }) {
+                customField: Int @cypher(statement: "RETURN 1 as foo", columnName: "foo")
+            }
+        `;
+
+        const userId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = /* GraphQL */ `
+            {
+                customField
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
+
+        const token = createBearerToken(secret, { sub: userId, roles: ["user"] });
+
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+        expect(gqlResult.errors).toHaveLength(1);
+        expect(gqlResult.errors?.[0]?.message).toBe("Unauthenticated");
+    });
+
+    test("should apply type-level authentication annotation on @cypher fields - pass", async () => {
+        const typeDefs = /* GraphQL */ `
+            type JWT @jwt {
+                roles: [String!]!
+            }
+
+            type Query @authentication(jwt: { roles_INCLUDES: "admin" }) {
+                customField: Int @cypher(statement: "RETURN 1 as foo", columnName: "foo")
+            }
+        `;
+
+        const userId = generate({
+            charset: "alphabetic",
+        });
+
+        const query = /* GraphQL */ `
+            {
+                customField
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
+
+        const token = createBearerToken(secret, { sub: userId, roles: ["admin"] });
+
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult.data as any).customField).toBe(1);
+    });
+
+    test("should apply schema-level defined authentication annotation on @cypher fields - throw unauthenticated", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Query {
+                customField: Int @cypher(statement: "RETURN 1 as foo", columnName: "foo")
+            }
+
+            extend schema @authentication(operations: ["READ"])
+        `;
+
+        const query = /* GraphQL */ `
+            {
+                customField
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toHaveLength(1);
+        expect(gqlResult.errors?.[0]?.message).toBe("Unauthenticated");
+    });
+
+    test("should apply type-level authentication annotation on @cypher fields on Mutation - throw unauthenticated", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Query {
+                customField: Int @cypher(statement: "RETURN 1 as foo", columnName: "foo")
+            }
+
+            type Mutation @authentication(operations: ["CREATE"]) {
+                customMutationField: Int @cypher(statement: "RETURN 1 as foo", columnName: "foo")
+            }
+        `;
+
+        const query = /* GraphQL */ `
+            mutation {
+                customMutationField
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toHaveLength(1);
+        expect(gqlResult.errors?.[0]?.message).toBe("Unauthenticated");
+    });
+
+    test("should apply schema-level defined authentication annotation on @cypher fields on Mutation - throw unauthenticated", async () => {
+        const typeDefs = /* GraphQL */ `
+            type Query {
+                customField: Int @cypher(statement: "RETURN 1 as foo", columnName: "foo")
+            }
+
+            type Mutation {
+                customMutationField: Int @cypher(statement: "RETURN 1 as foo", columnName: "foo")
+            }
+
+            extend schema @authentication(operations: ["CREATE"])
+        `;
+
+        const query = /* GraphQL */ `
+            mutation {
+                customMutationField
+            }
+        `;
+
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                },
+            },
+        });
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toHaveLength(1);
+        expect(gqlResult.errors?.[0]?.message).toBe("Unauthenticated");
+    });
+
     test("should apply both type-level and field-level authentication - pass", async () => {
         const typeDefs = /* GraphQL */ `
             type JWT @jwt {
