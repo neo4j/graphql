@@ -42,7 +42,7 @@ jobs:
           package-manager-cache: false
 
       - name: Update npm # Need at least 11.5.1 for OIDC publishing. Pinned to v11: npm 12 changed `npm info --json` output and "already published" errors, breaking `changeset publish` (https://github.com/changesets/changesets/issues/2099)
-        run: npm install -g npm@11.19.0
+        run: npm install -g npm@11.19.1
 
       - name: Install Dependencies
         run: yarn
@@ -54,7 +54,7 @@ jobs:
 
       - name: Create release PR or release
         id: changesets
-        uses: changesets/action@63a615b9cd06ba9a3e6d13796c7fbcb080a60a0b # v1.8.0
+        uses: changesets/action@a45c4d594aa4e2c509dc14a9f2b3b67ba3780d0d # v1.9.0
         with:
           title: changesets for branch `${{ github.ref_name }}`
           version: yarn changeset-version
@@ -78,7 +78,7 @@ jobs:
     steps:
       - name: Send Slack announcement of release
         if: matrix.package.name == '@neo4j/graphql'
-        uses: slackapi/slack-github-action@45a88b9581bfab2566dc881e2cd66d334e621e2c # v3.0.3
+        uses: slackapi/slack-github-action@0d95c9a7becc1e6e297d76df9bc735c44f4cbcbc # v3.0.5
         with:
           payload: |
             version: ${{ matrix.package.version }}
