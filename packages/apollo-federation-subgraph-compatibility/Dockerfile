@@ -4,6 +4,8 @@ WORKDIR /app
 
 COPY ["dist/bundle.js", "./"]
 
+USER node
+
 EXPOSE 4001
 
 CMD [ "node", "bundle.js" ]
