@@ -1,19 +1,41 @@
 name: "ReleaseOps Aura Tests"
-# Executes graphql tests in the ReleaseOps Aura environment as part of the Neo4j ReleaseOps pipeline. 
-# Triggered by ReleaseOps from TeamCity, to validate the new database version, before a release.
+run-name: ${{ inputs.correlation_id || 'ReleaseOps Aura Tests' }}
 on:
   workflow_dispatch:
+    inputs:
+      correlation_id:
+        description: Unique caller identifier
+        type: string
+        required: false
+      database_id:
+        description: Invocation database ID in devreleaseops
+        type: string
+        required: false
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}-aura
-  cancel-in-progress: true
+  group: ${{ github.workflow }}-${{ inputs.database_id || 'legacy' }}
+  cancel-in-progress: false
 
 jobs:
+  validate-target:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate invocation target
+        env:
+          DATABASE_ID: ${{ inputs.database_id }}
+          CORRELATION_ID: ${{ inputs.correlation_id }}
+        shell: bash
+        run: |
+          if [[ -n "$DATABASE_ID" || -n "$CORRELATION_ID" ]]; then
+            [[ "$DATABASE_ID" =~ ^[a-f0-9]{8}$ ]] || exit 1
+            [[ "$CORRELATION_ID" =~ ^releaseops-[0-9]+-[0-9]+$ ]] || exit 1
+          fi
+
   aura-professional-5-tests:
+    needs: validate-target
     uses: ./.github/workflows/reusable-aura-tests.yml
     with:
       BRANCH: ${{ github.head_ref || github.ref }}
     secrets:
-      URI: ${{ secrets.RELEASEOPS_AURA_PROFESSIONAL_5_URI }}
+      URI: ${{ inputs.database_id && format('neo4j+s://{0}-devreleaseops.databases.neo4j-dev.io', inputs.database_id) || secrets.RELEASEOPS_AURA_PROFESSIONAL_5_URI }}
       PASSWORD: ${{ secrets.RELEASEOPS_AURA_PROFESSIONAL_5_PASSWORD }}
-    concurrency: aura-professional-5
