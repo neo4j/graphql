@@ -8,6 +8,8 @@ import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../../src";
 
+// TODO: maybe groupBy.aggregate should be configured somehow?
+// eg @query(groupByAggregate: true)
 describe("@groupBy directive", () => {
     test("enables groupBy on node fields", async () => {
         const typeDefs = gql`

@@ -122,7 +122,8 @@ export class FieldFactory {
     public createAggregationFields(
         entity: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter,
         rawFields: Record<string, ResolveTree>,
-        useDeprecatedAttribute = false
+        useDeprecatedAttribute = false,
+        groupByMode = false
     ): AggregationField[] {
         return filterTruthy(
             Object.values(rawFields).map((field) => {
@@ -138,6 +139,7 @@ export class FieldFactory {
                                 nodes: hasNodes,
                                 edges: hasEdges,
                             },
+                            groupByMode,
                         });
                     }
                     return new DeprecatedCountField({
