@@ -42,7 +42,8 @@
         "test:tck": "jest tests/tck -c jest.minimal.config.js",
         "test:unit": "jest src --coverage=true -c jest.minimal.config.js",
         "test": "jest",
-        "knip": "knip"
+        "knip": "knip",
+        "build-benchmark-workflow": "ts-node tests/performance/build-benchmark-workload.ts"
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
