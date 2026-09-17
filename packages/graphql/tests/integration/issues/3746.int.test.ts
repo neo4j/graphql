@@ -12,9 +12,11 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
     const testHelper = new TestHelper();
     const secret = "secret";
     let User: UniqueType;
+    let UserProfile: UniqueType;
 
     beforeEach(() => {
         User = testHelper.createUniqueType("User");
+        UserProfile = testHelper.createUniqueType("UserProfile");
     });
 
     afterEach(async () => {
@@ -120,11 +122,11 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             const typeDefs = /* GraphQL */ `
                 type ${User} @node {
                     name: String
-                    profile: ${User.name}Profile
-                        @cypher(statement: "MATCH (p:${User.name}Profile) RETURN p LIMIT 1", columnName: "p")
+                    profile: ${UserProfile}
+                        @cypher(statement: "MATCH (p:${UserProfile}) RETURN p LIMIT 1", columnName: "p")
                 }
 
-                type ${User.name}Profile @node @authentication {
+                type ${UserProfile} @node @authentication {
                     email: String
                     secret: String
                 }
@@ -141,7 +143,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
 
             await testHelper.executeCypher(`
                 CREATE (:${User} { name: "Keanu" })
-                CREATE (:${User.name}Profile { email: "keanu@example.com", secret: "keanu-secret" })
+                CREATE (:${UserProfile} { email: "keanu@example.com", secret: "keanu-secret" })
             `);
 
             const query = /* GraphQL */ `
@@ -218,11 +220,11 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             const typeDefs = /* GraphQL */ `
                 type ${User} @node {
                     name: String
-                    profile: ${User.name}Profile
-                        @cypher(statement: "MATCH (p:${User.name}Profile) RETURN p LIMIT 1", columnName: "p")
+                    profile: ${UserProfile}
+                        @cypher(statement: "MATCH (p:${UserProfile}) RETURN p LIMIT 1", columnName: "p")
                 }
 
-                type ${User.name}Profile @node @authentication {
+                type ${UserProfile} @node @authentication {
                     email: String
                 }
             `;
@@ -237,7 +239,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             });
 
             await testHelper.executeCypher(`
-                CREATE (:${User.name}Profile { email: "keanu@example.com" })
+                CREATE (:${UserProfile} { email: "keanu@example.com" })
             `);
 
             const query = /* GraphQL */ `
