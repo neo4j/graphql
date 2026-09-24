@@ -571,7 +571,7 @@ describe("Limit required", () => {
             `;
 
             const gqlResult = await testHelper.executeGraphQL(query);
-            console.log(gqlResult.errors, 0, 2);
+
             expect(gqlResult.errors).toHaveLength(2);
             expect(gqlResult.errors).toIncludeSameMembers([
                 new GraphQLError(

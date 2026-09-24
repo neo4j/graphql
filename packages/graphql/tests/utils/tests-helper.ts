@@ -4,7 +4,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
-import type { ExecutionResult, GraphQLArgs } from "graphql";
+import type { ExecutionResult, GraphQLArgs, GraphQLSchema } from "graphql";
 import { graphql as graphqlRuntime } from "graphql";
 import * as neo4j from "neo4j-driver";
 import type { Neo4jGraphQLConstructor, Neo4jGraphQLContext } from "../../src";
@@ -50,6 +50,14 @@ export class TestHelper {
 
     public get database(): string {
         return this.customDB ?? this._database;
+    }
+
+    public async dryRun(
+        query: string,
+        variableValues?: Record<string, unknown>,
+        schema?: GraphQLSchema
+    ): Promise<{ cypher: string; params: Record<string, unknown> } | undefined> {
+        return this.neo4jGraphQL?.giveMeCypher(query, schema, variableValues);
     }
 
     /** Expectations over a Node label */
@@ -159,6 +167,10 @@ export class TestHelper {
         }
         const schema = await this.neo4jGraphQL.getSchema();
         const useRestrictedUser = process.env.USE_RESTRICTED_USER === "true";
+
+        const translationResult = await this.dryRun(query, args.variableValues || {}, schema);
+        console.log(translationResult?.cypher);
+
         return graphqlRuntime({
             schema,
             ...args,
