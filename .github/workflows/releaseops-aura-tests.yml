@@ -1,4 +1,8 @@
 name: "ReleaseOps Aura Tests"
+# Coordinated callers provide both inputs. The correlation ID becomes the exact
+# run name so the caller can recover its run, while the eight-character hexadecimal
+# database ID selects a database in devreleaseops. Omitting both inputs preserves the
+# legacy secret-based target. Runs are isolated per database and never cancelled.
 run-name: ${{ inputs.correlation_id || 'ReleaseOps Aura Tests' }}
 on:
   workflow_dispatch:
