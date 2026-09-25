@@ -103,6 +103,7 @@ describe("GroupBy query field tests", () => {
             }"
         `);
     });
+    // eslint-disable-next-line jest/no-disabled-tests
     test.skip("Paginated single selection, Movie by title", async () => {
         const query = /* GraphQL */ `
             {
@@ -141,6 +142,7 @@ describe("GroupBy query field tests", () => {
             }"
         `);
     });
+    // eslint-disable-next-line jest/no-disabled-tests
     test.skip("Next page single selection, Movie by title", async () => {
         const query = /* GraphQL */ `
             {
@@ -187,6 +189,7 @@ describe("GroupBy query field tests", () => {
     });
 
     // TODO: to implement
+    // eslint-disable-next-line jest/no-disabled-tests
     test.skip("Aggregate Movies and select", async () => {
         const query = /* GraphQL */ `
             {

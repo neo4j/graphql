@@ -17,12 +17,11 @@ import type { AuthorizationFilters } from "../filters/authorization-filters/Auth
 import type { EntitySelection } from "../selection/EntitySelection";
 import type { OperationTranspileResult } from "./operations";
 import { Operation } from "./operations";
-import { type UnwindSelection } from "../selection/UnwindSelection";
 
 // TODO: somewhat dupe of readOperation
 export class AggregationOperation extends Operation {
     public readonly entity: ConcreteEntityAdapter | RelationshipAdapter; // TODO: normal entities
-    private selection: EntitySelection | UnwindSelection;
+    private selection: EntitySelection;
     protected directed: boolean;
     private groupByMode: boolean;
 
@@ -44,7 +43,7 @@ export class AggregationOperation extends Operation {
     }: {
         entity: ConcreteEntityAdapter | RelationshipAdapter;
         directed?: boolean;
-        selection: EntitySelection | UnwindSelection;
+        selection: EntitySelection;
         groupByMode?: boolean;
     }) {
         super();

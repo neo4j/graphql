@@ -130,7 +130,7 @@ describe("connections sort", () => {
         await testHelper.close();
     });
 
-    it.only("top level connection with skip and limit", async () => {
+    it("top level connection with skip and limit", async () => {
         const query = `
            query {
             ${Movie.operations.connection}(first: 1, sort: {title: DESC}) {
