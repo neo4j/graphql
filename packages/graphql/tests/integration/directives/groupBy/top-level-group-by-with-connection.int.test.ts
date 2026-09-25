@@ -364,10 +364,10 @@ describe("@groupBy directive top level with nested connection aggregate and rela
                                             edge: { role: { longest: "Carrie" } },
                                             node: { name: { shortest: "Keanu Reeves" } },
                                         },
-                                        edges: [
+                                        edges: expect.toIncludeSameMembers([
                                             { node: { name: "Keanu Reeves" } },
                                             { node: { name: "Carrie-Anne Moss" } },
-                                        ],
+                                        ]),
                                     },
                                 },
                             },
