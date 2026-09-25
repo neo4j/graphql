@@ -243,11 +243,16 @@ describe("auth filters", () => {
                 extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creator: { none: { id: { eq: "$jwt.sub" } } } } } }])
             `;
 
-            const userId = generate({
+            const user1Id = generate({
                 charset: "alphabetic",
             });
-
-            const postId = generate({
+            const user2Id = generate({
+                charset: "alphabetic",
+            });
+            const post1Id = generate({
+                charset: "alphabetic",
+            });
+            const post2Id = generate({
                 charset: "alphabetic",
             });
             const query = /* GraphQL */ `
@@ -268,19 +273,23 @@ describe("auth filters", () => {
             });
 
             await testHelper.executeCypher(`
-                    CREATE (u:${User} {id: "${userId}"})
-                    CREATE (p:${Post} {id: "${postId}"})
-                    MERGE (u)-[:HAS_POST]->(p)
+                    CREATE (u1:${User} {id: "${user1Id}"})
+                    CREATE (p1:${Post} {id: "${post1Id}"})
+                    CREATE (u2:${User} {id: "${user2Id}"})
+                    CREATE (p2:${Post} {id: "${post2Id}"})
+                    MERGE (u1)-[:HAS_POST]->(p1)
+                    MERGE (u2)-[:HAS_POST]->(p2)
                 `);
 
-            const token = createBearerToken(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: user1Id });
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeUndefined();
 
             const posts = (gqlResult.data as any)[Post.plural] as any[];
-            expect(posts).toHaveLength(0);
+
+            expect(posts).toEqual([{ id: post2Id }]);
         });
 
         test("user's post should not be returned when none quantifier is used with user's JWT id in connection", async () => {
@@ -298,11 +307,16 @@ describe("auth filters", () => {
                 extend type ${Post} @authorization(filter: [{ operations: [READ], where: { node: { creatorConnection: { none: { node: { id: { eq: "$jwt.sub" } } } } } } }])
             `;
 
-            const userId = generate({
+            const user1Id = generate({
                 charset: "alphabetic",
             });
-
-            const postId = generate({
+            const user2Id = generate({
+                charset: "alphabetic",
+            });
+            const post1Id = generate({
+                charset: "alphabetic",
+            });
+            const post2Id = generate({
                 charset: "alphabetic",
             });
             const query = /* GraphQL */ `
@@ -323,19 +337,23 @@ describe("auth filters", () => {
             });
 
             await testHelper.executeCypher(`
-                    CREATE (u:${User} {id: "${userId}"})
-                    CREATE (p:${Post} {id: "${postId}"})
-                    MERGE (u)-[:HAS_POST]->(p)
+                    CREATE (u1:${User} {id: "${user1Id}"})
+                    CREATE (p1:${Post} {id: "${post1Id}"})
+                    CREATE (u2:${User} {id: "${user2Id}"})
+                    CREATE (p2:${Post} {id: "${post2Id}"})
+                    MERGE (u1)-[:HAS_POST]->(p1)
+                    MERGE (u2)-[:HAS_POST]->(p2)
                 `);
 
-            const token = createBearerToken(secret, { sub: userId });
+            const token = createBearerToken(secret, { sub: user1Id });
 
             const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
             expect(gqlResult.errors).toBeUndefined();
 
             const posts = (gqlResult.data as any)[Post.plural] as any[];
-            expect(posts).toHaveLength(0);
+
+            expect(posts).toEqual([{ id: post2Id }]);
         });
 
         test("should add $jwt.id to where on a relationship(using connection)", async () => {
