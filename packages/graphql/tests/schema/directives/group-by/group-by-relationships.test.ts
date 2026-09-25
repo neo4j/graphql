@@ -67,7 +67,9 @@ describe("@groupBy directive", () => {
             }
 
             type ActorGroupBy {
+              aggregate: ActorAggregate!
               edges: [ActorGroupByEdge!]!
+              values: ActorGroupByValues
             }
 
             type ActorGroupByEdge {
@@ -76,6 +78,10 @@ describe("@groupBy directive", () => {
 
             input ActorGroupByInput {
               name: Boolean
+            }
+
+            type ActorGroupByValues {
+              name: String
             }
 
             input ActorRelationshipFilters {
@@ -324,7 +330,9 @@ describe("@groupBy directive", () => {
             }
 
             type MovieGroupBy {
+              aggregate: MovieAggregate!
               edges: [MovieGroupByEdge!]!
+              values: MovieGroupByValues
             }
 
             type MovieGroupByEdge {
@@ -333,6 +341,10 @@ describe("@groupBy directive", () => {
 
             input MovieGroupByInput {
               title: Boolean
+            }
+
+            type MovieGroupByValues {
+              title: String
             }
 
             \\"\\"\\"

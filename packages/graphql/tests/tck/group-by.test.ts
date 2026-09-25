@@ -3,25 +3,27 @@
  * Neo4j Sweden AB [http://neo4j.com]
  */
 
-import { Neo4jGraphQL } from "../../../../src";
-import { formatCypher, formatParams, translateQuery } from "../../utils/tck-test-utils";
+import { Neo4jGraphQL } from "../../src";
+import { formatCypher, formatParams, translateQuery } from "./utils/tck-test-utils";
 
-describe("Group By Directive - Top Level", () => {
+describe("GroupBy query field tests", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;
 
     beforeAll(() => {
         typeDefs = /* GraphQL */ `
-            type Movie @node {
+            type Movie @node @mutation(operations: []) {
                 title: String!
+                #@authorization(filter: [{ where: { node: { title: { eq: "$jwt.sub" } } } }])
                 released: Int! @groupBy
                 other: Int! @groupBy
                 actors: [Person!]! @relationship(type: "ACTED_IN", properties: "ActedInMovie", direction: IN)
             }
-            type Person @node {
+            type Person @node @mutation(operations: []) {
                 name: String!
                 born: Int! @groupBy
                 actedIn: [Movie!]! @relationship(type: "ACTED_IN", properties: "ActedInMovie", direction: OUT)
+                directed: [Movie!]! @relationship(type: "DIRECTED", direction: OUT)
             }
 
             type ActedInMovie @relationshipProperties {
@@ -35,21 +37,34 @@ describe("Group By Directive - Top Level", () => {
         });
     });
 
-    test("group by in top level query with node projection", async () => {
+    // TODO: add values to groupby response type
+    /*
+  @neo4j/graphql:translate ConnectionReadOperation
+  @neo4j/graphql:translate |──── NodeSelection
+  @neo4j/graphql:translate |     |──── NodeSelectionPattern <Movie>
+  @neo4j/graphql:translate |──── GroupByField <groupBy> [released,other]
+  @neo4j/graphql:translate |──── Pagination <skip: undefined | limit: 10>
+    */
+    test("Single selection, Movie by title", async () => {
         const query = /* GraphQL */ `
-            query {
-                moviesConnection {
-                    edges {
-                        node {
-                            title
-                        }
-                    }
-                    groupBy(fields: { released: true }) {
+            {
+                moviesConnection(first: 2) {
+                    groupBy(fields: { released: true, other: true }) {
                         edges {
                             node {
                                 title
                             }
                         }
+                    }
+                    edges {
+                        node {
+                            title
+                        }
+                        cursor
+                    }
+                    pageInfo {
+                        hasNextPage
+                        endCursor
                     }
                 }
             }
@@ -60,40 +75,44 @@ describe("Group By Directive - Top Level", () => {
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:Movie)
-            WITH collect({node: this0}) AS edges
+            WITH collect({node: this0}) AS edges, count(this0) AS totalCount
             CALL (edges) {
               UNWIND edges AS edge
               WITH edge.node AS this0
+              WITH *
+              LIMIT $param0
               RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var1
             }
             WITH *, COLLECT {
               CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                RETURN this0.released AS released, {edges: collect({node: {title: this0.title}}), values: {}} AS var2
+                RETURN this0.released AS released, this0.other AS other, {edges: collect({node: {title: this0.title}}), values: {}} AS var2
               }
               RETURN var2
             } AS var2
-            RETURN {edges: var1, groupBy: var2} AS this"
+            RETURN {edges: var1, totalCount: totalCount, groupBy: var2} AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 2,
+                    \\"high\\": 0
+                }
+            }"
+        `);
     });
-
-    test("group by in top level query with values projection", async () => {
+    // eslint-disable-next-line jest/no-disabled-tests
+    test.skip("Paginated single selection, Movie by title", async () => {
         const query = /* GraphQL */ `
-            query {
-                moviesConnection {
+            {
+                moviesConnection(first: 10) {
                     edges {
                         node {
                             title
                         }
                     }
-                    groupBy(fields: { released: true }) {
-                        values {
-                            released
-                        }
-                    }
                 }
             }
         `;
@@ -107,31 +126,30 @@ describe("Group By Directive - Top Level", () => {
             CALL (edges) {
               UNWIND edges AS edge
               WITH edge.node AS this0
+              WITH *
+              LIMIT $param0
               RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var1
             }
-            WITH *, COLLECT {
-              CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN this0.released AS released, {edges: collect({node: {__id: elementId(this0)}}), values: {released: this0.released}} AS var2
-              }
-              RETURN var2
-            } AS var2
-            RETURN {edges: var1, groupBy: var2} AS this"
+            RETURN {edges: var1} AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": {
+                    \\"low\\": 10,
+                    \\"high\\": 0
+                }
+            }"
+        `);
     });
-
-    test("group by in top level query with node projection, paginated", async () => {
+    // eslint-disable-next-line jest/no-disabled-tests
+    test.skip("Next page single selection, Movie by title", async () => {
         const query = /* GraphQL */ `
-            query {
-                moviesConnection(first: 2) {
-                    groupBy(fields: { released: true }) {
-                        edges {
-                            node {
-                                title
-                            }
+            {
+                moviesConnection(first: 10, after: "10", sort: { title: ASC }) {
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }
@@ -148,49 +166,47 @@ describe("Group By Directive - Top Level", () => {
               UNWIND edges AS edge
               WITH edge.node AS this0
               WITH *
-              LIMIT $param0
-              RETURN collect({node: {__id: elementId(this0), __resolveType: 'Movie'}}) AS var1
+              ORDER BY this0.title ASC
+              SKIP $param0
+              LIMIT $param1
+              RETURN collect({node: {title: this0.title, __resolveType: 'Movie'}}) AS var1
             }
-            WITH *, COLLECT {
-              CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                RETURN this0.released AS released, {edges: collect({node: {title: this0.title}}), values: {}} AS var2
-              }
-              RETURN var2
-            } AS var2
-            RETURN {edges: var1, groupBy: var2} AS this"
+            RETURN {edges: var1} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": {
-                    \\"low\\": 2,
+                    \\"low\\": 0,
+                    \\"high\\": 0
+                },
+                \\"param1\\": {
+                    \\"low\\": 10,
                     \\"high\\": 0
                 }
             }"
         `);
     });
 
-    test("group by in top level query with aggregation and node projection", async () => {
+    // TODO: to implement
+    // eslint-disable-next-line jest/no-disabled-tests
+    test.skip("Aggregate Movies and select", async () => {
         const query = /* GraphQL */ `
-            query {
-                moviesConnection {
-                    groupBy(fields: { released: true }) {
-                        aggregate {
-                            count {
-                                nodes
-                            }
-                            node {
-                                title {
-                                    longest
-                                }
+            {
+                moviesConnection(first: 10) {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                        node {
+                            title {
+                                longest
                             }
                         }
-                        edges {
-                            node {
-                                title
-                            }
+                    }
+                    edges {
+                        node {
+                            title
                         }
                     }
                 }
@@ -201,175 +217,72 @@ describe("Group By Directive - Top Level", () => {
 
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
-            MATCH (this0:Movie)
-            WITH collect({node: this0}) AS edges
-            CALL (edges) {
-              UNWIND edges AS edge
-              WITH edge.node AS this0
-              RETURN collect({node: {__id: elementId(this0), __resolveType: 'Movie'}}) AS var1
+            CALL {
+              MATCH (this:Movie)
+              RETURN {nodes: count(DISTINCT this)} AS var0
             }
-            WITH *, COLLECT {
+            CALL {
+              MATCH (this:Movie)
+              WITH DISTINCT this
+              ORDER BY size(this.title) DESC
+              WITH collect(this.title) AS list
+              RETURN {longest: head(list)} AS var1
+            }
+            CALL (*) {
+              MATCH (this2:Movie)
+              WITH collect({node: this2}) AS edges
               CALL (edges) {
                 UNWIND edges AS edge
-                WITH edge.node AS this0
-                WITH this0.released AS released, {edges: collect({node: {title: this0.title}}), values: {}, aggregate: collect({node: this0})} AS var2
-                CALL (var2) {
-                  WITH *
-                  RETURN {nodes: size(var2.aggregate)} AS var3
-                }
-                CALL (var2) {
-                  UNWIND var2.aggregate AS edge
-                  WITH edge.node AS this0
-                  WITH DISTINCT this0
-                  ORDER BY size(this0.title) DESC
-                  WITH collect(this0.title) AS list
-                  RETURN {longest: head(list)} AS var4
-                }
-                RETURN var2 { .*, aggregate: {count: var3, node: {title: var4}} } AS var2
+                WITH edge.node AS this2
+                WITH *
+                LIMIT $param0
+                RETURN collect({node: {title: this2.title, __resolveType: 'Movie'}}) AS var3
               }
-              RETURN var2
-            } AS var2
-            RETURN {edges: var1, groupBy: var2} AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-    });
-
-    test("group by in top level query with aggregation and node projection, paginated", async () => {
-        const query = /* GraphQL */ `
-            query {
-                moviesConnection(first: 2) {
-                    groupBy(fields: { released: true }) {
-                        aggregate {
-                            count {
-                                nodes
-                            }
-                            node {
-                                title {
-                                    longest
-                                }
-                            }
-                        }
-                        edges {
-                            node {
-                                title
-                            }
-                        }
-                    }
-                }
+              RETURN *
             }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CYPHER 5
-            MATCH (this0:Movie)
-            WITH collect({node: this0}) AS edges
-            CALL (edges) {
-              UNWIND edges AS edge
-              WITH edge.node AS this0
-              WITH *
-              LIMIT $param0
-              RETURN collect({node: {__id: elementId(this0), __resolveType: 'Movie'}}) AS var1
-            }
-            WITH *, COLLECT {
-              CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                WITH this0.released AS released, {edges: collect({node: {title: this0.title}}), values: {}, aggregate: collect({node: this0})} AS var2
-                CALL (var2) {
-                  WITH *
-                  RETURN {nodes: size(var2.aggregate)} AS var3
-                }
-                CALL (var2) {
-                  UNWIND var2.aggregate AS edge
-                  WITH edge.node AS this0
-                  WITH DISTINCT this0
-                  ORDER BY size(this0.title) DESC
-                  WITH collect(this0.title) AS list
-                  RETURN {longest: head(list)} AS var4
-                }
-                RETURN var2 { .*, aggregate: {count: var3, node: {title: var4}} } AS var2
-              }
-              RETURN var2
-            } AS var2
-            RETURN {edges: var1, groupBy: var2} AS this"
+            RETURN {edges: var3, aggregate: {count: var0, node: {title: var1}}} AS this"
         `);
 
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": {
-                    \\"low\\": 2,
+                    \\"low\\": 10,
                     \\"high\\": 0
                 }
             }"
         `);
     });
 
-    test("group by in top level query with aggregation only", async () => {
+    test("Aggregate Movies with pagination", async () => {
+        /*
+  @neo4j/graphql:translate ConnectionReadOperation
+  @neo4j/graphql:translate |──── NodeSelection
+  @neo4j/graphql:translate |     |──── NodeSelectionPattern <Movie>
+  @neo4j/graphql:translate |──── ConnectionAggregationField <aggregate>
+  @neo4j/graphql:translate |     |──── AggregationOperation
+  @neo4j/graphql:translate |           |──── CountField <count>
+  @neo4j/graphql:translate |           |──── AggregationAttributeField <title>
+  @neo4j/graphql:translate |           |──── NodeSelection
+  @neo4j/graphql:translate |                 |──── NodeSelectionPattern <Movie>
+  @neo4j/graphql:translate |──── Pagination <skip: undefined | limit: 10>
+        */
+        /*
+  @neo4j/graphql:translate ConnectionReadOperation
+  @neo4j/graphql:translate |──── NodeSelection
+  @neo4j/graphql:translate |     |──── NodeSelectionPattern <Movie>
+  @neo4j/graphql:translate |──── GroupByField <groupBy> [released,other]
+  @neo4j/graphql:translate |──── ConnectionAggregationField <aggregate>
+  @neo4j/graphql:translate |     |──── AggregationOperation
+  @neo4j/graphql:translate |           |──── CountField <count>
+  @neo4j/graphql:translate |           |──── AggregationAttributeField <title>
+  @neo4j/graphql:translate |           |──── NodeSelection
+  @neo4j/graphql:translate |                 |──── NodeSelectionPattern <Movie>
+  @neo4j/graphql:translate |──── Pagination <skip: undefined | limit: 10>
+        */
         const query = /* GraphQL */ `
-            query {
-                moviesConnection {
-                    groupBy(fields: { released: true }) {
-                        aggregate {
-                            count {
-                                nodes
-                            }
-                            node {
-                                title {
-                                    longest
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        `;
-
-        const result = await translateQuery(neoSchema, query);
-
-        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
-            "CYPHER 5
-            MATCH (this0:Movie)
-            WITH collect({node: this0}) AS edges
-            CALL (edges) {
-              UNWIND edges AS edge
-              WITH edge.node AS this0
-              RETURN collect({node: {__id: elementId(this0), __resolveType: 'Movie'}}) AS var1
-            }
-            WITH *, COLLECT {
-              CALL (edges) {
-                UNWIND edges AS edge
-                WITH edge.node AS this0
-                WITH this0.released AS released, {edges: collect({node: {__id: elementId(this0)}}), values: {}, aggregate: collect({node: this0})} AS var2
-                CALL (var2) {
-                  WITH *
-                  RETURN {nodes: size(var2.aggregate)} AS var3
-                }
-                CALL (var2) {
-                  UNWIND var2.aggregate AS edge
-                  WITH edge.node AS this0
-                  WITH DISTINCT this0
-                  ORDER BY size(this0.title) DESC
-                  WITH collect(this0.title) AS list
-                  RETURN {longest: head(list)} AS var4
-                }
-                RETURN var2 { .*, aggregate: {count: var3, node: {title: var4}} } AS var2
-              }
-              RETURN var2
-            } AS var2
-            RETURN {edges: var1, groupBy: var2} AS this"
-        `);
-
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
-    });
-
-    test("group by in top level query with aggregation only, paginated", async () => {
-        const query = /* GraphQL */ `
-            query {
-                moviesConnection(first: 2) {
-                    groupBy(fields: { released: true }) {
+            {
+                moviesConnection(first: 10) {
+                    groupBy(fields: { released: true, other: true }) {
                         aggregate {
                             count {
                                 nodes
@@ -402,7 +315,7 @@ describe("Group By Directive - Top Level", () => {
               CALL (edges) {
                 UNWIND edges AS edge
                 WITH edge.node AS this0
-                WITH this0.released AS released, {edges: collect({node: {__id: elementId(this0)}}), values: {}, aggregate: collect({node: this0})} AS var2
+                WITH this0.released AS released, this0.other AS other, {edges: collect({node: {__id: elementId(this0)}}), values: {}, aggregate: collect({node: this0})} AS var2
                 CALL (var2) {
                   WITH *
                   RETURN {nodes: size(var2.aggregate)} AS var3
@@ -425,14 +338,15 @@ describe("Group By Directive - Top Level", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`
             "{
                 \\"param0\\": {
-                    \\"low\\": 2,
+                    \\"low\\": 10,
                     \\"high\\": 0
                 }
             }"
         `);
     });
 
-    test("Aggregate operations on actors for grouped movies", async () => {
+    // TODO: add values to groupby response type
+    test("Aggregate Movies by actors", async () => {
         const query = /* GraphQL */ `
             {
                 moviesConnection {

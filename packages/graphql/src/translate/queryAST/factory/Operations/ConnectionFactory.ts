@@ -405,8 +405,80 @@ export class ConnectionFactory {
                     resolveTreeNodeFields,
                     context
                 );
-
                 groupBy.setNodeFields(nodeFields);
+
+                const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+                    entity: target,
+                    operations: ["READ"],
+                    attributes: this.queryASTFactory.operationsFactory.getSelectedAttributes(
+                        target,
+                        resolveTreeNodeFields
+                    ),
+                    context,
+                    skipEntityAuth: true,
+                });
+                operation.addAuthFilters(...authFilters);
+            }
+        }
+        const valuesResolveTree =
+            resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()]?.values;
+        if (valuesResolveTree) {
+            const resolveTreeNodeFields = getFieldsByTypeName(
+                valuesResolveTree,
+                target.operations.getConnectionGroupByValuesTypename()
+            );
+
+            const valuesFields = this.queryASTFactory.fieldFactory.createFields(target, resolveTreeNodeFields, context);
+
+            groupBy.setValuesFields(valuesFields);
+
+            const attributes = this.queryASTFactory.operationsFactory.getSelectedAttributes(
+                target,
+                resolveTreeNodeFields
+            );
+            const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+                entity: target,
+                operations: ["READ"],
+                attributes,
+                context,
+                skipEntityAuth: true,
+            });
+            operation.addAuthFilters(...authFilters);
+        }
+        const resolveTreeAggregate =
+            resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()]?.aggregate;
+        if (resolveTreeAggregate) {
+            const aggregationOperation = this.aggregateFactory.createAggregationOperation({
+                entityOrRel: target,
+                resolveTree: resolveTreeAggregate,
+                context,
+                groupByMode: true,
+                // extraWhereArgs: whereArgs,
+            });
+
+            const aggregationField = new ConnectionAggregationField({
+                alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
+                nodeAlias: "node",
+                operation: aggregationOperation,
+            });
+
+            groupBy.setAggregationField(aggregationField);
+
+            const resolveTreeAggregateFields =
+                resolveTreeAggregate?.fieldsByTypeName[target.operations.aggregateTypeNames.connection]?.node
+                    ?.fieldsByTypeName[target.operations.aggregateTypeNames.node];
+
+            if (resolveTreeAggregateFields) {
+                const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+                    entity: target,
+                    operations: ["READ"],
+                    attributes: this.queryASTFactory.operationsFactory.getSelectedAttributes(
+                        target,
+                        resolveTreeAggregateFields
+                    ),
+                    context,
+                });
+                operation.addAuthFilters(...authFilters);
             }
         }
 

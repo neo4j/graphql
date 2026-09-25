@@ -42,9 +42,11 @@ export class AuthorizationFactory {
     public getAuthFilters({
         attributes,
         afterValidation = false,
+        skipEntityAuth = false,
         ...params
     }: AuthParams & {
         afterValidation?: boolean;
+        skipEntityAuth?: boolean;
         attributes?: AttributeAdapter[];
     }): AuthorizationFilters[] {
         const authorizationFilters = this.createAuthFilterRule({
@@ -96,6 +98,9 @@ export class AuthorizationFactory {
             }
         }
 
+        if (skipEntityAuth) {
+            return filterTruthy([...attributeAuthFilters, ...attributeAuthValidate]);
+        }
         return filterTruthy([
             authorizationFilters,
             ...attributeAuthFilters,
