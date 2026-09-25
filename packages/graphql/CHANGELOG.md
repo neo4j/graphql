@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.6.4
+
+### Patch Changes
+
+- [#7381](https://github.com/neo4j/graphql/pull/7381) [`79e77b5`](https://github.com/neo4j/graphql/commit/79e77b5711132d2e6a3a8f6bbcc219e2a50cb554) Thanks [@risset](https://github.com/risset)! - Fix type-level `@authentication` not enforced on entities returned by `@cypher` fields
+
 ## 7.6.3
 
 ### Patch Changes
