@@ -10,7 +10,6 @@ import { QueryASTContext } from "../../QueryASTContext";
 import type { QueryASTNode } from "../../QueryASTNode";
 import { Field } from "../Field";
 
-// TODO: check print method
 export class GroupByField extends Field {
     private by: string[];
 
@@ -51,8 +50,12 @@ export class GroupByField extends Field {
     }
 
     public getChildren(): QueryASTNode[] {
-        // ?? add valuesFields
-        return [...this.nodeFields, ...this.edgeFields, ...(this.aggregationField ? [this.aggregationField] : [])];
+        return [
+            ...this.nodeFields,
+            ...this.edgeFields,
+            ...(this.aggregationField ? [this.aggregationField] : []),
+            ...this.valuesFields,
+        ];
     }
 
     public getSubqueries(context: QueryASTContext): Clause[] {

@@ -41,7 +41,6 @@ export class CountField extends AggregationField {
     }
 
     public getAggregationExpr(variable: Cypher.Variable): Cypher.Expr {
-        // context.varTarget.property("edges");
         return this.groupByMode ? Cypher.size(variable.property("aggregate")) : Cypher.count(variable).distinct();
     }
 
