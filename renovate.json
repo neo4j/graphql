@@ -37,5 +37,15 @@
             "allowedVersions": "15",
             "matchPackageNames": ["/graphql/"]
         }
+    ],
+    "customManagers": [
+        {
+            "customType": "regex",
+            "description": "Update the npm version pinned in the release workflow",
+            "managerFilePatterns": ["/^\\.github/workflows/release\\.yml$/"],
+            "matchStrings": ["npm install -g npm@(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
+            "depNameTemplate": "npm",
+            "datasourceTemplate": "npm"
+        }
     ]
 }

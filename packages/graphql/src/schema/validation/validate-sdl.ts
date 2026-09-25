@@ -7,7 +7,7 @@ import type { Maybe } from "@graphql-tools/utils";
 import type { ASTVisitor, DocumentNode, GraphQLError, GraphQLSchema } from "graphql";
 import { visit, visitInParallel } from "graphql";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import type { Neo4jGraphQLCallbacks } from "../../types";
+import type { Neo4jGraphQLCallbacks, Neo4jVectorSettings } from "../../types";
 import { Neo4jValidationContext } from "./Neo4jValidationContext";
 import { mapError } from "./utils/map-error";
 
@@ -17,7 +17,8 @@ export function validateSDL(
     documentAST: DocumentNode,
     rules: ReadonlyArray<Neo4jValidationRule>,
     schemaToExtend?: Maybe<GraphQLSchema>,
-    callbacks?: Neo4jGraphQLCallbacks
+    callbacks?: Neo4jGraphQLCallbacks,
+    vectors?: Neo4jVectorSettings
 ): ReadonlyArray<GraphQLError> {
     const errors: Array<GraphQLError> = [];
     const context = new Neo4jValidationContext(
@@ -27,7 +28,8 @@ export function validateSDL(
             const mappedError = mapError(error);
             errors.push(mappedError);
         },
-        callbacks
+        callbacks,
+        vectors
     );
     const visitors = rules.map((rule) => rule(context));
     visit(documentAST, visitInParallel(visitors));

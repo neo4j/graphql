@@ -1,5 +1,71 @@
 # @neo4j/graphql
 
+## 7.6.3
+
+### Patch Changes
+
+- [#7377](https://github.com/neo4j/graphql/pull/7377) [`4d6574e`](https://github.com/neo4j/graphql/commit/4d6574ea9289e8c3bcf426ea5d0bf83a333461e7) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Fix source authorization rules not applied to the source node on delete relationship
+
+## 7.6.2
+
+### Patch Changes
+
+- [#7373](https://github.com/neo4j/graphql/pull/7373) [`56903f7`](https://github.com/neo4j/graphql/commit/56903f7e9bfb7464c905f4862bb36c89c017c235) Thanks [@a-alle](https://github.com/a-alle)! - Fix authorization rules not applied correctly on create relationship
+
+## 7.6.1
+
+### Patch Changes
+
+- [#7370](https://github.com/neo4j/graphql/pull/7370) [`a9531c6`](https://github.com/neo4j/graphql/commit/a9531c66029faa25df3efbba633f20b9e36f5d8b) Thanks [@risset](https://github.com/risset)! - `@vector` provider configuration is now validated at schema build time.
+
+    Previously, when a `@vector` index declared a `provider` but no matching
+    configuration was supplied in `features.vector`, this only surfaced as an error
+    at query time.
+
+- [#7367](https://github.com/neo4j/graphql/pull/7367) [`d9a084e`](https://github.com/neo4j/graphql/commit/d9a084ece8a6f54a00de8073a387926a949d5f9d) Thanks [@risset](https://github.com/risset)! - Relax validation of @relationship field uniqueness when duplicate relationship has the @deprecated annotation
+
+## 7.6.0
+
+### Minor Changes
+
+- [#7353](https://github.com/neo4j/graphql/pull/7353) [`e3efbe4`](https://github.com/neo4j/graphql/commit/e3efbe442f47f3a4f4d1e3b936d8d25da975a567) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Add an optional `maxPhraseLength` argument to the indexes of the `@vector` directive, capping the character length of the `phrase` argument accepted by the generated vector query:
+
+    ```graphql
+    type Movie
+        @node
+        @vector(
+            indexes: [
+                {
+                    indexName: "movie_index"
+                    embeddingProperty: "movieVector"
+                    queryName: "moviesByPhrase"
+                    provider: OPEN_AI
+                    maxPhraseLength: 100
+                }
+            ]
+        ) {
+        title: String!
+    }
+    ```
+
+    Queries supplying a longer `phrase` are rejected with a `Neo4jGraphQLError` before any Cypher is generated or any embedding provider call is made, giving server owners a per-index guardrail against unbounded embedding costs. The limit is measured in characters (Unicode code points), must be at least 1, and does not affect the `vector` (list of `Float`) input. Because it caps the `phrase` argument, `maxPhraseLength` can only be set on a phrase-capable index (one with a `provider` or `callback`); setting it on a vector-only index fails at schema build time.
+
+### Patch Changes
+
+- [`1ed675f`](https://github.com/neo4j/graphql/commit/1ed675f04dd86ce77b2ba236e4cae5caa39aedd0) Thanks [@risset](https://github.com/risset)! - Fix a privilege-escalation vulnerability where a field-level `@authentication` rule on a root custom-resolver field was silently ignored when the operation type also carried a type-level `@authentication` rule. Type-level and field-level `@authentication` are now enforced independently, so stricter per-field requirements (such as a required JWT role) are applied as declared.
+
+## 7.5.6
+
+### Patch Changes
+
+- [`7e60511`](https://github.com/neo4j/graphql/commit/7e60511dc4cd9dd4299d7a46fabd4771fb2d4d9d) Thanks [@Liam-Doodson](https://github.com/Liam-Doodson)! - Fix an authentication and authorization bypass on GraphQL Subscriptions. A JWT supplied by the client in the WebSocket connection parameters was trusted without verification; subscriptions now authenticate only with a cryptographically verified `token`, and a pre-decoded JWT is trusted only when set on the server-side context.
+
+## 7.5.5
+
+### Patch Changes
+
+- [#7344](https://github.com/neo4j/graphql/pull/7344) [`56ae726`](https://github.com/neo4j/graphql/commit/56ae72613e88151c5111e124c8932affaf2d6338) Thanks [@vivientran42](https://github.com/vivientran42)! - Parameterise AI provider API keys.
+
 ## 7.5.4
 
 ### Patch Changes

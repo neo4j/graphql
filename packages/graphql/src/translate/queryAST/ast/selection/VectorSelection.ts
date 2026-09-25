@@ -4,6 +4,7 @@
  */
 
 import Cypher from "@neo4j/cypher-builder";
+import { Neo4jGraphQLError } from "../../../../classes/Error";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import { mapLabelsWithContext } from "../../../../schema-model/utils/map-labels-with-context";
 import type { Neo4jVectorSettings } from "../../../../types";
@@ -39,6 +40,18 @@ export class VectorSelection extends EntitySelection {
         nestedContext: QueryASTContext<Cypher.Node>;
         selection: SelectionClause;
     } {
+        const maxPhraseLength = this.vectorOptions.index.maxPhraseLength;
+        if (maxPhraseLength != null && this.vectorOptions.phrase != null) {
+            // Count Unicode code points (spread) rather than UTF-16 code units (.length) so the
+            // "characters" limit matches user expectations for surrogate-pair characters (e.g. emoji).
+            const phraseLength = [...this.vectorOptions.phrase].length;
+            if (phraseLength > maxPhraseLength) {
+                throw new Neo4jGraphQLError(
+                    `Invalid vector query: phrase is ${phraseLength} characters, but the maximum allowed length for this query is ${maxPhraseLength} characters.`
+                );
+            }
+        }
+
         const node = new Cypher.Node();
         const vectorParam = new Cypher.Param(this.vectorOptions.vector);
         const phraseParam = new Cypher.Param(this.vectorOptions.phrase);
@@ -63,13 +76,46 @@ export class VectorSelection extends EntitySelection {
             }
 
             const providerSettings = this.settings[this.vectorOptions.index.provider];
+
+            let providerSettingsParams = {};
+            if (this.vectorOptions.index.provider === "VertexAI") {
+                providerSettingsParams = {
+                    token: new Cypher.Param(providerSettings.token),
+                    projectId: new Cypher.Param(providerSettings.projectId),
+                    model: new Cypher.Param(providerSettings.model),
+                    region: new Cypher.Param(providerSettings.region),
+                };
+            }
+            if (this.vectorOptions.index.provider === "OpenAI") {
+                providerSettingsParams = {
+                    token: new Cypher.Param(providerSettings.token),
+                    model: new Cypher.Param(providerSettings.model),
+                    dimensions: new Cypher.Param(providerSettings.dimensions),
+                };
+            }
+            if (this.vectorOptions.index.provider === "AzureOpenAI") {
+                providerSettingsParams = {
+                    token: new Cypher.Param(providerSettings.token),
+                    resource: new Cypher.Param(providerSettings.resource),
+                    deployment: new Cypher.Param(providerSettings.deployment),
+                };
+            }
+            if (this.vectorOptions.index.provider === "Bedrock") {
+                providerSettingsParams = {
+                    accessKeyId: new Cypher.Param(providerSettings.accessKeyId),
+                    secretAccessKey: new Cypher.Param(providerSettings.secretAccessKey),
+                    model: new Cypher.Param(providerSettings.model),
+                    region: new Cypher.Param(providerSettings.region),
+                };
+            }
+
             const asQueryVector = new Cypher.Variable();
             const vectorProcedure = Cypher.db.index.vector.queryNodes(indexName, 4, asQueryVector);
 
             const encodeFunction = Cypher.genai.vector.encode(
                 phraseParam,
                 this.vectorOptions.index.provider,
-                providerSettings
+                providerSettingsParams
             );
 
             vectorClause = new Cypher.With([encodeFunction, asQueryVector])

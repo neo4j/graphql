@@ -10,6 +10,7 @@ export type VectorField = {
     embeddingProperty: string;
     queryName: string;
     provider?: string;
+    maxPhraseLength?: number;
     callback?: string;
 };
 
