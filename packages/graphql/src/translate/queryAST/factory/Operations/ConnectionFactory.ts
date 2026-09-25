@@ -36,7 +36,6 @@ import { getFieldsByTypeName } from "../parsers/get-fields-by-type-name";
 import { AggregateFactory } from "./AggregateFactory";
 import { FulltextFactory } from "./FulltextFactory";
 import { GroupByFactory } from "./GroupByFactory";
-import { UnwindSelection } from "../../ast/selection/UnwindSelection";
 
 export class ConnectionFactory {
     private queryASTFactory: QueryASTFactory;
