@@ -67,6 +67,16 @@ export class AggregationOperation extends Operation {
     }
 
     public getChildren(): QueryASTNode[] {
+        if (this.groupByMode) {
+            // groupBy skips this.authFilters bc it adds filters to top-level match instead of inside every aggregation subquery
+            return filterTruthy([
+                ...this.fields,
+                ...this.nodeFields,
+                ...this.edgeFields,
+                ...this.filters,
+                this.selection,
+            ]);
+        }
         return filterTruthy([
             ...this.fields,
             ...this.nodeFields,
@@ -179,11 +189,19 @@ export class AggregationOperation extends Operation {
     }
 
     private getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        if (this.groupByMode) {
+            // groupBy adds filters to top-level match instead of inside every aggregation subquery
+            return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)));
+        }
         const authPredicates = this.getAuthFilterPredicate(queryASTContext);
         return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authPredicates);
     }
 
     private getValidations(queryASTContext: QueryASTContext): Cypher.VoidProcedure[] {
+        if (this.groupByMode) {
+            // groupBy adds validations to top-level match instead of inside every aggregation subquery
+            return [];
+        }
         return filterTruthy(this.authFilters.flatMap((f) => f.getValidation(queryASTContext)));
     }
 

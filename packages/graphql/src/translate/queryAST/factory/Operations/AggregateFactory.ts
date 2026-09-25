@@ -530,7 +530,6 @@ export class AggregateFactory {
                         ...rawProjectionFields,
                     }),
                 });
-
                 operation.addAuthFilters(...authFilters);
             }
             operation.setFields(fields);

@@ -406,8 +406,21 @@ export class ConnectionFactory {
                     resolveTreeNodeFields,
                     context
                 );
-
                 groupBy.setNodeFields(nodeFields);
+
+                const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+                    entity: target,
+                    operations: ["READ"],
+                    attributes: this.queryASTFactory.operationsFactory.getSelectedAttributes(
+                        target,
+                        resolveTreeNodeFields
+                    ),
+                    context,
+                    skipEntityAuth: true,
+                });
+                // TODO: on operation or on groupBy?
+                console.log(1, authFilters);
+                operation.addAuthFilters(...authFilters);
             }
         }
         const valuesResolveTree =
@@ -421,10 +434,24 @@ export class ConnectionFactory {
             const valuesFields = this.queryASTFactory.fieldFactory.createFields(target, resolveTreeNodeFields, context);
 
             groupBy.setValuesFields(valuesFields);
+
+            const attributes = this.queryASTFactory.operationsFactory.getSelectedAttributes(
+                target,
+                resolveTreeNodeFields
+            );
+            const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+                entity: target,
+                operations: ["READ"],
+                attributes,
+                context,
+                skipEntityAuth: true,
+            });
+            // TODO: on operation or on groupBy?
+            console.log(2, authFilters);
+            operation.addAuthFilters(...authFilters);
         }
         const resolveTreeAggregate =
             resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()]?.aggregate;
-
         if (resolveTreeAggregate) {
             const aggregationOperation = this.aggregateFactory.createAggregationOperation({
                 entityOrRel: target,
@@ -441,7 +468,23 @@ export class ConnectionFactory {
             });
 
             groupBy.setAggregationField(aggregationField);
-            console.log("ALE", aggregationField);
+
+            const resolveTreeAggregateFields =
+                resolveTreeAggregate?.fieldsByTypeName[target.operations.aggregateTypeNames.connection]?.node
+                    ?.fieldsByTypeName[target.operations.aggregateTypeNames.node];
+
+            if (resolveTreeAggregateFields) {
+                const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+                    entity: target,
+                    operations: ["READ"],
+                    attributes: this.queryASTFactory.operationsFactory.getSelectedAttributes(
+                        target,
+                        resolveTreeAggregateFields
+                    ),
+                    context,
+                });
+                operation.addAuthFilters(...authFilters);
+            }
         }
 
         operation.setGroupByFields([groupBy]);

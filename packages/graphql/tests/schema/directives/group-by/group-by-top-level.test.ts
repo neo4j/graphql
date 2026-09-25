@@ -112,7 +112,9 @@ describe("@groupBy directive", () => {
             }
 
             type MovieGroupBy {
+              aggregate: MovieAggregate!
               edges: [MovieGroupByEdge!]!
+              values: MovieGroupByValues
             }
 
             type MovieGroupByEdge {
@@ -121,6 +123,10 @@ describe("@groupBy directive", () => {
 
             input MovieGroupByInput {
               title: Boolean
+            }
+
+            type MovieGroupByValues {
+              title: String
             }
 
             \\"\\"\\"

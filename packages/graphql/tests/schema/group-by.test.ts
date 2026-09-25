@@ -321,11 +321,6 @@ describe("GroupBy enabled", () => {
               averageRating: FloatAggregateSelection!
             }
 
-            type MovieEdge {
-              cursor: String!
-              node: Movie!
-            }
-
             type MovieGroupBy {
               aggregate: MovieAggregate!
               edges: [MovieGroupByEdge!]!
@@ -412,11 +407,7 @@ describe("GroupBy enabled", () => {
             }
 
             type MoviesConnection {
-              aggregate: MovieAggregate!
-              edges: [MovieEdge!]!
               groupBy(fields: MovieGroupByInput!): [MovieGroupBy!]!
-              pageInfo: PageInfo!
-              totalCount: Int!
             }
 
             \\"\\"\\"Pagination information (Relay)\\"\\"\\"
