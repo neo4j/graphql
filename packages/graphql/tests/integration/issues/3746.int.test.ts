@@ -360,7 +360,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
                 roles: [String!]!
             }
 
-            type Query @authentication(operations: ["READ"]) {
+            type Query @authentication(jwt: { roles_INCLUDES: "user" }, operations: ["READ"]) {
                 customField: Int
                     @cypher(statement: "RETURN 1 as foo", columnName: "foo")
                     @authentication(jwt: { roles_INCLUDES: "admin" })
@@ -400,7 +400,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
                 roles: [String!]!
             }
 
-            type Query @authentication(operations: ["READ"]) {
+            type Query @authentication(jwt: { roles_INCLUDES: "user" }, operations: ["READ"]) {
                 customField: Int
                     @cypher(statement: "RETURN 1 as foo", columnName: "foo")
                     @authentication(jwt: { roles_INCLUDES: "admin" })
@@ -426,7 +426,7 @@ describe("https://github.com/neo4j/graphql/issues/3746", () => {
             },
         });
 
-        const token = createBearerToken(secret, { sub: userId, roles: ["admin"] });
+        const token = createBearerToken(secret, { sub: userId, roles: ["user", "admin"] });
 
         const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
 
