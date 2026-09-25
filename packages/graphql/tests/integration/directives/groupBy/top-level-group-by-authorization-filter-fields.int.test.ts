@@ -130,6 +130,11 @@ describe("@groupBy directive top level with @authorization filter on fields", ()
                             released
                             other
                         }
+                        edges{
+                            node {
+                                title
+                            }
+                        }
                     }
                 }
             }

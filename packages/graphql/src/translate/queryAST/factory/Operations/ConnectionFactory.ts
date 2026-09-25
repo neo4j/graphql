@@ -418,8 +418,6 @@ export class ConnectionFactory {
                     context,
                     skipEntityAuth: true,
                 });
-                // TODO: on operation or on groupBy?
-                console.log(1, authFilters);
                 operation.addAuthFilters(...authFilters);
             }
         }
@@ -446,8 +444,6 @@ export class ConnectionFactory {
                 context,
                 skipEntityAuth: true,
             });
-            // TODO: on operation or on groupBy?
-            console.log(2, authFilters);
             operation.addAuthFilters(...authFilters);
         }
         const resolveTreeAggregate =

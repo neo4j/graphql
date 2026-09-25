@@ -195,7 +195,7 @@ describe("@groupBy directive top level with @authorization validate on fields", 
 
     test("throws forbidden for grouped aggregate when released validate rule fails", async () => {
         await testHelper.executeCypher(`
-            CREATE (:${Movie} {title: "someTitle", released: 1999, other: 1})
+            CREATE (:${Movie} {title: "otherTitle", released: 1999, other: 1})
             CREATE (:${Movie} {title: "someTitle", released: 1999, other: 2})
         `);
 
