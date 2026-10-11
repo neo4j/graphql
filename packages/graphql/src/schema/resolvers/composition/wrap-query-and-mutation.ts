@@ -40,6 +40,8 @@ export interface Neo4jGraphQLComposedContext extends Neo4jGraphQLContext {
     neo4jDatabaseInfo?: Neo4jDatabaseInfo;
     fulltext?: FulltextContext;
     vector?: VectorContext;
+    /** When true, the context is being used for translation only (no execution): authentication checks, custom resolvers and populatedBy callbacks are skipped. */
+    dryRun?: boolean;
 }
 
 let neo4jDatabaseInfo: Neo4jDatabaseInfo;

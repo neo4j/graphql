@@ -31,11 +31,6 @@ export function fulltextResolver({
         context.fulltext = fulltextContext;
 
         const resolveTree = getNeo4jResolveTree(info, { args });
-        resolveTree.args.options = {
-            sort: resolveTree.args.sort,
-            limit: resolveTree.args.limit,
-            offset: resolveTree.args.offset,
-        };
 
         const { cypher, params } = translateRead({
             context: { ...context, resolveTree },
