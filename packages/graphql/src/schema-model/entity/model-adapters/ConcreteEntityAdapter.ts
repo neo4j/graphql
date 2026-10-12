@@ -106,6 +106,18 @@ export class ConcreteEntityAdapter {
         return schemaModel.annotations.query === undefined || schemaModel.annotations.query.aggregate === true;
     }
 
+    public isGroupable(schemaModel: Neo4jGraphQLSchemaModel): boolean {
+        const hasGroupByFields = this.groupByFields.length > 0;
+        if (this.annotations.query) {
+            return this.annotations.query.groupBy && hasGroupByFields;
+        }
+
+        return (
+            hasGroupByFields &&
+            (schemaModel.annotations.query === undefined || schemaModel.annotations.query.groupBy === true)
+        );
+    }
+
     get isCreatable(): boolean {
         return (
             this.annotations.mutation === undefined ||
