@@ -623,4 +623,163 @@ describe("@groupBy directive top level", () => {
             },
         });
     });
+
+    test("groupBy with only aggregate inside group", async () => {
+        await testHelper.executeCypher(`
+            CREATE (:${Movie} {title: "The Matrix", year: 1999, rating: 5})
+            CREATE (:${Movie} {title: "Toy Story", year: 1999, rating: 5})
+            CREATE (:${Movie} {title: "Toy Story 2", year: 2001, rating: 5})
+            CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001, rating: 7})
+        `);
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.operations.connection}(first: 1) {
+                    groupBy(fields: { year: true, rating: true }) {
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                            node {
+                                title {
+                                    longest
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeUndefined();
+
+        expect(result.data).toEqual({
+            [Movie.operations.connection]: {
+                groupBy: expect.toIncludeSameMembers([
+                    {
+                        aggregate: {
+                            count: { nodes: 2 },
+                            node: { title: { longest: "The Matrix" } },
+                        },
+                    },
+                    {
+                        aggregate: {
+                            count: { nodes: 1 },
+                            node: { title: { longest: "The Matrix Reloaded" } },
+                        },
+                    },
+                    {
+                        aggregate: {
+                            count: { nodes: 1 },
+                            node: { title: { longest: "Toy Story 2" } },
+                        },
+                    },
+                ]),
+            },
+        });
+    });
+
+    test("groupBy with all fields inside group", async () => {
+        await testHelper.executeCypher(`
+            CREATE (:${Movie} {title: "The Matrix", year: 1999, rating: 5})
+            CREATE (:${Movie} {title: "Toy Story", year: 1999, rating: 5})
+            CREATE (:${Movie} {title: "Toy Story 2", year: 2001, rating: 5})
+            CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001, rating: 7})
+        `);
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.operations.connection}(first: 1) {
+                    groupBy(fields: { year: true, rating: true }) {
+                        values {
+                            year
+                            rating
+                        }
+                        edges {
+                            node {
+                                title
+                            }
+                        }
+                        aggregate {
+                            count {
+                                nodes
+                            }
+                            node {
+                                title {
+                                    longest
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeUndefined();
+
+        expect(result.data).toEqual({
+            [Movie.operations.connection]: {
+                groupBy: expect.toIncludeSameMembers([
+                    {
+                        values: {
+                            year: 1999,
+                            rating: 5,
+                        },
+                        edges: expect.toIncludeSameMembers([
+                            {
+                                node: {
+                                    title: "The Matrix",
+                                },
+                            },
+                            {
+                                node: {
+                                    title: "Toy Story",
+                                },
+                            },
+                        ]),
+                        aggregate: {
+                            count: { nodes: 2 },
+                            node: { title: { longest: "The Matrix" } },
+                        },
+                    },
+                    {
+                        values: {
+                            year: 2001,
+                            rating: 7,
+                        },
+                        edges: expect.toIncludeSameMembers([
+                            {
+                                node: {
+                                    title: "The Matrix Reloaded",
+                                },
+                            },
+                        ]),
+                        aggregate: {
+                            count: { nodes: 1 },
+                            node: { title: { longest: "The Matrix Reloaded" } },
+                        },
+                    },
+                    {
+                        values: {
+                            year: 2001,
+                            rating: 5,
+                        },
+                        edges: expect.toIncludeSameMembers([
+                            {
+                                node: {
+                                    title: "Toy Story 2",
+                                },
+                            },
+                        ]),
+                        aggregate: {
+                            count: { nodes: 1 },
+                            node: { title: { longest: "Toy Story 2" } },
+                        },
+                    },
+                ]),
+            },
+        });
+    });
 });
