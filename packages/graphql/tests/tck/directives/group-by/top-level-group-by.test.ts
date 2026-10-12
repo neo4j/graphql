@@ -432,19 +432,18 @@ describe("Group By Directive - Top Level", () => {
         `);
     });
 
-    test("Aggregate operations on actors for grouped movies", async () => {
+    test("group by with filter on inner connection field", async () => {
         const query = /* GraphQL */ `
-            {
+            query {
                 moviesConnection {
-                    groupBy(fields: { released: true, other: true }) {
+                    groupBy(fields: { released: true }) {
                         values {
                             released
-                            other
                         }
                         edges {
                             node {
                                 title
-                                actorsConnection {
+                                actorsConnection(where: { node: { name: { startsWith: "C" } } }) {
                                     aggregate {
                                         count {
                                             nodes
@@ -491,10 +490,12 @@ describe("Group By Directive - Top Level", () => {
                 CALL (this0) {
                   CALL (this0) {
                     MATCH (this0)<-[this2:ACTED_IN]-(this3:Person)
+                    WHERE this3.name STARTS WITH $param0
                     RETURN {nodes: count(DISTINCT this3)} AS var4
                   }
                   CALL (this0) {
                     MATCH (this0)<-[this5:ACTED_IN]-(this6:Person)
+                    WHERE this6.name STARTS WITH $param1
                     WITH DISTINCT this6
                     ORDER BY size(this6.name) DESC
                     WITH collect(this6.name) AS list
@@ -502,6 +503,7 @@ describe("Group By Directive - Top Level", () => {
                   }
                   CALL (this0) {
                     MATCH (this0)<-[this8:ACTED_IN]-(this9:Person)
+                    WHERE this9.name STARTS WITH $param2
                     WITH DISTINCT this8
                     ORDER BY size(this8.role) DESC
                     WITH collect(this8.role) AS list
@@ -509,6 +511,7 @@ describe("Group By Directive - Top Level", () => {
                   }
                   CALL (*) {
                     MATCH (this0)<-[this11:ACTED_IN]-(this12:Person)
+                    WHERE this12.name STARTS WITH $param3
                     WITH collect({node: this12, relationship: this11}) AS edges
                     CALL (edges) {
                       UNWIND edges AS edge
@@ -519,13 +522,20 @@ describe("Group By Directive - Top Level", () => {
                   }
                   RETURN {edges: var13, aggregate: {count: var4, node: {name: var7}, edge: {role: var10}}} AS var14
                 }
-                RETURN this0.released AS released, this0.other AS other, {edges: collect({node: {title: this0.title, actorsConnection: var14}}), values: {released: this0.released, other: this0.other}} AS var15
+                RETURN this0.released AS released, {edges: collect({node: {title: this0.title, actorsConnection: var14}}), values: {released: this0.released}} AS var15
               }
               RETURN var15
             } AS var15
             RETURN {edges: var1, groupBy: var15} AS this"
         `);
 
-        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`
+            "{
+                \\"param0\\": \\"C\\",
+                \\"param1\\": \\"C\\",
+                \\"param2\\": \\"C\\",
+                \\"param3\\": \\"C\\"
+            }"
+        `);
     });
 });
