@@ -10,7 +10,7 @@ import type { AuthenticationOperation } from "../schema-model/annotation/Authent
 import { type AttributeAdapter } from "../schema-model/attribute/model-adapters/AttributeAdapter";
 import { getEntityAdapter } from "../schema-model/utils/get-entity-adapter";
 import type { Neo4jGraphQLTranslationContext } from "../types/neo4j-graphql-translation-context";
-import { applyAuthentication } from "./authorization/utils/apply-authentication";
+import { applyAuthenticationAnnotations } from "./authorization/check-authentication";
 import { QueryASTContext, QueryASTEnv } from "./queryAST/ast/QueryASTContext";
 import { QueryASTFactory } from "./queryAST/factory/QueryASTFactory";
 import { buildClause } from "./utils/build-clause";
@@ -31,19 +31,19 @@ export function translateTopLevelCypher({
     if (!operation) {
         throw new Error(`Failed to find operation ${type} in Schema Model.`);
     }
+
     const operationField = operation.findAttribute(attributeAdapter.name);
     if (!operationField) {
         throw new Error(`Failed to find field ${attributeAdapter.name} on operation ${type}.`);
     }
-    const entity = context.schemaModel.entities.get(attributeAdapter.getTypeName());
-    const annotation = operationField.annotations.authentication;
-    if (annotation) {
-        const targetOperations: AuthenticationOperation[] =
-            type === "Query" ? ["READ"] : ["CREATE", "UPDATE", "DELETE"];
 
-        applyAuthentication({ context, annotation, targetOperations });
-    }
+    const targetOperations: AuthenticationOperation[] = type === "Query" ? ["READ"] : ["CREATE", "UPDATE", "DELETE"];
+
+    applyAuthenticationAnnotations({ context, operation, targetOperations, fieldName: operationField.name });
+
     const { resolveTree } = context;
+
+    const entity = context.schemaModel.entities.get(attributeAdapter.getTypeName());
 
     // entity could be undefined as the field could be a scalar
     const entityAdapter = entity && getEntityAdapter(entity);
