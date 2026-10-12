@@ -67,6 +67,7 @@ import { getResolveAndSubscriptionMethods } from "./get-resolve-and-subscription
 import { getUserDefinedDirectives } from "./make-augmented-schema/user-defined-directives";
 import { cypherResolver } from "./resolvers/query/cypher";
 import { generateSubscriptionTypes } from "./subscriptions/generate-subscription-types";
+import type { WrapSubscriptionArgs } from "./resolvers/composition/wrap-subscription";
 
 function definitionNodeHasName(x: DefinitionNode): x is DefinitionNode & { name: NameNode } {
     return "name" in x;
@@ -78,12 +79,14 @@ function makeAugmentedSchema({
     subgraph,
     schemaModel,
     complexityEstimatorHelper,
+    wrapSubscriptionArgs,
 }: {
     document: DocumentNode;
     features?: Neo4jFeaturesSettings;
     subgraph?: Subgraph;
     schemaModel: Neo4jGraphQLSchemaModel;
     complexityEstimatorHelper: ComplexityEstimatorHelper;
+    wrapSubscriptionArgs?: WrapSubscriptionArgs;
 }): {
     typeDefs: DocumentNode;
     resolvers: IResolvers;
@@ -334,6 +337,7 @@ function makeAugmentedSchema({
             schemaModel,
             userDefinedFieldDirectivesForNode,
             features,
+            wrapSubscriptionArgs,
         });
     }
 
