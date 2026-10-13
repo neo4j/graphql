@@ -10,9 +10,11 @@ import { TestHelper } from "../../../utils/tests-helper";
 describe("Connection aggregation authentication", () => {
     const testHelper = new TestHelper();
     let Employee: UniqueType;
+    let Movie: UniqueType;
 
     beforeEach(async () => {
         Employee = testHelper.createUniqueType("Employee");
+        Movie = testHelper.createUniqueType("Movie");
 
         const typeDefs = /* GraphQL */ `
             type ${Employee} @node {
@@ -20,6 +22,10 @@ describe("Connection aggregation authentication", () => {
                 salary: Float @authentication
                 ssn: String @authentication
                 coworkers: [${Employee}!]! @relationship(type: "KNOWS", direction: OUT)
+            }
+
+            type ${Movie} @node @authentication(operations: [AGGREGATE]) {
+                title: String
             }
         `;
 
@@ -35,6 +41,8 @@ describe("Connection aggregation authentication", () => {
         await testHelper.executeCypher(`
             CREATE (:${Employee} { name: "Alice", salary: 185000.0, ssn: "111-22-3333" })
             CREATE (:${Employee} { name: "Bob", salary: 240000.0, ssn: "444-55-6666" })
+            CREATE (:${Movie} { title: "Alpha" })
+            CREATE (:${Movie} { title: "Beta" })
             WITH 1 AS ignored
             MATCH (alice:${Employee} { name: "Alice" }), (bob:${Employee} { name: "Bob" })
             CREATE (alice)-[:KNOWS]->(bob)
@@ -164,5 +172,25 @@ describe("Connection aggregation authentication", () => {
         expect(gqlResult.data?.[Employee.plural]).toEqual([
             { coworkersConnection: { aggregate: { node: { name: { longest: "Bob" } } } } },
         ]);
+    });
+
+    test("rejects an unauthenticated top-level aggregate over an aggregate-authenticated entity", async () => {
+        const query = /* GraphQL */ `
+            {
+                ${Movie.operations.connection} {
+                    aggregate {
+                        count {
+                            nodes
+                        }
+                    }
+                }
+            }
+        `;
+
+        const gqlResult = await testHelper.executeGraphQL(query);
+
+        expect(gqlResult.errors).toHaveLength(1);
+        expect(gqlResult.errors?.[0]?.message).toBe("Unauthenticated");
+        expect(gqlResult.data?.[Movie.operations.connection]).toBeFalsy();
     });
 });

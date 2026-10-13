@@ -390,6 +390,10 @@ export class AggregateFactory {
         context: Neo4jGraphQLTranslationContext;
         whereArgs: Record<string, any>;
     }): T {
+        if (isConcreteEntity(entity)) {
+            checkEntityAuthentication({ context, entity: entity.entity, targetOperations: ["AGGREGATE"] });
+        }
+
         // whereArgs = whereArgs.node ?? {};
         const deprecatedAttributes = false;
         if (relationship) {
