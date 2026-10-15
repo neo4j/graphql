@@ -31,12 +31,17 @@ export function filterByValues<T>(
         } else {
             const { fieldName, operator } = parseFilterProperty(k);
             if (!operator) {
-                return filterByValuesOnGenericOperator({
-                    fieldName,
-                    receivedValues,
-                    jwtClaims,
-                    value: v as Record<string, any>,
-                });
+                if (
+                    !filterByValuesOnGenericOperator({
+                        fieldName,
+                        receivedValues,
+                        jwtClaims,
+                        value: v as Record<string, any>,
+                    })
+                ) {
+                    return false;
+                }
+                continue;
             }
             const receivedValue = getReceivedValue({ fieldName, receivedValues, jwtClaims });
             if (!receivedValue) {
