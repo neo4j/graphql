@@ -20,7 +20,7 @@
     ],
     "ignoreDeps": ["neo4j"],
     "separateMajorMinor": true,
-    "minimumReleaseAge": "3 days",
+    "minimumReleaseAge": "7 days",
     "packageRules": [
         {
             "matchUpdateTypes": ["major"],
