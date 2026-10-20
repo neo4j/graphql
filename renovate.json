@@ -36,6 +36,11 @@
             "matchFileNames": ["packages/package-tests/graphql-15/package.json"],
             "allowedVersions": "15",
             "matchPackageNames": ["/graphql/"]
+        },
+        {
+            "description": "msw 2.13+ depends on ESM-only rettime, which Jest cannot load (https://github.com/mswjs/msw/issues/2698)",
+            "matchPackageNames": ["msw"],
+            "allowedVersions": "<2.13.0"
         }
     ],
     "customManagers": [
