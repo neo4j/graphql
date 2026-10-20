@@ -78,7 +78,7 @@
         "ws": "8.21.0"
     },
     "dependencies": {
-        "@apollo/subgraph": "^2.2.3",
+        "@apollo/subgraph": ">=2.2.3 <2.15.0",
         "@as-integrations/express4": "^1.1.2",
         "@graphql-tools/merge": "^9.0.0",
         "@graphql-tools/resolvers-composition": "^7.0.0",

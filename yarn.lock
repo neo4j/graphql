@@ -55,7 +55,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/cache-control-types@npm:^1.0.3":
+"@apollo/cache-control-types@npm:^1.0.2, @apollo/cache-control-types@npm:^1.0.3":
   version: 1.0.3
   resolution: "@apollo/cache-control-types@npm:1.0.3"
   peerDependencies:
@@ -87,6 +87,20 @@ __metadata:
   peerDependencies:
     graphql: ^16.5.0
   checksum: 10c0/296b9e293c0c639eaf8daf51e7be1514c7437da40b47decc9daaf6b6d2faa46d3fdd2f7edfa0acaccab3a344bd70cccb793bb8bed619fdd33a36653a8ac77cc9
+  languageName: node
+  linkType: hard
+
+"@apollo/federation-internals@npm:2.14.4":
+  version: 2.14.4
+  resolution: "@apollo/federation-internals@npm:2.14.4"
+  dependencies:
+    "@types/uuid": "npm:^9.0.0"
+    chalk: "npm:^4.1.0"
+    js-levenshtein: "npm:^1.1.6"
+    uuid: "npm:^9.0.0"
+  peerDependencies:
+    graphql: ^16.5.0
+  checksum: 10c0/97851373758559aa7739e9871271c034aec5b0a39d6a2572b51bc17eafeebb64bd93e975c5e1d9d4a8b30adbe41be6d41ae42bfcd1ebfcb2595c41b13a67ad23
   languageName: node
   linkType: hard
 
@@ -339,15 +353,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@apollo/subgraph@npm:^2.2.3":
-  version: 2.15.1
-  resolution: "@apollo/subgraph@npm:2.15.1"
+"@apollo/subgraph@npm:>=2.2.3 <2.15.0":
+  version: 2.14.4
+  resolution: "@apollo/subgraph@npm:2.14.4"
   dependencies:
-    "@apollo/cache-control-types": "npm:^1.0.3"
-    "@graphql-tools/utils": "npm:^12.0.0"
+    "@apollo/cache-control-types": "npm:^1.0.2"
+    "@apollo/federation-internals": "npm:2.14.4"
   peerDependencies:
-    graphql: ^16.11.0
-  checksum: 10c0/e360809d2778d01ec3c751c73d43dd549a833a5ca031892f322f9fbb4fed2c0567ec774b79fcfa164e488168155befe460b19ecd48b8db2fb9f00d1aded19e54
+    graphql: ^16.5.0
+  checksum: 10c0/98295dafc8e37b23bcccac5b516eea9ce710c31eaa566acee5a63146ae23d0ef9c93c0b210d00658dbce5961719465ba058a33494b6093ca5e665dfad1295d2e
   languageName: node
   linkType: hard
 
@@ -1969,7 +1983,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@graphql-tools/utils@npm:^12.0.0, @graphql-tools/utils@npm:^12.1.0":
+"@graphql-tools/utils@npm:^12.1.0":
   version: 12.1.0
   resolution: "@graphql-tools/utils@npm:12.1.0"
   dependencies:
@@ -2820,7 +2834,7 @@ __metadata:
   dependencies:
     "@apollo/gateway": "npm:2.13.3"
     "@apollo/server": "npm:5.2.0"
-    "@apollo/subgraph": "npm:^2.2.3"
+    "@apollo/subgraph": "npm:>=2.2.3 <2.15.0"
     "@as-integrations/express4": "npm:^1.1.2"
     "@graphql-tools/merge": "npm:^9.0.0"
     "@graphql-tools/resolvers-composition": "npm:^7.0.0"
