@@ -1944,6 +1944,20 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@graphql-tools/utils@npm:12.1.0, @graphql-tools/utils@npm:^12.1.0":
+  version: 12.1.0
+  resolution: "@graphql-tools/utils@npm:12.1.0"
+  dependencies:
+    "@graphql-typed-document-node/core": "npm:^3.1.1"
+    "@whatwg-node/promise-helpers": "npm:^2.0.0"
+    cross-inspect: "npm:1.0.1"
+    tslib: "npm:^2.4.0"
+  peerDependencies:
+    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
+  checksum: 10c0/a781650a9ccc524170ea04e485fb56f6ec357b2372787cd0056bd3bb0d4c38d10ae5bcbea598256353888dd96424b312e842ee47fc1eb3e6ebeb6bc1313203a3
+  languageName: node
+  linkType: hard
+
 "@graphql-tools/utils@npm:8.9.0":
   version: 8.9.0
   resolution: "@graphql-tools/utils@npm:8.9.0"
@@ -1980,20 +1994,6 @@ __metadata:
   peerDependencies:
     graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
   checksum: 10c0/049389bd14c9c18e99d1443552baeda187c2759635b179b2eb74f008c8ab80637730b2427267dd2a39b7051138cff8f5fd5bc1416d516bf4c7dc3ea50501daf6
-  languageName: node
-  linkType: hard
-
-"@graphql-tools/utils@npm:^12.1.0":
-  version: 12.1.0
-  resolution: "@graphql-tools/utils@npm:12.1.0"
-  dependencies:
-    "@graphql-typed-document-node/core": "npm:^3.1.1"
-    "@whatwg-node/promise-helpers": "npm:^2.0.0"
-    cross-inspect: "npm:1.0.1"
-    tslib: "npm:^2.4.0"
-  peerDependencies:
-    graphql: ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
-  checksum: 10c0/a781650a9ccc524170ea04e485fb56f6ec357b2372787cd0056bd3bb0d4c38d10ae5bcbea598256353888dd96424b312e842ee47fc1eb3e6ebeb6bc1313203a3
   languageName: node
   linkType: hard
 
@@ -2839,7 +2839,7 @@ __metadata:
     "@graphql-tools/merge": "npm:^9.0.0"
     "@graphql-tools/resolvers-composition": "npm:^7.0.0"
     "@graphql-tools/schema": "npm:^10.0.0"
-    "@graphql-tools/utils": "npm:^12.1.0"
+    "@graphql-tools/utils": "npm:12.1.0"
     "@neo4j/cypher-builder": "npm:^2.4.0"
     "@types/deep-equal": "npm:1.0.4"
     "@types/is-uuid": "npm:1.0.2"
