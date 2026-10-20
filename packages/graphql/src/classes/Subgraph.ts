@@ -99,12 +99,10 @@ export class Subgraph {
     }
 
     public buildSchema({ typeDefs, resolvers }: { typeDefs: DocumentNode; resolvers: Record<string, any> }) {
-        return buildSubgraphSchema([
-            {
-                typeDefs,
-                resolvers,
-            },
-        ]);
+        return buildSubgraphSchema({
+            typeDefs,
+            resolvers,
+        });
     }
 
     public getReferenceResolvers(schemaModel: Neo4jGraphQLSchemaModel): IResolvers {
@@ -173,7 +171,7 @@ export class Subgraph {
     } {
         const document = parse(print(this.linkExtension));
 
-        const schema = buildSubgraphSchema(document);
+        const schema = buildSubgraphSchema({ typeDefs: document });
 
         const config = schema.toConfig();
 
