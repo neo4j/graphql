@@ -44,14 +44,14 @@ describe("Apollo Federation", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSubgraphSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema @link(url: \\"https://specs.apollo.dev/federation/v2.0\\", import: [\\"@shareable\\"]) {
+            "schema @link(url: \\"https://specs.apollo.dev/link/v1.0\\") @link(url: \\"https://specs.apollo.dev/federation/v2.0\\", import: [\\"@shareable\\"]) {
               query: Query
               mutation: Mutation
             }
 
             directive @federation__extends on INTERFACE | OBJECT
 
-            directive @federation__external on FIELD_DEFINITION | OBJECT
+            directive @federation__external(reason: String) on FIELD_DEFINITION | OBJECT
 
             directive @federation__inaccessible on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
 
@@ -614,6 +614,8 @@ describe("Apollo Federation", () => {
               totalCount: Int!
             }
 
+            scalar _Any
+
             type _Service {
               sdl: String
             }
@@ -655,14 +657,14 @@ describe("Apollo Federation", () => {
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSubgraphSchema()));
 
         expect(printedSchema).toMatchInlineSnapshot(`
-            "schema @link(url: \\"https://specs.apollo.dev/federation/v2.0\\", import: [\\"@key\\"]) {
+            "schema @link(url: \\"https://specs.apollo.dev/link/v1.0\\") @link(url: \\"https://specs.apollo.dev/federation/v2.0\\", import: [\\"@key\\"]) {
               query: Query
               mutation: Mutation
             }
 
             directive @federation__extends on INTERFACE | OBJECT
 
-            directive @federation__external on FIELD_DEFINITION | OBJECT
+            directive @federation__external(reason: String) on FIELD_DEFINITION | OBJECT
 
             directive @federation__inaccessible on ARGUMENT_DEFINITION | ENUM | ENUM_VALUE | FIELD_DEFINITION | INPUT_FIELD_DEFINITION | INPUT_OBJECT | INTERFACE | OBJECT | SCALAR | UNION
 
