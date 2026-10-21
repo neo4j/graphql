@@ -78,7 +78,6 @@ describe("Apollo and RabbitMQ Subscription", () => {
     });
 
     test("create subscription", async () => {
-        // @apollo/server 5.3.0+ passes options as the 4th argument to validate(), which graphql 15 reads as typeInfo
         if (versionInfo.major < 16) {
             console.log("GraphQL version is <16, skipping Apollo Server tests");
             return;
@@ -118,7 +117,6 @@ describe("Apollo and RabbitMQ Subscription", () => {
     });
 
     test("create subscription with where", async () => {
-        // @apollo/server 5.3.0+ passes options as the 4th argument to validate(), which graphql 15 reads as typeInfo
         if (versionInfo.major < 16) {
             console.log("GraphQL version is <16, skipping Apollo Server tests");
             return;
