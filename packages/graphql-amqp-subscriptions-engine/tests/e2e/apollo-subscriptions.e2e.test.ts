@@ -21,6 +21,7 @@ import type { Driver } from "neo4j-driver";
 import type { Response } from "supertest";
 import supertest from "supertest";
 import { Neo4jGraphQL } from "@neo4j/graphql";
+import { versionInfo } from "graphql";
 import type { TestGraphQLServer } from "./setup/apollo-server";
 import { ApolloTestServer } from "./setup/apollo-server";
 import { WebSocketTestClient } from "./setup/ws-client";
@@ -77,6 +78,10 @@ describe("Apollo and RabbitMQ Subscription", () => {
     });
 
     test("create subscription", async () => {
+        if (versionInfo.major < 16) {
+            console.log("GraphQL version is <16, skipping Apollo Server tests");
+            return;
+        }
         await wsClient.subscribe(`
                             subscription {
                                 ${typeMovie.operations.subscribe.created} {
@@ -112,6 +117,10 @@ describe("Apollo and RabbitMQ Subscription", () => {
     });
 
     test("create subscription with where", async () => {
+        if (versionInfo.major < 16) {
+            console.log("GraphQL version is <16, skipping Apollo Server tests");
+            return;
+        }
         await wsClient.subscribe(`
             subscription {
                 ${typeMovie.operations.subscribe.created}(where: { title: "movie1" }) {
