@@ -10,10 +10,22 @@ export class QueryAnnotation implements Annotation {
     public readonly read: boolean;
     public readonly aggregate: boolean;
     public readonly connection: boolean;
+    public readonly groupBy: boolean;
 
-    constructor({ read, aggregate, connection }: { read: boolean; aggregate: boolean; connection: boolean }) {
+    constructor({
+        read,
+        aggregate,
+        connection,
+        groupBy,
+    }: {
+        read: boolean;
+        aggregate: boolean;
+        connection: boolean;
+        groupBy: boolean;
+    }) {
         this.read = read;
         this.aggregate = aggregate;
         this.connection = connection;
+        this.groupBy = groupBy;
     }
 }
