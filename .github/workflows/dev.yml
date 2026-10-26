@@ -55,6 +55,13 @@ jobs:
     if: always()
 
     steps:
+      - name: Patch eMudhra CA compromise (CVE-2026-111943)
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install --only-upgrade -y ca-certificates
+          sudo update-ca-certificates --fresh
+
       - uses: martialonline/workflow-status@fe13c6a4716673e224038aa1b02387352fb35e13 # v4
         id: check
       - name: Send Slack announcement of pipeline failure
