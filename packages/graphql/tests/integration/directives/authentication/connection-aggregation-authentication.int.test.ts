@@ -127,7 +127,7 @@ describe("Connection aggregation authentication", () => {
     test("allows an authenticated aggregate over a protected field", async () => {
         const query = /* GraphQL */ `
             {
-                ${Employee.operations.connection} {
+                ${Employee.operations.connection}(where: { name: { eq: "Bob" } }) {
                     aggregate { node { ssn { longest } } }
                 }
             }
@@ -136,6 +136,9 @@ describe("Connection aggregation authentication", () => {
         const gqlResult = await testHelper.executeGraphQLWithToken(query, createBearerToken("secret"));
 
         expect(gqlResult.errors).toBeUndefined();
+        expect(gqlResult.data?.[Employee.operations.connection]).toEqual({
+            aggregate: { node: { ssn: { longest: "444-55-6666" } } },
+        });
     });
 
     test("rejects an unauthenticated relationship aggregate over an authenticated field", async () => {
