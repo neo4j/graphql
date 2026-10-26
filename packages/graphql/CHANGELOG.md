@@ -1,5 +1,13 @@
 # @neo4j/graphql
 
+## 5.12.16
+
+### Patch Changes
+
+-   [#7392](https://github.com/neo4j/graphql/pull/7392) [`6cc725b`](https://github.com/neo4j/graphql/commit/6cc725be60169300e02baf29ec69188773222101) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Fix `getSubgraphSchema()` throwing `TypeError: doc.definitions is not iterable` when `@apollo/subgraph` 2.15 is installed. `@apollo/subgraph` is now limited to `>=2.2.3 <2.15.0`, because 2.15 needs Node.js 22 or later and `graphql` 16.11 or later.
+
+    `@graphql-tools/utils` is updated to `12.1.0`.
+
 ## 5.12.15
 
 ### Patch Changes
