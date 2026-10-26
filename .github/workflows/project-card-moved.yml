@@ -12,6 +12,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Patch eMudhra CA compromise (CVE-2026-111943)
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install --only-upgrade -y ca-certificates
+          sudo update-ca-certificates --fresh
+
       - name: add labels
         uses: andymckay/labeler@e6c4322d0397f3240f0e7e30a33b5c5df2d39e90 # renovate: tag=v1.0.4
         with:
@@ -23,6 +30,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Patch eMudhra CA compromise (CVE-2026-111943)
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install --only-upgrade -y ca-certificates
+          sudo update-ca-certificates --fresh
+
       - name: add labels
         uses: andymckay/labeler@e6c4322d0397f3240f0e7e30a33b5c5df2d39e90 # renovate: tag=v1.0.4
         with:
