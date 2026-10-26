@@ -16284,8 +16284,8 @@ __metadata:
   linkType: hard
 
 "schema-utils@npm:^4.3.0, schema-utils@npm:^4.3.3":
-  version: 4.8.0
-  resolution: "schema-utils@npm:4.8.0"
+  version: 4.8.1
+  resolution: "schema-utils@npm:4.8.1"
   dependencies:
     "@types/json-schema": "npm:^7.0.15"
     ajv: "npm:^8.20.0"
@@ -16298,7 +16298,7 @@ __metadata:
       optional: true
   bin:
     schema-utils: bin/schema-utils.js
-  checksum: 10c0/edf12e09e1b4a22e0612a2732fe457bb6c117a35d73ceba0244e37195abdb40fe074a4957d46fd4d4faec34b40ef2a530e673480735a153950b6c05917809647
+  checksum: 10c0/b18b816e5628adb6a703883dbbb672aa3368e6462e16097c9df16d9ca192e41191b98c1b63b6cf18b0ee17a7223268ec9ca76935e8c50337cfa8484d3d289eea
   languageName: node
   linkType: hard
 
