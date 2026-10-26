@@ -53,12 +53,6 @@ export class AggregateFactory {
         if (entityOrRel instanceof RelationshipAdapter) {
             if (isConcreteEntity(entity)) {
                 // RELATIONSHIP WITH CONCRETE TARGET
-                checkEntityAuthentication({
-                    entity: entity.entity,
-                    targetOperations: ["AGGREGATE"],
-                    context,
-                });
-
                 const selection = new RelationshipSelection({
                     relationship: entityOrRel,
                 });
