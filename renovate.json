@@ -1,13 +1,14 @@
 {
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
     "extends": ["config:best-practices"],
-    "baseBranches": ["dev", "lts"],
+    "baseBranchPatterns": ["dev", "lts"],
     "rebaseWhen": "auto",
     "automerge": true,
     "major": {
         "automerge": false
     },
     "timezone": "Europe/London",
-    "schedule": ["after 10pm every weekday", "before 5am every weekday", "every weekend"],
+    "schedule": ["* 0-4 1,15 * *"],
     "ignorePaths": [
         "**/node_modules/**",
         "**/bower_components/**",
@@ -18,12 +19,45 @@
         "**/__fixtures__/**"
     ],
     "ignoreDeps": ["neo4j"],
-    "minimumReleaseAge": "3 days",
+    "separateMajorMinor": true,
+    "minimumReleaseAge": "7 days",
     "packageRules": [
+        {
+            "matchUpdateTypes": ["major"],
+            "groupName": null,
+            "automerge": false
+        },
+        {
+            "matchUpdateTypes": ["minor", "patch"],
+            "groupName": "minor-and-patch",
+            "automerge": true
+        },
         {
             "matchFileNames": ["packages/package-tests/graphql-15/package.json"],
             "allowedVersions": "15",
             "matchPackageNames": ["/graphql/"]
+        },
+        {
+            "description": "msw 2.13+ depends on ESM-only rettime, which Jest cannot load (https://github.com/mswjs/msw/issues/2698)",
+            "matchPackageNames": ["msw"],
+            "allowedVersions": "<2.13.0"
+        },
+        {
+            "description": "Vulnerability alerts do not cover the Node runtime, so Node releases get a shorter release age wait and skip the schedule",
+            "matchDatasources": ["node-version", "docker"],
+            "matchDepNames": ["node"],
+            "minimumReleaseAge": "3 days",
+            "schedule": ["at any time"]
+        }
+    ],
+    "customManagers": [
+        {
+            "customType": "regex",
+            "description": "Update the npm version pinned in the release workflow",
+            "managerFilePatterns": ["/^\\.github/workflows/release\\.yml$/"],
+            "matchStrings": ["npm install -g npm@(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
+            "depNameTemplate": "npm",
+            "datasourceTemplate": "npm"
         }
     ]
 }
