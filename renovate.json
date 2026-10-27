@@ -20,7 +20,7 @@
     ],
     "ignoreDeps": ["neo4j"],
     "separateMajorMinor": true,
-    "minimumReleaseAge": "7 days",
+    "minimumReleaseAge": "3 days",
     "packageRules": [
         {
             "matchUpdateTypes": ["major"],
@@ -35,12 +35,20 @@
         {
             "matchFileNames": ["packages/package-tests/graphql-15/package.json"],
             "allowedVersions": "15",
-            "matchPackageNames": ["/graphql/"]
+            "matchPackageNames": ["/graphql/"],
+            "minimumReleaseAge": "3 days"
         },
         {
             "description": "msw 2.13+ depends on ESM-only rettime, which Jest cannot load (https://github.com/mswjs/msw/issues/2698)",
             "matchPackageNames": ["msw"],
-            "allowedVersions": "<2.13.0"
+            "allowedVersions": "<2.13.0",
+            "minimumReleaseAge": "3 days"
+        },
+        {
+            "description": "Vulnerability alerts do not cover the Node runtime, so Node releases skip the schedule",
+            "matchDatasources": ["node-version", "docker"],
+            "matchDepNames": ["node"],
+            "schedule": ["at any time"]
         }
     ],
     "customManagers": [
