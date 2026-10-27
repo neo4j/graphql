@@ -43,10 +43,10 @@
             "allowedVersions": "<2.13.0"
         },
         {
-            "description": "Vulnerability alerts do not cover the Node runtime, so Node releases skip the release age wait and the schedule",
+            "description": "Vulnerability alerts do not cover the Node runtime, so Node releases get a shorter release age wait and skip the schedule",
             "matchDatasources": ["node-version", "docker"],
             "matchDepNames": ["node"],
-            "minimumReleaseAge": null,
+            "minimumReleaseAge": "3 days",
             "schedule": ["at any time"]
         }
     ],
