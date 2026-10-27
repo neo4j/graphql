@@ -41,6 +41,13 @@
             "description": "msw 2.13+ depends on ESM-only rettime, which Jest cannot load (https://github.com/mswjs/msw/issues/2698)",
             "matchPackageNames": ["msw"],
             "allowedVersions": "<2.13.0"
+        },
+        {
+            "description": "Vulnerability alerts do not cover the Node runtime, so Node releases skip the release age wait and the schedule",
+            "matchDatasources": ["node-version", "docker"],
+            "matchDepNames": ["node"],
+            "minimumReleaseAge": null,
+            "schedule": ["at any time"]
         }
     ],
     "customManagers": [
