@@ -13,6 +13,14 @@ describe.each([
 ])("$name authentication", ({ schema }) => {
     const testHelper = new TestHelper();
     const secret = "secret";
+    const allUsersQuery = /* GraphQL */ `
+        {
+            allUsers {
+                id
+                name
+            }
+        }
+    `;
     let User: UniqueType;
     let readQuery: string;
     let createMutation: string;
@@ -67,10 +75,26 @@ describe.each([
         await testHelper.close();
     });
 
-    test("rejects anonymous reads", async () => {
+    test("rejects anonymous reads using the generated query", async () => {
         const result = await testHelper.executeGraphQL(readQuery);
 
         expect((result.errors as any[])[0].message).toBe("Unauthenticated");
+    });
+
+    test("rejects anonymous reads using allUsers", async () => {
+        const result = await testHelper.executeGraphQL(allUsersQuery);
+
+        expect((result.errors as any[])[0].message).toBe("Unauthenticated");
+    });
+
+    test("permits authenticated reads using allUsers", async () => {
+        const result = await testHelper.executeGraphQLWithToken(allUsersQuery, createBearerToken(secret));
+
+        expect(result).toEqual({
+            data: {
+                allUsers: [{ id: "1", name: "alice" }],
+            },
+        });
     });
 
     test("rejects anonymous creates", async () => {
@@ -86,7 +110,7 @@ describe.each([
         });
     });
 
-    test("permits authenticated reads", async () => {
+    test("permits authenticated reads using the generated query", async () => {
         const result = await testHelper.executeGraphQLWithToken(readQuery, createBearerToken(secret));
 
         expect(result).toEqual({
