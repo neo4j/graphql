@@ -83,14 +83,13 @@ export function generateSubscribeMethod({
                 );
                 context.authorization = authorizationContext;
 
-                const jwt = context.connectionParams?.jwt;
+                const jwt = context.authorization.jwt;
                 if (jwt) {
-                    if (!authorizationContext.isAuthenticated && isJwtExpired(jwt)) {
+                    if (isJwtExpired(jwt)) {
                         // if expired we don't want to send events
                         return false;
                     }
                 }
-
                 return (
                     data[0].typename === entityAdapter.name &&
                     subscriptionAuthorization({
