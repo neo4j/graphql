@@ -24,13 +24,6 @@ jobs:
   validate-target:
     runs-on: ubuntu-latest
     steps:
-      - name: Patch eMudhra CA compromise (CVE-2026-111943)
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install --only-upgrade -y ca-certificates
-          sudo update-ca-certificates --fresh
-
       - name: Validate invocation target
         env:
           DATABASE_ID: ${{ inputs.database_id }}
