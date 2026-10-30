@@ -19,13 +19,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Patch eMudhra CA compromise (CVE-2026-111943)
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install --only-upgrade -y ca-certificates
-          sudo update-ca-certificates --fresh
-
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
@@ -54,13 +47,6 @@ jobs:
       typescript_files: ${{ steps.filter.outputs.typescript_files }}
 
     steps:
-      - name: Patch eMudhra CA compromise (CVE-2026-111943)
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install --only-upgrade -y ca-certificates
-          sudo update-ca-certificates --fresh
-
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: dorny/paths-filter@fbd0ab8f3e69293af611ebaee6363fc25e6d187d # v4.0.1
         id: filter
@@ -77,13 +63,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Patch eMudhra CA compromise (CVE-2026-111943)
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install --only-upgrade -y ca-certificates
-          sudo update-ca-certificates --fresh
-
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
@@ -123,13 +102,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Patch eMudhra CA compromise (CVE-2026-111943)
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install --only-upgrade -y ca-certificates
-          sudo update-ca-certificates --fresh
-
       - name: Check Job Status
         run: |
           if [ ${{ needs.reviewdog-eslint.result }} != 'success' ] || 
