@@ -25,13 +25,6 @@ jobs:
       docker_password: ${{ steps.login-to-ecr.outputs.docker_password_535893049302_dkr_ecr_eu_west_1_amazonaws_com }}
 
     steps:
-      - name: Patch eMudhra CA compromise (CVE-2026-111943)
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install --only-upgrade -y ca-certificates
-          sudo update-ca-certificates --fresh
-
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@19d944daaa35f0fa1d3f7f8af1d3f2e5de25c5b7 # v2
         id: login-to-ecr
@@ -80,13 +73,6 @@ jobs:
     #       - 7687:7687
 
     steps:
-      - name: Patch eMudhra CA compromise (CVE-2026-111943)
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install --only-upgrade -y ca-certificates
-          sudo update-ca-certificates --fresh
-
       - name: Check out repository code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Setting up Node.js with version ${{ matrix.node.name }}
@@ -143,13 +129,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: integration-tests
     steps:
-      - name: Patch eMudhra CA compromise (CVE-2026-111943)
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install --only-upgrade -y ca-certificates
-          sudo update-ca-certificates --fresh
-
       - if: ${{ !inputs.disable-coverage-archival }}
         name: Merge Artifacts
         uses: actions/upload-artifact/merge@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7

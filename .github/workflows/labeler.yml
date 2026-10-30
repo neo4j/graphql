@@ -13,13 +13,6 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Patch eMudhra CA compromise (CVE-2026-111943)
-        shell: bash
-        run: |
-          sudo apt-get update
-          sudo apt-get install --only-upgrade -y ca-certificates
-          sudo update-ca-certificates --fresh
-
       - uses: srvaroa/labeler@bf262763a8a8e191f5847873aecc0f29df84f957 # v1.14.0
         env:
           GITHUB_TOKEN: ${{ secrets.NEO4J_TEAM_GRAPHQL_PERSONAL_ACCESS_TOKEN }}
