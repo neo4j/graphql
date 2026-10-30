@@ -70,6 +70,60 @@ describe("@groupBy directive top level", () => {
         });
     });
 
+    test("groupBy in top level query values and aggregate, aliased", async () => {
+        await testHelper.executeCypher(`
+            CREATE (:${Movie} {title: "The Matrix", year: 1999})
+            CREATE (:${Movie} {title: "The Matrix Reloaded", year: 2001})
+            CREATE (:${Movie} {title: "Another Movie", year: 1999})
+        `);
+
+        const query = /* GraphQL */ `
+            query {
+                ${Movie.operations.connection} {
+                    groupBy(fields: {year: true}) {
+                        v: values {
+                            year
+                        }
+                        agg: aggregate {
+                            count {
+                                nodes
+                            }
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await testHelper.executeGraphQL(query);
+        expect(result.errors).toBeUndefined();
+        expect(result.data).toEqual({
+            [Movie.operations.connection]: {
+                groupBy: expect.toIncludeSameMembers([
+                    {
+                        v: {
+                            year: 1999,
+                        },
+                        agg: {
+                            count: {
+                                nodes: 2,
+                            },
+                        },
+                    },
+                    {
+                        v: {
+                            year: 2001,
+                        },
+                        agg: {
+                            count: {
+                                nodes: 1,
+                            },
+                        },
+                    },
+                ]),
+            },
+        });
+    });
+
     test("groupBy in top level query without projection", async () => {
         await testHelper.executeCypher(`
             CREATE (:${Movie} {title: "The Matrix", year: 1999})

@@ -387,11 +387,13 @@ export class ConnectionFactory {
             resolveTree: resolveTreeGroupBy,
         });
 
-        const edgesResolveTree =
-            resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()]?.edges;
+        const groupByFields =
+            resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()] ?? {};
+        const edgesResolveTree = findFieldsByNameInFieldsByTypeNameField(groupByFields, "edges")[0];
         if (edgesResolveTree) {
-            const nodeResolveTree =
-                edgesResolveTree.fieldsByTypeName[target.operations.getConnectionGroupByEdgeTypename()]?.node;
+            const edgeFieldsByTypeName =
+                edgesResolveTree.fieldsByTypeName?.[target.operations.getConnectionGroupByEdgeTypename()] ?? {};
+            const nodeResolveTree = findFieldsByNameInFieldsByTypeNameField(edgeFieldsByTypeName, "node")[0];
             if (nodeResolveTree) {
                 const resolveTreeNodeFieldsTypesNames = [
                     target.name,
@@ -420,8 +422,7 @@ export class ConnectionFactory {
                 operation.addAuthFilters(...authFilters);
             }
         }
-        const valuesResolveTree =
-            resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()]?.values;
+        const valuesResolveTree = findFieldsByNameInFieldsByTypeNameField(groupByFields, "values")[0];
         if (valuesResolveTree) {
             const resolveTreeNodeFields = getFieldsByTypeName(
                 valuesResolveTree,
@@ -445,8 +446,7 @@ export class ConnectionFactory {
             });
             operation.addAuthFilters(...authFilters);
         }
-        const resolveTreeAggregate =
-            resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()]?.aggregate;
+        const resolveTreeAggregate = findFieldsByNameInFieldsByTypeNameField(groupByFields, "aggregate")[0];
         if (resolveTreeAggregate) {
             const aggregationOperation = this.aggregateFactory.createAggregationOperation({
                 entityOrRel: target,
@@ -457,7 +457,7 @@ export class ConnectionFactory {
             });
 
             const aggregationField = new ConnectionAggregationField({
-                alias: resolveTreeAggregate.name, // Alias is hanlded by graphql on top level
+                alias: resolveTreeAggregate.name, // Alias is handled by graphql on top level
                 nodeAlias: "node",
                 operation: aggregationOperation,
             });
@@ -477,6 +477,7 @@ export class ConnectionFactory {
                         resolveTreeAggregateFields
                     ),
                     context,
+                    skipEntityAuth: true,
                 });
                 operation.addAuthFilters(...authFilters);
             }

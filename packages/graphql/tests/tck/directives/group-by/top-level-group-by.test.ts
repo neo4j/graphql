@@ -123,6 +123,44 @@ describe("Group By Directive - Top Level", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 
+    test("group by in top level query with values projection aliased", async () => {
+        const query = /* GraphQL */ `
+            query {
+                moviesConnection {
+                    groupBy(fields: { released: true }) {
+                        v: values {
+                            released
+                        }
+                    }
+                }
+            }
+        `;
+
+        const result = await translateQuery(neoSchema, query);
+
+        expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
+            "CYPHER 5
+            MATCH (this0:Movie)
+            WITH collect({node: this0}) AS edges
+            CALL (edges) {
+              UNWIND edges AS edge
+              WITH edge.node AS this0
+              RETURN collect({node: {__id: elementId(this0), __resolveType: 'Movie'}}) AS var1
+            }
+            WITH *, COLLECT {
+              CALL (edges) {
+                UNWIND edges AS edge
+                WITH edge.node AS this0
+                RETURN this0.released AS released, {edges: collect({node: {__id: elementId(this0)}}), values: {released: this0.released}} AS var2
+              }
+              RETURN var2
+            } AS var2
+            RETURN {edges: var1, groupBy: var2} AS this"
+        `);
+
+        expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
+    });
+
     test("group by in top level query with node projection, paginated", async () => {
         const query = /* GraphQL */ `
             query {

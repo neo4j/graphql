@@ -293,13 +293,13 @@ describe("Group By Directive - Top Level - @authorization filter on types", () =
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:Movie)
-            WHERE (($isAuthenticated = true AND ($param1 IS NOT NULL AND this0.title = $param1)) AND ($isAuthenticated = true AND ($param2 IS NOT NULL AND this0.title = $param2)))
+            WHERE ($isAuthenticated = true AND ($param1 IS NOT NULL AND this0.title = $param1))
             WITH collect({node: this0}) AS edges
             CALL (edges) {
               UNWIND edges AS edge
               WITH edge.node AS this0
               WITH *
-              LIMIT $param3
+              LIMIT $param2
               RETURN collect({node: {__id: elementId(this0), __resolveType: 'Movie'}}) AS var1
             }
             WITH *, COLLECT {
@@ -330,8 +330,7 @@ describe("Group By Directive - Top Level - @authorization filter on types", () =
             "{
                 \\"isAuthenticated\\": false,
                 \\"param1\\": \\"someTitle\\",
-                \\"param2\\": \\"someTitle\\",
-                \\"param3\\": {
+                \\"param2\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }
@@ -369,13 +368,13 @@ describe("Group By Directive - Top Level - @authorization filter on types", () =
         expect(formatCypher(result.cypher)).toMatchInlineSnapshot(`
             "CYPHER 5
             MATCH (this0:Movie)
-            WHERE (($isAuthenticated = true AND ($param1 IS NOT NULL AND this0.title = $param1)) AND ($isAuthenticated = true AND ($param2 IS NOT NULL AND this0.title = $param2)))
+            WHERE ($isAuthenticated = true AND ($param1 IS NOT NULL AND this0.title = $param1))
             WITH collect({node: this0}) AS edges
             CALL (edges) {
               UNWIND edges AS edge
               WITH edge.node AS this0
               WITH *
-              LIMIT $param3
+              LIMIT $param2
               RETURN collect({node: {__id: elementId(this0), __resolveType: 'Movie'}}) AS var1
             }
             WITH *, COLLECT {
@@ -406,8 +405,7 @@ describe("Group By Directive - Top Level - @authorization filter on types", () =
             "{
                 \\"isAuthenticated\\": false,
                 \\"param1\\": \\"someTitle\\",
-                \\"param2\\": \\"someTitle\\",
-                \\"param3\\": {
+                \\"param2\\": {
                     \\"low\\": 10,
                     \\"high\\": 0
                 }
