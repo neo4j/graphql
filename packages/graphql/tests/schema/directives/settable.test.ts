@@ -1546,11 +1546,6 @@ describe("@settable", () => {
                   where: ActorActedInConnectionWhere
                 }
 
-                input ActorActedInDisconnectFieldInput {
-                  disconnect: MovieDisconnectInput
-                  where: ActorActedInConnectionWhere
-                }
-
                 input ActorActedInFieldInput {
                   connect: [ActorActedInConnectFieldInput!]
                   create: [ActorActedInCreateFieldInput!]
@@ -1608,10 +1603,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                input ActorConnectInput {
-                  actedIn: [ActorActedInConnectFieldInput!]
-                }
-
                 input ActorConnectWhere {
                   node: ActorWhere!
                 }
@@ -1623,10 +1614,6 @@ describe("@settable", () => {
 
                 input ActorDeleteInput {
                   actedIn: [ActorActedInDeleteFieldInput!]
-                }
-
-                input ActorDisconnectInput {
-                  actedIn: [ActorActedInDisconnectFieldInput!]
                 }
 
                 type ActorEdge {
@@ -1803,7 +1790,6 @@ describe("@settable", () => {
                 }
 
                 input MovieActorsConnectFieldInput {
-                  connect: [ActorConnectInput!]
                   where: ActorConnectWhere
                 }
 
@@ -1864,7 +1850,6 @@ describe("@settable", () => {
                 }
 
                 input MovieActorsDisconnectFieldInput {
-                  disconnect: ActorDisconnectInput
                   where: MovieActorsConnectionWhere
                 }
 
@@ -1939,10 +1924,6 @@ describe("@settable", () => {
 
                 input MovieDeleteInput {
                   actors: [MovieActorsDeleteFieldInput!]
-                }
-
-                input MovieDisconnectInput {
-                  actors: [MovieActorsDisconnectFieldInput!]
                 }
 
                 type MovieEdge {
@@ -3808,11 +3789,6 @@ describe("@settable", () => {
                   name: String!
                 }
 
-                input ActorActedInConnectInput {
-                  Movie: [ActorActedInMovieConnectFieldInput!]
-                  Series: [ActorActedInSeriesConnectFieldInput!]
-                }
-
                 type ActorActedInConnection {
                   edges: [ActorActedInRelationship!]!
                   pageInfo: PageInfo!
@@ -3853,11 +3829,6 @@ describe("@settable", () => {
                   Series: [ActorActedInSeriesDeleteFieldInput!]
                 }
 
-                input ActorActedInDisconnectInput {
-                  Movie: [ActorActedInMovieDisconnectFieldInput!]
-                  Series: [ActorActedInSeriesDisconnectFieldInput!]
-                }
-
                 input ActorActedInMovieConnectFieldInput {
                   connect: [MovieConnectInput!]
                   where: MovieConnectWhere
@@ -3876,11 +3847,6 @@ describe("@settable", () => {
 
                 input ActorActedInMovieDeleteFieldInput {
                   delete: MovieDeleteInput
-                  where: ActorActedInMovieConnectionWhere
-                }
-
-                input ActorActedInMovieDisconnectFieldInput {
-                  disconnect: MovieDisconnectInput
                   where: ActorActedInMovieConnectionWhere
                 }
 
@@ -3913,10 +3879,6 @@ describe("@settable", () => {
                   where: ActorActedInSeriesConnectionWhere
                 }
 
-                input ActorActedInSeriesDisconnectFieldInput {
-                  where: ActorActedInSeriesConnectionWhere
-                }
-
                 input ActorActedInSeriesFieldInput {
                   connect: [ActorActedInSeriesConnectFieldInput!]
                   create: [ActorActedInSeriesCreateFieldInput!]
@@ -3931,10 +3893,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                input ActorConnectInput {
-                  actedIn: ActorActedInConnectInput
-                }
-
                 input ActorConnectWhere {
                   node: ActorWhere!
                 }
@@ -3946,10 +3904,6 @@ describe("@settable", () => {
 
                 input ActorDeleteInput {
                   actedIn: ActorActedInDeleteInput
-                }
-
-                input ActorDisconnectInput {
-                  actedIn: ActorActedInDisconnectInput
                 }
 
                 type ActorEdge {
@@ -4120,7 +4074,6 @@ describe("@settable", () => {
                 }
 
                 input MovieActorsConnectFieldInput {
-                  connect: [ActorConnectInput!]
                   where: ActorConnectWhere
                 }
 
@@ -4181,7 +4134,6 @@ describe("@settable", () => {
                 }
 
                 input MovieActorsDisconnectFieldInput {
-                  disconnect: ActorDisconnectInput
                   where: MovieActorsConnectionWhere
                 }
 
@@ -4256,10 +4208,6 @@ describe("@settable", () => {
 
                 input MovieDeleteInput {
                   actors: [MovieActorsDeleteFieldInput!]
-                }
-
-                input MovieDisconnectInput {
-                  actors: [MovieActorsDisconnectFieldInput!]
                 }
 
                 type MovieEdge {
@@ -6638,11 +6586,6 @@ describe("@settable", () => {
                   where: ActorActedInConnectionWhere
                 }
 
-                input ActorActedInDisconnectFieldInput {
-                  disconnect: ProductionDisconnectInput
-                  where: ActorActedInConnectionWhere
-                }
-
                 input ActorActedInFieldInput {
                   connect: [ActorActedInConnectFieldInput!]
                   create: [ActorActedInCreateFieldInput!]
@@ -6700,10 +6643,6 @@ describe("@settable", () => {
                   name: StringAggregateSelection!
                 }
 
-                input ActorConnectInput {
-                  actedIn: [ActorActedInConnectFieldInput!]
-                }
-
                 input ActorConnectWhere {
                   node: ActorWhere!
                 }
@@ -6715,10 +6654,6 @@ describe("@settable", () => {
 
                 input ActorDeleteInput {
                   actedIn: [ActorActedInDeleteFieldInput!]
-                }
-
-                input ActorDisconnectInput {
-                  actedIn: [ActorActedInDisconnectFieldInput!]
                 }
 
                 type ActorEdge {
@@ -6891,7 +6826,6 @@ describe("@settable", () => {
                 }
 
                 input MovieActorsConnectFieldInput {
-                  connect: [ActorConnectInput!]
                   where: ActorConnectWhere
                 }
 
@@ -7104,7 +7038,6 @@ describe("@settable", () => {
                 }
 
                 input ProductionActorsConnectFieldInput {
-                  connect: [ActorConnectInput!]
                   where: ActorConnectWhere
                 }
 
@@ -7162,7 +7095,6 @@ describe("@settable", () => {
                 }
 
                 input ProductionActorsDisconnectFieldInput {
-                  disconnect: ActorDisconnectInput
                   where: ProductionActorsConnectionWhere
                 }
 
@@ -7218,10 +7150,6 @@ describe("@settable", () => {
 
                 input ProductionDeleteInput {
                   actors: [ProductionActorsDeleteFieldInput!]
-                }
-
-                input ProductionDisconnectInput {
-                  actors: [ProductionActorsDisconnectFieldInput!]
                 }
 
                 type ProductionEdge {
@@ -7338,7 +7266,6 @@ describe("@settable", () => {
                 }
 
                 input SeriesActorsConnectFieldInput {
-                  connect: [ActorConnectInput!]
                   where: ActorConnectWhere
                 }
 
