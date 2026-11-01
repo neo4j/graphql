@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.6.6
+
+### Patch Changes
+
+- [#7410](https://github.com/neo4j/graphql/pull/7410) [`2dcbc5e`](https://github.com/neo4j/graphql/commit/2dcbc5ea9a891110d680f7fe9081f46e9195f3a3) Thanks [@risset](https://github.com/risset)! - Enforce authentication on schema definitions.
+
 ## 7.6.5
 
 ### Patch Changes
