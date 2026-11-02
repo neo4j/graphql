@@ -46,7 +46,9 @@ async function translateUsingQueryAST({
         callbackBucket,
     });
     debug(operationsTree.print());
-    await callbackBucket.resolveCallbacks();
+    if (!context.dryRun) {
+        await callbackBucket.resolveCallbacks();
+    }
     const clause = operationsTree.build(context, varName);
     return buildClause(clause, { context });
 }
