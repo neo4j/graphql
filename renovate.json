@@ -9,15 +9,7 @@
     },
     "timezone": "Europe/London",
     "schedule": ["* 0-4 1,15 * *"],
-    "ignorePaths": [
-        "**/node_modules/**",
-        "**/bower_components/**",
-        "**/vendor/**",
-        "**/__tests__/**",
-        "**/test/**",
-        "**/tests/**",
-        "**/__fixtures__/**"
-    ],
+    "ignorePaths": ["**/node_modules/**"],
     "ignoreDeps": ["neo4j"],
     "separateMajorMinor": true,
     "minimumReleaseAge": "3 days",
