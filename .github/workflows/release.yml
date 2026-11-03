@@ -37,7 +37,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
-          node-version: lts/*
+          node-version: 26.13.0
           registry-url: https://registry.npmjs.org
           package-manager-cache: false
 

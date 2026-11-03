@@ -11,7 +11,11 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
-          node-version: 26 # Should match package.json minimum node engine
+          # Must match the minimum node engine in packages/*/package.json - do not bump (excluded from Renovate in renovate.json).
+          # Node 20 reached end-of-maintenance in April 2026 and receives no further security patches; testing on it is
+          # accepted because users on Node 20 still rely on our `>=20.0.0` engines claim. Dropping Node 20 support is a
+          # breaking (semver-major) change and must be a deliberate decision, made together with an engines bump.
+          node-version: 20
           cache: yarn
           package-manager-cache: false
       - name: Install dependencies
