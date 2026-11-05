@@ -34,6 +34,7 @@ export class QueryASTContext<T extends Cypher.Node | undefined = Cypher.Node | u
     public readonly returnVariable: Cypher.Variable;
     public readonly shouldCollect: boolean; // temporary hack to describe if we should collect the return variable (used for mutation response)
     public readonly shouldDistinct: boolean; // temporary hack to describe if we should distinct the return variable (used for mutation response)
+    public readonly varTarget?: Cypher.Variable;
 
     public env: QueryASTEnv;
     public neo4jGraphQLContext: Neo4jGraphQLTranslationContext;
@@ -48,6 +49,7 @@ export class QueryASTContext<T extends Cypher.Node | undefined = Cypher.Node | u
         returnVariable,
         shouldCollect,
         shouldDistinct,
+        varTarget,
     }: {
         target: T;
         relationship?: Cypher.Relationship;
@@ -58,6 +60,7 @@ export class QueryASTContext<T extends Cypher.Node | undefined = Cypher.Node | u
         returnVariable?: Cypher.Variable;
         shouldCollect?: boolean;
         shouldDistinct?: boolean;
+        varTarget?: Cypher.Variable;
     }) {
         this.target = target;
         this.relationship = relationship;
@@ -68,11 +71,16 @@ export class QueryASTContext<T extends Cypher.Node | undefined = Cypher.Node | u
         this.shouldCollect = shouldCollect ?? false;
         this.shouldDistinct = shouldDistinct ?? false;
         this.direction = direction;
+        this.varTarget = varTarget;
     }
 
     // TODO: make target always defined
     public hasTarget(): this is QueryASTContext<Cypher.Node> {
         return Boolean(this.target);
+    }
+
+    public getVarTarget(): Cypher.Variable | undefined {
+        return this.varTarget;
     }
 
     public getRelationshipScope(): Scope {

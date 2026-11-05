@@ -109,7 +109,7 @@ export function rootConnectionResolver({
         });
     }
 
-    if (isConcreteEntity(entityAdapter)) {
+    if (isConcreteEntity(entityAdapter) && entityAdapter.isGroupable(schemaModel)) {
         const groupByField = makeConnectionGroupByType({
             entityAdapter,
             composer,
