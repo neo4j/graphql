@@ -41,6 +41,12 @@
             "matchDatasources": ["node-version", "docker"],
             "matchDepNames": ["node"],
             "schedule": ["at any time"]
+        },
+        {
+            "description": "reusable-package-tests.yml pins the minimum supported Node engine, so its node-version must not be bumped",
+            "matchManagers": ["node"],
+            "matchFileNames": [".github/workflows/reusable-package-tests.yml"],
+            "enabled": false
         }
     ],
     "customManagers": [
