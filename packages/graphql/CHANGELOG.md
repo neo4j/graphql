@@ -1,5 +1,12 @@
 # @neo4j/graphql
 
+## 7.6.7
+
+### Patch Changes
+
+- [`a077f3c`](https://github.com/neo4j/graphql/commit/a077f3cdf38c86e35edc1c48087baf5ad3d596a8) Thanks [@risset](https://github.com/risset)! - Fix `@authentication` JWT `where` filters only evaluating the first condition.
+  All conditions are now evaluated and combined with `AND` as documented.
+
 ## 7.6.6
 
 ### Patch Changes
