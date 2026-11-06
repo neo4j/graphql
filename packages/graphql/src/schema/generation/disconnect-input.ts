@@ -18,7 +18,7 @@ import type { RelationshipAdapter } from "../../schema-model/relationship/model-
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
 import type { Neo4jFeaturesSettings } from "../../types";
 import { withConnectionWhereInputType } from "./connection-where-input";
-import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
+import { relationshipTargetHasUpdatableRelationshipWithNestedOperation } from "./utils";
 
 function withDisconnectInputType({
     entityAdapter,
@@ -49,6 +49,9 @@ export function augmentDisconnectInputTypeWithDisconnectFieldInput({
 }) {
     if (relationshipAdapter.source instanceof UnionEntityAdapter) {
         throw new Error("Unexpected union source");
+    }
+    if (!relationshipAdapter.isUpdatable()) {
+        return;
     }
     const disconnectFieldInput = makeDisconnectInputType({
         relationshipAdapter,
@@ -218,7 +221,7 @@ function makeDisconnectFieldInputTypeFields({
     if (relationshipAdapter.target instanceof ConcreteEntityAdapter) {
         fields["where"] = relationshipAdapter.operations.getConnectionWhereTypename();
         if (
-            relationshipTargetHasRelationshipWithNestedOperation(
+            relationshipTargetHasUpdatableRelationshipWithNestedOperation(
                 relationshipAdapter.target,
                 RelationshipNestedOperationsOption.DISCONNECT
             )
@@ -233,7 +236,10 @@ function makeDisconnectFieldInputTypeFields({
 
         const disconnectTypename = relationshipAdapter.target.operations.updateMutationArgumentNames.disconnect;
 
-        const hasNestedRelationships = relationshipAdapter.target.relationshipDeclarations.size > 0;
+        const hasNestedRelationships = relationshipTargetHasUpdatableRelationshipWithNestedOperation(
+            relationshipAdapter.target,
+            RelationshipNestedOperationsOption.DISCONNECT
+        );
         if (composer.has(disconnectTypename) || hasNestedRelationships) {
             const disconnectInputType = composer.getOrCreateITC(disconnectTypename);
 
@@ -249,7 +255,12 @@ function makeDisconnectFieldInputTypeFields({
             composer,
         });
 
-        if (ifUnionMemberEntity.relationships.size) {
+        if (
+            relationshipTargetHasUpdatableRelationshipWithNestedOperation(
+                ifUnionMemberEntity,
+                RelationshipNestedOperationsOption.DISCONNECT
+            )
+        ) {
             const disconnectInput = withDisconnectInputType({ entityAdapter: ifUnionMemberEntity, composer });
             if (disconnectInput) {
                 fields["disconnect"] = disconnectInput;
