@@ -67,6 +67,7 @@ export async function getAuthorizationContext(
                 claims: jwtClaimsMap,
             };
         }
+        return { jwt: context.jwt, ...unauthorizedContext };
     }
 
     debug("request not authenticated");
