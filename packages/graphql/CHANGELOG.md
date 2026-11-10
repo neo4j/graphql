@@ -1,5 +1,11 @@
 # @neo4j/graphql
 
+## 7.6.8
+
+### Patch Changes
+
+- [`8523320`](https://github.com/neo4j/graphql/commit/8523320cdde096d7e63d8ff7fd1cc012dbee5fd2) Thanks [@risset](https://github.com/risset)! - Enforce authentication on aggregation selections and root aggregate connections
+
 ## 7.6.7
 
 ### Patch Changes
