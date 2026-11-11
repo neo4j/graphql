@@ -39,11 +39,11 @@ jobs:
 
     strategy:
       matrix:
-        # Exact pins for reproducible nightly runs; these are not updated by Renovate, so bump them manually.
-        # Keep two lanes: the current Node release and the previous LTS line still in maintenance.
+        # Two lanes, both pinned exactly and bumped by Renovate (see customManagers in renovate.json):
+        # the current Node release, followed by the previous LTS line still in maintenance.
         node: [
-          { name: "26.13.0", coverage_name: "26" },
-          { name: "24.22.1", coverage_name: "24" }
+          "26.13.0",
+          "24.22.1"
         ]
         packages:
           [
@@ -77,10 +77,10 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
-      - name: Setting up Node.js with version ${{ matrix.node.name }}
+      - name: Setting up Node.js with version ${{ matrix.node }}
         uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
-          node-version: ${{ matrix.node.name }}
+          node-version: ${{ matrix.node }}
           cache: yarn
           package-manager-cache: false
       - name: Login to ECR
@@ -119,7 +119,7 @@ jobs:
         name: Archive coverage report
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
         with:
-          name: integration-nightly-coverage-${{ matrix.packages.package }}-${{ matrix.graphql-version.coverage_path }}-${{ matrix.packages.coverage_name }}-${{ matrix.node.coverage_name }}
+          name: integration-nightly-coverage-${{ matrix.packages.package }}-${{ matrix.graphql-version.coverage_path }}-${{ matrix.packages.coverage_name }}-${{ matrix.node }}
           path: packages/${{ matrix.packages.package }}/coverage-nightly-${{ matrix.graphql-version.coverage_path }}/
       - name: Stop Neo4j container
         if: always()
