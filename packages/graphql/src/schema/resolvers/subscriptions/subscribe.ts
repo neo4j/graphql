@@ -20,7 +20,6 @@ import { updateDiffFilter } from "./update-diff-filter";
 import { subscriptionAuthorization } from "./where/authorization";
 import { subscriptionWhere } from "./where/where";
 import { getAuthorizationContext } from "../composition/utils/get-authorization-context";
-import type { JwtPayload } from "jsonwebtoken";
 
 type SubscriptionArgs = {
     where?: Record<string, any>;
