@@ -39,9 +39,11 @@ jobs:
 
     strategy:
       matrix:
+        # Exact pins for reproducible nightly runs; these are not updated by Renovate, so bump them manually.
+        # Keep two lanes: the current Node release and the previous LTS line still in maintenance.
         node: [
-          { name: "lts/*", coverage_name: "lts" },
-          { name: "latest", coverage_name: "latest" }
+          { name: "26.13.0", coverage_name: "26" },
+          { name: "24.22.1", coverage_name: "24" }
         ]
         packages:
           [
