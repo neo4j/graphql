@@ -4,6 +4,7 @@
  */
 
 import { printSchemaWithDirectives } from "@graphql-tools/utils";
+import type { GraphQLInterfaceType, GraphQLNonNull, GraphQLObjectType } from "graphql";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 import { TestCDCEngine } from "../../utils/builders/TestCDCEngine";
@@ -674,6 +675,120 @@ describe("@selectable", () => {
               movies: [Movie!]!
             }"
         `);
+    });
+
+    describe("interface-declared relationship fields", () => {
+        test("Disable read on an interface-declared relationship field", async () => {
+            const typeDefs = /* GraphQL */ `
+                interface Production {
+                    title: String!
+                    actors: [Actor!]! @declareRelationship @selectable(onRead: false)
+                }
+
+                type Movie implements Production @node {
+                    title: String!
+                    actors: [Actor!]!
+                        @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
+                        @selectable(onRead: false)
+                }
+
+                type Actor @node {
+                    name: String!
+                    salary: Float
+                }
+            `;
+            const neoSchema = new Neo4jGraphQL({ typeDefs });
+            const schema = await neoSchema.getSchema();
+
+            const productionType = schema.getType("Production") as GraphQLInterfaceType;
+            expect(productionType).toBeDefined();
+            expect(productionType.getFields().actors).toBeUndefined();
+            expect(productionType.getFields().actorsConnection).toBeUndefined();
+
+            const movieType = schema.getType("Movie") as GraphQLObjectType;
+            expect(movieType).toBeDefined();
+
+            const { actors, actorsConnection } = movieType.getFields();
+            expect(actors).toBeUndefined();
+            expect(actorsConnection).toBeDefined();
+
+            const { aggregate, edges, pageInfo, totalCount } = (
+                actorsConnection?.type as GraphQLNonNull<GraphQLObjectType>
+            ).ofType.getFields();
+            expect(aggregate).toBeDefined();
+            expect(edges).toBeUndefined();
+            expect(pageInfo).toBeUndefined();
+            expect(totalCount).toBeUndefined();
+        });
+
+        const series = /* GraphQL */ `
+            type Series implements Production @node {
+                title: String!
+                actors: [Actor!]! @relationship(type: "ACTED_IN", direction: IN)
+            }
+        `;
+        const movie = /* GraphQL */ `
+            type Movie implements Production @node {
+                title: String!
+                actors: [Actor!]!
+                    @relationship(type: "ACTED_IN", direction: IN, nestedOperations: [])
+                    @selectable(onRead: false)
+            }
+        `;
+
+        test.each([
+            ["readable implementation first", [series, movie]],
+            ["non-readable implementation first", [movie, series]],
+        ])(
+            "Disable read on one implementation without disabling another implementation, with %s",
+            async (_order, implementations) => {
+                const typeDefs = /* GraphQL */ `
+                    interface Production {
+                        title: String!
+                        actors: [Actor!]! @declareRelationship @selectable(onRead: false)
+                    }
+
+                    ${implementations.join("\n")}
+
+                    type Actor @node {
+                        name: String!
+                        salary: Float
+                    }
+                `;
+                const neoSchema = new Neo4jGraphQL({ typeDefs });
+                const schema = await neoSchema.getSchema();
+
+                const seriesType = schema.getType("Series") as GraphQLObjectType;
+                expect(seriesType).toBeDefined();
+
+                const { actors: seriesActors, actorsConnection: seriesActorsConnection } = seriesType.getFields();
+                expect(seriesActors).toBeDefined();
+                expect(seriesActorsConnection).toBeDefined();
+
+                const seriesConnectionFields = (
+                    seriesActorsConnection?.type as GraphQLNonNull<GraphQLObjectType>
+                ).ofType.getFields();
+                expect(seriesConnectionFields.aggregate).toBeDefined();
+                expect(seriesConnectionFields.edges).toBeDefined();
+                expect(seriesConnectionFields.pageInfo).toBeDefined();
+                expect(seriesConnectionFields.totalCount).toBeDefined();
+
+                const movieType = schema.getType("Movie") as GraphQLObjectType;
+                expect(movieType).toBeDefined();
+
+                const { actors, actorsConnection } = movieType.getFields();
+                expect(actors).toBeUndefined();
+                expect(actorsConnection).toBeDefined();
+
+                const { aggregate, edges, pageInfo, totalCount } = (
+                    actorsConnection?.type as GraphQLNonNull<GraphQLObjectType>
+                ).ofType.getFields();
+                expect(aggregate).toBeDefined();
+                expect(edges).toBeUndefined();
+                expect(pageInfo).toBeUndefined();
+                expect(totalCount).toBeUndefined();
+            }
+        );
     });
 
     describe("relationships fields to a concrete type", () => {

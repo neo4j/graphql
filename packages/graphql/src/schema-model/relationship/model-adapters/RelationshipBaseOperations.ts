@@ -60,15 +60,20 @@ export abstract class RelationshipBaseOperations<T extends RelationshipAdapter |
 
     /**Note: Required for now to infer the types without ResolveTree */
     public get connectionFieldTypename(): string {
+        // Non-readable relationship fields should use their own connection type instead of the interface's.
+        // This is because the interface connection will always be readable if any implementation is readable.
+        if (!this.relationship.isReadable()) {
+            return `${this.prefixForTypename}Connection`;
+        }
         return `${this.prefixForTypenameWithInheritance}Connection`;
     }
 
     public get connectionSortInputTypename(): string {
-        return `${this.connectionFieldTypename}Sort`;
+        return `${this.prefixForTypenameWithInheritance}ConnectionSort`;
     }
 
     public get connectionWhereInputTypename(): string {
-        return `${this.connectionFieldTypename}Where`;
+        return `${this.prefixForTypenameWithInheritance}ConnectionWhere`;
     }
 
     /**Note: Required for now to infer the types without ResolveTree */
