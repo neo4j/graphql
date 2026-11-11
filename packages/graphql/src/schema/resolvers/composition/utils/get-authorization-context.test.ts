@@ -58,6 +58,53 @@ describe("getAuthorizationContext", () => {
         expect(context.jwt).toBeUndefined();
     });
 
+    describe("expired tokens", () => {
+        const nowInSeconds = () => Math.floor(Date.now() / 1000);
+
+        test("flags an expired token as expired and unauthenticated", async () => {
+            const context = await getAuthorizationContext(
+                { token: createBearerToken(secret, { sub: "user", exp: nowInSeconds() - 60 }) },
+                new Neo4jGraphQLAuthorization({ key: secret })
+            );
+            expect(context.isAuthenticated).toBe(false);
+            expect(context.tokenExpired).toBe(true);
+            expect(context.jwt).toBeUndefined();
+        });
+
+        test("does not flag a token that has not expired", async () => {
+            const context = await getAuthorizationContext(
+                { token: createBearerToken(secret, { sub: "user", exp: nowInSeconds() + 60 }) },
+                new Neo4jGraphQLAuthorization({ key: secret })
+            );
+            expect(context.isAuthenticated).toBe(true);
+            expect(context.tokenExpired).toBeUndefined();
+        });
+
+        test("does not flag a token signed with the wrong key, even if it is also expired", async () => {
+            const context = await getAuthorizationContext(
+                { token: createBearerToken("wrong-secret", { sub: "user", exp: nowInSeconds() - 60 }) },
+                new Neo4jGraphQLAuthorization({ key: secret })
+            );
+            expect(context.isAuthenticated).toBe(false);
+            expect(context.tokenExpired).toBeUndefined();
+        });
+
+        test("does not flag as expired when no token is provided", async () => {
+            const context = await getAuthorizationContext({}, new Neo4jGraphQLAuthorization({ key: secret }));
+            expect(context.isAuthenticated).toBe(false);
+            expect(context.tokenExpired).toBeUndefined();
+        });
+
+        test("does not check expiry when verification is disabled", async () => {
+            const context = await getAuthorizationContext(
+                { token: createBearerToken(secret, { sub: "user", exp: nowInSeconds() - 60 }) },
+                new Neo4jGraphQLAuthorization({ key: secret, verify: false })
+            );
+            expect(context.isAuthenticated).toBe(true);
+            expect(context.tokenExpired).toBeUndefined();
+        });
+    });
+
     test("returns an unauthenticated context when no token and no jwt are provided", async () => {
         const context = await getAuthorizationContext({}, new Neo4jGraphQLAuthorization({ key: secret }));
         expect(context.isAuthenticated).toBe(false);

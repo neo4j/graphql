@@ -5,7 +5,7 @@
 
 import Cypher from "@neo4j/cypher-builder";
 import Debug from "debug";
-import type { JWTPayload } from "jose";
+import { errors, type JWTPayload } from "jose";
 import type { Neo4jGraphQLAuthorization } from "../../../../classes/authorization/Neo4jGraphQLAuthorization";
 import { DEBUG_AUTH } from "../../../../constants";
 import { debugObject } from "../../../../debug/debug-object";
@@ -16,6 +16,13 @@ import type { Neo4jGraphQLSubscriptionsConnectionParams } from "../../../../type
 const debug = Debug(DEBUG_AUTH);
 
 const unauthorizedContext = {
+    isAuthenticated: false,
+    jwtParam: new Cypher.NamedParam("jwt", {}),
+    isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", false),
+};
+
+const expiredTokenContext = {
+    tokenExpired: true,
     isAuthenticated: false,
     jwtParam: new Cypher.NamedParam("jwt", {}),
     isAuthenticatedParam: new Cypher.NamedParam("isAuthenticated", false),
@@ -53,7 +60,7 @@ export async function getAuthorizationContext(
     }
 
     if (context.token) {
-        const jwt = await authorization.decode(context);
+        const { jwt, error } = await authorization.decode(context);
         if (jwt) {
             const isAuthenticated = true;
 
@@ -67,7 +74,9 @@ export async function getAuthorizationContext(
                 claims: jwtClaimsMap,
             };
         }
-        return { jwt: context.jwt, ...unauthorizedContext };
+        if (error instanceof errors.JWTExpired) {
+            return expiredTokenContext;
+        }
     }
 
     debug("request not authenticated");

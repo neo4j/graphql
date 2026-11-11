@@ -34,14 +34,6 @@ function isNodeSubscriptionEvent(event: SubscriptionsEvent | undefined): event i
     return "typename" in event;
 }
 
-function isJwtExpired(jwt: JwtPayload): boolean {
-    const exp = jwt.exp;
-    if (exp && exp * 1000 < Date.now()) {
-        return true;
-    }
-    return false;
-}
-
 export function generateSubscribeMethod({
     entityAdapter,
     type,
@@ -82,14 +74,10 @@ export function generateSubscribeMethod({
                     context.jwt
                 );
                 context.authorization = authorizationContext;
-
-                const jwt = context.authorization.jwt;
-                if (jwt) {
-                    if (isJwtExpired(jwt)) {
-                        // if expired we don't want to send events
-                        return false;
-                    }
+                if (context.authorization?.tokenExpired) {
+                    return false;
                 }
+
                 return (
                     data[0].typename === entityAdapter.name &&
                     subscriptionAuthorization({

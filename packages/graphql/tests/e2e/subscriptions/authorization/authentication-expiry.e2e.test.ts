@@ -165,6 +165,11 @@ describe("Subscription authentication with expired token", () => {
             },
         ]);
         expect(wsClient.errors).toEqual([]);
+
+        const anotherMovieCreatedAfterExpiry = await createMovie("movie5", server);
+        expect(anotherMovieCreatedAfterExpiry.body.errors).toBeUndefined();
+        await waitForMaybeEvent(wsClient);
+        expect(wsClient.errors).toEqual([]);
     });
 
     test("client started with expired jwt throws unauthenticated", async () => {
@@ -388,6 +393,32 @@ describe("Subscription authorization with expired token", () => {
 
         const userCreatedAfterExpiry = await createUser("user1", server);
         expect(userCreatedAfterExpiry.body.errors).toBeUndefined();
+
+        await waitForMaybeEvent(wsClient);
+        expect(wsClient.events).toEqual([]);
+        expect(wsClient.errors).toEqual([]);
+    });
+
+    test("client with forged jwt in connectionParams and invalid token receives no events", async () => {
+        wsClient = new WebSocketTestClient(server.wsPath, undefined, {
+            token: "Bearer not-a-valid-token",
+            jwt: {
+                sub: "user1",
+                exp: Math.floor(Date.now() / 1000) + 60,
+            },
+        });
+        await wsClient.subscribe(`
+                    subscription {
+                        ${typeUser.operations.subscribe.created} {
+                            ${typeUser.operations.subscribe.payload.created} {
+                                id
+                            }
+                        }
+                    }
+                    `);
+
+        const userCreated = await createUser("user1", server);
+        expect(userCreated.body.errors).toBeUndefined();
 
         await waitForMaybeEvent(wsClient);
         expect(wsClient.events).toEqual([]);
