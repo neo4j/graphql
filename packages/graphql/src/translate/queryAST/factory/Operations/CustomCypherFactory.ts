@@ -7,6 +7,7 @@ import type { ResolveTree } from "graphql-parse-resolve-info";
 import { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { EntityAdapter } from "../../../../schema-model/entity/EntityAdapter";
 import type { Neo4jGraphQLTranslationContext } from "../../../../types/neo4j-graphql-translation-context";
+import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import { TypenameFilter } from "../../ast/filters/property-filters/TypenameFilter";
 import { CypherAttributeOperation } from "../../ast/operations/CypherAttributeOperation";
 import { CypherEntityOperation } from "../../ast/operations/CypherEntityOperation";
@@ -49,6 +50,12 @@ export class CustomCypherFactory {
             return new CypherAttributeOperation(selection, cypherAttributeField, true);
         }
         if (isConcreteEntity(entity)) {
+            checkEntityAuthentication({
+                entity: entity.entity,
+                targetOperations: ["READ"],
+                context,
+            });
+
             const customCypher = new CypherEntityOperation({
                 cypherAttributeField: cypherAttributeField,
                 target: entity,
@@ -115,6 +122,12 @@ export class CustomCypherFactory {
             return new CypherAttributeOperation(selection, operationField, false);
         }
         if (isConcreteEntity(entity)) {
+            checkEntityAuthentication({
+                entity: entity.entity,
+                targetOperations: ["READ"],
+                context,
+            });
+
             const customCypher = new CypherEntityOperation({
                 cypherAttributeField: operationField,
                 target: entity,

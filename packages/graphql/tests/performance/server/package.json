@@ -21,9 +21,9 @@
         "@apollo/server": "^4.7.0",
         "@benzene/http": "^0.4.2",
         "clinic": "^12.1.0",
-        "fastify": "^4.17.0",
+        "fastify": "^5.0.0",
         "graphql-yoga": "^3.9.1",
-        "mercurius": "^13.0.0",
+        "mercurius": "^16.0.0",
         "neo4j-driver": "^5.8.0"
     },
     "dependencies": {

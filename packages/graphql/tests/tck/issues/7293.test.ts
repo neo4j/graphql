@@ -156,9 +156,9 @@ describe("https://github.com/neo4j/graphql/issues/7293", () => {
                   WITH result AS this4
                   RETURN this4 AS var5
                 }
-                CALL (this0) {
-                  CALL (this0) {
-                    WITH this0 AS this
+                CALL (this) {
+                  CALL (this) {
+                    WITH this AS this
                     RETURN \\"countryCreateRelationship\\" as result
                   }
                   WITH result AS this6
@@ -302,9 +302,9 @@ describe("https://github.com/neo4j/graphql/issues/7293", () => {
                   WITH result AS this5
                   RETURN this5 AS var6
                 }
-                CALL (this1) {
-                  CALL (this1) {
-                    WITH this1 AS this
+                CALL (this0) {
+                  CALL (this0) {
+                    WITH this0 AS this
                     RETURN \\"countryCreateRelationship\\" as result
                   }
                   WITH result AS this7

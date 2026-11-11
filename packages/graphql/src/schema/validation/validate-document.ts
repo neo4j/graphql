@@ -249,7 +249,8 @@ function runValidationRulesOnFilteredDocument({
             validateGroupByDirective,
         ],
         schema,
-        features?.populatedBy?.callbacks
+        features?.populatedBy?.callbacks,
+        features?.vector
     );
     const filteredErrors = errors.filter((e) => e.message !== "Query root type must be provided.");
     if (filteredErrors.length) {

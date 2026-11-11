@@ -8,6 +8,7 @@ import {
     GraphQLDirective,
     GraphQLEnumType,
     GraphQLInputObjectType,
+    GraphQLInt,
     GraphQLList,
     GraphQLNonNull,
     GraphQLString,
@@ -51,6 +52,11 @@ export const vectorDirective = new GraphQLDirective({
                             },
                             provider: {
                                 type: VectorProviderEnum,
+                            },
+                            maxPhraseLength: {
+                                type: GraphQLInt,
+                                description:
+                                    "The maximum length, in characters, of the phrase argument accepted by queries against this index. Phrases longer than this are rejected before any database or embedding provider call is made.",
                             },
                         },
                     })

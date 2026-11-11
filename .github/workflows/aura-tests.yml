@@ -22,6 +22,7 @@ jobs:
       github.event.pull_request.user.login == 'neo4j-team-graphql' &&
       startsWith(github.head_ref, 'changeset-release/')
     uses: ./.github/workflows/reusable-aura-tests.yml
+    cache-mode: read
     with:
       BRANCH: ${{ github.head_ref || github.ref }}
     secrets:
@@ -35,6 +36,7 @@ jobs:
       github.event.pull_request.user.login == 'neo4j-team-graphql' &&
       startsWith(github.head_ref, 'changeset-release/')
     uses: ./.github/workflows/reusable-aura-tests.yml
+    cache-mode: read
     with:
       BRANCH: ${{ github.head_ref || github.ref }}
     secrets:
@@ -48,6 +50,7 @@ jobs:
       github.event.pull_request.user.login == 'neo4j-team-graphql' &&
       startsWith(github.head_ref, 'changeset-release/')
     uses: ./.github/workflows/reusable-aura-tests.yml
+    cache-mode: read
     with:
       BRANCH: ${{ github.head_ref || github.ref }}
     secrets:

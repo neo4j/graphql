@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Login to ECR
-        uses: aws-actions/amazon-ecr-login@d539f0932e70871a027e9d5a9d8fc38589180a64 # v2
+        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # v2
         id: login-to-ecr
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -55,15 +55,15 @@ jobs:
 
     steps:
       - name: Check out repository code
-        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - name: Setting up Node.js with version ${{ matrix.node.name }}
-        uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
         with:
           node-version: ${{ matrix.node.name }}
           cache: yarn
           package-manager-cache: false
       - name: Login to ECR
-        uses: docker/login-action@650006c6eb7dba73a995cc03b0b2d7f5ca915bee # v4
+        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4
         with:
           registry: 535893049302.dkr.ecr.eu-west-1.amazonaws.com
           username: ${{ secrets.AWS_ACCESS_KEY_ID }}
@@ -99,7 +99,7 @@ jobs:
           USE_RESTRICTED_USER: true
       - if: ${{ !inputs.disable-coverage-archival && matrix.packages.package == 'graphql' }}
         name: Archive coverage report
-        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: integration-nightly-coverage-neo-driver${{matrix.neo4j-driver-version}}-${{ matrix.packages.package }}-${{ matrix.graphql-version.coverage_path }}-${{ matrix.packages.coverage_name }}-${{ matrix.node.coverage_name }}
           path: packages/${{ matrix.packages.package }}/coverage-nightly-${{ matrix.graphql-version.coverage_path }}/
@@ -115,7 +115,7 @@ jobs:
     steps:
       - if: ${{ !inputs.disable-coverage-archival }}
         name: Merge Artifacts
-        uses: actions/upload-artifact/merge@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7
+        uses: actions/upload-artifact/merge@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7
         with:
           name: integration-nightly-coverage
           pattern: integration-nightly-coverage-*

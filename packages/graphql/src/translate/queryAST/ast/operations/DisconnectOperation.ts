@@ -9,7 +9,7 @@ import type { RelationshipAdapter } from "../../../../schema-model/relationship/
 import { filterTruthy } from "../../../../utils/utils";
 import { checkEntityAuthentication } from "../../../authorization/check-authentication";
 import { isConcreteEntity } from "../../utils/is-concrete-entity";
-import { wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
+import { wrapAuthFiltersInCypherCalls, wrapSubqueriesInCypherCalls } from "../../utils/wrap-subquery-in-calls";
 import type { QueryASTContext } from "../QueryASTContext";
 import type { QueryASTNode } from "../QueryASTNode";
 import type { Filter } from "../filters/Filter";
@@ -134,31 +134,12 @@ export class DisconnectOperation extends MutationOperation {
 
         const filterSubqueries = wrapSubqueriesInCypherCalls(nestedContext, this.filters, [nestedContext.target]);
         filterSubqueries.push(
-            ...this.authFilters
-                .flatMap((authFilter) => {
-                    const authSubqueries = authFilter.getSubqueriesBefore(nestedContext);
-                    return authSubqueries;
-                })
-                .map((sq) => {
-                    return new Cypher.Call(sq, [nestedContext.target]);
-                }),
-            ...this.sourceAuthFilters
-                .flatMap((authFilter) => {
-                    const authSubqueries = authFilter.getSubqueriesBefore(context);
-                    return authSubqueries;
-                })
-                .map((sq) => {
-                    return new Cypher.Call(sq, [context.target]);
-                })
+            ...wrapAuthFiltersInCypherCalls(this.authFilters, "BEFORE", nestedContext),
+            ...wrapAuthFiltersInCypherCalls(this.sourceAuthFilters, "BEFORE", context)
         );
-        const afterFilterSubqueries: Cypher.Clause[] = [...this.authFilters, ...this.sourceAuthFilters]
-            .flatMap((authFilter) => {
-                const authSubqueries = authFilter.getSubqueriesAfter(nestedContext);
-                return authSubqueries;
-            })
-            .map((sq) => {
-                return new Cypher.Call(sq, [nestedContext.target]);
-            });
+
+        const afterFilterSubqueries = wrapAuthFiltersInCypherCalls(this.authFilters, "AFTER", nestedContext);
+        afterFilterSubqueries.push(...wrapAuthFiltersInCypherCalls(this.sourceAuthFilters, "AFTER", context));
         if (afterFilterSubqueries.length > 0) {
             afterFilterSubqueries.unshift(new Cypher.With("*"));
         }

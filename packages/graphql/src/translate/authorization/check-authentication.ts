@@ -38,24 +38,35 @@ export function checkEntityAuthentication({
 }
 
 export const isAuthenticated =
-    (targetOperations: AuthenticationOperation[], entity: Operation | undefined) =>
+    (targetOperations: AuthenticationOperation[], operation: Operation | undefined) =>
     (next) =>
     (root, args, context, info) => {
-        const schemaLevelAnnotation = context.schemaModel.annotations.authentication;
-        if (schemaLevelAnnotation) {
-            applyAuthentication({ context, annotation: schemaLevelAnnotation, targetOperations });
-        }
-
-        if (entity) {
-            const { fieldName } = info;
-            const annotation: AuthenticationAnnotation | undefined =
-                entity.annotations.authentication ||
-                (fieldName && entity.findUserResolvedAttributes(fieldName)?.annotations.authentication);
-
-            if (annotation) {
-                applyAuthentication({ context, annotation, targetOperations });
-            }
-        }
-
+        applyAuthenticationAnnotations({ context, operation, targetOperations, fieldName: info.fieldName });
         return next(root, args, context, info);
     };
+
+export function applyAuthenticationAnnotations({
+    context,
+    operation,
+    targetOperations,
+    fieldName,
+}: {
+    context: Neo4jGraphQLTranslationContext;
+    operation: Operation | undefined;
+    targetOperations: AuthenticationOperation[];
+    fieldName: string;
+}): void {
+    const field = operation?.findAttribute(fieldName) ?? operation?.findUserResolvedAttributes(fieldName);
+
+    const annotations = [
+        context.schemaModel.annotations.authentication,
+        operation?.annotations.authentication,
+        field?.annotations.authentication,
+    ];
+
+    for (const annotation of annotations) {
+        if (annotation) {
+            applyAuthentication({ context, annotation, targetOperations });
+        }
+    }
+}

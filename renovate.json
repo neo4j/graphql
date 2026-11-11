@@ -9,15 +9,7 @@
     },
     "timezone": "Europe/London",
     "schedule": ["* 0-4 1,15 * *"],
-    "ignorePaths": [
-        "**/node_modules/**",
-        "**/bower_components/**",
-        "**/vendor/**",
-        "**/__tests__/**",
-        "**/test/**",
-        "**/tests/**",
-        "**/__fixtures__/**"
-    ],
+    "ignorePaths": ["**/node_modules/**"],
     "ignoreDeps": ["neo4j"],
     "separateMajorMinor": true,
     "minimumReleaseAge": "3 days",
@@ -35,7 +27,26 @@
         {
             "matchFileNames": ["packages/package-tests/graphql-15/package.json"],
             "allowedVersions": "15",
-            "matchPackageNames": ["/graphql/"]
+            "matchPackageNames": ["/graphql/"],
+            "minimumReleaseAge": "3 days"
+        },
+        {
+            "description": "msw 2.13+ depends on ESM-only rettime, which Jest cannot load (https://github.com/mswjs/msw/issues/2698)",
+            "matchPackageNames": ["msw"],
+            "allowedVersions": "<2.13.0",
+            "minimumReleaseAge": "3 days"
+        },
+        {
+            "description": "Vulnerability alerts do not cover the Node runtime, so Node releases skip the schedule",
+            "matchDatasources": ["node-version", "docker"],
+            "matchDepNames": ["node"],
+            "schedule": ["at any time"]
+        },
+        {
+            "description": "reusable-package-tests.yml pins the minimum supported Node engine, so its node-version must not be bumped",
+            "matchManagers": ["node"],
+            "matchFileNames": [".github/workflows/reusable-package-tests.yml"],
+            "enabled": false
         }
     ],
     "customManagers": [
