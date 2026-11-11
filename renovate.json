@@ -47,8 +47,19 @@
         {
             "description": "Vulnerability alerts do not cover the Node runtime, so Node releases skip the schedule",
             "matchDatasources": ["node-version", "docker"],
-            "matchDepNames": ["node"],
+            "matchDepNames": ["node", "node-previous-lts"],
             "schedule": ["at any time"]
+        },
+        {
+            "description": "reusable-package-tests.yml pins the minimum supported Node engine, so its node-version must not be bumped",
+            "matchDepNames": ["node"],
+            "matchFileNames": [".github/workflows/reusable-package-tests.yml"],
+            "enabled": false
+        },
+        {
+            "description": "The second entry of the nightly integration test matrix is the previous LTS Node line, so it must only be bumped within its current major - update this major when deliberately moving that lane to a newer LTS line",
+            "matchDepNames": ["node-previous-lts"],
+            "allowedVersions": "24"
         }
     ],
     "customManagers": [
@@ -59,6 +70,23 @@
             "matchStrings": ["npm install -g npm@(?<currentValue>\\d+\\.\\d+\\.\\d+)"],
             "depNameTemplate": "npm",
             "datasourceTemplate": "npm"
+        },
+        {
+            "customType": "regex",
+            "description": "Update the current Node release pinned first in the nightly integration test matrix",
+            "managerFilePatterns": ["/^\\.github/workflows/reusable-integration-tests-on-prem-nightly\\.yml$/"],
+            "matchStrings": ["node: \\[\\s*\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\""],
+            "depNameTemplate": "node",
+            "datasourceTemplate": "node-version"
+        },
+        {
+            "customType": "regex",
+            "description": "Update the previous LTS Node version pinned last in the nightly integration test matrix",
+            "managerFilePatterns": ["/^\\.github/workflows/reusable-integration-tests-on-prem-nightly\\.yml$/"],
+            "matchStrings": [",\\s*\"(?<currentValue>\\d+\\.\\d+\\.\\d+)\"\\s*\\]"],
+            "depNameTemplate": "node-previous-lts",
+            "packageNameTemplate": "node",
+            "datasourceTemplate": "node-version"
         }
     ]
 }
