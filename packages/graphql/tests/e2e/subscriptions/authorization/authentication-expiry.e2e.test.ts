@@ -65,7 +65,7 @@ describe("Subscription authentication with expired token", () => {
     test("subscription sends more events if jwt did not expire", async () => {
         const expJwtToken = createBearerToken(secret, {
             roles: ["admin"],
-            exp: Math.floor(Date.now() / 1000) + 10,
+            exp: Math.floor(Date.now() / 1000) + 30,
         }); // exp in 30s
         wsClient = new WebSocketTestClient(server.wsPath, expJwtToken);
         await wsClient.subscribe(`
@@ -122,7 +122,7 @@ describe("Subscription authentication with expired token", () => {
         const expJwtToken = createBearerToken(secret, {
             roles: ["admin"],
             exp: Math.floor(Date.now() / 1000) + 5,
-        }); // exp in 10s
+        }); // exp in 5s
         wsClient = new WebSocketTestClient(server.wsPath, expJwtToken);
         await wsClient.subscribe(`
                     subscription {
