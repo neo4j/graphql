@@ -11,7 +11,12 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
       - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
         with:
-          node-version: 26.13.0
+          # Minimum Node version the repo's tooling can run on (Yarn 4 requires Node >=18.12, so the >=16.0.0
+          # engines claim cannot be CI-tested) - do not bump (excluded from Renovate in renovate.json).
+          # Node 18 reached end-of-maintenance in April 2025 and receives no further security patches; testing on
+          # it is accepted because users on Node 18 still rely on our `>=16.0.0` engines claim. Raising the
+          # tested minimum is a deliberate decision, made together with an engines bump.
+          node-version: 18.20.8
           cache: yarn
           package-manager-cache: false
       - name: Install dependencies
