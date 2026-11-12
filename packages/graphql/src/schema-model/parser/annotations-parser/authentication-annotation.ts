@@ -24,6 +24,10 @@ export function parseAuthenticationAnnotation(directive: DirectiveNode): Authent
         jwt?: GraphQLWhereArg;
     };
 
+    if (args.operations !== undefined && !Array.isArray(args.operations)) {
+        throw new Error("@authentication operations must be a list");
+    }
+
     const constructorArgs: [AuthenticationOperation[], GraphQLWhereArg?] = [
         args.operations || authenticationDefaultOperations,
     ];
