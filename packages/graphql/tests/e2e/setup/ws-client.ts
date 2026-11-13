@@ -33,7 +33,7 @@ export class WebSocketTestClient {
         });
     }
 
-    public waitForEvents(count = 1): Promise<void> {
+    public waitForEvents(count = 1, timeoutMs = 5000): Promise<void> {
         return new Promise<void>((resolve, reject) => {
             if (this.counter >= count) {
                 // checking for events that were emitted before `waitForEvents` got the chance to execute
@@ -53,7 +53,7 @@ export class WebSocketTestClient {
                 this.eventsEmitter.removeListener(NEW_EVENT, newEventListener);
                 // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
                 reject("[waitForEvents] Timed out.");
-            }, 500);
+            }, timeoutMs);
             this.eventsEmitter.on(NEW_EVENT, newEventListener);
         });
     }

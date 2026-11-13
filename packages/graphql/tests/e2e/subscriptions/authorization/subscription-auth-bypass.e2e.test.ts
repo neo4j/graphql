@@ -15,10 +15,6 @@ import { WebSocketTestClient } from "../../setup/ws-client";
 
 const secret = "secret";
 
-function waitForMaybeEvent(wsClient: WebSocketTestClient): Promise<void> {
-    return wsClient.waitForEvents(1).catch(() => undefined);
-}
-
 describe("Subscription authentication with @authentication(SUBSCRIBE)", () => {
     const testHelper = new TestHelper({ cdc: true });
     let typeMovie: UniqueType;
@@ -104,7 +100,7 @@ describe("Subscription authentication with @authentication(SUBSCRIBE)", () => {
         `);
 
         await createMovie("forged-jwt-movie");
-        await waitForMaybeEvent(wsClient);
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.events).toEqual([]);
         expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
@@ -123,7 +119,7 @@ describe("Subscription authentication with @authentication(SUBSCRIBE)", () => {
         `);
 
         await createMovie("wrong-key-movie");
-        await waitForMaybeEvent(wsClient);
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.events).toEqual([]);
         expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
@@ -142,7 +138,7 @@ describe("Subscription authentication with @authentication(SUBSCRIBE)", () => {
         `);
 
         await createMovie("no-credentials-movie");
-        await waitForMaybeEvent(wsClient);
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.events).toEqual([]);
         expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
@@ -229,7 +225,7 @@ describe("Subscription authorization with a $jwt.sub filter", () => {
 
         await createUser("forged-user");
         await createUser("other-user");
-        await waitForMaybeEvent(wsClient);
+        await wsClient.waitForEvents(1, 2000).catch(() => undefined);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([]);
@@ -447,7 +443,7 @@ describe("Subscription authentication with a developer-injected top-level contex
         `);
 
         await createMovie("movie1");
-        await waitForMaybeEvent(wsClient);
+        await wsClient.waitForEvents(1);
 
         expect(wsClient.errors).toEqual([]);
         expect(wsClient.events).toEqual([
