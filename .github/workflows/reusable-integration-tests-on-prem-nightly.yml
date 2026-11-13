@@ -28,6 +28,8 @@ jobs:
       - name: Login to ECR
         uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # v2
         id: login-to-ecr
+        with:
+          mask-password: "false"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -53,6 +55,24 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    services:
+      neo4j:
+        image: 535893049302.dkr.ecr.eu-west-1.amazonaws.com/build-service/neo4j:2025-enterprise-debian-nightly-bundle
+        credentials:
+          username: ${{ needs.ecr-login.outputs.docker_user }}
+          password: ${{ needs.ecr-login.outputs.docker_password }}
+        env:
+          NEO4J_AUTH: neo4j/password
+          NEO4J_PLUGINS: '["apoc"]'
+          NEO4J_ACCEPT_LICENSE_AGREEMENT: yes
+        ports:
+          - 7687:7687
+        options: >-
+          --health-cmd "cypher-shell -u neo4j -p password 'RETURN 1'"
+          --health-start-period 120s
+          --health-start-interval 2s
+          --health-interval 60s
+
     steps:
       - name: Check out repository code
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
@@ -62,33 +82,12 @@ jobs:
           node-version: ${{ matrix.node.name }}
           cache: yarn
           package-manager-cache: false
-      - name: Login to ECR
-        uses: docker/login-action@81c6f93d4bc991e510b342a00b419b3bb4efc5c6 # v4
-        with:
-          registry: 535893049302.dkr.ecr.eu-west-1.amazonaws.com
-          username: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          password: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      - name: Pull Neo4j dev image
-        run: docker pull 535893049302.dkr.ecr.eu-west-1.amazonaws.com/build-service/neo4j:2025-enterprise-debian-nightly-bundle
-      - name: Start Neo4j container
-        run: |
-          docker run \
-          --name test-dev-neo4j \
-          -d \
-          --rm \
-          -p 7687:7687 \
-          --env NEO4J_AUTH=neo4j/password \
-          --env NEO4J_PLUGINS=\[\"apoc\"\] \
-          --env NEO4J_ACCEPT_LICENSE_AGREEMENT=yes \
-          535893049302.dkr.ecr.eu-west-1.amazonaws.com/build-service/neo4j:2025-enterprise-debian-nightly-bundle
       - name: Install dependencies
         run: yarn --immutable
       - name: Overwrite GraphQL version
         run: yarn up --exact graphql@${{ matrix.graphql-version.version }}
       - name: Overwrite neo4-driver version
         run: yarn up --exact neo4j-driver@${{ matrix.neo4j-driver-version }}
-      - name: Wait for Neo4j to be ready
-        run: timeout 120 bash -c 'until docker exec test-dev-neo4j cypher-shell -u neo4j -p password "RETURN 1"; do sleep 1; done'
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --shard=${{ matrix.packages.shard }} --coverage
@@ -105,11 +104,6 @@ jobs:
         with:
           name: integration-nightly-coverage-neo-driver${{matrix.neo4j-driver-version}}-${{ matrix.packages.package }}-${{ matrix.graphql-version.coverage_path }}-${{ matrix.packages.coverage_name }}-${{ matrix.node.coverage_name }}
           path: packages/${{ matrix.packages.package }}/coverage-nightly-${{ matrix.graphql-version.coverage_path }}/
-      - name: Stop Neo4j container
-        if: always()
-        run: |
-          docker ps -a
-          docker stop test-dev-neo4j
 
   merge-integration-tests-results:
     runs-on: ubuntu-latest
