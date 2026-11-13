@@ -17,26 +17,7 @@ on:
         description: "AWS Secret Access Key"
 
 jobs:
-  ecr-login:
-    runs-on: ubuntu-latest
-
-    outputs:
-      docker_user: ${{ steps.login-to-ecr.outputs.docker_username_535893049302_dkr_ecr_eu_west_1_amazonaws_com }}
-      docker_password: ${{ steps.login-to-ecr.outputs.docker_password_535893049302_dkr_ecr_eu_west_1_amazonaws_com }}
-
-    steps:
-      - name: Login to ECR
-        uses: aws-actions/amazon-ecr-login@03f1aad4c6c7ffd436567f42f9384779290529bd # v2
-        id: login-to-ecr
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: eu-west-1
-
   integration-tests:
-    needs:
-      - ecr-login
-
     strategy:
       matrix: # This matrix tests the minimum supported version of Node.js as well as the current lts
         node: [{ name: "20", coverage_name: "20" }, { name: "lts/*", coverage_name: "lts" }]
