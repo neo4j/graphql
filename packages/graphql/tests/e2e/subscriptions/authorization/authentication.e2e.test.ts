@@ -112,6 +112,11 @@ describe("Subscription authentication", () => {
             expect(result.body.errors).toBeUndefined();
             expect(wsClient.events).toEqual([]);
             expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
+
+            await wsClient.waitForEvents(1).catch(() => undefined);
+            await createMovie("movie2", server);
+            expect(wsClient.events).toEqual([]);
+            expect(wsClient.errors).toEqual([expect.objectContaining({ message: "Unauthenticated" })]);
         });
 
         test("unauthenticated subscription fails", async () => {

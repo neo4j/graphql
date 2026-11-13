@@ -280,7 +280,6 @@ class Neo4jGraphQL {
             jwtPayloadFieldsMap: this.jwtFieldsMap,
         };
         const queryAndMutationWrappers = [wrapQueryAndMutation(wrapResolverArgs)];
-
         const isSubscriptionEnabled = !!this.features.subscriptions;
         const wrapSubscriptionResolverArgs = {
             subscriptionsEngine: this.features.subscriptionsEngine,
@@ -294,9 +293,9 @@ class Neo4jGraphQL {
 
         const resolversComposition = generateResolverComposition({
             schemaModel: this.schemaModel,
-            isSubscriptionEnabled,
             queryAndMutationWrappers,
             subscriptionWrappers,
+            isSubscriptionEnabled,
         });
 
         // Merge generated and custom resolvers
@@ -383,11 +382,21 @@ class Neo4jGraphQL {
 
             this.schemaModel = this.generateSchemaModel(document);
 
+            const wrapSubscriptionArgs: WrapSubscriptionArgs | undefined = this.features.subscriptions
+                ? {
+                      subscriptionsEngine: this.features.subscriptionsEngine!,
+                      schemaModel: this.schemaModel,
+                      authorization: this.authorization,
+                      jwtPayloadFieldsMap: this.jwtFieldsMap,
+                  }
+                : undefined;
+
             const { typeDefs, resolvers } = makeAugmentedSchema({
                 document,
                 features: this.features,
                 schemaModel: this.schemaModel,
                 complexityEstimatorHelper: this.complexityEstimatorHelper,
+                wrapSubscriptionArgs,
             });
 
             if (this.validate) {
@@ -449,12 +458,22 @@ class Neo4jGraphQL {
 
         this.schemaModel = this.generateSchemaModel(document);
 
+        const wrapSubscriptionArgs: WrapSubscriptionArgs | undefined = this.features.subscriptions
+            ? {
+                  subscriptionsEngine: this.features.subscriptionsEngine!,
+                  schemaModel: this.schemaModel,
+                  authorization: this.authorization,
+                  jwtPayloadFieldsMap: this.jwtFieldsMap,
+              }
+            : undefined;
+
         const { typeDefs, resolvers } = makeAugmentedSchema({
             document,
             features: this.features,
             subgraph,
             schemaModel: this.schemaModel,
             complexityEstimatorHelper: this.complexityEstimatorHelper,
+            wrapSubscriptionArgs,
         });
 
         if (this.validate) {
