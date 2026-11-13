@@ -87,6 +87,8 @@ jobs:
         run: yarn up --exact graphql@${{ matrix.graphql-version.version }}
       - name: Overwrite neo4-driver version
         run: yarn up --exact neo4j-driver@${{ matrix.neo4j-driver-version }}
+      - name: Wait for Neo4j to be ready
+        run: timeout 120 bash -c 'until docker exec test-dev-neo4j cypher-shell -u neo4j -p password "RETURN 1"; do sleep 1; done'
       - name: Run @neo4j/graphql integration tests and move coverage
         run: |
           yarn test:int --shard=${{ matrix.packages.shard }} --coverage
