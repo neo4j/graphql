@@ -30,6 +30,7 @@ export function makeConnectionGroupByType({
         typeName,
         composer,
         edgeType: getGroupByEdgeType({ composer, entityAdapter }),
+        valuesType: getGroupByValuesType({ composer, entityAdapter }),
         entityAdapter,
     });
 }
@@ -38,11 +39,13 @@ function getOrCreateConnectionGroupBy({
     typeName,
     composer,
     edgeType,
+    valuesType,
     entityAdapter,
 }: {
     typeName: string;
     composer: SchemaComposer;
     edgeType: ObjectTypeComposer;
+    valuesType: ObjectTypeComposer;
     entityAdapter: ConcreteEntityAdapter;
 }): {
     type: ObjectTypeComposer;
@@ -57,6 +60,8 @@ function getOrCreateConnectionGroupBy({
     const connectionGroupByOTC = composer.createObjectTC(typeName);
     connectionGroupByOTC.addFields({
         edges: edgeType.NonNull.List.NonNull,
+        values: valuesType,
+        aggregate: `${entityAdapter.operations.aggregateTypeNames.connection}!`,
     });
 
     return { type: connectionGroupByOTC, args: inputArgs };
@@ -75,6 +80,24 @@ function getGroupByEdgeType({
         oc.addFields({
             node: nodeType.NonNull,
         });
+    });
+}
+
+function getGroupByValuesType({
+    entityAdapter,
+    composer,
+}: {
+    entityAdapter: ConcreteEntityAdapter;
+    composer: SchemaComposer;
+}): ObjectTypeComposer {
+    const valuesTypeName = entityAdapter.operations.getConnectionGroupByValuesTypename();
+    const groupByFields = entityAdapter.groupByFields;
+    return composer.getOrCreateOTC(valuesTypeName, (oc) => {
+        for (const field of groupByFields) {
+            oc.addFields({
+                [field.name]: field.getFieldTypeName(),
+            });
+        }
     });
 }
 

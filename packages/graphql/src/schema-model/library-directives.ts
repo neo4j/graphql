@@ -49,6 +49,7 @@ export const FIELD_DIRECTIVES = [
     "subscriptionsAuthorization",
     "timestamp",
     "declareRelationship",
+    "groupBy",
     ...SCHEMA_CONFIGURATION_FIELD_DIRECTIVES,
 ] as const satisfies readonly LibraryDirectives[];
 

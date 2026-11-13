@@ -23,6 +23,7 @@ export class AggregationOperation extends Operation {
     public readonly entity: ConcreteEntityAdapter | RelationshipAdapter; // TODO: normal entities
     private selection: EntitySelection;
     protected directed: boolean;
+    private groupByMode: boolean;
 
     public fields: AggregationField[] = []; // Aggregation fields
     public nodeFields: AggregationField[] = []; // Aggregation node fields
@@ -38,15 +39,18 @@ export class AggregationOperation extends Operation {
         entity,
         directed = true,
         selection,
+        groupByMode = false,
     }: {
         entity: ConcreteEntityAdapter | RelationshipAdapter;
         directed?: boolean;
         selection: EntitySelection;
+        groupByMode?: boolean;
     }) {
         super();
         this.entity = entity;
         this.directed = directed;
         this.selection = selection;
+        this.groupByMode = groupByMode;
     }
 
     public setFields(fields: AggregationField[]) {
@@ -62,6 +66,16 @@ export class AggregationOperation extends Operation {
     }
 
     public getChildren(): QueryASTNode[] {
+        if (this.groupByMode) {
+            // groupBy skips this.authFilters bc it adds filters to top-level match instead of inside every aggregation subquery
+            return filterTruthy([
+                ...this.fields,
+                ...this.nodeFields,
+                ...this.edgeFields,
+                ...this.filters,
+                this.selection,
+            ]);
+        }
         return filterTruthy([
             ...this.fields,
             ...this.nodeFields,
@@ -174,11 +188,19 @@ export class AggregationOperation extends Operation {
     }
 
     private getPredicates(queryASTContext: QueryASTContext): Cypher.Predicate | undefined {
+        if (this.groupByMode) {
+            // groupBy adds filters to top-level match instead of inside every aggregation subquery
+            return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)));
+        }
         const authPredicates = this.getAuthFilterPredicate(queryASTContext);
         return Cypher.and(...this.filters.map((f) => f.getPredicate(queryASTContext)), ...authPredicates);
     }
 
     private getValidations(queryASTContext: QueryASTContext): Cypher.VoidProcedure[] {
+        if (this.groupByMode) {
+            // groupBy adds validations to top-level match instead of inside every aggregation subquery
+            return [];
+        }
         return filterTruthy(this.authFilters.flatMap((f) => f.getValidation(queryASTContext)));
     }
 
@@ -214,14 +236,20 @@ export class AggregationOperation extends Operation {
             }
         }
 
+        let overwriteMatch: Cypher.With | undefined = undefined;
+        let overwriteTargetVar: Cypher.Variable | undefined = undefined;
         if (field instanceof CountField) {
             field.edgeVar = nestedContext.relationship;
+            if (this.groupByMode) {
+                overwriteMatch = new Cypher.With("*");
+                overwriteTargetVar = context.getVarTarget();
+            }
         }
 
-        const ret = this.getFieldProjectionClause(targetVar, returnVariable, field);
+        const ret = this.getFieldProjectionClause(overwriteTargetVar || targetVar, returnVariable, field);
 
         return Cypher.utils.concat(
-            matchClause,
+            overwriteMatch || matchClause,
             ...validations,
             ...selectionClauses,
             ...nestedSubqueries,
