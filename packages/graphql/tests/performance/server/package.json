@@ -19,12 +19,12 @@
     },
     "devDependencies": {
         "@apollo/server": "^4.7.0",
-        "@benzene/http": "^0.4.2",
-        "clinic": "^12.1.0",
-        "fastify": "^5.0.0",
-        "graphql-yoga": "^3.9.1",
-        "mercurius": "^16.0.0",
-        "neo4j-driver": "^5.8.0"
+        "@benzene/http": "0.4.2",
+        "clinic": "12.1.0",
+        "fastify": "5.12.8",
+        "graphql-yoga": "3.9.1",
+        "mercurius": "16.12.1",
+        "neo4j-driver": "5.28.3"
     },
     "dependencies": {
         "@neo4j/graphql": "link:../../.."
