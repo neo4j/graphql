@@ -12,6 +12,7 @@ import type {
     InterfaceTypeDefinitionNode,
     NameNode,
     ObjectTypeDefinitionNode,
+    SchemaDefinitionNode,
     SchemaExtensionNode,
     UnionTypeDefinitionNode,
 } from "graphql";
@@ -462,17 +463,15 @@ function getTransformedDefinitionNodesForAugmentedSchema({
     definitions,
     complexityEstimatorHelper,
 }: {
-    schemaExtensions: SchemaExtensionNode | undefined;
+    schemaExtensions: SchemaDefinitionNode | SchemaExtensionNode | undefined;
     definitions: readonly DefinitionNode[];
     complexityEstimatorHelper: ComplexityEstimatorHelper;
 }): DefinitionNode[] {
     const definitionNodes: DefinitionNode[] = [];
-    // do not propagate Neo4jGraphQL directives on schema extensions
-    asArray(schemaExtensions).reduce((acc, schemaExtension: SchemaExtensionNode) => {
+    // do not propagate Neo4jGraphQL directives on schema definitions or extensions
+    asArray(schemaExtensions).reduce((acc, schemaExtension: SchemaDefinitionNode | SchemaExtensionNode) => {
         acc.push({
-            kind: schemaExtension.kind,
-            loc: schemaExtension.loc,
-            operationTypes: schemaExtension.operationTypes,
+            ...schemaExtension,
             directives: schemaExtension.directives?.filter(
                 (schemaDirective) =>
                     !["query", "mutation", "subscription", "authentication"].includes(schemaDirective.name.value)

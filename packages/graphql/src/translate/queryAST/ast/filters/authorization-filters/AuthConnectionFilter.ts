@@ -45,7 +45,12 @@ export class AuthConnectionFilter extends ConnectionFilter {
                 }
 
                 const match = new Cypher.Match(pattern).where(innerPredicate);
-                return new Cypher.Exists(match);
+                const existsClause = new Cypher.Exists(match);
+                if (this.operator === "NONE") {
+                    return Cypher.not(existsClause);
+                }
+
+                return existsClause;
             }
         }
     }

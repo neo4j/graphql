@@ -56,6 +56,9 @@ export class AuthRelationshipFilter extends RelationshipFilter {
             case "SOME": {
                 const matchClause = new Cypher.Match(pattern).where(innerPredicate);
                 const existsPredicate = new Cypher.Exists(matchClause);
+                if (this.operator === "NONE") {
+                    return Cypher.not(existsPredicate);
+                }
                 return existsPredicate;
             }
         }

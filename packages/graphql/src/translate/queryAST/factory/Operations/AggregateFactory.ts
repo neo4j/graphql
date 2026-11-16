@@ -4,6 +4,7 @@
  */
 
 import type { ResolveTree } from "graphql-parse-resolve-info";
+import type { AttributeAdapter } from "../../../../schema-model/attribute/model-adapters/AttributeAdapter";
 import type { ConcreteEntityAdapter } from "../../../../schema-model/entity/model-adapters/ConcreteEntityAdapter";
 import type { InterfaceEntityAdapter } from "../../../../schema-model/entity/model-adapters/InterfaceEntityAdapter";
 import { RelationshipAdapter } from "../../../../schema-model/relationship/model-adapters/RelationshipAdapter";
@@ -55,12 +56,6 @@ export class AggregateFactory {
         if (entityOrRel instanceof RelationshipAdapter) {
             if (isConcreteEntity(entity)) {
                 // RELATIONSHIP WITH CONCRETE TARGET
-                checkEntityAuthentication({
-                    entity: entity.entity,
-                    targetOperations: ["AGGREGATE"],
-                    context,
-                });
-
                 const selection = new RelationshipSelection({
                     relationship: entityOrRel,
                 });
@@ -401,6 +396,10 @@ export class AggregateFactory {
         whereArgs: Record<string, any>;
         groupByMode?: boolean;
     }): T {
+        if (isConcreteEntity(entity)) {
+            checkEntityAuthentication({ context, entity: entity.entity, targetOperations: ["AGGREGATE"] });
+        }
+
         // whereArgs = whereArgs.node ?? {};
         const deprecatedAttributes = false;
         if (relationship) {
@@ -456,6 +455,7 @@ export class AggregateFactory {
                 operation.addFilters(...nodeFilters, ...edgeFilters);
 
                 const attributes = this.queryASTFactory.operationsFactory.getSelectedAttributes(entity, nodeRawFields);
+                this.checkSelectedAttributeAuthentication(entity, attributes, context);
 
                 const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
                     entity,
@@ -521,14 +521,16 @@ export class AggregateFactory {
             } else {
                 const filters = this.queryASTFactory.filterFactory.createNodeFilters(entity, whereArgs.node ?? {}); // Aggregation filters only apply to target node
                 operation.addFilters(...filters);
+                const attributes = this.queryASTFactory.operationsFactory.getSelectedAttributes(entity, {
+                    ...nodeRawFields,
+                    ...rawProjectionFields,
+                });
+                this.checkSelectedAttributeAuthentication(entity, attributes, context);
                 const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
                     entity,
                     operations: ["AGGREGATE"],
                     context,
-                    attributes: this.queryASTFactory.operationsFactory.getSelectedAttributes(entity, {
-                        ...nodeRawFields,
-                        ...rawProjectionFields,
-                    }),
+                    attributes,
                 });
                 operation.addAuthFilters(...authFilters);
             }
@@ -536,6 +538,22 @@ export class AggregateFactory {
         }
 
         return operation;
+    }
+
+    // check authentication of fields selected by aggregate operation
+    private checkSelectedAttributeAuthentication(
+        entity: ConcreteEntityAdapter,
+        attributes: AttributeAdapter[],
+        context: Neo4jGraphQLTranslationContext
+    ): void {
+        for (const attribute of attributes) {
+            checkEntityAuthentication({
+                context,
+                entity: entity.entity,
+                targetOperations: ["AGGREGATE"],
+                field: attribute.name,
+            });
+        }
     }
 
     /** @deprecated */

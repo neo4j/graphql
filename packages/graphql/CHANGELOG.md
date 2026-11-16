@@ -1,5 +1,46 @@
 # @neo4j/graphql
 
+## 7.6.8
+
+### Patch Changes
+
+- [`8523320`](https://github.com/neo4j/graphql/commit/8523320cdde096d7e63d8ff7fd1cc012dbee5fd2) Thanks [@risset](https://github.com/risset)! - Enforce authentication on aggregation selections and root aggregate connections
+
+## 7.6.7
+
+### Patch Changes
+
+- [`a077f3c`](https://github.com/neo4j/graphql/commit/a077f3cdf38c86e35edc1c48087baf5ad3d596a8) Thanks [@risset](https://github.com/risset)! - Fix `@authentication` JWT `where` filters only evaluating the first condition.
+  All conditions are now evaluated and combined with `AND` as documented.
+
+## 7.6.6
+
+### Patch Changes
+
+- [#7410](https://github.com/neo4j/graphql/pull/7410) [`2dcbc5e`](https://github.com/neo4j/graphql/commit/2dcbc5ea9a891110d680f7fe9081f46e9195f3a3) Thanks [@risset](https://github.com/risset)! - Enforce authentication on schema definitions.
+
+## 7.6.5
+
+### Patch Changes
+
+- [#7393](https://github.com/neo4j/graphql/pull/7393) [`e0e03bf`](https://github.com/neo4j/graphql/commit/e0e03bf10bde5626351de9471cfd9d1c412a0037) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Fix `getSubgraphSchema()` throwing `TypeError: doc.definitions is not iterable` with `@apollo/subgraph` 2.15, which the existing `^2.2.3` range installs. `@apollo/subgraph` 2.14 still works.
+
+    With `@apollo/subgraph` 2.15 the printed subgraph schema changes slightly. It no longer has the `@link` to `https://specs.apollo.dev/link/v1.0`, `@federation__external` no longer has a `reason` argument, and `scalar _Any` is left out when there is no `_entities` field.
+
+    `@apollo/subgraph` 2.15 needs Node.js 22 or later and `graphql` 16.11 or later. If you can't upgrade those yet, pin `@apollo/subgraph` to `~2.14`.
+
+    `@graphql-tools/utils` is updated to `^12.0.0`.
+
+## 7.6.4
+
+### Patch Changes
+
+- [#7381](https://github.com/neo4j/graphql/pull/7381) [`79e77b5`](https://github.com/neo4j/graphql/commit/79e77b5711132d2e6a3a8f6bbcc219e2a50cb554) Thanks [@risset](https://github.com/risset)! - Fix type-level `@authentication` not enforced on entities returned by `@cypher` fields
+
+- [`ef69cc6`](https://github.com/neo4j/graphql/commit/ef69cc69ff5e97c60d64aa524005f939c5ba3633) Thanks [@risset](https://github.com/risset)! - Fix schema and type level @authentication annotations not being applied to top-level @cypher fields
+
+- [`17650cc`](https://github.com/neo4j/graphql/commit/17650cc370445a6bb9d394d34063d3623e987aa2) Thanks [@risset](https://github.com/risset)! - Fix "none" quantifier being inverted in authorization relationship and connection filters
+
 ## 7.6.3
 
 ### Patch Changes
