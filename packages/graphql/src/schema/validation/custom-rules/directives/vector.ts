@@ -73,7 +73,7 @@ function assertIndexProviderIsValid(indexes: VectorField[], vectorSettings: Neo4
             continue;
         }
 
-        if (vectorSettings === undefined) {
+        if (vectorSettings == null) {
             throw new DocumentValidationError(
                 `@${vectorDirective.name}.indexes specifies a provider, but no vector providers configuration exists.`,
                 ["indexes"]
@@ -83,6 +83,15 @@ function assertIndexProviderIsValid(indexes: VectorField[], vectorSettings: Neo4
         if (!(provider in vectorSettings)) {
             throw new DocumentValidationError(
                 `@${vectorDirective.name}.indexes specifies a provider that doesn't exist in the vector providers configuration.`,
+                ["indexes"]
+            );
+        }
+
+        // A key that is present but unset (e.g. `{ OpenAI: process.env.TOKEN ? {...} : undefined }`) would pass the
+        // check above and only fail on the first phrase query, in VectorSelection
+        if (vectorSettings[provider] == null) {
+            throw new DocumentValidationError(
+                `@${vectorDirective.name}.indexes specifies a provider whose settings are not set in the vector providers configuration.`,
                 ["indexes"]
             );
         }
