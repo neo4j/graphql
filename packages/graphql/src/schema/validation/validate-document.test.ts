@@ -7133,6 +7133,40 @@ describe("validation 2.0", () => {
             expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
         });
 
+        test("invalid when provider is specified and the vector configuration in features is null", () => {
+            const doc = gql`
+                type User
+                    @node
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "UserIndex"
+                                embeddingProperty: "embedding"
+                                queryName: "userQuery"
+                                provider: OPEN_AI
+                            }
+                        ]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            const executeValidate = () =>
+                // Plain JavaScript callers can pass null, which the type does not allow
+                validateDocument({ document: doc, features: { vector: null as any }, additionalDefinitions });
+
+            const errors = getError(executeValidate);
+
+            expect(errors).toHaveLength(1);
+            expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+            expect(errors[0]).toHaveProperty(
+                "message",
+                "@vector.indexes specifies a provider, but no vector providers configuration exists."
+            );
+            expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
+        });
+
         test("invalid when provider is specified without its provider present within vector configuration in features", () => {
             const doc = gql`
                 type User
@@ -7171,6 +7205,57 @@ describe("validation 2.0", () => {
                 "@vector.indexes specifies a provider that doesn't exist in the vector providers configuration."
             );
             expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
+        });
+
+        describe.each([
+            ["VERTEX_AI", "VertexAI", { token: "token", projectId: "project" }],
+            ["OPEN_AI", "OpenAI", { token: "token" }],
+            ["AZURE_OPEN_AI", "AzureOpenAI", { token: "token", resource: "resource", deployment: "deployment" }],
+            ["BEDROCK", "Bedrock", { accessKeyId: "id", secretAccessKey: "secret" }],
+        ] as const)("provider %s", (enumValue, settingsKey, providerSettings) => {
+            const doc = gql`
+                type User
+                    @node
+                    @vector(
+                        indexes: [
+                            {
+                                indexName: "UserIndex"
+                                embeddingProperty: "embedding"
+                                queryName: "userQuery"
+                                provider: ${enumValue}
+                            }
+                        ]
+                    ) {
+                    id: ID
+                    name: String
+                }
+            `;
+
+            test(`valid when ${settingsKey} settings are configured`, () => {
+                const vectorSettings = { [settingsKey]: providerSettings };
+
+                const executeValidate = () =>
+                    validateDocument({ document: doc, features: { vector: vectorSettings }, additionalDefinitions });
+
+                expect(executeValidate).not.toThrow();
+            });
+
+            test.each([undefined, null])(`invalid when the ${settingsKey} key is present but %p`, (value) => {
+                const vectorSettings = { [settingsKey]: value };
+
+                const executeValidate = () =>
+                    validateDocument({ document: doc, features: { vector: vectorSettings }, additionalDefinitions });
+
+                const errors = getError(executeValidate);
+
+                expect(errors).toHaveLength(1);
+                expect(errors[0]).not.toBeInstanceOf(NoErrorThrownError);
+                expect(errors[0]).toHaveProperty(
+                    "message",
+                    "@vector.indexes specifies a provider whose settings are not set in the vector providers configuration."
+                );
+                expect(errors[0]).toHaveProperty("path", ["User", "indexes"]);
+            });
         });
     });
 });
