@@ -20,6 +20,9 @@ on:
         required: true
         description: "The password needed to access the AuraDB instance"
 
+permissions:
+  contents: read
+
 jobs:
   teardown:
     runs-on: ubuntu-latest
