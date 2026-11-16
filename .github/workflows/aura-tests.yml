@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
   schedule:
     - cron: "0 3 * * *"
-  pull_request_target:
+  pull_request:
     branches:
       - dev
     paths:
@@ -18,13 +18,12 @@ concurrency:
 jobs:
   aura-free-tests:
     if: |
-      github.event_name != 'pull_request_target' ||
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository &&
       github.event.pull_request.user.login == 'neo4j-team-graphql' &&
       startsWith(github.head_ref, 'changeset-release/')
     uses: ./.github/workflows/reusable-aura-tests.yml
     cache-mode: read
-    with:
-      BRANCH: ${{ github.head_ref || github.ref }}
     secrets:
       URI: ${{ secrets.AURA_FREE_URI }}
       PASSWORD: ${{ secrets.AURA_FREE_PASSWORD }}
@@ -32,13 +31,12 @@ jobs:
 
   aura-professional-5-tests:
     if: |
-      github.event_name != 'pull_request_target' ||
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository &&
       github.event.pull_request.user.login == 'neo4j-team-graphql' &&
       startsWith(github.head_ref, 'changeset-release/')
     uses: ./.github/workflows/reusable-aura-tests.yml
     cache-mode: read
-    with:
-      BRANCH: ${{ github.head_ref || github.ref }}
     secrets:
       URI: ${{ secrets.AURA_PROFESSIONAL_5_URI }}
       PASSWORD: ${{ secrets.AURA_PROFESSIONAL_5_PASSWORD }}
@@ -46,13 +44,12 @@ jobs:
 
   aura-enterprise-5-tests:
     if: |
-      github.event_name != 'pull_request_target' ||
+      github.event_name != 'pull_request' ||
+      github.event.pull_request.head.repo.full_name == github.repository &&
       github.event.pull_request.user.login == 'neo4j-team-graphql' &&
       startsWith(github.head_ref, 'changeset-release/')
     uses: ./.github/workflows/reusable-aura-tests.yml
     cache-mode: read
-    with:
-      BRANCH: ${{ github.head_ref || github.ref }}
     secrets:
       URI: ${{ secrets.AURA_ENTERPRISE_5_URI }}
       PASSWORD: ${{ secrets.AURA_ENTERPRISE_5_PASSWORD }}
