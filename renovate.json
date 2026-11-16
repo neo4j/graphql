@@ -44,7 +44,8 @@
         },
         {
             "description": "reusable-package-tests.yml pins the minimum supported Node engine, so its node-version must not be bumped",
-            "matchManagers": ["node"],
+            "matchManagers": ["github-actions"],
+            "matchDepNames": ["node"],
             "matchFileNames": [".github/workflows/reusable-package-tests.yml"],
             "enabled": false
         }
