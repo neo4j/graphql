@@ -13,7 +13,7 @@ const cypherCreateUser = `CREATE USER ${INT_TEST_USER_NAME} IF NOT EXISTS SET PA
 const cypherCreateRole = `CREATE ROLE ${INT_TEST_ROLE_NAME} IF NOT EXISTS`;
 const cypherGrantRole = `GRANT ROLE ${INT_TEST_ROLE_NAME} TO ${INT_TEST_USER_NAME}`;
 
-const cypherDropUser = `DROP USER ${INT_TEST_USER_NAME}`;
+const cypherDropUser = `DROP USER ${INT_TEST_USER_NAME} IF EXISTS`;
 const cypherDropRole = `DROP ROLE ${INT_TEST_ROLE_NAME} IF EXISTS`;
 
 module.exports = async function globalSetup() {
