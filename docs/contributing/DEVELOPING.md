@@ -169,7 +169,8 @@ query SimpleUnionQuery_only {
 }
 ```
 
-**Saving metrics**
+##### Saving metrics
+
 With the option `-u` a file `performance.json` will be generated, that can be used to compare metrics between runs. This is only available for database query benchmark.
 
 ##### Running Cypher queries
