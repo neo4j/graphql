@@ -138,8 +138,8 @@ npx vitest run tests/tck/alias.test.ts
 The `unit`, `schema` and `tck` projects run without test isolation: each worker
 loads the library once and shares it between test files, which makes these
 projects several times faster. A test file in these projects must leave no
-state behind, so restore its mocks and spies, and do not change globals or
-module state that it does not reset.
+state behind, so restore its mocks and spies, change environment variables with
+`vi.stubEnv`, and do not change globals or module state that it does not reset.
 
 ### Verify TCK Tests
 
@@ -279,23 +279,26 @@ The real key entries here are:
 * `references` - gives TypeScript "permission" to accesss the projects at these paths
 
 Finally, Vitest does not read the `paths` entry, so the tests need an alias
-to the same source. `packages/project/vitest.config.ts` will need to look like:
+to the same source. Build the config on the shared settings in the root
+`vitest.shared.mts`, which also make Vitest resolve packages as `require` does.
+`packages/project/vitest.config.mts` will need to look like:
 
 ```ts
 import path from "node:path";
-import { defineConfig } from "vitest/config";
+import { defineConfig, mergeConfig } from "vitest/config";
+import { sharedConfig } from "../../vitest.shared.mts";
 
-export default defineConfig({
-    resolve: {
-        alias: [{ find: /^@neo4j\/graphql$/, replacement: path.join(__dirname, "../graphql/src") }],
-    },
-    test: {
-        globals: true,
-    },
-});
+export default mergeConfig(
+    sharedConfig,
+    defineConfig({
+        resolve: {
+            alias: [{ find: /^@neo4j\/graphql$/, replacement: path.join(import.meta.dirname, "../graphql/src") }],
+        },
+    })
+);
 ```
 
-See `packages/introspector/vitest.config.ts` for a complete example.
+See `packages/introspector/vitest.config.mts` for a complete example.
 
 #### Test dependencies
 
