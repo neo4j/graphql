@@ -519,7 +519,7 @@ describe("Update Subscriptions", () => {
     });
 
     test("subscription with where filter lt for String should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {
@@ -544,7 +544,7 @@ describe("Update Subscriptions", () => {
     });
 
     test("subscription with where filter lte for String should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {
@@ -569,7 +569,7 @@ describe("Update Subscriptions", () => {
     });
 
     test("subscription with where filter gt for String should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {
@@ -594,7 +594,7 @@ describe("Update Subscriptions", () => {
     });
 
     test("subscription with where filter gte for String should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {
@@ -619,7 +619,7 @@ describe("Update Subscriptions", () => {
     });
 
     test("subscription with where filter lt for ID as Int should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {
@@ -644,7 +644,7 @@ describe("Update Subscriptions", () => {
     });
 
     test("subscription with where filter lte for ID as Int should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {
@@ -669,7 +669,7 @@ describe("Update Subscriptions", () => {
     });
 
     test("subscription with where filter gt for ID as Int should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {
@@ -694,7 +694,7 @@ describe("Update Subscriptions", () => {
     });
 
     test("subscription with where filter gte for ID as Int should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {
@@ -719,7 +719,7 @@ describe("Update Subscriptions", () => {
     });
 
     test("subscription with where filter lt for Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {
@@ -744,7 +744,7 @@ describe("Update Subscriptions", () => {
     });
 
     test("subscription with where filter lte for Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {
@@ -769,7 +769,7 @@ describe("Update Subscriptions", () => {
     });
 
     test("subscription with where filter gt for Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {
@@ -794,7 +794,7 @@ describe("Update Subscriptions", () => {
     });
 
     test("subscription with where filter gte for Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {
@@ -819,7 +819,7 @@ describe("Update Subscriptions", () => {
     });
 
     test("subscription with where filter lt for Array should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {

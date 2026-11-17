@@ -418,9 +418,9 @@ describe("custom directive propagation", () => {
         expect(movieCreateInputFields).toHaveLength(3);
         for (const field of movieCreateInputFields || []) {
             if (field.name.value !== "actors") {
-                // eslint-disable-next-line jest/no-conditional-expect
+                // eslint-disable-next-line @vitest/no-conditional-expect
                 expect(field.directives).toHaveLength(1);
-                // eslint-disable-next-line jest/no-conditional-expect
+                // eslint-disable-next-line @vitest/no-conditional-expect
                 expect(field.directives?.[0]?.name.value).toBe("myOtherCustomDirective");
             }
         }

@@ -294,7 +294,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
     });
 
     test("subscription with where filter using contains for Int should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -316,7 +316,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
     });
 
     test("subscription with where filter using contains for Float should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -338,7 +338,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
     });
 
     test("subscription with where filter using contains for BigInt should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -360,7 +360,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
     });
 
     test("subscription with where filter using contains for Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -382,7 +382,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
     });
 
     test("subscription with where filter using contains for Array should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -404,7 +404,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
     });
 
     test("subscription with where filter using startsWith for Int should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -426,7 +426,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
     });
 
     test("subscription with where filter using startsWith for Float should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -448,7 +448,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
     });
 
     test("subscription with where filter using startsWith for BigInt should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -470,7 +470,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
     });
 
     test("subscription with where filter using startsWith for Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -492,7 +492,7 @@ describe("Create Subscription with filters valid on string types (String, ID)", 
     });
 
     test("subscription with where filter using startsWith for Array should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {

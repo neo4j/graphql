@@ -246,7 +246,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
     });
 
     test("subscription with includes on String should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {
@@ -271,7 +271,7 @@ describe("Create Subscription with optional filters valid for all types", () => 
     });
 
     test("subscription with includes on Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {

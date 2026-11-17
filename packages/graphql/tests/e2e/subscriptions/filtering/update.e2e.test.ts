@@ -717,7 +717,7 @@ describe("Update Subscriptions", () => {
     });
 
     test("subscription with in on Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {

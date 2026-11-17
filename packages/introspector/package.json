@@ -32,19 +32,17 @@
         "build:clean": "yarn clean && yarn build",
         "build": "tsc --build tsconfig.production.json",
         "clean": "cd src/ && tsc --build --clean",
-        "test:int": "jest tests/integration",
-        "test:unit": "jest src",
-        "test": "jest"
+        "test:int": "vitest run --project integration",
+        "test:unit": "vitest run --project unit",
+        "test": "vitest run"
     },
     "author": "Neo4j Inc.",
     "devDependencies": {
         "@neo4j/graphql": "^7.0.0",
-        "@types/jest": "30.0.0",
         "@types/node": "26.6.6",
         "@types/pluralize": "0.0.33",
-        "jest": "30.5.2",
-        "ts-jest": "29.4.9",
-        "typescript": "5.9.3"
+        "typescript": "5.9.3",
+        "vitest": "4.1.12"
     },
     "dependencies": {
         "camelcase": "^6.3.0",

@@ -3,6 +3,7 @@
  * Neo4j Sweden AB [http://neo4j.com]
  */
 
+import type { Mock } from "vitest";
 import type { Client } from "graphql-ws";
 import { createClient } from "graphql-ws";
 import { EventEmitter } from "stream";
@@ -58,7 +59,7 @@ export class WebSocketTestClient {
         });
     }
 
-    public async subscribe(query: string, callback?: jest.Mock): Promise<void> {
+    public async subscribe(query: string, callback?: Mock): Promise<void> {
         await new Promise<void>((resolve, reject) => {
             this.client.subscribe(
                 { query },

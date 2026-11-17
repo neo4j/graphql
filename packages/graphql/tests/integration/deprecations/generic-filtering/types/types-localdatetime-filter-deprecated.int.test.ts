@@ -144,7 +144,7 @@ describe("LocalDateTime - deprecated filters", () => {
             const graphqlMovies: { id: string; localDT: string }[] = (graphqlResult.data as any)[Movie.plural];
             expect(graphqlMovies).toBeDefined();
 
-            /* eslint-disable jest/no-conditional-expect */
+            /* eslint-disable @vitest/no-conditional-expect */
             if (filter === "LT") {
                 expect(graphqlMovies).toHaveLength(1);
                 expect(graphqlMovies[0]?.id).toBe(pastId);
@@ -174,7 +174,7 @@ describe("LocalDateTime - deprecated filters", () => {
                 expect(graphqlMovies[1]?.id).toBe(futureId);
                 expect(parseLocalDateTime(graphqlMovies[1]?.localDT)).toStrictEqual(parsedFuture);
             }
-            /* eslint-enable jest/no-conditional-expect */
+            /* eslint-enable @vitest/no-conditional-expect */
         }
     );
 });

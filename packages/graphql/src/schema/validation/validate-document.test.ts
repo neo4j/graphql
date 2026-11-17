@@ -3,6 +3,7 @@
  * Neo4j Sweden AB [http://neo4j.com]
  */
 
+import type { MockInstance } from "vitest";
 import {
     parse,
     type EnumTypeDefinitionNode,
@@ -25,10 +26,10 @@ const additionalDefinitions = {
 };
 
 describe("authorization warning", () => {
-    let warn: jest.SpyInstance;
+    let warn: MockInstance;
 
     beforeEach(() => {
-        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     });
 
     afterEach(() => {
@@ -53,10 +54,9 @@ describe("authorization warning", () => {
             features: {},
         });
 
-        expect(warn).toHaveBeenCalledWith(
+        expect(warn).toHaveBeenCalledExactlyOnceWith(
             "'@authentication', '@authorization' and/or @subscriptionsAuthorization detected - please ensure that you either specify authorization settings in 'features.authorization'. This warning can be ignored if you intend to pass a decoded JWT into 'context.jwt' on every request."
         );
-        expect(warn).toHaveBeenCalledOnce();
     });
 });
 
@@ -205,10 +205,10 @@ describe("valid list fields in @node and @relationshipProperties types", () => {
 });
 
 describe("single relationship deprecation warning", () => {
-    let warn: jest.SpyInstance;
+    let warn: MockInstance;
 
     beforeEach(() => {
-        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     });
 
     afterEach(() => {
@@ -238,10 +238,10 @@ describe("single relationship deprecation warning", () => {
 });
 
 describe("default max limit bypass warning", () => {
-    let warn: jest.SpyInstance;
+    let warn: MockInstance;
 
     beforeEach(() => {
-        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     });
 
     afterEach(() => {
@@ -414,10 +414,10 @@ describe("default max limit bypass warning", () => {
 });
 
 describe("warns if queryDirection deprecated values are used", () => {
-    let warn: jest.SpyInstance;
+    let warn: MockInstance;
 
     beforeEach(() => {
-        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     });
 
     afterEach(() => {

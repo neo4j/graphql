@@ -11,8 +11,8 @@ describe("populatedBy arguments", () => {
     const testHelper = new TestHelper();
     let typeDefs: string;
 
-    const nodeMockCallback = jest.fn((_root) => "slug");
-    const edgeMockCallback = jest.fn((_root) => "actedInSlug");
+    const nodeMockCallback = vi.fn((_root) => "slug");
+    const edgeMockCallback = vi.fn((_root) => "actedInSlug");
 
     let SVG: UniqueType;
     let VectorGraphic: UniqueType;

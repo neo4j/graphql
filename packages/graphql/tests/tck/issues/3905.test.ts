@@ -7,7 +7,7 @@ import { Neo4jGraphQL } from "../../../src";
 import { formatCypher, formatParams, translateQuery } from "../utils/tck-test-utils";
 
 // This has to be reintroduced when user defined types are supported as target for cypher fields
-// eslint-disable-next-line jest/no-disabled-tests
+// eslint-disable-next-line @vitest/no-disabled-tests
 describe.skip("https://github.com/neo4j/graphql/issues/3905", () => {
     let typeDefs: string;
     let neoSchema: Neo4jGraphQL;

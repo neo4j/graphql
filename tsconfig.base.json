@@ -10,6 +10,6 @@
         "module": "commonjs",
         "target": "es2021",
         "moduleResolution": "node10",
-        "types": ["node", "jest"]
+        "types": ["node", "vitest/globals"]
     }
 }

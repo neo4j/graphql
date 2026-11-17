@@ -712,7 +712,7 @@ describe("Delete Subscription", () => {
     });
 
     test("subscription with in on Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {
@@ -737,7 +737,7 @@ describe("Delete Subscription", () => {
     });
 
     test("subscription with in on Array should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
                 subscription {

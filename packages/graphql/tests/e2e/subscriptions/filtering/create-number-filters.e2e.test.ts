@@ -458,7 +458,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
     });
 
     test("subscription with where filter using lt for String should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -480,7 +480,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
     });
 
     test("subscription with where filter using lte for String should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -502,7 +502,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
     });
 
     test("subscription with where filter using gt for String should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -524,7 +524,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
     });
 
     test("subscription with where filter using gte for String should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -546,7 +546,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
     });
 
     test("subscription with where filter using lt for ID as Int should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -568,7 +568,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
     });
 
     test("subscription with where filter using lte for ID as Int should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -590,7 +590,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
     });
 
     test("subscription with where filter using gt for ID as Int should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -612,7 +612,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
     });
 
     test("subscription with where filter using gte for ID as Int should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -634,7 +634,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
     });
 
     test("subscription with where filter using lt for Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -656,7 +656,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
     });
 
     test("subscription with where filter using lte for Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -678,7 +678,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
     });
 
     test("subscription with where filter using gt for Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -700,7 +700,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
     });
 
     test("subscription with where filter using gte for Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -722,7 +722,7 @@ describe("Create Subscription with filters valid of number types (Int, Float, Bi
     });
 
     test("subscription with where filter using gte for Array should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {

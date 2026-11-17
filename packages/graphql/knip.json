@@ -5,14 +5,8 @@
         "type": false
     },
     "tags": ["-lintignore"],
-    "ignoreFiles": [
-        "tests/performance/**",
-        "tests/utils/**",
-        "tests/integration/teardown.ts",
-        "tests/e2e/**",
-        "jest-*-setup.js"
-    ],
+    "ignoreFiles": ["tests/performance/**", "tests/utils/**", "tests/integration/teardown.ts", "tests/e2e/**"],
     "ignoreBinaries": [],
-    "ignoreDependencies": ["jest", "rimraf", "ts-node"],
+    "ignoreDependencies": ["rimraf", "ts-node"],
     "treatConfigHintsAsErrors": true
 }

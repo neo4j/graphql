@@ -509,7 +509,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
 
                     const federationVersion = linkUrl.match(linkUrlSpecVersionRegex)[1];
                     // only federation v2.0 and v2.1 are supported
-                    // eslint-disable-next-line jest/no-conditional-expect
+                    // eslint-disable-next-line @vitest/no-conditional-expect
                     expect(federationVersion).toMatch(/2\.0|2\.1/);
 
                     const linkImportsRegex = /import:\[(.+?)\]/;
@@ -533,7 +533,7 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
                         const linkImports = (linkImportsMatch?.[1] as string).split(" ");
                         linkImports?.forEach((importedElement) => {
                             if (!expected.includes(importedElement.replaceAll('"', ""))) {
-                                // eslint-disable-next-line jest/no-conditional-expect
+                                // eslint-disable-next-line @vitest/no-conditional-expect
                                 expect("").toBe("unexpected federation import ${element}");
                             }
                         });
@@ -543,12 +543,12 @@ describe("Tests copied from https://github.com/apollographql/apollo-federation-s
         });
 
         if (fedLinkCount == 0) {
-            // eslint-disable-next-line jest/no-conditional-expect
+            // eslint-disable-next-line @vitest/no-conditional-expect
             expect("").toBe("missing federation spec @link imports");
         }
 
         if (fedLinkCount > 1) {
-            // eslint-disable-next-line jest/no-conditional-expect
+            // eslint-disable-next-line @vitest/no-conditional-expect
             expect("").toBe("schema @link imports multiple federation specs");
         }
     });

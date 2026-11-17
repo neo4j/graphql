@@ -57,11 +57,11 @@ yarn install
 for working in this repository, and we additionally recommend the following extensions:
 
 * [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-* [Jest](https://marketplace.visualstudio.com/items?itemName=Orta.vscode-jest)
+* [Vitest](https://marketplace.visualstudio.com/items?itemName=vitest.explorer)
 * [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
 
-The Jest extension should automatically detect the tests for this repository and
-watch them in the Status Bar.
+The Vitest extension finds the tests through the `vitest.config` file of each package
+and shows them in the Testing view.
 
 ## Using local Cypher-Builder
 
@@ -97,8 +97,10 @@ easily get up and running with a local Neo4j instance.
 We used to require an `admin` user to be created and further assigned permissions.
 We have since settled for the default `neo4j` user, which already has the required permissions.
 
-Tests are run using Jest, which has been configured to allow for execution of
-test suites at any level in the project.
+Tests are run using [Vitest](https://vitest.dev). The `vitest.config` file of each
+package splits its tests into projects. In `packages/graphql` these are `unit`,
+`schema`, `tck`, `integration` and `e2e`. Only `integration` and `e2e` need a
+database.
 
 You can execute tests with a different database, user and password with the
 following command:
@@ -107,8 +109,8 @@ following command:
 NEO_URL=neo4j://localhost:7687 NEO_USER=neo4j NEO_PASSWORD=password yarn test
 ```
 
-The above command can additionally be run from `packages/graphql`,
-or any directory where there is a `jest.config.js` file!
+The above command can additionally be run from `packages/graphql` or
+`packages/introspector`.
 
 Alternatively, you can put these environment variables in a `.env` file in the
 root of the repo which will automatically get picked up:
@@ -119,9 +121,6 @@ NEO_USER=neo4j
 NEO_PASSWORD=password
 ```
 
-The above command can additionally be run from `packages/graphql`,
-or any directory where there is a `jest.config.js` file!
-
 Additionally, for projects which have the appropriate Yarn scripts setup, you can
 run individual test suites. For instance, to run the TCK test suite of `@neo4j/graphql`,
 run the following from `packages/graphql`:
@@ -129,6 +128,18 @@ run the following from `packages/graphql`:
 ```bash
 yarn test:tck
 ```
+
+To run a single file or folder, pass its path to Vitest from `packages/graphql`:
+
+```bash
+npx vitest run tests/tck/alias.test.ts
+```
+
+The `unit`, `schema` and `tck` projects run without test isolation: each worker
+loads the library once and shares it between test files, which makes these
+projects several times faster. A test file in these projects must leave no
+state behind, so restore its mocks and spies, and do not change globals or
+module state that it does not reset.
 
 ### Verify TCK Tests
 
@@ -224,7 +235,6 @@ For the sake of completeness, add an entry for the new project into the followin
 files in the root of the repository:
 
 * `tsconfig.json` (`references` entry)
-* `jest.config.base.js` (`moduleNameMapper` entry)
 
 ### Dependencies within the monorepo
 
@@ -268,27 +278,24 @@ The real key entries here are:
 * `paths` - this will translate `import` statements in code to the relative dependency
 * `references` - gives TypeScript "permission" to accesss the projects at these paths
 
-Finally, it is highly likely that Jest will also need access to this internal
-dependency, so `packages/project/jest.config.js` will need to look like:
+Finally, Vitest does not read the `paths` entry, so the tests need an alias
+to the same source. `packages/project/vitest.config.ts` will need to look like:
 
-```js
-const globalConf = require("../../jest.config.base");
+```ts
+import path from "node:path";
+import { defineConfig } from "vitest/config";
 
-module.exports = {
-    ...globalConf,
-    displayName: "@neo4j/graphql-project",
-    roots: ["<rootDir>/packages/project/src", "<rootDir>/packages/project/tests"],
-    coverageDirectory: "<rootDir>/packages/project/coverage/",
-    globals: {
-        "ts-jest": {
-            tsconfig: "<rootDir>/packages/project/src/tsconfig.json",
-        },
+export default defineConfig({
+    resolve: {
+        alias: [{ find: /^@neo4j\/graphql$/, replacement: path.join(__dirname, "../graphql/src") }],
     },
-};
+    test: {
+        globals: true,
+    },
+});
 ```
 
-The magic sauce here is `globals/ts-jest/tsconfig`, which tells Jest which
-TypeScript configuration to use.
+See `packages/introspector/vitest.config.ts` for a complete example.
 
 #### Test dependencies
 

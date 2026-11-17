@@ -3,6 +3,7 @@
  * Neo4j Sweden AB [http://neo4j.com]
  */
 
+import type { MockInstance } from "vitest";
 import gql from "graphql-tag";
 import { INVALID_REQUIRED_FIELD_ERROR } from "../../../src/schema/selection-set-to-resolve-tree";
 import { createBearerToken } from "../../utils/create-bearer-token";
@@ -218,10 +219,10 @@ describe("@customResolver directive", () => {
     });
 
     describe("Custom resolver checks", () => {
-        let warn: jest.SpyInstance;
+        let warn: MockInstance;
 
         beforeEach(() => {
-            warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+            warn = vi.spyOn(console, "warn").mockImplementation(() => {});
         });
 
         afterEach(() => {

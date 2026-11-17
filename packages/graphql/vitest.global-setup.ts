@@ -1,7 +1,5 @@
-const setTZ = require("set-tz");
-const neo4j = require("neo4j-driver");
+import neo4j, { type Driver, type Session } from "neo4j-driver";
 
-const TZ = "Etc/UTC";
 const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";
 const INT_TEST_ROLE_NAME = "neo4jgraphqlinttestrole";
 const INT_TEST_USER_NAME = "neo4jgraphqlinttestuser";
@@ -16,14 +14,7 @@ const cypherGrantRole = `GRANT ROLE ${INT_TEST_ROLE_NAME} TO ${INT_TEST_USER_NAM
 const cypherDropUser = `DROP USER ${INT_TEST_USER_NAME} IF EXISTS`;
 const cypherDropRole = `DROP ROLE ${INT_TEST_ROLE_NAME} IF EXISTS`;
 
-module.exports = async function globalSetup() {
-    process.env.NODE_ENV = "test";
-
-    setTZ(TZ);
-
-    // INFO: The 'global' object can only be accessed in globalSetup and globalTeardown.
-    global.INT_TEST_DB_NAME = INT_TEST_DB_NAME;
-
+export default async function globalSetup(): Promise<void> {
     const { NEO_USER = "neo4j", NEO_PASSWORD = "password", NEO_URL = "neo4j://localhost:7687/neo4j" } = process.env;
     const auth = neo4j.auth.basic(NEO_USER, NEO_PASSWORD);
     const driver = neo4j.driver(NEO_URL, auth);
@@ -37,10 +28,10 @@ module.exports = async function globalSetup() {
     } finally {
         await driver.close();
     }
-};
+}
 
-async function createTestUserAndRole(driver) {
-    let session = null;
+async function createTestUserAndRole(driver: Driver): Promise<void> {
+    let session: Session | null = null;
     // Some tests use different DBs, so using "*" for now
     const dbName = "*";
     // GRANTS READ/WRITE SERVICE ACCOUNT
@@ -64,10 +55,10 @@ async function createTestUserAndRole(driver) {
         for (const cypherGrant of readWriteGrants) {
             await session.run(cypherGrant);
         }
-    } catch (error) {
+    } catch (error: any) {
         if (errorHasGQLStatus(error, "42NFF")) {
             console.log(
-                `\nJest /packages/graphql setup: Will NOT create a separate integration test user and role as the command is not supported in the current environment.`
+                `\nVitest /packages/graphql setup: Will NOT create a separate integration test user and role as the command is not supported in the current environment.`
             );
         } else {
             throw error;
@@ -79,17 +70,17 @@ async function createTestUserAndRole(driver) {
     }
 }
 
-async function dropTestUserAndRole(driver) {
-    let session = null;
+async function dropTestUserAndRole(driver: Driver): Promise<void> {
+    let session: Session | null = null;
 
     try {
         session = driver.session();
         await session.run(cypherDropUser);
         await session.run(cypherDropRole);
-    } catch (error) {
+    } catch (error: any) {
         if (errorHasGQLStatus(error, "50N42")) {
             console.log(
-                `\nJest /packages/graphql setup: Failure to drop test user/role, this is expected if the user/role does not exist. Error: ${error.message}`
+                `\nVitest /packages/graphql setup: Failure to drop test user/role, this is expected if the user/role does not exist. Error: ${error.message}`
             );
         } else {
             throw error;
@@ -101,12 +92,11 @@ async function dropTestUserAndRole(driver) {
     }
 }
 
-async function setupTestDatabase(driver, neoURL) {
+async function setupTestDatabase(driver: Driver, neoURL: string): Promise<void> {
     const cypherCreateDb = `CREATE OR REPLACE DATABASE ${INT_TEST_DB_NAME} WAIT`;
-    let session = null;
+    const session = driver.session();
 
     try {
-        session = driver.session();
         const hasMultiDbSupport = await driver.supportsMultiDb();
         if (process.env.USE_DEFAULT_DB || !hasMultiDbSupport) {
             // If we know at this stage that we need to drop data only, then do so
@@ -114,7 +104,7 @@ async function setupTestDatabase(driver, neoURL) {
             return;
         }
         await session.run(cypherCreateDb);
-    } catch (error) {
+    } catch (error: any) {
         if (
             error.message.includes(
                 "This is an administration command and it should be executed against the system database"
@@ -125,28 +115,26 @@ async function setupTestDatabase(driver, neoURL) {
             error.message.includes("DROP DATABASE is not supported")
         ) {
             console.log(
-                `\nJest /packages/graphql setup: Will NOT create a separate integration test database as the command is not supported in the current environment.`
+                `\nVitest /packages/graphql setup: Will NOT create a separate integration test database as the command is not supported in the current environment.`
             );
         } else {
             console.log(
-                `\nJest /packages/graphql setup: Failure to create test DB on neo4j @ ${neoURL}, cypher: "${cypherCreateDb}", Error: ${error.message}. Falling back to drop data.`
+                `\nVitest /packages/graphql setup: Failure to create test DB on neo4j @ ${neoURL}, cypher: "${cypherCreateDb}", Error: ${error.message}. Falling back to drop data.`
             );
             await dropDataAndIndexes(session);
         }
     } finally {
-        if (session) {
-            await session.close();
-        }
+        await session.close();
     }
 }
 
-async function dropDataAndIndexes(session) {
+async function dropDataAndIndexes(session: Session): Promise<void> {
     await session.run(cypherDropData);
     await session.run(cypherDropIndexes);
 }
 
 /* Javascript copy of the utility function available at: ./src/utils/error-has-gql-status */
-function errorHasGQLStatus(error, gqlStatus) {
+function errorHasGQLStatus(error: any, gqlStatus: string): boolean {
     if (error.gqlStatus === gqlStatus) {
         return true;
     }
