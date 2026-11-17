@@ -224,5 +224,3 @@ describe("https://github.com/neo4j/graphql/issues/487", () => {
         expect(formatParams(result.params)).toMatchInlineSnapshot(`"{}"`);
     });
 });
-
-describe("https://github.com/neo4j/graphql/issues/487, test on interface", () => {});

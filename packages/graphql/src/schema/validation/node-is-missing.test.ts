@@ -56,7 +56,7 @@ describe("directive is required to be in a type with @node", () => {
                 additionalDefinitions,
                 features: {},
             });
-        expect(executeValidate).not.toThrow('Directive "relationship" must be in a type with "@node"');
+        expect(executeValidate).not.toThrow();
     });
 
     test("should raise when @cypher is not used within the @node directive", () => {
@@ -96,7 +96,7 @@ describe("directive is required to be in a type with @node", () => {
                 additionalDefinitions,
                 features: {},
             });
-        expect(executeValidate).not.toThrow('Directive "cypher" must be in a type with "@node"');
+        expect(executeValidate).not.toThrow();
     });
 
     test("should raise when @populatedBy is not used within the @node directive", () => {
