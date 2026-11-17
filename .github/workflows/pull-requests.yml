@@ -33,7 +33,7 @@ jobs:
           eslint_flags: "."
           node_options: "--max_old_space_size=4096"
 
-  # Type-checks the tests as well as the sources, separately from the test runner
+  # Vitest strips types without checking them, so the tests are type-checked here
   typecheck:
     runs-on: ubuntu-latest
 

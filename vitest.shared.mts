@@ -50,7 +50,6 @@ function resolveLikeRequire(): Plugin {
     };
 }
 
-// The settings that the Vitest config of every package builds on
 export const sharedConfig = defineConfig({
     plugins: [resolveLikeRequire()],
     test: {

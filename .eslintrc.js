@@ -79,7 +79,6 @@ module.exports = {
             files: ["**/*.test.ts"],
             extends: ["plugin:@vitest/legacy-recommended"],
             rules: {
-                // The rules eslint-plugin-jest's "style" config enabled
                 "@vitest/prefer-to-be": "error",
                 "@vitest/prefer-to-contain": "error",
                 "@vitest/prefer-to-have-length": "error",
