@@ -65,7 +65,7 @@ async function createTestUserAndRole(driver) {
             await session.run(cypherGrant);
         }
     } catch (error) {
-        if (errorHasGQLStatus("42NFF")) {
+        if (errorHasGQLStatus(error, "42NFF")) {
             console.log(
                 `\nJest /packages/graphql setup: Will NOT create a separate integration test user and role as the command is not supported in the current environment.`
             );
@@ -87,7 +87,7 @@ async function dropTestUserAndRole(driver) {
         await session.run(cypherDropUser);
         await session.run(cypherDropRole);
     } catch (error) {
-        if (errorHasGQLStatus("50N42")) {
+        if (errorHasGQLStatus(error, "50N42")) {
             console.log(
                 `\nJest /packages/graphql setup: Failure to drop test user/role, this is expected if the user/role does not exist. Error: ${error.message}`
             );
