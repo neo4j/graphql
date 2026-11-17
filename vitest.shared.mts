@@ -17,9 +17,14 @@ dotenv.config({ path: path.join(import.meta.dirname, ".env"), quiet: true });
  * the ESM build of jose.
  */
 function resolveLikeRequire(): Plugin {
-    // Vitest must load as ESM: its CommonJS entry point only throws an error
+    // Vitest must load as ESM: its CommonJS entry point only throws an error. The oxc runtime
+    // holds the helpers, such as decorators, that Vite's transform adds, so Vite resolves it.
     const isTestRunnerPackage = (source: string): boolean =>
-        source === "vitest" || source.startsWith("vitest/") || source.startsWith("@vitest/") || source === "vite";
+        source === "vitest" ||
+        source.startsWith("vitest/") ||
+        source.startsWith("@vitest/") ||
+        source === "vite" ||
+        source.startsWith("@oxc-project/");
 
     return {
         name: "neo4j-graphql:resolve-like-require",
