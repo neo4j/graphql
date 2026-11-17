@@ -33,6 +33,25 @@ jobs:
           eslint_flags: "."
           node_options: "--max_old_space_size=4096"
 
+  # Vitest strips types without checking them, so the tests are type-checked here
+  typecheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6
+        with:
+          node-version: 26.13.0
+          cache: yarn
+          package-manager-cache: false
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Type-check @neo4j/graphql sources and tests
+        run: npx tsc --noEmit -p packages/graphql/tsconfig.json
+      - name: Type-check the other packages' sources and tests
+        # Builds the @neo4j/graphql project reference first
+        run: npx tsc --build packages/introspector/tsconfig.json packages/ogm/tsconfig.json packages/graphql-amqp-subscriptions-engine/tsconfig.json
+
   code-scanning:
     uses: ./.github/workflows/reusable-codeql-analysis.yml
 
@@ -91,6 +110,7 @@ jobs:
     if: ${{ always() }}
     needs:
       - reviewdog-eslint
+      - typecheck
       - code-scanning
       - package-tests
       - unit-tests
@@ -106,6 +126,7 @@ jobs:
         run: |
           if [ ${{ needs.reviewdog-eslint.result }} != 'success' ] || 
             [ ${{ needs.code-scanning.result }} != 'success' ] ||
+            [ ${{ needs.typecheck.result }} != 'success' ] ||
             [ ${{ needs.package-tests.result }} != 'success' ] ||
             [ ${{ needs.unit-tests.result }} != 'success' ] ||
             [ ${{ needs.e2e-tests-plugins.result }} != 'success' ] ||
