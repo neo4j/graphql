@@ -28,7 +28,7 @@ describe("WarnObjectFieldsWithoutResolver", () => {
     });
 
     afterEach(() => {
-        warn.mockReset();
+        warn.mockRestore();
     });
     describe("Does not show warning", () => {
         test("Error on object field array  without resolver throw warning in debug", () => {

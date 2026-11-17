@@ -226,7 +226,7 @@ describe("@customResolver directive", () => {
         });
 
         afterEach(() => {
-            warn.mockReset();
+            warn.mockRestore();
         });
 
         test("Check throws error if customResolver is not provided", async () => {

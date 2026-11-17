@@ -128,7 +128,7 @@ describe("Startup Validation", () => {
         });
 
         afterEach(() => {
-            warn.mockReset();
+            warn.mockRestore();
         });
 
         test("should warn for missing custom resolvers", async () => {

@@ -28,7 +28,7 @@ describe("WarnObjectFieldsWithoutResolver", () => {
     });
 
     afterEach(() => {
-        warn.mockReset();
+        warn.mockRestore();
     });
     describe("Subscriptions authorization rule", () => {
         test("warns if @authorization is used on type and @subscriptionsAuthorization is missing", () => {

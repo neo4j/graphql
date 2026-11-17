@@ -33,7 +33,7 @@ describe("authorization warning", () => {
     });
 
     afterEach(() => {
-        warn.mockReset();
+        warn.mockRestore();
     });
 
     test("authorization warning only occurs once for multiple directives", () => {
@@ -212,7 +212,7 @@ describe("single relationship deprecation warning", () => {
     });
 
     afterEach(() => {
-        warn.mockReset();
+        warn.mockRestore();
     });
 
     test("deprecated warning does not trigger on list relationships", () => {
@@ -245,7 +245,7 @@ describe("default max limit bypass warning", () => {
     });
 
     afterEach(() => {
-        warn.mockReset();
+        warn.mockRestore();
     });
 
     test("max limit on interface does not trigger warning if no limit on concrete", () => {
@@ -421,7 +421,7 @@ describe("warns if queryDirection deprecated values are used", () => {
     });
 
     afterEach(() => {
-        warn.mockReset();
+        warn.mockRestore();
     });
 
     test("should not warn if no deprecation values are used", () => {
