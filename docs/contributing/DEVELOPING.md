@@ -74,7 +74,7 @@ In the Cypher Builder folder run:
 
 In the root of the `neo4j/graphql` monorepo run:
 
-* `yarn link -p [path-to-local-cypher-builder]
+* `yarn link -p [path-to-local-cypher-builder]`
 
 To unlink, in the graphql project:
 
