@@ -18,7 +18,7 @@ export class NeoExpectCypher extends NeoExpect {
         this.params = params;
     }
 
-    /** Uses jest.toEqual matcher over the result of the type query */
+    /** Uses the toEqual matcher over the result of the type query */
     public async toEqual(expectation: Record<string, any>[]): Promise<void> {
         const result = await this.executeCypher(this.cypher, this.params);
 

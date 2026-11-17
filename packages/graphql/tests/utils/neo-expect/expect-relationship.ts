@@ -30,7 +30,7 @@ export class NeoExpectRelationship extends NeoExpect {
         this.type = relationshipType;
     }
 
-    /** Uses jest.toEqual matcher over the result of the type query */
+    /** Uses the toEqual matcher over the result of the type query */
     public async toEqual(expectation: any[]): Promise<void> {
         const result = await this.getAll();
         try {
@@ -44,7 +44,7 @@ export class NeoExpectRelationship extends NeoExpect {
 
     /**
      * Use this if expectation is a list an elements order does not matter
-     * This fn does not use the toIncludeSameMembers on jest bc aura test teardown runs without jest-extended
+     * This fn does not use toIncludeSameMembers because the aura test teardown runs without jest-extended
      */
     public async toIncludeSameMembers(expectation: any[]): Promise<void> {
         const result = await this.getAll();
