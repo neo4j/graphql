@@ -34,12 +34,8 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
     });
 
     test("DISTANCE", async () => {
-        let verifyTCK;
-
-        if (process.env.VERIFY_TCK) {
-            verifyTCK = process.env.VERIFY_TCK;
-            delete process.env.VERIFY_TCK;
-        }
+        // Restored after the test by `unstubEnvs` in the Vitest config
+        vi.stubEnv("VERIFY_TCK", undefined);
 
         const query = /* GraphQL */ `
             query {
@@ -97,9 +93,5 @@ describe("Cypher -> Connections -> Filtering -> Relationship -> Points", () => {
                 }
             }"
         `);
-
-        if (verifyTCK) {
-            process.env.VERIFY_TCK = verifyTCK;
-        }
     });
 });
