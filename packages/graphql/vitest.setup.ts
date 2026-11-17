@@ -1,8 +1,8 @@
 import * as matchers from "jest-extended";
 import { expect } from "vitest";
 
-// Setup files run once per test file, and the projects without isolation share one `expect` per
-// worker, so register everything once
+// Setup files run once per test file, and without isolation the files in a worker share one
+// `expect`, so register everything once
 const registered = Symbol.for("neo4j-graphql.vitest-setup");
 const state = globalThis as typeof globalThis & { [registered]?: boolean };
 
