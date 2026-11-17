@@ -1,17 +1,27 @@
 import * as matchers from "jest-extended";
 import { expect } from "vitest";
 
-expect.extend(matchers);
+// Setup files run once per test file, and the projects without isolation share one `expect` per
+// worker, so register everything once
+const registered = Symbol.for("neo4j-graphql.vitest-setup");
+const state = globalThis as typeof globalThis & { [registered]?: boolean };
 
-// Jest treats two errors as equal when their messages are equal. Vitest also compares their other
-// properties, such as the locations and path of a GraphQLError. Many tests compare received errors
-// with `new GraphQLError(message)`, so keep Jest's rule. It also applies to jest-extended matchers
-// such as toIncludeSameMembers.
-expect.addEqualityTesters([
-    function errorsEqualByMessage(a: unknown, b: unknown): boolean | undefined {
-        if (a instanceof Error && b instanceof Error) {
-            return a.message === b.message;
-        }
-        return undefined;
-    },
-]);
+if (!state[registered]) {
+    state[registered] = true;
+
+    expect.extend(matchers);
+
+    // Jest treats two errors as equal when their messages are equal. Vitest also compares their
+    // other properties, such as the locations and path of a GraphQLError. Many tests compare
+    // received errors with `new GraphQLError(message)`, so keep Jest's rule. It also applies to
+    // jest-extended matchers such as toIncludeSameMembers. Unlike Jest, `toStrictEqual` then does
+    // not check that the two errors have the same class.
+    expect.addEqualityTesters([
+        function errorsEqualByMessage(a: unknown, b: unknown): boolean | undefined {
+            if (a instanceof Error && b instanceof Error) {
+                return a.message === b.message;
+            }
+            return undefined;
+        },
+    ]);
+}
