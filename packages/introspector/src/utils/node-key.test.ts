@@ -14,7 +14,7 @@ describe("nodeKey", () => {
         [["First", "Second", "Aaaa"], ":`Aaaa`:`First`:`Second`"],
     ];
 
-    test.each<Args>(cases)("given input %p, returns %p", (inStr, expectedResult) => {
+    test.each<Args>(cases)("given input %o, returns %o", (inStr, expectedResult) => {
         const result = nodeKey(inStr);
         expect(result).toEqual(expectedResult);
     });

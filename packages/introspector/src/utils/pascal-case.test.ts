@@ -17,7 +17,7 @@ describe("pascalCase", () => {
         ["MY_TYPE", "MyType"],
     ];
 
-    test.each<Args>(cases)("given input %p, returns %p", (inStr, expectedResult) => {
+    test.each<Args>(cases)("given input %o, returns %o", (inStr, expectedResult) => {
         const result = pascalCase(inStr);
         expect(result).toEqual(expectedResult);
     });

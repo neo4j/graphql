@@ -7284,7 +7284,7 @@ describe("validation 2.0", () => {
                 expect(executeValidate).not.toThrow();
             });
 
-            test.each([undefined, null])(`invalid when the ${settingsKey} key is present but %p`, (value) => {
+            test.each([undefined, null])(`invalid when the ${settingsKey} key is present but %o`, (value) => {
                 const vectorSettings = { [settingsKey]: value };
 
                 const executeValidate = () =>
