@@ -115,26 +115,25 @@ describe("Global authentication - Authorization JWT plugin", () => {
     });
 
     test("should not throw a different error if noVerify and global authentication are both enabled", async () => {
-        let initError: unknown;
-        try {
-            await testHelper.initNeo4jGraphQL({
-                typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                        verify: false,
-                    },
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
+                    verify: false,
                 },
-            });
+            },
+        });
 
-            const gqlResult = await testHelper.executeGraphQL(query);
-            expect(gqlResult.errors).toBeUndefined();
-        } catch (error) {
-            initError = error;
-        }
+        const gqlResult = await testHelper.executeGraphQL(query);
 
-        expect(initError).toBeDefined();
-        expect((initError as Error)?.message).toInclude("Unauthenticated");
+        expect(gqlResult.errors).toBeDefined();
+        expect(
+            (gqlResult.errors as unknown as Neo4jGraphQLAuthenticationError[]).some((el) =>
+                el.message.includes("Unauthenticated")
+            )
+        ).toBeTruthy();
+        expect(gqlResult.data).toBeNull();
     });
 
     test("should not fail if noVerify is false and global authentication is true", async () => {
