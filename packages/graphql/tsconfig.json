@@ -7,7 +7,7 @@
         "noUncheckedIndexedAccess": true,
         "moduleResolution": "node10"
     },
-    "include": ["global.d.ts", "package.json", "src/**/*", "tests/**/*"],
+    "include": ["global.d.ts", "package.json", "vitest.setup.ts", "vitest.global-setup.ts", "src/**/*", "tests/**/*"],
     "ts-node": {
         "require": ["tsconfig-paths/register"]
     }

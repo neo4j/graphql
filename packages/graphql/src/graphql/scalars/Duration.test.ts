@@ -8,7 +8,7 @@ import { DAYS_PER_WEEK, MONTHS_PER_YEAR, parseDuration, SECONDS_PER_HOUR, SECOND
 type ParsedDuration = ReturnType<typeof parseDuration>;
 
 describe("Duration Scalar", () => {
-    test.each<unknown>([42, () => 5, { a: 3, b: 4 }, null, undefined])("should not match %p and throw error", (value) =>
+    test.each<unknown>([42, () => 5, { a: 3, b: 4 }, null, undefined])("should not match %o and throw error", (value) =>
         expect(() => parseDuration(value as string)).toThrow(TypeError)
     );
     test.each<string>(["P", "PT", "P233WT4H", "P54W", "P5.2Y4M", "P18871104T12:00:00", "P1887-11-04T120000"])(

@@ -8,7 +8,7 @@ import { gql } from "graphql-tag";
 import { lexicographicSortSchema } from "graphql/utilities";
 import { Neo4jGraphQL } from "../../../src";
 // This has to be reintroduced when user defined types are supported as target for cypher fields
-// eslint-disable-next-line jest/no-disabled-tests
+// eslint-disable-next-line @vitest/no-disabled-tests
 describe.skip("https://github.com/neo4j/graphql/issues/3905", () => {
     test("custom Cypher result type with list of lists generates without error", async () => {
         const typeDefs = gql`

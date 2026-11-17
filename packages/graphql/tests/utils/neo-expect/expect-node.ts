@@ -39,7 +39,7 @@ export class NeoExpectNode extends NeoExpect {
         }
     }
 
-    /** Uses jest.toEqual matcher over the result of the type query */
+    /** Uses the toEqual matcher over the result of the type query */
     public async toEqual(expectation: any[]): Promise<void> {
         const result = await this.getAll();
         expect(result).toEqual(expectation);

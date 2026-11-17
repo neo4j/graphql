@@ -200,7 +200,7 @@ describe("@groupBy directive top level", () => {
     });
 
     // This is not supported, same issue as in edges: https://github.com/neo4j/graphql/issues/5584
-    // eslint-disable-next-line jest/no-disabled-tests
+    // eslint-disable-next-line @vitest/no-disabled-tests
     test.skip("multitple aliased groupBy in top level query without projection", async () => {
         await testHelper.executeCypher(`
             CREATE (:${Movie} {title: "The Matrix", year: 1999, rating: 10})

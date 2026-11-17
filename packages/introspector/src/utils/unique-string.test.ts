@@ -19,7 +19,7 @@ describe("uniqueString", () => {
         ["a", ["a", "a2", "c"], "a3"],
     ];
 
-    test.each<Args>(cases)("given candidate %p and pool %p, returns %p", (candidate, pool, expectedResult) => {
+    test.each<Args>(cases)("given candidate %o and pool %o, returns %o", (candidate, pool, expectedResult) => {
         const result = uniqueString(candidate, pool);
         expect(result).toEqual(expectedResult);
     });

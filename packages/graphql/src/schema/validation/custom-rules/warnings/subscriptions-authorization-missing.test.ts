@@ -3,6 +3,7 @@
  * Neo4j Sweden AB [http://neo4j.com]
  */
 
+import type { MockInstance } from "vitest";
 import type {
     EnumTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
@@ -20,14 +21,14 @@ const additionalDefinitions = {
 };
 
 describe("WarnObjectFieldsWithoutResolver", () => {
-    let warn: jest.SpyInstance;
+    let warn: MockInstance;
 
     beforeEach(() => {
-        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     });
 
     afterEach(() => {
-        warn.mockReset();
+        warn.mockRestore();
     });
     describe("Subscriptions authorization rule", () => {
         test("warns if @authorization is used on type and @subscriptionsAuthorization is missing", () => {

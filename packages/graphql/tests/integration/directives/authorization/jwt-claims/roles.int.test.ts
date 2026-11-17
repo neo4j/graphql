@@ -196,7 +196,7 @@ describe("auth/roles", () => {
         });
 
         // This tests reproduces the security issue related to authorization without match #195
-        // eslint-disable-next-line jest/no-disabled-tests
+        // eslint-disable-next-line @vitest/no-disabled-tests
         test.skip("should throw if missing role on type definition and no nodes are matched", async () => {
             const typeDefs = /* GraphQL */ `
                 type JWTPayload @jwt {

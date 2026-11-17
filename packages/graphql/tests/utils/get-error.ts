@@ -13,6 +13,21 @@ export const getError = <TError extends Error>(call: () => unknown): TError[] =>
     }
 };
 
+/**
+ * Returns the message of a thrown `Error`, or any other thrown value as a string, or an empty
+ * string when nothing is thrown. A thrown array of GraphQLErrors gives each error's message and
+ * printed source locations, joined with commas. Vitest's `toThrow` reads `message` only, so it
+ * matches nothing on the arrays that schema validation throws.
+ */
+export const getThrownMessage = (call: () => unknown): string => {
+    try {
+        call();
+        return "";
+    } catch (error: unknown) {
+        return error instanceof Error ? error.message : String(error);
+    }
+};
+
 export const getErrorAsync = async <TError>(call: () => unknown): Promise<TError[]> => {
     try {
         await call();

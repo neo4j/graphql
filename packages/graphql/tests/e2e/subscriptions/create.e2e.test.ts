@@ -123,7 +123,7 @@ describe("Create Subscription", () => {
     });
 
     test("create subscription on excluded type", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {

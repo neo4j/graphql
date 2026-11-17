@@ -6,7 +6,7 @@
 import type { ObjectTypeDefinitionNode } from "graphql";
 import { parse } from "graphql";
 import { gql } from "graphql-tag";
-import { NoErrorThrownError, getError } from "../../../tests/utils/get-error";
+import { NoErrorThrownError, getError, getThrownMessage } from "../../../tests/utils/get-error";
 import { ComplexityEstimatorHelper } from "../../classes/ComplexityEstimatorHelper";
 import { Subgraph } from "../../classes/Subgraph";
 import { generateModel } from "../../schema-model/generate-model";
@@ -986,7 +986,7 @@ describe("schema validation", () => {
                     complexityEstimatorHelper: new ComplexityEstimatorHelper(false),
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrow(
+                expect(getThrownMessage(executeValidate)).toContain(
                     'Directive "@subscriptionsAuthorization" may not be used on INTERFACE.'
                 );
             });
@@ -1329,7 +1329,7 @@ describe("schema validation", () => {
                     complexityEstimatorHelper: new ComplexityEstimatorHelper(false),
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrow(
+                expect(getThrownMessage(executeValidate)).toContain(
                     'Directive "@subscriptionsAuthorization" may not be used on INTERFACE.'
                 );
             });

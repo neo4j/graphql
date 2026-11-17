@@ -11,6 +11,7 @@ import type {
 } from "graphql";
 import gql from "graphql-tag";
 import validateDocument from "./validate-document";
+import { getThrownMessage } from "../../../tests/utils/get-error";
 
 const additionalDefinitions = {
     enums: [] as EnumTypeDefinitionNode[],
@@ -36,7 +37,7 @@ describe("directive is required to be in a type with @node", () => {
                 additionalDefinitions: {},
                 features: {},
             });
-        expect(executeValidate).toThrow('Directive "relationship" must be in a type with "@node"');
+        expect(getThrownMessage(executeValidate)).toContain('Directive "relationship" must be in a type with "@node"');
     });
 
     test("should not raise when @relationship is used within the @node directive", () => {
@@ -76,7 +77,7 @@ describe("directive is required to be in a type with @node", () => {
                 additionalDefinitions: {},
                 features: {},
             });
-        expect(executeValidate).toThrow('Directive "cypher" must be in a type with "@node"');
+        expect(getThrownMessage(executeValidate)).toContain('Directive "cypher" must be in a type with "@node"');
     });
 
     test("should not raise when @cypher is used within the @node directive", () => {
@@ -120,7 +121,7 @@ describe("directive is required to be in a type with @node", () => {
                     },
                 },
             });
-        expect(executeValidate).toThrow('Directive "populatedBy" must be in a type with "@node"');
+        expect(getThrownMessage(executeValidate)).toContain('Directive "populatedBy" must be in a type with "@node"');
     });
 
     test("should not raise when @populatedBy is used within the @node directive", () => {
@@ -144,7 +145,9 @@ describe("directive is required to be in a type with @node", () => {
                     },
                 },
             });
-        expect(executeValidate).not.toThrow('Directive "populatedBy" must be in a type with "@node"');
+        expect(getThrownMessage(executeValidate)).not.toContain(
+            'Directive "populatedBy" must be in a type with "@node"'
+        );
     });
 
     test("should raise when @relayId is not used within the @node directive", () => {
@@ -164,7 +167,7 @@ describe("directive is required to be in a type with @node", () => {
                 additionalDefinitions: {},
                 features: {},
             });
-        expect(executeValidate).toThrow('Directive "relayId" must be in a type with "@node"');
+        expect(getThrownMessage(executeValidate)).toContain('Directive "relayId" must be in a type with "@node"');
     });
 
     test("should not raise when @relayId is used within the @node directive", () => {
@@ -184,7 +187,7 @@ describe("directive is required to be in a type with @node", () => {
                 additionalDefinitions,
                 features: {},
             });
-        expect(executeValidate).not.toThrow('Directive "relayId" must be in a type with "@node"');
+        expect(getThrownMessage(executeValidate)).not.toContain('Directive "relayId" must be in a type with "@node"');
     });
 
     test("should raise when @authorization is not used within the @node directive", () => {
@@ -205,7 +208,9 @@ describe("directive is required to be in a type with @node", () => {
                 additionalDefinitions: {},
                 features: {},
             });
-        expect(executeValidate).toThrow('Directive "@authorization" must be in a type with "@node"');
+        expect(getThrownMessage(executeValidate)).toContain(
+            'Directive "@authorization" must be in a type with "@node"'
+        );
     });
 
     test("should not raise when @authorization is used within the @node directive", () => {
@@ -248,7 +253,9 @@ describe("directive is required to be in a type with @node", () => {
                 additionalDefinitions: {},
                 features: {},
             });
-        expect(executeValidate).toThrow('Directive "@authorization" must be in a type with "@node"');
+        expect(getThrownMessage(executeValidate)).toContain(
+            'Directive "@authorization" must be in a type with "@node"'
+        );
     });
 
     test("should not raise when @authorization is used within the @node directive at object level", () => {
@@ -295,7 +302,9 @@ describe("directive is required to be in a type with @node", () => {
                 additionalDefinitions: {},
                 features: {},
             });
-        expect(executeValidate).toThrow('Directive "@authorization" must be in a type with "@node"');
+        expect(getThrownMessage(executeValidate)).toContain(
+            'Directive "@authorization" must be in a type with "@node"'
+        );
     });
 
     test("should not raise when @authorization is used within the @node directive in type extension", () => {
@@ -345,7 +354,9 @@ describe("directive is required to be in a type with @node", () => {
                 additionalDefinitions: {},
                 features: {},
             });
-        expect(executeValidate).toThrow('Directive "@authorization" must be in a type with "@node"');
+        expect(getThrownMessage(executeValidate)).toContain(
+            'Directive "@authorization" must be in a type with "@node"'
+        );
     });
 
     test("should not raise when @authorization is used within the @node directive on field in type extension", () => {

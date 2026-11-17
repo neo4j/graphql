@@ -300,12 +300,12 @@ describe("ComposeEntity generation", () => {
     test("concrete entity has correct references of the composite entities that implements", () => {
         const userEntity = schemaModel.concreteEntities.find((e) => e.name === "User");
         expect(userEntity?.compositeEntities).toBeArrayOfSize(2);
-        expect(userEntity?.compositeEntities.map((e) => e.name)).toStrictEqual(
+        expect(userEntity?.compositeEntities.map((e) => e.name)).toEqual(
             expect.arrayContaining(["Human", "Animal"])
         );
         const pencilEntity = schemaModel.concreteEntities.find((e) => e.name === "Pencil");
         expect(pencilEntity?.compositeEntities).toBeArrayOfSize(1);
-        expect(pencilEntity?.compositeEntities.map((e) => e.name)).toStrictEqual(expect.arrayContaining(["Tool"]));
+        expect(pencilEntity?.compositeEntities.map((e) => e.name)).toEqual(expect.arrayContaining(["Tool"]));
     });
 });
 

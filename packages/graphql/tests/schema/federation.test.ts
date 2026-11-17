@@ -25,7 +25,7 @@ describe("Apollo Federation", () => {
         `;
 
         // @ts-ignore
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver: jest.fn() });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver: vi.fn() });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSubgraphSchema()));
 
@@ -718,7 +718,7 @@ describe("Apollo Federation", () => {
         `;
 
         // @ts-ignore
-        const neoSchema = new Neo4jGraphQL({ typeDefs, driver: jest.fn() });
+        const neoSchema = new Neo4jGraphQL({ typeDefs, driver: vi.fn() });
 
         const printedSchema = printSchemaWithDirectives(lexicographicSortSchema(await neoSchema.getSubgraphSchema()));
 

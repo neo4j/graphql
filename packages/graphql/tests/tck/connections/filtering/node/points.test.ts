@@ -33,13 +33,12 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
         });
     });
 
-    test("DISTANCE", async () => {
-        let verifyTCK;
+    afterEach(() => {
+        vi.unstubAllEnvs();
+    });
 
-        if (process.env.VERIFY_TCK) {
-            verifyTCK = process.env.VERIFY_TCK;
-            delete process.env.VERIFY_TCK;
-        }
+    test("DISTANCE", async () => {
+        vi.stubEnv("VERIFY_TCK", undefined);
 
         const query = /* GraphQL */ `
             query {
@@ -99,9 +98,5 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
                 }
             }"
         `);
-
-        if (verifyTCK) {
-            process.env.VERIFY_TCK = verifyTCK;
-        }
     });
 });

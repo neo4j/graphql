@@ -3,6 +3,7 @@
  * Neo4j Sweden AB [http://neo4j.com]
  */
 
+import type { MockInstance } from "vitest";
 import {
     parse,
     type EnumTypeDefinitionNode,
@@ -11,7 +12,7 @@ import {
     type UnionTypeDefinitionNode,
 } from "graphql";
 import { gql } from "graphql-tag";
-import { NoErrorThrownError, getError } from "../../../tests/utils/get-error";
+import { NoErrorThrownError, getError, getThrownMessage } from "../../../tests/utils/get-error";
 import { RESERVED_TYPE_NAMES } from "../../constants";
 import { AuthorizationAnnotationArguments } from "../../schema-model/annotation/AuthorizationAnnotation";
 import type { Neo4jGraphQLCallback } from "../../types";
@@ -25,14 +26,14 @@ const additionalDefinitions = {
 };
 
 describe("authorization warning", () => {
-    let warn: jest.SpyInstance;
+    let warn: MockInstance;
 
     beforeEach(() => {
-        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     });
 
     afterEach(() => {
-        warn.mockReset();
+        warn.mockRestore();
     });
 
     test("authorization warning only occurs once for multiple directives", () => {
@@ -53,10 +54,9 @@ describe("authorization warning", () => {
             features: {},
         });
 
-        expect(warn).toHaveBeenCalledWith(
+        expect(warn).toHaveBeenCalledExactlyOnceWith(
             "'@authentication', '@authorization' and/or @subscriptionsAuthorization detected - please ensure that you either specify authorization settings in 'features.authorization'. This warning can be ignored if you intend to pass a decoded JWT into 'context.jwt' on every request."
         );
-        expect(warn).toHaveBeenCalledOnce();
     });
 });
 
@@ -205,14 +205,14 @@ describe("valid list fields in @node and @relationshipProperties types", () => {
 });
 
 describe("single relationship deprecation warning", () => {
-    let warn: jest.SpyInstance;
+    let warn: MockInstance;
 
     beforeEach(() => {
-        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     });
 
     afterEach(() => {
-        warn.mockReset();
+        warn.mockRestore();
     });
 
     test("deprecated warning does not trigger on list relationships", () => {
@@ -238,14 +238,14 @@ describe("single relationship deprecation warning", () => {
 });
 
 describe("default max limit bypass warning", () => {
-    let warn: jest.SpyInstance;
+    let warn: MockInstance;
 
     beforeEach(() => {
-        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     });
 
     afterEach(() => {
-        warn.mockReset();
+        warn.mockRestore();
     });
 
     test("max limit on interface does not trigger warning if no limit on concrete", () => {
@@ -414,14 +414,14 @@ describe("default max limit bypass warning", () => {
 });
 
 describe("warns if queryDirection deprecated values are used", () => {
-    let warn: jest.SpyInstance;
+    let warn: MockInstance;
 
     beforeEach(() => {
-        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     });
 
     afterEach(() => {
-        warn.mockReset();
+        warn.mockRestore();
     });
 
     test("should not warn if no deprecation values are used", () => {
@@ -460,7 +460,9 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
+                expect(
+                    getThrownMessage(() => validateDocument({ document: doc, features: {}, additionalDefinitions }))
+                ).toContain(
                     'Directive "@cypher" argument "columnName" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -471,7 +473,9 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
+                expect(
+                    getThrownMessage(() => validateDocument({ document: doc, features: {}, additionalDefinitions }))
+                ).toContain(
                     'Directive "@cypher" argument "statement" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -499,7 +503,9 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
+                expect(
+                    getThrownMessage(() => validateDocument({ document: doc, features: {}, additionalDefinitions }))
+                ).toContain(
                     'Directive "@alias" argument "property" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -528,7 +534,7 @@ describe("validation 2.0", () => {
                         additionalDefinitions,
                         features: {},
                     });
-                expect(executeValidate).toThrow(
+                expect(getThrownMessage(executeValidate)).toContain(
                     'Directive "@coalesce" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
                 );
             });
@@ -563,7 +569,7 @@ describe("validation 2.0", () => {
                         additionalDefinitions,
                         features: {},
                     });
-                expect(executeValidate).toThrow(
+                expect(getThrownMessage(executeValidate)).toContain(
                     'Directive "@default" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
                 );
             });
@@ -591,7 +597,9 @@ describe("validation 2.0", () => {
                     }
                 `;
                 // TODO: is "[FulltextInput]!" type exposed to the user?
-                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
+                expect(
+                    getThrownMessage(() => validateDocument({ document: doc, features: {}, additionalDefinitions }))
+                ).toContain(
                     'Directive "@fulltext" argument "indexes" of type "[FulltextInput]!" is required, but it was not provided.'
                 );
             });
@@ -602,7 +610,9 @@ describe("validation 2.0", () => {
                         name: String
                     }
                 `;
-                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
+                expect(
+                    getThrownMessage(() => validateDocument({ document: doc, features: {}, additionalDefinitions }))
+                ).toContain(
                     `Invalid argument: indexes, error: Field "queryName" of required type "String!" was not provided.`
                 );
             });
@@ -627,7 +637,9 @@ describe("validation 2.0", () => {
                     }
                 `;
                 // TODO: is "ScalarOrEnum" type exposed to the user?
-                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
+                expect(
+                    getThrownMessage(() => validateDocument({ document: doc, features: {}, additionalDefinitions }))
+                ).toContain(
                     'Directive "@jwtClaim" argument "path" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -660,7 +672,9 @@ describe("validation 2.0", () => {
                     }
                 `;
                 // TODO: is "ScalarOrEnum" type exposed to the user?
-                expect(() => validateDocument({ document: doc, features: {}, additionalDefinitions })).toThrow(
+                expect(
+                    getThrownMessage(() => validateDocument({ document: doc, features: {}, additionalDefinitions }))
+                ).toContain(
                     'Directive "@plural" argument "value" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -688,7 +702,7 @@ describe("validation 2.0", () => {
                         features: { populatedBy: { callbacks: { myCallback: () => "hello" } } },
                         additionalDefinitions,
                     });
-                expect(executeValidate).toThrow(
+                expect(getThrownMessage(executeValidate)).toContain(
                     'Directive "@populatedBy" argument "callback" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -758,7 +772,7 @@ describe("validation 2.0", () => {
                             features: { populatedBy: { callbacks: { myCallback: () => "hello" } } },
                             additionalDefinitions,
                         });
-                    expect(executeValidate).toThrow(
+                    expect(getThrownMessage(executeValidate)).toContain(
                         "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime, Duration or a defined Enum type."
                     );
                 }
@@ -779,7 +793,7 @@ describe("validation 2.0", () => {
                             features: { populatedBy: { callbacks: { myCallback: () => "hello" } } },
                             additionalDefinitions,
                         });
-                    expect(executeValidate).toThrow(
+                    expect(getThrownMessage(executeValidate)).toContain(
                         "@populatedBy can only be used on fields of type Int, Float, String, Boolean, ID, BigInt, DateTime, Date, Time, LocalDateTime, LocalTime, Duration or a defined Enum type."
                     );
                 }
@@ -802,7 +816,7 @@ describe("validation 2.0", () => {
                         additionalDefinitions,
                         features: {},
                     });
-                expect(executeValidate).toThrow(
+                expect(getThrownMessage(executeValidate)).toContain(
                     'Directive "@relationship" argument "type" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -822,7 +836,7 @@ describe("validation 2.0", () => {
                         additionalDefinitions,
                         features: {},
                     });
-                expect(executeValidate).toThrow(
+                expect(getThrownMessage(executeValidate)).toContain(
                     'Directive "@relationship" argument "type" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -842,7 +856,7 @@ describe("validation 2.0", () => {
                         additionalDefinitions,
                         features: {},
                     });
-                expect(executeValidate).toThrow(
+                expect(getThrownMessage(executeValidate)).toContain(
                     'Directive "@relationship" argument "direction" of type "RelationshipDirection!" is required, but it was not provided.'
                 );
             });
@@ -5819,7 +5833,7 @@ describe("validation 2.0", () => {
                     features: undefined,
                 });
 
-            expect(executeValidate).toThrow('Directive "@coalesce" may not be used on OBJECT.');
+            expect(getThrownMessage(executeValidate)).toContain('Directive "@coalesce" may not be used on OBJECT.');
         });
 
         test("should throw an error if a directive is missing an argument", () => {
@@ -5840,7 +5854,7 @@ describe("validation 2.0", () => {
                     features: undefined,
                 });
 
-            expect(executeValidate).toThrow(
+            expect(getThrownMessage(executeValidate)).toContain(
                 'Directive "@coalesce" argument "value" of type "ScalarOrEnum!" is required, but it was not provided.'
             );
         });
@@ -5852,9 +5866,9 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
-                'Unknown type "Unknown".'
-            );
+            expect(
+                getThrownMessage(() => validateDocument({ document: doc, features: undefined, additionalDefinitions }))
+            ).toContain('Unknown type "Unknown".');
         });
 
         test("should throw an error if a user tries to pass in their own Point definition", () => {
@@ -5869,7 +5883,9 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
+            expect(
+                getThrownMessage(() => validateDocument({ document: doc, features: undefined, additionalDefinitions }))
+            ).toContain(
                 'Type "Point" already exists in the schema. It cannot also be defined in this type definition.'
             );
         });
@@ -5883,7 +5899,9 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
+            expect(
+                getThrownMessage(() => validateDocument({ document: doc, features: undefined, additionalDefinitions }))
+            ).toContain(
                 'Type "DateTime" already exists in the schema. It cannot also be defined in this type definition.'
             );
         });
@@ -5897,7 +5915,9 @@ describe("validation 2.0", () => {
                 extend type User @fulltext
             `;
 
-            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
+            expect(
+                getThrownMessage(() => validateDocument({ document: doc, features: undefined, additionalDefinitions }))
+            ).toContain(
                 'Directive "@fulltext" argument "indexes" of type "[FulltextInput]!" is required, but it was not provided.'
             );
         });
@@ -5914,7 +5934,9 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
+            expect(
+                getThrownMessage(() => validateDocument({ document: doc, features: undefined, additionalDefinitions }))
+            ).toContain(
                 'Type "PointInput" already exists in the schema. It cannot also be defined in this type definition.'
             );
         });
@@ -5930,9 +5952,9 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
-                "Interface field UserInterface.age expected but User does not provide it."
-            );
+            expect(
+                getThrownMessage(() => validateDocument({ document: doc, features: undefined, additionalDefinitions }))
+            ).toContain("Interface field UserInterface.age expected but User does not provide it.");
         });
 
         test("should throw an error a user tries to redefine one of our directives", () => {
@@ -5944,9 +5966,9 @@ describe("validation 2.0", () => {
                 }
             `;
 
-            expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
-                'Directive "@relationship" already exists in the schema. It cannot be redefined.'
-            );
+            expect(
+                getThrownMessage(() => validateDocument({ document: doc, features: undefined, additionalDefinitions }))
+            ).toContain('Directive "@relationship" already exists in the schema. It cannot be redefined.');
         });
 
         test("should not throw error on use of internal node input types", () => {
@@ -6024,9 +6046,11 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
-                    'Directive "@relationshipProperties" may not be used on INTERFACE.'
-                );
+                expect(
+                    getThrownMessage(() =>
+                        validateDocument({ document: doc, features: undefined, additionalDefinitions })
+                    )
+                ).toContain('Directive "@relationshipProperties" may not be used on INTERFACE.');
             });
 
             test("should throw if used on a field", () => {
@@ -6036,9 +6060,11 @@ describe("validation 2.0", () => {
                     }
                 `;
 
-                expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
-                    'Directive "@relationshipProperties" may not be used on FIELD_DEFINITION.'
-                );
+                expect(
+                    getThrownMessage(() =>
+                        validateDocument({ document: doc, features: undefined, additionalDefinitions })
+                    )
+                ).toContain('Directive "@relationshipProperties" may not be used on FIELD_DEFINITION.');
             });
         });
 
@@ -6446,7 +6472,11 @@ describe("validation 2.0", () => {
                         name: String @alias
                     }
                 `;
-                expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
+                expect(
+                    getThrownMessage(() =>
+                        validateDocument({ document: doc, features: undefined, additionalDefinitions })
+                    )
+                ).toContain(
                     'Directive "@alias" argument "property" of type "String!" is required, but it was not provided.'
                 );
             });
@@ -6456,9 +6486,11 @@ describe("validation 2.0", () => {
                         name: String
                     }
                 `;
-                expect(() => validateDocument({ document: doc, features: undefined, additionalDefinitions })).toThrow(
-                    'Directive "@alias" may not be used on OBJECT.'
-                );
+                expect(
+                    getThrownMessage(() =>
+                        validateDocument({ document: doc, features: undefined, additionalDefinitions })
+                    )
+                ).toContain('Directive "@alias" may not be used on OBJECT.');
             });
             test("should not throw when used correctly", () => {
                 const doc = gql`
@@ -6484,13 +6516,15 @@ describe("validation 2.0", () => {
                         }
                     `;
 
-                    expect(() =>
-                        validateDocument({
-                            document: doc,
-                            features: undefined,
-                            additionalDefinitions,
-                        })
-                    ).toThrow(RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error);
+                    expect(
+                        getThrownMessage(() =>
+                            validateDocument({
+                                document: doc,
+                                features: undefined,
+                                additionalDefinitions,
+                            })
+                        )
+                    ).toContain(RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error);
                 });
 
                 test("should throw when using Connection in a node name", () => {
@@ -6500,13 +6534,15 @@ describe("validation 2.0", () => {
                         }
                     `;
 
-                    expect(() =>
-                        validateDocument({
-                            document: doc,
-                            features: undefined,
-                            additionalDefinitions,
-                        })
-                    ).toThrow(RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error);
+                    expect(
+                        getThrownMessage(() =>
+                            validateDocument({
+                                document: doc,
+                                features: undefined,
+                                additionalDefinitions,
+                            })
+                        )
+                    ).toContain(RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error);
                 });
 
                 test("should throw when using Node as node name", () => {
@@ -6516,13 +6552,15 @@ describe("validation 2.0", () => {
                         }
                     `;
 
-                    expect(() =>
-                        validateDocument({
-                            document: doc,
-                            features: undefined,
-                            additionalDefinitions,
-                        })
-                    ).toThrow(RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error);
+                    expect(
+                        getThrownMessage(() =>
+                            validateDocument({
+                                document: doc,
+                                features: undefined,
+                                additionalDefinitions,
+                            })
+                        )
+                    ).toContain(RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error);
                 });
             });
 
@@ -6543,13 +6581,15 @@ describe("validation 2.0", () => {
                         }
                     `;
 
-                    expect(() =>
-                        validateDocument({
-                            document: doc,
-                            features: undefined,
-                            additionalDefinitions,
-                        })
-                    ).toThrow(RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error);
+                    expect(
+                        getThrownMessage(() =>
+                            validateDocument({
+                                document: doc,
+                                features: undefined,
+                                additionalDefinitions,
+                            })
+                        )
+                    ).toContain(RESERVED_TYPE_NAMES.find((x) => x.regex.test("PageInfo"))?.error);
                 });
 
                 test("should throw when using Connection in a properties interface name", () => {
@@ -6569,13 +6609,15 @@ describe("validation 2.0", () => {
                         }
                     `;
 
-                    expect(() =>
-                        validateDocument({
-                            document: doc,
-                            features: undefined,
-                            additionalDefinitions,
-                        })
-                    ).toThrow(RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error);
+                    expect(
+                        getThrownMessage(() =>
+                            validateDocument({
+                                document: doc,
+                                features: undefined,
+                                additionalDefinitions,
+                            })
+                        )
+                    ).toContain(RESERVED_TYPE_NAMES.find((x) => x.regex.test("NodeConnection"))?.error);
                 });
 
                 test("should throw when using Node as relationship properties interface name", () => {
@@ -6594,13 +6636,15 @@ describe("validation 2.0", () => {
                         }
                     `;
 
-                    expect(() =>
-                        validateDocument({
-                            document: doc,
-                            features: undefined,
-                            additionalDefinitions,
-                        })
-                    ).toThrow(RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error);
+                    expect(
+                        getThrownMessage(() =>
+                            validateDocument({
+                                document: doc,
+                                features: undefined,
+                                additionalDefinitions,
+                            })
+                        )
+                    ).toContain(RESERVED_TYPE_NAMES.find((x) => x.regex.test("Node"))?.error);
                 });
             });
         });
@@ -7240,7 +7284,7 @@ describe("validation 2.0", () => {
                 expect(executeValidate).not.toThrow();
             });
 
-            test.each([undefined, null])(`invalid when the ${settingsKey} key is present but %p`, (value) => {
+            test.each([undefined, null])(`invalid when the ${settingsKey} key is present but %o`, (value) => {
                 const vectorSettings = { [settingsKey]: value };
 
                 const executeValidate = () =>
