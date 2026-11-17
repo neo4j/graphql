@@ -122,6 +122,7 @@ jobs:
         run: |
           if [ ${{ needs.reviewdog-eslint.result }} != 'success' ] || 
             [ ${{ needs.code-scanning.result }} != 'success' ] ||
+            [ ${{ needs.typecheck.result }} != 'success' ] ||
             [ ${{ needs.package-tests.result }} != 'success' ] ||
             [ ${{ needs.unit-tests.result }} != 'success' ] ||
             [ ${{ needs.api-library-tests.result }} != 'success' ] ||
