@@ -59,8 +59,6 @@ export const sharedConfig = defineConfig({
     plugins: [resolveLikeRequire()],
     test: {
         globals: true,
-        // Undo `vi.stubEnv` after each test, so a failed test leaves no environment change behind
-        unstubEnvs: true,
         // Integration tests run against a real database, which can be slow
         testTimeout: 120_000,
         hookTimeout: 120_000,

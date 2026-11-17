@@ -136,10 +136,11 @@ npx vitest run tests/tck/alias.test.ts
 ```
 
 The tests run without test isolation: each worker loads the library once and
-shares it between test files. That makes every suite faster, and the suites
-that need no database several times faster. A test file must leave no state behind, so restore its mocks and spies, change
-environment variables with `vi.stubEnv`, and do not change globals or module
-state that it does not reset.
+shares it between test files. That makes every suite faster, and the suites that
+need no database several times faster. A test file must leave no state behind,
+so restore its mocks and spies, change environment variables with `vi.stubEnv`
+and undo them with `vi.unstubAllEnvs()` in `afterEach`, and do not change
+globals or module state that it does not reset.
 
 ### Verify TCK Tests
 

@@ -33,8 +33,11 @@ describe("Cypher -> Connections -> Filtering -> Node -> Points", () => {
         });
     });
 
+    afterEach(() => {
+        vi.unstubAllEnvs();
+    });
+
     test("DISTANCE", async () => {
-        // Restored after the test by `unstubEnvs` in the Vitest config
         vi.stubEnv("VERIFY_TCK", undefined);
 
         const query = /* GraphQL */ `
