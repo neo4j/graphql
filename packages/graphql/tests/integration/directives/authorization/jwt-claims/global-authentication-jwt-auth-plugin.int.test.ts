@@ -123,27 +123,20 @@ describe("Global authentication - Authorization JWT plugin", () => {
     });
 
     test("should not fail if noVerify is false and global authentication is true", async () => {
-        let initError: unknown;
-        try {
-            await testHelper.initNeo4jGraphQL({
-                typeDefs,
-                features: {
-                    authorization: {
-                        key: secret,
-                    },
+        await testHelper.initNeo4jGraphQL({
+            typeDefs,
+            features: {
+                authorization: {
+                    key: secret,
                 },
-            });
+            },
+        });
 
-            const token = createBearerToken(secret, { sub: "test" });
+        const token = createBearerToken(secret, { sub: "test" });
 
-            const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
-            expect(gqlResult.errors).toBeUndefined();
-            expect((gqlResult.data as any)[testMovie.plural]).toHaveLength(0);
-        } catch (error) {
-            initError = error;
-        }
-
-        expect(initError).toBeUndefined();
+        const gqlResult = await testHelper.executeGraphQLWithToken(query, token);
+        expect(gqlResult.errors).toBeUndefined();
+        expect((gqlResult.data as any)[testMovie.plural]).toHaveLength(0);
     });
 
     test("should not fail if valid JWT token is present and global authentication is enabled", async () => {
