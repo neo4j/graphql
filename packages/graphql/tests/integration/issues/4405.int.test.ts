@@ -85,7 +85,7 @@ describe("https://github.com/neo4j/graphql/issues/4405", () => {
             contextValue: { jwt: { uid: "user-1" } },
         });
         expect(response.errors).toBeFalsy();
-        expect(response.data?.[Actor.plural]).toStrictEqual(
+        expect(response.data?.[Actor.plural]).toEqual(
             expect.arrayContaining([
                 {
                     name: "Keanu",

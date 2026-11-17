@@ -76,7 +76,7 @@ describe("https://github.com/neo4j/graphql/issues/4239", () => {
             contextValue: { jwt: { sub: "SOME_ID" } },
         });
         expect(response.errors).toBeFalsy();
-        expect(response.data?.[Movie.plural]).toStrictEqual(
+        expect(response.data?.[Movie.plural]).toEqual(
             expect.arrayContaining([expect.objectContaining({ title: "Matrix" })])
         );
     });

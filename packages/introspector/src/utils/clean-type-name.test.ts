@@ -30,7 +30,7 @@ describe("cleanTypeName", () => {
         [":`REL`", "REL"],
     ];
 
-    test.each<Args>(cases)("given input %p, returns %p", (inStr, expectedResult) => {
+    test.each<Args>(cases)("given input %o, returns %o", (inStr, expectedResult) => {
         const result = cleanTypeName(inStr);
         expect(result).toEqual(expectedResult);
     });

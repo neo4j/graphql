@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { MockInstance } from "vitest";
 import type {
     EnumTypeDefinitionNode,
     InterfaceTypeDefinitionNode,
@@ -34,14 +35,14 @@ const additionalDefinitions = {
 };
 
 describe("WarnObjectFieldsWithoutResolver", () => {
-    let warn: jest.SpyInstance;
+    let warn: MockInstance;
 
     beforeEach(() => {
-        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     });
 
     afterEach(() => {
-        warn.mockReset();
+        warn.mockRestore();
     });
     describe("Does not show warning", () => {
         test("Error on object field array  without resolver throw warning in debug", () => {

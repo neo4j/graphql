@@ -212,7 +212,7 @@ describe("connect-or-create with @id", () => {
     });
 
     // NOTE: This test case covers a known bug #1124 in which the where field update the values on connectOrCreate
-    /* eslint-disable-next-line jest/no-disabled-tests */
+    /* eslint-disable-next-line @vitest/no-disabled-tests */
     test.skip("create -> connectOrCreate does not change value on where", async () => {
         const title = generate({
             charset: "alphabetic",

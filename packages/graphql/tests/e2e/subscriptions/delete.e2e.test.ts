@@ -163,7 +163,7 @@ describe.each([
     });
 
     test("delete subscription on excluded type", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {

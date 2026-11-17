@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { MockInstance } from "vitest";
 import { GraphQLError } from "graphql";
 import { Neo4jGraphQL } from "../../../src/classes";
 
@@ -134,14 +135,14 @@ describe("Startup Validation", () => {
     });
 
     describe("@customResolver", () => {
-        let warn: jest.SpyInstance;
+        let warn: MockInstance;
 
         beforeEach(() => {
-            warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+            warn = vi.spyOn(console, "warn").mockImplementation(() => {});
         });
 
         afterEach(() => {
-            warn.mockReset();
+            warn.mockRestore();
         });
 
         test("should warn for missing custom resolvers", async () => {

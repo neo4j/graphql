@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { MockInstance } from "vitest";
 import gql from "graphql-tag";
 import { INVALID_REQUIRED_FIELD_ERROR } from "../../../src/schema/get-custom-resolver-meta";
 import { createBearerToken } from "../../utils/create-bearer-token";
@@ -232,14 +233,14 @@ describe("@customResolver directive", () => {
     });
 
     describe("Custom resolver checks", () => {
-        let warn: jest.SpyInstance;
+        let warn: MockInstance;
 
         beforeEach(() => {
-            warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+            warn = vi.spyOn(console, "warn").mockImplementation(() => {});
         });
 
         afterEach(() => {
-            warn.mockReset();
+            warn.mockRestore();
         });
 
         test("Check throws error if customResolver is not provided", async () => {
