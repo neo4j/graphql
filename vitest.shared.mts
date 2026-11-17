@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ */
+
 import { createRequire, isBuiltin } from "node:module";
 import path from "node:path";
 import dotenv from "dotenv";

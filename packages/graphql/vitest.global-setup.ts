@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ */
+
 import neo4j, { type Driver, type Session } from "neo4j-driver";
 
 const INT_TEST_DB_NAME = "neo4jgraphqlinttestdatabase";

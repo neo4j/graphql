@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) "Neo4j"
+ * Neo4j Sweden AB [http://neo4j.com]
+ */
+
 import path from "node:path";
 import { defineConfig, mergeConfig } from "vitest/config";
 import { sharedConfig } from "../../vitest.shared.mts";
