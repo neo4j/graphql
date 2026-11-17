@@ -109,7 +109,8 @@ following command:
 NEO_URL=neo4j://localhost:7687 NEO_USER=neo4j NEO_PASSWORD=password yarn test
 ```
 
-The above command can additionally be run from any package directory.
+The above command can additionally be run from `packages/graphql`, `packages/introspector`
+or `packages/ogm`.
 
 Alternatively, you can put these environment variables in a `.env` file in the
 root of the repo which will automatically get picked up:
@@ -146,7 +147,7 @@ globals or module state that it does not reset.
 You can run all the TCK tests against the database to check that the Cypher generated is valid. This can be done with the env variable `VERIFY_TCK`
 
 ```bash
-VERIFY_TCK yarn test:tck
+VERIFY_TCK=true yarn test:tck
 ```
 
 ### Testing using docker
