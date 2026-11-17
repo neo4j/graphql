@@ -1,5 +1,7 @@
+import { createRequire, isBuiltin } from "node:module";
 import path from "node:path";
 import dotenv from "dotenv";
+import type { Plugin } from "vite";
 import { defineConfig } from "vitest/config";
 
 // Set before Vitest forks its workers, so that every test process runs in UTC
@@ -7,15 +9,45 @@ process.env.TZ = "Etc/UTC";
 
 dotenv.config({ path: path.join(import.meta.dirname, ".env"), quiet: true });
 
+/**
+ * Resolves the packages that the source and tests import the way Node's `require` does, because
+ * the library ships as CommonJS. Vite would otherwise pick the ESM build of a dual package, and
+ * load a second copy of it next to the copy that CommonJS dependencies `require`: graphql's
+ * `instanceof` checks then fail, and patches to `require("http")`, such as the JWKS mock's, miss
+ * the ESM build of jose.
+ */
+function resolveLikeRequire(): Plugin {
+    // Vitest must load as ESM: its CommonJS entry point only throws an error
+    const isTestRunnerPackage = (source: string): boolean =>
+        source === "vitest" || source.startsWith("vitest/") || source.startsWith("@vitest/") || source === "vite";
+
+    return {
+        name: "neo4j-graphql:resolve-like-require",
+        enforce: "pre",
+        resolveId(source, importer) {
+            const isBarePackage = !source.startsWith(".") && !path.isAbsolute(source) && !source.startsWith("\0");
+            if (
+                !importer ||
+                !isBarePackage ||
+                isBuiltin(source) ||
+                importer.includes("/node_modules/") ||
+                isTestRunnerPackage(source)
+            ) {
+                return null;
+            }
+            try {
+                return createRequire(importer).resolve(source);
+            } catch {
+                // Packages without a CommonJS entry point resolve as usual
+                return null;
+            }
+        },
+    };
+}
+
 // The settings that the Vitest config of every package builds on
 export const sharedConfig = defineConfig({
-    resolve: {
-        // Try `.js` before `.mjs`, as Node's `require` does. graphql's `main` is "index" with no
-        // extension, and Vite's default order picks index.mjs. CommonJS dependencies such as
-        // graphql-compose `require` index.js, so graphql would load twice and its `instanceof`
-        // checks would fail.
-        extensions: [".js", ".mjs", ".ts", ".mts", ".json"],
-    },
+    plugins: [resolveLikeRequire()],
     test: {
         globals: true,
         // Undo `vi.stubEnv` after each test, so a failed test leaves no environment change behind
