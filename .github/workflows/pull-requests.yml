@@ -33,6 +33,25 @@ jobs:
           eslint_flags: "."
           node_options: "--max_old_space_size=4096"
 
+  # Type-checks the tests as well as the sources, separately from the test runner
+  typecheck:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7
+        with:
+          node-version: 26.13.0
+          cache: yarn
+          package-manager-cache: false
+      - name: Install dependencies
+        run: yarn --immutable
+      - name: Type-check @neo4j/graphql sources and tests
+        run: npx tsc --noEmit -p packages/graphql/tsconfig.json
+      - name: Type-check @neo4j/introspector sources and tests
+        # Builds the @neo4j/graphql project reference first
+        run: npx tsc --build packages/introspector/tsconfig.json
+
   code-scanning:
     uses: ./.github/workflows/reusable-codeql-analysis.yml
 
@@ -88,6 +107,7 @@ jobs:
     if: ${{ always() }}
     needs:
       - reviewdog-eslint
+      - typecheck
       - code-scanning
       - package-tests
       - unit-tests
