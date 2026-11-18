@@ -16,7 +16,7 @@ import { InterfaceEntityAdapter } from "../../schema-model/entity/model-adapters
 import { UnionEntityAdapter } from "../../schema-model/entity/model-adapters/UnionEntityAdapter";
 import type { RelationshipAdapter } from "../../schema-model/relationship/model-adapters/RelationshipAdapter";
 import type { RelationshipDeclarationAdapter } from "../../schema-model/relationship/model-adapters/RelationshipDeclarationAdapter";
-import { relationshipTargetHasRelationshipWithNestedOperation } from "./utils";
+import { relationshipTargetHasUpdatableRelationshipWithNestedOperation } from "./utils";
 import { withConnectWhereFieldInputType } from "./where-input";
 
 function withConnectInputType({
@@ -47,6 +47,9 @@ export function augmentConnectInputTypeWithConnectFieldInput({
 }) {
     if (relationshipAdapter.source instanceof UnionEntityAdapter) {
         throw new Error("Unexpected union source");
+    }
+    if (!relationshipAdapter.isUpdatable()) {
+        return;
     }
     const connectFieldInput = makeConnectInputType({
         relationshipAdapter,
@@ -210,7 +213,7 @@ function makeConnectFieldInputTypeFields({
     if (relationshipAdapter.target instanceof ConcreteEntityAdapter) {
         fields["where"] = withConnectWhereFieldInputType(relationshipAdapter.target, composer);
         if (
-            relationshipTargetHasRelationshipWithNestedOperation(
+            relationshipTargetHasUpdatableRelationshipWithNestedOperation(
                 relationshipAdapter.target,
                 RelationshipNestedOperationsOption.CONNECT
             )
@@ -224,7 +227,10 @@ function makeConnectFieldInputTypeFields({
         fields["where"] = withConnectWhereFieldInputType(relationshipAdapter.target, composer);
         const connectTypename = relationshipAdapter.target.operations.connectInputTypeName;
 
-        const hasNestedRelationships = relationshipAdapter.target.relationshipDeclarations.size > 0;
+        const hasNestedRelationships = relationshipTargetHasUpdatableRelationshipWithNestedOperation(
+            relationshipAdapter.target,
+            RelationshipNestedOperationsOption.CONNECT
+        );
         if (composer.has(connectTypename) || hasNestedRelationships) {
             const connectInputType = composer.getOrCreateITC(connectTypename);
             fields["connect"] = connectInputType;
@@ -234,7 +240,12 @@ function makeConnectFieldInputTypeFields({
             throw new Error("Member Entity required.");
         }
         fields["where"] = withConnectWhereFieldInputType(ifUnionMemberEntity, composer);
-        if (ifUnionMemberEntity.relationships.size) {
+        if (
+            relationshipTargetHasUpdatableRelationshipWithNestedOperation(
+                ifUnionMemberEntity,
+                RelationshipNestedOperationsOption.CONNECT
+            )
+        ) {
             const connectInputType = withConnectInputType({ entityAdapter: ifUnionMemberEntity, composer });
             if (connectInputType) {
                 fields["connect"] = relationshipAdapter.isList ? connectInputType.NonNull.List : connectInputType;
