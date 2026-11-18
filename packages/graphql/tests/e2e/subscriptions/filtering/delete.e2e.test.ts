@@ -980,7 +980,7 @@ describe.each([
     });
 
     test("subscription with IN on Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -1004,7 +1004,7 @@ describe.each([
         expect(wsClient.events).toEqual([]);
     });
     test("subscription with NOT_IN on Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -1028,7 +1028,7 @@ describe.each([
         expect(wsClient.events).toEqual([]);
     });
     test("subscription with IN on Array should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -1052,7 +1052,7 @@ describe.each([
         expect(wsClient.events).toEqual([]);
     });
     test("subscription with NOT_IN on Array should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {

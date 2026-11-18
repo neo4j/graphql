@@ -219,7 +219,7 @@ describe("https://github.com/neo4j/graphql/issues/4292", () => {
         });
 
         expect(response.errors).toBeFalsy();
-        expect(response.data?.[Group.plural]).toStrictEqual(
+        expect(response.data?.[Group.plural]).toEqual(
             expect.arrayContaining([
                 expect.objectContaining({
                     id: "family_id_1",

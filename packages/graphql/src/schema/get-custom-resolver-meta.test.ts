@@ -17,6 +17,7 @@
  * limitations under the License.
  */
 
+import type { MockInstance } from "vitest";
 import type {
     FieldDefinitionNode,
     InterfaceTypeDefinitionNode,
@@ -458,14 +459,14 @@ describe("getCustomResolverMeta", () => {
         [customResolverField]: () => 25,
     };
 
-    let warn: jest.SpyInstance;
+    let warn: MockInstance;
 
     beforeEach(() => {
-        warn = jest.spyOn(console, "warn").mockImplementation(() => {});
+        warn = vi.spyOn(console, "warn").mockImplementation(() => {});
     });
 
     afterEach(() => {
-        warn.mockReset();
+        warn.mockRestore();
     });
 
     test("should return undefined if no directive found", () => {

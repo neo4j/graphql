@@ -29,7 +29,7 @@ describe("neo4jTokenEscape", () => {
         ["He llo", "`He llo`"],
     ];
 
-    test.each<Args>(cases)("given input %p, returns %p", (inStr, expectedResult) => {
+    test.each<Args>(cases)("given input %o, returns %o", (inStr, expectedResult) => {
         const result = neo4jTokenEscape(inStr);
         expect(result).toEqual(expectedResult);
     });

@@ -399,9 +399,7 @@ describe("@mutation directive", () => {
                 extend schema @mutation(operations: [])
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            await expect(async () => {
-                await neoSchema.getSchema();
-            }).rejects.toIncludeSameMembers([
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
                 new GraphQLError(
                     "Invalid directive usage: Directive @mutation can only be used in one location: either schema or type."
                 ),

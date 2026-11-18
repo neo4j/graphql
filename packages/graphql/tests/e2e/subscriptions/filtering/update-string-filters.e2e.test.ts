@@ -605,7 +605,7 @@ describe.each([
     });
 
     test("subscription with where filter CONTAINS for Int should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -629,7 +629,7 @@ describe.each([
         expect(wsClient.events).toEqual([]);
     });
     test("subscription with where filter CONTAINS for Float should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -653,7 +653,7 @@ describe.each([
         expect(wsClient.events).toEqual([]);
     });
     test("subscription with where filter CONTAINS for BigInt should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -677,7 +677,7 @@ describe.each([
         expect(wsClient.events).toEqual([]);
     });
     test("subscription with where filter CONTAINS for Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -701,7 +701,7 @@ describe.each([
         expect(wsClient.events).toEqual([]);
     });
     test("subscription with where filter CONTAINS for Array should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -726,7 +726,7 @@ describe.each([
     });
 
     test("subscription with where filter STARTS_WITH for Int should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -750,7 +750,7 @@ describe.each([
         expect(wsClient.events).toEqual([]);
     });
     test("subscription with where filter STARTS_WITH for Float should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -774,7 +774,7 @@ describe.each([
         expect(wsClient.events).toEqual([]);
     });
     test("subscription with where filter STARTS_WITH for BigInt should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -798,7 +798,7 @@ describe.each([
         expect(wsClient.events).toEqual([]);
     });
     test("subscription with where filter STARTS_WITH for Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {
@@ -822,7 +822,7 @@ describe.each([
         expect(wsClient.events).toEqual([]);
     });
     test("subscription with where filter STARTS_WITH for Array should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
         subscription {

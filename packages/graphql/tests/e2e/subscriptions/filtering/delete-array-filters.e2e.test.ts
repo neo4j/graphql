@@ -448,7 +448,7 @@ describe.each([
     });
 
     test("subscription with INCLUDES on String should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -472,7 +472,7 @@ describe.each([
         expect(wsClient.events).toEqual([]);
     });
     test("subscription with INCLUDES on Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -496,7 +496,7 @@ describe.each([
         expect(wsClient.events).toEqual([]);
     });
     test("subscription with NOT_INCLUDES on String should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {
@@ -520,7 +520,7 @@ describe.each([
         expect(wsClient.events).toEqual([]);
     });
     test("subscription with NOT_INCLUDES on Boolean should error", async () => {
-        const onReturnError = jest.fn();
+        const onReturnError = vi.fn();
         await wsClient.subscribe(
             `
             subscription {

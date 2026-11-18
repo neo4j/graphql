@@ -323,9 +323,7 @@ describe("@query directive", () => {
                 extend schema @query(read: false, aggregate: true)
             `;
             const neoSchema = new Neo4jGraphQL({ typeDefs });
-            await expect(async () => {
-                await neoSchema.getSchema();
-            }).rejects.toIncludeSameMembers([
+            await expect(neoSchema.getSchema()).rejects.toIncludeSameMembers([
                 new GraphQLError(
                     "Invalid directive usage: Directive @query can only be used in one location: either schema or type."
                 ),

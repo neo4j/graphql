@@ -18,7 +18,7 @@
  */
 
 import * as semver from "semver";
-import type { GraphQLResolveInfo, GraphQLSchema } from "graphql";
+import type { GraphQLSchema } from "graphql";
 import type { Session, Driver } from "neo4j-driver";
 import { Neo4jDatabaseInfo } from "../../../classes/Neo4jDatabaseInfo";
 import type { Neo4jGraphQLComposedContext } from "./wrap-query-and-mutation";
@@ -26,14 +26,14 @@ import type { Neo4jGraphQLComposedContext } from "./wrap-query-and-mutation";
 describe("wrapper test", () => {
     let fakeSession: Session;
     let fakeDriver: Driver;
-    const executeRead = jest.fn();
+    const executeRead = vi.fn();
     let wrapResolverArgs: Parameters<typeof wrapResolver>[0];
     let wrapResolver;
 
     beforeEach(async () => {
         const module = await import("./wrap-query-and-mutation");
         wrapResolver = module.wrapQueryAndMutation;
-        jest.resetModules();
+        vi.resetModules();
         executeRead.mockReset();
         // @ts-ignore
         fakeSession = {
@@ -78,7 +78,7 @@ describe("wrapper test", () => {
         executeRead.mockReturnValueOnce({
             records: [["4.4.0", "enterprise"]],
         });
-        const resolver = jest.fn((_root, _args, context: Neo4jGraphQLComposedContext) => {
+        const resolver = vi.fn((_root, _args, context: Neo4jGraphQLComposedContext) => {
             expect(context).toBeDefined();
             expect(context.neo4jDatabaseInfo).toBeDefined();
             expect(context.neo4jDatabaseInfo?.edition).toBe("enterprise");
@@ -86,7 +86,7 @@ describe("wrapper test", () => {
             return resolvedResult;
         });
         const wrappedResolver = resolverDecorator(resolver);
-        const res = await wrappedResolver({}, {}, {} as Neo4jGraphQLComposedContext, {} as GraphQLResolveInfo);
+        const res = await wrappedResolver({}, {}, {}, {});
         expect(res).toBe(resolvedResult);
         expect(executeRead).toHaveBeenCalledTimes(1);
         expect(resolver).toHaveBeenCalledTimes(1);
@@ -106,13 +106,13 @@ describe("wrapper test", () => {
             records: [["4.3.0", "enterprise"]],
         });
         const wrappedResolver = resolverDecorator(resolver);
-        const firstRes = await wrappedResolver({}, {}, {} as Neo4jGraphQLComposedContext, {} as GraphQLResolveInfo);
+        const firstRes = await wrappedResolver({}, {}, {}, {});
         expect(firstRes).toBe(resolvedResult);
         expect(executeRead).toHaveBeenCalledTimes(1);
         executeRead.mockReturnValueOnce({
             records: [["4.4.0", "enterprise"]],
         });
-        const secondRes = await wrappedResolver({}, {}, {} as Neo4jGraphQLComposedContext, {} as GraphQLResolveInfo);
+        const secondRes = await wrappedResolver({}, {}, {}, {});
         expect(secondRes).toBe(resolvedResult);
         expect(executeRead).toHaveBeenCalledTimes(1);
     });

@@ -940,7 +940,7 @@ describe("interface implementing interface with declared relationships", () => {
         expect(gqlResult.errors?.[0]?.message).toInclude(`Cannot query field "actorsConnection" on type "Production"`);
     });
 
-    /* eslint-disable-next-line jest/no-disabled-tests */
+    /* eslint-disable-next-line @vitest/no-disabled-tests */
     test.skip("WHERE?", async () => {
         const actorName = "actor1";
         const actorName2 = "actor2";

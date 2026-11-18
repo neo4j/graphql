@@ -73,7 +73,7 @@ describe("getRelationshipMeta", () => {
         };
 
         expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
-            `"Argument \\"type\\" of required type \\"String!\\" was not provided."`
+            `[Error: Argument "type" of required type "String!" was not provided.]`
         );
     });
 
@@ -98,7 +98,7 @@ describe("getRelationshipMeta", () => {
         };
 
         expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
-            `"Argument \\"direction\\" of required type \\"RelationshipDirection!\\" was not provided."`
+            `[Error: Argument "direction" of required type "RelationshipDirection!" was not provided.]`
         );
     });
 
@@ -127,7 +127,7 @@ describe("getRelationshipMeta", () => {
             ],
         };
         expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
-            `"Argument \\"direction\\" has invalid value true."`
+            `[Error: Argument "direction" has invalid value true.]`
         );
     });
 
@@ -156,7 +156,7 @@ describe("getRelationshipMeta", () => {
         };
 
         expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
-            `"Argument \\"direction\\" has invalid value INVALID!."`
+            `[Error: Argument "direction" has invalid value INVALID!.]`
         );
     });
 
@@ -180,7 +180,7 @@ describe("getRelationshipMeta", () => {
         };
 
         expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
-            `"Argument \\"type\\" of required type \\"String!\\" was not provided."`
+            `[Error: Argument "type" of required type "String!" was not provided.]`
         );
     });
 
@@ -210,7 +210,7 @@ describe("getRelationshipMeta", () => {
         };
 
         expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
-            `"Argument \\"type\\" has invalid value 1.3."`
+            `[Error: Argument "type" has invalid value 1.3.]`
         );
     });
 
@@ -279,7 +279,7 @@ describe("getRelationshipMeta", () => {
         };
 
         expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
-            `"Argument \\"properties\\" has invalid value true."`
+            `[Error: Argument "properties" has invalid value true.]`
         );
     });
 
@@ -351,7 +351,7 @@ describe("getRelationshipMeta", () => {
         };
 
         expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
-            `"Argument \\"queryDirection\\" has invalid value \\"IN\\"."`
+            `[Error: Argument "queryDirection" has invalid value "IN".]`
         );
     });
 
@@ -423,7 +423,7 @@ describe("getRelationshipMeta", () => {
         };
 
         expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
-            `"Argument \\"nestedOperations\\" has invalid value \\"IN\\"."`
+            `[Error: Argument "nestedOperations" has invalid value "IN".]`
         );
     });
 
@@ -465,7 +465,7 @@ describe("getRelationshipMeta", () => {
         };
 
         expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
-            `"Argument \\"nestedOperations\\" has invalid value [\\"FAIL\\"]."`
+            `[Error: Argument "nestedOperations" has invalid value ["FAIL"].]`
         );
     });
 
@@ -511,7 +511,7 @@ describe("getRelationshipMeta", () => {
         };
 
         expect(() => getRelationshipMeta(field)).toThrowErrorMatchingInlineSnapshot(
-            `"Argument \\"nestedOperations\\" has invalid value [CONNECT, FAIL]."`
+            `[Error: Argument "nestedOperations" has invalid value [CONNECT, FAIL].]`
         );
     });
 

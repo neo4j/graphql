@@ -320,7 +320,7 @@ describe("LocalDateTime", () => {
                 const graphqlMovies: { id: string; localDT: string }[] = (graphqlResult.data as any)[Movie.plural];
                 expect(graphqlMovies).toBeDefined();
 
-                /* eslint-disable jest/no-conditional-expect */
+                /* eslint-disable @vitest/no-conditional-expect */
                 if (filter === "LT") {
                     expect(graphqlMovies).toHaveLength(1);
                     expect(graphqlMovies[0]?.id).toBe(pastId);
@@ -350,7 +350,7 @@ describe("LocalDateTime", () => {
                     expect(graphqlMovies[1]?.id).toBe(futureId);
                     expect(parseLocalDateTime(graphqlMovies[1]?.localDT)).toStrictEqual(parsedFuture);
                 }
-                /* eslint-enable jest/no-conditional-expect */
+                /* eslint-enable @vitest/no-conditional-expect */
             }
         );
     });
@@ -439,7 +439,7 @@ describe("LocalDateTime", () => {
             expect(graphqlMovies).toBeDefined();
             expect(graphqlMovies).toHaveLength(3);
 
-            /* eslint-disable jest/no-conditional-expect */
+            /* eslint-disable @vitest/no-conditional-expect */
             if (sort === "ASC") {
                 expect(graphqlMovies[0]?.id).toBe(pastId);
                 expect(parseLocalDateTime(graphqlMovies[0]?.localDT)).toStrictEqual(parsedPast);
@@ -461,7 +461,7 @@ describe("LocalDateTime", () => {
                 expect(graphqlMovies[2]?.id).toBe(pastId);
                 expect(parseLocalDateTime(graphqlMovies[2]?.localDT)).toStrictEqual(parsedPast);
             }
-            /* eslint-enable jest/no-conditional-expect */
+            /* eslint-enable @vitest/no-conditional-expect */
         });
     });
 });

@@ -21,7 +21,7 @@ import type { ASTVisitor, FieldDefinitionNode, ObjectTypeDefinitionNode } from "
 import { GraphQLError, parse } from "graphql";
 import { gql } from "graphql-tag";
 import type { SDLValidationContext } from "graphql/validation/ValidationContext";
-import { NoErrorThrownError, getError } from "../../../tests/utils/get-error";
+import { NoErrorThrownError, getError, getThrownMessage } from "../../../tests/utils/get-error";
 import { Subgraph } from "../../classes/Subgraph";
 import { generateModel } from "../../schema-model/generate-model";
 import makeAugmentedSchema from "../make-augmented-schema";
@@ -945,7 +945,7 @@ describe("schema validation", () => {
                     schemaModel,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrow(
+                expect(getThrownMessage(executeValidate)).toContain(
                     'Directive "@subscriptionsAuthorization" may not be used on INTERFACE.'
                 );
             });
@@ -1264,7 +1264,7 @@ describe("schema validation", () => {
                     schemaModel,
                 });
                 const executeValidate = () => validateUserDefinition({ userDocument, augmentedDocument });
-                expect(executeValidate).toThrow(
+                expect(getThrownMessage(executeValidate)).toContain(
                     'Directive "@subscriptionsAuthorization" may not be used on INTERFACE.'
                 );
             });

@@ -74,7 +74,7 @@ describe("https://github.com/neo4j/graphql/issues/4268", () => {
             },
         });
         expect(response.errors).toBeFalsy();
-        expect(response.data?.[Movie.plural]).toStrictEqual(
+        expect(response.data?.[Movie.plural]).toEqual(
             expect.arrayContaining([expect.objectContaining({ title: "SomeTitle" })])
         );
     });
