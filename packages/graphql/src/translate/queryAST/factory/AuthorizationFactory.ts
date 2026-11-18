@@ -39,12 +39,15 @@ export class AuthorizationFactory {
     constructor(private filterFactory: AuthFilterFactory) {}
     // TODO: rename this to getProjectionAuthFilters
     /** @param afterValidation Use it to add "AFTER" validate filters */
+    /** @param skipEntityAuth Use it to only get attribute auth filters (eg for group by bc the main ConnectionOperation will handle the entity auth filters) */
     public getAuthFilters({
         attributes,
         afterValidation = false,
+        skipEntityAuth = false,
         ...params
     }: AuthParams & {
         afterValidation?: boolean;
+        skipEntityAuth?: boolean;
         attributes?: AttributeAdapter[];
     }): AuthorizationFilters[] {
         const authorizationFilters = this.createAuthFilterRule({
@@ -96,6 +99,9 @@ export class AuthorizationFactory {
             }
         }
 
+        if (skipEntityAuth) {
+            return filterTruthy([...attributeAuthFilters, ...attributeAuthValidate]);
+        }
         return filterTruthy([
             authorizationFilters,
             ...attributeAuthFilters,

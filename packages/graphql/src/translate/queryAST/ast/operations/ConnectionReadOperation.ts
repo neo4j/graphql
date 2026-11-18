@@ -181,6 +181,8 @@ export class ConnectionReadOperation extends Operation {
             };
         }
 
+        let paginationClauses: Cypher.CompositeClause | undefined;
+
         const hasProjectionFields = this.shouldProjectEdges();
         let unwindAndProjectionSubquery: Cypher.Call | undefined;
         if (hasProjectionFields) {
@@ -192,13 +194,16 @@ export class ConnectionReadOperation extends Operation {
 
             const edgeProjectionMap = this.createProjectionMapForEdge(nestedContext);
             const paginationWith = this.generateSortAndPaginationClause(nestedContext);
+            paginationClauses = Cypher.utils.concat(
+                ...prePaginationSubqueries,
+                paginationWith,
+                ...postPaginationSubqueries
+            );
 
             unwindAndProjectionSubquery = new Cypher.Call(
                 Cypher.utils.concat(
                     unwindClause,
-                    ...prePaginationSubqueries,
-                    paginationWith,
-                    ...postPaginationSubqueries,
+                    paginationClauses,
                     new Cypher.Return([Cypher.collect(edgeProjectionMap), edgesProjectionVar])
                 ),
                 [edgesVar]
@@ -251,6 +256,8 @@ export class ConnectionReadOperation extends Operation {
             withWhere,
             ...validations,
             withCollectEdgesAndTotalCount,
+            // // pagination clauses top level for groupBy query bc this is where the main match is
+            // this.groupByFields.length ? paginationClauses : undefined,
             unwindAndProjectionSubquery,
             ...groupBySubqueries
         );

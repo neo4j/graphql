@@ -387,11 +387,13 @@ export class ConnectionFactory {
             resolveTree: resolveTreeGroupBy,
         });
 
-        const edgesResolveTree =
-            resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()]?.edges;
+        const groupByFields =
+            resolveTreeGroupBy.fieldsByTypeName[target.operations.getConnectionGroupByTypename()] ?? {};
+        const edgesResolveTree = findFieldsByNameInFieldsByTypeNameField(groupByFields, "edges")[0];
         if (edgesResolveTree) {
-            const nodeResolveTree =
-                edgesResolveTree.fieldsByTypeName[target.operations.getConnectionGroupByEdgeTypename()]?.node;
+            const edgeFieldsByTypeName =
+                edgesResolveTree.fieldsByTypeName?.[target.operations.getConnectionGroupByEdgeTypename()] ?? {};
+            const nodeResolveTree = findFieldsByNameInFieldsByTypeNameField(edgeFieldsByTypeName, "node")[0];
             if (nodeResolveTree) {
                 const resolveTreeNodeFieldsTypesNames = [
                     target.name,
@@ -405,8 +407,79 @@ export class ConnectionFactory {
                     resolveTreeNodeFields,
                     context
                 );
-
                 groupBy.setNodeFields(nodeFields);
+
+                const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+                    entity: target,
+                    operations: ["READ"],
+                    attributes: this.queryASTFactory.operationsFactory.getSelectedAttributes(
+                        target,
+                        resolveTreeNodeFields
+                    ),
+                    context,
+                    skipEntityAuth: true,
+                });
+                operation.addAuthFilters(...authFilters);
+            }
+        }
+        const valuesResolveTree = findFieldsByNameInFieldsByTypeNameField(groupByFields, "values")[0];
+        if (valuesResolveTree) {
+            const resolveTreeNodeFields = getFieldsByTypeName(
+                valuesResolveTree,
+                target.operations.getConnectionGroupByValuesTypename()
+            );
+
+            const valuesFields = this.queryASTFactory.fieldFactory.createFields(target, resolveTreeNodeFields, context);
+
+            groupBy.setValuesFields(valuesFields);
+
+            const attributes = this.queryASTFactory.operationsFactory.getSelectedAttributes(
+                target,
+                resolveTreeNodeFields
+            );
+            const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+                entity: target,
+                operations: ["READ"],
+                attributes,
+                context,
+                skipEntityAuth: true,
+            });
+            operation.addAuthFilters(...authFilters);
+        }
+        const resolveTreeAggregate = findFieldsByNameInFieldsByTypeNameField(groupByFields, "aggregate")[0];
+        if (resolveTreeAggregate) {
+            const aggregationOperation = this.aggregateFactory.createAggregationOperation({
+                entityOrRel: target,
+                resolveTree: resolveTreeAggregate,
+                context,
+                groupByMode: true,
+                // extraWhereArgs: whereArgs,
+            });
+
+            const aggregationField = new ConnectionAggregationField({
+                alias: resolveTreeAggregate.name, // Alias is handled by graphql on top level
+                nodeAlias: "node",
+                operation: aggregationOperation,
+            });
+
+            groupBy.setAggregationField(aggregationField);
+
+            const resolveTreeAggregateFields =
+                resolveTreeAggregate?.fieldsByTypeName[target.operations.aggregateTypeNames.connection]?.node
+                    ?.fieldsByTypeName[target.operations.aggregateTypeNames.node];
+
+            if (resolveTreeAggregateFields) {
+                const authFilters = this.queryASTFactory.authorizationFactory.getAuthFilters({
+                    entity: target,
+                    operations: ["READ"],
+                    attributes: this.queryASTFactory.operationsFactory.getSelectedAttributes(
+                        target,
+                        resolveTreeAggregateFields
+                    ),
+                    context,
+                    skipEntityAuth: true,
+                });
+                operation.addAuthFilters(...authFilters);
             }
         }
 
