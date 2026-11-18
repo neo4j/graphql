@@ -1,5 +1,14 @@
 # @neo4j/graphql
 
+## 7.6.9
+
+### Patch Changes
+
+- [#7358](https://github.com/neo4j/graphql/pull/7358) [`6b4d460`](https://github.com/neo4j/graphql/commit/6b4d4603bcb1f0f0e5d74b42334329179dbbe287) Thanks [@a-alle](https://github.com/a-alle)! - Check jwt token exp claim on subscription events and stop sending events on if token is expired.
+  In order to avoid missing events it is the user's responsibility to ensure the jwt is valid at all times, or to create a new subscription before the jwt expires.
+
+- [#7455](https://github.com/neo4j/graphql/pull/7455) [`43dbcf8`](https://github.com/neo4j/graphql/commit/43dbcf81ee9f498904ff3250dec646e2550db58d) Thanks [@mjfwebb](https://github.com/mjfwebb)! - Fail schema validation when a `@vector` provider's settings are `undefined` or `null` in `features.vector`, instead of failing on the first phrase query
+
 ## 7.6.8
 
 ### Patch Changes
