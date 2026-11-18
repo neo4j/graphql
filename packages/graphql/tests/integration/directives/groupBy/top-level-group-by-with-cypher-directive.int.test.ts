@@ -17,7 +17,7 @@ describe("@groupBy directive top level with @cypher directive", () => {
         const typeDefs = /* GraphQL */ `
             type ${Movie} @node {
                 title: String!
-                year: Int! @groupBy @cypher(statement: "RETURN this.year + 1 as year", columnName: "year")
+                 year: Int! @groupBy @cypher(statement: "RETURN this.year % 2 as year", columnName: "year")
                 rating: Int @groupBy 
             }
         `;
@@ -63,26 +63,23 @@ describe("@groupBy directive top level with @cypher directive", () => {
                             {
                                 node: {
                                     title: "The Matrix",
-                                    year: 2000,
+                                    year: 1,
                                 },
                             },
                             {
                                 node: {
                                     title: "Another Movie",
-                                    year: 2000,
+                                    year: 1,
                                 },
                             },
-                        ]),
-                    },
-                    {
-                        edges: [
+
                             {
                                 node: {
                                     title: "The Matrix Reloaded",
-                                    year: 2002,
+                                    year: 1,
                                 },
                             },
-                        ],
+                        ]),
                     },
                 ]),
             },
