@@ -6,7 +6,7 @@
 import Debug from "debug";
 import type { Key, Neo4jAuthorizationSettings, RemoteJWKS } from "../../types";
 
-import type { JWTPayload, JWTVerifyGetKey } from "jose";
+import type { JWTPayload, JWTVerifyGetKey, errors } from "jose";
 import { createRemoteJWKSet, decodeJwt, jwtVerify } from "jose";
 import { DEBUG_AUTH } from "../../constants";
 import type { Neo4jGraphQLContext } from "../../types/neo4j-graphql-context";
@@ -35,25 +35,25 @@ export class Neo4jGraphQLAuthorization {
 
     public async decode(
         context: Neo4jGraphQLContext | Neo4jGraphQLSubscriptionsConnectionParams
-    ): Promise<JWTPayload | undefined> {
+    ): Promise<{ jwt: JWTPayload | undefined; error: Error | undefined }> {
         const bearerToken = context.token;
         if (!bearerToken) {
-            return undefined;
+            return { jwt: undefined, error: undefined };
         }
         const token = parseBearerToken(bearerToken);
         if (!token) {
-            return undefined;
+            return { jwt: undefined, error: undefined };
         }
         try {
             if (this.authorization.verify === false) {
                 debug("Skipping verifying JWT as verify is set to false");
-                return decodeJwt(token);
+                return { jwt: decodeJwt(token), error: undefined };
             }
             const secret = this.resolveKey(context);
-            return await this.verify(token, secret);
+            return { jwt: await this.verify(token, secret), error: undefined };
         } catch (error) {
             debug("%s", error);
-            return undefined;
+            return { jwt: undefined, error: error as errors.JOSEError };
         }
     }
 

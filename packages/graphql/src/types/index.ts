@@ -23,6 +23,7 @@ export type AuthorizationContext = {
     isAuthenticated: boolean;
     isAuthenticatedParam: Cypher.Param;
     claims?: Map<string, string>;
+    tokenExpired?: boolean;
 };
 
 export type FulltextContext = {
