@@ -59,6 +59,9 @@ export const sharedConfig = defineConfig({
     plugins: [resolveLikeRequire()],
     test: {
         globals: true,
+        // Print values in full in test.each titles and failure messages. Long titles would
+        // otherwise be cut short, and different tests could get the same name.
+        chaiConfig: { truncateThreshold: 0 },
         // Integration tests run against a real database, which can be slow
         testTimeout: 120_000,
         hookTimeout: 120_000,
