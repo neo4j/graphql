@@ -44,6 +44,16 @@ describe("Schema model generation", () => {
         );
     });
 
+    test("rejects @authentication directive with a single operation value", () => {
+        const typeDefs = gql`
+            extend schema @authentication(operations: CREATE)
+        `;
+
+        const document = mergeTypeDefs(typeDefs);
+
+        expect(() => generateModel(document)).toThrow("@authentication operations must be a list");
+    });
+
     test("parses @authentication directive with operations", () => {
         const typeDefs = gql`
             extend schema @authentication(operations: [CREATE])
