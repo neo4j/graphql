@@ -21,6 +21,7 @@ import { isConcreteEntity } from "../../utils/is-concrete-entity";
 import { isInterfaceEntity } from "../../utils/is-interface-entity";
 import type { QueryASTFactory } from "../QueryASTFactory";
 import { findFieldsByNameInFieldsByTypeNameField } from "../parsers/find-fields-by-name-in-fields-by-type-name-field";
+import { UnwindSelection } from "../../ast/selection/UnwindSelection";
 
 export class AggregateFactory {
     private queryASTFactory: QueryASTFactory;
@@ -34,11 +35,13 @@ export class AggregateFactory {
         entityOrRel,
         resolveTree,
         context,
+        groupByMode = false,
         extraWhereArgs = {},
     }: {
         entityOrRel: ConcreteEntityAdapter | RelationshipAdapter | InterfaceEntityAdapter;
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
+        groupByMode?: boolean;
         extraWhereArgs?: Record<string, any>;
     }): AggregationOperation | CompositeAggregationOperation {
         let entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
@@ -126,15 +129,21 @@ export class AggregateFactory {
             if (isConcreteEntity(entity)) {
                 // TOP LEVEL CONCRETE
 
-                const selection = new NodeSelection({
-                    target: entity,
-                    alias: "this",
-                });
+                let selection: NodeSelection | UnwindSelection;
+                if (groupByMode) {
+                    selection = new UnwindSelection();
+                } else {
+                    selection = new NodeSelection({
+                        target: entity,
+                        alias: "this",
+                    });
+                }
 
                 const operation = new AggregationOperation({
                     entity,
                     directed: Boolean(resolveTree.args?.directed ?? true),
                     selection,
+                    groupByMode,
                 });
 
                 return this.hydrateAggregationOperation({
@@ -143,6 +152,7 @@ export class AggregateFactory {
                     resolveTree,
                     context,
                     whereArgs: resolveTreeWhere,
+                    groupByMode,
                 });
             } else {
                 // TOP level interface/union
@@ -376,6 +386,7 @@ export class AggregateFactory {
         resolveTree,
         context,
         whereArgs,
+        groupByMode = false,
     }: {
         relationship?: RelationshipAdapter;
         entity: ConcreteEntityAdapter | InterfaceEntityAdapter;
@@ -383,6 +394,7 @@ export class AggregateFactory {
         resolveTree: ResolveTree;
         context: Neo4jGraphQLTranslationContext;
         whereArgs: Record<string, any>;
+        groupByMode?: boolean;
     }): T {
         if (isConcreteEntity(entity)) {
             checkEntityAuthentication({ context, entity: entity.entity, targetOperations: ["AGGREGATE"] });
@@ -494,7 +506,8 @@ export class AggregateFactory {
                     {
                         count: countResolveTree,
                     },
-                    deprecatedAttributes
+                    deprecatedAttributes,
+                    groupByMode
                 );
                 fields.push(...connetionTopFields);
             }
@@ -519,7 +532,6 @@ export class AggregateFactory {
                     context,
                     attributes,
                 });
-
                 operation.addAuthFilters(...authFilters);
             }
             operation.setFields(fields);

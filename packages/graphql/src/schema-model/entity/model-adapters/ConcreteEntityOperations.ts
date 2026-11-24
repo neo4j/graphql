@@ -53,6 +53,10 @@ export class ConcreteEntityOperations extends ImplementingEntityOperations<Concr
         return `${this.entityAdapter.name}GroupByEdge`;
     }
 
+    public getConnectionGroupByValuesTypename(): string {
+        return `${this.entityAdapter.name}GroupByValues`;
+    }
+
     public get rootTypeFieldNames(): RootTypeFieldNames {
         return {
             ...super.rootTypeFieldNames,
