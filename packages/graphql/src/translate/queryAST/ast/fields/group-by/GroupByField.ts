@@ -61,6 +61,10 @@ export class GroupByField extends Field {
             if (!context.target) {
                 throw new Error("target not available");
             }
+            const isComputed = this.nodeFields.find((f) => f.alias === prop)?.getProjectionField(context.target);
+            if (isComputed && typeof isComputed !== "string" && isComputed[prop]) {
+                return [isComputed[prop], prop];
+            }
             return [context.target.property(prop), prop];
         });
         const sq = Cypher.utils.concat(
