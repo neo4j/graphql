@@ -24,6 +24,21 @@ export function relationshipTargetHasRelationshipWithNestedOperation(
     );
 }
 
+/** Returns true if the target has a relationship with the given nested operation that is settable on update */
+export function relationshipTargetHasUpdatableRelationshipWithNestedOperation(
+    target: ConcreteEntityAdapter | InterfaceEntityAdapter,
+    nestedOperation: RelationshipNestedOperationsOption
+): boolean {
+    if (target instanceof ConcreteEntityAdapter) {
+        return Array.from(target.relationships.values()).some(
+            (rel: RelationshipAdapter) => rel.nestedOperations.has(nestedOperation) && rel.isUpdatable()
+        );
+    }
+    return Array.from(target.relationshipDeclarations.values()).some(
+        (rel: RelationshipDeclarationAdapter) => rel.nestedOperations.has(nestedOperation) && rel.isUpdatable()
+    );
+}
+
 type DeprecationOptions = Exclude<Neo4jFeaturesSettings["excludeDeprecatedFields"], undefined>;
 
 /** Returns true if the "excludeDeprecatedFields" flag is not set in the features option of Neo4jGraphQL for the chosen deprecation type */
