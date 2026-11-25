@@ -21,6 +21,9 @@ export function applyAuthentication({
     annotation: AuthenticationAnnotation;
     targetOperations: AuthenticationOperation[];
 }): void {
+    if (context.dryRun) {
+        return;
+    }
     const requiresAuthentication = targetOperations.some((targetOperation) =>
         annotation.operations.has(targetOperation)
     );
